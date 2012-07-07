@@ -1,10 +1,14 @@
-from thryft.grammar import Grammar
+from thryft.compiler import Compiler
+from thryft.target.target import Target
 import os.path
 import unittest
 
 
-class GrammarTest(unittest.TestCase):
+class CompilerTest(unittest.TestCase):
     def runTest(self):
+        target = Target()
+        compiler = Compiler(target=target)
+
         for dir_path, _, file_names in \
             os.walk(
                 os.path.join(
@@ -17,15 +21,9 @@ class GrammarTest(unittest.TestCase):
                     continue
                 thrift_file_path = os.path.join(dir_path, file_name)
 
-                print file_name,
+                print file_name
                 try:
-                    tokens = \
-                        Grammar().document.parseFile(
-                            thrift_file_path,
-                            parseAll=True
-                        )
-                    self.assertTrue(len(tokens) > 0)
+                    compiler((thrift_file_path,))
                 except:
                     print
                     raise
-                print tokens

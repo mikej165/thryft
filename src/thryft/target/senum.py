@@ -1,0 +1,2 @@
+class Senum(object):
+    pass

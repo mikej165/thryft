@@ -7,9 +7,6 @@ import sys
 import traceback
 
 
-__all__ = ['Grammar']
-
-
 class Grammar(object):
     '''
     Thrift grammar.
@@ -38,7 +35,7 @@ class Grammar(object):
         int_constant = \
             Combine(CaselessLiteral('0x') + Word(nums + 'abcdefABCDEF')).setParseAction(wrap_parse_action(lambda tokens: [int(tokens[0], 16)])) | \
             Word(nums + '+-', nums).setParseAction(wrap_parse_action(lambda tokens: [int(tokens[0])]))
-        self.double_constant = double_constant = \
+        double_constant = \
             Combine(Word(nums + '+-', nums) + '.' + Word(nums) + Optional(CaselessLiteral('E') + Word(nums + '+-', nums))).\
                 setParseAction(wrap_parse_action(lambda tokens: [Decimal(tokens[0])]))
         const_list = const_list = Forward()

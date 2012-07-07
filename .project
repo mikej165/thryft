@@ -3,6 +3,7 @@
 	<name>thryft</name>
 	<comment></comment>
 	<projects>
+		<project>yutil</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

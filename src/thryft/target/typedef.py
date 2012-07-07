@@ -1,0 +1,2 @@
+class Typedef(object):
+    pass
