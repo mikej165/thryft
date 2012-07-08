@@ -7,6 +7,6 @@ class ThriftStruct(Struct):
         return "struct %s {%s}" % (
             self.name,
             pad("\n", "\n".join(indent(' ' * 4,
-                [repr(field) for field in self.fields],
+                [repr(field) + ';' for field in self.fields],
             )), "\n")
         )
