@@ -1,26 +1,28 @@
-class Field(object):
-    def __init__(self, parent, name, type, id=None, required=True, value=None):
+from thryft.target.construct import Construct
+
+
+class Field(Construct):
+    def __init__(
+        self,
+        name,
+        parent,
+        type,
+        id=None,
+        required=True,
+        value=None
+    ):
+        Construct.__init__(self, name=name, parent=parent)
         self.__id = id
-        self.__name = name
-        self.__parent = parent
         self.__type = type
         self.__required = required
         self.__value = value
 
     @property
-    def id(self):
+    def id(self): #@ReservedAssignment
         return self.__id
 
     @property
-    def name(self):
-        return self.__name
-
-    @property
-    def parent(self):
-        return self.__parent
-
-    @property
-    def type(self):
+    def type(self): #@ReservedAssignment
         return self.__type
 
     @property

@@ -1,8 +1,8 @@
 from collections import OrderedDict
 from decimal import Decimal
 from pyparsing import alphas, alphanums, CaselessLiteral, Combine, \
-    cppStyleComment, cStyleComment, delimitedList, Forward, Group, Literal, nums, \
-    Optional, pythonStyleComment, quotedString, Word, ZeroOrMore
+    cppStyleComment, cStyleComment, delimitedList, Forward, Group, Keyword, Literal, \
+    nums, Optional, pythonStyleComment, quotedString, Word, ZeroOrMore
 import sys
 import traceback
 
@@ -33,60 +33,167 @@ class Grammar(object):
 
         # Constant Values
         int_constant = \
-            Combine(CaselessLiteral('0x') + Word(nums + 'abcdefABCDEF')).setParseAction(wrap_parse_action(lambda tokens: [int(tokens[0], 16)])) | \
-            Word(nums + '+-', nums).setParseAction(wrap_parse_action(lambda tokens: [int(tokens[0])]))
+            Combine(CaselessLiteral('0x') + Word(nums + 'abcdefABCDEF')).\
+                setParseAction(wrap_parse_action(lambda tokens: [int(tokens[0], 16)])) | \
+            Word(nums + '+-', nums).\
+                setParseAction(wrap_parse_action(lambda tokens: [int(tokens[0])]))
         double_constant = \
             Combine(Word(nums + '+-', nums) + '.' + Word(nums) + Optional(CaselessLiteral('E') + Word(nums + '+-', nums))).\
                 setParseAction(wrap_parse_action(lambda tokens: [Decimal(tokens[0])]))
-        const_list = const_list = Forward()
-        const_map = const_map = Forward()
-        const_value = double_constant ^ int_constant ^ quotedString ^ identifier ^ const_list ^ const_map
-        const_list << (Literal('[').suppress() + Group(delimitedList(const_value, list_separator)) + Literal(']').suppress())
-        const_map << (Literal('{').suppress() + Optional(delimitedList(Group(const_value + Literal(':').suppress() + const_value), list_separator)) + Literal('}').suppress())
-        const_map.setParseAction(wrap_parse_action(lambda tokens: [OrderedDict(tuple(item) for item in tokens)]))
+        const_list = Forward()
+        const_map = Forward()
+        const_value = \
+            double_constant ^ \
+            int_constant ^ \
+            quotedString ^ \
+            identifier ^ \
+            const_list ^ \
+            const_map
+        const_list << \
+            (Literal('[').suppress() + \
+                Group(delimitedList(const_value, list_separator)) + \
+            Literal(']').suppress())
+        const_map << \
+            (Literal('{').suppress() + \
+                Optional(delimitedList(
+                    Group(const_value + Literal(':').suppress() + const_value),
+                    list_separator
+                )) + \
+            Literal('}').suppress())
+        const_map.setParseAction(
+            wrap_parse_action(lambda tokens: [OrderedDict(tuple(item)
+                                              for item in tokens)])
+        )
 
         # Types
         field_type = Forward()
-        self.base_type = base_type = Literal('bool') ^ 'byte' ^ 'i16' ^ 'i32' ^ 'i64' ^ 'double' ^ 'string' ^ 'binary' ^ 'slist'
-        self.map_type = map_type = Literal('map').suppress() + Literal('<').suppress() + field_type + Literal(',').suppress() + field_type + Literal('>').suppress()
-        self.list_type = list_type = Literal('list').suppress() + Literal('<').suppress() + field_type + Literal('>').suppress()
-        self.set_type = set_type = Literal('set').suppress() + Literal('<').suppress() + field_type + Literal('>').suppress()
-        container_type = map_type ^ list_type ^ set_type
-        definition_type = base_type ^ container_type
-        field_type << (base_type ^ container_type ^ identifier)
+        self.base_type = \
+            Keyword('binary') ^ \
+            Keyword('bool') ^ \
+            Keyword('byte') ^ \
+            Keyword('double') ^ \
+            Keyword('i16') ^ \
+            Keyword('i32') ^ \
+            Keyword('i64') ^ \
+            Keyword('slist') ^ \
+            Keyword('string')
+        self.map_type = \
+            Keyword('map') + Literal('<').suppress() + \
+                field_type + \
+                Literal(',').suppress() + \
+                field_type + \
+            Literal('>').suppress()
+        self.list_type = \
+            Keyword('list') + Literal('<').suppress() + \
+                field_type + \
+            Literal('>').suppress()
+        self.set_type = \
+            Keyword('set') + Literal('<').suppress() + \
+                field_type + \
+            Literal('>').suppress()
+        container_type = self.list_type ^ self.map_type ^ self.set_type
+        field_type << (self.base_type ^ container_type ^ identifier)
 
         # Thrift Include
-        self.include = include = Literal('include').suppress() + quotedString
+        self.include = Keyword('include') + quotedString
 
         # Namespace
-        namespace_scope = Literal('*') ^ 'java' ^ 'py'
-        self.namespace = namespace = Literal('namespace').suppress() + namespace_scope + identifier
+        namespace_scope = Keyword('*') ^ Keyword('java') ^ Keyword('py')
+        self.namespace = Keyword('namespace') + namespace_scope + identifier
 
         # Field
-        field_id = int_constant + Literal(':').suppress()
-        field_req = (Literal('required') ^ Literal('optional')).setParseAction(wrap_parse_action(lambda tokens: [tokens[0] == 'required']))
-        self.field = field = Optional(field_id) + Optional(field_req) + field_type + identifier + Optional(Literal('=').suppress() + const_value)
+        self.field = \
+            Optional(int_constant + Literal(':').suppress()) + \
+            Optional(
+                (Keyword('required') ^ Keyword('optional')).\
+                    setParseAction(
+                        wrap_parse_action(lambda tokens: [tokens[0] == 'required'])
+                    )
+            ) + \
+            field_type + identifier + \
+            Optional(Literal('=').suppress() + const_value)
 
         # Functions
-        function_type = Literal('void') ^ field_type
-        throws = Literal('throws').suppress() + Literal('(').suppress() + Group(delimitedList(field, list_separator)) + Literal(')').suppress()
-        self.function = function = Optional(Literal('oneway')) + function_type + identifier + Literal('(').suppress() + Optional(Group(delimitedList(field))) + Literal(')').suppress() + Optional(throws)
+        self.function_declarator = \
+            Optional(Keyword('oneway')) + \
+            (Keyword('void') ^ field_type) + \
+            identifier
+        self.function = \
+            self.function_declarator + Literal('(').suppress() + \
+                Optional(Group(delimitedList(self.field))) + \
+            Literal(')').suppress() + \
+            Optional(
+                Keyword('throws').suppress() + Literal('(').suppress() + \
+                    Group(delimitedList(self.field, list_separator)) + \
+                Literal(')').suppress()
+            )
 
         # Header
-        header = include ^ namespace
+        header = self.include ^ self.namespace
 
         # Definition
-        self.const = const = Literal('const').suppress() + field_type + identifier + Literal('=').suppress() + const_value + Optional(list_separator).suppress()
-        self.typedef = typedef = Literal('typedef').suppress() + definition_type + identifier
-        self.enum = enum = Literal('enum').suppress() + identifier + Literal('{').suppress() + Optional(delimitedList(identifier + Optional(Literal('=').suppress() + int_constant), list_separator)) + Literal('}').suppress()
-        self.senum = senum = Literal('senum').suppress() + identifier + Literal('{').suppress() + Optional(delimitedList(quotedString, list_separator)) + Literal('}').suppress()
-        self.struct = struct = Literal('struct').suppress() + identifier + Literal('{').suppress() + Group(ZeroOrMore(field + Optional(list_separator).suppress())) + Literal('}').suppress()
-        self.exception = exception = Literal('exception').suppress() + identifier + Literal('{').suppress() + Group(ZeroOrMore(field + Optional(list_separator).suppress())) + Literal('}').suppress()
-        self.service = service = Literal('service').suppress() + identifier + Optional(Literal('extends') + identifier) + Literal('{').suppress() + Group(ZeroOrMore(function + Optional(list_separator).suppress())) + Literal('}').suppress()
-        definition = const ^ typedef ^ enum ^ senum ^ struct ^ exception ^ service
+        # Const
+        self.const = \
+            Keyword('const') + field_type + identifier + \
+                Literal('=').suppress() + const_value + \
+                Optional(list_separator).suppress()
+        # Typedef
+        self.typedef = \
+            Keyword('typedef') + (self.base_type ^ container_type) + identifier
+        # Enum
+        self.enum_declarator = Keyword('enum') + identifier
+        self.enum = \
+            self.enum_declarator + Literal('{').suppress() + \
+                Optional(Group(delimitedList(
+                    Group(identifier + \
+                        Optional(Literal('=').suppress() + int_constant)),
+                    list_separator
+                ))) + \
+            Literal('}').suppress()
+        # Senum
+        self.senum_declarator = Keyword('senum') + identifier
+        self.senum = \
+            self.senum_declarator + Literal('{').suppress() + \
+                Optional(delimitedList(quotedString, list_separator)) + \
+            Literal('}').suppress()
+        # Struct
+        self.struct_declarator = Keyword('struct') + identifier
+        self.struct = \
+            self.struct_declarator + Literal('{').suppress() + \
+                Group(ZeroOrMore(
+                    self.field + Optional(list_separator).suppress()
+                )) + \
+                Literal('}').suppress()
+        # Exception
+        self.exception_declarator = Keyword('exception') + identifier
+        self.exception = \
+            self.exception_declarator + Literal('{').suppress() + \
+                Group(ZeroOrMore(
+                    self.field + Optional(list_separator).suppress()
+                )) + \
+            Literal('}').suppress()
+        # Service
+        self.service_declarator = \
+            Keyword('service') + identifier + \
+                Optional(Keyword('extends') + identifier)
+        self.service = \
+            self.service_declarator + Literal('{').suppress() + \
+                Group(ZeroOrMore(
+                    self.function + Optional(list_separator).suppress()
+                )) + \
+            Literal('}').suppress()
+        definition = \
+            self.const ^ \
+            self.typedef ^ \
+            self.enum ^ \
+            self.senum ^ \
+            self.struct ^ \
+            self.exception ^ \
+            self.service
 
         # Document
-        self.document = document = ZeroOrMore(header) + ZeroOrMore(definition)
-        document.ignore(cStyleComment)
-        document.ignore(cppStyleComment)
-        document.ignore(pythonStyleComment)
+        self.document = \
+            Group(ZeroOrMore(header)) + Group(ZeroOrMore(definition))
+        self.document.ignore(cStyleComment)
+        self.document.ignore(cppStyleComment)
+        self.document.ignore(pythonStyleComment)

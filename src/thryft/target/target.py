@@ -3,17 +3,18 @@ class Target(object):
     from thryft.target.base_types.bool_type import BoolType #@UnusedImport
     from thryft.target.base_types.numeric_type import NumericType #@UnusedImport
     from thryft.target.base_types.string_type import StringType #@UnusedImport
+    from thryft.target.compound_types.enum import Enum #@UnusedImport
+    from thryft.target.compound_types.exception import Exception #@UnusedImport
+    from thryft.target.compound_types.senum import Senum #@UnusedImport
+    from thryft.target.compound_types.struct import Struct #@UnusedImport
     from thryft.target.const import Const #@UnusedImport
-    from thryft.target.document import Document #@UnusedImport
-    from thryft.target.enum import Enum #@UnusedImport
-    from thryft.target.exception import Exception #@UnusedImport
-    from thryft.target.field import Field #@UnusedImport
-    from thryft.target.function import Function #@UnusedImport
     from thryft.target.container_types.list_type import ListType #@UnusedImport
     from thryft.target.container_types.map_type import MapType #@UnusedImport
+    from thryft.target.document import Document #@UnusedImport
+    from thryft.target.field import Field #@UnusedImport
+    from thryft.target.function import Function #@UnusedImport
+    from thryft.target.include import Include #@UnusedImport
     from thryft.target.namespace import Namespace #@UnusedImport
-    from thryft.target.senum import Senum #@UnusedImport
     from thryft.target.service import Service #@UnusedImport
     from thryft.target.container_types.set_type import SetType #@UnusedImport
-    from thryft.target.struct import Struct #@UnusedImport
     from thryft.target.typedef import Typedef #@UnusedImport

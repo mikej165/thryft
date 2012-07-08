@@ -1,7 +1,5 @@
-class Type(object):
-    def __init__(self, name):
-        self.__name = name
+from thryft.target.construct import Construct
 
-    @property
-    def name(self):
-        return self.__name
+
+class Type(Construct):
+    pass
