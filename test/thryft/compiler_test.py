@@ -1,12 +1,12 @@
 from thryft.compiler import Compiler
-from thryft.target.target import Target
+from thryft.targets.thrift.thrift_target import ThriftTarget
 import os.path
 import unittest
 
 
 class CompilerTest(unittest.TestCase):
     def runTest(self):
-        target = Target()
+        target = ThriftTarget()
         compiler = Compiler(target=target)
 
         for dir_path, _, file_names in \

@@ -13,11 +13,11 @@ class Construct(object):
 
     @property
     def qname(self):
-        from thryft.target.document import Document
+        return self.name
 
-        if isinstance(self, Document):
-            return self.name
-        elif not isinstance(self.parent, Document):
-            return self.name
-        else:
-            return self.parent.name + '.' + self.name
+    def __repr__(self):
+        raise NotImplementedError('.'.join((
+                  self.__class__.__module__,
+                  self.__class__.__name__,
+                  '__repr__'
+              )))

@@ -7,5 +7,9 @@ class Typedef(Construct):
         self.__type = type
 
     @property
+    def qname(self):
+        return self.parent.name + '.' + self.name
+
+    @property
     def type(self): #@ReservedAssignment
         return self.__type

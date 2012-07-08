@@ -9,3 +9,7 @@ class CompoundType(Type):
     @property
     def fields(self):
         return self.__fields
+
+    @property
+    def qname(self):
+        return self.parent.name + '.' + self.name

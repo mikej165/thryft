@@ -154,7 +154,7 @@ class Grammar(object):
         self.senum_declarator = Keyword('senum') + identifier
         self.senum = \
             self.senum_declarator + Literal('{').suppress() + \
-                Optional(delimitedList(quotedString, list_separator)) + \
+                Optional(Group(delimitedList(quotedString, list_separator))) + \
             Literal('}').suppress()
         # Struct
         self.struct_declarator = Keyword('struct') + identifier

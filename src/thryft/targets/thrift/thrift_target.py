@@ -1,0 +1,20 @@
+class ThriftTarget(object):
+    from thryft.targets.thrift.base_types.thrift_binary_type import ThriftBinaryType as BinaryType #@UnusedImport
+    from thryft.targets.thrift.base_types.thrift_bool_type import ThriftBoolType as BoolType #@UnusedImport
+    from thryft.targets.thrift.base_types.thrift_numeric_type import ThriftNumericType as NumericType #@UnusedImport
+    from thryft.targets.thrift.base_types.thrift_string_type import ThriftStringType as StringType #@UnusedImport
+    from thryft.targets.thrift.compound_types.thrift_enum import ThriftEnum as Enum #@UnusedImport
+    from thryft.targets.thrift.compound_types.thrift_exception import ThriftException as Exception #@UnusedImport
+    from thryft.targets.thrift.compound_types.thrift_senum import ThriftSenum as Senum #@UnusedImport
+    from thryft.targets.thrift.compound_types.thrift_struct import ThriftStruct as Struct #@UnusedImport
+    from thryft.targets.thrift.thrift_const import ThriftConst as Const #@UnusedImport
+    from thryft.targets.thrift.container_types.thrift_list_type import ThriftListType as ListType #@UnusedImport
+    from thryft.targets.thrift.container_types.thrift_map_type import ThriftMapType as MapType #@UnusedImport
+    from thryft.targets.thrift.container_types.thrift_set_type import ThriftSetType as SetType  #@UnusedImport
+    from thryft.targets.thrift.thrift_document import ThriftDocument as Document #@UnusedImport
+    from thryft.targets.thrift.thrift_field import ThriftField as Field #@UnusedImport
+    from thryft.targets.thrift.thrift_function import ThriftFunction as Function #@UnusedImport
+    from thryft.targets.thrift.thrift_include import ThriftInclude as Include #@UnusedImport
+    from thryft.targets.thrift.thrift_namespace import ThriftNamespace as Namespace #@UnusedImport
+    from thryft.targets.thrift.thrift_service import ThriftService as Service #@UnusedImport
+    from thryft.targets.thrift.thrift_typedef import ThriftTypedef as Typedef #@UnusedImport

@@ -10,11 +10,11 @@ class Target(object):
     from thryft.target.const import Const #@UnusedImport
     from thryft.target.container_types.list_type import ListType #@UnusedImport
     from thryft.target.container_types.map_type import MapType #@UnusedImport
+    from thryft.target.container_types.set_type import SetType #@UnusedImport
     from thryft.target.document import Document #@UnusedImport
     from thryft.target.field import Field #@UnusedImport
     from thryft.target.function import Function #@UnusedImport
     from thryft.target.include import Include #@UnusedImport
     from thryft.target.namespace import Namespace #@UnusedImport
     from thryft.target.service import Service #@UnusedImport
-    from thryft.target.container_types.set_type import SetType #@UnusedImport
     from thryft.target.typedef import Typedef #@UnusedImport
