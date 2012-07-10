@@ -1,5 +1,7 @@
-import os.path
 from thryft.target.construct import Construct
+from thryft.target.include import Include
+from thryft.target.namespace import Namespace
+import os.path
 
 
 class Document(Construct):
@@ -21,6 +23,16 @@ class Document(Construct):
     @property
     def headers(self):
         return self.__headers
+
+    @property
+    def includes(self):
+        return [header for header in self.headers
+                if isinstance(header, Include)]
+
+    @property
+    def namespaces(self):
+        return [header for header in self.headers
+                if isinstance(header, Namespace)]
 
     @property
     def path(self):

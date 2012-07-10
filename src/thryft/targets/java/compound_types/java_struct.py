@@ -37,13 +37,6 @@ public static class Builder {
     def java_declarations(self):
         return [field.java_declaration(final=True) for field in self.fields]
 
-    def java_is_native(self):
-        return self.qname in (
-            'date.Date',
-            'date_time.DateTime',
-            'decimal.Decimal'
-        )
-
     def java_is_reference(self):
         return True
 
