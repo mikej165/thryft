@@ -24,6 +24,9 @@ class CompilerTest(unittest.TestCase):
                 print file_name
                 try:
                     compiler((thrift_file_path,))
+                except RuntimeError:
+                    if file_name != 'include.thrift':
+                        raise
                 except:
                     print
                     raise

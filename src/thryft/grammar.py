@@ -2,7 +2,7 @@ from collections import OrderedDict
 from decimal import Decimal
 from pyparsing import alphas, alphanums, CaselessLiteral, Combine, \
     cppStyleComment, cStyleComment, delimitedList, Forward, Group, Keyword, Literal, \
-    nums, Optional, pythonStyleComment, quotedString, Word, ZeroOrMore
+    nums, Optional, QuotedString, pythonStyleComment, Word, ZeroOrMore
 import sys
 import traceback
 
@@ -18,7 +18,6 @@ class Grammar(object):
         def wrap_parse_action(parse_action):
             def wrapped_parse_action(tokens):
                 try:
-                    # print tokens
                     return parse_action(tokens)
                 except:
                     print >> sys.stderr, 'Error parsing', tokens
@@ -27,8 +26,8 @@ class Grammar(object):
             return lambda tokens: wrapped_parse_action(tokens)
 
         # Basic definitions
-        # literal = quotedString
-        identifier = Word(alphas, alphanums)
+        string_literal = QuotedString('\'') ^ QuotedString('"')
+        identifier = Word(alphas, alphanums + '._')
         list_separator = Literal(',') | Literal(';')
 
         # Constant Values
@@ -45,7 +44,7 @@ class Grammar(object):
         const_value = \
             double_constant ^ \
             int_constant ^ \
-            quotedString ^ \
+            string_literal ^ \
             identifier ^ \
             const_list ^ \
             const_map
@@ -95,7 +94,7 @@ class Grammar(object):
         field_type << (self.base_type ^ container_type ^ identifier)
 
         # Thrift Include
-        self.include = Keyword('include') + quotedString
+        self.include = Keyword('include') + string_literal
 
         # Namespace
         namespace_scope = Keyword('*') ^ Keyword('java') ^ Keyword('py')
@@ -154,7 +153,7 @@ class Grammar(object):
         self.senum_declarator = Keyword('senum') + identifier
         self.senum = \
             self.senum_declarator + Literal('{').suppress() + \
-                Optional(Group(delimitedList(quotedString, list_separator))) + \
+                Optional(Group(delimitedList(string_literal, list_separator))) + \
             Literal('}').suppress()
         # Struct
         self.struct_declarator = Keyword('struct') + identifier

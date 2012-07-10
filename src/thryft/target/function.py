@@ -15,7 +15,7 @@ class Function(Construct):
         self.__oneway = oneway
         self.__parameters = parameters is not None and list(parameters) or []
         self.__throws = throws is not None and list(throws) or []
-        self.__return_type = None
+        self.__return_type = return_type
 
     @property
     def oneway(self):

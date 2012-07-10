@@ -1,14 +1,22 @@
 from thryft.grammar import Grammar
 from thryft.target.type import Type
-from yutil import camelize
-import argparse
-import sys
-import traceback
+import logging
+import os.path
 
 
 class Compiler(object):
-    def __init__(self, target):
+    def __init__(self, target, include_dir_paths=None):
         object.__init__(self)
+
+        if include_dir_paths is None:
+            include_dir_paths = []
+        elif isinstance(include_dir_paths, (list, tuple)):
+            include_dir_paths = list(include_dir_paths)
+        else:
+            include_dir_paths = [include_dir_paths]
+        if len(include_dir_paths) == 0:
+            include_dir_paths.append(os.getcwd())
+        self.__include_dir_paths = include_dir_paths
 
         self.__grammar = grammar = Grammar()
         self.__target = target
@@ -24,40 +32,25 @@ class Compiler(object):
                 self._wrap_parse_action(parse_action)
             )
 
-    def __call__(self, file_paths):
-        for file_path in file_paths:
-            document = self.__target.Document(path=file_path)
+    def __call__(self, thrift_file_paths):
+        return self.compile(thrift_file_paths)
+
+    def compile(self, thrift_file_paths): #@ReservedAssignment
+        if not isinstance(thrift_file_paths, (list, tuple)):
+            thrift_file_paths = (thrift_file_paths,)
+
+        documents = []
+        for thrift_file_path in thrift_file_paths:
+            document = self.__target.Document(path=thrift_file_path)
             self.__scope_stack.append(document)
 
-            self.__grammar.document.parseFile(file_path, parseAll=True)
+            self.__grammar.document.parseFile(thrift_file_path, parseAll=True)
 
+            assert self.__scope_stack[-1] is document
             self.__scope_stack.pop(-1)
+            documents.append(document)
 
-    @classmethod
-    def main(cls):
-        argument_parser = argparse.ArgumentParser()
-        argument_parser.add_argument(
-            '--gen',
-            dest='target',
-            help='generator/target name',
-            required=True
-        )
-        argument_parser.add_argument(
-            'files',
-            nargs='+',
-            type=argparse.FileType
-        )
-        args = argument_parser.parse_args()
-
-        target_module_name = 'thryft.targets.' + args.target + '_target'
-        target_module = __import__(target_module_name)
-        for module_name in target_module_name.split('.')[1:]:
-            target_module = getattr(module_name, target_module)
-        target_class_name = camelize(args.target) + 'Target'
-        target_class = getattr(target_module, target_class_name)
-        target = target_class()
-
-        cls(target)(args.files)
+        return documents
 
     def __parse_compound_type_declarator(self, keyword, tokens):
         compound_type = \
@@ -122,6 +115,8 @@ class Compiler(object):
                     )
                 )
 
+        self.__type_map[enum.qname] = enum
+
         return [enum]
 
     def _parse_exception_declarator(self, tokens):
@@ -132,7 +127,8 @@ class Compiler(object):
 
     def _parse_field(self, tokens):
         tokens_copy = list(tokens)
-        if isinstance(tokens_copy[0], int):
+        if isinstance(tokens_copy[0], int) and \
+           not isinstance(tokens_copy[0], bool):
             id = tokens_copy.pop(0) #@ReservedAssignment
         else:
             id = None #@ReservedAssignment
@@ -210,7 +206,15 @@ class Compiler(object):
                 parent=self.__scope_stack[-1],
                 path=tokens[1]
             )
-        return [include]
+
+        for include_dir_path in self.__include_dir_paths:
+            include_file_path = os.path.join(include_dir_path, include.path)
+            if os.path.exists(include_file_path):
+                include_file_path = os.path.abspath(include_file_path)
+                self.compile((include_file_path,))
+                return [include]
+
+        raise RuntimeError("include path not found: %s" % include.path)
 
     def _parse_list_type(self, tokens):
         return self.__parse_sequence_type('list', tokens)
@@ -332,14 +336,20 @@ class Compiler(object):
     def _wrap_parse_action(parse_action):
         def wrapped_parse_action(tokens):
             try:
-                print >> sys.stderr, 'Parsing', tokens, \
-                    'with', parse_action,
                 out_tokens = parse_action(tokens)
-                print >> sys.stderr, '->', out_tokens
+                logging.debug(
+                    "parsed %s with %s -> %s",
+                    tokens,
+                    parse_action,
+                    out_tokens
+                )
                 return out_tokens
             except:
-                print >> sys.stderr, 'Error parsing', tokens, \
-                    'with', parse_action
-                traceback.print_exc()
+                logging.error(
+                    "error parsing %s with %s",
+                    tokens,
+                    parse_action,
+                    exc_info=True
+                )
                 raise
         return lambda tokens: wrapped_parse_action(tokens)
