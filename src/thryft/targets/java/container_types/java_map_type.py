@@ -2,6 +2,9 @@ from thryft.target.container_types.map_type import MapType
 
 
 class JavaMapType(MapType):
+    def java_hashCode(self, value):
+        return "%(value)s.hashCode()" % locals()
+
     def java_name(self, boxed=False):
         return "com.google.common.collect.ImmutableMap<%s, %s>" % (
                    self.key_type.java_name(boxed=True),

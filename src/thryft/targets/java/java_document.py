@@ -6,8 +6,6 @@ class JavaDocument(Document):
     def __repr__(self):
         headers = []
         for namespace in self.namespaces:
-            if namespace.name.rsplit('.', 1)[-1] == 'native':
-                return ''
             if namespace.scope == '*' or namespace.scope == 'java':
                 headers.append('package ' + namespace.name + ';')
         for include in self.includes:

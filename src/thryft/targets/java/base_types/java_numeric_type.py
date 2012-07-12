@@ -20,6 +20,18 @@ class JavaNumericType(NumericType):
         'i64': 'long'
     }
 
+    def java_hashCode(self, value):
+        if self.name == 'double':
+            return "((int)(Double.doubleToLongBits(%(value)s) ^ (Double.doubleToLongBits(%(value)s) >>> 32)))" % locals()
+        elif self.name == 'float':
+            return "Float.floatToIntBits(%(value)s)" % locals()
+        elif self.name == 'i32':
+            return "((int)%(value)s)" % locals()
+        elif self.name == 'i64':
+            return "((int)(%(value)s ^ (%(value)s >>> 32)))" % locals()
+        else:
+            raise NotImplementedError(self.name)
+
     def java_is_reference(self):
         return False
 

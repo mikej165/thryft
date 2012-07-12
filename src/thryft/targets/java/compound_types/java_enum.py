@@ -3,6 +3,9 @@ from yutil import indent
 
 
 class JavaEnum(CompoundType):
+    def java_hashCode(self, value):
+        return "%(value)s.ordinal()" % locals()
+
     def java_is_reference(self):
         return True
 

@@ -10,7 +10,6 @@ class JavaField(Field):
             return "private %s;" % self.java_parameter(final=final)
 
     def java_default_initializer(self):
-        assert not self.required
         name = self.java_name()
         if self.value is not None:
             value = self.java_value()
@@ -20,6 +19,17 @@ this.%(name)s = %(value)s;""" % locals()
             return """\
 this.%(name)s = null;""" % locals()
 
+    def java_equals(self, this_value, other_value):
+        if not self.required:
+            return """\
+((%(this_value)s == null && %(other_value)s == null) ||
+(%(this_value)s != null && %(other_value)s != null &&
+%(this_value)s.equals(%(other_value)s)))""" % locals()
+        elif self.type.java_is_reference():
+            return "%(this_value)s.equals(%(other_value)s)" % locals()
+        else:
+            return "%(this_value)s == %(other_value)s" % locals()
+
     def java_getter_name(self):
         return 'get' + upper_camelize(self.name)
 
@@ -27,7 +37,7 @@ this.%(name)s = null;""" % locals()
         final = final and 'final ' or ''
         getter_name = self.java_getter_name()
         name = self.java_name()
-        type_name = self.type.java_name()
+        type_name = self.type.java_name(boxed=not self.required)
         return """\
 public %(final)s%(type_name)s %(getter_name)s() {
     return %(name)s;
