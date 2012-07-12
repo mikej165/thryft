@@ -23,8 +23,11 @@ def %(name)s(self):
         return "%(lhs)s = %(rhs)s" % locals()
 
     def py_parameter(self):
-        if not self.required and self.value is not None:
-            return self.py_name() + '=' + str(self.py_value())
+        if not self.required:
+            if self.value is not None:
+                return self.py_name() + '=' + str(self.py_value())
+            else:
+                return self.py_name() + '=None'
         else:
             return self.py_name()
 
