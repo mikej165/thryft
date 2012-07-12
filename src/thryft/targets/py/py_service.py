@@ -16,7 +16,7 @@ class %(name)s(object):
 """ % locals()
 
         methods = \
-            "\n".join(indent(' ' * 4,
+            "\n\n".join(indent(' ' * 4,
                 ["\n".join((
                      function.py_public_delegating_definition(),
                      function.py_protected_abstract_definition()

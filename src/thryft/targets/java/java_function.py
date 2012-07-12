@@ -1,5 +1,5 @@
 from thryft.target.function import Function
-from yutil import lower_camelize
+from yutil import lower_camelize, lpad
 
 
 class JavaFunction(Function):
@@ -12,8 +12,14 @@ class JavaFunction(Function):
             self.return_type is not None and \
                 self.return_type.java_name() or \
                 'void'
+        throws = \
+            lpad(
+                ' throws ',
+                ', '.join([field.type.java_name()
+                           for field in self.throws])
+            )
         return """\
-%(return_type)s %(name)s(%(parameters)s);""" % locals()
+public %(return_type)s %(name)s(%(parameters)s)%(throws)s;""" % locals()
 
     def java_name(self):
         return lower_camelize(self.name)
