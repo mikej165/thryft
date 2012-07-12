@@ -9,7 +9,7 @@ class JavaDocument(Document):
             if namespace.scope == '*' or namespace.scope == 'java':
                 headers.append('package ' + namespace.name + ';')
         for include in self.includes:
-            if include.is_native:
+            if include.native:
                 continue
             if len(headers) == 1 and headers[0].startswith('package'):
                 headers.append('')

@@ -8,7 +8,7 @@ class Include(Construct):
         self.__path = path
 
     @property
-    def is_native(self):
+    def native(self):
         dir_path = os.path.split(self.path)[0]
         if len(dir_path) > 0:
             dir_name = os.path.split(dir_path)[1]
