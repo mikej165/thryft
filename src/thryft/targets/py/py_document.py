@@ -4,11 +4,13 @@ from yutil import rpad
 
 class PyDocument(Document):
     def __repr__(self):
-#        includes = "\n".join([repr(include)
-#                              for include in self.includes
-#                              if not include.is_native])
-        includes = ''
+        imports = []
+        for definition in self.definitions:
+            if hasattr(definition, 'py_imports'):
+                imports.extend(definition.py_imports())
+        imports = "\n".join(imports)
+
         definitions = \
             "\n\n".join([repr(definition)
                          for definition in self.definitions])
-        return rpad(includes, "\n\n\n") + definitions + "\n"
+        return rpad(imports, "\n\n\n") + definitions + "\n"
