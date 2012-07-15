@@ -1,8 +1,9 @@
 from thryft.target.field import Field
+from thryft.targets.java.java_construct import JavaConstruct
 from yutil import lower_camelize, upper_camelize
 
 
-class JavaField(Field):
+class JavaField(Field, JavaConstruct):
     def java_declaration(self, final=False):
         if self.value is not None:
             return "private %s = %s;" % (repr(self), self.java_value())

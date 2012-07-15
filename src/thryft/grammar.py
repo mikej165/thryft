@@ -14,6 +14,18 @@ class Grammar(object):
     Adapted from http://thrift.apache.org/docs/idl/.
     '''
 
+    base_type_names = (
+        'binary',
+        'bool',
+        'byte',
+        'double',
+        'float',
+        'i16',
+        'i32',
+        'i64',
+        'string'
+    )
+
     def __init__(self):
         def wrap_parse_action(parse_action):
             def wrapped_parse_action(tokens):
@@ -66,16 +78,9 @@ class Grammar(object):
 
         # Types
         field_type = Forward()
-        self.base_type = \
-            Keyword('binary') ^ \
-            Keyword('bool') ^ \
-            Keyword('byte') ^ \
-            Keyword('double') ^ \
-            Keyword('i16') ^ \
-            Keyword('i32') ^ \
-            Keyword('i64') ^ \
-            Keyword('slist') ^ \
-            Keyword('string')
+        self.base_type = Keyword(self.base_type_names[0])
+        for base_type_name in self.base_type_names[1:]:
+            self.base_type ^= Keyword(base_type_name)
         self.map_type = \
             Keyword('map') + Literal('<').suppress() + \
                 field_type + \

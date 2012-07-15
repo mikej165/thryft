@@ -1,5 +1,6 @@
 from thryft.grammar import Grammar
 from thryft.target.type import Type
+from yutil import upper_camelize
 import logging
 import os.path
 
@@ -7,6 +8,8 @@ import os.path
 class Compiler(object):
     def __init__(self, target, include_dir_paths=None):
         object.__init__(self)
+
+        self.__grammar = grammar = Grammar()
 
         if include_dir_paths is None:
             include_dir_paths = []
@@ -16,10 +19,26 @@ class Compiler(object):
             include_dir_paths = [include_dir_paths]
         if len(include_dir_paths) == 0:
             include_dir_paths.append(os.getcwd())
+        my_dir_path = os.path.dirname(os.path.realpath(__file__))
+        include_dir_paths.append(
+            os.path.abspath(os.path.join(my_dir_path, '..'))
+        )
         self.__include_dir_paths = include_dir_paths
 
-        self.__grammar = grammar = Grammar()
+        native_type_qnames = []
+        for _1, _2, file_names in \
+            os.walk(os.path.join(my_dir_path, 'target', 'native_types')):
+            for file_name in file_names:
+                file_base_name, file_ext = os.path.splitext(file_name)
+                if file_ext != '.thrift':
+                    continue
+                native_type_qnames.append(
+                    file_base_name + '.' + upper_camelize(file_base_name)
+                )
+        self.__native_type_qnames = native_type_qnames
+
         self.__target = target
+
         self.__scope_stack = []
         self.__type_map = {}
 
@@ -54,7 +73,7 @@ class Compiler(object):
 
     def __parse_compound_type_declarator(self, keyword, tokens):
         compound_type = \
-            getattr(self.__target, keyword.capitalize())(
+            getattr(self.__target, keyword.capitalize() + 'Type')(
                 name=tokens[1],
                 parent=self.__scope_stack[-1]
             )
@@ -71,9 +90,12 @@ class Compiler(object):
             for field in tokens[1]:
                 compound_type.fields.append(field)
 
-        self.__type_map[compound_type.qname] = compound_type
-
-        return [compound_type]
+        if keyword != 'struct' or \
+           not compound_type.qname in self.__native_type_qnames:
+            self.__type_map[compound_type.qname] = compound_type
+            return [compound_type]
+        else:
+            return []
 
     def _parse_const(self, tokens):
         const = \
@@ -212,8 +234,10 @@ class Compiler(object):
             if os.path.exists(include_file_path):
                 include_file_path = os.path.abspath(include_file_path)
                 self.compile((include_file_path,))
-                return [include]
-
+                if not include.path.startswith('thryft/target/native_types/'):
+                    return [include]
+                else:
+                    return []
         raise RuntimeError("include path not found: %s" % include.path)
 
     def _parse_list_type(self, tokens):
@@ -321,10 +345,11 @@ class Compiler(object):
         try:
             return self.__type_map[type_name]
         except KeyError:
-            if type_name in ('binary', 'bool', 'string'):
+            if type_name in self.__grammar.base_type_names:
                 return getattr(self.__target, type_name.capitalize() + 'Type')(name=type_name)
-            elif type_name in ('byte', 'i16', 'i32', 'i64', 'double'):
-                return self.__target.NumericType(type_name)
+            elif type_name in self.__native_type_qnames:
+                type_name = type_name.rsplit('.', 1)[1]
+                return getattr(self.__target, type_name)(name=type_name)
             elif not '.' in type_name:
                 document = self.__scope_stack[0]
                 type_qname = document.name + '.' + type_name

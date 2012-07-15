@@ -1,11 +1,9 @@
 from thryft.target.service import Service
-from yutil import lpad, indent
+from thryft.targets.py.py_construct import PyConstruct
+from yutil import indent
 
 
-class PyService(Service):
-    def py_name(self):
-        return self.name
-
+class PyService(Service, PyConstruct):
     def __repr__(self):
         name = self.py_name()
 

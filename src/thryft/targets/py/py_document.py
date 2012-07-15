@@ -1,8 +1,9 @@
 from thryft.target.document import Document
+from thryft.targets.py.py_construct import PyConstruct
 from yutil import rpad
 
 
-class PyDocument(Document):
+class PyDocument(Document, PyConstruct):
     def __repr__(self):
         imports = []
         for definition in self.definitions:

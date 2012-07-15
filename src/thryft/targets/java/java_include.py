@@ -1,8 +1,9 @@
 from thryft.target.include import Include
+from thryft.targets.java.java_construct import JavaConstruct
 from yutil import upper_camelize
 
 
-class JavaInclude(Include):
+class JavaInclude(Include, JavaConstruct):
     def __init__(self, *args, **kwds):
         Include.__init__(self, *args, **kwds)
         java_class_qname = self.path.rsplit('.', 1)[0].replace('/', '.')

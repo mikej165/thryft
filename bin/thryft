@@ -46,6 +46,8 @@ if gen == 'target':
         'compound_type.py',
         'construct.py',
         'container_type.py',
+        'native_type.py',
+        'type.py',
     )
 
     target_template_root_dir_path = os.path.join(ROOT_DIR_PATH, 'src', 'thryft', 'target')

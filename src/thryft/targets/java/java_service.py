@@ -1,8 +1,9 @@
 from thryft.target.service import Service
+from thryft.targets.java.java_construct import JavaConstruct
 from yutil import indent, lpad
 
 
-class JavaService(Service):
+class JavaService(Service, JavaConstruct):
     def java_name(self):
         return self.name
 

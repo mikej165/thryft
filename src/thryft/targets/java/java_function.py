@@ -1,8 +1,9 @@
 from thryft.target.function import Function
+from thryft.targets.java.java_construct import JavaConstruct
 from yutil import lower_camelize, lpad
 
 
-class JavaFunction(Function):
+class JavaFunction(Function, JavaConstruct):
     def java_declaration(self):
         name = self.java_name()
         parameters = \

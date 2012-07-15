@@ -1,10 +1,8 @@
 from thryft.target.function import Function
+from thryft.targets.py.py_construct import PyConstruct
 
 
-class PyFunction(Function):
-    def py_name(self):
-        return self.name
-
+class PyFunction(Function, PyConstruct):
     def py_parameters(self):
         parameters = []
         for parameter in self.parameters:
