@@ -8,3 +8,6 @@ class JavaI64Type(I64Type, JavaBaseType):
 
     def java_name(self, boxed=False):
         return boxed and 'Long' or 'long'
+
+    def java_read_protocol_throws(self):
+        return ['NumberFormatException']

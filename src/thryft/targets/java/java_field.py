@@ -63,6 +63,33 @@ public %(final)s%(type_name)s %(getter_name)s() {
         parameter.append(self.java_name())
         return ' '.join(parameter)
 
+    def java_read_protocol(self):
+        read_protocol = self.type.java_read_protocol()
+
+        setter_name = self.java_setter_name()
+        read_protocol = """\
+builder.%(setter_name)s(%(read_protocol)s);""" % locals()
+
+        read_protocol_throws = self.type.java_read_protocol_throws()
+        if len(read_protocol_throws) > 0:
+            read_protocol = indent(' ' * 4, read_protocol)
+            read_protocol_throws = \
+                ''.join(["""\
+ catch (%(exception_type_name)s e) {
+}""" % locals()
+                           for exception_type_name in read_protocol_throws])
+            read_protocol = """\
+try {
+%(read_protocol)s
+}%(read_protocol_throws)s""" % locals()
+
+        read_protocol = indent(' ' * 4, read_protocol)
+        name = self.name
+        return """\
+if (ifield.name.equals("%(name)s")) {
+%(read_protocol)s
+}""" % locals()
+
     def java_setter(self, return_type_name='void'):
         setter_name = self.java_setter_name()
         name = self.java_name()

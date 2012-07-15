@@ -8,3 +8,6 @@ class JavaFloatType(FloatType, JavaBaseType):
 
     def java_name(self, boxed=False):
         return boxed and 'Float' or 'float'
+
+    def java_read_protocol_throws(self):
+        return ['NumberFormatException']

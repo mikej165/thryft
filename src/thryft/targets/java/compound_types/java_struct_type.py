@@ -174,20 +174,48 @@ public int hashCode() {
     return hashCode;
 }""" % locals()}
 
+    def _java_method_read_protocol(self):
+        field_read_protocols = \
+            lpad("\n\n", "\n\n".join(indent(' ' * 8,
+                [field.java_read_protocol()
+                 for field in self.fields]
+            )))
+        name = self.java_name()
+        return {'read': """\
+public static %(name)s read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    Builder builder = new Builder();
+
+    org.apache.thrift.protocol.TStruct structBegin = iprot.readStructBegin();
+    if (structBegin == null) {
+        return null;
+    }
+    while (true) {
+        org.apache.thrift.protocol.TField ifield = iprot.readFieldBegin();
+        if (ifield.type == org.apache.thrift.protocol.TType.STOP) {
+            break;
+        }%(field_read_protocols)s
+
+        iprot.readFieldEnd();
+    }
+    iprot.readStructEnd();
+
+    return builder.build();
+}""" % locals()}
+
     def _java_method_write_protocol(self):
-        statements = []
-        statements.append(
-            "oprot.writeStructBegin(new org.apache.thrift.protocol.TStruct(\"%s\"));" % \
-                self.java_name()
-        )
-        for field in self.fields:
-            statements.append(field.java_write_protocol(depth=0))
-        statements.append('oprot.writeFieldStop();')
-        statements.append('oprot.writeStructEnd();')
-        statements = "\n\n".join(indent(' ' * 4, statements))
+        field_write_protocols = \
+            lpad("\n\n", "\n\n".join(indent(' ' * 4,
+                [field.java_write_protocol(depth=0)
+                 for field in self.fields]
+            )))
+        name = self.java_name()
         return {'write': """\
 public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
-%(statements)s
+    oprot.writeStructBegin(new org.apache.thrift.protocol.TStruct(\"%(name)s\"));%(field_write_protocols)s
+
+    oprot.writeFieldStop();
+
+    oprot.writeStructEnd();
 }""" % locals()}
 
     def _java_methods(self):
@@ -195,9 +223,14 @@ public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.
         methods.update(self._java_method_equals())
         methods.update(self._java_method_getters())
         methods.update(self._java_method_hash_code())
+        methods.update(self._java_method_read_protocol())
         methods.update(self._java_method_write_protocol())
         return self._java_constructors() + \
                [methods[key] for key in sorted(methods.iterkeys())]
+
+    def java_read_protocol(self):
+        name = self.java_name()
+        return "%(name)s.read(iprot)" % locals()
 
     def __repr__(self):
         name = self.name

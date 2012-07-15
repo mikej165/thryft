@@ -8,3 +8,6 @@ class JavaDoubleType(DoubleType, JavaBaseType):
 
     def java_name(self, boxed=False):
         return boxed and 'Double' or 'double'
+
+    def java_read_protocol_throws(self):
+        return ['NumberFormatException']

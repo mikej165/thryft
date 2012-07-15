@@ -8,3 +8,6 @@ class JavaI32Type(I32Type, JavaBaseType):
 
     def java_name(self, boxed=False):
         return boxed and 'Integer' or 'int'
+
+    def java_read_protocol_throws(self):
+        return ['NumberFormatException']

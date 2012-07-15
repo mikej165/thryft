@@ -7,8 +7,12 @@ class JavaEnumType(EnumType, JavaCompoundType):
     def java_hash_code(self, value):
         return "%(value)s.ordinal()" % locals()
 
+    def java_read_protocol(self):
+        name = self.java_name()
+        return "%(name)s.valueOf(iprot.readString().trim().toUpperCase())" % locals()
+
     def java_write_protocol(self, value, depth=0):
-        return "oprot.writeI32(%(value)s.ordinal());" % locals()
+        return "oprot.writeString(%(value)s.toString());" % locals()
 
     def __repr__(self):
         name = self.java_name()
