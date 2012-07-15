@@ -2,4 +2,5 @@ from thryft.target.compound_type import CompoundType
 
 
 class EnumType(CompoundType):
-    pass
+    def thrift_protocol_name(self):
+        return 'ENUM'

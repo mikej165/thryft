@@ -11,6 +11,9 @@ class MapType(ContainerType):
     def key_type(self):
         return self.__key_type
 
+    def thrift_protocol_name(self):
+        return 'MAP'
+
     @property
     def value_type(self):
         return self.__value_type

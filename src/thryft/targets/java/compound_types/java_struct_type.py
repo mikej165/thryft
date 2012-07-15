@@ -3,7 +3,7 @@ from thryft.targets.java.java_compound_type import JavaCompoundType
 from yutil import indent, lpad
 
 
-class JavaStructType(JavaCompoundType, StructType):
+class JavaStructType(StructType, JavaCompoundType):
     def _java_builder(self):
         constructor_parameters = \
             ', '.join([field.java_name() for field in self.fields])
@@ -25,12 +25,79 @@ public static class Builder {
     }%(setters)s%(declarations)s
 }""" % locals()
 
+    def _java_constructor_default(self):
+        name = self.java_name()
+
+        if len(self.fields) == 0:
+            return """\
+public %(name)s() {
+}""" % locals()
+
+        initializers = \
+            lpad("\n", "\n".join(indent(' ' * 4,
+                [field.java_default_initializer()
+                 for field in self.fields]
+            )))
+
+        for field in self.fields:
+            if field.required:
+                return """\
+protected %(name)s() {%(initializers)s
+}""" % locals()
+
+        return """\
+public %(name)s() {%(initializers)s
+}""" % locals()
+
+    def _java_constructor_required(self):
+        if len(self.fields) == 0:
+            return None # Will be covered by default constructor
+
+        for field in self.fields:
+            if field.required:
+                initializers = []
+                name = self.java_name()
+                parameters = []
+                for field in self.fields:
+                    field_name = field.java_name()
+                    if field.required:
+                        initializers.append(field.java_initializer())
+                        parameters.append(field.java_parameter(final=True))
+                    else:
+                        initializers.append(field.java_default_initializer())
+                initializers = "\n".join(indent(' ' * 4, initializers))
+                parameters = ", ".join(parameters)
+                return """\
+public %(name)s(%(parameters)s) {
+%(initializers)s
+}""" % locals()
+
+        return None # Will be covered by total constructor
+
+    def _java_constructor_total(self):
+        if len(self.fields) == 0:
+            return None # Will be covered by default constructor
+
+        initializers = []
+        name = self.java_name()
+        parameters = []
+        for field in self.fields:
+            field_name = field.java_name()
+            initializers.append("this.%(field_name)s = %(field_name)s;" % locals())
+            parameters.append(field.java_parameter(final=True))
+        initializers = "\n".join(indent(' ' * 4, initializers))
+        parameters = ", ".join(parameters)
+        return """\
+public %(name)s(%(parameters)s) {
+%(initializers)s
+}""" % locals()
+
     def _java_constructors(self):
         constructors = []
         for constructor in (
-            self._java_default_constructor(),
-            self._java_required_constructor(),
-            self._java_total_constructor()
+            self._java_constructor_default(),
+            self._java_constructor_required(),
+            self._java_constructor_total()
         ):
             if constructor is not None:
                 constructors.append(constructor)
@@ -39,7 +106,7 @@ public static class Builder {
     def _java_declarations(self):
         return [field.java_declaration(final=True) for field in self.fields]
 
-    def _java_equals_method(self):
+    def _java_method_equals(self):
         name = self.java_name()
 
         field_equal_tests = []
@@ -80,11 +147,11 @@ public boolean equals(Object otherObject) {
     %(field_equal_tests)s;
 }""" % locals()}
 
-    def _java_getters(self):
+    def _java_method_getters(self):
         return dict((field.java_getter_name(), field.java_getter())
                     for field in self.fields)
 
-    def _java_hash_code_method(self):
+    def _java_method_hash_code(self):
         statements = ['int hashCode = 17;']
         for field in self.fields:
             value = field.java_getter_name() + '()'
@@ -107,86 +174,30 @@ public int hashCode() {
     return hashCode;
 }""" % locals()}
 
-    def java_is_reference(self):
-        return True
-
-    def java_name(self, boxed=False):
-        return self.name
-
-    def _java_default_constructor(self):
-        name = self.java_name()
-
-        if len(self.fields) == 0:
-            return """\
-public %(name)s() {
-}""" % locals()
-
-        initializers = \
-            lpad("\n", "\n".join(indent(' ' * 4,
-                [field.java_default_initializer()
-                 for field in self.fields]
-            )))
-
+    def _java_method_write_protocol(self):
+        statements = []
+        statements.append(
+            "oprot.writeStructBegin(new org.apache.thrift.protocol.TStruct(\"%s\"));" % \
+                self.java_name()
+        )
         for field in self.fields:
-            if field.required:
-                return """\
-protected %(name)s() {%(initializers)s
-}""" % locals()
-
-        return """\
-public %(name)s() {%(initializers)s
-}""" % locals()
+            statements.append(field.java_write_protocol(depth=0))
+        statements.append('oprot.writeFieldStop();')
+        statements.append('oprot.writeStructEnd();')
+        statements = "\n\n".join(indent(' ' * 4, statements))
+        return {'write': """\
+public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+%(statements)s
+}""" % locals()}
 
     def _java_methods(self):
         methods = {}
-        methods.update(self._java_equals_method())
-        methods.update(self._java_hash_code_method())
-        methods.update(self._java_getters())
+        methods.update(self._java_method_equals())
+        methods.update(self._java_method_getters())
+        methods.update(self._java_method_hash_code())
+        methods.update(self._java_method_write_protocol())
         return self._java_constructors() + \
                [methods[key] for key in sorted(methods.iterkeys())]
-
-    def _java_required_constructor(self):
-        if len(self.fields) == 0:
-            return None # Will be covered by default constructor
-
-        for field in self.fields:
-            if field.required:
-                initializers = []
-                name = self.java_name()
-                parameters = []
-                for field in self.fields:
-                    field_name = field.java_name()
-                    if field.required:
-                        initializers.append(field.java_initializer())
-                        parameters.append(field.java_parameter(final=True))
-                    else:
-                        initializers.append(field.java_default_initializer())
-                initializers = "\n".join(indent(' ' * 4, initializers))
-                parameters = ", ".join(parameters)
-                return """\
-public %(name)s(%(parameters)s) {
-%(initializers)s
-}""" % locals()
-
-        return None # Will be covered by total constructor
-
-    def _java_total_constructor(self):
-        if len(self.fields) == 0:
-            return None # Will be covered by default constructor
-
-        initializers = []
-        name = self.java_name()
-        parameters = []
-        for field in self.fields:
-            field_name = field.java_name()
-            initializers.append("this.%(field_name)s = %(field_name)s;" % locals())
-            parameters.append(field.java_parameter(final=True))
-        initializers = "\n".join(indent(' ' * 4, initializers))
-        parameters = ", ".join(parameters)
-        return """\
-public %(name)s(%(parameters)s) {
-%(initializers)s
-}""" % locals()
 
     def __repr__(self):
         name = self.name

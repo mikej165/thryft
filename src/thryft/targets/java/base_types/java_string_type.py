@@ -2,7 +2,7 @@ from thryft.target.base_types.string_type import StringType
 from thryft.targets.java.java_base_type import JavaBaseType
 
 
-class JavaStringType(JavaBaseType, StringType):
+class JavaStringType(StringType, JavaBaseType):
     def java_hash_code(self, value):
         return "%(value)s.hashCode()" % locals()
 

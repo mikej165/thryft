@@ -7,6 +7,9 @@ class JavaEnumType(EnumType, JavaCompoundType):
     def java_hash_code(self, value):
         return "%(value)s.ordinal()" % locals()
 
+    def java_write_protocol(self, value, depth=0):
+        return "oprot.writeI32(%(value)s.ordinal());" % locals()
+
     def __repr__(self):
         name = self.java_name()
         if len(self.fields) == 0:

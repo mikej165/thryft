@@ -9,3 +9,6 @@ class SetType(ContainerType):
     @property
     def element_type(self):
         return self.__element_type
+
+    def thrift_protocol_name(self):
+        return 'SET'

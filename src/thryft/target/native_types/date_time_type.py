@@ -2,4 +2,5 @@ from thryft.target.native_type import NativeType
 
 
 class DateTimeType(NativeType):
-    pass
+    def thrift_protocol_name(self):
+        return 'I64'

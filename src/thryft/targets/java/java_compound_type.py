@@ -7,3 +7,6 @@ class JavaCompoundType(JavaType):
 
     def java_is_reference(self):
         return True
+
+    def java_name(self, boxed=False):
+        return getattr(self, 'name')

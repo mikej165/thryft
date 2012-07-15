@@ -1,6 +1,6 @@
 from thryft.target.field import Field
 from thryft.targets.java.java_construct import JavaConstruct
-from yutil import lower_camelize, upper_camelize
+from yutil import lower_camelize, upper_camelize, indent
 
 
 class JavaField(Field, JavaConstruct):
@@ -82,6 +82,28 @@ public %(return_type_name)s %(setter_name)s(final %(type_name)s %(name)s) {
             return "\"%s\"" % self.value
         else:
             return self.value
+
+    def java_write_protocol(self, depth=0):
+        id_ = self.id
+        if id_ is None:
+            id_ = -1
+        name = self.name
+        getter_name = self.java_getter_name()
+        ttype = self.type.thrift_protocol_name()
+        write_protocol = \
+            self.type.java_write_protocol(getter_name + "()", depth=depth)
+        write_protocol = """\
+oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("%(name)s", org.apache.thrift.protocol.TType.%(ttype)s, (short)%(id_)d));
+%(write_protocol)s
+oprot.writeFieldEnd();
+""" % locals()
+        if not self.required:
+            write_protocol = indent(' ' * 4, write_protocol)
+            write_protocol = """\
+if (%(getter_name)s() != null) {
+%(write_protocol)s
+}""" % locals()
+        return write_protocol
 
     def __repr__(self):
         return self.java_parameter()
