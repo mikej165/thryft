@@ -15,7 +15,6 @@ class Grammar(object):
     '''
 
     base_type_names = (
-        'binary',
         'bool',
         'byte',
         'double',
@@ -153,12 +152,6 @@ class Grammar(object):
                         Optional(Literal('=').suppress() + int_constant)),
                     list_separator
                 ))) + \
-            Literal('}').suppress()
-        # Senum
-        self.senum_declarator = Keyword('senum') + identifier
-        self.senum = \
-            self.senum_declarator + Literal('{').suppress() + \
-                Optional(Group(delimitedList(string_literal, list_separator))) + \
             Literal('}').suppress()
         # Struct
         self.struct_declarator = Keyword('struct') + identifier

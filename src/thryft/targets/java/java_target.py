@@ -5,7 +5,6 @@ from thryft.target.target import Target
 class JavaTarget(Target):
     from thryft.targets.java.base_types.java_bool_type import JavaBoolType as BoolType
     from thryft.targets.java.base_types.java_double_type import JavaDoubleType as DoubleType
-    from thryft.targets.java.base_types.java_float_type import JavaFloatType as FloatType
     from thryft.targets.java.base_types.java_i16_type import JavaI16Type as I16Type
     from thryft.targets.java.base_types.java_i32_type import JavaI32Type as I32Type
     from thryft.targets.java.base_types.java_i64_type import JavaI64Type as I64Type

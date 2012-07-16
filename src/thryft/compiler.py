@@ -264,27 +264,6 @@ class Compiler(object):
             )
         return [namespace]
 
-    def _parse_senum_declarator(self, tokens):
-        return self.__parse_compound_type_declarator('senum', tokens)
-
-    def _parse_senum(self, tokens):
-        senum = tokens[0]
-        self.__scope_stack.pop(-1)
-
-        if len(tokens) > 1:
-            type_ = self.__resolve_type('string')
-            for token_i, token in enumerate(tokens[1]):
-                senum.fields.append(
-                    self.__target.Field(
-                        id=token_i,
-                        name=token,
-                        parent=senum,
-                        type=type_
-                    )
-                )
-
-        return [senum]
-
     def __parse_sequence_type(self, keyword, tokens):
         assert tokens[0] == keyword
         element_type = self.__resolve_type(tokens[1])

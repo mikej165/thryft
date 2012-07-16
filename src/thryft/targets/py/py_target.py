@@ -5,7 +5,6 @@ from thryft.target.target import Target
 class PyTarget(Target):
     from thryft.targets.py.base_types.py_bool_type import PyBoolType as BoolType
     from thryft.targets.py.base_types.py_double_type import PyDoubleType as DoubleType
-    from thryft.targets.py.base_types.py_float_type import PyFloatType as FloatType
     from thryft.targets.py.base_types.py_i16_type import PyI16Type as I16Type
     from thryft.targets.py.base_types.py_i32_type import PyI32Type as I32Type
     from thryft.targets.py.base_types.py_i64_type import PyI64Type as I64Type

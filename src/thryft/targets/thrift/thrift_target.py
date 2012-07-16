@@ -6,7 +6,6 @@ from thryft.targets.thrift.thrift_base_type import ThriftBaseType
 class ThriftTarget(Target):
     from thryft.targets.thrift.compound_types.thrift_enum_type import ThriftEnumType as EnumType
     from thryft.targets.thrift.compound_types.thrift_exception_type import ThriftExceptionType as ExceptionType
-    from thryft.targets.thrift.compound_types.thrift_senum_type import ThriftSenumType as SenumType
     from thryft.targets.thrift.compound_types.thrift_struct_type import ThriftStructType as StructType
     from thryft.targets.thrift.thrift_const import ThriftConst as Const
     from thryft.targets.thrift.container_types.thrift_list_type import ThriftListType as ListType
