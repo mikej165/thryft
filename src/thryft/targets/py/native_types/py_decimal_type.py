@@ -3,11 +3,14 @@ from thryft.targets.py.py_native_type import PyNativeType
 
 
 class PyDecimalType(DecimalType, PyNativeType):
-    def py_from_json_object(self, json_object_variable_name):
-        return "Decimal(%(json_object_variable_name)s)" % locals()
-
     def py_imports(self):
         return ['from decimal import Decimal']
 
     def py_name(self):
         return 'java.math.BigDecimal'
+
+    def py_read_protocol(self):
+        return "Decimal(iprot.readString())"
+
+    def py_write_protocol(self, value, depth=0):
+        return "oprot.writeString(str(%(value)s))" % locals()

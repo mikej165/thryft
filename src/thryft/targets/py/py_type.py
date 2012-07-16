@@ -6,5 +6,5 @@ class PyType(PyConstruct):
     def py_read_protocol(self):
         raise NotImplementedError(class_qname(self) + '.py_read_protocol')
 
-    def py_write_protocol(self):
+    def py_write_protocol(self, depth=0):
         raise NotImplementedError(class_qname(self) + '.py_write_protocol')

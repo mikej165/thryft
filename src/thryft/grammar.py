@@ -183,7 +183,6 @@ class Grammar(object):
             self.const ^ \
             self.typedef ^ \
             self.enum ^ \
-            self.senum ^ \
             self.struct ^ \
             self.exception ^ \
             self.service

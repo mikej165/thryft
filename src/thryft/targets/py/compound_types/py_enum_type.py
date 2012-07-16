@@ -4,6 +4,14 @@ from yutil import indent
 
 
 class PyEnumType(EnumType, PyCompoundType):
+    def py_read_protocol(self):
+        name = self.py_name()
+        return "getattr(%(name)s, iprot.readString().strip().upper())" % locals()
+
+    def py_write_protocol(self, value, depth=0):
+        name = self.py_name()
+        return "oprot.writeString([attr for attr in dir(%(name)s) if getattr(%(name)s, attr) == %(value)s][0])" % locals()
+
     def __repr__(self):
         name = self.py_name()
         if len(self.fields) == 0:

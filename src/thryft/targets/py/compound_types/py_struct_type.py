@@ -32,34 +32,51 @@ def __init__(
 
     def _py_method_read_protocol(self):
         field_read_protocols = \
-            lpad("\n\n", "\n\n".join(indent(' ' * 8,
-                [field.java_read_protocol()
+            indent(' ' * 8, lpad('el', "el".join(
+                [field.py_read_protocol()
                  for field in self.fields]
             )))
-        name = self.java_name()
+        name = self.py_name()
         return {'read': """\
 @classmethod
 def read(cls, iprot):
+    init_kwds = {}
+
     struct_begin = iprot.readStructBegin()
     if struct_begin is None:
         return None
     while True:
-        (fname, ftype, fid) = iprot.readFieldBegin()
-        if ftype == 
-        if (ifield.type == org.apache.thrift.protocol.TType.STOP) {
-            break;
-        }%(field_read_protocols)s
-
+        ifield_name, ifield_type, _ifield_id = iprot.readFieldBegin()
+        if ifield_type == 0: # STOP
+            break
+%(field_read_protocols)s
         iprot.readFieldEnd()
-    }
-    iprot.readStructEnd();
+    iprot.readStructEnd()
 
-    return builder.build();
+    return cls(**init_kwds)
+""" % locals()}
+
+    def _py_method_write_protocol(self):
+        field_write_protocols = \
+            lpad("\n\n", "\n\n".join(indent(' ' * 4,
+                [field.py_write_protocol(depth=0)
+                 for field in self.fields]
+            )))
+        name = self.py_name()
+        return {'write': """\
+def write(self, oprot):
+    oprot.writeStructBegin('%(name)s')%(field_write_protocols)s
+
+    oprot.writeFieldStop()
+
+    oprot.writeStructEnd()
 }""" % locals()}
 
     def _py_methods(self):
         methods_dict = {}
         methods_dict.update(self._py_method_getters())
+        methods_dict.update(self._py_method_read_protocol())
+        methods_dict.update(self._py_method_write_protocol())
         methods_list = \
            [methods_dict[method_name]
             for method_name in sorted(methods_dict.iterkeys())]

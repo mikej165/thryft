@@ -176,7 +176,7 @@ public int hashCode() {
 
     def _java_method_read_protocol(self):
         field_read_protocols = \
-            lpad("\n\n", "\n\n".join(indent(' ' * 8,
+            lpad(' else ', indent(' ' * 8, ' else '.join(
                 [field.java_read_protocol()
                  for field in self.fields]
             )))
