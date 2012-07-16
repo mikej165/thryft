@@ -1,6 +1,10 @@
 from thryft.targets.py.py_construct import PyConstruct
+from yutil import class_qname
 
 
 class PyType(PyConstruct):
-    def py_from_json_object(self, json_object_variable_name):
-        return json_object_variable_name
+    def py_read_protocol(self):
+        raise NotImplementedError(class_qname(self) + '.py_read_protocol')
+
+    def py_write_protocol(self):
+        raise NotImplementedError(class_qname(self) + '.py_write_protocol')

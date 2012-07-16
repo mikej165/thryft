@@ -116,7 +116,7 @@ public %(return_type_name)s %(setter_name)s(final %(type_name)s %(name)s) {
             id_ = -1
         name = self.name
         getter_name = self.java_getter_name()
-        ttype = self.type.thrift_protocol_name()
+        ttype = self.type.thrift_ttype_name()
         write_protocol = \
             self.type.java_write_protocol(getter_name + "()", depth=depth)
         write_protocol = """\

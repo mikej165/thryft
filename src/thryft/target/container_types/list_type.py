@@ -10,5 +10,8 @@ class ListType(ContainerType):
     def element_type(self):
         return self.__element_type
 
-    def thrift_protocol_name(self):
+    def thrift_ttype_id(self):
+        return 15
+
+    def thrift_ttype_name(self):
         return 'LIST'

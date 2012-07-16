@@ -30,7 +30,7 @@ class JavaListType(ListType, JavaCompoundType):
 }).apply(iprot)""" % locals()
 
     def java_write_protocol(self, value, depth=0):
-        element_ttype = self.element_type.thrift_protocol_name()
+        element_ttype = self.element_type.thrift_ttype_name()
         element_type_name = self.element_type.java_name()
         element_write_protocol = \
             indent(' ' * 4,
