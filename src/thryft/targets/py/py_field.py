@@ -38,9 +38,19 @@ def %(name)s(self):
     def py_read_protocol(self):
         name = self.name
         read_protocol = self.type.py_read_protocol()
+        read_protocol = "init_kwds['%(name)s'] = %(read_protocol)s" % locals()
+        if not self.required:
+            read_protocol = indent(' ' * 4, read_protocol)
+            read_protocol = """\
+try:
+%(read_protocol)s
+except (InvalidOperation, ValueError):
+    pass
+""" % locals()
+        read_protocol = indent(' ' * 4, read_protocol)
         return """\
 if ifield_name == '%(name)s':
-    init_kwds['%(name)s'] = %(read_protocol)s
+%(read_protocol)s
 """ % locals()
 
     def py_write_protocol(self, depth=0):

@@ -70,7 +70,7 @@ def write(self, oprot):
     oprot.writeFieldStop()
 
     oprot.writeStructEnd()
-}""" % locals()}
+""" % locals()}
 
     def _py_methods(self):
         methods_dict = {}

@@ -4,7 +4,7 @@ from thryft.targets.py.py_native_type import PyNativeType
 
 class PyDecimalType(DecimalType, PyNativeType):
     def py_imports(self):
-        return ['from decimal import Decimal']
+        return ['from decimal import Decimal, InvalidOperation']
 
     def py_name(self):
         return 'java.math.BigDecimal'
