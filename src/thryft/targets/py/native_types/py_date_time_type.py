@@ -7,7 +7,7 @@ class PyDateTimeType(DateTimeType, PyNativeType):
         return "isinstance(%(value)s, datetime)" % locals()
 
     def py_imports(self):
-        return ['from calendar import timegm', 'from datetime import datetime']
+        return ['from datetime import datetime', 'from time import mktime']
 
     def py_name(self):
         return 'datetime'
@@ -16,4 +16,4 @@ class PyDateTimeType(DateTimeType, PyNativeType):
         return "datetime.fromtimestamp(iprot.readI64() / 1000)"
 
     def py_write_protocol(self, value, depth=0):
-        return "oprot.writeI64(timegm(datetime.timetuple()))"
+        return "oprot.writeI64(long(mktime(%(value)s.timetuple())) * 1000l)" % locals()
