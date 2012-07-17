@@ -18,7 +18,7 @@ class PyFunction(Function, PyConstruct):
         parameters = ', '.join(['self'] + self.py_parameters())
         return """\
 def _%(name)s(%(parameters)s):
-    raise NotImplementedError
+    raise NotImplementedError(self.__class__.__module__ + '.' + self.__class__.__name__ + '._%(name)s')
 """ % locals()
 
     def py_public_delegating_definition(self):
