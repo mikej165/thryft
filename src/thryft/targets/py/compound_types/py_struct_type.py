@@ -42,9 +42,7 @@ def __init__(
 def read(cls, iprot):
     init_kwds = {}
 
-    struct_begin = iprot.readStructBegin()
-    if struct_begin is None:
-        return None
+    iprot.readStructBegin()
     while True:
         ifield_name, ifield_type, _ifield_id = iprot.readFieldBegin()
         if ifield_type == 0: # STOP
