@@ -26,6 +26,22 @@ def __init__(
 %(initializers)s
 """ % locals()
 
+    def _py_method_eq(self):
+        expressions = []
+        for field in self.fields:
+            expressions.append(
+                'self.' + field.py_getter_call() + \
+                ' == ' + \
+                'other.' + field.py_getter_call()
+            )
+        if len(expressions) == 0:
+            expressions.append('True')
+        expressions = ' and '.join(expressions)
+        return {'__eq__': """\
+def __eq__(self, other):
+    return %(expressions)s
+""" % locals()}
+
     def _py_method_getters(self):
         return dict((field.py_getter_name(), field.py_getter())
                     for field in self.fields)
@@ -54,6 +70,23 @@ def read(cls, iprot):
     return cls(**init_kwds)
 """ % locals()}
 
+    def _py_method_repr(self):
+        field_reprs = \
+            ', '.join([
+                "%s=%%s" % field.name
+                for field in self.fields
+            ])
+        field_values = \
+            ', '.join([
+                'self.' + field.py_getter_call()
+                 for field in self.fields
+            ])
+        name = self.name
+        return {'__repr__': """\
+def __repr__(self):
+    return "%(name)s(%(field_reprs)s)" %% (%(field_values)s,)
+""" % locals()}
+
     def _py_method_write_protocol(self):
         field_write_protocols = \
             lpad("\n\n", "\n\n".join(indent(' ' * 4,
@@ -72,8 +105,10 @@ def write(self, oprot):
 
     def _py_methods(self):
         methods_dict = {}
+        methods_dict.update(self._py_method_eq())
         methods_dict.update(self._py_method_getters())
         methods_dict.update(self._py_method_read_protocol())
+        methods_dict.update(self._py_method_repr())
         methods_dict.update(self._py_method_write_protocol())
         methods_list = \
            [methods_dict[method_name]

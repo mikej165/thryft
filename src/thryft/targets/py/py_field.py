@@ -13,6 +13,9 @@ def %(name)s(self):
     return self.__%(name)s
 """ % locals()
 
+    def py_getter_call(self):
+        return self.py_getter_name()
+
     def py_getter_name(self):
         return self.py_name()
 
@@ -62,11 +65,11 @@ if ifield_name == '%(name)s':
         if id_ is None:
             id_ = -1
         name = self.name
-        getter_name = self.py_getter_name()
+        getter_call = self.py_getter_call()
         ttype_id = self.type.thrift_ttype_id()
         write_protocol = \
             self.type.py_write_protocol(
-                'self.' + getter_name,
+                'self.' + getter_call,
                 depth=depth
             )
         write_protocol = """\
@@ -77,7 +80,7 @@ oprot.writeFieldEnd()
         if not self.required:
             write_protocol = indent(' ' * 4, write_protocol)
             write_protocol = """\
-if self.%(getter_name)s is not None:
+if self.%(getter_call)s is not None:
 %(write_protocol)s
 """ % locals()
         return write_protocol
