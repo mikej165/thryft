@@ -3,4 +3,5 @@ from thryft.targets.py.py_base_type import PyBaseType
 
 
 class PyBoolType(BoolType, PyBaseType):
-    pass
+    def py_check(self, value):
+        return "isinstance(%(value)s, bool)" % locals()

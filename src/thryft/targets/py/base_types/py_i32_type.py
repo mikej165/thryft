@@ -3,4 +3,5 @@ from thryft.targets.py.py_base_type import PyBaseType
 
 
 class PyI32Type(I32Type, PyBaseType):
-    pass
+    def py_check(self, value):
+        return "isinstance(%(value)s, int)" % locals()

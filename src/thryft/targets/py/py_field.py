@@ -20,11 +20,15 @@ def %(name)s(self):
         return self.type.py_imports()
 
     def py_initializer(self):
-        lhs = 'self.__' + self.py_name()
+        name = self.py_name()
+        type_check = self.type.py_check(name)
         rhs = self.py_name()
-        if isinstance(self.type, ListType):
-            rhs = "%(rhs)s is not None and tuple(%(rhs)s) or None" % locals()
-        return "%(lhs)s = %(rhs)s" % locals()
+        return """\
+if %(name)s is not None:
+    if not %(type_check)s:
+        raise TypeError(getattr(__builtins__, 'type')(%(name)s))
+self.__%(name)s = %(name)s
+""" % locals()
 
     def py_parameter(self):
         if not self.required:

@@ -15,7 +15,7 @@ class PyStructType(StructType, PyCompoundType):
                 parameters.append(field.py_parameter())
         parameters = ",\n".join(indent(' ' * 4, parameters))
         initializers = \
-            "\n".join(indent(' ' * 4,
+            "\n\n".join(indent(' ' * 4,
                 [field.py_initializer() for field in self.fields]
             ))
         return """\

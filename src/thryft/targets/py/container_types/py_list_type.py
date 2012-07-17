@@ -4,9 +4,12 @@ from yutil import indent
 
 
 class PyListType(ListType, PyContainerType):
+    def py_check(self, value):
+        return "isinstance(%(value)s, tuple)" % locals()
+
     def py_read_protocol(self):
         element_read_protocol = self.element_type.py_read_protocol()
-        return """[%(element_read_protocol)s for _ in xrange(iprot.readListBegin()[1])] + (iprot.readListEnd() is None and [])""" % locals()
+        return """tuple([%(element_read_protocol)s for _ in xrange(iprot.readListBegin()[1])] + (iprot.readListEnd() is None and []))""" % locals()
 
     def py_write_protocol(self, value, depth=0):
         element_ttype_id = self.element_type.thrift_ttype_id()

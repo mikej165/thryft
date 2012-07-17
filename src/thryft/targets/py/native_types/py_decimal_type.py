@@ -3,6 +3,9 @@ from thryft.targets.py.py_native_type import PyNativeType
 
 
 class PyDecimalType(DecimalType, PyNativeType):
+    def py_check(self, value):
+        return "isinstance(%(value)s, Decimal)" % locals()
+
     def py_imports(self):
         return ['from decimal import Decimal, InvalidOperation']
 
