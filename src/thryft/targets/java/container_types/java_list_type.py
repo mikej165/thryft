@@ -42,6 +42,6 @@ class JavaListType(ListType, JavaCompoundType):
         return """\
 oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.%(element_ttype)s, %(value)s.size()));
 for (%(element_type_name)s _iter%(depth)u : %(value)s) {
-%(element_write_protocol)s
+%(element_write_protocol)s;
 }
 oprot.writeListEnd();""" % locals()
