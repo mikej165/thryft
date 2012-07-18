@@ -3,6 +3,9 @@ from thryft.targets.java.java_base_type import JavaBaseType
 
 
 class JavaI32Type(I32Type, JavaBaseType):
+    def java_default_value(self):
+        return '0'
+
     def java_hash_code(self, value):
         return "((int)%(value)s)" % locals()
 

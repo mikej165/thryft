@@ -3,8 +3,11 @@ from yutil import class_qname
 
 
 class JavaType(JavaConstruct):
+    def java_default_value(self):
+        raise NotImplementedError(class_qname(self) + '.java_default_value')
+
     def java_hash_code(self, value):
-        raise NotImplementedError(class_qname(self) + '.java_write_protocol')
+        raise NotImplementedError(class_qname(self) + '.java_hash_code')
 
     def java_is_reference(self):
         raise NotImplementedError(class_qname(self) + '.java_is_reference')

@@ -13,12 +13,13 @@ class JavaField(Field, JavaConstruct):
     def java_default_initializer(self):
         name = self.java_name()
         if self.value is not None:
-            value = self.java_value()
-            return """\
-this.%(name)s = %(value)s;""" % locals()
+            default_value = self.java_value()
+        elif not self.required:
+            default_value = 'null'
         else:
-            return """\
-this.%(name)s = null;""" % locals()
+            default_value = self.type.java_default_value()
+        return """\
+this.%(name)s = %(default_value)s;""" % locals()
 
     def java_equals(self, this_value, other_value):
         if not self.required:

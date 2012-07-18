@@ -3,6 +3,9 @@ from thryft.targets.java.java_base_type import JavaBaseType
 
 
 class JavaStringType(StringType, JavaBaseType):
+    def java_default_value(self):
+        return 'null'
+
     def java_hash_code(self, value):
         return "%(value)s.hashCode()" % locals()
 
