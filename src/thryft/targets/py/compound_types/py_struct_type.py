@@ -1,6 +1,6 @@
 from thryft.target.compound_types.struct_type import StructType
 from thryft.targets.py.py_compound_type import PyCompoundType
-from yutil import indent, pad, lpad
+from yutil import indent, lpad
 
 
 class PyStructType(StructType, PyCompoundType):
@@ -122,6 +122,13 @@ def write(self, oprot):
         for field in self.fields:
             imports.extend(field.py_imports())
         return list(set(imports))
+
+    def py_read_protocol(self):
+        name = self.py_name()
+        return "%(name)s.read(iprot)" % locals()
+
+    def py_write_protocol(self, value, depth=0):
+        return "%(value)s.write(oprot)" % locals()
 
     def __repr__(self):
         if len(self.fields) > 0:
