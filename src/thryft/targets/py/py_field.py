@@ -47,11 +47,14 @@ self.__%(name)s = %(name)s
         read_protocol = self.type.py_read_protocol()
         read_protocol = "init_kwds['%(name)s'] = %(read_protocol)s" % locals()
         if not self.required:
-            read_protocol = indent(' ' * 4, read_protocol)
-            read_protocol = """\
+            read_protocol_throws = self.type.py_read_protocol_throws()
+            if len(read_protocol_throws) > 0:
+                read_protocol_throws = ', '.join(read_protocol_throws)
+                read_protocol = indent(' ' * 4, read_protocol)
+                read_protocol = """\
 try:
 %(read_protocol)s
-except (InvalidOperation, ValueError):
+except (%(read_protocol_throws)s,):
     pass
 """ % locals()
         read_protocol = indent(' ' * 4, read_protocol)

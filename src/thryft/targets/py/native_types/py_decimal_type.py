@@ -15,5 +15,8 @@ class PyDecimalType(DecimalType, PyNativeType):
     def py_read_protocol(self):
         return "Decimal(iprot.readString())"
 
+    def py_read_protocol_throws(self):
+        return ['InvalidOperation', 'TypeError']
+
     def py_write_protocol(self, value, depth=0):
         return "oprot.writeString(str(%(value)s))" % locals()
