@@ -1,8 +1,10 @@
+from pyparsing import ParseException
 from thryft.grammar import Grammar
 from thryft.target.type import Type
 from yutil import upper_camelize
 import logging
 import os.path
+import sys
 
 
 class Compiler(object):
@@ -63,7 +65,14 @@ class Compiler(object):
             document = self.__target.Document(path=thrift_file_path)
             self.__scope_stack.append(document)
 
-            self.__grammar.document.parseFile(thrift_file_path, parseAll=True)
+            try:
+                self.__grammar.document.parseFile(thrift_file_path, parseAll=True)
+            except ParseException, e:
+                print >> sys.stderr, 'Error parsing', thrift_file_path + ':'
+                print >> sys.stderr, e.line
+                print >> sys.stderr, ' ' * (e.column - 1) + '^'
+                print >> sys.stderr, e
+                raise
 
             assert self.__scope_stack[-1] is document
             self.__scope_stack.pop(-1)
