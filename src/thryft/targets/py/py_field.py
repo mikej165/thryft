@@ -25,11 +25,22 @@ def %(name)s(self):
     def py_initializer(self):
         name = self.py_name()
         type_check = self.type.py_check(name)
-        rhs = self.py_name()
-        return """\
+        type_check = """\
+if not %(type_check)s:
+    raise TypeError(getattr(__builtins__, 'type')(%(name)s))""" % locals()
+        if self.required:
+            checks = """\
+if %(name)s is None:
+    raise ValueError('%(name)s is required')
+%(type_check)s""" % locals()
+        else:
+            type_check = indent(' ' * 4, type_check)
+            checks = """\
 if %(name)s is not None:
-    if not %(type_check)s:
-        raise TypeError(getattr(__builtins__, 'type')(%(name)s))
+%(type_check)s""" % locals()
+
+        return """\
+%(checks)s
 self.__%(name)s = %(name)s
 """ % locals()
 
