@@ -8,7 +8,7 @@ class PyBaseType(PyType):
         return "iprot.read%(name)s()" % locals()
 
     def py_read_protocol_throws(self):
-        return ['ValueError']
+        return ['TypeError', 'ValueError']
 
     def py_write_protocol(self, value, depth=0):
         name = upper_camelize(getattr(self, 'name'))
