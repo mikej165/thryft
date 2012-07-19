@@ -20,6 +20,7 @@ class PyEnumType(EnumType, PyCompoundType):
         name = self.py_name()
 
         enumerators = []
+        enumerator_placeholders = []
         value_of_statements = []
         if len(self.fields) > 0:
             enumerator_values = []
@@ -33,17 +34,22 @@ class PyEnumType(EnumType, PyCompoundType):
 
             for enumerator, enumerator_value in zip(self.fields, enumerator_values):
                 enumerator_name = enumerator.name
-                enumerators.append("setattr(%(name)s, '%(enumerator_name)s', %(name)s('%(enumerator_name)s', %(enumerator_value)u))" % locals())
+                enumerator_placeholders.append("%(enumerator_name)s = None" % locals())
+                enumerators.append("%(name)s.%(enumerator_name)s = %(name)s('%(enumerator_name)s', %(enumerator_value)u)" % locals())
                 value_of_statements.append("""\
 if name == '%(enumerator_name)s' or name == '%(enumerator_value)u':
     return getattr(%(name)s, '%(enumerator_name)s')
 """ % locals())
         enumerators = \
             lpad("\n\n", "\n".join(enumerators))
+        enumerator_placeholders = \
+            pad("\n", "\n".join(indent(' ' * 4,
+                enumerator_placeholders
+            )), "\n")
         value_of_statements = \
             lpad("\n", indent(' ' * 8, 'el'.join(value_of_statements)))
         return """\
-class %(name)s(object):
+class %(name)s(object):%(enumerator_placeholders)s
     def __init__(self, name, value):
         object.__init__(self)
         self.__name = name
