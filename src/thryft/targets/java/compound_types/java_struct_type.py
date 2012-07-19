@@ -233,7 +233,7 @@ public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.
         return "%(name)s.read(iprot)" % locals()
 
     def java_write_protocol(self, value, depth=0):
-        return "%(value)s.write(oprot)" % locals()
+        return "%(value)s.write(oprot);" % locals()
 
     def __repr__(self):
         name = self.name
