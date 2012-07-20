@@ -25,33 +25,33 @@ public static class Builder {
     }%(setters)s%(declarations)s
 }""" % locals()
 
-    def _java_constructor_default(self):
-        name = self.java_name()
-
-        if len(self.fields) == 0:
-            return """\
-public %(name)s() {
-}""" % locals()
-
-        initializers = \
-            lpad("\n", "\n".join(indent(' ' * 4,
-                [field.java_default_initializer()
-                 for field in self.fields]
-            )))
-
-        for field in self.fields:
-            if field.required:
-                return """\
-protected %(name)s() {%(initializers)s
-}""" % locals()
-
-        return """\
-public %(name)s() {%(initializers)s
-}""" % locals()
+#    def _java_constructor_default(self):
+#        name = self.java_name()
+#
+#        if len(self.fields) == 0:
+#            return """\
+#public %(name)s() {
+#}""" % locals()
+#
+#        initializers = \
+#            lpad("\n", "\n".join(indent(' ' * 4,
+#                [field.java_default_initializer()
+#                 for field in self.fields]
+#            )))
+#
+#        for field in self.fields:
+#            if field.required:
+#                return """\
+#protected %(name)s() {%(initializers)s
+#}""" % locals()
+#
+#        return """\
+#public %(name)s() {%(initializers)s
+#}""" % locals()
 
     def _java_constructor_required(self):
-        if len(self.fields) == 0:
-            return None # Will be covered by default constructor
+#        if len(self.fields) == 0:
+#            return None # Will be covered by default constructor
 
         for field in self.fields:
             if field.required:
@@ -65,25 +65,25 @@ public %(name)s() {%(initializers)s
                         parameters.append(field.java_parameter(final=True))
                     else:
                         initializers.append(field.java_default_initializer())
-                initializers = "\n".join(indent(' ' * 4, initializers))
+                initializers = \
+                    lpad("\n", "\n".join(indent(' ' * 4, initializers)))
                 parameters = ", ".join(parameters)
                 return """\
-public %(name)s(%(parameters)s) {
-%(initializers)s
+public %(name)s(%(parameters)s) {%(initializers)s
 }""" % locals()
 
         return None # Will be covered by total constructor
 
     def _java_constructor_total(self):
-        if len(self.fields) == 0:
-            return None # Will be covered by default constructor
+#        if len(self.fields) == 0:
+#            return None # Will be covered by default constructor
 
         initializers = []
         name = self.java_name()
         parameters = []
         for field in self.fields:
             field_name = field.java_name()
-            initializers.append("this.%(field_name)s = %(field_name)s;" % locals())
+            initializers.append(field.java_initializer())
             parameters.append(field.java_parameter(final=True))
         initializers = "\n".join(indent(' ' * 4, initializers))
         parameters = ", ".join(parameters)
@@ -95,7 +95,7 @@ public %(name)s(%(parameters)s) {
     def _java_constructors(self):
         constructors = []
         for constructor in (
-            self._java_constructor_default(),
+            # self._java_constructor_default(),
             self._java_constructor_required(),
             self._java_constructor_total()
         ):
