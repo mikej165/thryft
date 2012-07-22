@@ -9,7 +9,7 @@ class JavaStructType(StructType, JavaCompoundType):
             ', '.join([field.java_name() for field in self.fields])
         declarations = \
             lpad("\n\n", "\n".join(indent(' ' * 4,
-                [field.java_declaration(final=False)
+                [field.java_declaration(boxed=True, final=False)
                  for field in self.fields]
             )))
         name = self.java_name()
@@ -59,7 +59,6 @@ public static class Builder {
                 name = self.java_name()
                 parameters = []
                 for field in self.fields:
-                    field_name = field.java_name()
                     if field.required:
                         initializers.append(field.java_initializer())
                         parameters.append(field.java_parameter(final=True))
@@ -78,16 +77,33 @@ public %(name)s(%(parameters)s) {%(initializers)s
 #        if len(self.fields) == 0:
 #            return None # Will be covered by default constructor
 
-        initializers = []
+        initializers = \
+            "\n".join(indent(' ' * 4,
+                [field.java_initializer()
+                 for field in self.fields]
+            ))
         name = self.java_name()
-        parameters = []
-        for field in self.fields:
-            field_name = field.java_name()
-            initializers.append(field.java_initializer())
-            parameters.append(field.java_parameter(final=True))
-        initializers = "\n".join(indent(' ' * 4, initializers))
-        parameters = ", ".join(parameters)
+        parameters = ', '.join([field.java_parameter(final=True)
+                                for field in self.fields])
         return """\
+public %(name)s(%(parameters)s) {
+%(initializers)s
+}""" % locals()
+
+    def _java_constructor_total_boxed(self):
+        for field in self.fields:
+            if field.required and \
+               (field.type.java_name(boxed=True) != \
+                field.type.java_name(boxed=False)):
+                initializers = \
+                    "\n".join(indent(' ' * 4,
+                        [field.java_initializer()
+                         for field in self.fields]
+                    ))
+                name = self.java_name()
+                parameters = ', '.join([field.java_parameter(boxed=True, final=True)
+                                        for field in self.fields])
+                return """\
 public %(name)s(%(parameters)s) {
 %(initializers)s
 }""" % locals()
@@ -97,7 +113,8 @@ public %(name)s(%(parameters)s) {
         for constructor in (
             # self._java_constructor_default(),
             self._java_constructor_required(),
-            self._java_constructor_total()
+            self._java_constructor_total(),
+            self._java_constructor_total_boxed()
         ):
             if constructor is not None:
                 constructors.append(constructor)

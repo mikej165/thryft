@@ -4,11 +4,13 @@ from yutil import lower_camelize, upper_camelize, indent
 
 
 class JavaField(Field, JavaConstruct):
-    def java_declaration(self, final=False):
+    def java_declaration(self, boxed=None, final=False):
         if self.value is not None:
-            return "private %s = %s;" % (repr(self), self.java_value())
+            return "private %s = %s;" % \
+                    (self.java_parameter(boxed=boxed), self.java_value())
         else:
-            return "private %s;" % self.java_parameter(final=final)
+            return "private %s;" % \
+                    self.java_parameter(boxed=boxed, final=final)
 
     def java_default_initializer(self):
         name = self.java_name()
@@ -56,11 +58,13 @@ public %(final)s%(type_name)s %(getter_name)s() {
     def java_name(self):
         return lower_camelize(self.name)
 
-    def java_parameter(self, final=False):
+    def java_parameter(self, boxed=None, final=False):
+        if boxed is None:
+            boxed = not self.required
         parameter = []
         if final:
             parameter.append('final')
-        parameter.append(self.type.java_name(boxed=not self.required))
+        parameter.append(self.type.java_name(boxed=boxed))
         parameter.append(self.java_name())
         return ' '.join(parameter)
 
