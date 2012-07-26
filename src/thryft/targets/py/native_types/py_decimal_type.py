@@ -6,7 +6,7 @@ class PyDecimalType(DecimalType, PyNativeType):
     def py_check(self, value):
         return "isinstance(%(value)s, Decimal)" % locals()
 
-    def py_imports(self):
+    def py_imports(self, caller_stack=None):
         return ['from decimal import Decimal, InvalidOperation']
 
     def py_name(self):

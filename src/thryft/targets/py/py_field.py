@@ -1,6 +1,7 @@
 from thryft.target.container_types.list_type import ListType
 from thryft.target.field import Field
 from thryft.targets.py.py_construct import PyConstruct
+from thryft.targets.py.py_container_type import PyContainerType
 from yutil import quote, indent
 
 
@@ -19,15 +20,24 @@ def %(name)s(self):
     def py_getter_name(self):
         return self.py_name()
 
-    def py_imports(self):
-        return self.type.py_imports()
+    def py_imports(self, caller_stack=None):
+        if caller_stack is None:
+            caller_stack = []
+        elif self in caller_stack:
+            return []
+        caller_stack.append(self)
+
+        imports = self.type.py_imports(caller_stack=caller_stack)
+
+        assert caller_stack[-1] is self
+        caller_stack.pop(-1)
+        return imports
 
     def py_initializer(self):
         name = self.py_name()
-        type_check = self.type.py_check(name)
-        type_check = """\
-if not %(type_check)s:
-    raise TypeError(getattr(__builtins__, 'type')(%(name)s))""" % locals()
+
+        type_check = self.py_type_check()
+
         if self.required:
             checks = """\
 if %(name)s is None:
@@ -73,6 +83,22 @@ except (%(read_protocol_throws)s,):
 if ifield_name == '%(name)s':
 %(read_protocol)s
 """ % locals()
+
+    def py_type_check(self):
+        name = self.py_name()
+        type_check = self.type.py_check(name)
+        type_check = """\
+if not %(type_check)s:
+    raise TypeError(getattr(__builtins__, 'type')(%(name)s))""" % locals()
+        if hasattr(self.type, 'py_element_check'):
+            element_type_check = \
+                self.type.py_element_check(name + '_element')
+            type_check += """
+for %(name)s_element in %(name)s:
+    if not %(element_type_check)s:
+        raise TypeError(getattr(__builtins__, 'type')(%(name)s))
+""" % locals()
+        return type_check
 
     def py_write_protocol(self, depth=0):
         id_ = self.id

@@ -6,7 +6,7 @@ class PyDateType(DateType, PyNativeType):
     def py_check(self, value):
         return "isinstance(%(value)s, datetime)" % locals()
 
-    def py_imports(self):
+    def py_imports(self, caller_stack=None):
         return ['from datetime import datetime', 'from time import mktime']
 
     def py_name(self):

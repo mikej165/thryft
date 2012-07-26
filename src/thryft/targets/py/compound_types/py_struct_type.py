@@ -124,10 +124,17 @@ def write(self, oprot):
             methods_list.insert(0, self._py_constructor())
         return methods_list
 
-    def py_imports(self):
+    def py_imports(self, caller_stack=None):
+        if caller_stack is None:
+            caller_stack = []
+        elif self in caller_stack:
+            return []
+        caller_stack.append(self)
         imports = []
         for field in self.fields:
-            imports.extend(field.py_imports())
+            imports.extend(field.py_imports(caller_stack=caller_stack))
+        assert caller_stack[-1] is self
+        caller_stack.pop(-1)
         return list(set(imports))
 
     def py_read_protocol(self):

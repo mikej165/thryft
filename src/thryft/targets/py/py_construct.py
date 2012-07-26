@@ -1,5 +1,5 @@
 class PyConstruct(object):
-    def py_imports(self):
+    def py_imports(self, caller_stack=None):
         return []
 
     def py_name(self):
