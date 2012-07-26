@@ -31,12 +31,19 @@ def %(name)s(self):
 
         assert caller_stack[-1] is self
         caller_stack.pop(-1)
-        return imports
+
+        if len(imports) > 0:
+            imports.append('import __builtin__')
+
+        return list(set(imports))
 
     def py_initializer(self):
         name = self.py_name()
 
-        type_check = self.py_type_check()
+        type_check = self.type.py_check(name)
+        type_check = """\
+if not %(type_check)s:
+    raise TypeError(getattr(__builtin__, 'type')(%(name)s))""" % locals()
 
         if self.required:
             checks = """\
@@ -83,22 +90,6 @@ except (%(read_protocol_throws)s,):
 if ifield_name == '%(name)s':
 %(read_protocol)s
 """ % locals()
-
-    def py_type_check(self):
-        name = self.py_name()
-        type_check = self.type.py_check(name)
-        type_check = """\
-if not %(type_check)s:
-    raise TypeError(getattr(__builtins__, 'type')(%(name)s))""" % locals()
-        if hasattr(self.type, 'py_element_check'):
-            element_type_check = \
-                self.type.py_element_check(name + '_element')
-            type_check += """
-for %(name)s_element in %(name)s:
-    if not %(element_type_check)s:
-        raise TypeError(getattr(__builtins__, 'type')(%(name)s))
-""" % locals()
-        return type_check
 
     def py_write_protocol(self, depth=0):
         id_ = self.id
