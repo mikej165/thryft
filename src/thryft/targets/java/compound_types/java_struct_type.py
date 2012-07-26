@@ -164,6 +164,21 @@ public boolean equals(Object otherObject) {
     %(field_equal_tests)s;
 }""" % locals()}
 
+    def _java_method_get(self):
+        fields = []
+        for field in self.fields:
+            field_name = field.name
+            field_getter_name = field.java_getter_name()
+            fields.append("""\
+if (fieldName.equals("%(field_name)s")) {
+    return %(field_getter_name)s();
+}""" % locals())
+        fields = lpad("\n", indent(' ' * 4, ' else '.join(fields)))
+        return {'get': """\
+public Object get(final String fieldName) {%(fields)s
+    return null;
+}""" % locals()}
+
     def _java_method_getters(self):
         return dict((field.java_getter_name(), field.java_getter())
                     for field in self.fields)
@@ -238,6 +253,7 @@ public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.
     def _java_methods(self):
         methods = {}
         methods.update(self._java_method_equals())
+        methods.update(self._java_method_get())
         methods.update(self._java_method_getters())
         methods.update(self._java_method_hash_code())
         methods.update(self._java_method_read_protocol())
