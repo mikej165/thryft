@@ -71,6 +71,14 @@ def read(cls, iprot):
 """ % locals()}
 
     def _py_method_repr(self):
+        name = self.name
+
+        if len(self.fields) == 0:
+            return {'__repr__': """\
+def __repr__(self):
+    return '%(name)s()'
+""" % locals()}
+
         field_reprs = \
             ', '.join([
                 "%s=%%s" % field.name
@@ -81,7 +89,6 @@ def read(cls, iprot):
                 'self.' + field.py_getter_call()
                  for field in self.fields
             ])
-        name = self.name
         return {'__repr__': """\
 def __repr__(self):
     return "%(name)s(%(field_reprs)s)" %% (%(field_values)s,)
@@ -131,10 +138,7 @@ def write(self, oprot):
         return "%(value)s.write(oprot)" % locals()
 
     def __repr__(self):
-        if len(self.fields) > 0:
-            methods = indent(' ' * 4, "\n".join(self._py_methods()))
-        else:
-            methods = ' ' * 4 + 'pass'
+        methods = indent(' ' * 4, "\n".join(self._py_methods()))
         name = self.py_name()
         return """\
 class %(name)s(object):
