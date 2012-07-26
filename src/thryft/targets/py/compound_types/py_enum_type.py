@@ -12,6 +12,9 @@ class PyEnumType(EnumType, PyCompoundType):
         name = self.py_name()
         return "%(name)s.value_of(iprot.readString().strip().upper())" % locals()
 
+    def py_read_protocol_throws(self):
+        return ['TypeError']
+
     def py_write_protocol(self, value, depth=0):
         name = self.py_name()
         return "oprot.writeString([attr for attr in dir(%(name)s) if getattr(%(name)s, attr) == %(value)s][0])" % locals()
