@@ -126,7 +126,7 @@ class Grammar(object):
                 Optional(Group(delimitedList(self.field))) + \
             Literal(')').suppress() + \
             Optional(
-                Keyword('throws').suppress() + Literal('(').suppress() + \
+                Keyword('throws') + Literal('(').suppress() + \
                     Group(delimitedList(self.field, list_separator)) + \
                 Literal(')').suppress()
             )

@@ -88,6 +88,11 @@ class Compiler(object):
             )
 
         self.__scope_stack.append(compound_type)
+        # Insert the compound type into the type_map here to allow recursive
+        # definitions
+        if keyword != 'struct' or \
+           not compound_type.qname in self.__native_type_qnames:
+            self.__type_map[compound_type.qname] = compound_type
 
         return [compound_type]
 
@@ -101,7 +106,6 @@ class Compiler(object):
 
         if keyword != 'struct' or \
            not compound_type.qname in self.__native_type_qnames:
-            self.__type_map[compound_type.qname] = compound_type
             return [compound_type]
         else:
             return []
@@ -219,14 +223,16 @@ class Compiler(object):
         return [function]
 
     def _parse_function(self, tokens):
-        function = tokens[0]
+        tokens_copy = list(tokens)
+        function = tokens_copy.pop(0)
         self.__scope_stack.pop(-1)
 
-        if len(tokens) > 1:
-            function.parameters.extend(tokens[1])
-
-        if len(tokens) > 2:
-            function.throws.extend(tokens[2])
+        while len(tokens_copy) > 0:
+            if tokens_copy[0] == 'throws':
+                tokens_copy.pop(0)
+                function.throws.extend(tokens_copy.pop(0))
+            else:
+                function.parameters.extend(tokens_copy.pop(0))
 
         return [function]
 
