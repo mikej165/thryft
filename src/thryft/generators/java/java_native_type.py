@@ -1,0 +1,12 @@
+from thryft.generators.java.java_type import JavaType
+
+
+class JavaNativeType(JavaType):
+    def java_default_value(self):
+        return 'null'
+
+    def java_hash_code(self, value):
+        return "%(value)s.hashCode()" % locals()
+
+    def java_is_reference(self):
+        return True

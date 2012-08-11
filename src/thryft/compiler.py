@@ -1,6 +1,6 @@
 from pyparsing import ParseException
 from thryft.grammar import Grammar
-from thryft.target.type import Type
+from thryft.generator.type import Type
 from yutil import upper_camelize
 import logging
 import os.path
@@ -8,7 +8,7 @@ import sys
 
 
 class Compiler(object):
-    def __init__(self, target, include_dir_paths=None):
+    def __init__(self, generator, include_dir_paths=None):
         object.__init__(self)
 
         self.__grammar = grammar = Grammar()
@@ -29,7 +29,7 @@ class Compiler(object):
 
         native_type_qnames = []
         for _1, _2, file_names in \
-            os.walk(os.path.join(my_dir_path, 'target', 'native_types')):
+            os.walk(os.path.join(my_dir_path, 'generator', 'native_types')):
             for file_name in file_names:
                 file_base_name, file_ext = os.path.splitext(file_name)
                 if file_ext != '.thrift':
@@ -39,7 +39,7 @@ class Compiler(object):
                 )
         self.__native_type_qnames = native_type_qnames
 
-        self.__target = target
+        self.__generator = generator
 
         self.__scope_stack = []
         self.__type_map = {}
@@ -62,7 +62,7 @@ class Compiler(object):
 
         documents = []
         for thrift_file_path in thrift_file_paths:
-            document = self.__target.Document(path=thrift_file_path)
+            document = self.__generator.Document(path=thrift_file_path)
             self.__scope_stack.append(document)
 
             try:
@@ -82,7 +82,7 @@ class Compiler(object):
 
     def __parse_compound_type_declarator(self, keyword, tokens):
         compound_type = \
-            getattr(self.__target, keyword.capitalize() + 'Type')(
+            getattr(self.__generator, keyword.capitalize() + 'Type')(
                 name=tokens[1],
                 parent=self.__scope_stack[-1]
             )
@@ -112,7 +112,7 @@ class Compiler(object):
 
     def _parse_const(self, tokens):
         const = \
-            self.__target.Const(
+            self.__generator.Const(
                 name=tokens[2],
                 parent=self.__scope_stack[-1],
                 type=self.__resolve_type(tokens[1]),
@@ -141,7 +141,7 @@ class Compiler(object):
                 else:
                     value = None
                 enum.fields.append(
-                    self.__target.Field(
+                    self.__generator.Field(
                         id=token_i,
                         name=token[0],
                         parent=enum,
@@ -181,7 +181,7 @@ class Compiler(object):
         parent = self.__scope_stack[-1]
 
         field = \
-            self.__target.Field(
+            self.__generator.Field(
                 id=id,
                 name=name,
                 parent=parent,
@@ -211,7 +211,7 @@ class Compiler(object):
         parent = self.__scope_stack[-1]
 
         function = \
-            self.__target.Function(
+            self.__generator.Function(
                 name=name,
                 oneway=oneway,
                 parent=parent,
@@ -238,7 +238,7 @@ class Compiler(object):
 
     def _parse_include(self, tokens):
         include = \
-            self.__target.Include(
+            self.__generator.Include(
                 name=tokens[1],
                 parent=self.__scope_stack[-1],
                 path=tokens[1]
@@ -249,7 +249,7 @@ class Compiler(object):
             if os.path.exists(include_file_path):
                 include_file_path = os.path.abspath(include_file_path)
                 self.compile((include_file_path,))
-                if not include.path.startswith('thryft/target/native_types/'):
+                if not include.path.startswith('thryft/generator/native_types/'):
                     return [include]
                 else:
                     return []
@@ -262,7 +262,7 @@ class Compiler(object):
         key_type = self.__resolve_type(tokens[1])
         value_type = self.__resolve_type(tokens[2])
         map_type = \
-            self.__target.MapType(
+            self.__generator.MapType(
                 key_type=key_type,
                 name="map<%s, %s>" % (key_type.qname, value_type.qname),
                 parent=self.__scope_stack[-1],
@@ -272,7 +272,7 @@ class Compiler(object):
 
     def _parse_namespace(self, tokens):
         namespace = \
-            self.__target.Namespace(
+            self.__generator.Namespace(
                 name=tokens[2],
                 parent=self.__scope_stack[-1],
                 scope=tokens[1]
@@ -283,7 +283,7 @@ class Compiler(object):
         assert tokens[0] == keyword
         element_type = self.__resolve_type(tokens[1])
         sequence_type = \
-            getattr(self.__target, keyword.capitalize() + 'Type')(
+            getattr(self.__generator, keyword.capitalize() + 'Type')(
                 element_type=element_type,
                 name="%s<%s>" % (keyword, element_type.qname),
                 parent=self.__scope_stack[-1]
@@ -292,7 +292,7 @@ class Compiler(object):
 
     def _parse_service_declarator(self, tokens):
         service = \
-            self.__target.Service(
+            self.__generator.Service(
                 extends=len(tokens) > 2 and tokens[3] or None,
                 name=tokens[1],
                 parent=self.__scope_stack[-1]
@@ -322,7 +322,7 @@ class Compiler(object):
 
     def _parse_typedef(self, tokens):
         typedef = \
-            self.__target.Typedef(
+            self.__generator.Typedef(
                 name=tokens[2],
                 parent=self.__scope_stack[-1],
                 type=self.__resolve_type(tokens[1])
@@ -340,10 +340,10 @@ class Compiler(object):
             return self.__type_map[type_name]
         except KeyError:
             if type_name in self.__grammar.base_type_names:
-                return getattr(self.__target, type_name.capitalize() + 'Type')(name=type_name)
+                return getattr(self.__generator, type_name.capitalize() + 'Type')(name=type_name)
             elif type_name in self.__native_type_qnames:
                 type_name = type_name.rsplit('.', 1)[1]
-                return getattr(self.__target, type_name)(name=type_name)
+                return getattr(self.__generator, type_name)(name=type_name)
             elif not '.' in type_name:
                 document = self.__scope_stack[0]
                 type_qname = document.name + '.' + type_name

@@ -1,13 +1,13 @@
 from thryft.compiler import Compiler
-from thryft.targets.thrift.thrift_target import ThriftTarget
+from thryft.generators.thrift.thrift_generator import ThriftGenerator
 import os.path
 import unittest
 
 
 class CompilerTest(unittest.TestCase):
     def runTest(self):
-        target = ThriftTarget()
-        compiler = Compiler(target=target)
+        generator = ThriftGenerator()
+        compiler = Compiler(generator=generator)
 
         for dir_path, _, file_names in \
             os.walk(
