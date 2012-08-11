@@ -1,140 +1,15 @@
-from yutil import camelize
-import argparse
+#!/usr/bin/env python
+
 import os.path
 import sys
-from yutil import rpad, upper_camelize
 
-
-MY_DIR_PATH = os.path.dirname(os.path.realpath(__file__))
-ROOT_DIR_PATH = os.path.normpath(os.path.join(MY_DIR_PATH, '..'))
-
-
-# Parse arguments
-argument_parser = argparse.ArgumentParser()
-argument_parser.add_argument(
-    '--gen',
-    help='language[:key1=val1[,key2,[key3=val3]]]',
-    required=True
+sys.path.append(
+    os.path.normpath(os.path.join(
+        os.path.dirname(os.path.realpath(__file__)),
+        '..',
+        'src'
+    ))
 )
-argument_parser.add_argument(
-    'files',
-    nargs='*',
-    type=argparse.FileType
-)
-args = argument_parser.parse_args()
 
-gen = args.gen.split(':', 1)
-gen_kwds = {}
-if len(gen) == 2:
-    gen, gen_kwds_str = gen
-    for gen_kwd in gen_kwds_str.split(','):
-        gen_kwd_split = gen_kwd.split('=', 1)
-        if len(gen_kwd_split) == 1:
-            gen_kwds[gen_kwd_split[0]] = None
-        else:
-            gen_kwds[gen_kwd_split[0]] = gen_kwd_split[1]
-
-
-# Interpret arguments
-if gen == 'target':
-    if len(gen_kwds) != 1:
-        raise ValueError, "--gen=target requires a target name"
-    target_name = gen_kwds.keys()[0]
-
-    excluded_file_names = (
-        'base_type.py',
-        'compound_type.py',
-        'construct.py',
-        'container_type.py',
-        'native_type.py',
-        'type.py',
-    )
-
-    target_template_root_dir_path = os.path.join(ROOT_DIR_PATH, 'src', 'thryft', 'target')
-    target_template_file_paths = []
-    for dir_path, _, file_names in os.walk(target_template_root_dir_path):
-        for file_name in file_names:
-            if os.path.splitext(file_name)[1] != '.py':
-                continue
-            elif file_name in excluded_file_names:
-                continue
-            target_template_file_paths.append(
-                os.path.relpath(
-                    os.path.join(dir_path, file_name),
-                    target_template_root_dir_path
-                )
-            )
-    # print target_template_file_paths
-
-    target_root_dir_path = os.path.join(ROOT_DIR_PATH, 'src', 'thryft', 'targets', target_name)
-    if not os.path.isdir(target_root_dir_path):
-        os.makedirs(target_root_dir_path)
-    target_file_paths = []
-    for dir_path, _, file_names in os.walk(target_root_dir_path):
-        for file_name in file_names:
-            if os.path.splitext(file_name)[1] != '.py':
-                continue
-            elif file_name in excluded_file_names:
-                continue
-            target_file_paths.append(
-                os.path.relpath(
-                    os.path.join(dir_path, file_name),
-                    target_root_dir_path
-                )
-            )
-    # print target_file_paths
-
-    for target_template_file_path in target_template_file_paths:
-        target_template_subdir_path, target_template_file_name = \
-            os.path.split(target_template_file_path)
-        if target_template_file_name == '__init__.py':
-            target_file_path = \
-                os.path.join(
-                    target_template_subdir_path,
-                    target_template_file_name
-                )
-        else:
-            target_file_path = \
-                os.path.join(
-                    target_template_subdir_path,
-                    target_name + '_' + target_template_file_name
-                )
-
-        try:
-            target_file_paths.remove(target_file_path)
-        except ValueError:
-            target_file_paths.append(target_file_path)
-
-    for target_file_path in target_file_paths:
-        target_dir_path, target_file_name = os.path.split(target_file_path)
-        if target_file_name == '__init__.py':
-            target_file_contents = ''
-        else:
-            target_file_base_name = os.path.splitext(target_file_name)[0]
-            target_class_name = upper_camelize(target_file_base_name)
-            target_parent_class_name = upper_camelize(target_file_base_name[len(target_name) + 1:])
-            target_parent_module_name = \
-                'thryft.target.' + \
-                rpad(target_dir_path.replace(os.path.sep, '.'), '.') + \
-                target_file_base_name[len(target_name) + 1:]
-            target_file_contents = """\
-from %(target_parent_module_name)s import %(target_parent_class_name)s
-
-
-class %(target_class_name)s(%(target_parent_class_name)s):
-    pass
-""" % locals()
-        target_file_path = os.path.join(target_root_dir_path, target_file_path)
-        if not os.path.isdir(os.path.dirname(target_file_path)):
-            os.makedirs(os.path.dirname(target_file_path))
-        with open(target_file_path, 'wb+') as target_file:
-            target_file.write(target_file_contents)
-            print 'wrote', target_file_path
-else:
-    target_module_name = "thryft.targets.%(gen)s.%(gen)_target" % locals()
-    target_module = __import__(target_module_name)
-    for module_name in target_module_name.split('.')[1:]:
-        target_module = getattr(module_name, target_module)
-    target_class_name = camelize(args.target) + 'Target'
-    target_class = getattr(target_module, target_class_name)
-    target = target_class(**gen_kwds)
+import thryft.__main__
+thryft.__main__.main()
