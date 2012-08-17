@@ -1,28 +1,79 @@
 from thryft.generator.compound_types.struct_type import StructType
 from thryft.generators.java.java_compound_type import JavaCompoundType
-from yutil import indent, lpad
+from yutil import indent, lpad, pad
 
 
 class JavaStructType(StructType, JavaCompoundType):
-    def _java_builder(self):
-        constructor_parameters = \
-            ', '.join([field.java_name() for field in self.fields])
-        declarations = \
-            lpad("\n\n", "\n".join(indent(' ' * 4,
-                [field.java_declaration(boxed=True, final=False)
-                 for field in self.fields]
-            )))
-        name = self.java_name()
-        setters = \
-            lpad("\n\n", "\n\n".join(indent(' ' * 4,
-                [field.java_setter(return_type_name='Builder')
-                 for field in self.fields]
-            )))
-        return """\
-public static class Builder {
-    public %(name)s build() {
-        return new %(name)s(%(constructor_parameters)s);
-    }%(setters)s%(declarations)s
+    class _JavaBuilder(object):
+        def __init__(self, java_struct_type):
+            object.__init__(self)
+            self.__java_struct_type = java_struct_type
+
+        def __getattr__(self, attr):
+            return getattr(self.__java_struct_type, attr)
+
+        def _java_declarations(self):
+            return [field.java_declaration(boxed=True, final=False)
+                    for field in self.fields]
+
+        def _java_method_build(self):
+            constructor_parameters = \
+                ', '.join([field.java_name() for field in self.fields])
+            name = self.java_name()
+            return {'build': """\
+public %(name)s build() {
+    return new %(name)s(%(constructor_parameters)s);
+}""" % locals()}
+
+        def _java_method_read_protocol(self):
+            field_read_protocols = \
+                lpad(' else ', indent(' ' * 8, ' else '.join(
+                    [field.java_read_protocol()
+                     for field in self.fields]
+                )))
+            name = self.java_name()
+            return {'read': """\
+@Override
+public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    org.apache.thrift.protocol.TStruct structBegin = iprot.readStructBegin();
+    if (structBegin == null) {
+        return;
+    }
+    while (true) {
+        org.apache.thrift.protocol.TField ifield = iprot.readFieldBegin();
+        if (ifield.type == org.apache.thrift.protocol.TType.STOP) {
+            break;
+        }%(field_read_protocols)s
+
+        iprot.readFieldEnd();
+    }
+    iprot.readStructEnd();
+}""" % locals()}
+
+        def _java_method_setters(self):
+            return \
+                dict((
+                    field.java_setter_name(),
+                    field.java_setter(return_type_name='Builder')
+                )
+                for field in self.fields)
+
+        def _java_methods(self):
+            methods = {}
+            methods.update(self._java_method_build())
+            methods.update(self._java_method_setters())
+            methods.update(self._java_method_TBase())
+            methods.update(self._java_method_read_protocol()) # Must be after TBase
+            return [methods[key] for key in sorted(methods.iterkeys())]
+
+        def __repr__(self):
+            name = self.java_name()
+            sections = []
+            sections.append("\n\n".join(indent(' ' * 4, self._java_methods())))
+            sections.append("\n".join(indent(' ' * 4, self._java_declarations())))
+            sections = lpad("\n", "\n\n".join(sections))
+            return """\
+public static class Builder implements org.apache.thrift.TBase <%(name)s, org.apache.thrift.TFieldIdEnum> {%(sections)s
 }""" % locals()
 
 #    def _java_constructor_default(self):
@@ -49,29 +100,40 @@ public static class Builder {
 #public %(name)s() {%(initializers)s
 #}""" % locals()
 
-    def _java_constructor_required(self):
-#        if len(self.fields) == 0:
-#            return None # Will be covered by default constructor
-
-        for field in self.fields:
-            if field.required:
-                initializers = []
-                name = self.java_name()
-                parameters = []
-                for field in self.fields:
-                    if field.required:
-                        initializers.append(field.java_initializer())
-                        parameters.append(field.java_parameter(final=True))
-                    else:
-                        initializers.append(field.java_default_initializer())
-                initializers = \
-                    lpad("\n", "\n".join(indent(' ' * 4, initializers)))
-                parameters = ", ".join(parameters)
-                return """\
-public %(name)s(%(parameters)s) {%(initializers)s
+    def _java_constructor_copy(self):
+        name = self.java_name()
+        this_call = \
+            indent(' ' * 4,
+                pad("\nthis(",
+                    ', '.join(['other.' + field.java_getter_name() + '()'
+                               for field in self.fields]),
+                ");\n")
+            )
+        return """\
+public %(name)s(final %(name)s other) {%(this_call)s
 }""" % locals()
 
-        return None # Will be covered by total constructor
+    def _java_constructor_required(self):
+        fields_required = set([field.required for field in self.fields])
+        if len(fields_required) <= 1:
+            # All fields are optional or all fields are required
+            return None # Will be covered by total constructor
+
+        initializers = []
+        name = self.java_name()
+        parameters = []
+        for field in self.fields:
+            if field.required:
+                initializers.append(field.java_initializer())
+                parameters.append(field.java_parameter(final=True))
+            else:
+                initializers.append(field.java_default_initializer())
+        initializers = \
+            lpad("\n", "\n".join(indent(' ' * 4, initializers)))
+        parameters = ", ".join(parameters)
+        return """\
+public %(name)s(%(parameters)s) {%(initializers)s
+}""" % locals()
 
     def _java_constructor_total(self):
 #        if len(self.fields) == 0:
@@ -112,6 +174,7 @@ public %(name)s(%(parameters)s) {
         constructors = []
         for constructor in (
             # self._java_constructor_default(),
+            self._java_constructor_copy(),
             self._java_constructor_required(),
             self._java_constructor_total(),
             self._java_constructor_total_boxed()
@@ -206,33 +269,36 @@ public int hashCode() {
     return hashCode;
 }""" % locals()}
 
-    def _java_method_read_protocol(self):
-        field_read_protocols = \
-            lpad(' else ', indent(' ' * 8, ' else '.join(
-                [field.java_read_protocol()
-                 for field in self.fields]
-            )))
+    def _java_method_readStatic_protocol(self):
         name = self.java_name()
-        return {'read': """\
-public static %(name)s read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+        return {'readStatic': """\
+public static %(name)s readStatic(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
     Builder builder = new Builder();
-
-    org.apache.thrift.protocol.TStruct structBegin = iprot.readStructBegin();
-    if (structBegin == null) {
-        return null;
-    }
-    while (true) {
-        org.apache.thrift.protocol.TField ifield = iprot.readFieldBegin();
-        if (ifield.type == org.apache.thrift.protocol.TType.STOP) {
-            break;
-        }%(field_read_protocols)s
-
-        iprot.readFieldEnd();
-    }
-    iprot.readStructEnd();
-
-    return builder.build();
+    builder.read(iprot);
+    return builder.build(); 
 }""" % locals()}
+
+    def _java_method_TBase(self):
+        name = self.java_name()
+        return dict((
+            method_name,
+            """\
+@Override
+public %(method_signature)s {
+throw new UnsupportedOperationException();
+}""" % locals())
+            for method_name, method_signature in (
+                ('clear', 'void clear()'),
+                ('compareTo', "int compareTo(%(name)s other)" % locals()),
+                ('deepCopy', "org.apache.thrift.TBase<%(name)s, org.apache.thrift.TFieldIdEnum> deepCopy()" % locals()),
+                ('fieldForId', 'org.apache.thrift.TFieldIdEnum fieldForId(int fieldId)'),
+                ('getFieldValue', 'Object getFieldValue(org.apache.thrift.TFieldIdEnum field)'),
+                ('isSet', 'boolean isSet(org.apache.thrift.TFieldIdEnum field)'),
+                ('setFieldValue', 'void setFieldValue(org.apache.thrift.TFieldIdEnum field, Object value)'),
+                ('read', 'void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException'),
+                ('write', 'void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException'),
+            )
+        )
 
     def _java_method_write_protocol(self):
         field_write_protocols = \
@@ -242,6 +308,7 @@ public static %(name)s read(org.apache.thrift.protocol.TProtocol iprot) throws o
             )))
         name = self.java_name()
         return {'write': """\
+@Override        
 public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
     oprot.writeStructBegin(new org.apache.thrift.protocol.TStruct(\"%(name)s\"));%(field_write_protocols)s
 
@@ -256,27 +323,27 @@ public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.
         methods.update(self._java_method_get())
         methods.update(self._java_method_getters())
         methods.update(self._java_method_hash_code())
-        methods.update(self._java_method_read_protocol())
-        methods.update(self._java_method_write_protocol())
+        methods.update(self._java_method_readStatic_protocol())
+        methods.update(self._java_method_TBase())
+        methods.update(self._java_method_write_protocol()) # Must be after TBase
         return self._java_constructors() + \
                [methods[key] for key in sorted(methods.iterkeys())]
 
     def java_read_protocol(self):
         name = self.java_name()
-        return "%(name)s.read(iprot)" % locals()
+        return "%(name)s.readStatic(iprot)" % locals()
 
     def java_write_protocol(self, value, depth=0):
         return "%(value)s.write(oprot);" % locals()
 
     def __repr__(self):
-        name = self.name
-
+        name = self.java_name()
         sections = []
-        sections.append(indent(' ' * 4, self._java_builder()))
+        sections.append(indent(' ' * 4, repr(self._JavaBuilder(self))))
         sections.append("\n\n".join(indent(' ' * 4, self._java_methods())))
         sections.append("\n".join(indent(' ' * 4, self._java_declarations())))
         sections = lpad("\n", "\n\n".join(sections))
-
         return """\
-public class %(name)s {%(sections)s
+@SuppressWarnings("serial")
+public class %(name)s implements org.apache.thrift.TBase<%(name)s, org.apache.thrift.TFieldIdEnum> {%(sections)s
 }""" % locals()
