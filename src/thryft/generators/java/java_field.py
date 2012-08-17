@@ -1,4 +1,5 @@
 from thryft.generator.field import Field
+from thryft.generators.java.base_types.java_bool_type import JavaBoolType
 from thryft.generators.java.java_construct import JavaConstruct
 from yutil import lower_camelize, upper_camelize, indent
 
@@ -35,7 +36,14 @@ this.%(name)s = %(default_value)s;""" % locals()
             return "%(this_value)s == %(other_value)s" % locals()
 
     def java_getter_name(self):
-        return 'get' + upper_camelize(self.name)
+        getter_name = upper_camelize(self.name)
+        if isinstance(self.type, JavaBoolType):
+            if getter_name.startswith('Is'):
+                return 'is' + getter_name[2:]
+            else:
+                return 'is' + getter_name
+        else:
+            return 'get' + getter_name
 
     def java_getter(self, final=True):
         final = final and 'final ' or ''
@@ -68,12 +76,12 @@ public %(final)s%(type_name)s %(getter_name)s() {
         parameter.append(self.java_name())
         return ' '.join(parameter)
 
-    def java_read_protocol(self):
+    def java_read_protocol(self, setter_name=None):
         read_protocol = self.type.java_read_protocol()
-
-        setter_name = self.java_setter_name()
+        if setter_name is None:
+            setter_name = self.java_setter_name()
         read_protocol = """\
-builder.%(setter_name)s(%(read_protocol)s);""" % locals()
+%(setter_name)s(%(read_protocol)s);""" % locals()
 
         read_protocol_throws = self.type.java_read_protocol_throws()
         if len(read_protocol_throws) > 0:
