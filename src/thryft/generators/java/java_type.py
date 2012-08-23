@@ -12,7 +12,7 @@ class JavaType(JavaConstruct):
     def java_is_reference(self):
         raise NotImplementedError(class_qname(self) + '.java_is_reference')
 
-    def java_read_protocol(self, value, depth=0):
+    def java_read_protocol(self):
         raise NotImplementedError(class_qname(self) + '.java_read_protocol')
 
     def java_read_protocol_throws(self):

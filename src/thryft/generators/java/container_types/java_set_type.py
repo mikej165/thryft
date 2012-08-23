@@ -1,8 +1,7 @@
 from thryft.generator.container_types.set_type import SetType
-from thryft.generators.java.java_container_type import JavaContainerType
+from thryft.generators.java.java_sequence_type import JavaSequenceType
 
 
-class JavaSetType(SetType, JavaContainerType):
-    def java_name(self, boxed=False):
-        return "com.google.common.collect.ImmutableSet<%s>" % \
-                self.element_type.java_name(boxed=True)
+class JavaSetType(SetType, JavaSequenceType):
+    def _java_mutable_raw_qname(self):
+        return 'java.util.LinkedHashSet'
