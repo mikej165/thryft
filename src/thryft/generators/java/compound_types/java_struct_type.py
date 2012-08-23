@@ -17,12 +17,23 @@ class JavaStructType(StructType, JavaCompoundType):
                     for field in self.fields]
 
         def _java_method_build(self):
-            constructor_parameters = \
+            field_names = \
                 ', '.join([field.java_name() for field in self.fields])
             name = self.java_name()
             return {'build': """\
 public %(name)s build() {
-    return new %(name)s(%(constructor_parameters)s);
+    return _build(%(field_names)s);
+}""" % locals()}
+
+        def _java_method__build(self):
+            field_names = \
+                ', '.join([field.java_name() for field in self.fields])
+            field_parameters = \
+                ', '.join([field.java_parameter(final=True) for field in self.fields])
+            name = self.java_name()
+            return {'_build': """\
+protected %(name)s _build(%(field_parameters)s) {
+    return new %(name)s(%(field_names)s);
 }""" % locals()}
 
         def _java_method_read_protocol(self):
@@ -34,7 +45,7 @@ public %(name)s build() {
             name = self.java_name()
             return {'read': """\
 @Override
-public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+public void read(final org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
     org.apache.thrift.protocol.TStruct structBegin = iprot.readStructBegin();
     if (structBegin == null) {
         return;
@@ -61,6 +72,7 @@ public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.t
         def _java_methods(self):
             methods = {}
             methods.update(self._java_method_build())
+            methods.update(self._java_method__build())
             methods.update(self._java_method_setters())
             methods.update(self._java_method_TBase())
             methods.update(self._java_method_read_protocol()) # Must be after TBase
@@ -221,7 +233,7 @@ if (!(otherObject instanceof %(name)s)) {
 
         return {'equals': """\
 @Override
-public boolean equals(Object otherObject) {
+public boolean equals(final Object otherObject) {
 %(struct_equal_tests)s
 
     %(field_equal_tests)s;
@@ -272,7 +284,7 @@ public int hashCode() {
     def _java_method_readStatic_protocol(self):
         name = self.java_name()
         return {'readStatic': """\
-public static %(name)s readStatic(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+public static %(name)s readStatic(final org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
     Builder builder = new Builder();
     builder.read(iprot);
     return builder.build(); 
@@ -285,20 +297,42 @@ public static %(name)s readStatic(org.apache.thrift.protocol.TProtocol iprot) th
             """\
 @Override
 public %(method_signature)s {
-throw new UnsupportedOperationException();
+    throw new UnsupportedOperationException();
 }""" % locals())
             for method_name, method_signature in (
                 ('clear', 'void clear()'),
-                ('compareTo', "int compareTo(%(name)s other)" % locals()),
+                ('compareTo', "int compareTo(final %(name)s other)" % locals()),
                 ('deepCopy', "org.apache.thrift.TBase<%(name)s, org.apache.thrift.TFieldIdEnum> deepCopy()" % locals()),
-                ('fieldForId', 'org.apache.thrift.TFieldIdEnum fieldForId(int fieldId)'),
-                ('getFieldValue', 'Object getFieldValue(org.apache.thrift.TFieldIdEnum field)'),
-                ('isSet', 'boolean isSet(org.apache.thrift.TFieldIdEnum field)'),
-                ('setFieldValue', 'void setFieldValue(org.apache.thrift.TFieldIdEnum field, Object value)'),
-                ('read', 'void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException'),
-                ('write', 'void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException'),
+                ('fieldForId', 'org.apache.thrift.TFieldIdEnum fieldForId(final int fieldId)'),
+                ('getFieldValue', 'Object getFieldValue(final org.apache.thrift.TFieldIdEnum field)'),
+                ('isSet', 'boolean isSet(final org.apache.thrift.TFieldIdEnum field)'),
+                ('setFieldValue', 'void setFieldValue(final org.apache.thrift.TFieldIdEnum field, Object value)'),
+                ('read', 'void read(final org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException'),
+                ('write', 'void write(final org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException'),
             )
         )
+
+    def _java_method_to_string(self):
+        if len(self.fields) == 0:
+            return {}
+
+        add_statements = []
+        for field in self.fields:
+            add_statement = \
+                """helper.add(\"%s\", %s());""" % (field.name, field.java_getter_name())
+            if not field.required:
+                add_statement = """\
+if (%s() != null) {
+    %s
+}""" % (field.java_getter_name(), add_statement)
+            add_statements.append(add_statement)
+        add_statements = lpad("\n", "\n".join(indent(' ' * 4, add_statements)))
+        return {'toString': """\
+@Override
+public String toString() {
+    final com.google.common.base.Objects.ToStringHelper helper = com.google.common.base.Objects.toStringHelper(this);%(add_statements)s
+    return helper.toString();
+}""" % locals()}
 
     def _java_method_write_protocol(self):
         field_write_protocols = \
@@ -309,7 +343,7 @@ throw new UnsupportedOperationException();
         name = self.java_name()
         return {'write': """\
 @Override        
-public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+public void write(final org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
     oprot.writeStructBegin(new org.apache.thrift.protocol.TStruct(\"%(name)s\"));%(field_write_protocols)s
 
     oprot.writeFieldStop();
@@ -325,6 +359,7 @@ public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.
         methods.update(self._java_method_hash_code())
         methods.update(self._java_method_readStatic_protocol())
         methods.update(self._java_method_TBase())
+        methods.update(self._java_method_to_string())
         methods.update(self._java_method_write_protocol()) # Must be after TBase
         return self._java_constructors() + \
                [methods[key] for key in sorted(methods.iterkeys())]
