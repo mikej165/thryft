@@ -47,9 +47,6 @@ protected %(name)s _build(%(field_parameters)s) {
 @Override
 public void read(final org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
     org.apache.thrift.protocol.TStruct structBegin = iprot.readStructBegin();
-    if (structBegin == null) {
-        return;
-    }
     while (true) {
         org.apache.thrift.protocol.TField ifield = iprot.readFieldBegin();
         if (ifield.type == org.apache.thrift.protocol.TType.STOP) {
