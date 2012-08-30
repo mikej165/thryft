@@ -19,7 +19,7 @@ class JavaSequenceType(JavaContainerType):
 
     def java_read_protocol(self):
         element_read_protocol = self.element_type.java_read_protocol()
-        element_type_name = self.element_type.java_name()
+        element_type_name = self.element_type.java_name(boxed=True)
         interface_simple_name = self._java_interface_simple_name()
         mutable_raw_qname = self._java_mutable_raw_qname()
         return """\
