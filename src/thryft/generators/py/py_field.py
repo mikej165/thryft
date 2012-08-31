@@ -1,7 +1,5 @@
-from thryft.generator.container_types.list_type import ListType
 from thryft.generator.field import Field
 from thryft.generators.py.py_construct import PyConstruct
-from thryft.generators.py.py_container_type import PyContainerType
 from yutil import quote, indent
 
 
@@ -32,8 +30,7 @@ def %(name)s(self):
         assert caller_stack[-1] is self
         caller_stack.pop(-1)
 
-        if len(imports) > 0:
-            imports.append('import __builtin__')
+        imports.append('import __builtin__')
 
         return list(set(imports))
 
