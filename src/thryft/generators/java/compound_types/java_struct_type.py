@@ -12,8 +12,8 @@ class JavaStructType(StructType, JavaCompoundType):
         def __getattr__(self, attr):
             return getattr(self.__java_struct_type, attr)
 
-        def _java_declarations(self):
-            return [field.java_declaration(boxed=True, final=False)
+        def _java_member_declarations(self):
+            return [field.java_member_declaration(boxed=True, final=False)
                     for field in self.fields]
 
         def _java_method_build(self):
@@ -79,7 +79,7 @@ public void read(final org.apache.thrift.protocol.TProtocol iprot) throws org.ap
             name = self.java_name()
             sections = []
             sections.append("\n\n".join(indent(' ' * 4, self._java_methods())))
-            sections.append("\n".join(indent(' ' * 4, self._java_declarations())))
+            sections.append("\n".join(indent(' ' * 4, self._java_member_declarations())))
             sections = lpad("\n", "\n\n".join(sections))
             return """\
 public static class Builder implements org.apache.thrift.TBase <%(name)s, org.apache.thrift.TFieldIdEnum> {%(sections)s
@@ -120,6 +120,37 @@ public static class Builder implements org.apache.thrift.TBase <%(name)s, org.ap
             )
         return """\
 public %(name)s(final %(name)s other) {%(this_call)s
+}""" % locals()
+
+    def _java_constructor_protocol(self):
+        field_declarations = \
+            pad("\n", indent(' ' * 4, "\n".join(
+                [field.java_local_declaration(final=False)
+                 for field in self.fields]
+            )), "\n")
+        field_initializers = \
+            lpad("\n\n", "\n".join(indent(' ' * 4,
+                [field.java_initializer()
+                 for field in self.fields]
+            )))
+        field_protocol_initializers = \
+            lpad(' else ', indent(' ' * 8, ' else '.join(
+                [field.java_protocol_initializer()
+                 for field in self.fields]
+            )))
+        name = self.java_name()
+        return """\
+public %(name)s(final org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {%(field_declarations)s
+    iprot.readStructBegin();
+    while (true) {
+        org.apache.thrift.protocol.TField ifield = iprot.readFieldBegin();
+        if (ifield.type == org.apache.thrift.protocol.TType.STOP) {
+            break;
+        }%(field_protocol_initializers)s
+
+        iprot.readFieldEnd();
+    }
+    iprot.readStructEnd();%(field_initializers)s
 }""" % locals()
 
     def _java_constructor_required(self):
@@ -184,6 +215,7 @@ public %(name)s(%(parameters)s) {
         for constructor in (
             # self._java_constructor_default(),
             self._java_constructor_copy(),
+            self._java_constructor_protocol(),
             self._java_constructor_required(),
             self._java_constructor_total(),
             self._java_constructor_total_boxed()
@@ -192,8 +224,9 @@ public %(name)s(%(parameters)s) {
                 constructors.append(constructor)
         return constructors
 
-    def _java_declarations(self):
-        return [field.java_declaration(final=True) for field in self.fields]
+    def _java_member_declarations(self):
+        return [field.java_member_declaration(final=True)
+                for field in self.fields]
 
     def _java_method_equals(self):
         name = self.java_name()
@@ -278,15 +311,6 @@ public int hashCode() {
     return hashCode;
 }""" % locals()}
 
-    def _java_method_readStatic_protocol(self):
-        name = self.java_name()
-        return {'readStatic': """\
-public static %(name)s readStatic(final org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
-    Builder builder = new Builder();
-    builder.read(iprot);
-    return builder.build(); 
-}""" % locals()}
-
     def _java_method_TBase(self):
         name = self.java_name()
         return dict((
@@ -354,7 +378,6 @@ public void write(final org.apache.thrift.protocol.TProtocol oprot) throws org.a
         methods.update(self._java_method_get())
         methods.update(self._java_method_getters())
         methods.update(self._java_method_hash_code())
-        methods.update(self._java_method_readStatic_protocol())
         methods.update(self._java_method_TBase())
         methods.update(self._java_method_to_string())
         methods.update(self._java_method_write_protocol()) # Must be after TBase
@@ -363,7 +386,7 @@ public void write(final org.apache.thrift.protocol.TProtocol oprot) throws org.a
 
     def java_read_protocol(self):
         name = self.java_name()
-        return "%(name)s.readStatic(iprot)" % locals()
+        return "new %(name)s(iprot)" % locals()
 
     def java_write_protocol(self, value, depth=0):
         return "%(value)s.write(oprot);" % locals()
@@ -373,7 +396,7 @@ public void write(final org.apache.thrift.protocol.TProtocol oprot) throws org.a
         sections = []
         sections.append(indent(' ' * 4, repr(self._JavaBuilder(self))))
         sections.append("\n\n".join(indent(' ' * 4, self._java_methods())))
-        sections.append("\n".join(indent(' ' * 4, self._java_declarations())))
+        sections.append("\n".join(indent(' ' * 4, self._java_member_declarations())))
         sections = lpad("\n", "\n\n".join(sections))
         return """\
 @SuppressWarnings("serial")

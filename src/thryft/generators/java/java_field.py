@@ -5,14 +5,6 @@ from yutil import lower_camelize, upper_camelize, indent
 
 
 class JavaField(Field, JavaConstruct):
-    def java_declaration(self, boxed=None, final=False):
-        if self.value is not None:
-            return "private %s = %s;" % \
-                    (self.java_parameter(boxed=boxed), self.java_value())
-        else:
-            return "private %s;" % \
-                    self.java_parameter(boxed=boxed, final=final)
-
     def java_default_initializer(self):
         name = self.java_name()
         if self.value is not None:
@@ -63,6 +55,29 @@ public %(final)s%(type_name)s %(getter_name)s() {
         return """\
 %(lhs)s = %(rhs)s;""" % locals()
 
+    def java_local_declaration(self, boxed=None, final=False):
+        if self.value is not None:
+            return "%s = %s;" % \
+                    (self.java_parameter(boxed=boxed), self.java_value())
+        elif not final:
+            if boxed is False or self.required:
+                return "%s = %s;" % \
+                        (self.java_parameter(boxed=boxed, final=final),
+                         self.type.java_default_value())
+            else:
+                return "%s = null;" % \
+                        self.java_parameter(boxed=boxed, final=final)
+        else:
+            return self.java_parameter(boxed=boxed, final=final)
+
+    def java_member_declaration(self, boxed=None, final=False):
+        if self.value is not None:
+            return "private %s = %s;" % \
+                    (self.java_parameter(boxed=boxed), self.java_value())
+        else:
+            return "private %s;" % \
+                    self.java_parameter(boxed=boxed, final=final)
+
     def java_name(self):
         return lower_camelize(self.name)
 
@@ -76,12 +91,35 @@ public %(final)s%(type_name)s %(getter_name)s() {
         parameter.append(self.java_name())
         return ' '.join(parameter)
 
-    def java_read_protocol(self, setter_name=None):
-        read_protocol = self.type.java_read_protocol()
-        if setter_name is None:
-            setter_name = self.java_setter_name()
-        read_protocol = """\
-%(setter_name)s(%(read_protocol)s);""" % locals()
+    def java_protocol_initializer(self):
+        read_protocol = \
+            self.java_name() + ' = ' + self.type.java_read_protocol() + ';'
+
+        read_protocol_throws = self.type.java_read_protocol_throws()
+        if len(read_protocol_throws) > 0:
+            read_protocol = indent(' ' * 4, read_protocol)
+            read_protocol_throws = \
+                ''.join(["""\
+ catch (%(exception_type_name)s e) {
+}""" % locals()
+                         for exception_type_name in read_protocol_throws])
+            read_protocol = """\
+try {
+%(read_protocol)s
+}%(read_protocol_throws)s""" % locals()
+
+        read_protocol = indent(' ' * 4, read_protocol)
+        name = self.name
+        return """\
+if (ifield.name.equals("%(name)s")) {
+%(read_protocol)s
+}""" % locals()
+
+    def java_read_protocol(self):
+        read_protocol = \
+            self.java_setter_name() + '(' + \
+                self.type.java_read_protocol() + \
+            ');'
 
         read_protocol_throws = self.type.java_read_protocol_throws()
         if len(read_protocol_throws) > 0:
