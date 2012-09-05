@@ -36,27 +36,26 @@ protected %(name)s _build(%(field_parameters)s) {
     return new %(name)s(%(field_names)s);
 }""" % locals()}
 
-        def _java_method_read_protocol(self):
-            field_read_protocols = \
-                lpad(' else ', indent(' ' * 8, ' else '.join(
-                    [field.java_read_protocol()
-                     for field in self.fields]
-                )))
-            name = self.java_name()
-            return {'read': """\
-@Override
-public void read(final org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
-    iprot.readStructBegin();
-    while (true) {
-        org.apache.thrift.protocol.TField ifield = iprot.readFieldBegin();
-        if (ifield.type == org.apache.thrift.protocol.TType.STOP) {
-            break;
-        }%(field_read_protocols)s
-
-        iprot.readFieldEnd();
-    }
-    iprot.readStructEnd();
-}""" % locals()}
+#        def _java_method_read_protocol(self):
+#            field_read_protocols = \
+#                lpad(' else ', indent(' ' * 8, ' else '.join(
+#                    [field.java_read_protocol()
+#                     for field in self.fields]
+#                )))
+#            name = self.java_name()
+#            readStructBegin = lpad("\n", indent(' ' * 4, 'iprot.readStructBegin();'))
+#            readStructEnd = lpad("\n", indent(' ' * 4, 'iprot.readStructEnd();'))
+#            return {'read': """\
+#@Override
+#public void read(final org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {%(readStructBegin)s
+#    while (true) {
+#        org.apache.thrift.protocol.TField ifield = iprot.readFieldBegin();
+#        if (ifield.type == org.apache.thrift.protocol.TType.STOP) {
+#            break;
+#        }%(field_read_protocols)s
+#        iprot.readFieldEnd();
+#    }%(readStructEnd)s
+#}""" % locals()}
 
         def _java_method_setters(self):
             return \
@@ -71,8 +70,7 @@ public void read(final org.apache.thrift.protocol.TProtocol iprot) throws org.ap
             methods.update(self._java_method_build())
             methods.update(self._java_method__build())
             methods.update(self._java_method_setters())
-            methods.update(self._java_method_TBase())
-            methods.update(self._java_method_read_protocol()) # Must be after TBase
+            # methods.update(self._java_method_read_protocol()) # Must be after TBase
             return [methods[key] for key in sorted(methods.iterkeys())]
 
         def __repr__(self):
@@ -82,7 +80,7 @@ public void read(final org.apache.thrift.protocol.TProtocol iprot) throws org.ap
             sections.append("\n".join(indent(' ' * 4, self._java_member_declarations())))
             sections = lpad("\n", "\n\n".join(sections))
             return """\
-public static class Builder implements org.apache.thrift.TBase <%(name)s, org.apache.thrift.TFieldIdEnum> {%(sections)s
+public static class Builder {%(sections)s
 }""" % locals()
 
 #    def _java_constructor_default(self):
@@ -135,7 +133,10 @@ public %(name)s(final %(name)s other) {%(this_call)s
             )))
         field_protocol_initializers = \
             lpad(' else ', indent(' ' * 8, ' else '.join(
-                [field.java_protocol_initializer()
+                ["""\
+if (ifield.name.equals("%s")) {
+%s
+}""" % (field.name, indent(' ' * 4, field.java_protocol_initializer()))
                  for field in self.fields]
             )))
         name = self.java_name()
@@ -147,7 +148,6 @@ public %(name)s(final org.apache.thrift.protocol.TProtocol iprot) throws org.apa
         if (ifield.type == org.apache.thrift.protocol.TType.STOP) {
             break;
         }%(field_protocol_initializers)s
-
         iprot.readFieldEnd();
     }
     iprot.readStructEnd();%(field_initializers)s
