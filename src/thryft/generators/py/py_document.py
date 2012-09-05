@@ -30,7 +30,6 @@ class PyDocument(Document, PyConstruct):
         while py_module_dir_path != root_out_dir_path:
             init_py_file_path = os.path.join(py_module_dir_path, '__init__.py')
             if not os.path.isfile(init_py_file_path):
-                print init_py_file_path
                 with open(init_py_file_path, 'wb+') as _init_py_file:
                     print 'wrote', init_py_file_path
             py_module_dir_path = os.path.split(py_module_dir_path)[0]
