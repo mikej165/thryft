@@ -83,29 +83,26 @@ protected %(name)s _build(%(field_parameters)s) {
 public static class Builder {%(sections)s
 }""" % locals()
 
-#    def _java_constructor_default(self):
-#        name = self.java_name()
-#
-#        if len(self.fields) == 0:
-#            return """\
-#public %(name)s() {
-#}""" % locals()
-#
-#        initializers = \
-#            lpad("\n", "\n".join(indent(' ' * 4,
-#                [field.java_default_initializer()
-#                 for field in self.fields]
-#            )))
-#
-#        for field in self.fields:
-#            if field.required:
-#                return """\
-#protected %(name)s() {%(initializers)s
-#}""" % locals()
-#
-#        return """\
-#public %(name)s() {%(initializers)s
-#}""" % locals()
+    def _java_constructor_default(self):
+        name = self.java_name()
+
+        if len(self.fields) == 0:
+            return """\
+public %(name)s() {
+}""" % locals()
+
+        for field in self.fields:
+            if field.required:
+                return None # Will be covered by total constructor
+
+        initializers = \
+            lpad("\n", "\n".join(indent(' ' * 4,
+                [field.java_default_initializer()
+                 for field in self.fields]
+            )))
+        return """\
+public %(name)s() {%(initializers)s
+}""" % locals()
 
     def _java_constructor_copy(self):
         name = self.java_name()
@@ -154,8 +151,9 @@ public %(name)s(final org.apache.thrift.protocol.TProtocol iprot) throws org.apa
 }""" % locals()
 
     def _java_constructor_required(self):
-        fields_required = set([field.required for field in self.fields])
-        if len(fields_required) <= 1:
+        if len(self.fields) == 0:
+            return None # Will be covered by default constructor
+        elif len(set([field.required for field in self.fields])) <= 1:
             # All fields are optional or all fields are required
             return None # Will be covered by total constructor
 
@@ -176,8 +174,8 @@ public %(name)s(%(parameters)s) {%(initializers)s
 }""" % locals()
 
     def _java_constructor_total(self):
-#        if len(self.fields) == 0:
-#            return None # Will be covered by default constructor
+        if len(self.fields) == 0:
+            return None # Will be covered by default constructor
 
         initializers = \
             "\n".join(indent(' ' * 4,
@@ -193,6 +191,9 @@ public %(name)s(%(parameters)s) {
 }""" % locals()
 
     def _java_constructor_total_boxed(self):
+        if len(self.fields) == 0:
+            return None # Will be covered by default constructor
+
         for field in self.fields:
             if field.required and \
                (field.type.java_name(boxed=True) != \
@@ -213,7 +214,7 @@ public %(name)s(%(parameters)s) {
     def _java_constructors(self):
         constructors = []
         for constructor in (
-            # self._java_constructor_default(),
+            self._java_constructor_default(),
             self._java_constructor_copy(),
             self._java_constructor_protocol(),
             self._java_constructor_required(),
