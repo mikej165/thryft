@@ -12,6 +12,35 @@ class JavaStructType(StructType, JavaCompoundType):
         def __getattr__(self, attr):
             return getattr(self.__java_struct_type, attr)
 
+        def _java_constructor_copy(self):
+            initializers = []
+            for field in self.fields:
+                getter_name = field.java_getter_name() # IGNORE:W0612
+                variable_name = field.java_name() # IGNORE:W0612
+                initializers.append(
+                    "this.%(variable_name)s = other.%(getter_name)s();" % \
+                        locals()
+                )
+            initializers = \
+                lpad("\n", "\n".join(indent(' ' * 4,
+                    initializers
+                )))
+            name = self.java_name()
+            return """\
+public Builder(final %(name)s other) {%(initializers)s
+}""" % locals()
+
+        def _java_constructor_default(self):
+            return """\
+public Builder() {
+}""" % locals()
+
+        def _java_constructors(self):
+            return [
+                self._java_constructor_default(),
+                self._java_constructor_copy()
+            ]
+
         def _java_member_declarations(self):
             return [field.java_member_declaration(boxed=True, final=False)
                     for field in self.fields]
@@ -71,7 +100,7 @@ protected %(name)s _build(%(field_parameters)s) {
             methods.update(self._java_method__build())
             methods.update(self._java_method_setters())
             # methods.update(self._java_method_read_protocol()) # Must be after TBase
-            return [methods[key] for key in sorted(methods.iterkeys())]
+            return self._java_constructors() + [methods[key] for key in sorted(methods.iterkeys())]
 
         def __repr__(self):
             name = self.java_name()
