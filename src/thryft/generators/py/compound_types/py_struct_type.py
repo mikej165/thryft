@@ -27,24 +27,42 @@ def __init__(
 """ % locals()
 
     def _py_method_eq(self):
-        expressions = []
+        statements = []
         for field in self.fields:
-            expressions.append(
-                'self.' + field.py_getter_call() + \
-                ' == ' + \
-                'other.' + field.py_getter_call()
-            )
-        if len(expressions) == 0:
-            expressions.append('True')
-        expressions = ' and '.join(expressions)
+            field_getter_call = field.py_getter_call()
+            statements.append("""\
+if self.%(field_getter_call)s != other.%(field_getter_call)s:
+    return False""" % locals())
+        statements.append('return True')
+        statements = "\n".join(indent(' ' * 4, statements))
         return {'__eq__': """\
 def __eq__(self, other):
-    return %(expressions)s
+%(statements)s
 """ % locals()}
 
     def _py_method_getters(self):
         return dict((field.py_getter_name(), field.py_getter())
                     for field in self.fields)
+
+    def _py_method_hash(self):
+        if len(self.fields) == 0:
+            return {}
+        elif len(self.fields) == 1:
+            return {'__hash__': """\
+def __hash__(self):
+    return hash(self.%s)
+""" % self.fields[0].py_getter_name()}
+        return {'__hash__': """\
+def __hash__(self):
+    return hash((%s,))
+""" % ','.join(['self.' + field.py_getter_name()
+                for field in self.fields])}
+
+    def _py_method_ne(self):
+        return {'__ne__': '''\
+def __ne__(self, other):
+    return not self.__eq__(other)
+'''}
 
     def _py_method_read_protocol(self):
         field_read_protocols = \
@@ -114,6 +132,8 @@ def write(self, oprot):
         methods_dict = {}
         methods_dict.update(self._py_method_eq())
         methods_dict.update(self._py_method_getters())
+        methods_dict.update(self._py_method_hash())
+        methods_dict.update(self._py_method_ne())
         methods_dict.update(self._py_method_read_protocol())
         methods_dict.update(self._py_method_repr())
         methods_dict.update(self._py_method_write_protocol())
