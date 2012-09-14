@@ -48,7 +48,7 @@ class JavaMapType(MapType, JavaContainerType):
         value_write_protocol = \
             indent(' ' * 4,
                 self.value_type.java_write_protocol(
-                    "_iter%(depth)u.getKey()" % locals(),
+                    "_iter%(depth)u.getValue()" % locals(),
                     depth=depth + 1
                 )
             )
