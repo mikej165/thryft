@@ -5,9 +5,9 @@ from yutil import indent
 
 class PyMapType(MapType, PyContainerType):
     def py_check(self, value):
-        key_check = self.key_type.py_check('__key')
-        value_check = self.value_type.py_check('__value')
-        return "(isinstance(%(value)s, dict) and len(list(ifilterfalse(lambda __key, __value: %(key_check)s and %(value_check)s, %(value)s.iteritems()))) == 0)" % locals()
+        key_check = self.key_type.py_check('__item[0]')
+        value_check = self.value_type.py_check('__item[1]')
+        return "(isinstance(%(value)s, dict) and len(list(ifilterfalse(lambda __item: %(key_check)s and %(value_check)s, %(value)s.iteritems()))) == 0)" % locals()
 
     def py_defensive_copy(self, value):
         return "%(value)s.copy()" % locals()
@@ -30,7 +30,7 @@ class PyMapType(MapType, PyContainerType):
     def py_read_protocol(self):
         key_read_protocol = self.key_type.py_read_protocol()
         value_read_protocol = self.value_type.py_read_protocol()
-        return """dict([(%(key_read_protocol)s, %(value_read_protocol)s) for _ in xrange(iprot.readMapBegin()[1])] + (iprot.readMapEnd() is None and []))""" % locals()
+        return """dict([(%(key_read_protocol)s, %(value_read_protocol)s) for _ in xrange(iprot.readMapBegin()[2])] + (iprot.readMapEnd() is None and []))""" % locals()
 
     def py_write_protocol(self, value, depth=0):
         key_ttype_id = self.key_type.thrift_ttype_id()
