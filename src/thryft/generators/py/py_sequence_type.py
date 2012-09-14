@@ -24,7 +24,6 @@ class PySequenceType(PyContainerType):
         assert class_name_split[2] == 'type'
 
         element_ttype_id = self.element_type.thrift_ttype_id()
-        element_type_name = self.element_type.py_name()
         element_write_protocol = \
             indent(' ' * 4,
                 self.element_type.py_write_protocol(
