@@ -6,10 +6,11 @@ from yutil import quote, indent
 class PyField(Field, PyConstruct):
     def py_getter(self):
         name = self.py_name()
+        defensive_copy = self.type.py_defensive_copy('self.__' + name)
         return """\
 @property
 def %(name)s(self):
-    return self.__%(name)s
+    return %(defensive_copy)s
 """ % locals()
 
     def py_getter_call(self):
@@ -53,9 +54,11 @@ if %(name)s is None:
 if %(name)s is not None:
 %(type_check)s""" % locals()
 
+        defensive_copy = self.type.py_defensive_copy(name)
+
         return """\
 %(checks)s
-self.__%(name)s = %(name)s
+self.__%(name)s = %(defensive_copy)s
 """ % locals()
 
     def py_parameter(self):

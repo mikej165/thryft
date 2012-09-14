@@ -10,7 +10,7 @@ class PyMapType(MapType, PyContainerType):
         return "(isinstance(%(value)s, dict) and len(list(ifilterfalse(lambda __key, __value: %(key_check)s and %(value_check)s, %(value)s.iteritems()))) == 0)" % locals()
 
     def py_defensive_copy(self, value):
-        return "%(value)s.copy()"
+        return "%(value)s.copy()" % locals()
 
     def py_imports(self, caller_stack=None):
         if caller_stack is None:
