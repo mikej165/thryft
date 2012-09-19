@@ -91,6 +91,18 @@ if ifield_name == '%(name)s':
 %(read_protocol)s
 """ % locals()
 
+    def py_setter(self, return_type_name='void'):
+        setter_name = self.py_setter_name()
+        name = self.py_name()
+        return """\
+def %(setter_name)s(self, %(name)s):
+    self.__%(name)s = %(name)s
+    return self
+""" % locals()
+
+    def py_setter_name(self):
+        return 'set_' + self.py_name()
+
     def py_write_protocol(self, depth=0):
         id_ = self.id
         if id_ is None:

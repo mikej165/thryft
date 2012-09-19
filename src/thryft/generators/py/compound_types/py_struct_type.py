@@ -1,9 +1,93 @@
 from thryft.generator.compound_types.struct_type import StructType
 from thryft.generators.py.py_compound_type import PyCompoundType
-from yutil import indent, lpad
+from yutil import decamelize, indent, lpad
 
 
 class PyStructType(StructType, PyCompoundType):
+    class _PyBuilder(object):
+        def __init__(self, py_struct_type):
+            object.__init__(self)
+            self.__py_struct_type = py_struct_type
+
+        def __getattr__(self, attr):
+            return getattr(self.__py_struct_type, attr)
+
+        def _py_constructor(self):
+            assert len(self.fields) > 0
+            parameters = []
+            for field in self.fields:
+                if field.required:
+                    parameters.append(field.py_parameter())
+            for field in self.fields:
+                if not field.required:
+                    parameters.append(field.py_parameter())
+            parameters = ",\n".join(indent(' ' * 4, parameters))
+            initializers = \
+                "\n".join(indent(' ' * 4,
+                    ['self.__%s = %s' % (field.py_name(), field.py_name())
+                     for field in self.fields]
+                ))
+            return """\
+def __init__(
+    self,
+%(parameters)s
+):
+%(initializers)s
+""" % locals()
+
+        def _py_method_build(self):
+            kwds = \
+                ', '.join(["%s=self.__%s" % (field.py_name(), field.py_name())
+                           for field in self.fields])
+            name = self.py_name()
+            return {'_build': """\
+def build(self):
+    return %(name)s(%(kwds)s)
+""" % locals()}
+
+        def _py_method_update(self):
+            name = self.py_name()
+            other_name = decamelize(self.py_name())
+            object_updates = "\n".join(indent(' ' * 8,
+                          ["self.%s(%s.%s)" % (field.py_setter_name(), other_name, field.py_getter_call())
+                           for field in self.fields]
+                       ))
+            return {'update': """\
+def update(self, %(other_name)s):
+    if isinstance(%(other_name)s, %(name)s):
+%(object_updates)s
+    elif isinstance(%(other_name)s, dict):
+        for key, value in %(other_name)s.iteritems():
+            getattr(self, 'set_' + key)(value)
+    else:
+        raise TypeError(%(other_name)s)
+    return self
+""" % locals()}
+
+        def _py_method_setters(self):
+            return \
+                dict((
+                    field.py_setter_name(),
+                    field.py_setter(return_type_name='Builder')
+                )
+                for field in self.fields)
+
+        def _py_methods(self):
+            methods = {}
+            methods.update(self._py_method_build())
+            methods.update(self._py_method_setters())
+            methods.update(self._py_method_update())
+            return [self._py_constructor()] + [methods[key] for key in sorted(methods.iterkeys())]
+
+        def __repr__(self):
+            name = self.py_name()
+            sections = []
+            sections.append("\n\n".join(indent(' ' * 4, self._py_methods())))
+            sections = lpad("\n", "\n\n".join(sections))
+            return """\
+class Builder:%(sections)s
+""" % locals()
+
     def _py_constructor(self):
         assert len(self.fields) > 0
         parameters = []
@@ -25,6 +109,13 @@ def __init__(
 ):
 %(initializers)s
 """ % locals()
+
+    def _py_method_as_dict(self):
+        return {'as_dict': """\
+def as_dict(self):
+    return {%s}
+""" % ', '.join(["'%s': %s" % (field.py_name(), 'self.' + field.py_getter_call())
+                                 for field in self.fields])}
 
     def _py_method_eq(self):
         statements = []
@@ -88,6 +179,28 @@ def read(cls, iprot):
     return cls(**init_kwds)
 """ % locals()}
 
+    def _py_method_replace(self):
+        in_kwds = []
+        out_kwds = []
+        replacements = []
+        for field in self.fields:
+            field_getter_call = field.py_getter_call()
+            field_name = field.py_name()
+            in_kwds.append("%(field_name)s=None" % locals())
+            out_kwds.append("%(field_name)s=%(field_name)s" % locals())
+            replacements.append("""\
+if %(field_name)s is None:            
+    %(field_name)s = self.%(field_getter_call)s
+""" % locals())
+        in_kwds = ', '.join(in_kwds)
+        out_kwds = ', '.join(out_kwds)
+        replacements = "\n".join(indent(' ' * 4, replacements))
+        return {'replace': """\
+def replace(self, %(in_kwds)s):
+%(replacements)s
+    return self.__class__(%(out_kwds)s)
+""" % locals()}
+
     def _py_method_repr(self):
         name = self.name
 
@@ -130,11 +243,13 @@ def write(self, oprot):
 
     def _py_methods(self):
         methods_dict = {}
+        methods_dict.update(self._py_method_as_dict())
         methods_dict.update(self._py_method_eq())
         methods_dict.update(self._py_method_getters())
         methods_dict.update(self._py_method_hash())
         methods_dict.update(self._py_method_ne())
         methods_dict.update(self._py_method_read_protocol())
+        methods_dict.update(self._py_method_replace())
         methods_dict.update(self._py_method_repr())
         methods_dict.update(self._py_method_write_protocol())
         methods_list = \
@@ -165,8 +280,11 @@ def write(self, oprot):
         return "%(value)s.write(oprot)" % locals()
 
     def __repr__(self):
-        methods = indent(' ' * 4, "\n".join(self._py_methods()))
+        sections = []
+        sections.append(indent(' ' * 4, repr(self._PyBuilder(self))))
+        sections.append(indent(' ' * 4, "\n".join(self._py_methods())))
+        sections = "\n\n".join(sections)
         name = self.py_name()
         return """\
 class %(name)s(object):
-%(methods)s""" % locals()
+%(sections)s""" % locals()
