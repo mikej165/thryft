@@ -4,6 +4,25 @@ from yutil import quote, indent
 
 
 class PyField(Field, PyConstruct):
+    def py_check(self):
+        name = self.py_name()
+
+        type_check = self.type.py_check(name)
+        type_check = """\
+if not %(type_check)s:
+    raise TypeError(getattr(__builtin__, 'type')(%(name)s))""" % locals()
+
+        if self.required:
+            return """\
+if %(name)s is None:
+    raise ValueError('%(name)s is required')
+%(type_check)s""" % locals()
+        else:
+            type_check = indent(' ' * 4, type_check)
+            return """\
+if %(name)s is not None:
+%(type_check)s""" % locals()
+
     def py_getter(self):
         name = self.py_name()
         defensive_copy = self.type.py_defensive_copy('self.__' + name)
@@ -36,28 +55,11 @@ def %(name)s(self):
         return list(set(imports))
 
     def py_initializer(self):
+        check = self.py_check()
         name = self.py_name()
-
-        type_check = self.type.py_check(name)
-        type_check = """\
-if not %(type_check)s:
-    raise TypeError(getattr(__builtin__, 'type')(%(name)s))""" % locals()
-
-        if self.required:
-            checks = """\
-if %(name)s is None:
-    raise ValueError('%(name)s is required')
-%(type_check)s""" % locals()
-        else:
-            type_check = indent(' ' * 4, type_check)
-            checks = """\
-if %(name)s is not None:
-%(type_check)s""" % locals()
-
         defensive_copy = self.type.py_defensive_copy(name)
-
         return """\
-%(checks)s
+%(check)s
 self.__%(name)s = %(defensive_copy)s
 """ % locals()
 

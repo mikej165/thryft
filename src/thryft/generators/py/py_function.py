@@ -1,6 +1,6 @@
 from thryft.generator.function import Function
 from thryft.generators.py.py_construct import PyConstruct
-from yutil import indent
+from yutil import indent, pad
 
 
 class PyFunction(Function, PyConstruct):
@@ -20,6 +20,7 @@ class PyFunction(Function, PyConstruct):
                 parameters.append(parameter.py_parameter())
         return parameters
 
+
     def py_protected_abstract_definition(self):
         name = self.py_name()
         parameters = ', '.join(['self'] + self.py_parameters())
@@ -32,6 +33,12 @@ def _%(name)s(%(parameters)s):
         name = self.py_name()
 
         parameters = ', '.join(['self'] + self.py_parameters())
+
+        parameter_checks = \
+            pad("\n", "\n".join(indent(' ' * 4,
+                [parameter.py_check()
+                 for parameter in self.parameters]
+            )), "\n")
 
         call = ', '.join(["%s=%s" % (parameter.py_name(), parameter.py_name())
                           for parameter in self.parameters])
@@ -59,7 +66,7 @@ if not %(return_type_check)s:
             return_prefix = return_suffix = ''
 
         return """\
-def %(name)s(%(parameters)s):
+def %(name)s(%(parameters)s):%(parameter_checks)s
     %(return_prefix)sself._%(name)s(%(call)s)%(return_suffix)s
 """ % locals()
 
