@@ -19,7 +19,7 @@ class ThriftGenerator(Generator):
     from thryft.generators.thrift.thrift_service import ThriftService as Service
     from thryft.generators.thrift.thrift_typedef import ThriftTypedef as Typedef
 
-for __base_type_name in ('binary', 'double', 'float', 'i16', 'i32', 'i64', 'string'):
+for __base_type_name in ('binary', 'byte', 'double', 'float', 'i16', 'i32', 'i64', 'string'):
     __base_class_name = __base_type_name.capitalize() + 'Type'
     setattr(
         ThriftGenerator,

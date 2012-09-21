@@ -4,6 +4,7 @@ from thryft.generator.generator import Generator
  #@PydevCodeAnalysisIgnore
 class JavaGenerator(Generator):
     from thryft.generators.java.base_types.java_bool_type import JavaBoolType as BoolType
+    from thryft.generators.java.base_types.java_byte_type import JavaByteType as ByteType
     from thryft.generators.java.base_types.java_double_type import JavaDoubleType as DoubleType
     from thryft.generators.java.base_types.java_i16_type import JavaI16Type as I16Type
     from thryft.generators.java.base_types.java_i32_type import JavaI32Type as I32Type

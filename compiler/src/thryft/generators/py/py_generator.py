@@ -4,6 +4,7 @@ from thryft.generator.generator import Generator
  #@PydevCodeAnalysisIgnore
 class PyGenerator(Generator):
     from thryft.generators.py.base_types.py_bool_type import PyBoolType as BoolType
+    from thryft.generators.py.base_types.py_byte_type import PyByteType as ByteType
     from thryft.generators.py.base_types.py_double_type import PyDoubleType as DoubleType
     from thryft.generators.py.base_types.py_i16_type import PyI16Type as I16Type
     from thryft.generators.py.base_types.py_i32_type import PyI32Type as I32Type
