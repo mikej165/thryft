@@ -7,8 +7,11 @@ class JavaInclude(Include, JavaConstruct):
     def __init__(self, *args, **kwds):
         Include.__init__(self, *args, **kwds)
         java_class_qname = self.path.rsplit('.', 1)[0].replace('/', '.')
-        self.__java_package, java_class_name = java_class_qname.rsplit('.', 1)
+        java_package, java_class_name = java_class_qname.rsplit('.', 1)
         self.__java_class_name = upper_camelize(java_class_name)
+        if not java_package.split('.', 1) in ('com', 'org'):
+            java_package = 'com.' + java_package
+        self.__java_package = java_package
 
     def java_package(self):
         return self.__java_package
