@@ -1,5 +1,6 @@
 package org.thryft.protocol;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import org.apache.thrift.TException;
@@ -19,6 +20,9 @@ public abstract class AbstractProtocol extends TProtocol {
 
     protected AbstractProtocol(final TTransport trans) {
         super(trans);
+    }
+
+    public void flush() throws IOException {
     }
 
     @Override

@@ -97,6 +97,11 @@ public class JsonProtocol extends AbstractProtocol {
         }
 
         @Override
+        public byte readByte() throws TException {
+            return (byte) _readNode().asInt();
+        }
+
+        @Override
         public double readDouble() throws TException {
             return _readNode().asDouble();
         }
@@ -376,6 +381,7 @@ public class JsonProtocol extends AbstractProtocol {
         this(new JsonFactory().createJsonGenerator(writer));
     }
 
+    @Override
     public void flush() throws IOException {
         generator.flush();
     }
