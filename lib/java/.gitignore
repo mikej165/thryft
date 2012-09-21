@@ -1,0 +1,11 @@
+# Build directory
+target
+
+# Bytecode files
+*.class
+*.pyc
+
+# Package Files #
+*.jar
+*.war
+*.ear
