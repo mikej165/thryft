@@ -22,14 +22,19 @@ class Compiler(object):
         if len(include_dir_paths) == 0:
             include_dir_paths.append(os.getcwd())
         my_dir_path = os.path.dirname(os.path.realpath(__file__))
-        include_dir_paths.append(
-            os.path.abspath(os.path.join(my_dir_path, '..'))
-        )
+        lib_thrift_src_dir_path = \
+            os.path.abspath(os.path.join(
+                my_dir_path,
+                '..', '..', '..',
+                'lib', 'thrift', 'src'
+            ))
+        if not lib_thrift_src_dir_path in include_dir_paths:
+            include_dir_paths.append(lib_thrift_src_dir_path)
         self.__include_dir_paths = include_dir_paths
 
         native_type_qnames = []
         for _1, _2, file_names in \
-            os.walk(os.path.join(my_dir_path, 'generator', 'native_types')):
+            os.walk(os.path.join(lib_thrift_src_dir_path, 'thryft', 'generator', 'native_types')):
             for file_name in file_names:
                 file_base_name, file_ext = os.path.splitext(file_name)
                 if file_ext != '.thrift':
