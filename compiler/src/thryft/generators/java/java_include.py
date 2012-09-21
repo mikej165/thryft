@@ -9,8 +9,9 @@ class JavaInclude(Include, JavaConstruct):
         java_class_qname = self.path.rsplit('.', 1)[0].replace('/', '.')
         java_package, java_class_name = java_class_qname.rsplit('.', 1)
         self.__java_class_name = upper_camelize(java_class_name)
-        if not java_package.split('.', 1) in ('com', 'org'):
-            java_package = 'com.' + java_package
+        document_java_package = self.document.java_package()
+        if document_java_package is not None:
+            java_package = document_java_package
         self.__java_package = java_package
 
     def java_package(self):

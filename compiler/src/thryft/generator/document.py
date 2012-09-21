@@ -1,3 +1,4 @@
+from collections import OrderedDict
 from thryft.generator.construct import Construct
 from thryft.generator.include import Include
 from thryft.generator.namespace import Namespace
@@ -36,6 +37,11 @@ class Document(Construct):
                 if isinstance(header, Namespace)]
 
     @property
+    def namespaces_by_scope(self):
+        return OrderedDict([(namespace.scope, namespace)
+                            for namespace in self.namespaces])
+
+    @property
     def path(self):
         return self.__path
 
@@ -46,22 +52,16 @@ class Document(Construct):
             assert self.__class__.__name__.endswith('Document')
             language = decamelize(self.__class__.__name__[:-len('Document')]).split('_')[-1]
 
-            language_namespace = None
-            for namespace in self.namespaces:
-                if namespace.scope == language:
-                    language_namespace = namespace
+            namespaces_by_scope = self.namespaces_by_scope
+            for scope in (language, '*'):
+                language_namespace = namespaces_by_scope.get(scope)
+                if language_namespace is not None:
+                    out_dir_path = \
+                        os.path.join(
+                            out_dir_path,
+                            language_namespace.name.replace('.', os.path.sep)
+                        )
                     break
-            if language_namespace is None:
-                for namespace in self.namespaces:
-                    if namespace.scope == '*':
-                        language_namespace = namespace
-                        break
-            if language_namespace is not None:
-                out_dir_path = \
-                    os.path.join(
-                        out_dir_path,
-                        language_namespace.name.replace('.', os.path.sep)
-                    )
 
             return self._save(os.path.join(out_dir_path, self.name + '.' + language))
         else:

@@ -242,19 +242,20 @@ class Compiler(object):
         return [function]
 
     def _parse_include(self, tokens):
-        include = \
-            self.__generator.Include(
-                name=tokens[1],
-                parent=self.__scope_stack[-1],
-                path=tokens[1]
-            )
-
+        include_file_relpath = tokens[1]
         for include_dir_path in self.__include_dir_paths:
-            include_file_path = os.path.join(include_dir_path, include.path)
+            include_file_path = os.path.join(include_dir_path, include_file_relpath)
             if os.path.exists(include_file_path):
                 include_file_path = os.path.abspath(include_file_path)
-                self.compile((include_file_path,))
-                if not include.path.startswith('thryft/generator/native_types/'):
+                document = self.compile((include_file_path,))[0]
+                if not include_file_relpath.startswith('thryft/generator/native_types/'):
+                    include = \
+                        self.__generator.Include(
+                            document=document,
+                            name=include_file_relpath,
+                            parent=self.__scope_stack[-1],
+                            path=include_file_relpath
+                        )
                     return [include]
                 else:
                     return []

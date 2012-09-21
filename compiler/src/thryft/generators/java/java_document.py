@@ -5,11 +5,20 @@ import os.path
 
 
 class JavaDocument(Document, JavaConstruct):
+    def java_package(self):
+        namespaces_by_scope = self.namespaces_by_scope
+        for scope in ('java', '*'):
+            try:
+                return namespaces_by_scope[scope].name
+            except KeyError:
+                pass
+        return None
+
     def __repr__(self):
         headers = []
-        for namespace in self.namespaces:
-            if namespace.scope == '*' or namespace.scope == 'java':
-                headers.append('package ' + namespace.name + ';')
+        package = self.java_package()
+        if package is not None:
+            headers.append('package ' + package + ';')
         for include in self.includes:
             if len(headers) == 1 and headers[0].startswith('package'):
                 headers.append('')
