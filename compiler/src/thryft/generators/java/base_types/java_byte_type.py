@@ -3,6 +3,9 @@ from thryft.generators.java.java_base_type import JavaBaseType
 
 
 class JavaByteType(ByteType, JavaBaseType):
+    def java_default_value(self):
+        return '((byte)0)'
+
     def java_hash_code(self, value):
         return "((byte)%(value)s)" % locals()
 

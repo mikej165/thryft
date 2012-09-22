@@ -3,6 +3,9 @@ from thryft.generators.java.java_base_type import JavaBaseType
 
 
 class JavaI16Type(I16Type, JavaBaseType):
+    def java_default_value(self):
+        return '((short)0)'
+
     def java_hash_code(self, value):
         return "((int)%(value)s)" % locals()
 

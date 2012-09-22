@@ -7,12 +7,13 @@ import os.path
 
 
 class Document(Construct):
-    def __init__(self, path, definitions=None, headers=None):
+    def __init__(self, path, definitions=None, headers=None, **kwds):
         self.__path = os.path.abspath(path)
         Construct.__init__(
             self,
             name=os.path.splitext(os.path.split(self.__path)[1])[0],
-            parent=None
+            parent=None,
+            **kwds
         )
         self.__definitions = \
             definitions is not None and list(definitions) or []
@@ -81,3 +82,6 @@ class Document(Construct):
             print 'wrote', out_file_path
 
         return out_file_path
+
+    def _set_comment(self, comment):
+        self._comment = comment

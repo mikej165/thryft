@@ -4,14 +4,13 @@ from thryft.generator.construct import Construct
 class Function(Construct):
     def __init__(
         self,
-        name,
-        parent,
         oneway=False,
         parameters=None,
         return_type=None,
-        throws=None
+        throws=None,
+        **kwds
     ):
-        Construct.__init__(self, name=name, parent=parent)
+        Construct.__init__(self, **kwds)
         self.__oneway = oneway
         self.__parameters = parameters is not None and list(parameters) or []
         self.__throws = throws is not None and list(throws) or []

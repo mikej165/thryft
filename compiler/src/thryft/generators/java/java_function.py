@@ -24,3 +24,6 @@ public %(return_type)s %(name)s(%(parameters)s)%(throws)s;""" % locals()
 
     def java_name(self):
         return lower_camelize(self.name)
+
+    def __repr__(self):
+        return self.java_declaration()

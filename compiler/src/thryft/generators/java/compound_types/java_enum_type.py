@@ -1,11 +1,17 @@
 from thryft.generator.compound_types.enum_type import EnumType
-from thryft.generators.java.java_compound_type import JavaCompoundType
+from thryft.generators.java.java_type import JavaType
 from yutil import indent
 
 
-class JavaEnumType(EnumType, JavaCompoundType):
+class JavaEnumType(EnumType, JavaType):
+    def java_default_value(self):
+        return 'null'
+
     def java_hash_code(self, value):
         return "%(value)s.ordinal()" % locals()
+
+    def java_is_reference(self):
+        return True
 
     def java_read_protocol(self):
         name = self.java_name()
@@ -19,15 +25,15 @@ class JavaEnumType(EnumType, JavaCompoundType):
 
     def __repr__(self):
         name = self.java_name()
-        if len(self.fields) == 0:
+        if len(self.enumerators) == 0:
             return """\
 public enum %(name)s {
 }"""
-        for enumerator in self.fields:
+        for enumerator in self.enumerators:
             if enumerator.value is not None:
                 byValue_cases = []
                 enumerators = []
-                for enumerator in self.fields:
+                for enumerator in self.enumerators:
                     byValue_cases.append(
 "case %u: return %s;" % (enumerator.value, enumerator.name))
                     enumerators.append(
@@ -71,7 +77,7 @@ public enum %(name)s {
 
         enumerators = \
             ",\n".join(indent(' ' * 4,
-                [enumerator.name for enumerator in self.fields]
+                [enumerator.name for enumerator in self.enumerators]
             ))
         return """public enum %(name)s {
 %(enumerators)s;

@@ -25,17 +25,17 @@ class PyEnumType(EnumType, PyCompoundType):
         enumerators = []
         enumerator_placeholders = []
         value_of_statements = []
-        if len(self.fields) > 0:
+        if len(self.enumerators) > 0:
             enumerator_values = []
-            for enumerator in self.fields:
+            for enumerator in self.enumerators:
                 if enumerator.value is not None:
-                    for enumerator in self.fields:
+                    for enumerator in self.enumerators:
                         assert enumerator.value is not None
                         enumerator_values.append(enumerator.value)
             if len(enumerator_values) == 0:
-                enumerator_values = [enumerator.id for enumerator in self.fields]
+                enumerator_values = [enumerator.id for enumerator in self.enumerators]
 
-            for enumerator, enumerator_value in zip(self.fields, enumerator_values):
+            for enumerator, enumerator_value in zip(self.enumerators, enumerator_values):
                 enumerator_name = enumerator.name
                 enumerator_placeholders.append("%(enumerator_name)s = None" % locals())
                 enumerators.append("%(name)s.%(enumerator_name)s = %(name)s('%(enumerator_name)s', %(enumerator_value)u)" % locals())

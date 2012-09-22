@@ -1,6 +1,7 @@
 from thryft.compiler import Compiler
 from yutil import camelize, rpad, upper_camelize
 import argparse
+import logging
 import os.path
 import sys
 
@@ -12,6 +13,11 @@ ROOT_DIR_PATH = os.path.normpath(os.path.join(MY_DIR_PATH, '..'))
 def main():
     # Parse arguments
     argument_parser = argparse.ArgumentParser()
+    argument_parser.add_argument(
+        '-debug',
+        help='Parse debug trace to stdout',
+        action='store_true',
+    )
     argument_parser.add_argument(
         '-gen',
         help='language[:key1=val1[,key2,[key3=val3]]]',
@@ -32,6 +38,12 @@ def main():
         nargs='*'
     )
     args = argument_parser.parse_args()
+
+    if args.debug:
+        logging.basicConfig(
+            format='%(asctime)s:%(module)s:%(lineno)s:%(name)s:%(levelname)s: %(message)s', #@IgnorePep8
+            level=logging.DEBUG
+        )
 
     gen = args.gen.split(':', 1)
     gen_kwds = {}

@@ -3,4 +3,5 @@ from thryft.generators.py.py_base_type import PyBaseType
 
 
 class PyByteType(ByteType, PyBaseType):
-    pass
+    def py_check(self, value):
+        return "isinstance(%(value)s, int)" % locals()

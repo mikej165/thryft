@@ -2,4 +2,6 @@ from thryft.generator.compound_type import CompoundType
 
 
 class ExceptionType(CompoundType): #@ReservedAssignment
-    pass
+    @property
+    def fields(self):
+        return self._fields

@@ -4,14 +4,13 @@ from thryft.generator.construct import Construct
 class Field(Construct):
     def __init__(
         self,
-        name,
-        parent,
-        type,
-        id=None,
+        type, #@ReservedAssignment
+        id=None, #@ReservedAssignment
         required=True,
-        value=None
+        value=None,
+        **kwds
     ):
-        Construct.__init__(self, name=name, parent=parent)
+        Construct.__init__(self, **kwds)
         self.__id = id
         self.__type = type
         self.__required = required

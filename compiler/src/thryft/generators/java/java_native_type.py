@@ -10,3 +10,8 @@ class JavaNativeType(JavaType):
 
     def java_is_reference(self):
         return True
+
+
+
+    def java_write_protocol(self):
+        pass

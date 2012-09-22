@@ -3,9 +3,11 @@ class Generator(object):
     from thryft.generator.base_types.bool_type import BoolType
     from thryft.generator.base_types.byte_type import ByteType
     from thryft.generator.base_types.double_type import DoubleType
+    from thryft.generator.base_types.i16_type import I16Type
     from thryft.generator.base_types.i32_type import I32Type
     from thryft.generator.base_types.i64_type import I64Type
     from thryft.generator.base_types.string_type import StringType
+    from thryft.generator.comment import Comment
     from thryft.generator.compound_types.enum_type import EnumType
     from thryft.generator.compound_types.exception_type import ExceptionType
     from thryft.generator.compound_types.struct_type import StructType

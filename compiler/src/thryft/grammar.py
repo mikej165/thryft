@@ -37,6 +37,7 @@ class Grammar(object):
             return lambda tokens: wrapped_parse_action(tokens)
 
         # Basic definitions
+        self.comment = cppStyleComment ^ cStyleComment ^ pythonStyleComment
         string_literal = QuotedString('\'') ^ QuotedString('"')
         identifier = Word(alphas, alphanums + '._')
         list_separator = Literal(',') | Literal(';')
@@ -106,6 +107,7 @@ class Grammar(object):
 
         # Field
         self.field = \
+            ZeroOrMore(self.comment) + \
             Optional(int_constant + Literal(':').suppress()) + \
             Optional(
                 (Keyword('required') ^ Keyword('optional')).\
@@ -118,6 +120,7 @@ class Grammar(object):
 
         # Functions
         self.function_declarator = \
+            ZeroOrMore(self.comment) + \
             Optional(Keyword('oneway')) + \
             (Keyword('void') ^ field_type) + \
             identifier
@@ -137,24 +140,32 @@ class Grammar(object):
         # Definition
         # Const
         self.const = \
+            ZeroOrMore(self.comment) + \
             Keyword('const') + field_type + identifier + \
                 Literal('=').suppress() + const_value + \
                 Optional(list_separator).suppress()
         # Typedef
         self.typedef = \
+            ZeroOrMore(self.comment) + \
             Keyword('typedef') + (self.base_type ^ container_type) + identifier
         # Enum
-        self.enum_declarator = Keyword('enum') + identifier
+        self.enum_declarator = \
+            ZeroOrMore(self.comment) + \
+            Keyword('enum') + identifier
+        self.enumerator = \
+            ZeroOrMore(self.comment) + \
+                identifier + \
+                    Optional(Literal('=').suppress() + int_constant)
         self.enum = \
             self.enum_declarator + Literal('{').suppress() + \
-                Optional(Group(delimitedList(
-                    Group(identifier + \
-                        Optional(Literal('=').suppress() + int_constant)),
-                    list_separator
-                ))) + \
+                Group(ZeroOrMore(
+                    self.enumerator + Optional(list_separator).suppress()
+                )) + \
             Literal('}').suppress()
         # Struct
-        self.struct_declarator = Keyword('struct') + identifier
+        self.struct_declarator = \
+            ZeroOrMore(self.comment) + \
+            Keyword('struct') + identifier
         self.struct = \
             self.struct_declarator + Literal('{').suppress() + \
                 Group(ZeroOrMore(
@@ -162,7 +173,9 @@ class Grammar(object):
                 )) + \
                 Literal('}').suppress()
         # Exception
-        self.exception_declarator = Keyword('exception') + identifier
+        self.exception_declarator = \
+            ZeroOrMore(self.comment) + \
+            Keyword('exception') + identifier
         self.exception = \
             self.exception_declarator + Literal('{').suppress() + \
                 Group(ZeroOrMore(
@@ -171,6 +184,7 @@ class Grammar(object):
             Literal('}').suppress()
         # Service
         self.service_declarator = \
+            ZeroOrMore(self.comment) + \
             Keyword('service') + identifier + \
                 Optional(Keyword('extends') + identifier)
         self.service = \
@@ -189,7 +203,6 @@ class Grammar(object):
 
         # Document
         self.document = \
-            Group(ZeroOrMore(header)) + Group(ZeroOrMore(definition))
-        self.document.ignore(cStyleComment)
-        self.document.ignore(cppStyleComment)
-        self.document.ignore(pythonStyleComment)
+            ZeroOrMore(self.comment) + \
+            Group(ZeroOrMore(header)) + \
+            Group(ZeroOrMore(definition))

@@ -13,7 +13,12 @@ class PyStructType(StructType, PyCompoundType):
             return getattr(self.__py_struct_type, attr)
 
         def _py_constructor(self):
-            assert len(self.fields) > 0
+            if len(self.fields) == 0:
+                return '''\
+def __init__(self):
+    pass
+'''
+
             parameters = []
             for field in self.fields:
                 if field.required:

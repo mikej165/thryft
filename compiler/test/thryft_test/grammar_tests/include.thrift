@@ -1,1 +1,1 @@
-include "somefile.thrift"
+include "const.thrift"

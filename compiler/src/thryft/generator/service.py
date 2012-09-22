@@ -2,8 +2,8 @@ from thryft.generator.construct import Construct
 
 
 class Service(Construct):
-    def __init__(self, name, parent, extends=None, functions=None):
-        Construct.__init__(self, name=name, parent=parent)
+    def __init__(self, extends=None, functions=None, **kwds):
+        Construct.__init__(self, **kwds)
         self.__extends = extends
         self.__functions = functions is not None and list(functions) or []
 

@@ -2,8 +2,8 @@ from thryft.generator.construct import Construct
 
 
 class Include(Construct):
-    def __init__(self, document, name, parent, path):
-        Construct.__init__(self, name=name, parent=parent)
+    def __init__(self, document, path, **kwds):
+        Construct.__init__(self, **kwds)
         self.__document = document
         self.__path = path
 

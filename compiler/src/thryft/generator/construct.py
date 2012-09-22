@@ -1,7 +1,12 @@
 class Construct(object):
-    def __init__(self, name, parent):
+    def __init__(self, name, parent, comment=None):
+        self._comment = comment
         self.__name = name
         self.__parent = parent
+
+    @property
+    def comment(self):
+        return self._comment
 
     @property
     def name(self):

@@ -2,13 +2,9 @@ from thryft.generator.type import Type
 
 
 class CompoundType(Type):
-    def __init__(self, name, parent, fields=None):
-        Type.__init__(self, name=name, parent=parent)
-        self.__fields = fields is not None and list(fields) or []
-
-    @property
-    def fields(self):
-        return self.__fields
+    def __init__(self, fields=None, **kwds):
+        Type.__init__(self, **kwds)
+        self._fields = fields is not None and list(fields) or []
 
     @property
     def qname(self):

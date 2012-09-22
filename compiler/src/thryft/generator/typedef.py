@@ -2,8 +2,8 @@ from thryft.generator.construct import Construct
 
 
 class Typedef(Construct):
-    def __init__(self, name, parent, type): #@ReservedAssignment
-        Construct.__init__(self, name=name, parent=parent)
+    def __init__(self, type, **kwds): #@ReservedAssignment
+        Construct.__init__(self, **kwds)
         self.__type = type
 
     @property

@@ -14,3 +14,4 @@ class JavaDateTimeType(DateTimeType, JavaNativeType):
 
     def java_write_protocol(self, value, depth=0):
         return "oprot.writeI64(%(value)s.getMillis());" % locals()
+

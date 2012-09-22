@@ -11,6 +11,7 @@ class ThriftGenerator(Generator):
     from thryft.generators.thrift.container_types.thrift_list_type import ThriftListType as ListType
     from thryft.generators.thrift.container_types.thrift_map_type import ThriftMapType as MapType
     from thryft.generators.thrift.container_types.thrift_set_type import ThriftSetType as SetType
+    from thryft.generators.thrift.thrift_comment import ThriftComment as Comment
     from thryft.generators.thrift.thrift_document import ThriftDocument as Document
     from thryft.generators.thrift.thrift_field import ThriftField as Field
     from thryft.generators.thrift.thrift_function import ThriftFunction as Function
@@ -19,7 +20,7 @@ class ThriftGenerator(Generator):
     from thryft.generators.thrift.thrift_service import ThriftService as Service
     from thryft.generators.thrift.thrift_typedef import ThriftTypedef as Typedef
 
-for __base_type_name in ('binary', 'byte', 'double', 'float', 'i16', 'i32', 'i64', 'string'):
+for __base_type_name in ('byte', 'double', 'i16', 'i32', 'i64', 'string'):
     __base_class_name = __base_type_name.capitalize() + 'Type'
     setattr(
         ThriftGenerator,

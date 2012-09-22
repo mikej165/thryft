@@ -1,6 +1,6 @@
 from pyparsing import ParseException
-from thryft.grammar import Grammar
 from thryft.generator.type import Type
+from thryft.grammar import Grammar
 from yutil import upper_camelize
 import logging
 import os.path
@@ -85,9 +85,70 @@ class Compiler(object):
 
         return documents
 
+    def __merge_comments(self, tokens):
+        comments = []
+        while isinstance(tokens[0], self.__generator.Comment):
+            comment = tokens.pop(0)
+            if len(comments) > 0:
+                assert comment.__class__ is comments[0].__class__
+                assert comment.parent is comments[0].parent
+            comments.append(comment)
+        if len(comments) > 0:
+            return self.__generator.Comment(
+                       parent=comments[0].parent,
+                       text="\n".join([comment.text
+                                       for comment in comments]),
+                   )
+
+    def _parse_comment(self, tokens):
+        text = tokens[0]
+        if text.startswith('/*'):
+            text = text[2:-2]
+            lines = []
+            for line in text.splitlines():
+                if line.lstrip().startswith('*'):
+                    line = line.lstrip().lstrip('*')
+                line = line.rstrip()
+                if len(line) > 0:
+                    lines.append(line)
+            text = "\n".join(lines)
+        elif text.startswith('//'):
+            text = text[2:].strip()
+        elif text.startswith('#'):
+            text = text[2:].strip()
+        else:
+            raise NotImplementedError(text)
+
+        comment = \
+            self.__generator.Comment(
+                parent=self.__scope_stack[-1],
+                text=text
+            )
+        return [comment]
+
+    def __parse_compound_type(self, keyword, tokens):
+        compound_type = tokens[0]
+        self.__scope_stack.pop(-1)
+
+        if len(tokens) > 1:
+            for field in tokens[1]:
+                if keyword == 'enum':
+                    compound_type.enumerators.append(field)
+                else:
+                    compound_type.fields.append(field)
+
+        if keyword != 'struct' or \
+           not compound_type.qname in self.__native_type_qnames:
+            return [compound_type]
+        else:
+            return []
+
     def __parse_compound_type_declarator(self, keyword, tokens):
+        comment = self.__merge_comments(tokens)
+
         compound_type = \
             getattr(self.__generator, keyword.capitalize() + 'Type')(
+                comment=comment,
                 name=tokens[1],
                 parent=self.__scope_stack[-1]
             )
@@ -101,23 +162,14 @@ class Compiler(object):
 
         return [compound_type]
 
-    def __parse_compound_type(self, keyword, tokens):
-        compound_type = tokens[0]
-        self.__scope_stack.pop(-1)
-
-        if len(tokens) > 1:
-            for field in tokens[1]:
-                compound_type.fields.append(field)
-
-        if keyword != 'struct' or \
-           not compound_type.qname in self.__native_type_qnames:
-            return [compound_type]
-        else:
-            return []
-
     def _parse_const(self, tokens):
+        comment = self.__merge_comments(tokens)
+
+        print tokens
+
         const = \
             self.__generator.Const(
+                comment=comment,
                 name=tokens[2],
                 parent=self.__scope_stack[-1],
                 type=self.__resolve_type(tokens[1]),
@@ -126,60 +178,71 @@ class Compiler(object):
         return [const]
 
     def _parse_document(self, tokens):
+        comment = self.__merge_comments(tokens)
         document = self.__scope_stack[-1]
+        document._set_comment(comment)
         document.definitions.extend(tokens[1])
         document.headers.extend(tokens[0])
         return [document]
 
+    def _parse_enum(self, tokens):
+        enum = self.__parse_compound_type('enum', tokens)[0]
+        enumerators = list(enum.enumerators)
+        del enum.enumerators[::]
+        for enumerator_i, enumerator in enumerate(enumerators):
+            enum.enumerators.append(
+                enumerator.__class__(
+                    id=enumerator_i,
+                    name=enumerator.name,
+                    parent=enumerator.parent,
+                    type=enumerator.type,
+                    value=enumerator.value
+                )
+            )
+        return [enum]
+
     def _parse_enum_declarator(self, tokens):
         return self.__parse_compound_type_declarator('enum', tokens)
 
-    def _parse_enum(self, tokens):
-        enum = tokens[0]
-        self.__scope_stack.pop(-1)
+    def _parse_enumerator(self, tokens):
+        comment = self.__merge_comments(tokens)
 
         if len(tokens) > 1:
-            type_ = self.__resolve_type('i32')
-            for token_i, token in enumerate(tokens[1]):
-                if len(token) > 1:
-                    value = token[1]
-                else:
-                    value = None
-                enum.fields.append(
-                    self.__generator.Field(
-                        id=token_i,
-                        name=token[0],
-                        parent=enum,
-                        type=type_,
-                        value=value
-                    )
-                )
-
-        self.__type_map[enum.qname] = enum
-
-        return [enum]
-
-    def _parse_exception_declarator(self, tokens):
-        return self.__parse_compound_type_declarator('exception', tokens)
+            value = tokens[1]
+        else:
+            value = None
+        enumerator = \
+            self.__generator.Field(
+                comment=comment,
+                name=tokens[0],
+                parent=self.__scope_stack[-1],
+                type=self.__resolve_type('i32'),
+                value=value
+            )
+        return [enumerator]
 
     def _parse_exception(self, tokens):
         return self.__parse_compound_type('exception', tokens)
 
+    def _parse_exception_declarator(self, tokens):
+        return self.__parse_compound_type_declarator('exception', tokens)
+
     def _parse_field(self, tokens):
-        tokens_copy = list(tokens)
-        if isinstance(tokens_copy[0], int) and \
-           not isinstance(tokens_copy[0], bool):
-            id = tokens_copy.pop(0) #@ReservedAssignment
+        comment = self.__merge_comments(tokens)
+
+        if isinstance(tokens[0], int) and \
+           not isinstance(tokens[0], bool):
+            id = tokens.pop(0) #@ReservedAssignment
         else:
             id = None #@ReservedAssignment
-        if isinstance(tokens_copy[0], bool):
-            required = tokens_copy.pop(0)
+        if isinstance(tokens[0], bool):
+            required = tokens.pop(0)
         else:
             required = True
-        type = self.__resolve_type(tokens_copy.pop(0)) #@ReservedAssignment
-        name = tokens_copy.pop(0)
-        if len(tokens_copy) > 0:
-            value = tokens_copy.pop(0)
+        type = self.__resolve_type(tokens.pop(0)) #@ReservedAssignment
+        name = tokens.pop(0)
+        if len(tokens) > 0:
+            value = tokens.pop(0)
         else:
             value = None
 
@@ -187,6 +250,7 @@ class Compiler(object):
 
         field = \
             self.__generator.Field(
+                comment=comment,
                 id=id,
                 name=name,
                 parent=parent,
@@ -197,26 +261,41 @@ class Compiler(object):
 
         return [field]
 
+    def _parse_function(self, tokens):
+        function = tokens.pop(0)
+        self.__scope_stack.pop(-1)
+
+        while len(tokens) > 0:
+            if tokens[0] == 'throws':
+                tokens.pop(0)
+                function.throws.extend(tokens.pop(0))
+            else:
+                function.parameters.extend(tokens.pop(0))
+
+        return [function]
+
     def _parse_function_declarator(self, tokens):
-        tokens_copy = list(tokens)
-        if tokens_copy[0] == 'oneway':
-            tokens_copy.pop(0)
+        comment = self.__merge_comments(tokens)
+
+        if tokens[0] == 'oneway':
+            tokens.pop(0)
             oneway = True
         else:
             oneway = False
 
-        return_type_name = tokens_copy.pop(0)
+        return_type_name = tokens.pop(0)
         if return_type_name == 'void':
             return_type = None
         else:
             return_type = self.__resolve_type(return_type_name)
 
-        name = tokens_copy.pop(0)
+        name = tokens.pop(0)
 
         parent = self.__scope_stack[-1]
 
         function = \
             self.__generator.Function(
+                comment=comment,
                 name=name,
                 oneway=oneway,
                 parent=parent,
@@ -227,23 +306,15 @@ class Compiler(object):
 
         return [function]
 
-    def _parse_function(self, tokens):
-        tokens_copy = list(tokens)
-        function = tokens_copy.pop(0)
-        self.__scope_stack.pop(-1)
-
-        while len(tokens_copy) > 0:
-            if tokens_copy[0] == 'throws':
-                tokens_copy.pop(0)
-                function.throws.extend(tokens_copy.pop(0))
-            else:
-                function.parameters.extend(tokens_copy.pop(0))
-
-        return [function]
-
     def _parse_include(self, tokens):
+        include_dir_paths = list(self.__include_dir_paths)
+        for scope in reversed(self.__scope_stack):
+            if isinstance(scope, self.__generator.Document):
+                include_dir_paths.append(os.path.dirname(scope.path))
+                break
+
         include_file_relpath = tokens[1]
-        for include_dir_path in self.__include_dir_paths:
+        for include_dir_path in include_dir_paths:
             include_file_path = os.path.join(include_dir_path, include_file_relpath)
             if os.path.exists(include_file_path):
                 include_file_path = os.path.abspath(include_file_path)
@@ -259,7 +330,7 @@ class Compiler(object):
                     return [include]
                 else:
                     return []
-        raise RuntimeError("include path not found: %s" % include.path)
+        raise RuntimeError("include path not found: %s" % include_file_relpath)
 
     def _parse_list_type(self, tokens):
         return self.__parse_sequence_type('list', tokens)
@@ -296,18 +367,6 @@ class Compiler(object):
             )
         return [sequence_type]
 
-    def _parse_service_declarator(self, tokens):
-        service = \
-            self.__generator.Service(
-                extends=len(tokens) > 2 and tokens[3] or None,
-                name=tokens[1],
-                parent=self.__scope_stack[-1]
-            )
-
-        self.__scope_stack.append(service)
-
-        return [service]
-
     def _parse_service(self, tokens):
         service = tokens[0]
         self.__scope_stack.pop(-1)
@@ -317,18 +376,36 @@ class Compiler(object):
 
         return [service]
 
+    def _parse_service_declarator(self, tokens):
+        comment = self.__merge_comments(tokens)
+
+        service = \
+            self.__generator.Service(
+                comment=comment,
+                extends=len(tokens) > 2 and tokens[3] or None,
+                name=tokens[1],
+                parent=self.__scope_stack[-1]
+            )
+
+        self.__scope_stack.append(service)
+
+        return [service]
+
     def _parse_set_type(self, tokens):
         return self.__parse_sequence_type('set', tokens)
-
-    def _parse_struct_declarator(self, tokens):
-        return self.__parse_compound_type_declarator('struct', tokens)
 
     def _parse_struct(self, tokens):
         return self.__parse_compound_type('struct', tokens)
 
+    def _parse_struct_declarator(self, tokens):
+        return self.__parse_compound_type_declarator('struct', tokens)
+
     def _parse_typedef(self, tokens):
+        comment = self.__merge_comments(tokens)
+
         typedef = \
             self.__generator.Typedef(
+                comment=comment,
                 name=tokens[2],
                 parent=self.__scope_stack[-1],
                 type=self.__resolve_type(tokens[1])
@@ -359,12 +436,13 @@ class Compiler(object):
 
     @staticmethod
     def _wrap_parse_action(parse_action):
-        def wrapped_parse_action(tokens):
+        def wrapped_parse_action(in_tokens):
+            in_tokens_copy = list(in_tokens)
             try:
-                out_tokens = parse_action(tokens)
+                out_tokens = parse_action(in_tokens_copy)
                 logging.debug(
                     "parsed %s with %s -> %s",
-                    tokens,
+                    in_tokens,
                     parse_action,
                     out_tokens
                 )
@@ -372,9 +450,9 @@ class Compiler(object):
             except:
                 logging.error(
                     "error parsing %s with %s",
-                    tokens,
+                    in_tokens,
                     parse_action,
                     exc_info=True
                 )
                 raise
-        return lambda tokens: wrapped_parse_action(tokens)
+        return lambda in_tokens: wrapped_parse_action(in_tokens)

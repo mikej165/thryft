@@ -1,15 +1,18 @@
 from thryft.generator.compound_types.enum_type import EnumType
-from yutil import pad, indent
+from yutil import pad, indent, rpad
 
 
 class ThriftEnumType(EnumType):
     def __repr__(self):
-        return "enum %s {%s}" % (
+        return "%senum %s {%s}" % (
+            self.comment is not None and rpad(self.comment.text, "\n") or '',
             self.name,
-            pad("\n", indent(' ' * 4, ",\n".join(
-                [enumerator.value is not None and \
-                    "%s = %s" % (enumerator.name, enumerator.value) or \
-                 enumerator.name
-                 for enumerator in self.fields]
+            pad("\n", indent(' ' * 4, ",\n".join([
+                "%s%s%s" % (
+                    enumerator.comment is not None and rpad(repr(enumerator.comment), "\n") or '',
+                    enumerator.name,
+                    enumerator.value is not None and " = %s" % enumerator.value or '',
+                )
+                for enumerator in self.enumerators]
             )), "\n")
         )
