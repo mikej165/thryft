@@ -70,7 +70,6 @@ def main():
             'compound_type.py',
             'construct.py',
             'container_type.py',
-            'native_type.py',
             'type.py',
         )
 
