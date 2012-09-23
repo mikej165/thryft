@@ -2,7 +2,7 @@ from decimal import Decimal
 from yogento.client.dependencies import json as json_module
 
 
-class YogentoJsonProtocol(object):
+class JsonProtocol(object):
     def __init__(self, json=None):
         object.__init__(self)
 
