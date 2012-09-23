@@ -1,26 +1,23 @@
-package thryft.native;
+package thryft.util;
 
 @SuppressWarnings("serial")
-public class DateTime implements org.apache.thrift.TBase<DateTime, org.apache.thrift.TFieldIdEnum> {
+public class Date implements org.apache.thrift.TBase<Date, org.apache.thrift.TFieldIdEnum> {
     public static class Builder {
         public Builder() {
         }
 
-        public Builder(final DateTime other) {
+        public Builder(final Date other) {
             this.year = other.getYear();
             this.month = other.getMonth();
             this.day = other.getDay();
-            this.hour = other.getHour();
-            this.minute = other.getMinute();
-            this.second = other.getSecond();
         }
 
-        protected DateTime _build(final short year, final byte month, final byte day, final byte hour, final byte minute, final byte second) {
-            return new DateTime(year, month, day, hour, minute, second);
+        protected Date _build(final short year, final byte month, final byte day) {
+            return new Date(year, month, day);
         }
 
-        public DateTime build() {
-            return _build(year, month, day, hour, minute, second);
+        public Date build() {
+            return _build(year, month, day);
         }
 
         public Builder setDay(final byte day) {
@@ -28,23 +25,8 @@ public class DateTime implements org.apache.thrift.TBase<DateTime, org.apache.th
             return this;
         }
 
-        public Builder setHour(final byte hour) {
-            this.hour = hour;
-            return this;
-        }
-
-        public Builder setMinute(final byte minute) {
-            this.minute = minute;
-            return this;
-        }
-
         public Builder setMonth(final byte month) {
             this.month = month;
-            return this;
-        }
-
-        public Builder setSecond(final byte second) {
-            this.second = second;
             return this;
         }
 
@@ -56,22 +38,16 @@ public class DateTime implements org.apache.thrift.TBase<DateTime, org.apache.th
         private Short year;
         private Byte month;
         private Byte day;
-        private Byte hour;
-        private Byte minute;
-        private Byte second;
     }
 
-    public DateTime(final DateTime other) {
-        this(other.getYear(), other.getMonth(), other.getDay(), other.getHour(), other.getMinute(), other.getSecond());
+    public Date(final Date other) {
+        this(other.getYear(), other.getMonth(), other.getDay());
     }
 
-    public DateTime(final org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public Date(final org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
         short year = ((short)0);
         byte month = ((byte)0);
         byte day = ((byte)0);
-        byte hour = ((byte)0);
-        byte minute = ((byte)0);
-        byte second = ((byte)0);
 
         iprot.readStructBegin();
         while (true) {
@@ -93,21 +69,6 @@ public class DateTime implements org.apache.thrift.TBase<DateTime, org.apache.th
                     day = iprot.readByte();
                 } catch (NumberFormatException e) {
                 }
-            } else if (ifield.name.equals("hour")) {
-                try {
-                    hour = iprot.readByte();
-                } catch (NumberFormatException e) {
-                }
-            } else if (ifield.name.equals("minute")) {
-                try {
-                    minute = iprot.readByte();
-                } catch (NumberFormatException e) {
-                }
-            } else if (ifield.name.equals("second")) {
-                try {
-                    second = iprot.readByte();
-                } catch (NumberFormatException e) {
-                }
             }
             iprot.readFieldEnd();
         }
@@ -116,27 +77,18 @@ public class DateTime implements org.apache.thrift.TBase<DateTime, org.apache.th
         this.year = year;
         this.month = month;
         this.day = day;
-        this.hour = hour;
-        this.minute = minute;
-        this.second = second;
     }
 
-    public DateTime(final short year, final byte month, final byte day, final byte hour, final byte minute, final byte second) {
+    public Date(final short year, final byte month, final byte day) {
         this.year = year;
         this.month = month;
         this.day = day;
-        this.hour = hour;
-        this.minute = minute;
-        this.second = second;
     }
 
-    public DateTime(final Short year, final Byte month, final Byte day, final Byte hour, final Byte minute, final Byte second) {
+    public Date(final Short year, final Byte month, final Byte day) {
         this.year = year;
         this.month = month;
         this.day = day;
-        this.hour = hour;
-        this.minute = minute;
-        this.second = second;
     }
 
     @Override
@@ -145,12 +97,12 @@ public class DateTime implements org.apache.thrift.TBase<DateTime, org.apache.th
     }
 
     @Override
-    public int compareTo(final DateTime other) {
+    public int compareTo(final Date other) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public org.apache.thrift.TBase<DateTime, org.apache.thrift.TFieldIdEnum> deepCopy() {
+    public org.apache.thrift.TBase<Date, org.apache.thrift.TFieldIdEnum> deepCopy() {
         throw new UnsupportedOperationException();
     }
 
@@ -158,18 +110,15 @@ public class DateTime implements org.apache.thrift.TBase<DateTime, org.apache.th
     public boolean equals(final Object otherObject) {
         if (otherObject == this) {
             return true;
-        } else if (!(otherObject instanceof DateTime)) {
+        } else if (!(otherObject instanceof Date)) {
             return false;
         }
 
-        final DateTime other = (DateTime)otherObject;
+        final Date other = (Date)otherObject;
         return
             getYear() == other.getYear() &&
             getMonth() == other.getMonth() &&
-            getDay() == other.getDay() &&
-            getHour() == other.getHour() &&
-            getMinute() == other.getMinute() &&
-            getSecond() == other.getSecond();
+            getDay() == other.getDay();
     }
 
     @Override
@@ -184,12 +133,6 @@ public class DateTime implements org.apache.thrift.TBase<DateTime, org.apache.th
             return getMonth();
         } else if (fieldName.equals("day")) {
             return getDay();
-        } else if (fieldName.equals("hour")) {
-            return getHour();
-        } else if (fieldName.equals("minute")) {
-            return getMinute();
-        } else if (fieldName.equals("second")) {
-            return getSecond();
         }
         return null;
     }
@@ -203,20 +146,8 @@ public class DateTime implements org.apache.thrift.TBase<DateTime, org.apache.th
         throw new UnsupportedOperationException();
     }
 
-    public final byte getHour() {
-        return hour;
-    }
-
-    public final byte getMinute() {
-        return minute;
-    }
-
     public final byte getMonth() {
         return month;
-    }
-
-    public final byte getSecond() {
-        return second;
     }
 
     public final short getYear() {
@@ -229,9 +160,6 @@ public class DateTime implements org.apache.thrift.TBase<DateTime, org.apache.th
         hashCode = 31 * hashCode + ((int)getYear());
         hashCode = 31 * hashCode + ((byte)getMonth());
         hashCode = 31 * hashCode + ((byte)getDay());
-        hashCode = 31 * hashCode + ((byte)getHour());
-        hashCode = 31 * hashCode + ((byte)getMinute());
-        hashCode = 31 * hashCode + ((byte)getSecond());
         return hashCode;
     }
 
@@ -256,15 +184,12 @@ public class DateTime implements org.apache.thrift.TBase<DateTime, org.apache.th
         helper.add("year", getYear());
         helper.add("month", getMonth());
         helper.add("day", getDay());
-        helper.add("hour", getHour());
-        helper.add("minute", getMinute());
-        helper.add("second", getSecond());
         return helper.toString();
     }
 
     @Override
     public void write(final org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
-        oprot.writeStructBegin(new org.apache.thrift.protocol.TStruct("DateTime"));
+        oprot.writeStructBegin(new org.apache.thrift.protocol.TStruct("Date"));
 
         oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("year", org.apache.thrift.protocol.TType.I16, (short)-1));
         oprot.writeI16(getYear());
@@ -278,18 +203,6 @@ public class DateTime implements org.apache.thrift.TBase<DateTime, org.apache.th
         oprot.writeByte(getDay());
         oprot.writeFieldEnd();
 
-        oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("hour", org.apache.thrift.protocol.TType.BYTE, (short)-1));
-        oprot.writeByte(getHour());
-        oprot.writeFieldEnd();
-
-        oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("minute", org.apache.thrift.protocol.TType.BYTE, (short)-1));
-        oprot.writeByte(getMinute());
-        oprot.writeFieldEnd();
-
-        oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("second", org.apache.thrift.protocol.TType.BYTE, (short)-1));
-        oprot.writeByte(getSecond());
-        oprot.writeFieldEnd();
-
         oprot.writeFieldStop();
 
         oprot.writeStructEnd();
@@ -298,7 +211,4 @@ public class DateTime implements org.apache.thrift.TBase<DateTime, org.apache.th
     private final short year;
     private final byte month;
     private final byte day;
-    private final byte hour;
-    private final byte minute;
-    private final byte second;
 }

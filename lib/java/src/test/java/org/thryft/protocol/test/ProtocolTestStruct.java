@@ -1,9 +1,9 @@
 package org.thryft.protocol.test;
 
 import org.thryft.protocol.test.ProtocolTestEnum;
-import thryft.native.Date;
-import thryft.native.DateTime;
-import thryft.native.Decimal;
+import thryft.util.Date;
+import thryft.util.DateTime;
+import thryft.util.Decimal;
 
 @SuppressWarnings("serial")
 public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestStruct, org.apache.thrift.TFieldIdEnum> {
