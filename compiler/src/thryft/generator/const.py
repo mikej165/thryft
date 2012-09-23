@@ -1,9 +1,8 @@
-from thryft.generator.construct import Construct
+from thryft.generator.named_construct import NamedConstruct
 
-
-class Const(Construct):
+class Const(NamedConstruct):
     def __init__(self, type, value, **kwds): #@ReservedAssignment
-        Construct.__init__(self, **kwds)
+        NamedConstruct.__init__(self, **kwds)
         self.__type = type
         self.__value = value
 

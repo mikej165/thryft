@@ -1,9 +1,9 @@
-from thryft.generator.construct import Construct
+from thryft.generator.named_construct import NamedConstruct
 
 
-class Typedef(Construct):
+class Typedef(NamedConstruct):
     def __init__(self, type, **kwds): #@ReservedAssignment
-        Construct.__init__(self, **kwds)
+        NamedConstruct.__init__(self, **kwds)
         self.__type = type
 
     @property

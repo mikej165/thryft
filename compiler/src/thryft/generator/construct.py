@@ -1,7 +1,7 @@
 class Construct(object):
-    def __init__(self, name, parent, comment=None):
+    def __init__(self, parent, comment=None):
+        object.__init__(self)
         self._comment = comment
-        self.__name = name
         self.__parent = parent
 
     @property
@@ -9,16 +9,8 @@ class Construct(object):
         return self._comment
 
     @property
-    def name(self):
-        return self.__name
-
-    @property
     def parent(self):
         return self.__parent
-
-    @property
-    def qname(self):
-        return self.name
 
     def __repr__(self):
         raise NotImplementedError('.'.join((

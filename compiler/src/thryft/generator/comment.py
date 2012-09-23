@@ -3,7 +3,7 @@ from thryft.generator.construct import Construct
 
 class Comment(Construct):
     def __init__(self, parent, text):
-        Construct.__init__(self, name=None, parent=parent)
+        Construct.__init__(self, parent=parent)
         self.__text = text
 
     @property

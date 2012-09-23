@@ -91,6 +91,15 @@ class Compiler(object):
         if parent is None and len(self.__scope_stack) > 0:
             parent = self.__scope_stack[-1]
         kwds['parent'] = parent
+
+        name = kwds.get('name')
+        if name is not None:
+            for scope in reversed(self.__scope_stack):
+                if isinstance(scope, Document):
+                    document = scope
+                    print document.path, name
+                    break
+
         return getattr(self.__generator, class_name)(**kwds)
 
     def __merge_comments(self, tokens):
@@ -327,7 +336,6 @@ class Compiler(object):
                         self.__construct(
                             'Include',
                             document=document,
-                            name=include_file_relpath,
                             path=include_file_relpath
                         )
                     return [include]

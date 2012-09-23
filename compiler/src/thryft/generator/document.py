@@ -1,15 +1,15 @@
 from collections import OrderedDict
-from thryft.generator.construct import Construct
 from thryft.generator.include import Include
+from thryft.generator.named_construct import NamedConstruct
 from thryft.generator.namespace import Namespace
 from yutil import decamelize
 import os.path
 
 
-class Document(Construct):
+class Document(NamedConstruct):
     def __init__(self, path, definitions=None, headers=None, **kwds):
         self.__path = os.path.abspath(path)
-        Construct.__init__(
+        NamedConstruct.__init__(
             self,
             name=os.path.splitext(os.path.split(self.__path)[1])[0],
             **kwds

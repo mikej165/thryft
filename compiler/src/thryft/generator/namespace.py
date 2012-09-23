@@ -1,9 +1,9 @@
-from thryft.generator.construct import Construct
+from thryft.generator.named_construct import NamedConstruct
 
 
-class Namespace(Construct):
+class Namespace(NamedConstruct):
     def __init__(self, scope=None, **kwds):
-        Construct.__init__(self, **kwds)
+        NamedConstruct.__init__(self, **kwds)
         self.__scope = scope
 
     @property
