@@ -1,10 +1,10 @@
 from thryft.generator.document import Document
-from thryft.generators.java.java_construct import JavaConstruct
+from thryft.generators.java.java_named_construct import JavaNamedConstruct
 from yutil import rpad, camelize
 import os.path
 
 
-class JavaDocument(Document, JavaConstruct):
+class JavaDocument(Document, JavaNamedConstruct):
     def java_package(self):
         namespaces_by_scope = self.namespaces_by_scope
         for scope in ('java', '*'):

@@ -6,15 +6,15 @@ from yutil import indent
 class JavaMapType(MapType, JavaContainerType):
     def java_name(self, boxed=False):
         return "com.google.common.collect.ImmutableMap<%s, %s>" % (
-                   self.key_type.java_name(boxed=True),
-                   self.value_type.java_name(boxed=True)
+                   self.key_type.java_declaration_name(boxed=True),
+                   self.value_type.java_declaration_name(boxed=True)
                )
 
     def java_read_protocol(self):
         key_read_protocol = self.key_type.java_read_protocol()
-        key_type_name = self.key_type.java_name(boxed=True)
+        key_type_name = self.key_type.java_declaration_name(boxed=True)
         value_read_protocol = self.value_type.java_read_protocol()
-        value_type_name = self.value_type.java_name(boxed=True)
+        value_type_name = self.value_type.java_declaration_name(boxed=True)
         return """\
 (new com.google.common.base.Function<org.apache.thrift.protocol.TProtocol, com.google.common.collect.ImmutableMap<%(key_type_name)s, %(value_type_name)s>>() {
     @Override
@@ -35,7 +35,7 @@ class JavaMapType(MapType, JavaContainerType):
 
     def java_write_protocol(self, value, depth=0):
         key_ttype = self.key_type.thrift_ttype_name()
-        key_type_name = self.key_type.java_name()
+        key_type_name = self.key_type.java_declaration_name()
         key_write_protocol = \
             indent(' ' * 4,
                 self.key_type.java_write_protocol(
@@ -44,7 +44,7 @@ class JavaMapType(MapType, JavaContainerType):
                 )
             )
         value_ttype = self.value_type.thrift_ttype_name()
-        value_type_name = self.value_type.java_name()
+        value_type_name = self.value_type.java_declaration_name()
         value_write_protocol = \
             indent(' ' * 4,
                 self.value_type.java_write_protocol(

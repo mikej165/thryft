@@ -1,10 +1,10 @@
 from thryft.generator.field import Field
 from thryft.generators.java.base_types.java_bool_type import JavaBoolType
-from thryft.generators.java.java_construct import JavaConstruct
+from thryft.generators.java.java_named_construct import JavaNamedConstruct
 from yutil import lower_camelize, upper_camelize, indent
 
 
-class JavaField(Field, JavaConstruct):
+class JavaField(Field, JavaNamedConstruct):
     def java_default_initializer(self):
         name = self.java_name()
         if self.value is not None:
@@ -41,7 +41,7 @@ this.%(name)s = %(default_value)s;""" % locals()
         final = final and 'final ' or ''
         getter_name = self.java_getter_name()
         name = self.java_name()
-        type_name = self.type.java_name(boxed=not self.required)
+        type_name = self.type.java_declaration_name(boxed=not self.required)
         return """\
 public %(final)s%(type_name)s %(getter_name)s() {
     return %(name)s;
@@ -87,7 +87,7 @@ public %(final)s%(type_name)s %(getter_name)s() {
         parameter = []
         if final:
             parameter.append('final')
-        parameter.append(self.type.java_name(boxed=boxed))
+        parameter.append(self.type.java_declaration_name(boxed=boxed))
         parameter.append(self.java_name())
         return ' '.join(parameter)
 
@@ -141,7 +141,7 @@ try {
         name = self.java_name()
         return_statement = \
             return_type_name != 'void' and "\n    return this;" or ''
-        type_name = self.type.java_name(boxed=not self.required)
+        type_name = self.type.java_declaration_name(boxed=not self.required)
         return """\
 public %(return_type_name)s %(setter_name)s(final %(type_name)s %(name)s) {
     this.%(name)s = %(name)s;%(return_statement)s

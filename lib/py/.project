@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>thryft-lib-thrift</name>
+	<name>thryft-lib-py</name>
 	<comment></comment>
 	<projects>
-		<project>thryft-compiler</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

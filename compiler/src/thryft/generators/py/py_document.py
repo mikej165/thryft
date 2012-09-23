@@ -1,10 +1,10 @@
 from thryft.generator.document import Document
-from thryft.generators.py.py_construct import PyConstruct
+from thryft.generators.py.py_named_construct import PyNamedConstruct
 from yutil import rpad
 import os.path
 
 
-class PyDocument(Document, PyConstruct):
+class PyDocument(Document, PyNamedConstruct):
     def __repr__(self):
         imports = []
         for include in self.includes:

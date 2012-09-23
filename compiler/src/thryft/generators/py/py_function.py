@@ -1,9 +1,9 @@
 from thryft.generator.function import Function
-from thryft.generators.py.py_construct import PyConstruct
+from thryft.generators.py.py_named_construct import PyNamedConstruct
 from yutil import indent, pad
 
 
-class PyFunction(Function, PyConstruct):
+class PyFunction(Function, PyNamedConstruct):
     def py_imports(self, caller_stack=None):
         if self.return_type is not None:
             return self.return_type.py_imports(caller_stack=None) + ['import __builtin__']

@@ -1,8 +1,8 @@
-from thryft.generators.py.py_construct import PyConstruct
+from thryft.generators.py.py_named_construct import PyNamedConstruct
 from yutil import class_qname
 
 
-class PyType(PyConstruct):
+class PyType(PyNamedConstruct):
     def py_check(self, value):
         raise NotImplementedError(class_qname(self) + '.py_check')
 

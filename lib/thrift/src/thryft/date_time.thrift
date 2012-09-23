@@ -1,6 +1,6 @@
-namespace * thryft.generator.native_types
+namespace * thryft
 
-struct DateTimeType {
+struct DateTime {
     required i16 year;
     required byte month;
     required byte day;

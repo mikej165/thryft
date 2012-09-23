@@ -13,9 +13,6 @@ class PyGenerator(Generator):
     from thryft.generators.py.compound_types.py_enum_type import PyEnumType as EnumType
     from thryft.generators.py.compound_types.py_exception_type import PyExceptionType as ExceptionType
     from thryft.generators.py.compound_types.py_struct_type import PyStructType as StructType
-    from thryft.generators.py.native_types.py_date_type import PyDateType as DateType
-    from thryft.generators.py.native_types.py_date_time_type import PyDateTimeType as DateTimeType
-    from thryft.generators.py.native_types.py_decimal_type import PyDecimalType as DecimalType
     from thryft.generators.py.container_types.py_list_type import PyListType as ListType
     from thryft.generators.py.container_types.py_map_type import PyMapType as MapType
     from thryft.generators.py.container_types.py_set_type import PySetType as SetType

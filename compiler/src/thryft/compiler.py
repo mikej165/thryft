@@ -1,9 +1,10 @@
+from inspect import isclass
 from pyparsing import ParseException
 from thryft.generator.comment import Comment
 from thryft.generator.document import Document
 from thryft.generator.type import Type
 from thryft.grammar import Grammar
-from yutil import upper_camelize
+import imp
 import logging
 import os.path
 import sys
@@ -33,18 +34,6 @@ class Compiler(object):
         if not lib_thrift_src_dir_path in include_dir_paths:
             include_dir_paths.append(lib_thrift_src_dir_path)
         self.__include_dir_paths = include_dir_paths
-
-        native_type_qnames = []
-        for _1, _2, file_names in \
-            os.walk(os.path.join(lib_thrift_src_dir_path, 'thryft', 'generator', 'native_types')):
-            for file_name in file_names:
-                file_base_name, file_ext = os.path.splitext(file_name)
-                if file_ext != '.thrift':
-                    continue
-                native_type_qnames.append(
-                    file_base_name + '.' + upper_camelize(file_base_name)
-                )
-        self.__native_type_qnames = native_type_qnames
 
         self.__generator = generator
 
@@ -97,7 +86,35 @@ class Compiler(object):
             for scope in reversed(self.__scope_stack):
                 if isinstance(scope, Document):
                     document = scope
-                    print document.path, name
+                    overrides_module_file_path = os.path.splitext(document.path)[0] + '.py'
+                    if os.path.isfile(overrides_module_file_path):
+                        overrides_module_dir_path, overrides_module_file_name = \
+                            os.path.split(overrides_module_file_path)
+                        overrides_module_name = \
+                            os.path.splitext(overrides_module_file_name)[0]
+                        try:
+                            overrides_module = \
+                                imp.load_module(
+                                    overrides_module_name,
+                                    *imp.find_module(
+                                        overrides_module_name,
+                                        [overrides_module_dir_path]
+                                    )
+                                )
+                        except ImportError:
+                            logging.error(
+                                "error importing overrides module %s",
+                                overrides_module_file_path,
+                                exc_info=True
+                            )
+                            overrides_module = None
+
+                        if overrides_module is not None:
+                            default_construct_class = getattr(self.__generator, class_name)
+                            for attr in dir(overrides_module):
+                                value = getattr(overrides_module, attr)
+                                if isclass(value) and issubclass(value, default_construct_class):
+                                    return getattr(overrides_module, attr)(**kwds)
                     break
 
         return getattr(self.__generator, class_name)(**kwds)
@@ -124,8 +141,8 @@ class Compiler(object):
             text = text[2:-2]
             lines = []
             for line in text.splitlines():
-                if line.lstrip().startswith('*'):
-                    line = line.lstrip().lstrip('*')
+                if line.lstrip().startswith(' * '):
+                    line = line.lstrip().lstrip(' * ')
                 line = line.rstrip()
                 if len(line) > 0:
                     lines.append(line)
@@ -155,11 +172,7 @@ class Compiler(object):
                 else:
                     compound_type.fields.append(field)
 
-        if keyword != 'struct' or \
-           not compound_type.qname in self.__native_type_qnames:
-            return [compound_type]
-        else:
-            return []
+        return [compound_type]
 
     def __parse_compound_type_declarator(self, keyword, tokens):
         comment = self.__merge_comments(tokens)
@@ -172,11 +185,10 @@ class Compiler(object):
             )
 
         self.__scope_stack.append(compound_type)
+
         # Insert the compound type into the type_map here to allow recursive
         # definitions
-        if keyword != 'struct' or \
-           not compound_type.qname in self.__native_type_qnames:
-            self.__type_map[compound_type.qname] = compound_type
+        self.__type_map[compound_type.qname] = compound_type
 
         return [compound_type]
 
@@ -331,16 +343,13 @@ class Compiler(object):
             if os.path.exists(include_file_path):
                 include_file_path = os.path.abspath(include_file_path)
                 document = self.compile((include_file_path,))[0]
-                if not include_file_relpath.startswith('thryft/generator/native_types/'):
-                    include = \
-                        self.__construct(
-                            'Include',
-                            document=document,
-                            path=include_file_relpath
-                        )
-                    return [include]
-                else:
-                    return []
+                include = \
+                    self.__construct(
+                        'Include',
+                        document=document,
+                        path=include_file_relpath
+                    )
+                return [include]
         raise RuntimeError("include path not found: %s" % include_file_relpath)
 
     def _parse_list_type(self, tokens):
@@ -435,9 +444,6 @@ class Compiler(object):
         except KeyError:
             if type_name in self.__grammar.base_type_names:
                 return getattr(self.__generator, type_name.capitalize() + 'Type')(name=type_name)
-            elif type_name in self.__native_type_qnames:
-                type_name = type_name.rsplit('.', 1)[1]
-                return getattr(self.__generator, type_name)(name=type_name)
             elif not '.' in type_name:
                 document = self.__scope_stack[0]
                 type_qname = document.name + '.' + type_name

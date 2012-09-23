@@ -15,6 +15,16 @@ from thryft.generators.py.py_generator import PyGenerator
 
 for in_dir_path, generator, out_dir_path in (
     (
+        os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'thrift', 'src'),
+        JavaGenerator(),
+        os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'java', 'src', 'gen', 'java')
+    ),
+    (
+        os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'thrift', 'src'),
+        PyGenerator(),
+        os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'py', 'src')
+    ),
+    (
         os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'thrift', 'test'),
         JavaGenerator(),
         os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'java', 'src', 'test', 'java')

@@ -21,6 +21,3 @@ class JavaGenerator(Generator):
     from thryft.generators.java.java_function import JavaFunction as Function
     from thryft.generators.java.java_include import JavaInclude as Include
     from thryft.generators.java.java_service import JavaService as Service
-    from thryft.generators.java.native_types.java_date_type import JavaDateType as DateType
-    from thryft.generators.java.native_types.java_date_time_type import JavaDateTimeType as DateTimeType
-    from thryft.generators.java.native_types.java_decimal_type import JavaDecimalType as DecimalType

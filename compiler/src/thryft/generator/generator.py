@@ -20,8 +20,5 @@ class Generator(object):
     from thryft.generator.function import Function
     from thryft.generator.include import Include
     from thryft.generator.namespace import Namespace
-    from thryft.generator.native_types.date_type import DateType
-    from thryft.generator.native_types.date_time_type import DateTimeType
-    from thryft.generator.native_types.decimal_type import DecimalType
     from thryft.generator.service import Service
     from thryft.generator.typedef import Typedef

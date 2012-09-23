@@ -225,8 +225,8 @@ public %(name)s(%(parameters)s) {
 
         for field in self.fields:
             if field.required and \
-               (field.type.java_name(boxed=True) != \
-                field.type.java_name(boxed=False)):
+               (field.type.java_declaration_name(boxed=True) != \
+                field.type.java_declaration_name(boxed=False)):
                 initializers = \
                     "\n".join(indent(' ' * 4,
                         [field.java_initializer()

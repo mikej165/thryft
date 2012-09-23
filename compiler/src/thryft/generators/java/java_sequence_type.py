@@ -7,8 +7,10 @@ class JavaSequenceType(JavaContainerType):
         raise NotImplementedError(class_qname(self))
 
     def java_name(self, boxed=False):
-        return "com.google.common.collect.Immutable%s<%s>" % \
-                (self._java_interface_simple_name(), self.element_type.java_name(boxed=True))
+        return "com.google.common.collect.Immutable%s<%s>" % (
+                   self._java_interface_simple_name(),
+                   self.element_type.java_declaration_name(boxed=True)
+               )
 
     def _java_interface_simple_name(self):
         class_name_split = decamelize(self.__class__.__name__).split('_')
@@ -19,7 +21,7 @@ class JavaSequenceType(JavaContainerType):
 
     def java_read_protocol(self):
         element_read_protocol = self.element_type.java_read_protocol()
-        element_type_name = self.element_type.java_name(boxed=True)
+        element_type_name = self.element_type.java_declaration_name(boxed=True)
         interface_simple_name = self._java_interface_simple_name()
         mutable_raw_qname = self._java_mutable_raw_qname()
         return """\
@@ -42,7 +44,7 @@ class JavaSequenceType(JavaContainerType):
 
     def java_write_protocol(self, value, depth=0):
         element_ttype = self.element_type.thrift_ttype_name()
-        element_type_name = self.element_type.java_name()
+        element_type_name = self.element_type.java_declaration_name(boxed=True)
         element_write_protocol = \
             indent(' ' * 4,
                 self.element_type.java_write_protocol(

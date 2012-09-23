@@ -1,16 +1,16 @@
 namespace java org.thryft.protocol.test
 
-include "thryft/generator/native_types/date_type.thrift"
-include "thryft/generator/native_types/date_time_type.thrift"
-include "thryft/generator/native_types/decimal_type.thrift"
-include "thryft/protocol/test/protocol_test_enum.thrift"
+include "protocol_test_enum.thrift"
+include "thryft/date.thrift"
+include "thryft/date_time.thrift"
+include "thryft/decimal.thrift"
 
 struct ProtocolTestStruct {
     optional bool bool_field;
     optional byte byte_field
-    optional date_type.DateType date_field;
-    optional date_time_type.DateTimeType date_time_field;
-    optional decimal_type.DecimalType decimal_field;
+    optional date.Date date_field;
+    optional date_time.DateTime date_time_field;
+    optional decimal.Decimal decimal_field;
     optional protocol_test_enum.ProtocolTestEnum enum_field;
     optional i16 i16_field;
     optional i32 i32_field;

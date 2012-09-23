@@ -1,8 +1,11 @@
-from thryft.generators.java.java_construct import JavaConstruct
+from thryft.generators.java.java_named_construct import JavaNamedConstruct
 from yutil import class_qname
 
 
-class JavaType(JavaConstruct):
+class JavaType(JavaNamedConstruct):
+    def java_declaration_name(self, boxed=False):
+        return self.java_name(boxed=boxed)
+
     def java_default_value(self):
         raise NotImplementedError(class_qname(self) + '.java_default_value')
 
@@ -11,6 +14,9 @@ class JavaType(JavaConstruct):
 
     def java_is_reference(self):
         raise NotImplementedError(class_qname(self) + '.java_is_reference')
+
+    def java_name(self, boxed=False):
+        return JavaNamedConstruct.java_name(self)
 
     def java_read_protocol(self):
         raise NotImplementedError(class_qname(self) + '.java_read_protocol')

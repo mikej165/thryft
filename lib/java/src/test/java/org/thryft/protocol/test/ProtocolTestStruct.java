@@ -1,6 +1,9 @@
 package org.thryft.protocol.test;
 
 import org.thryft.protocol.test.ProtocolTestEnum;
+import thryft.Date;
+import thryft.DateTime;
+import thryft.Decimal;
 
 @SuppressWarnings("serial")
 public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestStruct, org.apache.thrift.TFieldIdEnum> {
@@ -592,19 +595,19 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
         }
 
         if (getDateField() != null) {
-            oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("date_field", org.apache.thrift.protocol.TType.I64, (short)-1));
+            oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("date_field", org.apache.thrift.protocol.TType.STRUCT, (short)-1));
             oprot.writeI64(getDateField().getMillis());
             oprot.writeFieldEnd();
         }
 
         if (getDateTimeField() != null) {
-            oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("date_time_field", org.apache.thrift.protocol.TType.I64, (short)-1));
+            oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("date_time_field", org.apache.thrift.protocol.TType.STRUCT, (short)-1));
             oprot.writeI64(getDateTimeField().getMillis());
             oprot.writeFieldEnd();
         }
 
         if (getDecimalField() != null) {
-            oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("decimal_field", org.apache.thrift.protocol.TType.STRING, (short)-1));
+            oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("decimal_field", org.apache.thrift.protocol.TType.STRUCT, (short)-1));
             oprot.writeString(getDecimalField().toString());
             oprot.writeFieldEnd();
         }
