@@ -1,9 +1,9 @@
 namespace java org.thryft.protocol.test
 
 include "protocol_test_enum.thrift"
-include "thryft/date.thrift"
-include "thryft/date_time.thrift"
-include "thryft/decimal.thrift"
+include "thryft/native/date.thrift"
+include "thryft/native/date_time.thrift"
+include "thryft/native/decimal.thrift"
 
 struct ProtocolTestStruct {
     optional bool bool_field;

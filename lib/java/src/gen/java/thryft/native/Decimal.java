@@ -1,4 +1,4 @@
-package thryft;
+package thryft.native;
 
 @SuppressWarnings("serial")
 public class Decimal implements org.apache.thrift.TBase<Decimal, org.apache.thrift.TFieldIdEnum> {

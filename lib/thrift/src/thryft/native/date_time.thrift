@@ -1,4 +1,4 @@
-namespace * thryft
+namespace * thryft.native
 
 struct DateTime {
     required i16 year;
