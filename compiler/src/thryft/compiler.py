@@ -1,4 +1,6 @@
 from pyparsing import ParseException
+from thryft.generator.comment import Comment
+from thryft.generator.document import Document
 from thryft.generator.type import Type
 from thryft.grammar import Grammar
 from yutil import upper_camelize
@@ -67,7 +69,7 @@ class Compiler(object):
 
         documents = []
         for thrift_file_path in thrift_file_paths:
-            document = self.__generator.Document(path=thrift_file_path)
+            document = self.__construct('Document', path=thrift_file_path)
             self.__scope_stack.append(document)
 
             try:
@@ -85,16 +87,23 @@ class Compiler(object):
 
         return documents
 
+    def __construct(self, class_name, parent=None, **kwds):
+        if parent is None and len(self.__scope_stack) > 0:
+            parent = self.__scope_stack[-1]
+        kwds['parent'] = parent
+        return getattr(self.__generator, class_name)(**kwds)
+
     def __merge_comments(self, tokens):
         comments = []
-        while isinstance(tokens[0], self.__generator.Comment):
+        while isinstance(tokens[0], Comment):
             comment = tokens.pop(0)
             if len(comments) > 0:
                 assert comment.__class__ is comments[0].__class__
                 assert comment.parent is comments[0].parent
             comments.append(comment)
         if len(comments) > 0:
-            return self.__generator.Comment(
+            return self.__construct(
+                       'Comment',
                        parent=comments[0].parent,
                        text="\n".join([comment.text
                                        for comment in comments]),
@@ -120,8 +129,8 @@ class Compiler(object):
             raise NotImplementedError(text)
 
         comment = \
-            self.__generator.Comment(
-                parent=self.__scope_stack[-1],
+            self.__construct(
+                'Comment',
                 text=text
             )
         return [comment]
@@ -147,10 +156,10 @@ class Compiler(object):
         comment = self.__merge_comments(tokens)
 
         compound_type = \
-            getattr(self.__generator, keyword.capitalize() + 'Type')(
+            self.__construct(
+                keyword.capitalize() + 'Type',
                 comment=comment,
-                name=tokens[1],
-                parent=self.__scope_stack[-1]
+                name=tokens[1]
             )
 
         self.__scope_stack.append(compound_type)
@@ -168,10 +177,10 @@ class Compiler(object):
         print tokens
 
         const = \
-            self.__generator.Const(
+            self.__construct(
+                'Const',
                 comment=comment,
                 name=tokens[2],
-                parent=self.__scope_stack[-1],
                 type=self.__resolve_type(tokens[1]),
                 value=tokens[3]
             )
@@ -212,10 +221,10 @@ class Compiler(object):
         else:
             value = None
         enumerator = \
-            self.__generator.Field(
+            self.__construct(
+                'Field',
                 comment=comment,
                 name=tokens[0],
-                parent=self.__scope_stack[-1],
                 type=self.__resolve_type('i32'),
                 value=value
             )
@@ -246,14 +255,12 @@ class Compiler(object):
         else:
             value = None
 
-        parent = self.__scope_stack[-1]
-
         field = \
-            self.__generator.Field(
+            self.__construct(
+                'Field',
                 comment=comment,
                 id=id,
                 name=name,
-                parent=parent,
                 required=required,
                 type=type,
                 value=value
@@ -289,16 +296,12 @@ class Compiler(object):
         else:
             return_type = self.__resolve_type(return_type_name)
 
-        name = tokens.pop(0)
-
-        parent = self.__scope_stack[-1]
-
         function = \
-            self.__generator.Function(
+            self.__construct(
+                'Function',
                 comment=comment,
-                name=name,
+                name=tokens[0],
                 oneway=oneway,
-                parent=parent,
                 return_type=return_type
             )
 
@@ -309,7 +312,7 @@ class Compiler(object):
     def _parse_include(self, tokens):
         include_dir_paths = list(self.__include_dir_paths)
         for scope in reversed(self.__scope_stack):
-            if isinstance(scope, self.__generator.Document):
+            if isinstance(scope, Document):
                 include_dir_paths.append(os.path.dirname(scope.path))
                 break
 
@@ -321,10 +324,10 @@ class Compiler(object):
                 document = self.compile((include_file_path,))[0]
                 if not include_file_relpath.startswith('thryft/generator/native_types/'):
                     include = \
-                        self.__generator.Include(
+                        self.__construct(
+                            'Include',
                             document=document,
                             name=include_file_relpath,
-                            parent=self.__scope_stack[-1],
                             path=include_file_relpath
                         )
                     return [include]
@@ -339,19 +342,19 @@ class Compiler(object):
         key_type = self.__resolve_type(tokens[1])
         value_type = self.__resolve_type(tokens[2])
         map_type = \
-            self.__generator.MapType(
+            self.__construct(
+                'MapType',
                 key_type=key_type,
                 name="map<%s, %s>" % (key_type.qname, value_type.qname),
-                parent=self.__scope_stack[-1],
                 value_type=value_type
             )
         return [map_type]
 
     def _parse_namespace(self, tokens):
         namespace = \
-            self.__generator.Namespace(
+            self.__construct(
+                'Namespace',
                 name=tokens[2],
-                parent=self.__scope_stack[-1],
                 scope=tokens[1]
             )
         return [namespace]
@@ -360,10 +363,10 @@ class Compiler(object):
         assert tokens[0] == keyword
         element_type = self.__resolve_type(tokens[1])
         sequence_type = \
-            getattr(self.__generator, keyword.capitalize() + 'Type')(
+            self.__construct(
+                keyword.capitalize() + 'Type',
                 element_type=element_type,
-                name="%s<%s>" % (keyword, element_type.qname),
-                parent=self.__scope_stack[-1]
+                name="%s<%s>" % (keyword, element_type.qname)
             )
         return [sequence_type]
 
@@ -380,11 +383,11 @@ class Compiler(object):
         comment = self.__merge_comments(tokens)
 
         service = \
-            self.__generator.Service(
+            self.__construct(
+                'Service',
                 comment=comment,
                 extends=len(tokens) > 2 and tokens[3] or None,
-                name=tokens[1],
-                parent=self.__scope_stack[-1]
+                name=tokens[1]
             )
 
         self.__scope_stack.append(service)
@@ -404,10 +407,10 @@ class Compiler(object):
         comment = self.__merge_comments(tokens)
 
         typedef = \
-            self.__generator.Typedef(
+            self.__construct(
+                'Typedef',
                 comment=comment,
                 name=tokens[2],
-                parent=self.__scope_stack[-1],
                 type=self.__resolve_type(tokens[1])
             )
 

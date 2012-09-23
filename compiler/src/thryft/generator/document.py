@@ -12,7 +12,6 @@ class Document(Construct):
         Construct.__init__(
             self,
             name=os.path.splitext(os.path.split(self.__path)[1])[0],
-            parent=None,
             **kwds
         )
         self.__definitions = \
