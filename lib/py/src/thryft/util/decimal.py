@@ -1,7 +1,8 @@
-from decimal import Decimal, InvalidOperation
+from __future__ import absolute_import; from decimal import Decimal, InvalidOperation
+import __builtin__
 
 
-class java.math.BigDecimal(object):
+class Decimal(object):
     class Builder:
         def __init__(
             self,
@@ -10,20 +11,20 @@ class java.math.BigDecimal(object):
             self.__value = value
 
         def build(self):
-            return java.math.BigDecimal(value=self.__value)
+            return Decimal(value=self.__value)
 
         def set_value(self, value):
             self.__value = value
             return self
 
-        def update(self, java.math._big_decimal):
-            if isinstance(java.math._big_decimal, java.math.BigDecimal):
-                self.set_value(java.math._big_decimal.value)
-            elif isinstance(java.math._big_decimal, dict):
-                for key, value in java.math._big_decimal.iteritems():
+        def update(self, decimal):
+            if isinstance(decimal, Decimal):
+                self.set_value(decimal.value)
+            elif isinstance(decimal, dict):
+                for key, value in decimal.iteritems():
                     getattr(self, 'set_' + key)(value)
             else:
-                raise TypeError(java.math._big_decimal)
+                raise TypeError(decimal)
             return self
 
     def __init__(
@@ -79,7 +80,7 @@ class java.math.BigDecimal(object):
         return self.__value
 
     def write(self, oprot):
-        oprot.writeStructBegin('java.math.BigDecimal')
+        oprot.writeStructBegin('Decimal')
 
         oprot.writeFieldBegin('value', 11, -1)
         oprot.writeString(self.value)

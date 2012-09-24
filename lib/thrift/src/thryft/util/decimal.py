@@ -8,13 +8,15 @@ class JavaDecimal(JavaStructType):
         return 'java.math.BigDecimal'
 
     def java_read_protocol(self):
-        return "new java.math.BigDecimal(iprot.readString())"
+        name = self.java_name()
+        return "new java.math.BigDecimal(new %(name)s(iprot).getValue())" % locals()
 
     def java_read_protocol_throws(self):
         return ['NumberFormatException']
 
     def java_write_protocol(self, value, depth=0):
-        return "oprot.writeString(%(value)s.toString());" % locals()
+        name = self.java_name()
+        return "new %(name)s(%(value)s.toString()).write(oprot);" % locals()
 
 
 class PyDecimal(PyStructType):
@@ -22,16 +24,16 @@ class PyDecimal(PyStructType):
         return "isinstance(%(value)s, Decimal)" % locals()
 
     def py_imports(self, caller_stack=None):
-        return ['from decimal import Decimal, InvalidOperation']
-
-    def py_name(self):
-        return 'java.math.BigDecimal'
+        return PyStructType.py_imports(self, caller_stack=caller_stack) + \
+               ['from __future__ import absolute_import; from decimal import Decimal, InvalidOperation']
 
     def py_read_protocol(self):
-        return "Decimal(iprot.readString())"
+        qname = self.py_qname()
+        return "Decimal(%(qname)s.read(iprot).value)" % locals()
 
     def py_read_protocol_throws(self):
         return ['InvalidOperation', 'TypeError']
 
     def py_write_protocol(self, value, depth=0):
-        return "oprot.writeString(str(%(value)s))" % locals()
+        qname = self.py_qname()
+        return "%(qname)s(str(%(value)s)).write(oprot)" % locals()
