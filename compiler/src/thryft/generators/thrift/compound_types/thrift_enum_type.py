@@ -1,8 +1,9 @@
 from thryft.generator.compound_types.enum_type import EnumType
+from thryft.generators.thrift.thrift_compound_type import ThriftCompoundType
 from yutil import pad, indent, rpad
 
 
-class ThriftEnumType(EnumType):
+class ThriftEnumType(EnumType, ThriftCompoundType):
     def __repr__(self):
         return "%senum %s {%s}" % (
             self.comment is not None and rpad(self.comment.text, "\n") or '',

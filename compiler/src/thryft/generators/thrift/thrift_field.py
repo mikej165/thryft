@@ -1,8 +1,9 @@
 from thryft.generator.field import Field
+from thryft.generators.thrift.thrift_named_construct import ThriftNamedConstruct
 from yutil import rpad
 
 
-class ThriftField(Field):
+class ThriftField(Field, ThriftNamedConstruct):
     def __repr__(self):
         repr_ = []
         if self.id is not None:
@@ -11,7 +12,7 @@ class ThriftField(Field):
             repr_.append('required')
         else:
             repr_.append('optional')
-        repr_.append(self.type.qname)
+        repr_.append(self.type.thrift_qname())
         repr_.append(self.name)
         if self.value is not None:
             repr_.extend(('=', str(self.value)))

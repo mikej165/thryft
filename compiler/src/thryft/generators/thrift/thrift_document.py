@@ -1,7 +1,8 @@
 from thryft.generator.document import Document
+from thryft.generators.thrift.thrift_named_construct import ThriftNamedConstruct
 
 
-class ThriftDocument(Document):
+class ThriftDocument(Document, ThriftNamedConstruct):
     def __repr__(self):
         sections = []
         for section in (
