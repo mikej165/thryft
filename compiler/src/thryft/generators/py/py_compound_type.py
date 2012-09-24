@@ -3,5 +3,5 @@ from thryft.generators.py.py_type import PyType
 
 class PyCompoundType(PyType):
     def py_check(self, value):
-        name = self.py_name()
-        return "isinstance(%(value)s, %(name)s)" % locals()
+        qname = self.py_qname()
+        return "isinstance(%(value)s, %(qname)s)" % locals()

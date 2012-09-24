@@ -22,4 +22,4 @@ class PyInclude(Include, PyConstruct):
         return self.__py_module_qname
 
     def __repr__(self):
-        return 'from ' + self.py_module_qname() + ' import ' + self.py_class_name()
+        return 'import ' + self.py_module_qname()

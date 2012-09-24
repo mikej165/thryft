@@ -278,8 +278,8 @@ def write(self, oprot):
         return list(set(imports))
 
     def py_read_protocol(self):
-        name = self.py_name()
-        return "%(name)s.read(iprot)" % locals()
+        qname = self.py_qname()
+        return "%(qname)s.read(iprot)" % locals()
 
     def py_write_protocol(self, value, depth=0):
         return "%(value)s.write(oprot)" % locals()

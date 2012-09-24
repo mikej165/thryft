@@ -4,20 +4,16 @@ from yutil import indent, lpad, pad
 
 
 class PyEnumType(EnumType, PyCompoundType):
-    def py_check(self, value):
-        name = self.py_name()
-        return "isinstance(%(value)s, %(name)s)" % locals()
-
     def py_read_protocol(self):
-        name = self.py_name()
-        return "%(name)s.value_of(iprot.readString().strip().upper())" % locals()
+        qname = self.py_qname()
+        return "%(qname)s.value_of(iprot.readString().strip().upper())" % locals()
 
     def py_read_protocol_throws(self):
         return ['TypeError']
 
     def py_write_protocol(self, value, depth=0):
-        name = self.py_name()
-        return "oprot.writeString([attr for attr in dir(%(name)s) if getattr(%(name)s, attr) == %(value)s][0])" % locals()
+        qname = self.py_qname()
+        return "oprot.writeString([attr for attr in dir(%(qname)s) if getattr(%(qname)s, attr) == %(value)s][0])" % locals()
 
     def __repr__(self):
         name = self.py_name()
