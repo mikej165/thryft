@@ -14,7 +14,3 @@ class Service(NamedConstruct):
     @property
     def functions(self):
         return self.__functions
-
-    @property
-    def qname(self):
-        return self.parent.name + '.' + self.name

@@ -11,6 +11,8 @@ class NamedConstruct(Construct):
     def name(self):
         return self.__name
 
-    @property
-    def qname(self):
-        return self.name
+    def thrift_qname(self):
+        if self.parent is None:
+            return self.name
+        else:
+            return self.parent.name + '.' + self.name

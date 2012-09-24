@@ -188,7 +188,7 @@ class Compiler(object):
 
         # Insert the compound type into the type_map here to allow recursive
         # definitions
-        self.__type_map[compound_type.qname] = compound_type
+        self.__type_map[compound_type.thrift_qname()] = compound_type
 
         return [compound_type]
 
@@ -362,7 +362,7 @@ class Compiler(object):
             self.__construct(
                 'MapType',
                 key_type=key_type,
-                name="map<%s, %s>" % (key_type.qname, value_type.qname),
+                name="map<%s, %s>" % (key_type.thrift_qname(), value_type.thrift_qname()),
                 value_type=value_type
             )
         return [map_type]
@@ -383,7 +383,7 @@ class Compiler(object):
             self.__construct(
                 keyword.capitalize() + 'Type',
                 element_type=element_type,
-                name="%s<%s>" % (keyword, element_type.qname)
+                name="%s<%s>" % (keyword, element_type.thrift_qname())
             )
         return [sequence_type]
 
@@ -431,7 +431,7 @@ class Compiler(object):
                 type=self.__resolve_type(tokens[1])
             )
 
-        self.__type_map[typedef.qname] = typedef.type
+        self.__type_map[typedef.thrift_qname()] = typedef.type
 
         return [typedef]
 
