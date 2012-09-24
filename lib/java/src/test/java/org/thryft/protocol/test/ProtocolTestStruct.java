@@ -173,17 +173,17 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
                 }
             } else if (ifield.name.equals("date_field")) {
                 try {
-                    dateField = new org.joda.time.DateTime(iprot.readI64());
+                    dateField = new org.joda.time.DateTime(new Date(iprot).getTimestampMs());
                 } catch (IllegalArgumentException e) {
                 }
             } else if (ifield.name.equals("date_time_field")) {
                 try {
-                    dateTimeField = new org.joda.time.DateTime(iprot.readI64());
+                    dateTimeField = new org.joda.time.DateTime(new DateTime(iprot).getTimestampMs());
                 } catch (IllegalArgumentException e) {
                 }
             } else if (ifield.name.equals("decimal_field")) {
                 try {
-                    decimalField = new java.math.BigDecimal(iprot.readString());
+                    decimalField = new java.math.BigDecimal(new Decimal(iprot).getValue());
                 } catch (NumberFormatException e) {
                 }
             } else if (ifield.name.equals("enum_field")) {
@@ -596,19 +596,19 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
 
         if (getDateField() != null) {
             oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("date_field", org.apache.thrift.protocol.TType.STRUCT, (short)-1));
-            oprot.writeI64(getDateField().getMillis());
+            new Date(getDateField().getMillis()).write(oprot);
             oprot.writeFieldEnd();
         }
 
         if (getDateTimeField() != null) {
             oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("date_time_field", org.apache.thrift.protocol.TType.STRUCT, (short)-1));
-            oprot.writeI64(getDateTimeField().getMillis());
+            new DateTime(getDateTimeField().getMillis()).write(oprot);
             oprot.writeFieldEnd();
         }
 
         if (getDecimalField() != null) {
             oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("decimal_field", org.apache.thrift.protocol.TType.STRUCT, (short)-1));
-            oprot.writeString(getDecimalField().toString());
+            new Decimal(getDecimalField().toString()).write(oprot);
             oprot.writeFieldEnd();
         }
 

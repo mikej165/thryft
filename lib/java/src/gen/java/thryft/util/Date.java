@@ -7,66 +7,40 @@ public class Date implements org.apache.thrift.TBase<Date, org.apache.thrift.TFi
         }
 
         public Builder(final Date other) {
-            this.year = other.getYear();
-            this.month = other.getMonth();
-            this.day = other.getDay();
+            this.timestampMs = other.getTimestampMs();
         }
 
-        protected Date _build(final short year, final byte month, final byte day) {
-            return new Date(year, month, day);
+        protected Date _build(final long timestampMs) {
+            return new Date(timestampMs);
         }
 
         public Date build() {
-            return _build(year, month, day);
+            return _build(timestampMs);
         }
 
-        public Builder setDay(final byte day) {
-            this.day = day;
+        public Builder setTimestampMs(final long timestampMs) {
+            this.timestampMs = timestampMs;
             return this;
         }
 
-        public Builder setMonth(final byte month) {
-            this.month = month;
-            return this;
-        }
-
-        public Builder setYear(final short year) {
-            this.year = year;
-            return this;
-        }
-
-        private Short year;
-        private Byte month;
-        private Byte day;
+        private Long timestampMs;
     }
 
     public Date(final Date other) {
-        this(other.getYear(), other.getMonth(), other.getDay());
+        this(other.getTimestampMs());
     }
 
     public Date(final org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
-        short year = ((short)0);
-        byte month = ((byte)0);
-        byte day = ((byte)0);
+        long timestampMs = ((long)0);
 
         iprot.readStructBegin();
         while (true) {
             org.apache.thrift.protocol.TField ifield = iprot.readFieldBegin();
             if (ifield.type == org.apache.thrift.protocol.TType.STOP) {
                 break;
-            } else         if (ifield.name.equals("year")) {
+            } else         if (ifield.name.equals("timestamp_ms")) {
                 try {
-                    year = iprot.readI16();
-                } catch (NumberFormatException e) {
-                }
-            } else if (ifield.name.equals("month")) {
-                try {
-                    month = iprot.readByte();
-                } catch (NumberFormatException e) {
-                }
-            } else if (ifield.name.equals("day")) {
-                try {
-                    day = iprot.readByte();
+                    timestampMs = iprot.readI64();
                 } catch (NumberFormatException e) {
                 }
             }
@@ -74,21 +48,15 @@ public class Date implements org.apache.thrift.TBase<Date, org.apache.thrift.TFi
         }
         iprot.readStructEnd();
 
-        this.year = year;
-        this.month = month;
-        this.day = day;
+        this.timestampMs = timestampMs;
     }
 
-    public Date(final short year, final byte month, final byte day) {
-        this.year = year;
-        this.month = month;
-        this.day = day;
+    public Date(final long timestampMs) {
+        this.timestampMs = timestampMs;
     }
 
-    public Date(final Short year, final Byte month, final Byte day) {
-        this.year = year;
-        this.month = month;
-        this.day = day;
+    public Date(final Long timestampMs) {
+        this.timestampMs = timestampMs;
     }
 
     @Override
@@ -116,9 +84,7 @@ public class Date implements org.apache.thrift.TBase<Date, org.apache.thrift.TFi
 
         final Date other = (Date)otherObject;
         return
-            getYear() == other.getYear() &&
-            getMonth() == other.getMonth() &&
-            getDay() == other.getDay();
+            getTimestampMs() == other.getTimestampMs();
     }
 
     @Override
@@ -127,18 +93,10 @@ public class Date implements org.apache.thrift.TBase<Date, org.apache.thrift.TFi
     }
 
     public Object get(final String fieldName) {
-        if (fieldName.equals("year")) {
-            return getYear();
-        } else if (fieldName.equals("month")) {
-            return getMonth();
-        } else if (fieldName.equals("day")) {
-            return getDay();
+        if (fieldName.equals("timestamp_ms")) {
+            return getTimestampMs();
         }
         return null;
-    }
-
-    public final byte getDay() {
-        return day;
     }
 
     @Override
@@ -146,20 +104,14 @@ public class Date implements org.apache.thrift.TBase<Date, org.apache.thrift.TFi
         throw new UnsupportedOperationException();
     }
 
-    public final byte getMonth() {
-        return month;
-    }
-
-    public final short getYear() {
-        return year;
+    public final long getTimestampMs() {
+        return timestampMs;
     }
 
     @Override
     public int hashCode() {
         int hashCode = 17;
-        hashCode = 31 * hashCode + ((int)getYear());
-        hashCode = 31 * hashCode + ((byte)getMonth());
-        hashCode = 31 * hashCode + ((byte)getDay());
+        hashCode = 31 * hashCode + ((int)(getTimestampMs() ^ (getTimestampMs() >>> 32)));
         return hashCode;
     }
 
@@ -181,9 +133,7 @@ public class Date implements org.apache.thrift.TBase<Date, org.apache.thrift.TFi
     @Override
     public String toString() {
         final com.google.common.base.Objects.ToStringHelper helper = com.google.common.base.Objects.toStringHelper(this);
-        helper.add("year", getYear());
-        helper.add("month", getMonth());
-        helper.add("day", getDay());
+        helper.add("timestamp_ms", getTimestampMs());
         return helper.toString();
     }
 
@@ -191,16 +141,8 @@ public class Date implements org.apache.thrift.TBase<Date, org.apache.thrift.TFi
     public void write(final org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
         oprot.writeStructBegin(new org.apache.thrift.protocol.TStruct("Date"));
 
-        oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("year", org.apache.thrift.protocol.TType.I16, (short)-1));
-        oprot.writeI16(getYear());
-        oprot.writeFieldEnd();
-
-        oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("month", org.apache.thrift.protocol.TType.BYTE, (short)-1));
-        oprot.writeByte(getMonth());
-        oprot.writeFieldEnd();
-
-        oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("day", org.apache.thrift.protocol.TType.BYTE, (short)-1));
-        oprot.writeByte(getDay());
+        oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("timestamp_ms", org.apache.thrift.protocol.TType.I64, (short)-1));
+        oprot.writeI64(getTimestampMs());
         oprot.writeFieldEnd();
 
         oprot.writeFieldStop();
@@ -208,7 +150,5 @@ public class Date implements org.apache.thrift.TBase<Date, org.apache.thrift.TFi
         oprot.writeStructEnd();
     }
 
-    private final short year;
-    private final byte month;
-    private final byte day;
+    private final long timestampMs;
 }

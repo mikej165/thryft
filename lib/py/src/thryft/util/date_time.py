@@ -1,154 +1,59 @@
 from datetime import datetime
 from time import mktime
+import __builtin__
 
 
-class datetime(object):
+class DateTime(object):
     class Builder:
         def __init__(
             self,
-            year,
-            month,
-            day,
-            hour,
-            minute,
-            second
+            timestamp_ms
         ):
-            self.__year = year
-            self.__month = month
-            self.__day = day
-            self.__hour = hour
-            self.__minute = minute
-            self.__second = second
+            self.__timestamp_ms = timestamp_ms
 
         def build(self):
-            return datetime(year=self.__year, month=self.__month, day=self.__day, hour=self.__hour, minute=self.__minute, second=self.__second)
+            return DateTime(timestamp_ms=self.__timestamp_ms)
 
-        def set_day(self, day):
-            self.__day = day
+        def set_timestamp_ms(self, timestamp_ms):
+            self.__timestamp_ms = timestamp_ms
             return self
 
-        def set_hour(self, hour):
-            self.__hour = hour
-            return self
-
-        def set_minute(self, minute):
-            self.__minute = minute
-            return self
-
-        def set_month(self, month):
-            self.__month = month
-            return self
-
-        def set_second(self, second):
-            self.__second = second
-            return self
-
-        def set_year(self, year):
-            self.__year = year
-            return self
-
-        def update(self, datetime):
-            if isinstance(datetime, datetime):
-                self.set_year(datetime.year)
-                self.set_month(datetime.month)
-                self.set_day(datetime.day)
-                self.set_hour(datetime.hour)
-                self.set_minute(datetime.minute)
-                self.set_second(datetime.second)
-            elif isinstance(datetime, dict):
-                for key, value in datetime.iteritems():
+        def update(self, date_time):
+            if isinstance(date_time, DateTime):
+                self.set_timestamp_ms(date_time.timestamp_ms)
+            elif isinstance(date_time, dict):
+                for key, value in date_time.iteritems():
                     getattr(self, 'set_' + key)(value)
             else:
-                raise TypeError(datetime)
+                raise TypeError(date_time)
             return self
 
     def __init__(
         self,
-        year,
-        month,
-        day,
-        hour,
-        minute,
-        second
+        timestamp_ms
     ):
-        if year is None:
-            raise ValueError('year is required')
-        if not isinstance(year, int):
-            raise TypeError(getattr(__builtin__, 'type')(year))
-        self.__year = year
-
-        if month is None:
-            raise ValueError('month is required')
-        if not isinstance(month, int):
-            raise TypeError(getattr(__builtin__, 'type')(month))
-        self.__month = month
-
-        if day is None:
-            raise ValueError('day is required')
-        if not isinstance(day, int):
-            raise TypeError(getattr(__builtin__, 'type')(day))
-        self.__day = day
-
-        if hour is None:
-            raise ValueError('hour is required')
-        if not isinstance(hour, int):
-            raise TypeError(getattr(__builtin__, 'type')(hour))
-        self.__hour = hour
-
-        if minute is None:
-            raise ValueError('minute is required')
-        if not isinstance(minute, int):
-            raise TypeError(getattr(__builtin__, 'type')(minute))
-        self.__minute = minute
-
-        if second is None:
-            raise ValueError('second is required')
-        if not isinstance(second, int):
-            raise TypeError(getattr(__builtin__, 'type')(second))
-        self.__second = second
+        if timestamp_ms is None:
+            raise ValueError('timestamp_ms is required')
+        if not isinstance(timestamp_ms, (int, long)):
+            raise TypeError(getattr(__builtin__, 'type')(timestamp_ms))
+        self.__timestamp_ms = timestamp_ms
 
     def __eq__(self, other):
-        if self.year != other.year:
-            return False
-        if self.month != other.month:
-            return False
-        if self.day != other.day:
-            return False
-        if self.hour != other.hour:
-            return False
-        if self.minute != other.minute:
-            return False
-        if self.second != other.second:
+        if self.timestamp_ms != other.timestamp_ms:
             return False
         return True
 
     def __hash__(self):
-        return hash((self.year,self.month,self.day,self.hour,self.minute,self.second,))
+        return hash(self.timestamp_ms)
 
     def __ne__(self, other):
         return not self.__eq__(other)
 
     def __repr__(self):
-        return "DateTime(year=%s, month=%s, day=%s, hour=%s, minute=%s, second=%s)" % (self.year, self.month, self.day, self.hour, self.minute, self.second,)
+        return "DateTime(timestamp_ms=%s)" % (self.timestamp_ms,)
 
     def as_dict(self):
-        return {'year': self.year, 'month': self.month, 'day': self.day, 'hour': self.hour, 'minute': self.minute, 'second': self.second}
-
-    @property
-    def day(self):
-        return self.__day
-
-    @property
-    def hour(self):
-        return self.__hour
-
-    @property
-    def minute(self):
-        return self.__minute
-
-    @property
-    def month(self):
-        return self.__month
+        return {'timestamp_ms': self.timestamp_ms}
 
     @classmethod
     def read(cls, iprot):
@@ -159,73 +64,29 @@ class datetime(object):
             ifield_name, ifield_type, _ifield_id = iprot.readFieldBegin()
             if ifield_type == 0: # STOP
                 break
-            elif ifield_name == 'year':
-                init_kwds['year'] = iprot.readI16()
-            elif ifield_name == 'month':
-                init_kwds['month'] = iprot.readByte()
-            elif ifield_name == 'day':
-                init_kwds['day'] = iprot.readByte()
-            elif ifield_name == 'hour':
-                init_kwds['hour'] = iprot.readByte()
-            elif ifield_name == 'minute':
-                init_kwds['minute'] = iprot.readByte()
-            elif ifield_name == 'second':
-                init_kwds['second'] = iprot.readByte()
+            elif ifield_name == 'timestamp_ms':
+                init_kwds['timestamp_ms'] = iprot.readI64()
             iprot.readFieldEnd()
         iprot.readStructEnd()
 
         return cls(**init_kwds)
 
-    def replace(self, year=None, month=None, day=None, hour=None, minute=None, second=None):
-        if year is None:
-            year = self.year
-        if month is None:
-            month = self.month
-        if day is None:
-            day = self.day
-        if hour is None:
-            hour = self.hour
-        if minute is None:
-            minute = self.minute
-        if second is None:
-            second = self.second
-        return self.__class__(year=year, month=month, day=day, hour=hour, minute=minute, second=second)
+    def replace(self, timestamp_ms=None):
+        if timestamp_ms is None:
+            timestamp_ms = self.timestamp_ms
+        return self.__class__(timestamp_ms=timestamp_ms)
 
     @property
-    def second(self):
-        return self.__second
+    def timestamp_ms(self):
+        return self.__timestamp_ms
 
     def write(self, oprot):
-        oprot.writeStructBegin('datetime')
+        oprot.writeStructBegin('DateTime')
 
-        oprot.writeFieldBegin('year', 6, -1)
-        oprot.writeI16(self.year)
-        oprot.writeFieldEnd()
-
-        oprot.writeFieldBegin('month', 3, -1)
-        oprot.writeByte(self.month)
-        oprot.writeFieldEnd()
-
-        oprot.writeFieldBegin('day', 3, -1)
-        oprot.writeByte(self.day)
-        oprot.writeFieldEnd()
-
-        oprot.writeFieldBegin('hour', 3, -1)
-        oprot.writeByte(self.hour)
-        oprot.writeFieldEnd()
-
-        oprot.writeFieldBegin('minute', 3, -1)
-        oprot.writeByte(self.minute)
-        oprot.writeFieldEnd()
-
-        oprot.writeFieldBegin('second', 3, -1)
-        oprot.writeByte(self.second)
+        oprot.writeFieldBegin('timestamp_ms', 10, -1)
+        oprot.writeI64(self.timestamp_ms)
         oprot.writeFieldEnd()
 
         oprot.writeFieldStop()
 
         oprot.writeStructEnd()
-
-    @property
-    def year(self):
-        return self.__year

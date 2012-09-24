@@ -1,10 +1,5 @@
 namespace * thryft.util
 
 struct DateTime {
-    required i16 year;
-    required byte month;
-    required byte day;
-    required byte hour;
-    required byte minute;
-    required byte second;    
+    required i64 timestamp_ms;
 }
