@@ -1,7 +1,6 @@
 package org.thryft.protocol;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
 
 import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TField;
@@ -13,12 +12,12 @@ import org.apache.thrift.protocol.TSet;
 import org.apache.thrift.protocol.TStruct;
 import org.apache.thrift.transport.TTransport;
 
-public abstract class AbstractProtocol extends TProtocol {
-    protected AbstractProtocol() {
+public abstract class Protocol extends TProtocol {
+    protected Protocol() {
         super(null);
     }
 
-    protected AbstractProtocol(final TTransport trans) {
+    protected Protocol(final TTransport trans) {
         super(trans);
     }
 
@@ -26,7 +25,7 @@ public abstract class AbstractProtocol extends TProtocol {
     }
 
     @Override
-    public ByteBuffer readBinary() throws TException {
+    public java.nio.ByteBuffer readBinary() throws TException {
         throw new UnsupportedOperationException();
     }
 
@@ -38,6 +37,18 @@ public abstract class AbstractProtocol extends TProtocol {
     @Override
     public byte readByte() throws TException {
         throw new UnsupportedOperationException();
+    }
+
+    public org.joda.time.DateTime readDate() throws TException {
+        return new org.joda.time.DateTime(readI64());
+    }
+
+    public org.joda.time.DateTime readDateTime() throws TException {
+        return new org.joda.time.DateTime(readI64());
+    }
+
+    public java.math.BigDecimal readDecimal() throws TException {
+        return new java.math.BigDecimal(readString());
     }
 
     @Override
@@ -127,7 +138,7 @@ public abstract class AbstractProtocol extends TProtocol {
     }
 
     @Override
-    public void writeBinary(final ByteBuffer buf) throws TException {
+    public void writeBinary(final java.nio.ByteBuffer buf) throws TException {
         throw new UnsupportedOperationException();
     }
 
@@ -139,6 +150,20 @@ public abstract class AbstractProtocol extends TProtocol {
     @Override
     public void writeByte(final byte b) throws TException {
         throw new UnsupportedOperationException();
+    }
+
+    public void writeDate(final org.joda.time.DateTime date) throws TException {
+        writeI64(date.getMillis());
+    }
+
+    public void writeDateTime(final org.joda.time.DateTime dateTime)
+            throws TException {
+        writeI64(dateTime.getMillis());
+    }
+
+    public void writeDecimal(final java.math.BigDecimal decimal)
+            throws TException {
+        writeString(decimal.toString());
     }
 
     @Override

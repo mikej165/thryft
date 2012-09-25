@@ -8,32 +8,29 @@ class JavaDecimal(JavaStructType):
         return 'java.math.BigDecimal'
 
     def java_read_protocol(self):
-        name = self.java_name()
-        return "new java.math.BigDecimal(new %(name)s(iprot).getValue())" % locals()
+        return "(iprot instanceof org.thryft.protocol.Protocol) ? ((org.thryft.protocol.Protocol)iprot).readDecimal() : new java.math.BigDecimal(iprot.readString())" % locals()
 
     def java_read_protocol_throws(self):
         return ['NumberFormatException']
 
     def java_write_protocol(self, value, depth=0):
-        name = self.java_name()
-        return "new %(name)s(%(value)s.toString()).write(oprot);" % locals()
+        return "if (oprot instanceof org.thryft.protocol.Protocol) { ((org.thryft.protocol.Protocol)oprot).writeDecimal(%(value)s); } else { oprot.writeString(%(value)s.toString()); }" % locals()
 
 
 class PyDecimal(PyStructType):
     def py_check(self, value):
-        return "isinstance(%(value)s, Decimal)" % locals()
+        return "isinstance(%(value)s, decimal.Decimal)" % locals()
 
     def py_imports(self, caller_stack=None):
         return PyStructType.py_imports(self, caller_stack=caller_stack) + \
-               ['from __future__ import absolute_import; from decimal import Decimal, InvalidOperation']
+               ['from __future__ import absolute_import; import decimal']
 
     def py_read_protocol(self):
-        qname = self.py_qname()
-        return "Decimal(%(qname)s.read(iprot).value)" % locals()
+        return "iprot.readDecimal() if hasattr(iprot, 'readDecimal') else decimal.Decimal(iprot.readString())" % locals()
 
     def py_read_protocol_throws(self):
-        return ['InvalidOperation', 'TypeError']
+        return ['decimal.InvalidOperation', 'TypeError']
 
     def py_write_protocol(self, value, depth=0):
         qname = self.py_qname()
-        return "%(qname)s(str(%(value)s)).write(oprot)" % locals()
+        return "oprot.writeDecimal(%(value)s) if hasattr(oprot, 'writeDecimal') else oprot.writeString(str(%(value)s))" % locals()

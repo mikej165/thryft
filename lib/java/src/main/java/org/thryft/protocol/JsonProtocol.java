@@ -26,7 +26,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.TextNode;
 
-public class JsonProtocol extends AbstractProtocol {
+public class JsonProtocol extends Protocol {
     protected final class ArrayReaderProtocol extends ReaderProtocol {
         public ArrayReaderProtocol(final JsonNode node) {
             super(node);
@@ -86,7 +86,7 @@ public class JsonProtocol extends AbstractProtocol {
         private boolean nextWriteIsKey = true;
     }
 
-    protected abstract class ReaderProtocol extends AbstractProtocol {
+    protected abstract class ReaderProtocol extends Protocol {
         protected ReaderProtocol(final JsonNode node) {
             this.node = node;
         }
@@ -226,7 +226,7 @@ public class JsonProtocol extends AbstractProtocol {
         }
     }
 
-    protected abstract class WriterProtocol extends AbstractProtocol {
+    protected abstract class WriterProtocol extends Protocol {
         @Override
         public void writeBool(final boolean b) throws TException {
             try {

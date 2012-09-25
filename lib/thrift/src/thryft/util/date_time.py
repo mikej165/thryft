@@ -13,15 +13,13 @@ class PyDateTime(PyStructType):
                ['from datetime import datetime', 'from time import mktime']
 
     def py_read_protocol(self):
-        qname = self.py_qname()
-        return "datetime.fromtimestamp(%(qname)s.read(iprot).timestamp_ms / 1000)" % locals()
+        return "iprot.readDateTime() if hasattr(iprot, 'readDateTime') else datetime.fromtimestamp(iprot.readI64() / 1000.0)" % locals()
 
     def py_read_protocol_throws(self):
         return ['TypeError']
 
     def py_write_protocol(self, value, depth=0):
-        qname = self.py_qname()
-        return "%(qname)s(long(mktime(%(value)s.timetuple())) * 1000l).write(oprot)" % locals()
+        return "oprot.writeDateTime(%(value)s) if hasattr(oprot, 'writeDateTime') else oprot.writeI64(long(mktime(%(value)s.timetuple())) * 1000l)" % locals()
 
 
 class JavaDateTime(JavaStructType):
@@ -29,12 +27,10 @@ class JavaDateTime(JavaStructType):
         return 'org.joda.time.DateTime'
 
     def java_read_protocol(self):
-        name = self.java_name()
-        return "new org.joda.time.DateTime(new %(name)s(iprot).getTimestampMs())" % locals()
+        return "(iprot instanceof org.thryft.protocol.Protocol) ? ((org.thryft.protocol.Protocol)iprot).readDateTime() : new org.joda.time.DateTime(iprot.readI64())" % locals()
 
     def java_read_protocol_throws(self):
         return ['IllegalArgumentException']
 
     def java_write_protocol(self, value, depth=0):
-        name = self.java_name()
-        return "new %(name)s(%(value)s.getMillis()).write(oprot);" % locals()
+        return "if (oprot instanceof org.thryft.protocol.Protocol) { ((org.thryft.protocol.Protocol)oprot).writeDateTime(%(value)s); } else { oprot.writeI64(%(value)s.getMillis()); }" % locals()

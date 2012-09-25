@@ -20,10 +20,10 @@ import au.com.bytecode.opencsv.CSVReader;
 
 import com.google.common.collect.Lists;
 
-public class CsvProtocol extends AbstractProtocol {
-    protected class File extends AbstractProtocol {
-        protected class Row extends AbstractProtocol {
-            protected class SequenceColumn extends AbstractProtocol {
+public class CsvProtocol extends Protocol {
+    protected class File extends Protocol {
+        protected class Row extends Protocol {
+            protected class SequenceColumn extends Protocol {
                 public SequenceColumn(final String[] elements) {
                     this.elements = elements;
                     currentElementI = 0;
@@ -71,6 +71,13 @@ public class CsvProtocol extends AbstractProtocol {
             @Override
             public String readString() {
                 return _getCurrentColumnValue();
+            }
+
+            @Override
+            public TStruct readStructBegin() {
+                // Assume a struct will read inline
+                scopeStack.push(this);
+                return new TStruct();
             }
 
             protected TProtocol _createSequenceColumn(final String[] elements) {

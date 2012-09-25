@@ -13,7 +13,7 @@ import org.apache.thrift.TBase;
 import org.apache.thrift.protocol.TProtocol;
 import org.joda.time.DateTime;
 import org.junit.Test;
-import org.thryft.protocol.AbstractProtocol;
+import org.thryft.protocol.Protocol;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -98,22 +98,22 @@ public abstract class ProtocolTest {
                 new ProtocolTestStruct()).build());
     }
 
-    protected abstract AbstractProtocol _newProtocol(Reader reader)
+    protected abstract Protocol _newProtocol(Reader reader)
             throws IOException;
 
-    protected abstract AbstractProtocol _newProtocol(Writer writer)
+    protected abstract Protocol _newProtocol(Writer writer)
             throws IOException;
 
     private void __test(final TBase<?, ?> expected) throws Exception {
         final StringWriter writer = new StringWriter();
-        final AbstractProtocol oprot = _newProtocol(writer);
+        final Protocol oprot = _newProtocol(writer);
         expected.write(oprot);
         oprot.flush();
 
         final String ostring = writer.toString();
 
         final StringReader reader = new StringReader(ostring);
-        final AbstractProtocol iprot = _newProtocol(reader);
+        final Protocol iprot = _newProtocol(reader);
         final TBase<?, ?> actual = expected.getClass()
                 .getConstructor(TProtocol.class).newInstance(iprot);
         assertEquals(expected, actual);
