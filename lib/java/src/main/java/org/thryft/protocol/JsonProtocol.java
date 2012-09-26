@@ -27,65 +27,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.TextNode;
 
 public class JsonProtocol extends Protocol {
-    protected final class ArrayReaderProtocol extends ReaderProtocol {
-        public ArrayReaderProtocol(final JsonNode node) {
-            super(node);
-        }
-
-        @Override
-        protected JsonNode _readNode() {
-            return node.get(nextValueIndex++);
-        }
-
-        private int nextValueIndex = 0;
-    }
-
-    protected final class ArrayWriterProtocol extends WriterProtocol {
-    }
-
-    protected final class MapObjectReaderProtocol extends ReaderProtocol {
-        public MapObjectReaderProtocol(final JsonNode node) {
-            super(node);
-            for (final Iterator<String> fieldName = node.fieldNames(); fieldName
-                    .hasNext();) {
-                fieldNameStack.add(fieldName.next());
-            }
-        }
-
-        @Override
-        protected JsonNode _readNode() {
-            if (nextReadIsKey) {
-                nextReadIsKey = false;
-                return new TextNode(fieldNameStack.peek());
-            } else {
-                nextReadIsKey = true;
-                return node.get(fieldNameStack.pop());
-            }
-        }
-
-        private final Stack<String> fieldNameStack = new Stack<String>();
-        private boolean nextReadIsKey = true;
-    }
-
-    protected final class MapObjectWriterProtocol extends WriterProtocol {
-        @Override
-        public void writeString(final String str) throws TException {
-            if (nextWriteIsKey) {
-                nextWriteIsKey = false;
-                try {
-                    generator.writeFieldName(str);
-                } catch (final IOException e) {
-                    throw new TException(e);
-                }
-            } else {
-                nextWriteIsKey = true;
-                super.writeString(str);
-            }
-        }
-
-        private boolean nextWriteIsKey = true;
-    }
-
     protected abstract class ReaderProtocol extends Protocol {
         protected ReaderProtocol(final JsonNode node) {
             this.node = node;
@@ -173,9 +114,6 @@ public class JsonProtocol extends Protocol {
 
     }
 
-    protected final class RootWriterProtocol extends WriterProtocol {
-    }
-
     protected class StructObjectReaderProtocol extends ReaderProtocol {
         public StructObjectReaderProtocol(final JsonNode node) {
             super(node);
@@ -205,25 +143,6 @@ public class JsonProtocol extends Protocol {
         }
 
         private final Stack<String> fieldNameStack = new Stack<String>();
-    }
-
-    protected final class StructObjectWriterProtocol extends WriterProtocol {
-        @Override
-        public void writeFieldBegin(final TField field) throws TException {
-            try {
-                generator.writeFieldName(field.name);
-            } catch (final IOException e) {
-                throw new TException(e);
-            }
-        }
-
-        @Override
-        public void writeFieldEnd() throws TException {
-        }
-
-        @Override
-        public void writeFieldStop() throws TException {
-        }
     }
 
     protected abstract class WriterProtocol extends Protocol {
@@ -348,6 +267,87 @@ public class JsonProtocol extends Protocol {
             } catch (final IOException e) {
                 throw new TException(e);
             }
+        }
+    }
+
+    private final class ArrayReaderProtocol extends ReaderProtocol {
+        public ArrayReaderProtocol(final JsonNode node) {
+            super(node);
+        }
+
+        @Override
+        protected JsonNode _readNode() {
+            return node.get(nextValueIndex++);
+        }
+
+        private int nextValueIndex = 0;
+    }
+
+    private final class ArrayWriterProtocol extends WriterProtocol {
+    }
+
+    private final class MapObjectReaderProtocol extends ReaderProtocol {
+        public MapObjectReaderProtocol(final JsonNode node) {
+            super(node);
+            for (final Iterator<String> fieldName = node.fieldNames(); fieldName
+                    .hasNext();) {
+                fieldNameStack.add(fieldName.next());
+            }
+        }
+
+        @Override
+        protected JsonNode _readNode() {
+            if (nextReadIsKey) {
+                nextReadIsKey = false;
+                return new TextNode(fieldNameStack.peek());
+            } else {
+                nextReadIsKey = true;
+                return node.get(fieldNameStack.pop());
+            }
+        }
+
+        private final Stack<String> fieldNameStack = new Stack<String>();
+        private boolean nextReadIsKey = true;
+    }
+
+    private final class MapObjectWriterProtocol extends WriterProtocol {
+        @Override
+        public void writeString(final String str) throws TException {
+            if (nextWriteIsKey) {
+                nextWriteIsKey = false;
+                try {
+                    generator.writeFieldName(str);
+                } catch (final IOException e) {
+                    throw new TException(e);
+                }
+            } else {
+                nextWriteIsKey = true;
+                super.writeString(str);
+            }
+        }
+
+        private boolean nextWriteIsKey = true;
+    }
+
+    private final class RootWriterProtocol extends WriterProtocol {
+    }
+
+    private final class StructObjectWriterProtocol extends WriterProtocol {
+        @Override
+        public void writeFieldBegin(final TField field) throws TException {
+            try {
+                generator.writeFieldName(field.name);
+            } catch (final IOException e) {
+                throw new TException(e);
+            }
+        }
+
+        @Override
+        public void writeFieldEnd() throws TException {
+        }
+
+        @Override
+        public void writeFieldStop() throws TException {
         }
     }
 
