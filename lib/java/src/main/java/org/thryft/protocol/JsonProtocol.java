@@ -329,6 +329,17 @@ public class JsonProtocol extends Protocol {
         private boolean nextWriteIsKey = true;
     }
 
+    private final class RootReaderProtocol extends ReaderProtocol {
+        protected RootReaderProtocol(final JsonNode node) {
+            super(node);
+        }
+
+        @Override
+        protected JsonNode _readNode() {
+            return node;
+        }
+    }
+
     private final class RootWriterProtocol extends WriterProtocol {
     }
 
@@ -359,13 +370,12 @@ public class JsonProtocol extends Protocol {
         this.generator = generator;
         scopeStack = new Stack<TProtocol>();
         scopeStack.push(new RootWriterProtocol());
-        parsedTree = null;
     }
 
     public JsonProtocol(final JsonNode parsedTree) {
         generator = null;
         scopeStack = new Stack<TProtocol>();
-        this.parsedTree = parsedTree;
+        scopeStack.push(new RootReaderProtocol(parsedTree));
     }
 
     public JsonProtocol(final OutputStream outputStream) throws IOException {
@@ -428,14 +438,7 @@ public class JsonProtocol extends Protocol {
 
     @Override
     public TList readListBegin() throws TException {
-        if (!scopeStack.isEmpty()) {
-            return scopeStack.peek().readListBegin();
-        } else if (parsedTree.isArray()) {
-            scopeStack.push(new ArrayReaderProtocol(parsedTree));
-            return new TList(TType.VOID, parsedTree.size());
-        } else {
-            throw new TException("expected JSON array");
-        }
+        return scopeStack.peek().readListBegin();
     }
 
     @Override
@@ -445,14 +448,7 @@ public class JsonProtocol extends Protocol {
 
     @Override
     public TMap readMapBegin() throws TException {
-        if (!scopeStack.isEmpty()) {
-            return scopeStack.peek().readMapBegin();
-        } else if (parsedTree.isObject()) {
-            scopeStack.push(new MapObjectReaderProtocol(parsedTree));
-            return new TMap(TType.VOID, TType.VOID, parsedTree.size());
-        } else {
-            throw new TException("expected JSON object");
-        }
+        return scopeStack.peek().readMapBegin();
     }
 
     @Override
@@ -467,14 +463,7 @@ public class JsonProtocol extends Protocol {
 
     @Override
     public TStruct readStructBegin() throws TException {
-        if (!scopeStack.isEmpty()) {
-            return scopeStack.peek().readStructBegin();
-        } else if (parsedTree.isObject()) {
-            scopeStack.push(new StructObjectReaderProtocol(parsedTree));
-            return new TStruct();
-        } else {
-            throw new TException("expected JSON object");
-        }
+        return scopeStack.peek().readStructBegin();
     }
 
     @Override
@@ -563,6 +552,5 @@ public class JsonProtocol extends Protocol {
     }
 
     private final JsonGenerator generator;
-    private final JsonNode parsedTree;
     private final Stack<TProtocol> scopeStack;
 }
