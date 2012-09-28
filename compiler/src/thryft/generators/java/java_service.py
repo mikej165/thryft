@@ -18,7 +18,7 @@ class JavaService(Service, JavaNamedConstruct):
             extends = ' extends ' + extends
         methods = \
             lpad("\n", "\n".join(indent(' ' * 4,
-                [function.java_declaration()
+                [repr(function)
                  for function in self.functions])))
         name = self.java_name()
         return """\
