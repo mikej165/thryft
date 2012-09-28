@@ -56,6 +56,11 @@ public abstract class Protocol extends TProtocol {
         throw new UnsupportedOperationException();
     }
 
+    public <E extends Enum<E>> E readEnum(final Class<E> klazz)
+            throws TException {
+        return Enum.valueOf(klazz, readString().trim().toUpperCase());
+    }
+
     @Override
     public TField readFieldBegin() throws TException {
         throw new UnsupportedOperationException();
@@ -108,6 +113,10 @@ public abstract class Protocol extends TProtocol {
 
     @Override
     public void readMessageEnd() throws TException {
+        throw new UnsupportedOperationException();
+    }
+
+    public Object readMixed() throws TException {
         throw new UnsupportedOperationException();
     }
 
@@ -171,6 +180,10 @@ public abstract class Protocol extends TProtocol {
         throw new UnsupportedOperationException();
     }
 
+    public void writeEnum(final Enum<?> enum_) throws TException {
+        writeString(enum_.toString().toUpperCase());
+    }
+
     @Override
     public void writeFieldBegin(final TField field) throws TException {
         throw new UnsupportedOperationException();
@@ -229,6 +242,28 @@ public abstract class Protocol extends TProtocol {
     @Override
     public void writeMessageEnd() throws TException {
         throw new UnsupportedOperationException();
+    }
+
+    public void writeMixed(final Object value) throws TException {
+        if (value instanceof Byte) {
+            writeByte((Byte) value);
+        } else if (value instanceof org.joda.time.DateTime) {
+            writeDateTime((org.joda.time.DateTime) value);
+        } else if (value instanceof java.math.BigDecimal) {
+            writeDecimal((java.math.BigDecimal) value);
+        } else if (value instanceof Double) {
+            writeDouble((Double) value);
+        } else if (value instanceof Short) {
+            writeI16((Short) value);
+        } else if (value instanceof Integer) {
+            writeI32((Integer) value);
+        } else if (value instanceof Long) {
+            writeI64((Long) value);
+        } else if (value instanceof String) {
+            writeString((String) value);
+        } else {
+            throw new UnsupportedOperationException();
+        }
     }
 
     @Override

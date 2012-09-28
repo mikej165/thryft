@@ -15,13 +15,13 @@ class JavaEnumType(EnumType, JavaType):
 
     def java_read_protocol(self):
         name = self.java_name()
-        return "%(name)s.byName(iprot.readString().trim().toUpperCase())" % locals()
+        return "(iprot instanceof org.thryft.protocol.Protocol) ? ((org.thryft.protocol.Protocol)iprot).readEnum(%(name)s.class) : %(name)s.valueOf(iprot.readString().trim().toUpperCase())" % locals()
 
     def java_read_protocol_throws(self):
         return ['IllegalArgumentException']
 
     def java_write_protocol(self, value, depth=0):
-        return "oprot.writeString(%(value)s.toString());" % locals()
+        return "if (oprot instanceof org.thryft.protocol.Protocol) { ((org.thryft.protocol.Protocol)oprot).writeEnum(%(value)s); } else { oprot.writeString(%(value)s.toString()); }" % locals()
 
     def __repr__(self):
         name = self.java_name()
@@ -31,15 +31,15 @@ public enum %(name)s {
 }"""
         for enumerator in self.enumerators:
             if enumerator.value is not None:
-                byValue_cases = []
+                valueOfInt_cases = []
                 enumerators = []
                 for enumerator in self.enumerators:
-                    byValue_cases.append(
+                    valueOfInt_cases.append(
 "case %u: return %s;" % (enumerator.value, enumerator.name))
                     enumerators.append(
                         "%s(%u)" % (enumerator.name, enumerator.value)
                     )
-                byValue_cases = "\n".join(indent(' ' * 8, byValue_cases))
+                valueOfInt_cases = "\n".join(indent(' ' * 8, valueOfInt_cases))
                 enumerators = ",\n".join(indent(' ' * 4, enumerators))
                 return """\
 public enum %(name)s {
@@ -48,22 +48,10 @@ public enum %(name)s {
     private %(name)s(int value) {
         this.value = value;
     }
-
-    public static %(name)s byName(final String name) {
-        try {
-            return valueOf(name);
-        } catch (IllegalArgumentException e1) {
-            try {
-                return byValue(Integer.parseInt(name));
-            } catch (NumberFormatException e2) {
-                throw e1;
-            }
-        }
-    }
     
-    public static %(name)s byValue(final int value) {
+    public static %(name)s valueOfInt(final int value) {
         switch (value) {
-%(byValue_cases)s
+%(valueOfInt_cases)s
         default: throw new IllegalArgumentException();
         }
     }
@@ -81,8 +69,4 @@ public enum %(name)s {
             ))
         return """public enum %(name)s {
 %(enumerators)s;
-
-    public static %(name)s byName(final String name) {
-        return valueOf(name);
-    }
 }""" % locals()

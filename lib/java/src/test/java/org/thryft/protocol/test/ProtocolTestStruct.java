@@ -173,17 +173,17 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
                 }
             } else if (ifield.name.equals("date_field")) {
                 try {
-                    dateField = new org.joda.time.DateTime(new Date(iprot).getTimestampMs());
+                    dateField = (iprot instanceof org.thryft.protocol.Protocol) ? ((org.thryft.protocol.Protocol)iprot).readDateTime() : new org.joda.time.DateTime(iprot.readI64());
                 } catch (IllegalArgumentException e) {
                 }
             } else if (ifield.name.equals("date_time_field")) {
                 try {
-                    dateTimeField = new org.joda.time.DateTime(new DateTime(iprot).getTimestampMs());
+                    dateTimeField = (iprot instanceof org.thryft.protocol.Protocol) ? ((org.thryft.protocol.Protocol)iprot).readDateTime() : new org.joda.time.DateTime(iprot.readI64());
                 } catch (IllegalArgumentException e) {
                 }
             } else if (ifield.name.equals("decimal_field")) {
                 try {
-                    decimalField = new java.math.BigDecimal(new Decimal(iprot).getValue());
+                    decimalField = (iprot instanceof org.thryft.protocol.Protocol) ? ((org.thryft.protocol.Protocol)iprot).readDecimal() : new java.math.BigDecimal(iprot.readString());
                 } catch (NumberFormatException e) {
                 }
             } else if (ifield.name.equals("enum_field")) {
@@ -596,19 +596,19 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
 
         if (getDateField() != null) {
             oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("date_field", org.apache.thrift.protocol.TType.STRUCT, (short)-1));
-            new Date(getDateField().getMillis()).write(oprot);
+            if (oprot instanceof org.thryft.protocol.Protocol) { ((org.thryft.protocol.Protocol)oprot).writeDateTime(getDateField()); } else { oprot.writeI64(getDateField().getMillis()); }
             oprot.writeFieldEnd();
         }
 
         if (getDateTimeField() != null) {
             oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("date_time_field", org.apache.thrift.protocol.TType.STRUCT, (short)-1));
-            new DateTime(getDateTimeField().getMillis()).write(oprot);
+            if (oprot instanceof org.thryft.protocol.Protocol) { ((org.thryft.protocol.Protocol)oprot).writeDateTime(getDateTimeField()); } else { oprot.writeI64(getDateTimeField().getMillis()); }
             oprot.writeFieldEnd();
         }
 
         if (getDecimalField() != null) {
             oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("decimal_field", org.apache.thrift.protocol.TType.STRUCT, (short)-1));
-            new Decimal(getDecimalField().toString()).write(oprot);
+            if (oprot instanceof org.thryft.protocol.Protocol) { ((org.thryft.protocol.Protocol)oprot).writeDecimal(getDecimalField()); } else { oprot.writeString(getDecimalField().toString()); }
             oprot.writeFieldEnd();
         }
 
