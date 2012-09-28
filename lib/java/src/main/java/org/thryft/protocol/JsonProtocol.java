@@ -368,13 +368,11 @@ public class JsonProtocol extends Protocol {
 
     public JsonProtocol(final JsonGenerator generator) {
         this.generator = generator;
-        scopeStack = new Stack<TProtocol>();
         scopeStack.push(new RootWriterProtocol());
     }
 
     public JsonProtocol(final JsonNode parsedTree) {
         generator = null;
-        scopeStack = new Stack<TProtocol>();
         scopeStack.push(new RootReaderProtocol(parsedTree));
     }
 
@@ -552,5 +550,5 @@ public class JsonProtocol extends Protocol {
     }
 
     private final JsonGenerator generator;
-    private final Stack<TProtocol> scopeStack;
+    private final Stack<TProtocol> scopeStack = new Stack<TProtocol>();
 }
