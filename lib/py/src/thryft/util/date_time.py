@@ -50,7 +50,9 @@ class DateTime(object):
         return not self.__eq__(other)
 
     def __repr__(self):
-        return "DateTime(timestamp_ms=%s)" % (self.timestamp_ms,)
+        field_reprs = []
+        field_reprs.append('timestamp_ms=' + repr(self.timestamp_ms))
+        return 'DateTime(' + ', '.join(field_reprs) + ')'
 
     def as_dict(self):
         return {'timestamp_ms': self.timestamp_ms}

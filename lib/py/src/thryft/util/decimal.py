@@ -1,4 +1,4 @@
-from __future__ import absolute_import; from decimal import Decimal, InvalidOperation
+from __future__ import absolute_import; import decimal
 import __builtin__
 
 
@@ -49,7 +49,9 @@ class Decimal(object):
         return not self.__eq__(other)
 
     def __repr__(self):
-        return "Decimal(value=%s)" % (self.value,)
+        field_reprs = []
+        field_reprs.append('value=' + "'" + self.value.encode('ascii', 'replace') + "'")
+        return 'Decimal(' + ', '.join(field_reprs) + ')'
 
     def as_dict(self):
         return {'value': self.value}

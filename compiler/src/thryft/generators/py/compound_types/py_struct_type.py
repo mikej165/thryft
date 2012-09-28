@@ -215,19 +215,24 @@ def __repr__(self):
     return '%(name)s()'
 """ % locals()}
 
-        field_reprs = \
-            ', '.join([
-                "%s=%%s" % field.name
-                for field in self.fields
-            ])
-        field_values = \
-            ', '.join([
-                'self.' + field.py_getter_call()
-                 for field in self.fields
-            ])
+        field_reprs = []
+        for field in self.fields:
+            field_name = field.name
+            field_getter_call = field.py_getter_call()
+            field_repr = field.type.py_repr('self.' + field.py_getter_call())
+            field_repr = "field_reprs.append('%(field_name)s=' + %(field_repr)s)" % locals()
+            if not field.required:
+                field_repr = """\
+if self.%(field_getter_call)s is not None:
+    %(field_repr)s
+""" % locals()
+            field_reprs.append(field_repr)
+        field_reprs = "\n".join(indent(' ' * 4, field_reprs))
         return {'__repr__': """\
 def __repr__(self):
-    return "%(name)s(%(field_reprs)s)" %% (%(field_values)s,)
+    field_reprs = []
+%(field_reprs)s
+    return '%(name)s(' + ', '.join(field_reprs) + ')'
 """ % locals()}
 
     def _py_method_write_protocol(self):

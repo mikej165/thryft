@@ -15,5 +15,8 @@ class PyType(PyNamedConstruct):
     def py_read_protocol_throws(self):
         return []
 
+    def py_repr(self, value):
+        return 'repr(' + value + ')'
+
     def py_write_protocol(self, value, depth=0):
         raise NotImplementedError(class_qname(self) + '.py_write_protocol')

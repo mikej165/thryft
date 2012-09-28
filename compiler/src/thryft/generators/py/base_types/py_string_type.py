@@ -8,3 +8,6 @@ class PyStringType(StringType, PyBaseType):
 
     def py_name(self):
         return 'str'
+
+    def py_repr(self, value):
+        return "\"'\" + %(value)s.encode('ascii', 'replace') + \"'\"" % locals()
