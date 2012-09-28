@@ -3,7 +3,6 @@ from thryft.generators.java.compound_types.java_struct_type import JavaStructTyp
 from thryft.generators.py.compound_types.py_struct_type import PyStructType
 
 
-
 class PyDateTime(PyStructType):
     def py_check(self, value):
         return "isinstance(%(value)s, datetime)" % locals()
