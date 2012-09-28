@@ -112,6 +112,10 @@ protected %(name)s _build(%(field_parameters)s) {
 public static class Builder {%(sections)s
 }""" % locals()
 
+    def __init__(self, java_static_class=False, **kwds):
+        StructType.__init__(self, **kwds)
+        self.__static_class = java_static_class
+
     def _java_constructor_default(self):
         name = self.java_name()
 
@@ -423,6 +427,7 @@ public void write(final org.apache.thrift.protocol.TProtocol oprot) throws org.a
 
     def __repr__(self):
         name = self.java_name()
+        static = self.__static_class and 'static ' or ''
         sections = []
         sections.append(indent(' ' * 4, repr(self._JavaBuilder(self))))
         sections.append("\n\n".join(indent(' ' * 4, self._java_methods())))
@@ -430,5 +435,5 @@ public void write(final org.apache.thrift.protocol.TProtocol oprot) throws org.a
         sections = lpad("\n", "\n\n".join(sections))
         return """\
 @SuppressWarnings("serial")
-public class %(name)s implements org.apache.thrift.TBase<%(name)s, org.apache.thrift.TFieldIdEnum> {%(sections)s
+public %(static)sclass %(name)s implements org.apache.thrift.TBase<%(name)s, org.apache.thrift.TFieldIdEnum> {%(sections)s
 }""" % locals()
