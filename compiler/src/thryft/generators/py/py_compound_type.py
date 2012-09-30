@@ -13,10 +13,7 @@ class PyCompoundType(PyType):
 
         def _py_constructor(self):
             if len(self.fields) == 0:
-                return '''\
-def __init__(self):
-    pass
-'''
+                return None
 
             parameters = []
             for field in self.fields:
@@ -50,6 +47,9 @@ def build(self):
 """ % locals()}
 
         def _py_method_update(self):
+            if len(self.fields) == 0:
+                return {}
+
             name = self.py_name()
             other_name = decamelize(self.py_name())
             object_updates = "\n".join(indent(' ' * 8,
@@ -77,11 +77,13 @@ def update(self, %(other_name)s):
                 for field in self.fields)
 
         def _py_methods(self):
+            constructor = self._py_constructor()
             methods = {}
             methods.update(self._py_method_build())
             methods.update(self._py_method_setters())
             methods.update(self._py_method_update())
-            return [self._py_constructor()] + [methods[key] for key in sorted(methods.iterkeys())]
+            return ([constructor] if constructor is not None else []) + \
+                    [methods[key] for key in sorted(methods.iterkeys())]
 
         def __repr__(self):
             name = self.py_name()
@@ -191,6 +193,9 @@ def read(cls, iprot):
 """ % locals()}
 
     def _py_method_replace(self):
+        if len(self.fields) == 0:
+            return {}
+
         in_kwds = []
         out_kwds = []
         replacements = []
