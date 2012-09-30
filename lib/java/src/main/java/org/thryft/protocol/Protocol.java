@@ -2,6 +2,7 @@ package org.thryft.protocol;
 
 import java.io.IOException;
 
+import org.apache.thrift.TBase;
 import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TField;
 import org.apache.thrift.protocol.TList;
@@ -261,6 +262,8 @@ public abstract class Protocol extends TProtocol {
             writeI64((Long) value);
         } else if (value instanceof String) {
             writeString((String) value);
+        } else if (value instanceof TBase<?, ?>) {
+            ((TBase<?, ?>) value).write(this);
         } else {
             throw new UnsupportedOperationException();
         }
