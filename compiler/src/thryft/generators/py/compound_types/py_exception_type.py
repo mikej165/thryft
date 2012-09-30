@@ -3,9 +3,8 @@ from thryft.generators.py.py_compound_type import PyCompoundType
 
 
 class PyExceptionType(ExceptionType, PyCompoundType):
+    def _py_extends(self):
+        return ['Exception']
+
     def __repr__(self):
-        name = self.py_name()
-        return """\
-class %(name)s(Exception):
-    pass
-""" % locals()
+        return PyCompoundType.__repr__(self)

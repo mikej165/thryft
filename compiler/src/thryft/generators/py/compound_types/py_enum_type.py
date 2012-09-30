@@ -1,9 +1,13 @@
 from thryft.generator.compound_types.enum_type import EnumType
-from thryft.generators.py.py_compound_type import PyCompoundType
+from thryft.generators.py.py_type import PyType
 from yutil import indent, lpad, pad
 
 
-class PyEnumType(EnumType, PyCompoundType):
+class PyEnumType(EnumType, PyType):
+    def py_check(self, value):
+        qname = self.py_qname()
+        return "isinstance(%(value)s, %(qname)s)" % locals()
+
     def py_read_protocol(self):
         qname = self.py_qname()
         return "%(qname)s.value_of(iprot.readString().strip().upper())" % locals()
