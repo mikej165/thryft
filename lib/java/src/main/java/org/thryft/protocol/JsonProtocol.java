@@ -27,6 +27,65 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.TextNode;
 
 public class JsonProtocol extends Protocol {
+    protected class ArrayReaderProtocol extends ReaderProtocol {
+        public ArrayReaderProtocol(final JsonNode node) {
+            super(node);
+        }
+
+        @Override
+        protected JsonNode _readNode() {
+            return node.get(nextValueIndex++);
+        }
+
+        private int nextValueIndex = 0;
+    }
+
+    protected class ArrayWriterProtocol extends WriterProtocol {
+    }
+
+    protected class MapObjectReaderProtocol extends ReaderProtocol {
+        public MapObjectReaderProtocol(final JsonNode node) {
+            super(node);
+            for (final Iterator<String> fieldName = node.fieldNames(); fieldName
+                    .hasNext();) {
+                fieldNameStack.add(fieldName.next());
+            }
+        }
+
+        @Override
+        protected JsonNode _readNode() {
+            if (nextReadIsKey) {
+                nextReadIsKey = false;
+                return new TextNode(fieldNameStack.peek());
+            } else {
+                nextReadIsKey = true;
+                return node.get(fieldNameStack.pop());
+            }
+        }
+
+        private final Stack<String> fieldNameStack = new Stack<String>();
+        private boolean nextReadIsKey = true;
+    }
+
+    protected class MapObjectWriterProtocol extends WriterProtocol {
+        @Override
+        public void writeString(final String str) throws TException {
+            if (nextWriteIsKey) {
+                nextWriteIsKey = false;
+                try {
+                    generator.writeFieldName(str);
+                } catch (final IOException e) {
+                    throw new TException(e);
+                }
+            } else {
+                nextWriteIsKey = true;
+                super.writeString(str);
+            }
+        }
+
+        private boolean nextWriteIsKey = true;
+    }
+
     protected abstract class ReaderProtocol extends Protocol {
         protected ReaderProtocol(final JsonNode node) {
             this.node = node;
@@ -68,7 +127,7 @@ public class JsonProtocol extends Protocol {
             if (!node.isArray()) {
                 throw new TException("expected JSON array");
             }
-            scopeStack.push(new ArrayReaderProtocol(node));
+            scopeStack.push(_createArrayReaderProtocol(node));
             return new TList(TType.VOID, node.size());
         }
 
@@ -78,7 +137,7 @@ public class JsonProtocol extends Protocol {
             if (!node.isObject()) {
                 throw new TException("expected JSON object");
             }
-            scopeStack.push(new MapObjectReaderProtocol(node));
+            scopeStack.push(_createMapObjectReaderProtocol(node));
             return new TMap(TType.VOID, TType.VOID, node.size());
         }
 
@@ -104,14 +163,41 @@ public class JsonProtocol extends Protocol {
             if (!node.isObject()) {
                 throw new TException("expected JSON object");
             }
-            scopeStack.push(new StructObjectReaderProtocol(node));
+            scopeStack.push(_createStructObjectReaderProtocol(node));
             return new TStruct();
+        }
+
+        protected TProtocol _createArrayReaderProtocol(final JsonNode node) {
+            return new ArrayReaderProtocol(node);
+        }
+
+        protected TProtocol _createMapObjectReaderProtocol(final JsonNode node) {
+            return new MapObjectReaderProtocol(node);
+        }
+
+        protected TProtocol _createStructObjectReaderProtocol(
+                final JsonNode node) {
+            return new StructObjectReaderProtocol(node);
         }
 
         protected abstract JsonNode _readNode();
 
         protected final JsonNode node;
 
+    }
+
+    protected class RootReaderProtocol extends ReaderProtocol {
+        protected RootReaderProtocol(final JsonNode node) {
+            super(node);
+        }
+
+        @Override
+        protected JsonNode _readNode() {
+            return node;
+        }
+    }
+
+    protected class RootWriterProtocol extends WriterProtocol {
     }
 
     protected class StructObjectReaderProtocol extends ReaderProtocol {
@@ -143,6 +229,25 @@ public class JsonProtocol extends Protocol {
         }
 
         private final Stack<String> fieldNameStack = new Stack<String>();
+    }
+
+    protected class StructObjectWriterProtocol extends WriterProtocol {
+        @Override
+        public void writeFieldBegin(final TField field) throws TException {
+            try {
+                generator.writeFieldName(field.name);
+            } catch (final IOException e) {
+                throw new TException(e);
+            }
+        }
+
+        @Override
+        public void writeFieldEnd() throws TException {
+        }
+
+        @Override
+        public void writeFieldStop() throws TException {
+        }
     }
 
     protected abstract class WriterProtocol extends Protocol {
@@ -204,7 +309,7 @@ public class JsonProtocol extends Protocol {
         public void writeListBegin(final TList list) throws TException {
             try {
                 generator.writeStartArray();
-                scopeStack.push(new ArrayWriterProtocol());
+                scopeStack.push(_createArrayWriterProtocol());
             } catch (final IOException e) {
                 throw new TException(e);
             }
@@ -224,7 +329,7 @@ public class JsonProtocol extends Protocol {
         public void writeMapBegin(final TMap map) throws TException {
             try {
                 generator.writeStartObject();
-                scopeStack.push(new MapObjectWriterProtocol());
+                scopeStack.push(_createMapObjectWriterProtocol());
             } catch (final IOException e) {
                 throw new TException(e);
             }
@@ -253,7 +358,7 @@ public class JsonProtocol extends Protocol {
         public void writeStructBegin(final TStruct struct) throws TException {
             try {
                 generator.writeStartObject();
-                scopeStack.push(new StructObjectWriterProtocol());
+                scopeStack.push(_createStructObjectWriterProtocol());
             } catch (final IOException e) {
                 throw new TException(e);
             }
@@ -268,97 +373,17 @@ public class JsonProtocol extends Protocol {
                 throw new TException(e);
             }
         }
-    }
 
-    private final class ArrayReaderProtocol extends ReaderProtocol {
-        public ArrayReaderProtocol(final JsonNode node) {
-            super(node);
+        protected TProtocol _createArrayWriterProtocol() {
+            return new ArrayWriterProtocol();
         }
 
-        @Override
-        protected JsonNode _readNode() {
-            return node.get(nextValueIndex++);
+        protected TProtocol _createMapObjectWriterProtocol() {
+            return new MapObjectWriterProtocol();
         }
 
-        private int nextValueIndex = 0;
-    }
-
-    private final class ArrayWriterProtocol extends WriterProtocol {
-    }
-
-    private final class MapObjectReaderProtocol extends ReaderProtocol {
-        public MapObjectReaderProtocol(final JsonNode node) {
-            super(node);
-            for (final Iterator<String> fieldName = node.fieldNames(); fieldName
-                    .hasNext();) {
-                fieldNameStack.add(fieldName.next());
-            }
-        }
-
-        @Override
-        protected JsonNode _readNode() {
-            if (nextReadIsKey) {
-                nextReadIsKey = false;
-                return new TextNode(fieldNameStack.peek());
-            } else {
-                nextReadIsKey = true;
-                return node.get(fieldNameStack.pop());
-            }
-        }
-
-        private final Stack<String> fieldNameStack = new Stack<String>();
-        private boolean nextReadIsKey = true;
-    }
-
-    private final class MapObjectWriterProtocol extends WriterProtocol {
-        @Override
-        public void writeString(final String str) throws TException {
-            if (nextWriteIsKey) {
-                nextWriteIsKey = false;
-                try {
-                    generator.writeFieldName(str);
-                } catch (final IOException e) {
-                    throw new TException(e);
-                }
-            } else {
-                nextWriteIsKey = true;
-                super.writeString(str);
-            }
-        }
-
-        private boolean nextWriteIsKey = true;
-    }
-
-    private final class RootReaderProtocol extends ReaderProtocol {
-        protected RootReaderProtocol(final JsonNode node) {
-            super(node);
-        }
-
-        @Override
-        protected JsonNode _readNode() {
-            return node;
-        }
-    }
-
-    private final class RootWriterProtocol extends WriterProtocol {
-    }
-
-    private final class StructObjectWriterProtocol extends WriterProtocol {
-        @Override
-        public void writeFieldBegin(final TField field) throws TException {
-            try {
-                generator.writeFieldName(field.name);
-            } catch (final IOException e) {
-                throw new TException(e);
-            }
-        }
-
-        @Override
-        public void writeFieldEnd() throws TException {
-        }
-
-        @Override
-        public void writeFieldStop() throws TException {
+        protected TProtocol _createStructObjectWriterProtocol() {
+            return new StructObjectWriterProtocol();
         }
     }
 
@@ -368,12 +393,12 @@ public class JsonProtocol extends Protocol {
 
     public JsonProtocol(final JsonGenerator generator) {
         this.generator = generator;
-        scopeStack.push(new RootWriterProtocol());
+        scopeStack.push(_createRootWriterProtocol());
     }
 
     public JsonProtocol(final JsonNode parsedTree) {
         generator = null;
-        scopeStack.push(new RootReaderProtocol(parsedTree));
+        scopeStack.push(_createRootReaderProtocol(parsedTree));
     }
 
     public JsonProtocol(final OutputStream outputStream) throws IOException {
@@ -547,6 +572,18 @@ public class JsonProtocol extends Protocol {
     @Override
     public void writeStructEnd() throws TException {
         scopeStack.peek().writeStructEnd();
+    }
+
+    protected TProtocol _createRootReaderProtocol(final JsonNode parsedTree) {
+        return new RootReaderProtocol(parsedTree);
+    }
+
+    protected TProtocol _createRootWriterProtocol() {
+        return new RootWriterProtocol();
+    }
+
+    protected Stack<TProtocol> _getScopeStack() {
+        return scopeStack;
     }
 
     private final JsonGenerator generator;
