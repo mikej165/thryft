@@ -4,11 +4,17 @@ from yutil import indent, pad
 
 
 class PyFunction(Function, PyNamedConstruct):
-    def py_imports(self, caller_stack=None):
+    def _py_imports_definition(self, caller_stack):
+        imports = []
+        for parameter in self.parameters:
+            imports.extend(parameter.py_imports_use(caller_stack=caller_stack))
         if self.return_type is not None:
-            return self.return_type.py_imports(caller_stack=None) + ['import __builtin__']
-        else:
-            return []
+            imports.extend(self.return_type.py_imports_use(caller_stack=caller_stack))
+        imports.append('import __builtin__')
+        return imports
+
+    def _py_imports_use(self, caller_stack):
+        raise NotImplementedError
 
     def py_parameters(self):
         parameters = []
@@ -19,7 +25,6 @@ class PyFunction(Function, PyNamedConstruct):
             if not parameter.required:
                 parameters.append(parameter.py_parameter())
         return parameters
-
 
     def py_protected_abstract_definition(self):
         name = self.py_name()

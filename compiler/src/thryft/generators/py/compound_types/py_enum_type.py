@@ -8,6 +8,9 @@ class PyEnumType(EnumType, PyType):
         qname = self.py_qname()
         return "isinstance(%(value)s, %(qname)s)" % locals()
 
+    def _py_imports_use(self, caller_stack):
+        return ['import ' + self.py_qname().rsplit('.', 1)[0]]
+
     def py_read_protocol(self):
         qname = self.py_qname()
         return "%(qname)s.value_of(iprot.readString().strip().upper())" % locals()

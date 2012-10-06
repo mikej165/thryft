@@ -12,20 +12,11 @@ class PyMapType(MapType, PyContainerType):
     def py_defensive_copy(self, value):
         return "%(value)s.copy()" % locals()
 
-    def py_imports(self, caller_stack=None):
-        if caller_stack is None:
-            caller_stack = []
-        elif self in caller_stack:
-            return []
-        caller_stack.append(self)
-
-        imports = list(self.key_type.py_imports(caller_stack=caller_stack))
-        imports.extend(self.value_type.py_imports(caller_stack=caller_stack))
-
-        assert caller_stack[-1] is self
-        caller_stack.pop(-1)
-
-        return imports + ['from itertools import ifilterfalse']
+    def _py_imports_definition(self, caller_stack):
+        imports = list(self.key_type.py_imports_definition(caller_stack=caller_stack))
+        imports.extend(self.value_type.py_imports_definition(caller_stack=caller_stack))
+        imports.append('from itertools import ifilterfalse')
+        return imports
 
     def py_read_protocol(self):
         key_read_protocol = self.key_type.py_read_protocol()

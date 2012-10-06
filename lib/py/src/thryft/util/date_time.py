@@ -1,5 +1,3 @@
-from datetime import datetime
-from time import mktime
 import __builtin__
 
 
@@ -50,6 +48,11 @@ class DateTime(object):
         return not self.__eq__(other)
 
     def __repr__(self):
+        field_reprs = []
+        field_reprs.append('timestamp_ms=' + repr(self.timestamp_ms))
+        return 'DateTime(' + ', '.join(field_reprs) + ')'
+
+    def __str__(self):
         field_reprs = []
         field_reprs.append('timestamp_ms=' + repr(self.timestamp_ms))
         return 'DateTime(' + ', '.join(field_reprs) + ')'

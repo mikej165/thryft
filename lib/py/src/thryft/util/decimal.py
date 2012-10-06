@@ -1,4 +1,3 @@
-from __future__ import absolute_import; import decimal
 import __builtin__
 
 
@@ -49,6 +48,11 @@ class Decimal(object):
         return not self.__eq__(other)
 
     def __repr__(self):
+        field_reprs = []
+        field_reprs.append('value=' + "'" + self.value.encode('ascii', 'replace') + "'")
+        return 'Decimal(' + ', '.join(field_reprs) + ')'
+
+    def __str__(self):
         field_reprs = []
         field_reprs.append('value=' + "'" + self.value.encode('ascii', 'replace') + "'")
         return 'Decimal(' + ', '.join(field_reprs) + ')'

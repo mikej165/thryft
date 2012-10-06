@@ -169,6 +169,15 @@ def __ne__(self, other):
 '''}
 
     def _py_method_read_protocol(self):
+        if len(self.fields) == 0:
+            return {'read': """\
+@classmethod
+def read(cls, iprot):
+    iprot.readStructBegin()
+    iprot.readStructEnd()
+    return cls()
+""" % locals()}
+
         field_read_protocols = \
             indent(' ' * 8, lpad('el', "el".join(
                 [field.py_read_protocol()
@@ -284,18 +293,14 @@ def write(self, oprot):
             methods_list.insert(0, self._py_constructor())
         return methods_list
 
-    def py_imports(self, caller_stack=None):
-        if caller_stack is None:
-            caller_stack = []
-        elif self in caller_stack:
-            return []
-        caller_stack.append(self)
+    def _py_imports_definition(self, caller_stack):
         imports = []
         for field in self.fields:
-            imports.extend(field.py_imports(caller_stack=caller_stack))
-        assert caller_stack[-1] is self
-        caller_stack.pop(-1)
-        return list(set(imports))
+            imports.extend(field.py_imports_use(caller_stack=caller_stack))
+        return imports
+
+    def _py_imports_use(self, caller_stack):
+        return ['import ' + self.py_qname().rsplit('.', 1)[0]]
 
     def py_read_protocol(self):
         qname = self.py_qname()

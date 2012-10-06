@@ -3,19 +3,13 @@ from yutil import decamelize, indent
 
 
 class PySequenceType(PyContainerType):
-    def py_imports(self, caller_stack=None):
-        if caller_stack is None:
-            caller_stack = []
-        elif self in caller_stack:
-            return []
-        caller_stack.append(self)
+    def _py_imports_definition(self, caller_stack):
+        return self.element_type.py_imports_definition(caller_stack=caller_stack) + \
+               ['from itertools import ifilterfalse']
 
-        imports = self.element_type.py_imports(caller_stack=caller_stack)
-
-        assert caller_stack[-1] is self
-        caller_stack.pop(-1)
-
-        return imports + ['from itertools import ifilterfalse']
+    def _py_imports_use(self, caller_stack):
+        return self.element_type.py_imports_use(caller_stack=caller_stack) + \
+               ['from itertools import ifilterfalse']
 
     def py_write_protocol(self, value, depth=0):
         class_name_split = decamelize(self.__class__.__name__).split('_')

@@ -7,10 +7,11 @@ import os.path
 class PyDocument(Document, PyNamedConstruct):
     def __repr__(self):
         imports = []
-        for include in self.includes:
-            imports.append(str(include))
+# Don't import anything that isn't required
+#        for include in self.includes:
+#            imports.append(str(include))
         for definition in self.definitions:
-            imports.extend(definition.py_imports())
+            imports.extend(definition.py_imports_definition())
         imports = "\n".join(list(sorted(set(imports))))
 
         definitions = \

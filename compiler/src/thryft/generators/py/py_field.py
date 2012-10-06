@@ -38,21 +38,8 @@ def %(name)s(self):
     def py_getter_name(self):
         return self.py_name()
 
-    def py_imports(self, caller_stack=None):
-        if caller_stack is None:
-            caller_stack = []
-        elif self in caller_stack:
-            return []
-        caller_stack.append(self)
-
-        imports = self.type.py_imports(caller_stack=caller_stack)
-
-        assert caller_stack[-1] is self
-        caller_stack.pop(-1)
-
-        imports.append('import __builtin__')
-
-        return list(set(imports))
+    def _py_imports_use(self, caller_stack):
+        return self.type.py_imports_use(caller_stack=caller_stack) + ['import __builtin__']
 
     def py_initializer(self):
         check = self.py_check()
