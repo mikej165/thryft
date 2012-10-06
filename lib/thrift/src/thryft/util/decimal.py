@@ -21,9 +21,11 @@ class PyDecimal(PyStructType):
     def py_check(self, value):
         return "isinstance(%(value)s, decimal.Decimal)" % locals()
 
-    def py_imports(self, caller_stack=None):
-        return PyStructType.py_imports(self, caller_stack=caller_stack) + \
-               ['from __future__ import absolute_import; import decimal']
+    def _py_imports_definition(self, caller_stack):
+        return []
+
+    def _py_imports_use(self, caller_stack):
+        return ['from __future__ import absolute_import; import decimal']
 
     def py_read_protocol(self):
         return "iprot.readDecimal() if hasattr(iprot, 'readDecimal') else decimal.Decimal(iprot.readString())" % locals()

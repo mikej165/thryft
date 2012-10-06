@@ -1,10 +1,5 @@
 package org.thryft.protocol.test;
 
-import org.thryft.protocol.test.ProtocolTestEnum;
-import thryft.util.Date;
-import thryft.util.DateTime;
-import thryft.util.Decimal;
-
 @SuppressWarnings("serial")
 public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestStruct, org.apache.thrift.TFieldIdEnum> {
     public static class Builder {
@@ -28,7 +23,7 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
             this.structField = other.getStructField();
         }
 
-        protected ProtocolTestStruct _build(final Boolean boolField, final Byte byteField, final org.joda.time.DateTime dateField, final org.joda.time.DateTime dateTimeField, final java.math.BigDecimal decimalField, final ProtocolTestEnum enumField, final Short i16Field, final Integer i32Field, final Long i64Field, final com.google.common.collect.ImmutableList<String> listStringField, final com.google.common.collect.ImmutableMap<String, String> mapStringStringField, final com.google.common.collect.ImmutableSet<String> setStringField, final String stringField, final ProtocolTestStruct structField) {
+        protected ProtocolTestStruct _build(final Boolean boolField, final Byte byteField, final org.joda.time.DateTime dateField, final org.joda.time.DateTime dateTimeField, final java.math.BigDecimal decimalField, final org.thryft.protocol.test.ProtocolTestEnum enumField, final Short i16Field, final Integer i32Field, final Long i64Field, final com.google.common.collect.ImmutableList<String> listStringField, final com.google.common.collect.ImmutableMap<String, String> mapStringStringField, final com.google.common.collect.ImmutableSet<String> setStringField, final String stringField, final org.thryft.protocol.test.ProtocolTestStruct structField) {
             return new ProtocolTestStruct(boolField, byteField, dateField, dateTimeField, decimalField, enumField, i16Field, i32Field, i64Field, listStringField, mapStringStringField, setStringField, stringField, structField);
         }
 
@@ -61,7 +56,7 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
             return this;
         }
 
-        public Builder setEnumField(final ProtocolTestEnum enumField) {
+        public Builder setEnumField(final org.thryft.protocol.test.ProtocolTestEnum enumField) {
             this.enumField = enumField;
             return this;
         }
@@ -101,7 +96,7 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
             return this;
         }
 
-        public Builder setStructField(final ProtocolTestStruct structField) {
+        public Builder setStructField(final org.thryft.protocol.test.ProtocolTestStruct structField) {
             this.structField = structField;
             return this;
         }
@@ -111,7 +106,7 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
         private org.joda.time.DateTime dateField;
         private org.joda.time.DateTime dateTimeField;
         private java.math.BigDecimal decimalField;
-        private ProtocolTestEnum enumField;
+        private org.thryft.protocol.test.ProtocolTestEnum enumField;
         private Short i16Field;
         private Integer i32Field;
         private Long i64Field;
@@ -119,7 +114,7 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
         private com.google.common.collect.ImmutableMap<String, String> mapStringStringField;
         private com.google.common.collect.ImmutableSet<String> setStringField;
         private String stringField;
-        private ProtocolTestStruct structField;
+        private org.thryft.protocol.test.ProtocolTestStruct structField;
     }
 
     public ProtocolTestStruct() {
@@ -149,7 +144,7 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
         org.joda.time.DateTime dateField = null;
         org.joda.time.DateTime dateTimeField = null;
         java.math.BigDecimal decimalField = null;
-        ProtocolTestEnum enumField = null;
+        org.thryft.protocol.test.ProtocolTestEnum enumField = null;
         Short i16Field = null;
         Integer i32Field = null;
         Long i64Field = null;
@@ -157,7 +152,7 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
         com.google.common.collect.ImmutableMap<String, String> mapStringStringField = null;
         com.google.common.collect.ImmutableSet<String> setStringField = null;
         String stringField = null;
-        ProtocolTestStruct structField = null;
+        org.thryft.protocol.test.ProtocolTestStruct structField = null;
 
         iprot.readStructBegin();
         while (true) {
@@ -188,7 +183,7 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
                 }
             } else if (ifield.name.equals("enum_field")) {
                 try {
-                    enumField = ProtocolTestEnum.byName(iprot.readString().trim().toUpperCase());
+                    enumField = (iprot instanceof org.thryft.protocol.Protocol) ? ((org.thryft.protocol.Protocol)iprot).readEnum(org.thryft.protocol.test.ProtocolTestEnum.class) : org.thryft.protocol.test.ProtocolTestEnum.valueOf(iprot.readString().trim().toUpperCase());
                 } catch (IllegalArgumentException e) {
                 }
             } else if (ifield.name.equals("i16_field")) {
@@ -260,7 +255,7 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
             } else if (ifield.name.equals("string_field")) {
                 stringField = iprot.readString();
             } else if (ifield.name.equals("struct_field")) {
-                structField = new ProtocolTestStruct(iprot);
+                structField = new org.thryft.protocol.test.ProtocolTestStruct(iprot);
             }
             iprot.readFieldEnd();
         }
@@ -282,7 +277,7 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
         this.structField = structField;
     }
 
-    public ProtocolTestStruct(final Boolean boolField, final Byte byteField, final org.joda.time.DateTime dateField, final org.joda.time.DateTime dateTimeField, final java.math.BigDecimal decimalField, final ProtocolTestEnum enumField, final Short i16Field, final Integer i32Field, final Long i64Field, final com.google.common.collect.ImmutableList<String> listStringField, final com.google.common.collect.ImmutableMap<String, String> mapStringStringField, final com.google.common.collect.ImmutableSet<String> setStringField, final String stringField, final ProtocolTestStruct structField) {
+    public ProtocolTestStruct(final Boolean boolField, final Byte byteField, final org.joda.time.DateTime dateField, final org.joda.time.DateTime dateTimeField, final java.math.BigDecimal decimalField, final org.thryft.protocol.test.ProtocolTestEnum enumField, final Short i16Field, final Integer i32Field, final Long i64Field, final com.google.common.collect.ImmutableList<String> listStringField, final com.google.common.collect.ImmutableMap<String, String> mapStringStringField, final com.google.common.collect.ImmutableSet<String> setStringField, final String stringField, final org.thryft.protocol.test.ProtocolTestStruct structField) {
         this.boolField = boolField;
         this.byteField = byteField;
         this.dateField = dateField;
@@ -422,7 +417,7 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
         return decimalField;
     }
 
-    public final ProtocolTestEnum getEnumField() {
+    public final org.thryft.protocol.test.ProtocolTestEnum getEnumField() {
         return enumField;
     }
 
@@ -459,7 +454,7 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
         return stringField;
     }
 
-    public final ProtocolTestStruct getStructField() {
+    public final org.thryft.protocol.test.ProtocolTestStruct getStructField() {
         return structField;
     }
 
@@ -614,7 +609,7 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
 
         if (getEnumField() != null) {
             oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("enum_field", org.apache.thrift.protocol.TType.STRING, (short)-1));
-            oprot.writeString(getEnumField().toString());
+            if (oprot instanceof org.thryft.protocol.Protocol) { ((org.thryft.protocol.Protocol)oprot).writeEnum(getEnumField()); } else { oprot.writeString(getEnumField().toString()); }
             oprot.writeFieldEnd();
         }
 
@@ -689,7 +684,7 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
     private final org.joda.time.DateTime dateField;
     private final org.joda.time.DateTime dateTimeField;
     private final java.math.BigDecimal decimalField;
-    private final ProtocolTestEnum enumField;
+    private final org.thryft.protocol.test.ProtocolTestEnum enumField;
     private final Short i16Field;
     private final Integer i32Field;
     private final Long i64Field;
@@ -697,5 +692,5 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
     private final com.google.common.collect.ImmutableMap<String, String> mapStringStringField;
     private final com.google.common.collect.ImmutableSet<String> setStringField;
     private final String stringField;
-    private final ProtocolTestStruct structField;
+    private final org.thryft.protocol.test.ProtocolTestStruct structField;
 }

@@ -24,10 +24,11 @@ class JavaDocument(Document, JavaNamedConstruct):
         package_declaration = self.java_package_declaration()
         if package_declaration is not None:
             headers.append(package_declaration)
-        for include in self.includes:
-            if len(headers) == 1 and headers[0].startswith('package'):
-                headers.append('')
-            headers.append(repr(include))
+# Don't import anything
+#        for include in self.includes:
+#            if len(headers) == 1 and headers[0].startswith('package'):
+#                headers.append('')
+#            headers.append(repr(include))
         headers = "\n".join(headers)
 
         definitions = \

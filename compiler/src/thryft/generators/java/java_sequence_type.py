@@ -7,10 +7,14 @@ class JavaSequenceType(JavaContainerType):
         raise NotImplementedError(class_qname(self))
 
     def java_name(self, boxed=False):
+        return self.java_qname(boxed=boxed)
+
+    def java_qname(self, boxed=False):
         return "com.google.common.collect.Immutable%s<%s>" % (
                    self._java_interface_simple_name(),
                    self.element_type.java_declaration_name(boxed=True)
                )
+
 
     def _java_interface_simple_name(self):
         class_name_split = decamelize(self.__class__.__name__).split('_')

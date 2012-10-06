@@ -14,8 +14,8 @@ class JavaEnumType(EnumType, JavaType):
         return True
 
     def java_read_protocol(self):
-        name = self.java_name()
-        return "(iprot instanceof org.thryft.protocol.Protocol) ? ((org.thryft.protocol.Protocol)iprot).readEnum(%(name)s.class) : %(name)s.valueOf(iprot.readString().trim().toUpperCase())" % locals()
+        qname = self.java_qname()
+        return "(iprot instanceof org.thryft.protocol.Protocol) ? ((org.thryft.protocol.Protocol)iprot).readEnum(%(qname)s.class) : %(qname)s.valueOf(iprot.readString().trim().toUpperCase())" % locals()
 
     def java_read_protocol_throws(self):
         return ['IllegalArgumentException']
@@ -27,7 +27,7 @@ class JavaEnumType(EnumType, JavaType):
         name = self.java_name()
         if len(self.enumerators) == 0:
             return """\
-public enum %(name)s {
+public enum %(qname)s {
 }"""
         for enumerator in self.enumerators:
             if enumerator.value is not None:

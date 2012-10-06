@@ -10,6 +10,3 @@ class JavaContainerType(JavaType):
 
     def java_is_reference(self):
         return True
-
-    def __repr__(self):
-        return self.java_name()

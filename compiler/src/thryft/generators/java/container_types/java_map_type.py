@@ -5,6 +5,9 @@ from yutil import indent
 
 class JavaMapType(MapType, JavaContainerType):
     def java_name(self, boxed=False):
+        return self.java_qname(boxed=boxed)
+
+    def java_qname(self, boxed=False):
         return "com.google.common.collect.ImmutableMap<%s, %s>" % (
                    self.key_type.java_declaration_name(boxed=True),
                    self.value_type.java_declaration_name(boxed=True)

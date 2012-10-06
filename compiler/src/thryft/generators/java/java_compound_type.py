@@ -433,8 +433,8 @@ public void write(final org.apache.thrift.protocol.TProtocol oprot) throws org.a
                [methods[key] for key in sorted(methods.iterkeys())]
 
     def java_read_protocol(self):
-        name = self.java_name()
-        return "new %(name)s(iprot)" % locals()
+        qname = self.java_qname()
+        return "new %(qname)s(iprot)" % locals()
 
     def java_write_protocol(self, value, depth=0):
         return "%(value)s.write(oprot);" % locals()
