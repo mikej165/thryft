@@ -50,7 +50,8 @@ class Document(NamedConstruct):
             out_dir_path = out_path
 
             assert self.__class__.__name__.endswith('Document')
-            language = decamelize(self.__class__.__name__[:-len('Document')]).split('_')[-1]
+            class_name_decamelized = decamelize(self.__class__.__name__)
+            language = class_name_decamelized.split('_')[-2]
 
             namespaces_by_scope = self.namespaces_by_scope
             for scope in (language, '*'):
