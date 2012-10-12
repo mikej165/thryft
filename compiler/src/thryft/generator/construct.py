@@ -1,5 +1,5 @@
 class Construct(object):
-    def __init__(self, parent, comment=None):
+    def __init__(self, parent, comment=None, **kwds):
         object.__init__(self)
         self._comment = comment
         self.__parent = parent

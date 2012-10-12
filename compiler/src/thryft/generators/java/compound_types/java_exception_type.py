@@ -3,9 +3,9 @@ from thryft.generators.java.java_compound_type import JavaCompoundType
 
 
 class JavaExceptionType(ExceptionType, JavaCompoundType):
-    def __init__(self, java_static_class=False, **kwds):
+    def __init__(self, **kwds):
         ExceptionType.__init__(self, **kwds)
-        JavaCompoundType.__init__(self, java_static_class=java_static_class)
+        JavaCompoundType.__init__(self, **kwds)
 
     def _java_extends(self):
         return 'java.lang.Exception'

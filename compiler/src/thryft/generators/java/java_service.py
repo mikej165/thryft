@@ -7,7 +7,7 @@ class JavaService(Service, JavaNamedConstruct):
     def java_extends(self):
         return self.extends
 
-    def java_name(self):
+    def java_name(self, boxed=False):
         return self.name
 
     def __repr__(self):

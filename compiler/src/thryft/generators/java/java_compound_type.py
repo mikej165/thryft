@@ -1,5 +1,5 @@
 from thryft.generators.java.java_type import JavaType
-from yutil import lpad, indent, pad
+from yutil import lpad, indent, pad, rpad
 
 
 class JavaCompoundType(JavaType):
@@ -111,8 +111,19 @@ protected %(name)s _build(%(field_parameters)s) {
 public static class Builder {%(sections)s
 }""" % locals()
 
-    def __init__(self, java_static_class=False):
-        self.__static_class = java_static_class
+    def __init__(self, java_class_modifiers=None, java_suppress_warnings=None, **kwds):
+        if java_class_modifiers is None:
+            java_class_modifiers = ('public',)
+        elif isinstance(java_class_modifiers, str):
+            java_class_modifiers = tuple(java_class_modifiers.split())
+        else:
+            java_class_modifiers = tuple(java_class_modifiers)
+        self.__class_modifiers = java_class_modifiers
+
+        if java_suppress_warnings is None:
+            self.__suppress_warnings = ('serial',)
+        else:
+            self.__suppress_warnings = tuple(java_suppress_warnings)
 
     def _java_constructor_default(self):
         name = self.java_name()
@@ -159,26 +170,47 @@ public %(name)s(final %(name)s other) {%(this_call)s
                 [field.java_initializer()
                  for field in self.fields]
             )))
-        field_protocol_initializers = \
-            lpad(' else ', indent(' ' * 8, ' else '.join(
+        field_protocol_named_initializers = \
+            lpad(' else ', indent(' ' * 16, ' else '.join(
                 ["""\
 if (ifield.name.equals("%s")) {
 %s
 }""" % (field.name, indent(' ' * 4, field.java_protocol_initializer()))
                  for field in self.fields]
             )))
+        field_protocol_positional_initializers = \
+            lpad("\n", indent(' ' * 12, "\n".join([
+                field.java_protocol_initializer()
+                for field in self.fields
+            ])))
         name = self.java_name()
         return """\
-public %(name)s(final org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {%(field_declarations)s
-    iprot.readStructBegin();
-    while (true) {
-        org.apache.thrift.protocol.TField ifield = iprot.readFieldBegin();
-        if (ifield.type == org.apache.thrift.protocol.TType.STOP) {
+public %(name)s(final org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    this(iprot, org.apache.thrift.protocol.TType.STRUCT);
+}
+        
+public %(name)s(final org.apache.thrift.protocol.TProtocol iprot, final byte readAsTType) throws org.apache.thrift.TException {%(field_declarations)s
+    switch (readAsTType) {
+        case org.apache.thrift.protocol.TType.LIST:
+            iprot.readListBegin();%(field_protocol_positional_initializers)s           
+            iprot.readListEnd();
             break;
-        }%(field_protocol_initializers)s
-        iprot.readFieldEnd();
-    }
-    iprot.readStructEnd();%(field_initializers)s
+    
+        case org.apache.thrift.protocol.TType.STRUCT:
+            iprot.readStructBegin();
+            while (true) {
+                org.apache.thrift.protocol.TField ifield = iprot.readFieldBegin();
+                if (ifield.type == org.apache.thrift.protocol.TType.STOP) {
+                    break;
+                }%(field_protocol_named_initializers)s
+                iprot.readFieldEnd();
+            }
+            iprot.readStructEnd();
+            break;
+        
+        default: 
+            throw new org.apache.thrift.TException("unknown readAsType");
+    }%(field_initializers)s    
 }""" % locals()
 
     def _java_constructor_required(self):
@@ -440,16 +472,18 @@ public void write(final org.apache.thrift.protocol.TProtocol oprot) throws org.a
         return "%(value)s.write(oprot);" % locals()
 
     def __repr__(self):
+        class_modifiers = rpad(' '.join(self.__class_modifiers), ' ')
         name = self.java_name()
         extends = lpad(' extends ', self._java_extends())
         implements = lpad(' implements ', ', '.join(self._java_implements()))
-        static = self.__static_class and 'static ' or ''
         sections = []
         sections.append(indent(' ' * 4, repr(self._JavaBuilder(self))))
         sections.append("\n\n".join(indent(' ' * 4, self._java_methods())))
         sections.append("\n".join(indent(' ' * 4, self._java_member_declarations())))
         sections = lpad("\n", "\n\n".join(sections))
+        suppress_warnings = ', '.join(['"' + warning + '"'
+                                       for warning in sorted(self.__suppress_warnings)])
         return """\
-@SuppressWarnings("serial")
-public %(static)sclass %(name)s%(extends)s%(implements)s {%(sections)s
+@SuppressWarnings({%(suppress_warnings)s})
+%(class_modifiers)sclass %(name)s%(extends)s%(implements)s {%(sections)s
 }""" % locals()
