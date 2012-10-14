@@ -13,12 +13,13 @@ class JsonProtocol(BuiltinsProtocol):
                 builtin_object = globals()['json'].loads(json, parse_float=Decimal, strict=False) #@UndefinedVariable
             else:
                 builtin_object = json
+            builtin_object = [builtin_object]
         else:
             builtin_object = None
         BuiltinsProtocol.__init__(self, builtin_object)
 
     def __str__(self):
         if len(self._scope_stack) > 0:
-            return json.dumps(self._scope_stack[0]) #@UndefinedVariable
+            return json.dumps(self._scope_stack[0].builtin_object) #@UndefinedVariable
         else:
             return ''
