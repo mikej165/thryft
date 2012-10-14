@@ -20,18 +20,9 @@ class Mixed(object):
 
     @classmethod
     def read(cls, iprot):
-        init_kwds = {}
-
         iprot.readStructBegin()
-        while True:
-            ifield_name, ifield_type, _ifield_id = iprot.readFieldBegin()
-            if ifield_type == 0: # STOP
-                break
-
-            iprot.readFieldEnd()
         iprot.readStructEnd()
-
-        return cls(**init_kwds)
+        return cls()
 
     def write(self, oprot):
         oprot.writeStructBegin('Mixed')

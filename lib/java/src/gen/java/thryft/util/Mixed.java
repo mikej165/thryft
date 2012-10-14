@@ -1,6 +1,6 @@
 package thryft.util;
 
-@SuppressWarnings("serial")
+@SuppressWarnings({"serial"})
 public class Mixed implements org.apache.thrift.TBase<Mixed, org.apache.thrift.TFieldIdEnum> {
     public static class Builder {
         public Builder() {
@@ -27,15 +27,31 @@ public class Mixed implements org.apache.thrift.TBase<Mixed, org.apache.thrift.T
     }
 
     public Mixed(final org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
-        iprot.readStructBegin();
-        while (true) {
-            org.apache.thrift.protocol.TField ifield = iprot.readFieldBegin();
-            if (ifield.type == org.apache.thrift.protocol.TType.STOP) {
+        this(iprot, org.apache.thrift.protocol.TType.STRUCT);
+    }
+
+    public Mixed(final org.apache.thrift.protocol.TProtocol iprot, final byte readAsTType) throws org.apache.thrift.TException {
+        switch (readAsTType) {
+            case org.apache.thrift.protocol.TType.LIST:
+                iprot.readListBegin();
+                iprot.readListEnd();
                 break;
-            }
-            iprot.readFieldEnd();
+
+            case org.apache.thrift.protocol.TType.STRUCT:
+                iprot.readStructBegin();
+                while (true) {
+                    org.apache.thrift.protocol.TField ifield = iprot.readFieldBegin();
+                    if (ifield.type == org.apache.thrift.protocol.TType.STOP) {
+                        break;
+                    }
+                    iprot.readFieldEnd();
+                }
+                iprot.readStructEnd();
+                break;
+
+            default:
+                throw new org.apache.thrift.TException("unknown readAsType");
         }
-        iprot.readStructEnd();
     }
 
     @Override

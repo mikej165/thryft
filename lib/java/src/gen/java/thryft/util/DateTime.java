@@ -1,6 +1,6 @@
 package thryft.util;
 
-@SuppressWarnings("serial")
+@SuppressWarnings({"serial"})
 public class DateTime implements org.apache.thrift.TBase<DateTime, org.apache.thrift.TFieldIdEnum> {
     public static class Builder {
         public Builder() {
@@ -31,22 +31,42 @@ public class DateTime implements org.apache.thrift.TBase<DateTime, org.apache.th
     }
 
     public DateTime(final org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+        this(iprot, org.apache.thrift.protocol.TType.STRUCT);
+    }
+
+    public DateTime(final org.apache.thrift.protocol.TProtocol iprot, final byte readAsTType) throws org.apache.thrift.TException {
         long timestampMs = ((long)0);
 
-        iprot.readStructBegin();
-        while (true) {
-            org.apache.thrift.protocol.TField ifield = iprot.readFieldBegin();
-            if (ifield.type == org.apache.thrift.protocol.TType.STOP) {
-                break;
-            } else         if (ifield.name.equals("timestamp_ms")) {
+        switch (readAsTType) {
+            case org.apache.thrift.protocol.TType.LIST:
+                iprot.readListBegin();
                 try {
                     timestampMs = iprot.readI64();
                 } catch (NumberFormatException e) {
                 }
-            }
-            iprot.readFieldEnd();
+                iprot.readListEnd();
+                break;
+
+            case org.apache.thrift.protocol.TType.STRUCT:
+                iprot.readStructBegin();
+                while (true) {
+                    org.apache.thrift.protocol.TField ifield = iprot.readFieldBegin();
+                    if (ifield.type == org.apache.thrift.protocol.TType.STOP) {
+                        break;
+                    } else                 if (ifield.name.equals("timestamp_ms")) {
+                        try {
+                            timestampMs = iprot.readI64();
+                        } catch (NumberFormatException e) {
+                        }
+                    }
+                    iprot.readFieldEnd();
+                }
+                iprot.readStructEnd();
+                break;
+
+            default:
+                throw new org.apache.thrift.TException("unknown readAsType");
         }
-        iprot.readStructEnd();
 
         this.timestampMs = timestampMs;
     }

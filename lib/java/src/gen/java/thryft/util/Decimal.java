@@ -1,6 +1,6 @@
 package thryft.util;
 
-@SuppressWarnings("serial")
+@SuppressWarnings({"serial"})
 public class Decimal implements org.apache.thrift.TBase<Decimal, org.apache.thrift.TFieldIdEnum> {
     public static class Builder {
         public Builder() {
@@ -31,19 +31,36 @@ public class Decimal implements org.apache.thrift.TBase<Decimal, org.apache.thri
     }
 
     public Decimal(final org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+        this(iprot, org.apache.thrift.protocol.TType.STRUCT);
+    }
+
+    public Decimal(final org.apache.thrift.protocol.TProtocol iprot, final byte readAsTType) throws org.apache.thrift.TException {
         String value = null;
 
-        iprot.readStructBegin();
-        while (true) {
-            org.apache.thrift.protocol.TField ifield = iprot.readFieldBegin();
-            if (ifield.type == org.apache.thrift.protocol.TType.STOP) {
-                break;
-            } else         if (ifield.name.equals("value")) {
+        switch (readAsTType) {
+            case org.apache.thrift.protocol.TType.LIST:
+                iprot.readListBegin();
                 value = iprot.readString();
-            }
-            iprot.readFieldEnd();
+                iprot.readListEnd();
+                break;
+
+            case org.apache.thrift.protocol.TType.STRUCT:
+                iprot.readStructBegin();
+                while (true) {
+                    org.apache.thrift.protocol.TField ifield = iprot.readFieldBegin();
+                    if (ifield.type == org.apache.thrift.protocol.TType.STOP) {
+                        break;
+                    } else                 if (ifield.name.equals("value")) {
+                        value = iprot.readString();
+                    }
+                    iprot.readFieldEnd();
+                }
+                iprot.readStructEnd();
+                break;
+
+            default:
+                throw new org.apache.thrift.TException("unknown readAsType");
         }
-        iprot.readStructEnd();
 
         this.value = com.google.common.base.Preconditions.checkNotNull(value);
     }

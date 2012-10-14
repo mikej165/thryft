@@ -1,6 +1,3 @@
-import __builtin__
-
-
 class Date(object):
     class Builder:
         def __init__(
