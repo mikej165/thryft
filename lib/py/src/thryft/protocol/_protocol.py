@@ -1,4 +1,16 @@
-class Protocol(object):
+class _Protocol(object):
+    def readByte(self):
+        return self.readI16()
+
+    def readI16(self):
+        return self.readI32()
+
+    def writeByte(self, byte):
+        self.writeI16(byte)
+
+    def writeI16(self, i16):
+        self.writeI32(i16)
+
     def writeMixed(self, object_):
         if isinstance(object_, float):
             self.writeDouble(object_)
