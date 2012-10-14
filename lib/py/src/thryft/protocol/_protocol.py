@@ -28,7 +28,7 @@ class _Protocol(object):
             self.writeListEnd()
         elif isinstance(object_, long):
             self.writeI64(object_)
-        elif isinstance(object_, str):
+        elif isinstance(object_, basestring):
             self.writeString(object_)
         elif hasattr(object_, 'write'):
             object_.write(self)

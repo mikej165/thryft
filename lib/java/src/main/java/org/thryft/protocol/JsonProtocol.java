@@ -14,7 +14,6 @@ import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TField;
 import org.apache.thrift.protocol.TList;
 import org.apache.thrift.protocol.TMap;
-import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.protocol.TSet;
 import org.apache.thrift.protocol.TStruct;
 import org.apache.thrift.protocol.TType;
@@ -167,16 +166,15 @@ public class JsonProtocol extends Protocol {
             return new TStruct();
         }
 
-        protected TProtocol _createArrayReaderProtocol(final JsonNode node) {
+        protected Protocol _createArrayReaderProtocol(final JsonNode node) {
             return new ArrayReaderProtocol(node);
         }
 
-        protected TProtocol _createMapObjectReaderProtocol(final JsonNode node) {
+        protected Protocol _createMapObjectReaderProtocol(final JsonNode node) {
             return new MapObjectReaderProtocol(node);
         }
 
-        protected TProtocol _createStructObjectReaderProtocol(
-                final JsonNode node) {
+        protected Protocol _createStructObjectReaderProtocol(final JsonNode node) {
             return new StructObjectReaderProtocol(node);
         }
 
@@ -346,6 +344,19 @@ public class JsonProtocol extends Protocol {
         }
 
         @Override
+        public void writeMixed(final Object value) throws TException {
+            if (value == null) {
+                try {
+                    generator.writeNull();
+                } catch (final IOException e) {
+                    throw new TException(e);
+                }
+            } else {
+                super.writeMixed(value);
+            }
+        }
+
+        @Override
         public void writeString(final String str) throws TException {
             try {
                 generator.writeString(str);
@@ -374,15 +385,15 @@ public class JsonProtocol extends Protocol {
             }
         }
 
-        protected TProtocol _createArrayWriterProtocol() {
+        protected Protocol _createArrayWriterProtocol() {
             return new ArrayWriterProtocol();
         }
 
-        protected TProtocol _createMapObjectWriterProtocol() {
+        protected Protocol _createMapObjectWriterProtocol() {
             return new MapObjectWriterProtocol();
         }
 
-        protected TProtocol _createStructObjectWriterProtocol() {
+        protected Protocol _createStructObjectWriterProtocol() {
             return new StructObjectWriterProtocol();
         }
     }
@@ -560,6 +571,11 @@ public class JsonProtocol extends Protocol {
     }
 
     @Override
+    public void writeMixed(final Object value) throws TException {
+        scopeStack.peek().writeMixed(value);
+    }
+
+    @Override
     public void writeString(final String str) throws TException {
         scopeStack.peek().writeString(str);
     }
@@ -574,18 +590,18 @@ public class JsonProtocol extends Protocol {
         scopeStack.peek().writeStructEnd();
     }
 
-    protected TProtocol _createRootReaderProtocol(final JsonNode parsedTree) {
+    protected Protocol _createRootReaderProtocol(final JsonNode parsedTree) {
         return new RootReaderProtocol(parsedTree);
     }
 
-    protected TProtocol _createRootWriterProtocol() {
+    protected Protocol _createRootWriterProtocol() {
         return new RootWriterProtocol();
     }
 
-    protected Stack<TProtocol> _getScopeStack() {
+    protected Stack<Protocol> _getScopeStack() {
         return scopeStack;
     }
 
     private final JsonGenerator generator;
-    private final Stack<TProtocol> scopeStack = new Stack<TProtocol>();
+    private final Stack<Protocol> scopeStack = new Stack<Protocol>();
 }

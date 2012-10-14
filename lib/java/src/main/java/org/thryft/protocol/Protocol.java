@@ -11,7 +11,11 @@ import org.apache.thrift.protocol.TMessage;
 import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.protocol.TSet;
 import org.apache.thrift.protocol.TStruct;
+import org.apache.thrift.protocol.TType;
 import org.apache.thrift.transport.TTransport;
+
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 
 public abstract class Protocol extends TProtocol {
     protected Protocol() {
@@ -246,7 +250,9 @@ public abstract class Protocol extends TProtocol {
     }
 
     public void writeMixed(final Object value) throws TException {
-        if (value instanceof Byte) {
+        if (value instanceof Boolean) {
+            writeBool((Boolean) value);
+        } else if (value instanceof Byte) {
             writeByte((Byte) value);
         } else if (value instanceof org.joda.time.DateTime) {
             writeDateTime((org.joda.time.DateTime) value);
@@ -254,6 +260,22 @@ public abstract class Protocol extends TProtocol {
             writeDecimal((java.math.BigDecimal) value);
         } else if (value instanceof Double) {
             writeDouble((Double) value);
+        } else if (value instanceof ImmutableList) {
+            @SuppressWarnings("unchecked")
+            final ImmutableList<Object> set = (ImmutableList<Object>) value;
+            writeListBegin(new TList(TType.VOID, set.size()));
+            for (final Object element : set) {
+                writeMixed(element);
+            }
+            writeListEnd();
+        } else if (value instanceof ImmutableSet) {
+            @SuppressWarnings("unchecked")
+            final ImmutableSet<Object> set = (ImmutableSet<Object>) value;
+            writeSetBegin(new TSet(TType.VOID, set.size()));
+            for (final Object element : set) {
+                writeMixed(element);
+            }
+            writeSetEnd();
         } else if (value instanceof Short) {
             writeI16((Short) value);
         } else if (value instanceof Integer) {
