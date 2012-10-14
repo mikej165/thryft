@@ -6,8 +6,12 @@ from yutil import upper_camelize
 class PyInclude(Include, PyConstruct):
     def __init__(self, *args, **kwds):
         Include.__init__(self, *args, **kwds)
-        py_module_qname = self.path.rsplit('.', 1)[0].replace('/', '.')
-        py_module_name = py_module_qname.rsplit('.', 1)[1]
+        py_module_qname = self.path.replace('/', '.')
+        py_module_qname_split = py_module_qname.rsplit('.', 1)
+        if len(py_module_qname_split) == 2:
+            py_module_qname, py_module_name = py_module_qname_split
+        else:
+            py_module_qname = py_module_name = py_module_qname_split[0]
         self.__py_class_name = upper_camelize(py_module_name)
         try:
             py_module_qname = self.document.namespaces_by_scope['py'].name + '.' + py_module_name
