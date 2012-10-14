@@ -1,6 +1,6 @@
 package org.thryft.protocol.test;
 
-@SuppressWarnings("serial")
+@SuppressWarnings({"serial"})
 public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestStruct, org.apache.thrift.TFieldIdEnum> {
     public static class Builder {
         public Builder() {
@@ -139,6 +139,10 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
     }
 
     public ProtocolTestStruct(final org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+        this(iprot, org.apache.thrift.protocol.TType.STRUCT);
+    }
+
+    public ProtocolTestStruct(final org.apache.thrift.protocol.TProtocol iprot, final byte readAsTType) throws org.apache.thrift.TException {
         Boolean boolField = null;
         Byte byteField = null;
         org.joda.time.DateTime dateField = null;
@@ -154,54 +158,42 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
         String stringField = null;
         org.thryft.protocol.test.ProtocolTestStruct structField = null;
 
-        iprot.readStructBegin();
-        while (true) {
-            org.apache.thrift.protocol.TField ifield = iprot.readFieldBegin();
-            if (ifield.type == org.apache.thrift.protocol.TType.STOP) {
-                break;
-            } else         if (ifield.name.equals("bool_field")) {
+        switch (readAsTType) {
+            case org.apache.thrift.protocol.TType.LIST:
+                iprot.readListBegin();
                 boolField = iprot.readBool();
-            } else if (ifield.name.equals("byte_field")) {
                 try {
                     byteField = iprot.readByte();
                 } catch (NumberFormatException e) {
                 }
-            } else if (ifield.name.equals("date_field")) {
                 try {
                     dateField = (iprot instanceof org.thryft.protocol.Protocol) ? ((org.thryft.protocol.Protocol)iprot).readDateTime() : new org.joda.time.DateTime(iprot.readI64());
                 } catch (IllegalArgumentException e) {
                 }
-            } else if (ifield.name.equals("date_time_field")) {
                 try {
                     dateTimeField = (iprot instanceof org.thryft.protocol.Protocol) ? ((org.thryft.protocol.Protocol)iprot).readDateTime() : new org.joda.time.DateTime(iprot.readI64());
                 } catch (IllegalArgumentException e) {
                 }
-            } else if (ifield.name.equals("decimal_field")) {
                 try {
                     decimalField = (iprot instanceof org.thryft.protocol.Protocol) ? ((org.thryft.protocol.Protocol)iprot).readDecimal() : new java.math.BigDecimal(iprot.readString());
                 } catch (NumberFormatException e) {
                 }
-            } else if (ifield.name.equals("enum_field")) {
                 try {
                     enumField = (iprot instanceof org.thryft.protocol.Protocol) ? ((org.thryft.protocol.Protocol)iprot).readEnum(org.thryft.protocol.test.ProtocolTestEnum.class) : org.thryft.protocol.test.ProtocolTestEnum.valueOf(iprot.readString().trim().toUpperCase());
                 } catch (IllegalArgumentException e) {
                 }
-            } else if (ifield.name.equals("i16_field")) {
                 try {
                     i16Field = iprot.readI16();
                 } catch (NumberFormatException e) {
                 }
-            } else if (ifield.name.equals("i32_field")) {
                 try {
                     i32Field = iprot.readI32();
                 } catch (NumberFormatException e) {
                 }
-            } else if (ifield.name.equals("i64_field")) {
                 try {
                     i64Field = iprot.readI64();
                 } catch (NumberFormatException e) {
                 }
-            } else if (ifield.name.equals("list_string_field")) {
                 listStringField = (new com.google.common.base.Function<org.apache.thrift.protocol.TProtocol, com.google.common.collect.ImmutableList<String>>() {
                     @Override
                     public com.google.common.collect.ImmutableList<String> apply(org.apache.thrift.protocol.TProtocol iprot) {
@@ -218,7 +210,6 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
                         }
                     }
                 }).apply(iprot);
-            } else if (ifield.name.equals("map_string_string_field")) {
                 mapStringStringField = (new com.google.common.base.Function<org.apache.thrift.protocol.TProtocol, com.google.common.collect.ImmutableMap<String, String>>() {
                     @Override
                     public com.google.common.collect.ImmutableMap<String, String> apply(org.apache.thrift.protocol.TProtocol iprot) {
@@ -235,7 +226,6 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
                         }
                     }
                 }).apply(iprot);
-            } else if (ifield.name.equals("set_string_field")) {
                 setStringField = (new com.google.common.base.Function<org.apache.thrift.protocol.TProtocol, com.google.common.collect.ImmutableSet<String>>() {
                     @Override
                     public com.google.common.collect.ImmutableSet<String> apply(org.apache.thrift.protocol.TProtocol iprot) {
@@ -252,14 +242,123 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
                         }
                     }
                 }).apply(iprot);
-            } else if (ifield.name.equals("string_field")) {
                 stringField = iprot.readString();
-            } else if (ifield.name.equals("struct_field")) {
                 structField = new org.thryft.protocol.test.ProtocolTestStruct(iprot);
-            }
-            iprot.readFieldEnd();
+                iprot.readListEnd();
+                break;
+
+            case org.apache.thrift.protocol.TType.STRUCT:
+                iprot.readStructBegin();
+                while (true) {
+                    org.apache.thrift.protocol.TField ifield = iprot.readFieldBegin();
+                    if (ifield.type == org.apache.thrift.protocol.TType.STOP) {
+                        break;
+                    } else                 if (ifield.name.equals("bool_field")) {
+                        boolField = iprot.readBool();
+                    } else if (ifield.name.equals("byte_field")) {
+                        try {
+                            byteField = iprot.readByte();
+                        } catch (NumberFormatException e) {
+                        }
+                    } else if (ifield.name.equals("date_field")) {
+                        try {
+                            dateField = (iprot instanceof org.thryft.protocol.Protocol) ? ((org.thryft.protocol.Protocol)iprot).readDateTime() : new org.joda.time.DateTime(iprot.readI64());
+                        } catch (IllegalArgumentException e) {
+                        }
+                    } else if (ifield.name.equals("date_time_field")) {
+                        try {
+                            dateTimeField = (iprot instanceof org.thryft.protocol.Protocol) ? ((org.thryft.protocol.Protocol)iprot).readDateTime() : new org.joda.time.DateTime(iprot.readI64());
+                        } catch (IllegalArgumentException e) {
+                        }
+                    } else if (ifield.name.equals("decimal_field")) {
+                        try {
+                            decimalField = (iprot instanceof org.thryft.protocol.Protocol) ? ((org.thryft.protocol.Protocol)iprot).readDecimal() : new java.math.BigDecimal(iprot.readString());
+                        } catch (NumberFormatException e) {
+                        }
+                    } else if (ifield.name.equals("enum_field")) {
+                        try {
+                            enumField = (iprot instanceof org.thryft.protocol.Protocol) ? ((org.thryft.protocol.Protocol)iprot).readEnum(org.thryft.protocol.test.ProtocolTestEnum.class) : org.thryft.protocol.test.ProtocolTestEnum.valueOf(iprot.readString().trim().toUpperCase());
+                        } catch (IllegalArgumentException e) {
+                        }
+                    } else if (ifield.name.equals("i16_field")) {
+                        try {
+                            i16Field = iprot.readI16();
+                        } catch (NumberFormatException e) {
+                        }
+                    } else if (ifield.name.equals("i32_field")) {
+                        try {
+                            i32Field = iprot.readI32();
+                        } catch (NumberFormatException e) {
+                        }
+                    } else if (ifield.name.equals("i64_field")) {
+                        try {
+                            i64Field = iprot.readI64();
+                        } catch (NumberFormatException e) {
+                        }
+                    } else if (ifield.name.equals("list_string_field")) {
+                        listStringField = (new com.google.common.base.Function<org.apache.thrift.protocol.TProtocol, com.google.common.collect.ImmutableList<String>>() {
+                            @Override
+                            public com.google.common.collect.ImmutableList<String> apply(org.apache.thrift.protocol.TProtocol iprot) {
+                                try {
+                                    org.apache.thrift.protocol.TList sequenceBegin = iprot.readListBegin();
+                                    java.util.List<String> sequence = new java.util.ArrayList<String>();
+                                    for (int elementI = 0; elementI < sequenceBegin.size; elementI++) {
+                                        sequence.add(iprot.readString());
+                                    }
+                                    iprot.readListEnd();
+                                    return com.google.common.collect.ImmutableList.copyOf(sequence);
+                                } catch (org.apache.thrift.TException e) {
+                                    return com.google.common.collect.ImmutableList.of();
+                                }
+                            }
+                        }).apply(iprot);
+                    } else if (ifield.name.equals("map_string_string_field")) {
+                        mapStringStringField = (new com.google.common.base.Function<org.apache.thrift.protocol.TProtocol, com.google.common.collect.ImmutableMap<String, String>>() {
+                            @Override
+                            public com.google.common.collect.ImmutableMap<String, String> apply(org.apache.thrift.protocol.TProtocol iprot) {
+                                try {
+                                    org.apache.thrift.protocol.TMap mapBegin = iprot.readMapBegin();
+                                    java.util.Map<String, String> map = new java.util.HashMap<String, String>();
+                                    for (int entryI = 0; entryI < mapBegin.size; entryI++) {
+                                        map.put(iprot.readString(), iprot.readString());
+                                    }
+                                    iprot.readMapEnd();
+                                    return com.google.common.collect.ImmutableMap.copyOf(map);
+                                } catch (org.apache.thrift.TException e) {
+                                    return com.google.common.collect.ImmutableMap.of();
+                                }
+                            }
+                        }).apply(iprot);
+                    } else if (ifield.name.equals("set_string_field")) {
+                        setStringField = (new com.google.common.base.Function<org.apache.thrift.protocol.TProtocol, com.google.common.collect.ImmutableSet<String>>() {
+                            @Override
+                            public com.google.common.collect.ImmutableSet<String> apply(org.apache.thrift.protocol.TProtocol iprot) {
+                                try {
+                                    org.apache.thrift.protocol.TSet sequenceBegin = iprot.readSetBegin();
+                                    java.util.Set<String> sequence = new java.util.LinkedHashSet<String>();
+                                    for (int elementI = 0; elementI < sequenceBegin.size; elementI++) {
+                                        sequence.add(iprot.readString());
+                                    }
+                                    iprot.readSetEnd();
+                                    return com.google.common.collect.ImmutableSet.copyOf(sequence);
+                                } catch (org.apache.thrift.TException e) {
+                                    return com.google.common.collect.ImmutableSet.of();
+                                }
+                            }
+                        }).apply(iprot);
+                    } else if (ifield.name.equals("string_field")) {
+                        stringField = iprot.readString();
+                    } else if (ifield.name.equals("struct_field")) {
+                        structField = new org.thryft.protocol.test.ProtocolTestStruct(iprot);
+                    }
+                    iprot.readFieldEnd();
+                }
+                iprot.readStructEnd();
+                break;
+
+            default:
+                throw new org.apache.thrift.TException("unknown readAsType");
         }
-        iprot.readStructEnd();
 
         this.boolField = boolField;
         this.byteField = byteField;

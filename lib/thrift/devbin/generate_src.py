@@ -29,6 +29,11 @@ for in_dir_path, generator, out_dir_path in (
         JavaGenerator(),
         os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'java', 'src', 'test', 'java')
     ),
+    (
+        os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'thrift', 'test'),
+        PyGenerator(),
+        os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'py', 'test')
+    ),
 ):
     compiler = \
         Compiler(
