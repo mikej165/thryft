@@ -14,3 +14,6 @@ class JavaI64Type(I64Type, JavaBaseType):
 
     def java_read_protocol_throws(self):
         return ['NumberFormatException']
+
+    def java_to_string(self, value):
+        return "Long.toString(%(value)s)" % locals()

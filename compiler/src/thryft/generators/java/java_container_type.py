@@ -10,3 +10,6 @@ class JavaContainerType(JavaType):
 
     def java_is_reference(self):
         return True
+
+    def java_to_string(self, value):
+        return "%(value)s.toString()" % locals()

@@ -14,3 +14,6 @@ class JavaI16Type(I16Type, JavaBaseType):
 
     def java_name(self, boxed=False):
         return boxed and 'Short' or 'short'
+
+    def java_to_string(self, value):
+        return "Short.toString(%(value)s)" % locals()

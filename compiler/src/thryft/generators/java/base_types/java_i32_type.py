@@ -14,3 +14,6 @@ class JavaI32Type(I32Type, JavaBaseType):
 
     def java_read_protocol_throws(self):
         return ['NumberFormatException']
+
+    def java_to_string(self, value):
+        return "Integer.toString(%(value)s)" % locals()

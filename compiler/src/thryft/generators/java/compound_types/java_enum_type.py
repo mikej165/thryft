@@ -70,3 +70,6 @@ public enum %(name)s {
         return """public enum %(name)s {
 %(enumerators)s;
 }""" % locals()
+
+    def java_to_string(self, value):
+        return "%(value)s.toString()" % locals()

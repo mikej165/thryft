@@ -470,6 +470,9 @@ public void write(final org.apache.thrift.protocol.TProtocol oprot) throws org.a
         qname = self.java_qname()
         return "new %(qname)s(iprot)" % locals()
 
+    def java_to_string(self, value):
+        return "%(value)s.toString()" % locals()
+
     def java_write_protocol(self, value, depth=0):
         return "%(value)s.write(oprot);" % locals()
 

@@ -14,3 +14,6 @@ class JavaStringType(StringType, JavaBaseType):
 
     def java_name(self, boxed=False):
         return 'String'
+
+    def java_to_string(self, value):
+        return value

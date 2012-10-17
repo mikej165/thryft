@@ -24,6 +24,9 @@ class JavaType(JavaNamedConstruct):
     def java_read_protocol_throws(self):
         return []
 
+    def java_to_string(self, value):
+        raise NotImplementedError(class_qname(self) + '.java_to_string')
+
     def java_ttype(self):
         raise NotImplementedError(class_qname(self) + '.java_ttype')
 

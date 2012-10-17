@@ -11,3 +11,6 @@ class JavaDoubleType(DoubleType, JavaBaseType):
 
     def java_read_protocol_throws(self):
         return ['NumberFormatException']
+
+    def java_to_string(self, value):
+        return "Double.toString(%(value)s)" % locals()

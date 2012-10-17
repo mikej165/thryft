@@ -11,3 +11,6 @@ class JavaBoolType(BoolType, JavaBaseType):
 
     def java_name(self, boxed=False):
         return boxed and 'Boolean' or 'boolean'
+
+    def java_to_string(self, value):
+        return "Boolean.toString(%(value)s)" % locals()

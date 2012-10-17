@@ -14,3 +14,6 @@ class JavaByteType(ByteType, JavaBaseType):
 
     def java_name(self, boxed=False):
         return boxed and 'Byte' or 'byte'
+
+    def java_to_string(self, value):
+        return "Byte.toString(%(value)s)" % locals()
