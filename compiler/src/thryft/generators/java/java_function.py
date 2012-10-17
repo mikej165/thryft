@@ -11,7 +11,7 @@ class JavaFunction(Function, JavaNamedConstruct):
         def __init__(self, parent_function, java_suppress_warnings=None):
             JavaStructType.__init__(
                 self,
-                java_class_modifiers='private final static',
+                java_class_modifiers='public final static',
                 java_suppress_warnings=java_suppress_warnings,
                 name=parent_function.java_name() + 'Request',
                 parent=parent_function.parent
@@ -30,7 +30,7 @@ class JavaFunction(Function, JavaNamedConstruct):
         def __init__(self, parent_function, java_suppress_warnings=None):
             JavaStructType.__init__(
                 self,
-                java_class_modifiers='private final static',
+                java_class_modifiers='public final static',
                 java_suppress_warnings=java_suppress_warnings,
                 name=parent_function.java_name() + 'Response',
                 parent=parent_function.parent
