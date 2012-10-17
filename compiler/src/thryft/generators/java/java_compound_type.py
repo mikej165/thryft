@@ -99,12 +99,15 @@ protected %(name)s _build(%(field_parameters)s) {
             methods.update(self._java_method__build())
             methods.update(self._java_method_setters())
             # methods.update(self._java_method_read_protocol()) # Must be after TBase
-            return self._java_constructors() + [methods[key] for key in sorted(methods.iterkeys())]
+            return methods
 
         def __repr__(self):
             name = self.java_name()
+            methods = self._java_methods()
             sections = []
-            sections.append("\n\n".join(indent(' ' * 4, self._java_methods())))
+            sections.append("\n\n".join(indent(' ' * 4,
+                self._java_constructors() + [methods[key] for key in sorted(methods.iterkeys())]
+            )))
             sections.append("\n".join(indent(' ' * 4, self._java_member_declarations())))
             sections = lpad("\n", "\n\n".join(sections))
             return """\
@@ -461,8 +464,7 @@ public void write(final org.apache.thrift.protocol.TProtocol oprot) throws org.a
         methods.update(self._java_method_TBase())
         methods.update(self._java_method_to_string())
         methods.update(self._java_method_write_protocol()) # Must be after TBase
-        return self._java_constructors() + \
-               [methods[key] for key in sorted(methods.iterkeys())]
+        return methods
 
     def java_read_protocol(self):
         qname = self.java_qname()
@@ -476,9 +478,12 @@ public void write(final org.apache.thrift.protocol.TProtocol oprot) throws org.a
         name = self.java_name()
         extends = lpad(' extends ', self._java_extends())
         implements = lpad(' implements ', ', '.join(self._java_implements()))
+        methods = self._java_methods()
         sections = []
         sections.append(indent(' ' * 4, repr(self._JavaBuilder(self))))
-        sections.append("\n\n".join(indent(' ' * 4, self._java_methods())))
+        sections.append("\n\n".join(indent(' ' * 4,
+            self._java_constructors() + \
+            [methods[key] for key in sorted(methods.iterkeys())])))
         sections.append("\n".join(indent(' ' * 4, self._java_member_declarations())))
         sections = lpad("\n", "\n\n".join(sections))
         suppress_warnings = ', '.join(['"' + warning + '"'
