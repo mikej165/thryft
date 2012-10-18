@@ -417,9 +417,6 @@ public %(method_signature)s {
         )
 
     def _java_method_to_string(self):
-        if len(self.fields) == 0:
-            return {}
-
         add_statements = []
         for field in self.fields:
             add_statement = \
