@@ -15,7 +15,6 @@ class JavaSequenceType(JavaContainerType):
                    self.element_type.java_declaration_name(boxed=True)
                )
 
-
     def _java_interface_simple_name(self):
         class_name_split = decamelize(self.__class__.__name__).split('_')
         assert len(class_name_split) == 3

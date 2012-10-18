@@ -27,6 +27,9 @@ class JavaType(JavaNamedConstruct):
     def java_to_string(self, value):
         raise NotImplementedError(class_qname(self) + '.java_to_string')
 
+    def java_to_summary_string(self, value):
+        return self.java_to_string(value)
+
     def java_ttype(self):
         raise NotImplementedError(class_qname(self) + '.java_ttype')
 
