@@ -1,6 +1,8 @@
 package org.thryft.protocol;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import org.apache.thrift.TBase;
 import org.apache.thrift.TException;
@@ -61,9 +63,43 @@ public abstract class Protocol extends TProtocol {
         throw new UnsupportedOperationException();
     }
 
-    public <E extends Enum<E>> E readEnum(final Class<E> klazz)
+    @SuppressWarnings("unchecked")
+    public <E extends Enum<E>> E readEnum(final Class<E> enumClass)
             throws TException {
-        return Enum.valueOf(klazz, readString().trim().toUpperCase());
+        final String enumStringValue = readString().trim().toUpperCase();
+        if (enumStringValue.isEmpty()) {
+            throw new IllegalArgumentException("empty string");
+        }
+
+        try {
+            return Enum.valueOf(enumClass, enumStringValue);
+        } catch (final IllegalArgumentException e) {
+            Integer enumIntValue;
+            try {
+                enumIntValue = Integer.parseInt(enumStringValue);
+            } catch (final NumberFormatException e1) {
+                throw e;
+            }
+
+            final Method valueOfMethod;
+            try {
+                valueOfMethod = enumClass.getMethod("valueOf", Integer.class);
+            } catch (final SecurityException e1) {
+                throw e;
+            } catch (final NoSuchMethodException e1) {
+                throw e;
+            }
+
+            try {
+                return (E) valueOfMethod.invoke(null, enumIntValue);
+            } catch (final IllegalArgumentException e1) {
+                throw e;
+            } catch (final IllegalAccessException e1) {
+                throw e;
+            } catch (final InvocationTargetException e1) {
+                throw e;
+            }
+        }
     }
 
     @Override
