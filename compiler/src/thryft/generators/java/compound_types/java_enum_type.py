@@ -31,15 +31,15 @@ public enum %(qname)s {
 }"""
         for enumerator in self.enumerators:
             if enumerator.value is not None:
-                valueOfInt_cases = []
+                valueOf_cases = []
                 enumerators = []
                 for enumerator in self.enumerators:
-                    valueOfInt_cases.append(
+                    valueOf_cases.append(
 "case %u: return %s;" % (enumerator.value, enumerator.name))
                     enumerators.append(
                         "%s(%u)" % (enumerator.name, enumerator.value)
                     )
-                valueOfInt_cases = "\n".join(indent(' ' * 8, valueOfInt_cases))
+                valueOf_cases = "\n".join(indent(' ' * 8, valueOf_cases))
                 enumerators = ",\n".join(indent(' ' * 4, enumerators))
                 return """\
 public enum %(name)s {
@@ -49,11 +49,15 @@ public enum %(name)s {
         this.value = value;
     }
     
-    public static %(name)s valueOfInt(final int value) {
+    public static %(name)s valueOf(final int value) {
         switch (value) {
-%(valueOfInt_cases)s
+%(valueOf_cases)s
         default: throw new IllegalArgumentException();
         }
+    }
+
+    public static %(name)s valueOf(final Integer value) {
+        return valueOf(value.intValue());
     }
 
     public final int value() {
