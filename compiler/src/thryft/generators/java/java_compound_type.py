@@ -14,8 +14,8 @@ class JavaCompoundType(JavaType):
         def _java_constructor_copy(self):
             initializers = []
             for field in self.fields:
-                getter_name = field.java_getter_name() # IGNORE:W0612
-                variable_name = field.java_name() # IGNORE:W0612
+                getter_name = field.java_getter_name()  # IGNORE:W0612
+                variable_name = field.java_name()  # IGNORE:W0612
                 initializers.append(
                     "this.%(variable_name)s = other.%(getter_name)s();" % \
                         locals()
@@ -74,8 +74,8 @@ protected %(name)s _build(%(field_parameters)s) {
 #            readStructBegin = lpad("\n", indent(' ' * 4, 'iprot.readStructBegin();'))
 #            readStructEnd = lpad("\n", indent(' ' * 4, 'iprot.readStructEnd();'))
 #            return {'read': """\
-#@Override
-#public void read(final org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {%(readStructBegin)s
+# @Override
+# public void read(final org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {%(readStructBegin)s
 #    while (true) {
 #        org.apache.thrift.protocol.TField ifield = iprot.readFieldBegin();
 #        if (ifield.type == org.apache.thrift.protocol.TType.STOP) {
@@ -83,7 +83,7 @@ protected %(name)s _build(%(field_parameters)s) {
 #        }%(field_read_protocols)s
 #        iprot.readFieldEnd();
 #    }%(readStructEnd)s
-#}""" % locals()}
+# }""" % locals()}
 
         def _java_method_setters(self):
             return \
@@ -138,7 +138,7 @@ public %(name)s() {
 
         for field in self.fields:
             if field.required:
-                return None # Will be covered by total constructor
+                return None  # Will be covered by total constructor
 
         initializers = \
             lpad("\n", "\n".join(indent(' ' * 4,
@@ -218,10 +218,10 @@ public %(name)s(final org.apache.thrift.protocol.TProtocol iprot, final byte rea
 
     def _java_constructor_required(self):
         if len(self.fields) == 0:
-            return None # Will be covered by default constructor
+            return None  # Will be covered by default constructor
         elif len(set([field.required for field in self.fields])) <= 1:
             # All fields are optional or all fields are required
-            return None # Will be covered by total constructor
+            return None  # Will be covered by total constructor
 
         initializers = []
         name = self.java_name()
@@ -241,7 +241,7 @@ public %(name)s(%(parameters)s) {%(initializers)s
 
     def _java_constructor_total(self):
         if len(self.fields) == 0:
-            return None # Will be covered by default constructor
+            return None  # Will be covered by default constructor
 
         initializers = \
             "\n".join(indent(' ' * 4,
@@ -258,7 +258,7 @@ public %(name)s(%(parameters)s) {
 
     def _java_constructor_total_boxed(self):
         if len(self.fields) == 0:
-            return None # Will be covered by default constructor
+            return None  # Will be covered by default constructor
 
         for field in self.fields:
             if field.required and \
@@ -460,7 +460,7 @@ public void write(final org.apache.thrift.protocol.TProtocol oprot) throws org.a
         methods.update(self._java_method_hash_code())
         methods.update(self._java_method_TBase())
         methods.update(self._java_method_to_string())
-        methods.update(self._java_method_write_protocol()) # Must be after TBase
+        methods.update(self._java_method_write_protocol())  # Must be after TBase
         return methods
 
     def java_read_protocol(self):
@@ -474,6 +474,13 @@ public void write(final org.apache.thrift.protocol.TProtocol oprot) throws org.a
         return "%(value)s.write(oprot);" % locals()
 
     def __repr__(self):
+        class_annotations = []
+        if len(self.__suppress_warnings) > 0:
+            class_annotations.append(
+                "@SuppressWarnings({%s})" % \
+                    ', '.join(['"' + warning + '"'
+                               for warning in sorted(self.__suppress_warnings)]))
+        class_annotations = rpad("\n".join(class_annotations), "\n")
         class_modifiers = rpad(' '.join(self.__class_modifiers), ' ')
         name = self.java_name()
         extends = lpad(' extends ', self._java_extends())
@@ -486,9 +493,6 @@ public void write(final org.apache.thrift.protocol.TProtocol oprot) throws org.a
             [methods[key] for key in sorted(methods.iterkeys())])))
         sections.append("\n".join(indent(' ' * 4, self._java_member_declarations())))
         sections = lpad("\n", "\n\n".join(sections))
-        suppress_warnings = ', '.join(['"' + warning + '"'
-                                       for warning in sorted(self.__suppress_warnings)])
         return """\
-@SuppressWarnings({%(suppress_warnings)s})
-%(class_modifiers)sclass %(name)s%(extends)s%(implements)s {%(sections)s
+%(class_annotations)s%(class_modifiers)sclass %(name)s%(extends)s%(implements)s {%(sections)s
 }""" % locals()
