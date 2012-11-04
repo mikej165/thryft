@@ -9,6 +9,9 @@ class JavaType(JavaNamedConstruct):
     def java_default_value(self):
         raise NotImplementedError(class_qname(self) + '.java_default_value')
 
+    def java_from_string(self, value):
+        raise NotImplementedError(class_qname(self) + '.java_from_string')
+
     def java_hash_code(self, value):
         raise NotImplementedError(class_qname(self) + '.java_hash_code')
 
@@ -29,9 +32,6 @@ class JavaType(JavaNamedConstruct):
 
     def java_to_summary_string(self, value):
         return self.java_to_string(value)
-
-    def java_ttype(self):
-        raise NotImplementedError(class_qname(self) + '.java_ttype')
 
     def java_write_protocol(self, value, depth=0):
         raise NotImplementedError(class_qname(self) + '.java_write_protocol')

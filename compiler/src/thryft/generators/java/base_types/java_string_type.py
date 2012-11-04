@@ -6,6 +6,9 @@ class JavaStringType(StringType, JavaBaseType):
     def java_default_value(self):
         return 'null'
 
+    def java_from_string(self, value):
+        return value
+
     def java_hash_code(self, value):
         return "%(value)s.hashCode()" % locals()
 

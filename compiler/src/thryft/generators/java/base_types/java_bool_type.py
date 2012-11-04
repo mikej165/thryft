@@ -6,6 +6,9 @@ class JavaBoolType(BoolType, JavaBaseType):
     def java_default_value(self):
         return 'false'
 
+    def java_from_string(self, value):
+        return """(%(value)s.equals("1") || %(value)s.equalsIgnoreCase("true"))""" % locals()
+
     def java_hash_code(self, value):
         return "(%(value)s ? 1 : 0)" % locals()
 
