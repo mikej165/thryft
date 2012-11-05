@@ -14,7 +14,6 @@ import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TField;
 import org.apache.thrift.protocol.TList;
 import org.apache.thrift.protocol.TMap;
-import org.apache.thrift.protocol.TSet;
 import org.apache.thrift.protocol.TStruct;
 import org.apache.thrift.protocol.TType;
 
@@ -25,7 +24,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.TextNode;
 
-public class JsonProtocol extends Protocol {
+public class JsonProtocol extends StackedProtocol {
     protected class ArrayReaderProtocol extends ReaderProtocol {
         public ArrayReaderProtocol(final JsonNode node) {
             super(node);
@@ -126,7 +125,7 @@ public class JsonProtocol extends Protocol {
             if (!node.isArray()) {
                 throw new TException("expected JSON array");
             }
-            scopeStack.push(_createArrayReaderProtocol(node));
+            _getProtocolStack().push(_createArrayReaderProtocol(node));
             return new TList(TType.VOID, node.size());
         }
 
@@ -136,19 +135,8 @@ public class JsonProtocol extends Protocol {
             if (!node.isObject()) {
                 throw new TException("expected JSON object");
             }
-            scopeStack.push(_createMapObjectReaderProtocol(node));
+            _getProtocolStack().push(_createMapObjectReaderProtocol(node));
             return new TMap(TType.VOID, TType.VOID, node.size());
-        }
-
-        @Override
-        public TSet readSetBegin() throws TException {
-            final TList list = readListBegin();
-            return new TSet(list.elemType, list.size);
-        }
-
-        @Override
-        public void readSetEnd() throws TException {
-            readListEnd();
         }
 
         @Override
@@ -162,7 +150,7 @@ public class JsonProtocol extends Protocol {
             if (!node.isObject()) {
                 throw new TException("expected JSON object");
             }
-            scopeStack.push(_createStructObjectReaderProtocol(node));
+            _getProtocolStack().push(_createStructObjectReaderProtocol(node));
             return new TStruct();
         }
 
@@ -196,6 +184,13 @@ public class JsonProtocol extends Protocol {
     }
 
     protected class RootWriterProtocol extends WriterProtocol {
+        @Override
+        public void writeFieldEnd() throws TException {
+        }
+
+        @Override
+        public void writeFieldStop() throws TException {
+        }
     }
 
     protected class StructObjectReaderProtocol extends ReaderProtocol {
@@ -307,7 +302,7 @@ public class JsonProtocol extends Protocol {
         public void writeListBegin(final TList list) throws TException {
             try {
                 generator.writeStartArray();
-                scopeStack.push(_createArrayWriterProtocol());
+                _getProtocolStack().push(_createArrayWriterProtocol());
             } catch (final IOException e) {
                 throw new TException(e);
             }
@@ -316,7 +311,6 @@ public class JsonProtocol extends Protocol {
         @Override
         public void writeListEnd() throws TException {
             try {
-                scopeStack.pop();
                 generator.writeEndArray();
             } catch (final IOException e) {
                 throw new TException(e);
@@ -327,7 +321,7 @@ public class JsonProtocol extends Protocol {
         public void writeMapBegin(final TMap map) throws TException {
             try {
                 generator.writeStartObject();
-                scopeStack.push(_createMapObjectWriterProtocol());
+                _getProtocolStack().push(_createMapObjectWriterProtocol());
             } catch (final IOException e) {
                 throw new TException(e);
             }
@@ -336,7 +330,7 @@ public class JsonProtocol extends Protocol {
         @Override
         public void writeMapEnd() throws TException {
             try {
-                scopeStack.pop();
+                _getProtocolStack().pop();
                 generator.writeEndObject();
             } catch (final IOException e) {
                 throw new TException(e);
@@ -369,7 +363,7 @@ public class JsonProtocol extends Protocol {
         public void writeStructBegin(final TStruct struct) throws TException {
             try {
                 generator.writeStartObject();
-                scopeStack.push(_createStructObjectWriterProtocol());
+                _getProtocolStack().push(_createStructObjectWriterProtocol());
             } catch (final IOException e) {
                 throw new TException(e);
             }
@@ -378,7 +372,6 @@ public class JsonProtocol extends Protocol {
         @Override
         public void writeStructEnd() throws TException {
             try {
-                scopeStack.pop();
                 generator.writeEndObject();
             } catch (final IOException e) {
                 throw new TException(e);
@@ -404,12 +397,12 @@ public class JsonProtocol extends Protocol {
 
     public JsonProtocol(final JsonGenerator generator) {
         this.generator = generator;
-        scopeStack.push(_createRootWriterProtocol());
+        _getProtocolStack().push(_createRootWriterProtocol());
     }
 
     public JsonProtocol(final JsonNode parsedTree) {
         generator = null;
-        scopeStack.push(_createRootReaderProtocol(parsedTree));
+        _getProtocolStack().push(_createRootReaderProtocol(parsedTree));
     }
 
     public JsonProtocol(final OutputStream outputStream) throws IOException {
@@ -430,166 +423,6 @@ public class JsonProtocol extends Protocol {
         generator.flush();
     }
 
-    @Override
-    public boolean readBool() throws TException {
-        return scopeStack.peek().readBool();
-    }
-
-    @Override
-    public byte readByte() throws TException {
-        return scopeStack.peek().readByte();
-    }
-
-    @Override
-    public double readDouble() throws TException {
-        return scopeStack.peek().readDouble();
-    }
-
-    @Override
-    public TField readFieldBegin() throws TException {
-        return scopeStack.peek().readFieldBegin();
-    }
-
-    @Override
-    public void readFieldEnd() throws TException {
-        scopeStack.peek().readFieldEnd();
-    }
-
-    @Override
-    public short readI16() throws TException {
-        return scopeStack.peek().readI16();
-    }
-
-    @Override
-    public int readI32() throws TException {
-        return scopeStack.peek().readI32();
-    }
-
-    @Override
-    public long readI64() throws TException {
-        return scopeStack.peek().readI64();
-    }
-
-    @Override
-    public TList readListBegin() throws TException {
-        return scopeStack.peek().readListBegin();
-    }
-
-    @Override
-    public void readListEnd() throws TException {
-        scopeStack.pop();
-    }
-
-    @Override
-    public TMap readMapBegin() throws TException {
-        return scopeStack.peek().readMapBegin();
-    }
-
-    @Override
-    public void readMapEnd() throws TException {
-        scopeStack.pop();
-    }
-
-    @Override
-    public String readString() throws TException {
-        return scopeStack.peek().readString();
-    }
-
-    @Override
-    public TStruct readStructBegin() throws TException {
-        return scopeStack.peek().readStructBegin();
-    }
-
-    @Override
-    public void readStructEnd() throws TException {
-        scopeStack.pop();
-    }
-
-    @Override
-    public void writeBool(final boolean b) throws TException {
-        scopeStack.peek().writeBool(b);
-    }
-
-    @Override
-    public void writeByte(final byte b) throws TException {
-        scopeStack.peek().writeByte(b);
-    }
-
-    @Override
-    public void writeDouble(final double dub) throws TException {
-        scopeStack.peek().writeDouble(dub);
-    }
-
-    @Override
-    public void writeFieldBegin(final TField field) throws TException {
-        scopeStack.peek().writeFieldBegin(field);
-    }
-
-    @Override
-    public void writeFieldEnd() throws TException {
-        scopeStack.peek().writeFieldEnd();
-    }
-
-    @Override
-    public void writeFieldStop() throws TException {
-        scopeStack.peek().writeFieldStop();
-    }
-
-    @Override
-    public void writeI16(final short i16) throws TException {
-        scopeStack.peek().writeI16(i16);
-    }
-
-    @Override
-    public void writeI32(final int i32) throws TException {
-        scopeStack.peek().writeI32(i32);
-    }
-
-    @Override
-    public void writeI64(final long i64) throws TException {
-        scopeStack.peek().writeI64(i64);
-    }
-
-    @Override
-    public void writeListBegin(final TList list) throws TException {
-        scopeStack.peek().writeListBegin(list);
-    }
-
-    @Override
-    public void writeListEnd() throws TException {
-        scopeStack.peek().writeListEnd();
-    }
-
-    @Override
-    public void writeMapBegin(final TMap map) throws TException {
-        scopeStack.peek().writeMapBegin(map);
-    }
-
-    @Override
-    public void writeMapEnd() throws TException {
-        scopeStack.peek().writeMapEnd();
-    }
-
-    @Override
-    public void writeMixed(final Object value) throws TException {
-        scopeStack.peek().writeMixed(value);
-    }
-
-    @Override
-    public void writeString(final String str) throws TException {
-        scopeStack.peek().writeString(str);
-    }
-
-    @Override
-    public void writeStructBegin(final TStruct struct) throws TException {
-        scopeStack.peek().writeStructBegin(struct);
-    }
-
-    @Override
-    public void writeStructEnd() throws TException {
-        scopeStack.peek().writeStructEnd();
-    }
-
     protected Protocol _createRootReaderProtocol(final JsonNode parsedTree) {
         return new RootReaderProtocol(parsedTree);
     }
@@ -598,10 +431,5 @@ public class JsonProtocol extends Protocol {
         return new RootWriterProtocol();
     }
 
-    protected Stack<Protocol> _getScopeStack() {
-        return scopeStack;
-    }
-
     private final JsonGenerator generator;
-    private final Stack<Protocol> scopeStack = new Stack<Protocol>();
 }

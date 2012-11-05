@@ -10,7 +10,6 @@ import java.util.Stack;
 import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TField;
 import org.apache.thrift.protocol.TList;
-import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.protocol.TStruct;
 import org.apache.thrift.protocol.TType;
 import org.joda.time.format.DateTimeFormat;
@@ -20,11 +19,11 @@ import au.com.bytecode.opencsv.CSVReader;
 
 import com.google.common.collect.Lists;
 
-public class CsvProtocol extends Protocol {
-    protected class File extends Protocol {
-        protected class Row extends Protocol {
-            protected class SequenceColumn extends Protocol {
-                public SequenceColumn(final String[] elements) {
+public class CsvProtocol extends StackedProtocol {
+    protected class FileReaderProtocol extends ReaderProtocol {
+        protected class RowReaderProtocol extends ReaderProtocol {
+            protected class SequenceColumnReaderProtocol extends ReaderProtocol {
+                public SequenceColumnReaderProtocol(final String[] elements) {
                     this.elements = elements;
                     currentElementI = 0;
                 }
@@ -43,7 +42,8 @@ public class CsvProtocol extends Protocol {
                 private final String[] elements;
             }
 
-            public Row(final String[] columnNames, final String[] columnValues) {
+            public RowReaderProtocol(final String[] columnNames,
+                    final String[] columnValues) {
                 this.columnNames = columnNames;
                 this.columnValues = columnValues;
                 currentColumnI = 0;
@@ -76,12 +76,12 @@ public class CsvProtocol extends Protocol {
             @Override
             public TStruct readStructBegin() {
                 // Assume a struct will read inline
-                scopeStack.push(this);
+                _getProtocolStack().push(this);
                 return new TStruct();
             }
 
-            protected TProtocol _createSequenceColumn(final String[] elements) {
-                return new SequenceColumn(elements);
+            protected Protocol _createSequenceColumn(final String[] elements) {
+                return new SequenceColumnReaderProtocol(elements);
             }
 
             protected String _getCurrentColumnName() {
@@ -115,7 +115,7 @@ public class CsvProtocol extends Protocol {
                         throw new TException(e);
                     }
                 }
-                scopeStack.push(_createSequenceColumn(new String[0]));
+                _getProtocolStack().push(_createSequenceColumn(new String[0]));
                 return new TList(TType.STRING, 0);
             }
 
@@ -134,12 +134,12 @@ public class CsvProtocol extends Protocol {
             private final String[] columnValues;
         }
 
-        public File(final List<String[]> rows) {
-            this.rows = new Stack<TProtocol>();
+        public FileReaderProtocol(final List<String[]> rows) {
+            this.rows = new Stack<Protocol>();
             Collections.reverse(rows);
             final String[] columnNames = rows.remove(rows.size() - 1);
             for (final String[] row : rows) {
-                this.rows.push(_createRow(columnNames, row));
+                this.rows.push(_createRowReaderProtocol(columnNames, row));
             }
         }
 
@@ -155,16 +155,53 @@ public class CsvProtocol extends Protocol {
 
         @Override
         public TStruct readStructBegin() throws TException {
-            scopeStack.push(rows.pop());
+            _getProtocolStack().push(rows.pop());
             return new TStruct();
         }
 
-        protected TProtocol _createRow(final String[] columnNames,
+        protected Protocol _createRowReaderProtocol(final String[] columnNames,
                 final String[] columnValues) {
-            return new Row(columnNames, columnValues);
+            return new RowReaderProtocol(columnNames, columnValues);
         }
 
-        private final Stack<TProtocol> rows;
+        private final Stack<Protocol> rows;
+    }
+
+    protected class ReaderProtocol extends Protocol {
+        @Override
+        public boolean readBool() throws TException {
+            return readString().equals("1");
+        }
+
+        @Override
+        public byte readByte() throws TException {
+            return Byte.parseByte(readString());
+        }
+
+        @Override
+        public double readDouble() throws TException {
+            return Double.parseDouble(readString());
+        }
+
+        @Override
+        public short readI16() throws TException {
+            return Short.parseShort(readString());
+        }
+
+        @Override
+        public int readI32() throws TException {
+            return Integer.parseInt(readString());
+        }
+
+        @Override
+        public long readI64() throws TException {
+            final String value = readString();
+            try {
+                return Long.parseLong(value);
+            } catch (final NumberFormatException e) {
+                return dateTimeFormatter.parseMillis(value);
+            }
+        }
     }
 
     public CsvProtocol(final Reader reader) {
@@ -183,84 +220,13 @@ public class CsvProtocol extends Protocol {
             }
         }
 
-        scopeStack.push(_createFile(rows));
+        _getProtocolStack().add(_createFileReaderProtocol(rows));
     }
 
-    @Override
-    public boolean readBool() throws TException {
-        return readString().equals("1");
-    }
-
-    @Override
-    public byte readByte() throws TException {
-        return Byte.parseByte(readString());
-    }
-
-    @Override
-    public double readDouble() throws TException {
-        return Double.parseDouble(readString());
-    }
-
-    @Override
-    public TField readFieldBegin() throws TException {
-        return scopeStack.peek().readFieldBegin();
-    }
-
-    @Override
-    public void readFieldEnd() throws TException {
-        scopeStack.peek().readFieldEnd();
-    }
-
-    @Override
-    public short readI16() throws TException {
-        return Short.parseShort(readString());
-    }
-
-    @Override
-    public int readI32() throws TException {
-        return Integer.parseInt(readString());
-    }
-
-    @Override
-    public long readI64() throws TException {
-        final String value = readString();
-        try {
-            return Long.parseLong(value);
-        } catch (final NumberFormatException e) {
-            return dateTimeFormatter.parseMillis(value);
-        }
-    }
-
-    @Override
-    public TList readListBegin() throws TException {
-        return scopeStack.peek().readListBegin();
-    }
-
-    @Override
-    public void readListEnd() throws TException {
-        scopeStack.pop();
-    }
-
-    @Override
-    public String readString() throws TException {
-        return scopeStack.peek().readString();
-    }
-
-    @Override
-    public TStruct readStructBegin() throws TException {
-        return scopeStack.peek().readStructBegin();
-    }
-
-    @Override
-    public void readStructEnd() throws TException {
-        scopeStack.pop();
-    }
-
-    protected TProtocol _createFile(final List<String[]> rows) {
-        return new File(rows);
+    protected Protocol _createFileReaderProtocol(final List<String[]> rows) {
+        return new FileReaderProtocol(rows);
     }
 
     private final static DateTimeFormatter dateTimeFormatter = DateTimeFormat
             .forPattern("yyyy-MM-dd HH:mm:ss");
-    protected final Stack<TProtocol> scopeStack = new Stack<TProtocol>();
 }

@@ -1,20 +1,21 @@
 package org.thryft.protocol.test;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.io.Writer;
-
-import org.thryft.protocol.CsvProtocol;
+import org.apache.thrift.TBase;
 
 public class CsvProtocolTest extends ProtocolTest {
     @Override
-    protected CsvProtocol _newProtocol(final Reader reader) throws IOException {
-        return new CsvProtocol(reader);
-    }
+    protected void _test(final TBase<?, ?> expected) throws Exception {
+        // final StringWriter writer = new StringWriter();
+        // final Protocol oprot = new CsvProtocol(writer);
+        // expected.write(oprot);
+        // oprot.flush();
+        //
+        // final String ostring = writer.toString();
 
-    @Override
-    protected CsvProtocol _newProtocol(final Writer writer) throws IOException {
-        throw new UnsupportedOperationException();
-        // return new CsvProtocol(writer);
+        // final StringReader reader = new StringReader(ostring);
+        // final Protocol iprot = new CsvProtocol(reader);
+        // final TBase<?, ?> actual = expected.getClass()
+        // .getConstructor(TProtocol.class).newInstance(iprot);
+        // assertEquals(expected, actual);
     }
 }
