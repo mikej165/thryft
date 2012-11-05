@@ -483,6 +483,10 @@ public class StringMapProtocol extends StackedProtocol {
         _getProtocolStack().push(new RootReaderProtocol(input));
     }
 
+    public StringMapProtocol(final Map<String, String> input) {
+        this(ImmutableMap.copyOf(input));
+    }
+
     public final ImmutableMap<String, String> toStringMap() {
         return ImmutableMap.copyOf(output);
     }
