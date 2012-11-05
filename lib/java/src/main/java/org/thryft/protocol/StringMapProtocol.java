@@ -5,6 +5,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 
 import org.apache.thrift.TException;
@@ -16,6 +17,7 @@ import org.apache.thrift.protocol.TType;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 public class StringMapProtocol extends StackedProtocol {
     protected abstract class ReaderProtocol extends Protocol {
@@ -24,6 +26,7 @@ public class StringMapProtocol extends StackedProtocol {
             this.input = input;
             this.myKey = myKey;
 
+            final Set<String> childKeyStack = Sets.newLinkedHashSet();
             if (myKey.isEmpty()) {
                 for (final String childKey : input.keySet()) {
                     childKeyStack.add(childKey.split("\\.", 2)[0]);
@@ -38,6 +41,7 @@ public class StringMapProtocol extends StackedProtocol {
                     }
                 }
             }
+            this.childKeyStack.addAll(childKeyStack);
         }
 
         @Override
