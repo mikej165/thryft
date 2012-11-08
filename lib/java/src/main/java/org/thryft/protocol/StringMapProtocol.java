@@ -165,11 +165,13 @@ public class StringMapProtocol extends StackedProtocol {
         }
 
         protected void _writeListBegin(final String childKey) throws TException {
+            output.put(__joinKeys(myKey, childKey), "");
             _getProtocolStack().push(
                     new ListWriterProtocol(__joinKeys(myKey, childKey)));
         }
 
         protected void _writeMapBegin(final String childKey) throws TException {
+            output.put(__joinKeys(myKey, childKey), "");
             _getProtocolStack().push(
                     new MapWriterProtocol(__joinKeys(myKey, childKey)));
         }
@@ -182,6 +184,7 @@ public class StringMapProtocol extends StackedProtocol {
 
         protected void _writeStructBegin(final String childKey)
                 throws TException {
+            output.put(__joinKeys(myKey, childKey), "");
             _getProtocolStack().push(
                     new StructWriterProtocol(__joinKeys(myKey, childKey)));
         }

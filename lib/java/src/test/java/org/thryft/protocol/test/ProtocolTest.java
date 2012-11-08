@@ -64,18 +64,30 @@ public abstract class ProtocolTest {
     public void testListString() throws Exception {
         _test(new ProtocolTestStruct.Builder().setListStringField(
                 ImmutableList.of("test")).build());
+
+        // Empty list
+        _test(new ProtocolTestStruct.Builder().setListStringField(
+                ImmutableList.<String> of()).build());
     }
 
     @Test
     public void testMapStringString() throws Exception {
         _test(new ProtocolTestStruct.Builder().setMapStringStringField(
                 ImmutableMap.of("testkey", "testvalue")).build());
+
+        // Empty map
+        _test(new ProtocolTestStruct.Builder().setMapStringStringField(
+                ImmutableMap.<String, String> of()).build());
     }
 
     @Test
     public void testSetString() throws Exception {
         _test(new ProtocolTestStruct.Builder().setSetStringField(
                 ImmutableSet.of("test")).build());
+
+        // Empty set
+        _test(new ProtocolTestStruct.Builder().setSetStringField(
+                ImmutableSet.<String> of()).build());
     }
 
     @Test
@@ -88,6 +100,10 @@ public abstract class ProtocolTest {
         _test(new ProtocolTestStruct.Builder().setStructField(
                 new ProtocolTestStruct.Builder().setI32Field(1).build())
                 .build());
+
+        // Empty struct
+        _test(new ProtocolTestStruct.Builder().setStructField(
+                new ProtocolTestStruct()).build());
     }
 
     protected abstract void _test(final TBase<?, ?> expected) throws Exception;
