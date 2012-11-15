@@ -169,7 +169,6 @@ public class JsonProtocol extends StackedProtocol {
         protected abstract JsonNode _readNode();
 
         protected final JsonNode node;
-
     }
 
     protected class RootReaderProtocol extends ReaderProtocol {
