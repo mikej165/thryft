@@ -36,11 +36,6 @@ class JavaMapType(MapType, JavaContainerType):
     }
 }).apply(iprot)""" % locals()
 
-    def java_to_summary_string(self, value):
-        key_type_qname = self.key_type.java_qname(boxed=True)
-        value_type_qname = self.value_type.java_qname(boxed=True)
-        return '"map<%(key_type_qname)s, %(value_type_qname)s>" + "(size=" + Integer.toString(%(value)s.size()) + ")"' % locals()
-
     def java_write_protocol(self, value, depth=0):
         key_ttype = self.key_type.thrift_ttype_name()
         key_type_name = self.key_type.java_declaration_name()
