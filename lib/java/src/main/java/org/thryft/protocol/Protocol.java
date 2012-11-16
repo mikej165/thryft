@@ -286,7 +286,9 @@ public abstract class Protocol extends TProtocol {
     }
 
     public void writeMixed(final Object value) throws TException {
-        if (value instanceof Boolean) {
+        if (value == null) {
+            writeNull();
+        } else if (value instanceof Boolean) {
             writeBool((Boolean) value);
         } else if (value instanceof Byte) {
             writeByte((Byte) value);
@@ -325,6 +327,10 @@ public abstract class Protocol extends TProtocol {
         } else {
             throw new UnsupportedOperationException();
         }
+    }
+
+    public void writeNull() throws TException {
+        throw new UnsupportedOperationException();
     }
 
     @Override
