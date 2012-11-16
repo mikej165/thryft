@@ -6,15 +6,18 @@ from yutil import lower_camelize, upper_camelize, indent
 
 class JavaField(Field, JavaNamedConstruct):
     def java_default_initializer(self):
+        default_value = self.java_default_value()
         name = self.java_name()
-        if self.value is not None:
-            default_value = self.java_value()
-        elif not self.required:
-            default_value = 'null'
-        else:
-            default_value = self.type.java_default_value()
         return """\
-this.%(name)s = %(default_value)s;""" % locals()
+%(name)s = %(default_value)s;""" % locals()
+
+    def java_default_value(self):
+        if self.value is not None:
+            return self.java_value()
+        elif not self.required:
+            return 'null'
+        else:
+            return self.type.java_default_value()
 
     def java_equals(self, this_value, other_value):
         if not self.required:
@@ -96,7 +99,7 @@ public %(final)s%(type_name)s %(getter_name)s() {
             self.java_name() + ' = ' + self.type.java_read_protocol() + ';'
 
         read_protocol_throws = self.type.java_read_protocol_throws()
-        if len(read_protocol_throws) > 0:
+        if not self.required and len(read_protocol_throws) > 0:
             read_protocol = indent(' ' * 4, read_protocol)
             read_protocol_throws = \
                 ''.join(["""\
@@ -122,19 +125,19 @@ try {
 #            read_protocol_throws = \
 #                ''.join(["""\
 # catch (%(exception_type_name)s e) {
-#}""" % locals()
+# }""" % locals()
 #                           for exception_type_name in read_protocol_throws])
 #            read_protocol = """\
-#try {
-#%(read_protocol)s
-#}%(read_protocol_throws)s""" % locals()
+# try {
+# %(read_protocol)s
+# }%(read_protocol_throws)s""" % locals()
 #
 #        read_protocol = indent(' ' * 4, read_protocol)
 #        name = self.name
 #        return """\
-#if (ifield.name.equals("%(name)s")) {
-#%(read_protocol)s
-#}""" % locals()
+# if (ifield.name.equals("%(name)s")) {
+# %(read_protocol)s
+# }""" % locals()
 
     def java_setter(self, return_type_name='void'):
         setter_name = self.java_setter_name()
