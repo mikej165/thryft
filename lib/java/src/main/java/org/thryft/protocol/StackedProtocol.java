@@ -141,8 +141,8 @@ public class StackedProtocol extends Protocol {
 
     @Override
     public final void writeListEnd() throws TException {
-        final Protocol topProtocol = protocolStack.pop();
-        topProtocol.writeListEnd();
+        protocolStack.pop();
+        protocolStack.peek().writeListEnd();
     }
 
     @Override
@@ -157,8 +157,8 @@ public class StackedProtocol extends Protocol {
 
     @Override
     public final void writeMapEnd() throws TException {
-        final Protocol topProtocol = protocolStack.pop();
-        topProtocol.writeMapEnd();
+        protocolStack.pop();
+        protocolStack.peek().writeMapEnd();
     }
 
     @Override
@@ -183,8 +183,8 @@ public class StackedProtocol extends Protocol {
 
     @Override
     public final void writeStructEnd() throws TException {
-        final Protocol topProtocol = protocolStack.pop();
-        topProtocol.writeStructEnd();
+        protocolStack.pop();
+        protocolStack.peek().writeStructEnd();
     }
 
     protected Stack<Protocol> _getProtocolStack() {
