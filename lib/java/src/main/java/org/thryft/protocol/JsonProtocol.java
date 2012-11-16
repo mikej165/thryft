@@ -154,18 +154,6 @@ public class JsonProtocol extends StackedProtocol {
             return new TStruct();
         }
 
-        protected Protocol _createArrayReaderProtocol(final JsonNode node) {
-            return new ArrayReaderProtocol(node);
-        }
-
-        protected Protocol _createMapObjectReaderProtocol(final JsonNode node) {
-            return new MapObjectReaderProtocol(node);
-        }
-
-        protected Protocol _createStructObjectReaderProtocol(final JsonNode node) {
-            return new StructObjectReaderProtocol(node);
-        }
-
         protected abstract JsonNode _readNode();
 
         protected final JsonNode node;
@@ -329,7 +317,6 @@ public class JsonProtocol extends StackedProtocol {
         @Override
         public void writeMapEnd() throws TException {
             try {
-                _getProtocolStack().pop();
                 generator.writeEndObject();
             } catch (final IOException e) {
                 throw new TException(e);
@@ -337,15 +324,11 @@ public class JsonProtocol extends StackedProtocol {
         }
 
         @Override
-        public void writeMixed(final Object value) throws TException {
-            if (value == null) {
-                try {
-                    generator.writeNull();
-                } catch (final IOException e) {
-                    throw new TException(e);
-                }
-            } else {
-                super.writeMixed(value);
+        public void writeNull() throws TException {
+            try {
+                generator.writeNull();
+            } catch (final IOException e) {
+                throw new TException(e);
             }
         }
 
@@ -375,18 +358,6 @@ public class JsonProtocol extends StackedProtocol {
             } catch (final IOException e) {
                 throw new TException(e);
             }
-        }
-
-        protected Protocol _createArrayWriterProtocol() {
-            return new ArrayWriterProtocol();
-        }
-
-        protected Protocol _createMapObjectWriterProtocol() {
-            return new MapObjectWriterProtocol();
-        }
-
-        protected Protocol _createStructObjectWriterProtocol() {
-            return new StructObjectWriterProtocol();
         }
     }
 
@@ -422,12 +393,36 @@ public class JsonProtocol extends StackedProtocol {
         generator.flush();
     }
 
+    protected Protocol _createArrayReaderProtocol(final JsonNode node) {
+        return new ArrayReaderProtocol(node);
+    }
+
+    protected Protocol _createArrayWriterProtocol() {
+        return new ArrayWriterProtocol();
+    }
+
+    protected Protocol _createMapObjectReaderProtocol(final JsonNode node) {
+        return new MapObjectReaderProtocol(node);
+    }
+
+    protected Protocol _createMapObjectWriterProtocol() {
+        return new MapObjectWriterProtocol();
+    }
+
     protected Protocol _createRootReaderProtocol(final JsonNode parsedTree) {
         return new RootReaderProtocol(parsedTree);
     }
 
     protected Protocol _createRootWriterProtocol() {
         return new RootWriterProtocol();
+    }
+
+    protected Protocol _createStructObjectReaderProtocol(final JsonNode node) {
+        return new StructObjectReaderProtocol(node);
+    }
+
+    protected Protocol _createStructObjectWriterProtocol() {
+        return new StructObjectWriterProtocol();
     }
 
     private final JsonGenerator generator;
