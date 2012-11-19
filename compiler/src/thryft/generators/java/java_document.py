@@ -40,7 +40,7 @@ class JavaDocument(Document, JavaNamedConstruct):
     def _save(self, out_file_path):
         out_dir_path, out_file_name = os.path.split(out_file_path)
         out_file_base_name, out_file_ext = os.path.splitext(out_file_name)
-        assert out_file_ext == '.java'
+        assert out_file_ext == '.java', out_file_path
         if out_file_base_name.lower() == out_file_base_name:
             out_file_base_name = camelize(out_file_base_name)
         out_file_path = \
