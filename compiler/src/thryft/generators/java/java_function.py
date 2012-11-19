@@ -8,7 +8,7 @@ from yutil import lower_camelize, lpad, indent
 
 class JavaFunction(Function, JavaNamedConstruct):
     class _JavaRequestType(JavaStructType):
-        def __init__(self, parent_function, java_suppress_warnings=None):
+        def __init__(self, parent_function, java_suppress_warnings=None, parameters=None):
             JavaStructType.__init__(
                 self,
                 java_class_modifiers='public final static',
@@ -16,7 +16,10 @@ class JavaFunction(Function, JavaNamedConstruct):
                 name=parent_function.java_name() + 'Request',
                 parent=parent_function.parent
             )
-            for parameter in parent_function.parameters:
+
+            if parameters is None:
+                parameters = parent_function.parameters
+            for parameter in parameters:
                 self.fields.append(
                     JavaField(
                         name=parameter.name,
