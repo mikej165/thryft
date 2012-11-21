@@ -272,6 +272,8 @@ def write(self, oprot):
     oprot.writeFieldStop()
 
     oprot.writeStructEnd()
+    
+    return self
 """ % locals()}
 
     def _py_methods(self):
