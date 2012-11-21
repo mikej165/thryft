@@ -40,32 +40,24 @@ public class DateTime implements org.apache.thrift.TBase<DateTime, org.apache.th
         switch (readAsTType) {
             case org.apache.thrift.protocol.TType.LIST:
                 iprot.readListBegin();
-                try {
-                    timestampMs = iprot.readI64();
-                } catch (NumberFormatException e) {
-                }
+                timestampMs = iprot.readI64();
                 iprot.readListEnd();
                 break;
 
             case org.apache.thrift.protocol.TType.STRUCT:
+            default:
                 iprot.readStructBegin();
                 while (true) {
                     org.apache.thrift.protocol.TField ifield = iprot.readFieldBegin();
                     if (ifield.type == org.apache.thrift.protocol.TType.STOP) {
                         break;
                     } else                 if (ifield.name.equals("timestamp_ms")) {
-                        try {
-                            timestampMs = iprot.readI64();
-                        } catch (NumberFormatException e) {
-                        }
+                        timestampMs = iprot.readI64();
                     }
                     iprot.readFieldEnd();
                 }
                 iprot.readStructEnd();
                 break;
-
-            default:
-                throw new org.apache.thrift.TException("unknown readAsType");
         }
 
         this.timestampMs = timestampMs;
@@ -159,15 +151,33 @@ public class DateTime implements org.apache.thrift.TBase<DateTime, org.apache.th
 
     @Override
     public void write(final org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
-        oprot.writeStructBegin(new org.apache.thrift.protocol.TStruct("DateTime"));
+        write(oprot, org.apache.thrift.protocol.TType.STRUCT);
+    }
 
-        oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("timestamp_ms", org.apache.thrift.protocol.TType.I64, (short)-1));
-        oprot.writeI64(getTimestampMs());
-        oprot.writeFieldEnd();
+    public void write(final org.apache.thrift.protocol.TProtocol oprot, final byte writeAsTType) throws org.apache.thrift.TException {
+        switch (writeAsTType) {
+            case org.apache.thrift.protocol.TType.VOID:
+            case org.apache.thrift.protocol.TType.LIST:
+                oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.VOID, 1));
 
-        oprot.writeFieldStop();
+                oprot.writeI64(getTimestampMs());
 
-        oprot.writeStructEnd();
+                oprot.writeListEnd();
+                break;
+
+            case org.apache.thrift.protocol.TType.STRUCT:
+            default:
+                oprot.writeStructBegin(new org.apache.thrift.protocol.TStruct("DateTime"));
+
+                oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("timestamp_ms", org.apache.thrift.protocol.TType.I64, (short)-1));
+                oprot.writeI64(getTimestampMs());
+                oprot.writeFieldEnd();
+
+                oprot.writeFieldStop();
+
+                oprot.writeStructEnd();
+                break;
+        }
     }
 
     private final long timestampMs;

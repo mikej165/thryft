@@ -38,6 +38,7 @@ public class Mixed implements org.apache.thrift.TBase<Mixed, org.apache.thrift.T
                 break;
 
             case org.apache.thrift.protocol.TType.STRUCT:
+            default:
                 iprot.readStructBegin();
                 while (true) {
                     org.apache.thrift.protocol.TField ifield = iprot.readFieldBegin();
@@ -48,9 +49,6 @@ public class Mixed implements org.apache.thrift.TBase<Mixed, org.apache.thrift.T
                 }
                 iprot.readStructEnd();
                 break;
-
-            default:
-                throw new org.apache.thrift.TException("unknown readAsType");
         }
     }
 
@@ -116,12 +114,33 @@ public class Mixed implements org.apache.thrift.TBase<Mixed, org.apache.thrift.T
     }
 
     @Override
+    public String toString() {
+        final com.google.common.base.Objects.ToStringHelper helper = com.google.common.base.Objects.toStringHelper(this);
+        return helper.toString();
+    }
+
+    @Override
     public void write(final org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
-        oprot.writeStructBegin(new org.apache.thrift.protocol.TStruct("Mixed"));
+        write(oprot, org.apache.thrift.protocol.TType.STRUCT);
+    }
 
-        oprot.writeFieldStop();
+    public void write(final org.apache.thrift.protocol.TProtocol oprot, final byte writeAsTType) throws org.apache.thrift.TException {
+        switch (writeAsTType) {
+            case org.apache.thrift.protocol.TType.VOID:
+            case org.apache.thrift.protocol.TType.LIST:
+                oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.VOID, 0));
+                oprot.writeListEnd();
+                break;
 
-        oprot.writeStructEnd();
+            case org.apache.thrift.protocol.TType.STRUCT:
+            default:
+                oprot.writeStructBegin(new org.apache.thrift.protocol.TStruct("Mixed"));
+
+                oprot.writeFieldStop();
+
+                oprot.writeStructEnd();
+                break;
+        }
     }
 
 

@@ -45,6 +45,7 @@ public class Decimal implements org.apache.thrift.TBase<Decimal, org.apache.thri
                 break;
 
             case org.apache.thrift.protocol.TType.STRUCT:
+            default:
                 iprot.readStructBegin();
                 while (true) {
                     org.apache.thrift.protocol.TField ifield = iprot.readFieldBegin();
@@ -57,9 +58,6 @@ public class Decimal implements org.apache.thrift.TBase<Decimal, org.apache.thri
                 }
                 iprot.readStructEnd();
                 break;
-
-            default:
-                throw new org.apache.thrift.TException("unknown readAsType");
         }
 
         this.value = com.google.common.base.Preconditions.checkNotNull(value);
@@ -149,15 +147,33 @@ public class Decimal implements org.apache.thrift.TBase<Decimal, org.apache.thri
 
     @Override
     public void write(final org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
-        oprot.writeStructBegin(new org.apache.thrift.protocol.TStruct("Decimal"));
+        write(oprot, org.apache.thrift.protocol.TType.STRUCT);
+    }
 
-        oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("value", org.apache.thrift.protocol.TType.STRING, (short)-1));
-        oprot.writeString(getValue());
-        oprot.writeFieldEnd();
+    public void write(final org.apache.thrift.protocol.TProtocol oprot, final byte writeAsTType) throws org.apache.thrift.TException {
+        switch (writeAsTType) {
+            case org.apache.thrift.protocol.TType.VOID:
+            case org.apache.thrift.protocol.TType.LIST:
+                oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.VOID, 1));
 
-        oprot.writeFieldStop();
+                oprot.writeString(getValue());
 
-        oprot.writeStructEnd();
+                oprot.writeListEnd();
+                break;
+
+            case org.apache.thrift.protocol.TType.STRUCT:
+            default:
+                oprot.writeStructBegin(new org.apache.thrift.protocol.TStruct("Decimal"));
+
+                oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("value", org.apache.thrift.protocol.TType.STRING, (short)-1));
+                oprot.writeString(getValue());
+                oprot.writeFieldEnd();
+
+                oprot.writeFieldStop();
+
+                oprot.writeStructEnd();
+                break;
+        }
     }
 
     private final String value;
