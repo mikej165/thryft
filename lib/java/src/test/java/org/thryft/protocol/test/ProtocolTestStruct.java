@@ -118,20 +118,20 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
     }
 
     public ProtocolTestStruct() {
-        this.boolField = null;
-        this.byteField = null;
-        this.dateField = null;
-        this.dateTimeField = null;
-        this.decimalField = null;
-        this.enumField = null;
-        this.i16Field = null;
-        this.i32Field = null;
-        this.i64Field = null;
-        this.listStringField = null;
-        this.mapStringStringField = null;
-        this.setStringField = null;
-        this.stringField = null;
-        this.structField = null;
+        boolField = null;
+        byteField = null;
+        dateField = null;
+        dateTimeField = null;
+        decimalField = null;
+        enumField = null;
+        i16Field = null;
+        i32Field = null;
+        i64Field = null;
+        listStringField = null;
+        mapStringStringField = null;
+        setStringField = null;
+        stringField = null;
+        structField = null;
     }
 
     public ProtocolTestStruct(final ProtocolTestStruct other) {
@@ -248,6 +248,7 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
                 break;
 
             case org.apache.thrift.protocol.TType.STRUCT:
+            default:
                 iprot.readStructBegin();
                 while (true) {
                     org.apache.thrift.protocol.TField ifield = iprot.readFieldBegin();
@@ -355,9 +356,6 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
                 }
                 iprot.readStructEnd();
                 break;
-
-            default:
-                throw new org.apache.thrift.TException("unknown readAsType");
         }
 
         this.boolField = boolField;
@@ -674,108 +672,221 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
 
     @Override
     public void write(final org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
-        oprot.writeStructBegin(new org.apache.thrift.protocol.TStruct("ProtocolTestStruct"));
+        write(oprot, org.apache.thrift.protocol.TType.STRUCT);
+    }
 
-        if (isBoolField() != null) {
-            oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("bool_field", org.apache.thrift.protocol.TType.BOOL, (short)-1));
-            oprot.writeBool(isBoolField());
-            oprot.writeFieldEnd();
+    public void write(final org.apache.thrift.protocol.TProtocol oprot, final byte writeAsTType) throws org.apache.thrift.TException {
+        switch (writeAsTType) {
+            case org.apache.thrift.protocol.TType.VOID:
+            case org.apache.thrift.protocol.TType.LIST:
+                oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.VOID, 14));
+
+                if (isBoolField() != null) {
+                    oprot.writeBool(isBoolField());
+                } else {
+                    ((org.thryft.protocol.Protocol)oprot).writeNull();
+                }
+
+                if (getByteField() != null) {
+                    oprot.writeByte(getByteField());
+                } else {
+                    ((org.thryft.protocol.Protocol)oprot).writeNull();
+                }
+
+                if (getDateField() != null) {
+                    if (oprot instanceof org.thryft.protocol.Protocol) { ((org.thryft.protocol.Protocol)oprot).writeDateTime(getDateField()); } else { oprot.writeI64(getDateField().getMillis()); }
+                } else {
+                    ((org.thryft.protocol.Protocol)oprot).writeNull();
+                }
+
+                if (getDateTimeField() != null) {
+                    if (oprot instanceof org.thryft.protocol.Protocol) { ((org.thryft.protocol.Protocol)oprot).writeDateTime(getDateTimeField()); } else { oprot.writeI64(getDateTimeField().getMillis()); }
+                } else {
+                    ((org.thryft.protocol.Protocol)oprot).writeNull();
+                }
+
+                if (getDecimalField() != null) {
+                    if (oprot instanceof org.thryft.protocol.Protocol) { ((org.thryft.protocol.Protocol)oprot).writeDecimal(getDecimalField()); } else { oprot.writeString(getDecimalField().toString()); }
+                } else {
+                    ((org.thryft.protocol.Protocol)oprot).writeNull();
+                }
+
+                if (getEnumField() != null) {
+                    if (oprot instanceof org.thryft.protocol.Protocol) { ((org.thryft.protocol.Protocol)oprot).writeEnum(getEnumField()); } else { oprot.writeString(getEnumField().toString()); }
+                } else {
+                    ((org.thryft.protocol.Protocol)oprot).writeNull();
+                }
+
+                if (getI16Field() != null) {
+                    oprot.writeI16(getI16Field());
+                } else {
+                    ((org.thryft.protocol.Protocol)oprot).writeNull();
+                }
+
+                if (getI32Field() != null) {
+                    oprot.writeI32(getI32Field());
+                } else {
+                    ((org.thryft.protocol.Protocol)oprot).writeNull();
+                }
+
+                if (getI64Field() != null) {
+                    oprot.writeI64(getI64Field());
+                } else {
+                    ((org.thryft.protocol.Protocol)oprot).writeNull();
+                }
+
+                if (getListStringField() != null) {
+                    oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, getListStringField().size()));
+                    for (String _iter0 : getListStringField()) {
+                        oprot.writeString(_iter0);
+                    }
+                    oprot.writeListEnd();
+                } else {
+                    ((org.thryft.protocol.Protocol)oprot).writeNull();
+                }
+
+                if (getMapStringStringField() != null) {
+                    oprot.writeMapBegin(new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, getMapStringStringField().size()));
+                    for (com.google.common.collect.ImmutableMap.Entry<String, String> _iter0 : getMapStringStringField().entrySet()) {
+                        oprot.writeString(_iter0.getKey());
+                        oprot.writeString(_iter0.getValue());
+                    }
+                    oprot.writeMapEnd();
+                } else {
+                    ((org.thryft.protocol.Protocol)oprot).writeNull();
+                }
+
+                if (getSetStringField() != null) {
+                    oprot.writeSetBegin(new org.apache.thrift.protocol.TSet(org.apache.thrift.protocol.TType.STRING, getSetStringField().size()));
+                    for (String _iter0 : getSetStringField()) {
+                        oprot.writeString(_iter0);
+                    }
+                    oprot.writeSetEnd();
+                } else {
+                    ((org.thryft.protocol.Protocol)oprot).writeNull();
+                }
+
+                if (getStringField() != null) {
+                    oprot.writeString(getStringField());
+                } else {
+                    ((org.thryft.protocol.Protocol)oprot).writeNull();
+                }
+
+                if (getStructField() != null) {
+                    getStructField().write(oprot);
+                } else {
+                    ((org.thryft.protocol.Protocol)oprot).writeNull();
+                }
+
+                oprot.writeListEnd();
+                break;
+
+            case org.apache.thrift.protocol.TType.STRUCT:
+            default:
+                oprot.writeStructBegin(new org.apache.thrift.protocol.TStruct("ProtocolTestStruct"));
+
+                if (isBoolField() != null) {
+                    oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("bool_field", org.apache.thrift.protocol.TType.BOOL, (short)-1));
+                    oprot.writeBool(isBoolField());
+                    oprot.writeFieldEnd();
+                }
+
+                if (getByteField() != null) {
+                    oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("byte_field", org.apache.thrift.protocol.TType.BYTE, (short)-1));
+                    oprot.writeByte(getByteField());
+                    oprot.writeFieldEnd();
+                }
+
+                if (getDateField() != null) {
+                    oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("date_field", org.apache.thrift.protocol.TType.STRUCT, (short)-1));
+                    if (oprot instanceof org.thryft.protocol.Protocol) { ((org.thryft.protocol.Protocol)oprot).writeDateTime(getDateField()); } else { oprot.writeI64(getDateField().getMillis()); }
+                    oprot.writeFieldEnd();
+                }
+
+                if (getDateTimeField() != null) {
+                    oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("date_time_field", org.apache.thrift.protocol.TType.STRUCT, (short)-1));
+                    if (oprot instanceof org.thryft.protocol.Protocol) { ((org.thryft.protocol.Protocol)oprot).writeDateTime(getDateTimeField()); } else { oprot.writeI64(getDateTimeField().getMillis()); }
+                    oprot.writeFieldEnd();
+                }
+
+                if (getDecimalField() != null) {
+                    oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("decimal_field", org.apache.thrift.protocol.TType.STRUCT, (short)-1));
+                    if (oprot instanceof org.thryft.protocol.Protocol) { ((org.thryft.protocol.Protocol)oprot).writeDecimal(getDecimalField()); } else { oprot.writeString(getDecimalField().toString()); }
+                    oprot.writeFieldEnd();
+                }
+
+                if (getEnumField() != null) {
+                    oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("enum_field", org.apache.thrift.protocol.TType.STRING, (short)-1));
+                    if (oprot instanceof org.thryft.protocol.Protocol) { ((org.thryft.protocol.Protocol)oprot).writeEnum(getEnumField()); } else { oprot.writeString(getEnumField().toString()); }
+                    oprot.writeFieldEnd();
+                }
+
+                if (getI16Field() != null) {
+                    oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("i16_field", org.apache.thrift.protocol.TType.I16, (short)-1));
+                    oprot.writeI16(getI16Field());
+                    oprot.writeFieldEnd();
+                }
+
+                if (getI32Field() != null) {
+                    oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("i32_field", org.apache.thrift.protocol.TType.I32, (short)-1));
+                    oprot.writeI32(getI32Field());
+                    oprot.writeFieldEnd();
+                }
+
+                if (getI64Field() != null) {
+                    oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("i64_field", org.apache.thrift.protocol.TType.I64, (short)-1));
+                    oprot.writeI64(getI64Field());
+                    oprot.writeFieldEnd();
+                }
+
+                if (getListStringField() != null) {
+                    oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("list_string_field", org.apache.thrift.protocol.TType.LIST, (short)-1));
+                    oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, getListStringField().size()));
+                    for (String _iter0 : getListStringField()) {
+                        oprot.writeString(_iter0);
+                    }
+                    oprot.writeListEnd();
+                    oprot.writeFieldEnd();
+                }
+
+                if (getMapStringStringField() != null) {
+                    oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("map_string_string_field", org.apache.thrift.protocol.TType.MAP, (short)-1));
+                    oprot.writeMapBegin(new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, getMapStringStringField().size()));
+                    for (com.google.common.collect.ImmutableMap.Entry<String, String> _iter0 : getMapStringStringField().entrySet()) {
+                        oprot.writeString(_iter0.getKey());
+                        oprot.writeString(_iter0.getValue());
+                    }
+                    oprot.writeMapEnd();
+                    oprot.writeFieldEnd();
+                }
+
+                if (getSetStringField() != null) {
+                    oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("set_string_field", org.apache.thrift.protocol.TType.SET, (short)-1));
+                    oprot.writeSetBegin(new org.apache.thrift.protocol.TSet(org.apache.thrift.protocol.TType.STRING, getSetStringField().size()));
+                    for (String _iter0 : getSetStringField()) {
+                        oprot.writeString(_iter0);
+                    }
+                    oprot.writeSetEnd();
+                    oprot.writeFieldEnd();
+                }
+
+                if (getStringField() != null) {
+                    oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("string_field", org.apache.thrift.protocol.TType.STRING, (short)-1));
+                    oprot.writeString(getStringField());
+                    oprot.writeFieldEnd();
+                }
+
+                if (getStructField() != null) {
+                    oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("struct_field", org.apache.thrift.protocol.TType.STRUCT, (short)-1));
+                    getStructField().write(oprot);
+                    oprot.writeFieldEnd();
+                }
+
+                oprot.writeFieldStop();
+
+                oprot.writeStructEnd();
+                break;
         }
-
-        if (getByteField() != null) {
-            oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("byte_field", org.apache.thrift.protocol.TType.BYTE, (short)-1));
-            oprot.writeByte(getByteField());
-            oprot.writeFieldEnd();
-        }
-
-        if (getDateField() != null) {
-            oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("date_field", org.apache.thrift.protocol.TType.STRUCT, (short)-1));
-            if (oprot instanceof org.thryft.protocol.Protocol) { ((org.thryft.protocol.Protocol)oprot).writeDateTime(getDateField()); } else { oprot.writeI64(getDateField().getMillis()); }
-            oprot.writeFieldEnd();
-        }
-
-        if (getDateTimeField() != null) {
-            oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("date_time_field", org.apache.thrift.protocol.TType.STRUCT, (short)-1));
-            if (oprot instanceof org.thryft.protocol.Protocol) { ((org.thryft.protocol.Protocol)oprot).writeDateTime(getDateTimeField()); } else { oprot.writeI64(getDateTimeField().getMillis()); }
-            oprot.writeFieldEnd();
-        }
-
-        if (getDecimalField() != null) {
-            oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("decimal_field", org.apache.thrift.protocol.TType.STRUCT, (short)-1));
-            if (oprot instanceof org.thryft.protocol.Protocol) { ((org.thryft.protocol.Protocol)oprot).writeDecimal(getDecimalField()); } else { oprot.writeString(getDecimalField().toString()); }
-            oprot.writeFieldEnd();
-        }
-
-        if (getEnumField() != null) {
-            oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("enum_field", org.apache.thrift.protocol.TType.STRING, (short)-1));
-            if (oprot instanceof org.thryft.protocol.Protocol) { ((org.thryft.protocol.Protocol)oprot).writeEnum(getEnumField()); } else { oprot.writeString(getEnumField().toString()); }
-            oprot.writeFieldEnd();
-        }
-
-        if (getI16Field() != null) {
-            oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("i16_field", org.apache.thrift.protocol.TType.I16, (short)-1));
-            oprot.writeI16(getI16Field());
-            oprot.writeFieldEnd();
-        }
-
-        if (getI32Field() != null) {
-            oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("i32_field", org.apache.thrift.protocol.TType.I32, (short)-1));
-            oprot.writeI32(getI32Field());
-            oprot.writeFieldEnd();
-        }
-
-        if (getI64Field() != null) {
-            oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("i64_field", org.apache.thrift.protocol.TType.I64, (short)-1));
-            oprot.writeI64(getI64Field());
-            oprot.writeFieldEnd();
-        }
-
-        if (getListStringField() != null) {
-            oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("list_string_field", org.apache.thrift.protocol.TType.LIST, (short)-1));
-            oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, getListStringField().size()));
-            for (String _iter0 : getListStringField()) {
-                oprot.writeString(_iter0);
-            }
-            oprot.writeListEnd();
-            oprot.writeFieldEnd();
-        }
-
-        if (getMapStringStringField() != null) {
-            oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("map_string_string_field", org.apache.thrift.protocol.TType.MAP, (short)-1));
-            oprot.writeMapBegin(new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, getMapStringStringField().size()));
-            for (com.google.common.collect.ImmutableMap.Entry<String, String> _iter0 : getMapStringStringField().entrySet()) {
-                oprot.writeString(_iter0.getKey());
-                oprot.writeString(_iter0.getValue());
-            }
-            oprot.writeMapEnd();
-            oprot.writeFieldEnd();
-        }
-
-        if (getSetStringField() != null) {
-            oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("set_string_field", org.apache.thrift.protocol.TType.SET, (short)-1));
-            oprot.writeSetBegin(new org.apache.thrift.protocol.TSet(org.apache.thrift.protocol.TType.STRING, getSetStringField().size()));
-            for (String _iter0 : getSetStringField()) {
-                oprot.writeString(_iter0);
-            }
-            oprot.writeSetEnd();
-            oprot.writeFieldEnd();
-        }
-
-        if (getStringField() != null) {
-            oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("string_field", org.apache.thrift.protocol.TType.STRING, (short)-1));
-            oprot.writeString(getStringField());
-            oprot.writeFieldEnd();
-        }
-
-        if (getStructField() != null) {
-            oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("struct_field", org.apache.thrift.protocol.TType.STRUCT, (short)-1));
-            getStructField().write(oprot);
-            oprot.writeFieldEnd();
-        }
-
-        oprot.writeFieldStop();
-
-        oprot.writeStructEnd();
     }
 
     private final Boolean boolField;
