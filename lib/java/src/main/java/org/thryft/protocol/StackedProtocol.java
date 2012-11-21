@@ -2,6 +2,7 @@ package org.thryft.protocol;
 
 import java.util.Stack;
 
+import org.apache.thrift.TBase;
 import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TField;
 import org.apache.thrift.protocol.TList;
@@ -163,7 +164,11 @@ public class StackedProtocol extends Protocol {
 
     @Override
     public final void writeMixed(final Object value) throws TException {
-        protocolStack.peek().writeMixed(value);
+        if (value instanceof TBase<?, ?>) {
+            ((TBase<?, ?>) value).write(this);
+        } else {
+            protocolStack.peek().writeMixed(value);
+        }
     }
 
     @Override
