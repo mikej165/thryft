@@ -35,13 +35,13 @@ class _ProtocolTest(unittest.TestCase):
         self._test(ProtocolTestStruct(i64_field=1l))
 
     def test_list_string(self):
-        self._test(ProtocolTestStruct(list_string_field=('test',)))
+        self._test(ProtocolTestStruct(list_string_field=('test1', 'test2')))
 
     def test_map_string_string(self):
-        self._test(ProtocolTestStruct(map_string_string_field={'testkey': 'testvalue'}))
+        self._test(ProtocolTestStruct(map_string_string_field={'testkey': 'testvalue', 'testkey2': 'testvalue2'}))
 
     def test_set_string(self):
-        self._test(ProtocolTestStruct(set_string_field=frozenset(('test',))))
+        self._test(ProtocolTestStruct(set_string_field=frozenset(('test1', 'test2'))))
 
     def test_string(self):
         self._test(ProtocolTestStruct(string_field='test'))
