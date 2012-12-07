@@ -31,8 +31,8 @@ public class JsonProtocol extends StackedProtocol {
         }
 
         @Override
-        protected JsonNode _readNode() {
-            return node.get(nextValueIndex++);
+        protected JsonNode _readChildNode() {
+            return _getMyNode().get(nextValueIndex++);
         }
 
         private int nextValueIndex = 0;
@@ -51,13 +51,13 @@ public class JsonProtocol extends StackedProtocol {
         }
 
         @Override
-        protected JsonNode _readNode() {
+        protected JsonNode _readChildNode() {
             if (nextReadIsKey) {
                 nextReadIsKey = false;
                 return new TextNode(fieldNameStack.peek());
             } else {
                 nextReadIsKey = true;
-                return node.get(fieldNameStack.pop());
+                return _getMyNode().get(fieldNameStack.pop());
             }
         }
 
@@ -86,42 +86,42 @@ public class JsonProtocol extends StackedProtocol {
 
     protected abstract class ReaderProtocol extends Protocol {
         protected ReaderProtocol(final JsonNode node) {
-            this.node = node;
+            myNode = node;
         }
 
         @Override
         public boolean readBool() throws TException {
-            return _readNode().asBoolean();
+            return _readChildNode().asBoolean();
         }
 
         @Override
         public byte readByte() throws TException {
-            return (byte) _readNode().asInt();
+            return (byte) _readChildNode().asInt();
         }
 
         @Override
         public double readDouble() throws TException {
-            return _readNode().asDouble();
+            return _readChildNode().asDouble();
         }
 
         @Override
         public short readI16() throws TException {
-            return (short) _readNode().asInt();
+            return (short) _readChildNode().asInt();
         }
 
         @Override
         public int readI32() throws TException {
-            return _readNode().asInt();
+            return _readChildNode().asInt();
         }
 
         @Override
         public long readI64() throws TException {
-            return _readNode().asLong();
+            return _readChildNode().asLong();
         }
 
         @Override
         public TList readListBegin() throws TException {
-            final JsonNode node = _readNode();
+            final JsonNode node = _readChildNode();
             if (!node.isArray()) {
                 throw new TException("expected JSON array");
             }
@@ -131,7 +131,7 @@ public class JsonProtocol extends StackedProtocol {
 
         @Override
         public TMap readMapBegin() throws TException {
-            final JsonNode node = _readNode();
+            final JsonNode node = _readChildNode();
             if (!node.isObject()) {
                 throw new TException("expected JSON object");
             }
@@ -141,12 +141,12 @@ public class JsonProtocol extends StackedProtocol {
 
         @Override
         public String readString() throws TException {
-            return _readNode().asText();
+            return _readChildNode().asText();
         }
 
         @Override
         public TStruct readStructBegin() throws TException {
-            final JsonNode node = _readNode();
+            final JsonNode node = _readChildNode();
             if (!node.isObject()) {
                 throw new TException("expected JSON object");
             }
@@ -154,9 +154,13 @@ public class JsonProtocol extends StackedProtocol {
             return new TStruct();
         }
 
-        protected abstract JsonNode _readNode();
+        protected JsonNode _getMyNode() {
+            return myNode;
+        }
 
-        protected final JsonNode node;
+        protected abstract JsonNode _readChildNode();
+
+        private final JsonNode myNode;
     }
 
     protected class RootReaderProtocol extends ReaderProtocol {
@@ -165,8 +169,8 @@ public class JsonProtocol extends StackedProtocol {
         }
 
         @Override
-        protected JsonNode _readNode() {
-            return node;
+        protected JsonNode _readChildNode() {
+            return _getMyNode();
         }
     }
 
@@ -203,9 +207,13 @@ public class JsonProtocol extends StackedProtocol {
             fieldNameStack.pop();
         }
 
+        protected final Stack<String> _getFieldNameStack() {
+            return fieldNameStack;
+        }
+
         @Override
-        protected JsonNode _readNode() {
-            return node.get(fieldNameStack.peek());
+        protected JsonNode _readChildNode() {
+            return _getMyNode().get(fieldNameStack.peek());
         }
 
         private final Stack<String> fieldNameStack = new Stack<String>();
