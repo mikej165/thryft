@@ -37,6 +37,9 @@ class JavaDocument(Document, JavaNamedConstruct):
 
         return rpad(headers, "\n\n") + definitions + "\n"
 
+    def save(self, out_path):
+        return Document.save(self, out_path=out_path, language='java')
+
     def _save(self, out_file_path):
         out_dir_path, out_file_name = os.path.split(out_file_path)
         out_file_base_name, out_file_ext = os.path.splitext(out_file_name)

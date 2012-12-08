@@ -45,17 +45,22 @@ class Document(NamedConstruct):
     def path(self):
         return self.__path
 
-    def save(self, out_path):
+    def save(self, out_path, language=None):
         if os.path.isdir(out_path):
             out_dir_path = out_path
 
-            assert self.__class__.__name__.endswith('Document')
-            class_name_decamelized = decamelize(self.__class__.__name__)
-            language = class_name_decamelized.split('_')[-2]
+            if language is None:
+                assert self.__class__.__name__.endswith('Document')
+                class_name_decamelized = decamelize(self.__class__.__name__)
+                class_name_split = class_name_decamelized.split('_')
+                if len(class_name_split) > 1:
+                    language = class_name_split[-2]
+                else:
+                    raise ValueError('unknown language: ' + self.__class__.__name__)
 
             namespaces_by_scope = self.namespaces_by_scope
-            for scope in (language, '*'):
-                language_namespace = namespaces_by_scope.get(scope)
+            for language in (language, '*'):
+                language_namespace = namespaces_by_scope.get(language)
                 if language_namespace is not None:
                     out_dir_path = \
                         os.path.join(
