@@ -59,13 +59,13 @@ class Document(_NamedConstruct):
                     raise ValueError('unknown language: ' + self.__class__.__name__)
 
             namespaces_by_scope = self.namespaces_by_scope
-            for language in (language, '*'):
-                language_namespace = namespaces_by_scope.get(language)
-                if language_namespace is not None:
+            for scope in (language, '*'):
+                scope_namespace = namespaces_by_scope.get(scope)
+                if scope_namespace is not None:
                     out_dir_path = \
                         os.path.join(
                             out_dir_path,
-                            language_namespace.name.replace('.', os.path.sep)
+                            scope_namespace.name.replace('.', os.path.sep)
                         )
                     break
 
