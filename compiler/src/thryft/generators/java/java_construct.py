@@ -1,2 +1,0 @@
-class JavaConstruct(object):
-    pass

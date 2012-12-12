@@ -1,9 +1,9 @@
-from thryft.generator.construct import Construct
+from thryft.generator._construct import _Construct
 
 
-class Comment(Construct):
+class Comment(_Construct):
     def __init__(self, parent, text):
-        Construct.__init__(self, parent=parent)
+        _Construct.__init__(self, parent=parent)
         self.__text = text
 
     @property

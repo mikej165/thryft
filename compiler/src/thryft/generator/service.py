@@ -1,9 +1,9 @@
-from thryft.generator.named_construct import NamedConstruct
+from thryft.generator._named_construct import _NamedConstruct
 
 
-class Service(NamedConstruct):
+class Service(_NamedConstruct):
     def __init__(self, extends=None, functions=None, **kwds):
-        NamedConstruct.__init__(self, **kwds)
+        _NamedConstruct.__init__(self, **kwds)
         self.__extends = extends
         self.__functions = functions is not None and list(functions) or []
 

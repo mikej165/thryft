@@ -1,7 +1,7 @@
-from thryft.generator.named_construct import NamedConstruct
+from thryft.generator._named_construct import _NamedConstruct
 
 
-class Function(NamedConstruct):
+class Function(_NamedConstruct):
     def __init__(
         self,
         oneway=False,
@@ -10,7 +10,7 @@ class Function(NamedConstruct):
         throws=None,
         **kwds
     ):
-        NamedConstruct.__init__(self, **kwds)
+        _NamedConstruct.__init__(self, **kwds)
         self.__oneway = oneway
         self.__parameters = parameters is not None and list(parameters) or []
         self.__throws = throws is not None and list(throws) or []

@@ -1,9 +1,9 @@
 from thryft.generator.field import Field
-from thryft.generators.py.py_named_construct import PyNamedConstruct
+from thryft.generators.py._py_named_construct import _PyNamedConstruct
 from yutil import quote, indent
 
 
-class PyField(Field, PyNamedConstruct):
+class PyField(Field, _PyNamedConstruct):
     def py_check(self):
         name = self.py_name()
 

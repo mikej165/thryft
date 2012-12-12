@@ -1,9 +1,9 @@
 from thryft.generator.function import Function
-from thryft.generators.py.py_named_construct import PyNamedConstruct
+from thryft.generators.py._py_named_construct import _PyNamedConstruct
 from yutil import indent, pad
 
 
-class PyFunction(Function, PyNamedConstruct):
+class PyFunction(Function, _PyNamedConstruct):
     def _py_imports_definition(self, caller_stack):
         imports = []
         for parameter in self.parameters:

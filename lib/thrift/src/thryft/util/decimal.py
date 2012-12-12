@@ -1,6 +1,6 @@
-from thryft.generator.compound_types.struct_type import StructType
-from thryft.generators.java.compound_types.java_struct_type import JavaStructType
-from thryft.generators.py.compound_types.py_struct_type import PyStructType
+from thryft.generator.struct_type import StructType
+from thryft.generators.java.java_struct_type import JavaStructType
+from thryft.generators.py.py_struct_type import PyStructType
 
 
 class JavaDecimal(JavaStructType):

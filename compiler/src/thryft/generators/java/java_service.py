@@ -1,9 +1,9 @@
 from thryft.generator.service import Service
-from thryft.generators.java.java_named_construct import JavaNamedConstruct
+from thryft.generators.java._java_named_construct import _JavaNamedConstruct
 from yutil import indent, lpad
 
 
-class JavaService(Service, JavaNamedConstruct):
+class JavaService(Service, _JavaNamedConstruct):
     def java_extends(self):
         return self.extends
 

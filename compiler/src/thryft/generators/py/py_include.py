@@ -1,9 +1,9 @@
 from thryft.generator.include import Include
-from thryft.generators.py.py_construct import PyConstruct
+from thryft.generators.py._py_construct import _PyConstruct
 from yutil import upper_camelize
 
 
-class PyInclude(Include, PyConstruct):
+class PyInclude(Include, _PyConstruct):
     def __init__(self, *args, **kwds):
         Include.__init__(self, *args, **kwds)
         py_module_qname = self.path.replace('/', '.')

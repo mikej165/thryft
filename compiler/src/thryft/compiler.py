@@ -2,7 +2,7 @@ from inspect import isclass
 from pyparsing import ParseException
 from thryft.generator.comment import Comment
 from thryft.generator.document import Document
-from thryft.generator.type import Type
+from thryft.generator._type import _Type
 from thryft.grammar import Grammar
 import imp
 import logging
@@ -52,7 +52,7 @@ class Compiler(object):
     def __call__(self, thrift_file_paths):
         return self.compile(thrift_file_paths)
 
-    def compile(self, thrift_file_paths): #@ReservedAssignment
+    def compile(self, thrift_file_paths):  # @ReservedAssignment
         if not isinstance(thrift_file_paths, (list, tuple)):
             thrift_file_paths = (thrift_file_paths,)
 
@@ -262,14 +262,14 @@ class Compiler(object):
 
         if isinstance(tokens[0], int) and \
            not isinstance(tokens[0], bool):
-            id = tokens.pop(0) #@ReservedAssignment
+            id = tokens.pop(0)  # @ReservedAssignment
         else:
-            id = None #@ReservedAssignment
+            id = None  # @ReservedAssignment
         if isinstance(tokens[0], bool):
             required = tokens.pop(0)
         else:
             required = True
-        type = self.__resolve_type(tokens.pop(0)) #@ReservedAssignment
+        type = self.__resolve_type(tokens.pop(0))  # @ReservedAssignment
         name = tokens.pop(0)
         if len(tokens) > 0:
             value = tokens.pop(0)
@@ -436,7 +436,7 @@ class Compiler(object):
         return [typedef]
 
     def __resolve_type(self, type_):
-        if isinstance(type_, Type):
+        if isinstance(type_, _Type):
             return type_
         type_name = type_
         try:

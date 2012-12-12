@@ -1,9 +1,9 @@
 from thryft.generator.field import Field
-from thryft.generators.thrift.thrift_named_construct import ThriftNamedConstruct
+from thryft.generators.thrift._thrift_named_construct import _ThriftNamedConstruct
 from yutil import rpad
 
 
-class ThriftField(Field, ThriftNamedConstruct):
+class ThriftField(Field, _ThriftNamedConstruct):
     def __repr__(self):
         repr_ = []
         if self.id is not None:

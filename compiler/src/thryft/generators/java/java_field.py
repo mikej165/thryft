@@ -1,10 +1,10 @@
 from thryft.generator.field import Field
-from thryft.generators.java.base_types.java_bool_type import JavaBoolType
-from thryft.generators.java.java_named_construct import JavaNamedConstruct
+from thryft.generators.java.java_bool_type import JavaBoolType
+from thryft.generators.java._java_named_construct import _JavaNamedConstruct
 from yutil import lower_camelize, upper_camelize, indent
 
 
-class JavaField(Field, JavaNamedConstruct):
+class JavaField(Field, _JavaNamedConstruct):
     def java_default_initializer(self):
         default_value = self.java_default_value()
         name = self.java_name()

@@ -1,2 +1,0 @@
-class ThriftConstruct(object):
-    pass

@@ -1,9 +1,9 @@
 from thryft.generator.service import Service
-from thryft.generators.py.py_named_construct import PyNamedConstruct
+from thryft.generators.py._py_named_construct import _PyNamedConstruct
 from yutil import indent
 
 
-class PyService(Service, PyNamedConstruct):
+class PyService(Service, _PyNamedConstruct):
     def py_imports_definition(self, caller_stack=None):
         imports = []
         for function in self.functions:

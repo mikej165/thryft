@@ -1,9 +1,9 @@
 from thryft.generator.function import Function
-from thryft.generators.thrift.thrift_named_construct import ThriftNamedConstruct
+from thryft.generators.thrift._thrift_named_construct import _ThriftNamedConstruct
 from yutil import rpad
 
 
-class ThriftFunction(Function, ThriftNamedConstruct):
+class ThriftFunction(Function, _ThriftNamedConstruct):
     def __repr__(self):
         return "%s%s%s %s(%s)%s" % (
             self.comment is not None and rpad(repr(self.comment), "\n") or '',

@@ -1,9 +1,9 @@
-from thryft.generator.construct import Construct
+from thryft.generator._construct import _Construct
 
 
-class Include(Construct):
+class Include(_Construct):
     def __init__(self, document, path, **kwds):
-        Construct.__init__(self, **kwds)
+        _Construct.__init__(self, **kwds)
         self.__document = document
         self.__path = path
 

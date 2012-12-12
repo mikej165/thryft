@@ -1,9 +1,9 @@
 from thryft.generator.service import Service
-from thryft.generators.thrift.thrift_named_construct import ThriftNamedConstruct
+from thryft.generators.thrift._thrift_named_construct import _ThriftNamedConstruct
 from yutil import pad, indent
 
 
-class ThriftService(Service, ThriftNamedConstruct):
+class ThriftService(Service, _ThriftNamedConstruct):
     def __repr__(self):
         return "service %s%s {%s}" % (
             self.name,

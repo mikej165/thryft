@@ -1,9 +1,9 @@
 from thryft.generator.include import Include
-from thryft.generators.java.java_construct import JavaConstruct
+from thryft.generators.java._java_construct import _JavaConstruct
 from yutil import upper_camelize, rpad
 
 
-class JavaInclude(Include, JavaConstruct):
+class JavaInclude(Include, _JavaConstruct):
     def __init__(self, *args, **kwds):
         Include.__init__(self, *args, **kwds)
 

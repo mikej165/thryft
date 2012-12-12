@@ -2,15 +2,15 @@ from thryft.generator.generator import Generator
 from thryft.generators.thrift.thrift_base_type import ThriftBaseType
 
 
- #@PydevCodeAnalysisIgnore
+ # @PydevCodeAnalysisIgnore
 class ThriftGenerator(Generator):
-    from thryft.generators.thrift.compound_types.thrift_enum_type import ThriftEnumType as EnumType
-    from thryft.generators.thrift.compound_types.thrift_exception_type import ThriftExceptionType as ExceptionType
-    from thryft.generators.thrift.compound_types.thrift_struct_type import ThriftStructType as StructType
+    from thryft.generators.thrift.thrift_enum_type import ThriftEnumType as EnumType
+    from thryft.generators.thrift.thrift_exception_type import ThriftExceptionType as ExceptionType
+    from thryft.generators.thrift.thrift_struct_type import ThriftStructType as StructType
     from thryft.generators.thrift.thrift_const import ThriftConst as Const
-    from thryft.generators.thrift.container_types.thrift_list_type import ThriftListType as ListType
-    from thryft.generators.thrift.container_types.thrift_map_type import ThriftMapType as MapType
-    from thryft.generators.thrift.container_types.thrift_set_type import ThriftSetType as SetType
+    from thryft.generators.thrift.thrift_list_type import ThriftListType as ListType
+    from thryft.generators.thrift.thrift_map_type import ThriftMapType as MapType
+    from thryft.generators.thrift.thrift_set_type import ThriftSetType as SetType
     from thryft.generators.thrift.thrift_comment import ThriftComment as Comment
     from thryft.generators.thrift.thrift_document import ThriftDocument as Document
     from thryft.generators.thrift.thrift_field import ThriftField as Field

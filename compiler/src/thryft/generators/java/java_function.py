@@ -1,12 +1,12 @@
 from thryft.generator.function import Function
-from thryft.generators.java.compound_types.java_struct_type import \
+from thryft.generators.java.java_struct_type import \
     JavaStructType
 from thryft.generators.java.java_field import JavaField
-from thryft.generators.java.java_named_construct import JavaNamedConstruct
+from thryft.generators.java._java_named_construct import _JavaNamedConstruct
 from yutil import lower_camelize, lpad, indent
 
 
-class JavaFunction(Function, JavaNamedConstruct):
+class JavaFunction(Function, _JavaNamedConstruct):
     class _JavaRequestType(JavaStructType):
         def __init__(self, parent_function, java_suppress_warnings=None, parameters=None):
             JavaStructType.__init__(
