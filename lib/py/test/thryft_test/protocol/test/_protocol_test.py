@@ -8,21 +8,21 @@ class _ProtocolTest(unittest.TestCase):
     def test_bool(self):
         self._test(ProtocolTestStruct(bool_field=True))
 
-    def test_Byte(self):
+    def test_byte(self):
         self._test(ProtocolTestStruct(byte_field=1))
 
-#    def test_Date(self):
+#    def test_date(self):
 #        self._test(ProtocolTestStruct.Builder().setDateField(DateTime.now())
 #                .build());
 #
-#    def test_DateTime(self):
+#    def test_dateTime(self):
 #        self._test(ProtocolTestStruct.Builder()
 #                .setDateTimeField(DateTime.now()).build());
 
-    def test_Decimal(self):
+    def test_decimal(self):
         self._test(ProtocolTestStruct(decimal_field=Decimal(100)))
 
-    def test_Enum(self):
+    def test_enum(self):
         self._test(ProtocolTestStruct(enum_field=ProtocolTestEnum.ENUMERATOR2))
 
     def test_i16(self):

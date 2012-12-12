@@ -3,7 +3,9 @@ package org.thryft.protocol;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.ByteBuffer;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.thrift.TBase;
 import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TField;
@@ -33,7 +35,9 @@ public abstract class Protocol extends TProtocol {
 
     @Override
     public java.nio.ByteBuffer readBinary() throws TException {
-        throw new UnsupportedOperationException();
+        final String base64String = readString();
+        final byte[] binaryBytes = Base64.decodeBase64(base64String);
+        return ByteBuffer.wrap(binaryBytes);
     }
 
     @Override
@@ -189,7 +193,7 @@ public abstract class Protocol extends TProtocol {
 
     @Override
     public void writeBinary(final java.nio.ByteBuffer buf) throws TException {
-        throw new UnsupportedOperationException();
+        writeString(Base64.encodeBase64String(buf.array()));
     }
 
     @Override

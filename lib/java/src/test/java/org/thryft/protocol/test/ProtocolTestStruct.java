@@ -7,6 +7,7 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
         }
 
         public Builder(final ProtocolTestStruct other) {
+            this.binaryField = other.getBinaryField();
             this.boolField = other.isBoolField();
             this.byteField = other.getByteField();
             this.dateField = other.getDateField();
@@ -23,12 +24,17 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
             this.structField = other.getStructField();
         }
 
-        protected ProtocolTestStruct _build(final Boolean boolField, final Byte byteField, final org.joda.time.DateTime dateField, final org.joda.time.DateTime dateTimeField, final java.math.BigDecimal decimalField, final org.thryft.protocol.test.ProtocolTestEnum enumField, final Short i16Field, final Integer i32Field, final Long i64Field, final com.google.common.collect.ImmutableList<String> listStringField, final com.google.common.collect.ImmutableMap<String, String> mapStringStringField, final com.google.common.collect.ImmutableSet<String> setStringField, final String stringField, final org.thryft.protocol.test.ProtocolTestStruct structField) {
-            return new ProtocolTestStruct(boolField, byteField, dateField, dateTimeField, decimalField, enumField, i16Field, i32Field, i64Field, listStringField, mapStringStringField, setStringField, stringField, structField);
+        protected ProtocolTestStruct _build(final java.nio.ByteBuffer binaryField, final Boolean boolField, final Byte byteField, final org.joda.time.DateTime dateField, final org.joda.time.DateTime dateTimeField, final java.math.BigDecimal decimalField, final org.thryft.protocol.test.ProtocolTestEnum enumField, final Short i16Field, final Integer i32Field, final Long i64Field, final com.google.common.collect.ImmutableList<String> listStringField, final com.google.common.collect.ImmutableMap<String, String> mapStringStringField, final com.google.common.collect.ImmutableSet<String> setStringField, final String stringField, final org.thryft.protocol.test.ProtocolTestStruct structField) {
+            return new ProtocolTestStruct(binaryField, boolField, byteField, dateField, dateTimeField, decimalField, enumField, i16Field, i32Field, i64Field, listStringField, mapStringStringField, setStringField, stringField, structField);
         }
 
         public ProtocolTestStruct build() {
-            return _build(boolField, byteField, dateField, dateTimeField, decimalField, enumField, i16Field, i32Field, i64Field, listStringField, mapStringStringField, setStringField, stringField, structField);
+            return _build(binaryField, boolField, byteField, dateField, dateTimeField, decimalField, enumField, i16Field, i32Field, i64Field, listStringField, mapStringStringField, setStringField, stringField, structField);
+        }
+
+        public Builder setBinaryField(final java.nio.ByteBuffer binaryField) {
+            this.binaryField = binaryField;
+            return this;
         }
 
         public Builder setBoolField(final Boolean boolField) {
@@ -101,6 +107,7 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
             return this;
         }
 
+        private java.nio.ByteBuffer binaryField;
         private Boolean boolField;
         private Byte byteField;
         private org.joda.time.DateTime dateField;
@@ -118,6 +125,7 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
     }
 
     public ProtocolTestStruct() {
+        binaryField = null;
         boolField = null;
         byteField = null;
         dateField = null;
@@ -135,7 +143,7 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
     }
 
     public ProtocolTestStruct(final ProtocolTestStruct other) {
-        this(other.isBoolField(), other.getByteField(), other.getDateField(), other.getDateTimeField(), other.getDecimalField(), other.getEnumField(), other.getI16Field(), other.getI32Field(), other.getI64Field(), other.getListStringField(), other.getMapStringStringField(), other.getSetStringField(), other.getStringField(), other.getStructField());
+        this(other.getBinaryField(), other.isBoolField(), other.getByteField(), other.getDateField(), other.getDateTimeField(), other.getDecimalField(), other.getEnumField(), other.getI16Field(), other.getI32Field(), other.getI64Field(), other.getListStringField(), other.getMapStringStringField(), other.getSetStringField(), other.getStringField(), other.getStructField());
     }
 
     public ProtocolTestStruct(final org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
@@ -143,6 +151,7 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
     }
 
     public ProtocolTestStruct(final org.apache.thrift.protocol.TProtocol iprot, final byte readAsTType) throws org.apache.thrift.TException {
+        java.nio.ByteBuffer binaryField = null;
         Boolean boolField = null;
         Byte byteField = null;
         org.joda.time.DateTime dateField = null;
@@ -161,6 +170,7 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
         switch (readAsTType) {
             case org.apache.thrift.protocol.TType.LIST:
                 iprot.readListBegin();
+                binaryField = iprot.readBinary();
                 boolField = iprot.readBool();
                 try {
                     byteField = iprot.readByte();
@@ -254,7 +264,9 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
                     org.apache.thrift.protocol.TField ifield = iprot.readFieldBegin();
                     if (ifield.type == org.apache.thrift.protocol.TType.STOP) {
                         break;
-                    } else                 if (ifield.name.equals("bool_field")) {
+                    } else                 if (ifield.name.equals("binary_field")) {
+                        binaryField = iprot.readBinary();
+                    } else if (ifield.name.equals("bool_field")) {
                         boolField = iprot.readBool();
                     } else if (ifield.name.equals("byte_field")) {
                         try {
@@ -358,6 +370,7 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
                 break;
         }
 
+        this.binaryField = binaryField;
         this.boolField = boolField;
         this.byteField = byteField;
         this.dateField = dateField;
@@ -374,7 +387,8 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
         this.structField = structField;
     }
 
-    public ProtocolTestStruct(final Boolean boolField, final Byte byteField, final org.joda.time.DateTime dateField, final org.joda.time.DateTime dateTimeField, final java.math.BigDecimal decimalField, final org.thryft.protocol.test.ProtocolTestEnum enumField, final Short i16Field, final Integer i32Field, final Long i64Field, final com.google.common.collect.ImmutableList<String> listStringField, final com.google.common.collect.ImmutableMap<String, String> mapStringStringField, final com.google.common.collect.ImmutableSet<String> setStringField, final String stringField, final org.thryft.protocol.test.ProtocolTestStruct structField) {
+    public ProtocolTestStruct(final java.nio.ByteBuffer binaryField, final Boolean boolField, final Byte byteField, final org.joda.time.DateTime dateField, final org.joda.time.DateTime dateTimeField, final java.math.BigDecimal decimalField, final org.thryft.protocol.test.ProtocolTestEnum enumField, final Short i16Field, final Integer i32Field, final Long i64Field, final com.google.common.collect.ImmutableList<String> listStringField, final com.google.common.collect.ImmutableMap<String, String> mapStringStringField, final com.google.common.collect.ImmutableSet<String> setStringField, final String stringField, final org.thryft.protocol.test.ProtocolTestStruct structField) {
+        this.binaryField = binaryField;
         this.boolField = boolField;
         this.byteField = byteField;
         this.dateField = dateField;
@@ -416,6 +430,9 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
 
         final ProtocolTestStruct other = (ProtocolTestStruct)otherObject;
         return
+            ((getBinaryField() == null && other.getBinaryField() == null) ||
+            (getBinaryField() != null && other.getBinaryField() != null &&
+            getBinaryField().equals(other.getBinaryField()))) &&
             ((isBoolField() == null && other.isBoolField() == null) ||
             (isBoolField() != null && other.isBoolField() != null &&
             isBoolField().equals(other.isBoolField()))) &&
@@ -466,7 +483,9 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
     }
 
     public Object get(final String fieldName) {
-        if (fieldName.equals("bool_field")) {
+        if (fieldName.equals("binary_field")) {
+            return getBinaryField();
+        } else if (fieldName.equals("bool_field")) {
             return isBoolField();
         } else if (fieldName.equals("byte_field")) {
             return getByteField();
@@ -496,6 +515,10 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
             return getStructField();
         }
         return null;
+    }
+
+    public final java.nio.ByteBuffer getBinaryField() {
+        return binaryField;
     }
 
     public final Byte getByteField() {
@@ -558,6 +581,9 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
     @Override
     public int hashCode() {
         int hashCode = 17;
+        if (getBinaryField() != null) {
+            hashCode = 31 * hashCode + getBinaryField().hashCode();
+        }
         if (isBoolField() != null) {
             hashCode = 31 * hashCode + (isBoolField() ? 1 : 0);
         }
@@ -625,6 +651,9 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
     @Override
     public String toString() {
         final com.google.common.base.Objects.ToStringHelper helper = com.google.common.base.Objects.toStringHelper(this);
+        if (getBinaryField() != null) {
+            helper.add("binary_field", getBinaryField());
+        }
         if (isBoolField() != null) {
             helper.add("bool_field", isBoolField());
         }
@@ -679,7 +708,13 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
         switch (writeAsTType) {
             case org.apache.thrift.protocol.TType.VOID:
             case org.apache.thrift.protocol.TType.LIST:
-                oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.VOID, 14));
+                oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.VOID, 15));
+
+                if (getBinaryField() != null) {
+                    oprot.writeBinary(getBinaryField());
+                } else {
+                    ((org.thryft.protocol.Protocol)oprot).writeNull();
+                }
 
                 if (isBoolField() != null) {
                     oprot.writeBool(isBoolField());
@@ -785,6 +820,12 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
             default:
                 oprot.writeStructBegin(new org.apache.thrift.protocol.TStruct("ProtocolTestStruct"));
 
+                if (getBinaryField() != null) {
+                    oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("binary_field", org.apache.thrift.protocol.TType.STRING, (short)-1));
+                    oprot.writeBinary(getBinaryField());
+                    oprot.writeFieldEnd();
+                }
+
                 if (isBoolField() != null) {
                     oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("bool_field", org.apache.thrift.protocol.TType.BOOL, (short)-1));
                     oprot.writeBool(isBoolField());
@@ -889,6 +930,7 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
         }
     }
 
+    private final java.nio.ByteBuffer binaryField;
     private final Boolean boolField;
     private final Byte byteField;
     private final org.joda.time.DateTime dateField;

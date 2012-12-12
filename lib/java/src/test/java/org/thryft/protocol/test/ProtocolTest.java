@@ -1,6 +1,8 @@
 package org.thryft.protocol.test;
 
 import java.math.BigDecimal;
+import java.nio.ByteBuffer;
+import java.security.SecureRandom;
 
 import org.apache.thrift.TBase;
 import org.joda.time.DateTime;
@@ -11,6 +13,15 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 public abstract class ProtocolTest {
+    @Test
+    public void testBinary() throws Exception {
+        final SecureRandom random = new SecureRandom();
+        final byte[] randomBytes = new byte[246];
+        random.nextBytes(randomBytes);
+        _test(new ProtocolTestStruct.Builder().setBinaryField(
+                ByteBuffer.wrap(randomBytes)).build());
+    }
+
     @Test
     public void testBool() throws Exception {
         _test(new ProtocolTestStruct.Builder().setBoolField(true).build());

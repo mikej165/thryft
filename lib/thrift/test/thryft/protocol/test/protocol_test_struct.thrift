@@ -7,6 +7,7 @@ include "thryft/util/date_time.thrift"
 include "thryft/util/decimal.thrift"
 
 struct ProtocolTestStruct {
+    optional binary binary_field;
     optional bool bool_field;
     optional byte byte_field
     optional date.Date date_field;
