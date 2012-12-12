@@ -1,8 +1,9 @@
 from thryft.generator.generator import Generator
 
 
- #@PydevCodeAnalysisIgnore
+ # @PydevCodeAnalysisIgnore
 class JavaGenerator(Generator):
+    from thryft.generators.java.java_binary_type import JavaBinaryType as BinaryType
     from thryft.generators.java.java_bool_type import JavaBoolType as BoolType
     from thryft.generators.java.java_byte_type import JavaByteType as ByteType
     from thryft.generators.java.java_double_type import JavaDoubleType as DoubleType

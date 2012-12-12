@@ -1,8 +1,9 @@
 from thryft.generator.generator import Generator
 
 
- #@PydevCodeAnalysisIgnore
+ # @PydevCodeAnalysisIgnore
 class PyGenerator(Generator):
+    from thryft.generators.py.py_binary_type import PyBinaryType as BinaryType
     from thryft.generators.py.py_bool_type import PyBoolType as BoolType
     from thryft.generators.py.py_byte_type import PyByteType as ByteType
     from thryft.generators.py.py_double_type import PyDoubleType as DoubleType

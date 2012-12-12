@@ -1,5 +1,6 @@
- #@PydevCodeAnalysisIgnore
+ # @PydevCodeAnalysisIgnore
 class Generator(object):
+
     from thryft.generator.bool_type import BoolType
     from thryft.generator.byte_type import ByteType
     from thryft.generator.double_type import DoubleType

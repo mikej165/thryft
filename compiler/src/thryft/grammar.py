@@ -15,6 +15,7 @@ class Grammar(object):
     '''
 
     base_type_names = (
+        'binary',
         'bool',
         'byte',
         'double',
