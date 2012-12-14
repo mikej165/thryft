@@ -46,7 +46,10 @@ for in_dir_path, generator, out_dir_path in (
 
     for dir_path, _, file_names in os.walk(in_dir_path):
         for file_name in file_names:
-            if os.path.splitext(file_name)[1] != '.thrift':
+            file_base_name, file_ext = os.path.splitext(file_name)
+            if file_ext != '.thrift':
+                continue
+            elif os.path.isfile(os.path.join(dir_path, file_base_name + '.py')):
                 continue
             file_path = os.path.join(dir_path, file_name)
 
