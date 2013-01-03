@@ -24,7 +24,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.TextNode;
 
-public class JSONProtocol extends StackedProtocol {
+public class JsonProtocol extends StackedProtocol {
     protected class ArrayReaderProtocol extends ReaderProtocol {
         public ArrayReaderProtocol(final JsonNode node) {
             super(node);
@@ -369,30 +369,30 @@ public class JSONProtocol extends StackedProtocol {
         }
     }
 
-    public JSONProtocol(final InputStream inputStream) throws IOException {
+    public JsonProtocol(final InputStream inputStream) throws IOException {
         this(new InputStreamReader(inputStream));
     }
 
-    public JSONProtocol(final JsonGenerator generator) {
+    public JsonProtocol(final JsonGenerator generator) {
         this.generator = generator;
         _getProtocolStack().push(_createRootWriterProtocol());
     }
 
-    public JSONProtocol(final JsonNode parsedTree) {
+    public JsonProtocol(final JsonNode parsedTree) {
         generator = null;
         _getProtocolStack().push(_createRootReaderProtocol(parsedTree));
     }
 
-    public JSONProtocol(final OutputStream outputStream) throws IOException {
+    public JsonProtocol(final OutputStream outputStream) throws IOException {
         this(new OutputStreamWriter(outputStream));
     }
 
-    public JSONProtocol(final Reader reader) throws IOException,
+    public JsonProtocol(final Reader reader) throws IOException,
             JsonParseException {
         this(new ObjectMapper().readTree(reader));
     }
 
-    public JSONProtocol(final Writer writer) throws IOException {
+    public JsonProtocol(final Writer writer) throws IOException {
         this(new JsonFactory().createJsonGenerator(writer));
     }
 
