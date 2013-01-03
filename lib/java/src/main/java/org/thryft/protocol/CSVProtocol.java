@@ -19,7 +19,7 @@ import au.com.bytecode.opencsv.CSVReader;
 
 import com.google.common.collect.Lists;
 
-public class CsvProtocol extends StackedProtocol {
+public class CSVProtocol extends StackedProtocol {
     protected class FileReaderProtocol extends ReaderProtocol {
         protected class RowReaderProtocol extends ReaderProtocol {
             protected class SequenceColumnReaderProtocol extends ReaderProtocol {
@@ -204,7 +204,7 @@ public class CsvProtocol extends StackedProtocol {
         }
     }
 
-    public CsvProtocol(final Reader reader) {
+    public CSVProtocol(final Reader reader) {
         final CSVReader csvReader = new CSVReader(reader);
         List<String[]> rows;
         try {
