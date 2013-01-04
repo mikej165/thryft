@@ -29,6 +29,7 @@
 # OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
+
 from thryft.generator.map_type import MapType
 from thryft.generators.py._py_container_type import _PyContainerType
 from yutil import indent

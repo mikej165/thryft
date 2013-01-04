@@ -29,6 +29,7 @@
 # OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
+
 class ProtocolTestEnum(object):
     ENUMERATOR1 = None
     ENUMERATOR2 = None

@@ -29,6 +29,7 @@
 # OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
+
 from __future__ import absolute_import; import decimal
 from datetime import datetime
 from itertools import ifilterfalse

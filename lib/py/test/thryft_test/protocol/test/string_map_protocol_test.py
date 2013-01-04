@@ -29,6 +29,7 @@
 # OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
+
 from thryft.protocol.string_map_protocol import StringMapProtocol
 from thryft_test.protocol.test._protocol_test import _ProtocolTest
 

@@ -29,6 +29,7 @@
 # OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
+
 from thryft.generator.binary_type import BinaryType
 from thryft.generators.java._java_base_type import _JavaBaseType
 

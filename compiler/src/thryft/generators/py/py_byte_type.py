@@ -29,6 +29,7 @@
 # OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
+
 from thryft.generator.byte_type import ByteType
 from thryft.generators.py._py_base_type import _PyBaseType
 

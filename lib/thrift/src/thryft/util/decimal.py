@@ -29,6 +29,7 @@
 # OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
+
 from thryft.generator.struct_type import StructType
 from thryft.generators.java.java_struct_type import JavaStructType
 from thryft.generators.py.py_struct_type import PyStructType

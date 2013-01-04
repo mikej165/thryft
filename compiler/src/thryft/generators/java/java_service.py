@@ -29,6 +29,7 @@
 # OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
+
 from thryft.generator.service import Service
 from thryft.generators.java._java_named_construct import _JavaNamedConstruct
 from yutil import indent, lpad

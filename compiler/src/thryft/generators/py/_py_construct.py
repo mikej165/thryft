@@ -29,6 +29,7 @@
 # OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
+
 class _PyConstruct(object):
     def py_imports_definition(self, caller_stack=None):
         if caller_stack is None:

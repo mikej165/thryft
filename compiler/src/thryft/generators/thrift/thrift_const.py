@@ -29,6 +29,7 @@
 # OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
+
 from thryft.generator.const import Const
 from thryft.generators.thrift._thrift_named_construct import _ThriftNamedConstruct
 from yutil import rpad

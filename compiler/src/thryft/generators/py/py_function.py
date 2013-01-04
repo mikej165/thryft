@@ -29,6 +29,7 @@
 # OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
+
 from thryft.generator.function import Function
 from thryft.generators.py._py_named_construct import _PyNamedConstruct
 from yutil import indent, pad

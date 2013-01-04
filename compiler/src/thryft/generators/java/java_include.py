@@ -29,6 +29,7 @@
 # OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
+
 from thryft.generator.include import Include
 from thryft.generators.java._java_construct import _JavaConstruct
 from yutil import upper_camelize, rpad

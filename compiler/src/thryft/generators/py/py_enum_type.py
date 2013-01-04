@@ -29,6 +29,7 @@
 # OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
+
 from thryft.generator.enum_type import EnumType
 from thryft.generators.py._py_type import _PyType
 from yutil import indent, lpad, pad

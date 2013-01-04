@@ -29,6 +29,7 @@
 # OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
+
 from thryft.generator.struct_type import StructType
 from thryft.generators.thrift._thrift_compound_type import _ThriftCompoundType
 from yutil import pad, indent, rpad

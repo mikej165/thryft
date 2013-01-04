@@ -29,6 +29,7 @@
 # OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
+
 from decimal import Decimal
 from thryft_test.protocol.test.protocol_test_enum import ProtocolTestEnum
 from thryft_test.protocol.test.protocol_test_struct import ProtocolTestStruct

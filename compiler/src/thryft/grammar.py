@@ -29,6 +29,7 @@
 # OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
+
 from collections import OrderedDict
 from decimal import Decimal
 from pyparsing import alphas, alphanums, CaselessLiteral, Combine, \
