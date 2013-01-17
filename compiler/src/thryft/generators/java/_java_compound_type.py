@@ -1,19 +1,19 @@
 #-------------------------------------------------------------------------------
 # Copyright (c) 2013, Minor Gordon
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
 # are met:
-# 
+#
 #     * Redistributions of source code must retain the above copyright
 #       notice, this list of conditions and the following disclaimer.
-# 
+#
 #     * Redistributions in binary form must reproduce the above copyright
 #       notice, this list of conditions and the following disclaimer in
 #       the documentation and/or other materials provided with the
 #       distribution.
-# 
+#
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
 # CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
 # INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
@@ -213,11 +213,29 @@ if (ifield.name.equals("%s")) {
 }""" % (field.name, indent(' ' * 4, field.java_protocol_initializer()))
                  for field in self.fields]
             )))
+        field_protocol_positional_initializers = []
+        for field_i, field in enumerate(self.fields):
+            if field.required:
+                field_required = True
+            else:
+                field_required = False
+                # Field is optional, but it may be followed by a required field,
+                # in which case it is required in a positional read
+                if field_i + 1 < len(self.fields):
+                    for other_field in self.fields[field_i + 1:]:
+                        if other_field.required:
+                            field_required = True
+                            break
+            field_protocol_initializer = field.java_protocol_initializer()
+            if not field_required:
+                field_protocol_initializer = indent(' ' * 4, field_protocol_initializer)
+                field_protocol_initializer = """\
+if (__list.size > %(field_i)u) {
+%(field_protocol_initializer)s
+}""" % locals()
+            field_protocol_positional_initializers.append(field_protocol_initializer)
         field_protocol_positional_initializers = \
-            lpad("\n", indent(' ' * 12, "\n".join([
-                field.java_protocol_initializer()
-                for field in self.fields
-            ])))
+            lpad("\n", indent(' ' * 12, "\n".join(field_protocol_positional_initializers)))
         name = self.java_name()
         return """\
 public %(name)s(final org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
@@ -227,7 +245,7 @@ public %(name)s(final org.apache.thrift.protocol.TProtocol iprot) throws org.apa
 public %(name)s(final org.apache.thrift.protocol.TProtocol iprot, final byte readAsTType) throws org.apache.thrift.TException {%(field_declarations)s
     switch (readAsTType) {
         case org.apache.thrift.protocol.TType.LIST:
-            iprot.readListBegin();%(field_protocol_positional_initializers)s           
+            org.apache.thrift.protocol.TList __list = iprot.readListBegin();%(field_protocol_positional_initializers)s
             iprot.readListEnd();
             break;
     
