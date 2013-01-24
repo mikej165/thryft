@@ -99,6 +99,96 @@ public class JsonProtocol extends StackedProtocol {
 
     protected class MapObjectWriterProtocol extends WriterProtocol {
         @Override
+        public void writeBool(final boolean b) throws TException {
+            if (nextWriteIsKey) {
+                writeString(Boolean.toString(b));
+            } else {
+                nextWriteIsKey = true;
+                super.writeBool(b);
+            }
+        }
+
+        @Override
+        public void writeByte(final byte b) throws TException {
+            if (nextWriteIsKey) {
+                writeString(Byte.toString(b));
+            } else {
+                nextWriteIsKey = true;
+                super.writeByte(b);
+            }
+        }
+
+        @Override
+        public void writeDouble(final double dub) throws TException {
+            if (nextWriteIsKey) {
+                writeString(Double.toString(dub));
+            } else {
+                nextWriteIsKey = true;
+                super.writeDouble(dub);
+            }
+        }
+
+        @Override
+        public void writeI16(final short i16) throws TException {
+            if (nextWriteIsKey) {
+                writeString(Short.toString(i16));
+            } else {
+                nextWriteIsKey = true;
+                super.writeI16(i16);
+            }
+        }
+
+        @Override
+        public void writeI32(final int i32) throws TException {
+            if (nextWriteIsKey) {
+                writeString(Integer.toString(i32));
+            } else {
+                nextWriteIsKey = true;
+                super.writeI32(i32);
+            }
+        }
+
+        @Override
+        public void writeI64(final long i64) throws TException {
+            if (nextWriteIsKey) {
+                writeString(Long.toString(i64));
+            } else {
+                nextWriteIsKey = true;
+                super.writeI64(i64);
+            }
+        }
+
+        @Override
+        public void writeListBegin(final TList list) throws TException {
+            if (nextWriteIsKey) {
+                throw new UnsupportedOperationException();
+            } else {
+                nextWriteIsKey = true;
+                super.writeListBegin(list);
+            }
+        }
+
+        @Override
+        public void writeMapBegin(final TMap map) throws TException {
+            if (nextWriteIsKey) {
+                throw new UnsupportedOperationException();
+            } else {
+                nextWriteIsKey = true;
+                super.writeMapBegin(map);
+            }
+        }
+
+        @Override
+        public void writeNull() throws TException {
+            if (nextWriteIsKey) {
+                throw new UnsupportedOperationException();
+            } else {
+                nextWriteIsKey = true;
+                super.writeNull();
+            }
+        }
+
+        @Override
         public void writeString(final String str) throws TException {
             if (nextWriteIsKey) {
                 nextWriteIsKey = false;
@@ -110,6 +200,16 @@ public class JsonProtocol extends StackedProtocol {
             } else {
                 nextWriteIsKey = true;
                 super.writeString(str);
+            }
+        }
+
+        @Override
+        public void writeStructBegin(final TStruct struct) throws TException {
+            if (nextWriteIsKey) {
+                throw new UnsupportedOperationException();
+            } else {
+                nextWriteIsKey = true;
+                super.writeStructBegin(struct);
             }
         }
 
