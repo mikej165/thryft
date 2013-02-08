@@ -1,19 +1,19 @@
 #-------------------------------------------------------------------------------
 # Copyright (c) 2013, Minor Gordon
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
 # are met:
-# 
+#
 #     * Redistributions of source code must retain the above copyright
 #       notice, this list of conditions and the following disclaimer.
-# 
+#
 #     * Redistributions in binary form must reproduce the above copyright
 #       notice, this list of conditions and the following disclaimer in
 #       the documentation and/or other materials provided with the
 #       distribution.
-# 
+#
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
 # CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
 # INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
@@ -30,14 +30,15 @@
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
 
-from thryft.protocol.string_map_protocol import StringMapProtocol
-from thryft_test.protocol.test._protocol_test import _ProtocolTest
+from thryft.core.protocol.json_protocol import BuiltinsProtocol
+from thryft_test.core.protocol.test._protocol_test import _ProtocolTest
 
 
-class StringMapProtocolTest(_ProtocolTest):
+class BuiltinsProtocolTest(_ProtocolTest):
     def _test(self, in_object):
-        oprot = StringMapProtocol()
+        obuiltin = []
+        oprot = BuiltinsProtocol(obuiltin)
         in_object.write(oprot)
-        string_map = oprot.to_string_map()
-        self.assertTrue(isinstance(string_map, dict))
-        # print string_map
+        iprot = BuiltinsProtocol(obuiltin)
+        out_object = in_object.read(iprot)
+        self.assertEquals(in_object, out_object)
