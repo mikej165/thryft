@@ -30,12 +30,14 @@
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
 
-from thryft.generator._sequence_type import _SequenceType
+from thryft.generator._container_type import _ContainerType
 
 
-class ListType(_SequenceType):
-    def thrift_ttype_id(self):
-        return 15
+class _SequenceType(_ContainerType):
+    def __init__(self, name, parent, element_type):
+        _ContainerType.__init__(self, name=name, parent=parent)
+        self.__element_type = element_type
 
-    def thrift_ttype_name(self):
-        return 'LIST'
+    @property
+    def element_type(self):
+        return self.__element_type
