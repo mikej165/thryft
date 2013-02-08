@@ -1,39 +1,11 @@
 from thryft.generator._base_type import _BaseType
 from thryft.generators.py import py_generator
-from thryft.generators.py.py_document import PyDocument
 from thryft.generators.py.py_function import PyFunction
 from thryft.generators.py.py_service import PyService
 from yutil import indent
-import os.path
 
 
 class JsonrpcClientPyGenerator(py_generator.PyGenerator):
-    class JsonrpcClientPyDocument(PyDocument):
-        def _save(self, out_file_path):
-            out_dir_path, out_file_name = os.path.split(out_file_path)
-
-            py_namespace = self.namespaces_by_scope['py']
-            py_namespace_prefix = 'yogento.api.services.'
-            assert py_namespace.name.startswith(py_namespace_prefix), py_namespace.name
-            out_root_dir_path = out_dir_path[:-len(py_namespace.name)]
-            out_dir_path = \
-                os.path.join(
-                    out_root_dir_path,
-                    'yogento',
-                    'client',
-                    'services',
-                    py_namespace.name[len(py_namespace_prefix):].replace('.', os.path.sep),
-                    'impl'
-                )
-
-            out_file_name = 'yogento_jsonrpc_' + out_file_name
-
-            out_file_path = os.path.join(out_dir_path, out_file_name)
-
-            return PyDocument._save(self, out_file_path)
-
-    Document = JsonrpcClientPyDocument
-
     class Function(PyFunction):
         def __repr__(self):
             if self.return_type is not None:
@@ -43,7 +15,7 @@ class JsonrpcClientPyGenerator(py_generator.PyGenerator):
                 else:
                     call_prefix = 'return_value = '
                     call_suffix = """
-    iprot = thryft.protocol.json_protocol.JsonProtocol(return_value)
+    iprot = thryft.core.protocol.json_protocol.JsonProtocol(return_value)
     return %s""" % self.return_type.py_read_protocol()
             else:
                 call_prefix = call_suffix = ''
@@ -55,13 +27,13 @@ def _%(name)s(self, **kwds):
 
     class Service(PyService):
         def py_imports_definition(self):
-            return ['import yogento.client.services._yogento_jsonrpc_service',
-                    'import ' + PyService.py_qname(self).rsplit('.', 1)[0],
-                    'import thryft.protocol.json_protocol'] + \
+            return ['import ' + PyService.py_qname(self).rsplit('.', 1)[0],
+                    'import thryft.core.protocol.json_protocol',
+                    'import thryft.web.service._jsonrpc_web_service'] + \
                    PyService.py_imports_definition(self)
 
         def _py_name(self):
-            return 'YogentoJsonrpc' + PyService.py_name(self)
+            return 'Jsonrpc' + PyService.py_name(self)
 
         def __repr__(self):
             name = self._py_name()
@@ -75,12 +47,12 @@ def _%(name)s(self, **kwds):
             service_endpoint_name = self.parent.namespaces_by_scope['py'].name.rsplit('.', 1)[-1]
             service_qname = PyService.py_qname(self)
             return """\
-class %(name)s(yogento.client.services._yogento_jsonrpc_service._YogentoJsonrpcService, %(service_qname)s):
+class %(name)s(thryft.web.service._jsonrpc_web_service._JsonrpcWebService, %(service_qname)s):
     def __init__(self, api_url, headers=None):
         api_url = api_url.rstrip('/')
         if not api_url.endswith('/jsonrpc/%(service_endpoint_name)s'):
             api_url += '/jsonrpc/%(service_endpoint_name)s'
-        yogento.client.services._yogento_jsonrpc_service._YogentoJsonrpcService.__init__(self, api_url=api_url, headers=headers)
+        thryft.web.service._jsonrpc_web_service._JsonrpcWebService.__init__(self, api_url=api_url, headers=headers)
 
 %(methods)s
 """ % locals()
