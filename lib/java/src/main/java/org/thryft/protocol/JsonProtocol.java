@@ -38,6 +38,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
+import java.io.StringReader;
 import java.io.Writer;
 import java.util.Iterator;
 import java.util.Stack;
@@ -522,6 +523,10 @@ public class JsonProtocol extends StackedProtocol {
     public JsonProtocol(final Reader reader) throws IOException,
             JsonParseException {
         this(new ObjectMapper().readTree(reader));
+    }
+
+    public JsonProtocol(final String json) throws IOException {
+        this(new StringReader(json));
     }
 
     public JsonProtocol(final Writer writer) throws IOException {
