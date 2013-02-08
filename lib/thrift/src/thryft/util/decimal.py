@@ -40,13 +40,13 @@ class JavaDecimal(JavaStructType):
         return 'java.math.BigDecimal'
 
     def java_read_protocol(self):
-        return "(iprot instanceof org.thryft.protocol.Protocol) ? ((org.thryft.protocol.Protocol)iprot).readDecimal() : new java.math.BigDecimal(iprot.readString())" % locals()
+        return "(iprot instanceof org.thryft.core.protocol.Protocol) ? ((org.thryft.core.protocol.Protocol)iprot).readDecimal() : new java.math.BigDecimal(iprot.readString())" % locals()
 
     def java_read_protocol_throws(self):
         return ['NumberFormatException']
 
     def java_write_protocol(self, value, depth=0):
-        return "if (oprot instanceof org.thryft.protocol.Protocol) { ((org.thryft.protocol.Protocol)oprot).writeDecimal(%(value)s); } else { oprot.writeString(%(value)s.toString()); }" % locals()
+        return "if (oprot instanceof org.thryft.core.protocol.Protocol) { ((org.thryft.core.protocol.Protocol)oprot).writeDecimal(%(value)s); } else { oprot.writeString(%(value)s.toString()); }" % locals()
 
 
 class PyDecimal(PyStructType):

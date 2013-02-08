@@ -519,7 +519,7 @@ public String toString() {
 if (%(field_java_getter_call)s != null) {
 %(field_value_write_protocol)s
 } else {
-    ((org.thryft.protocol.Protocol)oprot).writeNull();
+    ((org.thryft.core.protocol.Protocol)oprot).writeNull();
 }""" % locals()
             field_value_write_protocols.append(field_value_write_protocol)
         field_value_write_protocols = \

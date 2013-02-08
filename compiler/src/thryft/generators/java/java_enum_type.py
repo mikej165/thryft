@@ -47,13 +47,13 @@ class JavaEnumType(EnumType, _JavaType):
 
     def java_read_protocol(self):
         qname = self.java_qname()
-        return "(iprot instanceof org.thryft.protocol.Protocol) ? ((org.thryft.protocol.Protocol)iprot).readEnum(%(qname)s.class) : %(qname)s.valueOf(iprot.readString().trim().toUpperCase())" % locals()
+        return "(iprot instanceof org.thryft.core.protocol.Protocol) ? ((org.thryft.core.protocol.Protocol)iprot).readEnum(%(qname)s.class) : %(qname)s.valueOf(iprot.readString().trim().toUpperCase())" % locals()
 
     def java_read_protocol_throws(self):
         return ['IllegalArgumentException']
 
     def java_write_protocol(self, value, depth=0):
-        return "if (oprot instanceof org.thryft.protocol.Protocol) { ((org.thryft.protocol.Protocol)oprot).writeEnum(%(value)s); } else { oprot.writeString(%(value)s.toString()); }" % locals()
+        return "if (oprot instanceof org.thryft.core.protocol.Protocol) { ((org.thryft.core.protocol.Protocol)oprot).writeEnum(%(value)s); } else { oprot.writeString(%(value)s.toString()); }" % locals()
 
     def __repr__(self):
         name = self.java_name()

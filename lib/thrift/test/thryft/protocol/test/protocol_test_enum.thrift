@@ -1,4 +1,4 @@
-namespace java org.thryft.protocol.test
+namespace java org.thryft.core.protocol.test
 namespace py thryft_test.protocol.test
 
 enum ProtocolTestEnum {

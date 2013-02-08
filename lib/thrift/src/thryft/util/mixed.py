@@ -51,7 +51,7 @@ class JavaMixed(JavaStructType):
         return 'java.lang.Object'
 
     def java_read_protocol(self):
-        return "((org.thryft.protocol.Protocol)iprot).readMixed()" % locals()
+        return "((org.thryft.core.protocol.Protocol)iprot).readMixed()" % locals()
 
     def java_write_protocol(self, value, depth=0):
-        return "((org.thryft.protocol.Protocol)oprot).writeMixed(%(value)s);" % locals()
+        return "((org.thryft.core.protocol.Protocol)oprot).writeMixed(%(value)s);" % locals()

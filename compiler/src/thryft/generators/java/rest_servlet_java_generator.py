@@ -56,7 +56,7 @@ class RestServletJavaGenerator(_servlet_java_generator._ServletJavaGenerator, _R
                     read_http_servlet_request_body = self._java_read_http_servlet_request_body(variable_name_prefix='__')
                     read_request.append("""\
 %(read_http_servlet_request_body)s
-final org.apache.thrift.protocol.TProtocol __restRequestProtocol = new org.thryft.protocol.JsonProtocol(new java.io.StringReader(__httpServletRequestBody));
+final org.apache.thrift.protocol.TProtocol __restRequestProtocol = new org.thryft.core.protocol.JsonProtocol(new java.io.StringReader(__httpServletRequestBody));
 """ % locals())
                 else:
                     path_parameter = self.rest_path_parameter()
@@ -80,7 +80,7 @@ java.util.Map<String, String> __restRequestParameterStringMap = new java.util.Li
 for (final java.util.Map.Entry<String, String[]> __httpServletRequestParameter : ((java.util.Map<String, String[]>)__httpServletRequest.getParameterMap()).entrySet()) {
     __restRequestParameterStringMap.put(__httpServletRequestParameter.getKey(), __httpServletRequestParameter.getValue()[0]);
 }
-final org.apache.thrift.protocol.TProtocol __restRequestProtocol = new org.thryft.protocol.StringMapProtocol(__restRequestParameterStringMap);
+final org.apache.thrift.protocol.TProtocol __restRequestProtocol = new org.thryft.core.protocol.StringMapProtocol(__restRequestParameterStringMap);
 """ % locals())
                 if request_type is not None:
                     variable_assignments = []
@@ -114,7 +114,7 @@ try {
                 catches = ' '.join(["""\
 catch (final %s e) {
     final java.io.StringWriter __httpServletResponseBodyWriter = new java.io.StringWriter();
-    final org.thryft.protocol.JsonProtocol __oprot = new org.thryft.protocol.JsonProtocol(__httpServletResponseBodyWriter);
+    final org.thryft.core.protocol.JsonProtocol __oprot = new org.thryft.core.protocol.JsonProtocol(__httpServletResponseBodyWriter);
     try {
         e.write(__oprot);
     } catch (org.apache.thrift.TException e1) {
@@ -160,7 +160,7 @@ try {
                 write_http_servlet_response_body = indent(' ' * 4, self._java_write_http_servlet_response_body(variable_name_prefix='__'))
                 write_response = """\
     final java.io.StringWriter __httpServletResponseBodyWriter = new java.io.StringWriter();
-    final org.thryft.protocol.JsonProtocol oprot = new org.thryft.protocol.JsonProtocol(__httpServletResponseBodyWriter);
+    final org.thryft.core.protocol.JsonProtocol oprot = new org.thryft.core.protocol.JsonProtocol(__httpServletResponseBodyWriter);
     try {
 %(return_type_write)s
     } catch (org.apache.thrift.TException e) {
