@@ -74,7 +74,7 @@ def _%(name)s(%(parameters)s):
                    ['import ' + PyService.py_qname(self).rsplit('.', 1)[0],
                     'import thryft.core.protocol.json_protocol',
                     'import thryft.core.protocol.string_map_protocol',
-                    'import thryft.web.service._rest_web_service'] + \
+                    'import thryft.web.client.service._rest_client_service'] + \
                    PyService.py_imports_definition(self)
             for function in self.functions:
                 if function.rest_request_method() in ('DELETE', 'HEAD') and isinstance(function.return_type, BoolType):
@@ -87,7 +87,7 @@ def _%(name)s(%(parameters)s):
             return imports
 
         def _py_name(self):
-            return 'Rest' + PyService.py_name(self)
+            return 'RestClient' + PyService.py_name(self)
 
         def __repr__(self):
             name = self._py_name()
@@ -101,12 +101,12 @@ def _%(name)s(%(parameters)s):
             service_endpoint_name = self.parent.namespaces_by_scope['py'].name.rsplit('.', 1)[-1]
             service_qname = PyService.py_qname(self)
             return """\
-class %(name)s(thryft.web.service._rest_web_service._RestWebService, %(service_qname)s):
+class %(name)s(thryft.web.client.service._rest_client_service._RestClientService, %(service_qname)s):
     def __init__(self, api_url, headers=None):
         api_url = api_url.rstrip('/')
         if not api_url.endswith('/rest/'):
             api_url += '/rest/'
-        thryft.web.service._rest_web_service._RestWebService.__init__(self, api_url=api_url, headers=headers)
+        thryft.web.client.service._rest_client_service._RestClientService.__init__(self, api_url=api_url, headers=headers)
 
 %(methods)s
 """ % locals()

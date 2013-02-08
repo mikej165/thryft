@@ -29,11 +29,11 @@ def _%(name)s(self, **kwds):
         def py_imports_definition(self):
             return ['import ' + PyService.py_qname(self).rsplit('.', 1)[0],
                     'import thryft.core.protocol.json_protocol',
-                    'import thryft.web.service._jsonrpc_web_service'] + \
+                    'import thryft.web.client.service._jsonrpc_client_service'] + \
                    PyService.py_imports_definition(self)
 
         def _py_name(self):
-            return 'Jsonrpc' + PyService.py_name(self)
+            return 'JsonrpcClient' + PyService.py_name(self)
 
         def __repr__(self):
             name = self._py_name()
@@ -47,12 +47,12 @@ def _%(name)s(self, **kwds):
             service_endpoint_name = self.parent.namespaces_by_scope['py'].name.rsplit('.', 1)[-1]
             service_qname = PyService.py_qname(self)
             return """\
-class %(name)s(thryft.web.service._jsonrpc_web_service._JsonrpcWebService, %(service_qname)s):
+class %(name)s(thryft.web.client.service._jsonrpc_client_service._JsonrpcClientService, %(service_qname)s):
     def __init__(self, api_url, headers=None):
         api_url = api_url.rstrip('/')
         if not api_url.endswith('/jsonrpc/%(service_endpoint_name)s'):
             api_url += '/jsonrpc/%(service_endpoint_name)s'
-        thryft.web.service._jsonrpc_web_service._JsonrpcWebService.__init__(self, api_url=api_url, headers=headers)
+        thryft.web.client.service._jsonrpc_client_service._JsonrpcClientService.__init__(self, api_url=api_url, headers=headers)
 
 %(methods)s
 """ % locals()
