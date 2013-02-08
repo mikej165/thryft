@@ -30,7 +30,7 @@
  * OF SUCH DAMAGE.
  ******************************************************************************/
 
-package org.thryft.protocol;
+package org.thryft.core.protocol;
 
 import java.io.IOException;
 import java.io.Reader;

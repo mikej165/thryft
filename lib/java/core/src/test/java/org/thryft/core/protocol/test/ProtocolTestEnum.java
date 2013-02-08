@@ -30,7 +30,7 @@
  * OF SUCH DAMAGE.
  ******************************************************************************/
 
-package org.thryft.protocol.test;
+package org.thryft.core.protocol.test;
 
 public enum ProtocolTestEnum {
     ENUMERATOR1(1),

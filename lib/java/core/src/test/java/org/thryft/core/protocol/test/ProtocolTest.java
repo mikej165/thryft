@@ -30,7 +30,7 @@
  * OF SUCH DAMAGE.
  ******************************************************************************/
 
-package org.thryft.protocol.test;
+package org.thryft.core.protocol.test;
 
 import java.math.BigDecimal;
 import java.nio.ByteBuffer;

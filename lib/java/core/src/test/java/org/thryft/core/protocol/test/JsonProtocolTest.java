@@ -30,24 +30,30 @@
  * OF SUCH DAMAGE.
  ******************************************************************************/
 
-package org.thryft.protocol.test;
+package org.thryft.core.protocol.test;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.StringReader;
+import java.io.StringWriter;
+
 import org.apache.thrift.TBase;
 import org.apache.thrift.protocol.TProtocol;
-import org.thryft.protocol.StringMapProtocol;
+import org.thryft.core.protocol.JsonProtocol;
+import org.thryft.core.protocol.Protocol;
 
-import com.google.common.collect.ImmutableMap;
-
-public class StringMapProtocolTest extends ProtocolTest {
+public class JsonProtocolTest extends ProtocolTest {
     @Override
     protected void _test(final TBase<?, ?> expected) throws Exception {
-        final StringMapProtocol oprot = new StringMapProtocol();
+        final StringWriter writer = new StringWriter();
+        final Protocol oprot = new JsonProtocol(writer);
         expected.write(oprot);
-        final ImmutableMap<String, String> ostringMap = oprot.toStringMap();
+        oprot.flush();
 
-        final StringMapProtocol iprot = new StringMapProtocol(ostringMap);
+        final String ostring = writer.toString();
+
+        final StringReader reader = new StringReader(ostring);
+        final Protocol iprot = new JsonProtocol(reader);
         final TBase<?, ?> actual = expected.getClass()
                 .getConstructor(TProtocol.class).newInstance(iprot);
         assertEquals(expected, actual);

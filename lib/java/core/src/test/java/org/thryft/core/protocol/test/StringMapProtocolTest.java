@@ -30,24 +30,26 @@
  * OF SUCH DAMAGE.
  ******************************************************************************/
 
-package org.thryft.protocol.test;
+package org.thryft.core.protocol.test;
+
+import static org.junit.Assert.assertEquals;
 
 import org.apache.thrift.TBase;
+import org.apache.thrift.protocol.TProtocol;
+import org.thryft.core.protocol.StringMapProtocol;
 
-public class CsvProtocolTest extends ProtocolTest {
+import com.google.common.collect.ImmutableMap;
+
+public class StringMapProtocolTest extends ProtocolTest {
     @Override
     protected void _test(final TBase<?, ?> expected) throws Exception {
-        // final StringWriter writer = new StringWriter();
-        // final Protocol oprot = new CsvProtocol(writer);
-        // expected.write(oprot);
-        // oprot.flush();
-        //
-        // final String ostring = writer.toString();
+        final StringMapProtocol oprot = new StringMapProtocol();
+        expected.write(oprot);
+        final ImmutableMap<String, String> ostringMap = oprot.toStringMap();
 
-        // final StringReader reader = new StringReader(ostring);
-        // final Protocol iprot = new CsvProtocol(reader);
-        // final TBase<?, ?> actual = expected.getClass()
-        // .getConstructor(TProtocol.class).newInstance(iprot);
-        // assertEquals(expected, actual);
+        final StringMapProtocol iprot = new StringMapProtocol(ostringMap);
+        final TBase<?, ?> actual = expected.getClass()
+                .getConstructor(TProtocol.class).newInstance(iprot);
+        assertEquals(expected, actual);
     }
 }

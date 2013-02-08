@@ -30,32 +30,24 @@
  * OF SUCH DAMAGE.
  ******************************************************************************/
 
-package org.thryft.protocol.test;
-
-import static org.junit.Assert.assertEquals;
-
-import java.io.StringReader;
-import java.io.StringWriter;
+package org.thryft.core.protocol.test;
 
 import org.apache.thrift.TBase;
-import org.apache.thrift.protocol.TProtocol;
-import org.thryft.protocol.JsonProtocol;
-import org.thryft.protocol.Protocol;
 
-public class JsonProtocolTest extends ProtocolTest {
+public class CsvProtocolTest extends ProtocolTest {
     @Override
     protected void _test(final TBase<?, ?> expected) throws Exception {
-        final StringWriter writer = new StringWriter();
-        final Protocol oprot = new JsonProtocol(writer);
-        expected.write(oprot);
-        oprot.flush();
+        // final StringWriter writer = new StringWriter();
+        // final Protocol oprot = new CsvProtocol(writer);
+        // expected.write(oprot);
+        // oprot.flush();
+        //
+        // final String ostring = writer.toString();
 
-        final String ostring = writer.toString();
-
-        final StringReader reader = new StringReader(ostring);
-        final Protocol iprot = new JsonProtocol(reader);
-        final TBase<?, ?> actual = expected.getClass()
-                .getConstructor(TProtocol.class).newInstance(iprot);
-        assertEquals(expected, actual);
+        // final StringReader reader = new StringReader(ostring);
+        // final Protocol iprot = new CsvProtocol(reader);
+        // final TBase<?, ?> actual = expected.getClass()
+        // .getConstructor(TProtocol.class).newInstance(iprot);
+        // assertEquals(expected, actual);
     }
 }
