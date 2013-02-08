@@ -1,19 +1,19 @@
 #-------------------------------------------------------------------------------
 # Copyright (c) 2013, Minor Gordon
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
 # are met:
-# 
+#
 #     * Redistributions of source code must retain the above copyright
 #       notice, this list of conditions and the following disclaimer.
-# 
+#
 #     * Redistributions in binary form must reproduce the above copyright
 #       notice, this list of conditions and the following disclaimer in
 #       the documentation and/or other materials provided with the
 #       distribution.
-# 
+#
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
 # CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
 # INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
@@ -39,10 +39,10 @@ class ThriftDocument(Document, _ThriftNamedConstruct):
         sections = []
         for section in (
             self.comment is not None and repr(self.comment) or '',
-            "\n".join([repr(include) for include in self.includes]),
-            "\n".join([repr(namespace) for namespace in self.namespaces]),
+            "\n".join(repr(include) for include in self.includes),
+            "\n".join(repr(namespace) for namespace in self.namespaces),
         ):
             if len(section) > 0:
                 sections.append(section)
-        sections.extend([repr(definition) for definition in self.definitions])
+        sections.extend(repr(definition) for definition in self.definitions)
         return "\n\n".join(sections)

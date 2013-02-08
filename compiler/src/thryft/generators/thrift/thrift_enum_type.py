@@ -1,19 +1,19 @@
 #-------------------------------------------------------------------------------
 # Copyright (c) 2013, Minor Gordon
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
 # are met:
-# 
+#
 #     * Redistributions of source code must retain the above copyright
 #       notice, this list of conditions and the following disclaimer.
-# 
+#
 #     * Redistributions in binary form must reproduce the above copyright
 #       notice, this list of conditions and the following disclaimer in
 #       the documentation and/or other materials provided with the
 #       distribution.
-# 
+#
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
 # CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
 # INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
@@ -40,12 +40,12 @@ class ThriftEnumType(EnumType, _ThriftCompoundType):
         return "%senum %s {%s}" % (
             self.comment is not None and rpad(self.comment.text, "\n") or '',
             self.name,
-            pad("\n", indent(' ' * 4, ",\n".join([
+            pad("\n", indent(' ' * 4, ",\n".join(
                 "%s%s%s" % (
                     enumerator.comment is not None and rpad(repr(enumerator.comment), "\n") or '',
                     enumerator.name,
                     enumerator.value is not None and " = %s" % enumerator.value or '',
                 )
-                for enumerator in self.enumerators]
+                for enumerator in self.enumerators
             )), "\n")
         )

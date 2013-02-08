@@ -78,7 +78,7 @@ public Builder() {
 
         def _java_method_build(self):
             field_names = \
-                ', '.join([field.java_name() for field in self.fields])
+                ', '.join(field.java_name() for field in self.fields)
             name = self.java_name()
             return {'build': """\
 public %(name)s build() {
@@ -87,9 +87,9 @@ public %(name)s build() {
 
         def _java_method__build(self):
             field_names = \
-                ', '.join([field.java_name() for field in self.fields])
+                ', '.join(field.java_name() for field in self.fields)
             field_parameters = \
-                ', '.join([field.java_parameter(final=True) for field in self.fields])
+                ', '.join(field.java_parameter(final=True) for field in self.fields)
             name = self.java_name()
             return {'_build': """\
 protected %(name)s _build(%(field_parameters)s) {
@@ -186,8 +186,8 @@ public %(name)s() {%(initializers)s
         this_call = \
             indent(' ' * 4,
                 pad("\nthis(",
-                    ', '.join(['other.' + field.java_getter_name() + '()'
-                               for field in self.fields]),
+                    ', '.join('other.' + field.java_getter_name() + '()'
+                               for field in self.fields),
                 ");\n")
             )
         return """\
@@ -197,8 +197,8 @@ public %(name)s(final %(name)s other) {%(this_call)s
     def _java_constructor_protocol(self):
         field_declarations = \
             pad("\n", indent(' ' * 4, "\n".join(
-                [field.java_local_declaration(final=False)
-                 for field in self.fields]
+                field.java_local_declaration(final=False)
+                for field in self.fields
             )), "\n")
         field_initializers = \
             lpad("\n\n", "\n".join(indent(' ' * 4,
@@ -207,11 +207,11 @@ public %(name)s(final %(name)s other) {%(this_call)s
             )))
         field_protocol_named_initializers = \
             lpad(' else ', indent(' ' * 16, ' else '.join(
-                ["""\
+                """\
 if (ifield.name.equals("%s")) {
 %s
 }""" % (field.name, indent(' ' * 4, field.java_protocol_initializer()))
-                 for field in self.fields]
+                 for field in self.fields
             )))
         field_protocol_positional_initializers = []
         for field_i, field in enumerate(self.fields):
@@ -297,8 +297,8 @@ public %(name)s(%(parameters)s) {%(initializers)s
                  for field in self.fields]
             ))
         name = self.java_name()
-        parameters = ', '.join([field.java_parameter(final=True)
-                                for field in self.fields])
+        parameters = ', '.join(field.java_parameter(final=True)
+                                for field in self.fields)
         return """\
 public %(name)s(%(parameters)s) {
 %(initializers)s
@@ -318,8 +318,8 @@ public %(name)s(%(parameters)s) {
                          for field in self.fields]
                     ))
                 name = self.java_name()
-                parameters = ', '.join([field.java_parameter(boxed=True, final=True)
-                                        for field in self.fields])
+                parameters = ', '.join(field.java_parameter(boxed=True, final=True)
+                                        for field in self.fields)
                 return """\
 public %(name)s(%(parameters)s) {
 %(initializers)s
@@ -578,8 +578,8 @@ public void write(final org.apache.thrift.protocol.TProtocol oprot, final byte w
         if len(self.__suppress_warnings) > 0:
             class_annotations.append(
                 "@SuppressWarnings({%s})" % \
-                    ', '.join(['"' + warning + '"'
-                               for warning in sorted(self.__suppress_warnings)]))
+                    ', '.join('"' + warning + '"'
+                               for warning in sorted(self.__suppress_warnings)))
         class_annotations = rpad("\n".join(class_annotations), "\n")
         class_modifiers = rpad(' '.join(self.__class_modifiers), ' ')
         name = self.java_name()

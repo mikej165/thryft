@@ -1,19 +1,19 @@
 #-------------------------------------------------------------------------------
 # Copyright (c) 2013, Minor Gordon
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
 # are met:
-# 
+#
 #     * Redistributions of source code must retain the above copyright
 #       notice, this list of conditions and the following disclaimer.
-# 
+#
 #     * Redistributions in binary form must reproduce the above copyright
 #       notice, this list of conditions and the following disclaimer in
 #       the documentation and/or other materials provided with the
 #       distribution.
-# 
+#
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
 # CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
 # INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
@@ -134,10 +134,10 @@ public %(final)s%(type_name)s %(getter_name)s() {
         if not self.required and len(read_protocol_throws) > 0:
             read_protocol = indent(' ' * 4, read_protocol)
             read_protocol_throws = \
-                ''.join(["""\
+                ''.join("""\
  catch (%(exception_type_name)s e) {
 }""" % locals()
-                         for exception_type_name in read_protocol_throws])
+                         for exception_type_name in read_protocol_throws)
             read_protocol = """\
 try {
 %(read_protocol)s
@@ -155,10 +155,10 @@ try {
 #        if len(read_protocol_throws) > 0:
 #            read_protocol = indent(' ' * 4, read_protocol)
 #            read_protocol_throws = \
-#                ''.join(["""\
+#                ''.join("""\
 # catch (%(exception_type_name)s e) {
 # }""" % locals()
-#                           for exception_type_name in read_protocol_throws])
+#                           for exception_type_name in read_protocol_throws)
 #            read_protocol = """\
 # try {
 # %(read_protocol)s

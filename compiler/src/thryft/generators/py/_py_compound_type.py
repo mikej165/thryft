@@ -1,19 +1,19 @@
 #-------------------------------------------------------------------------------
 # Copyright (c) 2013, Minor Gordon
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
 # are met:
-# 
+#
 #     * Redistributions of source code must retain the above copyright
 #       notice, this list of conditions and the following disclaimer.
-# 
+#
 #     * Redistributions in binary form must reproduce the above copyright
 #       notice, this list of conditions and the following disclaimer in
 #       the documentation and/or other materials provided with the
 #       distribution.
-# 
+#
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
 # CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
 # INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
@@ -70,8 +70,8 @@ def __init__(
 
         def _py_method_build(self):
             kwds = \
-                ', '.join(["%s=self.__%s" % (field.py_name(), field.py_name())
-                           for field in self.fields])
+                ', '.join("%s=self.__%s" % (field.py_name(), field.py_name())
+                           for field in self.fields)
             name = self.py_name()
             return {'_build': """\
 def build(self):
@@ -159,8 +159,8 @@ def __init__(
         return {'as_dict': """\
 def as_dict(self):
     return {%s}
-""" % ', '.join(["'%s': %s" % (field.py_name(), 'self.' + field.py_getter_call())
-                                 for field in self.fields])}
+""" % ', '.join("'%s': %s" % (field.py_name(), 'self.' + field.py_getter_call())
+                                 for field in self.fields)}
 
     def _py_method_eq(self):
         statements = []
@@ -191,8 +191,8 @@ def __hash__(self):
         return {'__hash__': """\
 def __hash__(self):
     return hash((%s,))
-""" % ','.join(['self.' + field.py_getter_name()
-                for field in self.fields])}
+""" % ','.join('self.' + field.py_getter_name()
+                for field in self.fields)}
 
     def _py_method_ne(self):
         return {'__ne__': '''\
