@@ -32,27 +32,31 @@
 
 package org.thryft.web.server.store.test;
 
-import java.io.IOException;
+public enum StoreTestEnum {
+    ENUMERATOR1(1), ENUMERATOR2(2);
 
-import org.junit.Before;
-import org.thryft.web.server.store.SimpleDbStore;
-
-public class SimpleDbStoreTest extends AwsKeyValueStoreTest {
-    public static SimpleDbStore.Configuration getSimpleDbStoreConfiguration()
-            throws IOException {
-        if (simpleDbStoreConfiguration == null) {
-            simpleDbStoreConfiguration = new SimpleDbStore.Configuration(
-                    AwsKeyValueStoreTest.getCredentials(), "yogento-test-");
+    public static StoreTestEnum valueOf(final int value) {
+        switch (value) {
+        case 1:
+            return ENUMERATOR1;
+        case 2:
+            return ENUMERATOR2;
+        default:
+            throw new IllegalArgumentException();
         }
-
-        return simpleDbStoreConfiguration;
     }
 
-    @Before
-    public void setUp() throws IOException {
-        super._setUp(new SimpleDbStore<StoreTestStruct>(
-                getSimpleDbStoreConfiguration(), StoreTestStruct.class));
+    public static StoreTestEnum valueOf(final Integer value) {
+        return valueOf(value.intValue());
     }
 
-    private static SimpleDbStore.Configuration simpleDbStoreConfiguration = null;
+    private StoreTestEnum(final int value) {
+        this.value = value;
+    }
+
+    public final int value() {
+        return value;
+    }
+
+    private final int value;
 }

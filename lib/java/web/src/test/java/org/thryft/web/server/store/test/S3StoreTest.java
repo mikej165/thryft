@@ -35,7 +35,6 @@ package org.thryft.web.server.store.test;
 import java.io.IOException;
 
 import org.junit.Before;
-import org.thryft.core.protocol.test.ProtocolTestStruct;
 import org.thryft.web.server.store.S3Store;
 
 public class S3StoreTest extends AwsKeyValueStoreTest {
@@ -51,8 +50,8 @@ public class S3StoreTest extends AwsKeyValueStoreTest {
 
     @Before
     public void setUp() throws IOException {
-        super._setUp(new S3Store<ProtocolTestStruct>(getS3StoreConfiguration(),
-                ProtocolTestStruct.class));
+        super._setUp(new S3Store<StoreTestStruct>(getS3StoreConfiguration(),
+                StoreTestStruct.class));
     }
 
     private static S3Store.Configuration s3StoreConfiguration = null;

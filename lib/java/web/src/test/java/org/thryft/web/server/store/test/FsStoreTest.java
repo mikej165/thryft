@@ -36,7 +36,6 @@ import java.io.File;
 import java.io.IOException;
 
 import org.junit.Before;
-import org.thryft.core.protocol.test.ProtocolTestStruct;
 import org.thryft.web.server.store.FsStore;
 import org.thryft.web.server.util.FileUtils;
 
@@ -57,8 +56,8 @@ public class FsStoreTest extends StoreTest {
         org.apache.commons.io.FileUtils
                 .deleteDirectory(getFsStoreConfiguration()
                         .getRootDirectoryPath());
-        super._setUp(new FsStore<ProtocolTestStruct>(getFsStoreConfiguration(),
-                ProtocolTestStruct.class));
+        super._setUp(new FsStore<StoreTestStruct>(getFsStoreConfiguration(),
+                StoreTestStruct.class));
     }
 
     private static FsStore.Configuration fsStoreConfiguration = null;

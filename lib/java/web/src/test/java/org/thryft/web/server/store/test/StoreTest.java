@@ -48,8 +48,6 @@ import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Test;
-import org.thryft.core.protocol.test.ProtocolTestEnum;
-import org.thryft.core.protocol.test.ProtocolTestStruct;
 import org.thryft.web.server.store.Store;
 import org.thryft.web.server.store.Store.NoSuchModelException;
 
@@ -61,31 +59,31 @@ import com.google.common.collect.Sets;
 
 public abstract class StoreTest {
     protected StoreTest() {
-        final Set<ProtocolTestStruct> models = Sets.newLinkedHashSet();
+        final Set<StoreTestStruct> models = Sets.newLinkedHashSet();
         final Set<String> modelIds = Sets.newLinkedHashSet();
         // models.size() should be > SimpleDBStore batch size of 25
         for (int modelI = 0; modelI < 32; modelI++) {
             // Use a long string to overflow SimpleDBStore's attribute
             // value limit of 1024
-            final ProtocolTestStruct model = new ProtocolTestStruct.Builder()
+            final StoreTestStruct model = new StoreTestStruct.Builder()
                     .setBoolField(true)
                     .setByteField((byte) modelI)
                     .setDateField(DateTime.now())
                     .setDateTimeField(DateTime.now())
                     .setDecimalField(new BigDecimal(modelI))
-                    .setEnumField(ProtocolTestEnum.ENUMERATOR1)
+                    .setEnumField(StoreTestEnum.ENUMERATOR1)
                     .setI16Field((short) modelI)
                     .setI32Field(modelI)
                     .setI64Field((long) modelI)
                     .setListStringField(
-                            ImmutableList.of("Test model " + modelI))
+                            ImmutableList.of("Test model "
+                                    + StringUtils.repeat("0", 1024)
+                                    + Integer.toString(modelI)))
                     .setMapStringStringField(
                             ImmutableMap.of("key", "Test model " + modelI))
                     .setSetStringField(ImmutableSet.of("Test model " + modelI))
-                    .setStringField(
-                            "Test model " + StringUtils.repeat("0", 1024)
-                                    + Integer.toString(modelI))
-                    .setStructField(new ProtocolTestStruct()).build();
+                    .setStringField("testmodel" + modelI)
+                    .setStructField(new StoreTestStruct()).build();
             models.add(model);
             modelIds.add(__getModelId(model));
         }
@@ -103,15 +101,14 @@ public abstract class StoreTest {
     public void testDeleteModelById() {
         __putModels();
 
-        final ProtocolTestStruct deleteModel = models.asList().get(0);
+        final StoreTestStruct deleteModel = models.asList().get(0);
 
         boolean ret = store
                 .deleteModelById(__getModelId(deleteModel), USERNAME);
         assertTrue(ret);
 
-        final ImmutableSet<ProtocolTestStruct> models = store
-                .getModels(USERNAME);
-        Set<ProtocolTestStruct> expectedModels = Sets
+        final ImmutableSet<StoreTestStruct> models = store.getModels(USERNAME);
+        Set<StoreTestStruct> expectedModels = Sets
                 .newLinkedHashSet(this.models);
         ret = expectedModels.remove(deleteModel);
         assertTrue(ret);
@@ -124,7 +121,7 @@ public abstract class StoreTest {
 
     @Test
     public void testDeleteModels() {
-        ImmutableSet<ProtocolTestStruct> models = store.getModels(USERNAME);
+        ImmutableSet<StoreTestStruct> models = store.getModels(USERNAME);
         assertEquals(0, models.size());
 
         __putModels();
@@ -142,7 +139,7 @@ public abstract class StoreTest {
     public void testGetModelById() throws Store.NoSuchModelException {
         __putModels();
 
-        for (final ProtocolTestStruct model : models) {
+        for (final StoreTestStruct model : models) {
             assertEquals(model,
                     store.getModelById(__getModelId(model), USERNAME));
         }
@@ -152,7 +149,7 @@ public abstract class StoreTest {
     public void testGetModelByIdCached() throws NoSuchModelException {
         __putModels();
 
-        for (final ProtocolTestStruct model : models) {
+        for (final StoreTestStruct model : models) {
             assertEquals(model,
                     store.getModelById(__getModelId(model), USERNAME));
             assertEquals(model,
@@ -192,8 +189,7 @@ public abstract class StoreTest {
     public void testGetModels() {
         __putModels();
 
-        final ImmutableSet<ProtocolTestStruct> models = store
-                .getModels(USERNAME);
+        final ImmutableSet<StoreTestStruct> models = store.getModels(USERNAME);
         assertEquals(this.models, models);
     }
 
@@ -201,11 +197,11 @@ public abstract class StoreTest {
     public void testGetModelsByIds() throws Store.NoSuchModelException {
         __putModels();
 
-        final ImmutableSet<ProtocolTestStruct> models = store.getModelsByIds(
+        final ImmutableSet<StoreTestStruct> models = store.getModelsByIds(
                 modelIds, USERNAME);
         assertEquals(this.models, models);
 
-        for (final ProtocolTestStruct model : models) {
+        for (final StoreTestStruct model : models) {
             assertEquals(model,
                     store.getModelById(__getModelId(model), USERNAME));
         }
@@ -240,7 +236,7 @@ public abstract class StoreTest {
     public void testHeadModelById() throws Store.NoSuchModelException {
         __putModels();
 
-        for (final ProtocolTestStruct model : models) {
+        for (final StoreTestStruct model : models) {
             assertTrue(store.headModelById(__getModelId(model), USERNAME));
         }
 
@@ -249,9 +245,9 @@ public abstract class StoreTest {
 
     @Test
     public void testPutModel() throws Store.NoSuchModelException {
-        final ProtocolTestStruct expectedModel = models.asList().get(0);
+        final StoreTestStruct expectedModel = models.asList().get(0);
         store.putModel(expectedModel, __getModelId(expectedModel), USERNAME);
-        final ProtocolTestStruct model = store.getModelById(
+        final StoreTestStruct model = store.getModelById(
                 __getModelId(expectedModel), USERNAME);
         assertEquals(expectedModel, model);
     }
@@ -259,8 +255,7 @@ public abstract class StoreTest {
     @Test
     public void testPutModels() {
         assertThat(store.getModels(USERNAME), hasSize(0));
-        store.putModels(ImmutableMap.<String, ProtocolTestStruct> of(),
-                USERNAME);
+        store.putModels(ImmutableMap.<String, StoreTestStruct> of(), USERNAME);
         assertThat(store.getModels(USERNAME), hasSize(0));
 
         __putModels();
@@ -270,27 +265,27 @@ public abstract class StoreTest {
         assertThat(store.getModels(USERNAME), hasSize(models.size()));
     }
 
-    protected void _setUp(final Store<ProtocolTestStruct> store) {
+    protected void _setUp(final Store<StoreTestStruct> store) {
         this.store = store;
     }
 
-    private String __getModelId(final ProtocolTestStruct model) {
+    private String __getModelId(final StoreTestStruct model) {
         return model.getStringField();
     }
 
     private void __putModels() {
-        final Map<String, ProtocolTestStruct> models = Maps.newLinkedHashMap();
-        for (final ProtocolTestStruct model : this.models) {
+        final Map<String, StoreTestStruct> models = Maps.newLinkedHashMap();
+        for (final StoreTestStruct model : this.models) {
             models.put(__getModelId(model), model);
         }
         store.putModels(ImmutableMap.copyOf(models), USERNAME);
     }
 
-    private final ImmutableSet<ProtocolTestStruct> models;
+    private final ImmutableSet<StoreTestStruct> models;
 
     private final ImmutableSet<String> modelIds;
 
-    private Store<ProtocolTestStruct> store;
+    private Store<StoreTestStruct> store;
 
     private final static String USERNAME = StoreTest.class.getSimpleName()
             + "_user";

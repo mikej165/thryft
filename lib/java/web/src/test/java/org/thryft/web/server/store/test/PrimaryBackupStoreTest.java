@@ -37,7 +37,6 @@ import java.io.IOException;
 
 import org.junit.After;
 import org.junit.Before;
-import org.thryft.core.protocol.test.ProtocolTestStruct;
 import org.thryft.web.server.store.FsStore;
 import org.thryft.web.server.store.MemStore;
 import org.thryft.web.server.store.PrimaryBackupStore;
@@ -48,10 +47,10 @@ public class PrimaryBackupStoreTest extends StoreTest {
     public void setUp() throws IOException {
         rootDirectoryPath = FileUtils.createTempDirectory(getClass()
                 .getSimpleName(), null);
-        super._setUp(new PrimaryBackupStore<ProtocolTestStruct>(
-                new MemStore<ProtocolTestStruct>(ProtocolTestStruct.class),
-                new FsStore<ProtocolTestStruct>(new FsStore.Configuration(
-                        rootDirectoryPath), ProtocolTestStruct.class)));
+        super._setUp(new PrimaryBackupStore<StoreTestStruct>(
+                new MemStore<StoreTestStruct>(StoreTestStruct.class),
+                new FsStore<StoreTestStruct>(new FsStore.Configuration(
+                        rootDirectoryPath), StoreTestStruct.class)));
     }
 
     @Override
