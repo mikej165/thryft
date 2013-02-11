@@ -1,19 +1,19 @@
 #-------------------------------------------------------------------------------
 # Copyright (c) 2013, Minor Gordon
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
 # are met:
-# 
+#
 #     * Redistributions of source code must retain the above copyright
 #       notice, this list of conditions and the following disclaimer.
-# 
+#
 #     * Redistributions in binary form must reproduce the above copyright
 #       notice, this list of conditions and the following disclaimer in
 #       the documentation and/or other materials provided with the
 #       distribution.
-# 
+#
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
 # CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
 # INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
@@ -42,6 +42,22 @@ class _NamedConstruct(_Construct):
     @property
     def name(self):
         return self.__name
+
+    def _qname(self, scope, **kwds):
+        if self.parent is None:
+            return getattr(self, scope + '_name')(**kwds)
+        from thryft.generator.document import Document
+        parent_document = self.parent
+        while not isinstance(parent_document, Document):
+            parent_document = parent_document.parent
+        if parent_document is None:
+            return getattr(self, scope + '_name')(**kwds)
+        parent_document_namespaces_by_scope = parent_document.namespaces_by_scope
+        for namespace_scope in (scope, '*'):
+            namespace = parent_document_namespaces_by_scope.get(namespace_scope)
+            if namespace is not None:
+                return '.'.join((namespace.name, parent_document.name, getattr(self, scope + '_name')(**kwds)))
+        return '.'.join((parent_document.name, getattr(self, scope + '_name')(**kwds)))
 
     def thrift_qname(self):
         if self.parent is None:

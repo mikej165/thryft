@@ -32,7 +32,61 @@
 
 from thryft.generator.function import Function
 from thryft.generators.js._js_named_construct import _JsNamedConstruct
+from yutil import decamelize, indent
 
 
 class JsFunction(Function, _JsNamedConstruct):
-    pass
+    def js_qname(self):
+        return self.parent.js_qname() + '.' + self.js_name()
+
+    def __repr__(self):
+        name = self.js_name()
+
+        if self.return_type is not None:
+            ajax_callbacks = indent(' ' * 8, """\
+success:function (reply) {
+    result = reply.result;
+}""")
+        else:
+            ajax_callbacks = indent(' ' * 8, """\
+success:function (reply) {
+    result = true;
+},
+error:function () {
+    result = false;
+}""")
+
+        jsonrpc_parameters = ', '.join("'" + parameter.name + "':" + parameter.name
+                                        for parameter in self.parameters)
+
+        jsonrpc_url = self.js_qname().split('.', 1)[0] + '.hostname()' + '/api/jsonrpc/'
+        assert self.parent.name.endswith('Service')
+        jsonrpc_url += '_'.join(decamelize(self.parent.name).split('_')[:-1])
+
+        qname = self.js_qname()
+
+        parameter_names = ', '.join([parameter.name for parameter in self.parameters])
+
+        return """\
+%(qname)s = function(%(parameter_names)s) {
+    var self = this;
+    var result;
+
+    $.ajax({
+        url:%(jsonrpc_url)s,
+        type:'POST',
+        data:JSON.stringify({
+            jsonrpc:'2.0',
+            method:'%(name)s',
+            params:{%(jsonrpc_parameters)s},
+            id:'1234'
+        }),
+        dataType:'json',
+        mimeType:'application/json',
+        async:false,
+%(ajax_callbacks)s
+    });
+    
+    return result;
+};
+""" % locals()

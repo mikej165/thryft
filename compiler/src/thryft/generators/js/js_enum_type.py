@@ -35,4 +35,5 @@ from thryft.generators.js._js_type import _JsType
 
 
 class JsEnumType(EnumType, _JsType):
-    pass
+    def __repr__(self):
+        return ''

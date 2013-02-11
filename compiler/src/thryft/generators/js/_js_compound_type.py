@@ -31,7 +31,17 @@
 #-------------------------------------------------------------------------------
 
 from thryft.generators.js._js_type import _JsType
+from yutil import indent
 
 
 class _JsCompoundType(_JsType):
-    pass
+    def __repr__(self):
+        fields = \
+            ",\n".join(indent(' ' * 4,
+                [field.name + ':undefined' for field in self.fields]
+            ))
+        qname = self.js_qname()
+        return """\
+%(qname)s = Backbone.Model.extend({
+%(fields)s
+});""" % locals()

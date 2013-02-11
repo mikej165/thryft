@@ -35,4 +35,5 @@ from thryft.generators.js._js_compound_type import _JsCompoundType
 
 
 class JsStructType(StructType, _JsCompoundType):
-    pass
+    def __repr__(self):
+        return _JsCompoundType.__repr__(self)

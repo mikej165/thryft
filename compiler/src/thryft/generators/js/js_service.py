@@ -35,4 +35,13 @@ from thryft.generators.js._js_named_construct import _JsNamedConstruct
 
 
 class JsService(Service, _JsNamedConstruct):
-    pass
+    def __repr__(self):
+        qname = self.js_qname()
+
+        if len(self.functions) == 0:
+            return """\
+%(qname)s = function() {
+};            
+""" % locals()
+
+        return "\n".join(repr(function) for function in self.functions)
