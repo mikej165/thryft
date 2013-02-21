@@ -33,6 +33,7 @@
 package org.thryft.web.server.store.test;
 
 import java.io.IOException;
+import java.util.Properties;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.PropertiesCredentials;
@@ -42,11 +43,23 @@ public abstract class AwsKeyValueStoreTest extends StoreTest {
         if (credentials == null) {
             credentials = new PropertiesCredentials(
                     AwsKeyValueStoreTest.class
-                            .getResourceAsStream("/store.properties.test"));
+                            .getResourceAsStream(PROPERTIES_RESOURCE_NAME));
         }
 
         return credentials;
     }
 
+    public static Properties getProperties() {
+        final Properties properties = new Properties();
+        try {
+            properties.load(AwsKeyValueStoreTest.class
+                    .getResourceAsStream(PROPERTIES_RESOURCE_NAME));
+            return properties;
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private static AWSCredentials credentials = null;
+    private final static String PROPERTIES_RESOURCE_NAME = "/store.properties.test";
 }

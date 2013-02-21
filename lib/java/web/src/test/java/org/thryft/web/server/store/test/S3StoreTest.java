@@ -41,8 +41,7 @@ public class S3StoreTest extends AwsKeyValueStoreTest {
     public static S3Store.Configuration getS3StoreConfiguration()
             throws IOException {
         if (s3StoreConfiguration == null) {
-            s3StoreConfiguration = new S3Store.Configuration("yogento-test-",
-                    AwsKeyValueStoreTest.getCredentials());
+            s3StoreConfiguration = new S3Store.Configuration(getProperties());
         }
 
         return s3StoreConfiguration;

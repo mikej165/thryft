@@ -74,7 +74,7 @@ public final class S3Store<ModelT extends TBase<?, ?>> extends
     public final static class Configuration extends
             AwsKeyValueStore.Configuration {
         public Configuration(final AWSCredentials credentials) {
-            this(BUCKET_NAME_PREFIX_DEFAULT, credentials);
+            super(credentials);
         }
 
         public Configuration(final Properties properties) {
@@ -86,8 +86,17 @@ public final class S3Store<ModelT extends TBase<?, ?>> extends
             }
             if (bucketNamePrefix != null) {
                 this.bucketNamePrefix = bucketNamePrefix;
-            } else {
-                this.bucketNamePrefix = BUCKET_NAME_PREFIX_DEFAULT;
+            }
+            try {
+                this.objectCacheExpireAfterAccessDuration = Long
+                        .parseLong(properties.getProperty(this.getClass()
+                                .getCanonicalName()
+                                + ".objectCacheExpireAfterAccessDuration"));
+                this.objectCacheExpireAfterAccessTimeUnit = TimeUnit
+                        .valueOf(properties.getProperty(this.getClass()
+                                .getCanonicalName()
+                                + ".objectCacheExpireAfterAccessTimeUnit"));
+            } catch (final IllegalArgumentException e) {
             }
         }
 
@@ -99,13 +108,39 @@ public final class S3Store<ModelT extends TBase<?, ?>> extends
             this.bucketNamePrefix = bucketNamePrefix;
         }
 
+        public Configuration(final String bucketNamePrefix,
+                final AWSCredentials credentials,
+                final long objectCacheExpireAfterAccessDuration,
+                final TimeUnit objectCacheExpireAfterAccessTimeUnit) {
+            super(credentials);
+            checkNotNull(bucketNamePrefix);
+            checkArgument(!bucketNamePrefix.isEmpty());
+            this.bucketNamePrefix = bucketNamePrefix;
+            this.objectCacheExpireAfterAccessDuration = objectCacheExpireAfterAccessDuration;
+            this.objectCacheExpireAfterAccessTimeUnit = checkNotNull(objectCacheExpireAfterAccessTimeUnit);
+        }
+
         public String getBucketNamePrefix() {
             return bucketNamePrefix;
         }
 
+        public long getObjectCacheExpireAfterAccessDuration() {
+            return objectCacheExpireAfterAccessDuration;
+        }
+
+        public TimeUnit getObjectCacheExpireAfterAccessTimeUnit() {
+            return objectCacheExpireAfterAccessTimeUnit;
+        }
+
         public final static String BUCKET_NAME_PREFIX_DEFAULT = "yogento-dev-";
 
-        private String bucketNamePrefix;
+        public final static long OBJECT_CACHE_EXPIRE_AFTER_ACCESS_DURATION_DEFAULT = 1;
+
+        public final static TimeUnit OBJECT_CACHE_EXPIRE_AFTER_ACCESS_TIME_UNIT_DEFAULT = TimeUnit.HOURS;
+
+        private String bucketNamePrefix = BUCKET_NAME_PREFIX_DEFAULT;
+        private long objectCacheExpireAfterAccessDuration = OBJECT_CACHE_EXPIRE_AFTER_ACCESS_DURATION_DEFAULT;
+        private TimeUnit objectCacheExpireAfterAccessTimeUnit = OBJECT_CACHE_EXPIRE_AFTER_ACCESS_TIME_UNIT_DEFAULT;
     }
 
     private final class ObjectCacheEntry {
@@ -144,6 +179,12 @@ public final class S3Store<ModelT extends TBase<?, ?>> extends
                 throw e;
             }
         }
+        objectCache = CacheBuilder
+                .newBuilder()
+                .expireAfterAccess(
+                        configuration.getObjectCacheExpireAfterAccessDuration(),
+                        configuration.getObjectCacheExpireAfterAccessTimeUnit())
+                .build();
     }
 
     @Override
@@ -385,7 +426,5 @@ public final class S3Store<ModelT extends TBase<?, ?>> extends
 
     private final String bucketName;
     private final AmazonS3 client;
-    private final Cache<String, ObjectCacheEntry> objectCache = CacheBuilder
-            .newBuilder().expireAfterAccess(1, TimeUnit.HOURS).build();
-
+    private final Cache<String, ObjectCacheEntry> objectCache;
 }
