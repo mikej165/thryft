@@ -38,4 +38,4 @@ class _JsNamedConstruct(_JsConstruct):
         return getattr(self, 'name')
 
     def js_qname(self):
-        return self._qname(scope='js')
+        return self._qname(include_parent_document_name=False, scope='js')

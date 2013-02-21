@@ -43,7 +43,7 @@ class _NamedConstruct(_Construct):
     def name(self):
         return self.__name
 
-    def _qname(self, scope, **kwds):
+    def _qname(self, scope, include_parent_document_name=True, **kwds):
         if self.parent is None:
             return getattr(self, scope + '_name')(**kwds)
         from thryft.generator.document import Document
@@ -53,11 +53,16 @@ class _NamedConstruct(_Construct):
         if parent_document is None:
             return getattr(self, scope + '_name')(**kwds)
         parent_document_namespaces_by_scope = parent_document.namespaces_by_scope
+        qname = []
         for namespace_scope in (scope, '*'):
             namespace = parent_document_namespaces_by_scope.get(namespace_scope)
             if namespace is not None:
-                return '.'.join((namespace.name, parent_document.name, getattr(self, scope + '_name')(**kwds)))
-        return '.'.join((parent_document.name, getattr(self, scope + '_name')(**kwds)))
+                qname.append(namespace.name)
+                break
+        if include_parent_document_name:
+            qname.append(parent_document.name)
+        qname.append(getattr(self, scope + '_name')(**kwds))
+        return '.'.join(qname)
 
     def thrift_qname(self):
         if self.parent is None:
