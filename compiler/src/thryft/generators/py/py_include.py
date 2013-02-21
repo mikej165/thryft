@@ -1,19 +1,19 @@
 #-------------------------------------------------------------------------------
 # Copyright (c) 2013, Minor Gordon
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
 # are met:
-# 
+#
 #     * Redistributions of source code must retain the above copyright
 #       notice, this list of conditions and the following disclaimer.
-# 
+#
 #     * Redistributions in binary form must reproduce the above copyright
 #       notice, this list of conditions and the following disclaimer in
 #       the documentation and/or other materials provided with the
 #       distribution.
-# 
+#
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
 # CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
 # INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
@@ -45,10 +45,12 @@ class PyInclude(Include, _PyConstruct):
         else:
             py_module_qname = py_module_name = py_module_qname_split[0]
         self.__py_class_name = upper_camelize(py_module_name)
-        try:
-            py_module_qname = self.document.namespaces_by_scope['py'].name + '.' + py_module_name
-        except KeyError:
-            pass
+        for scope in ('py', '*'):
+            try:
+                py_module_qname = self.document.namespaces_by_scope[scope].name + '.' + py_module_name
+                break
+            except KeyError:
+                pass
         self.__py_module_qname = py_module_qname
 
     def py_class_name(self):

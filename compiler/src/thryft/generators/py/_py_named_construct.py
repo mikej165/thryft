@@ -1,19 +1,19 @@
 #-------------------------------------------------------------------------------
 # Copyright (c) 2013, Minor Gordon
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
 # are met:
-# 
+#
 #     * Redistributions of source code must retain the above copyright
 #       notice, this list of conditions and the following disclaimer.
-# 
+#
 #     * Redistributions in binary form must reproduce the above copyright
 #       notice, this list of conditions and the following disclaimer in
 #       the documentation and/or other materials provided with the
 #       distribution.
-# 
+#
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
 # CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
 # INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
@@ -38,15 +38,4 @@ class _PyNamedConstruct(_PyConstruct):
         return getattr(self, 'name')
 
     def py_qname(self):
-        if self.parent is None:
-            return self.name
-        from thryft.generators.py.py_document import PyDocument
-        parent_document = self.parent
-        while not isinstance(parent_document, PyDocument):
-            parent_document = parent_document.parent
-        parent_document_namespaces_by_scope = parent_document.namespaces_by_scope
-        for scope in ('py', '*'):
-            namespace = parent_document_namespaces_by_scope.get(scope)
-            if namespace is not None:
-                return '.'.join((namespace.name, parent_document.name, self.py_name()))
-        return '.'.join((parent_document.name, self.py_name()))
+        return self._qname(scope='py')

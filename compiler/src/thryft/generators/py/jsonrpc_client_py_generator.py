@@ -44,7 +44,11 @@ def _%(name)s(self, **kwds):
                     ))
             else:
                 methods = indent(' ' * 4, 'pass')
-            service_endpoint_name = self.parent.namespaces_by_scope['py'].name.rsplit('.', 1)[-1]
+            try:
+                py_namespace = self.parent.namespaces_by_scope['py']
+            except KeyError:
+                py_namespace = self.parent.namespaces_by_scope['*']
+            service_endpoint_name = py_namespace.name.rsplit('.', 1)[-1]
             service_qname = PyService.py_qname(self)
             return """\
 class %(name)s(thryft.web.client.service._jsonrpc_client_service._JsonrpcClientService, %(service_qname)s):
