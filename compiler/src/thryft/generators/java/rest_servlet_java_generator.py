@@ -22,16 +22,16 @@ class RestServletJavaGenerator(_servlet_java_generator._ServletJavaGenerator, _R
             return message_types
 
         def java_request_type(self):
-            if len(self.parameters) > 0:
-                path_parameter = self.rest_path_parameter()
-                if path_parameter is not None:
-                    parameters = [parameter for parameter in self.parameters
-                                  if parameter is not path_parameter]
-                else:
-                    parameters = self.parameters
-                if len(parameters) > 0:
-                    return _servlet_java_generator._ServletJavaGenerator._Function.java_request_type(self, java_suppress_warnings=tuple(), parameters=parameters)
-            return None
+            if len(self.parameters) == 0:
+                return None
+            path_parameter = self.rest_path_parameter()
+            if path_parameter is None:
+                return None
+            parameters = [parameter for parameter in self.parameters
+                          if parameter is not path_parameter]
+            if len(parameters) == 0:
+                return None
+            return _servlet_java_generator._ServletJavaGenerator._Function.java_request_type(self, java_suppress_warnings=tuple(), parameters=parameters)
 
         def __repr__(self):
             annotations = []
@@ -49,9 +49,11 @@ class RestServletJavaGenerator(_servlet_java_generator._ServletJavaGenerator, _R
 
             read_request = []
             if len(self.parameters) > 0:
-                request_type = self.java_request_type()
-                if request_type is not None:
-                    request_type_name = request_type.java_name()
+                path_parameter = self.rest_path_parameter()
+                if path_parameter is None or len(self.parameters) > 1:
+                    request_type_name = 'Messages.' + self.java_name() + 'Request'
+                else:
+                    request_type_name = None
                 if self.rest_request_method() in ('POST', 'PUT'):
                     read_http_servlet_request_body = self._java_read_http_servlet_request_body(variable_name_prefix='__')
                     read_request.append("""\
@@ -59,7 +61,6 @@ class RestServletJavaGenerator(_servlet_java_generator._ServletJavaGenerator, _R
 final org.apache.thrift.protocol.TProtocol __restRequestProtocol = new org.thryft.core.protocol.JsonProtocol(new java.io.StringReader(__httpServletRequestBody));
 """ % locals())
                 else:
-                    path_parameter = self.rest_path_parameter()
                     if path_parameter is not None:
                         path_info_prefix = self.rest_path_prefix()
                         path_info_prefix_len = len(path_info_prefix)
@@ -82,9 +83,11 @@ for (final java.util.Map.Entry<String, String[]> __httpServletRequestParameter :
 }
 final org.apache.thrift.protocol.TProtocol __restRequestProtocol = new org.thryft.core.protocol.StringMapProtocol(__restRequestParameterStringMap);
 """ % locals())
-                if request_type is not None:
+                if request_type_name is not None:
                     variable_assignments = []
-                    for parameter in request_type.fields:
+                    for parameter in self.parameters:
+                        if parameter is path_parameter:
+                            continue
                         variable_assignments.append(parameter.java_name() + ' = __serviceRequest.' + parameter.java_getter_name() + '();')
                     variable_assignments = "\n".join(indent(' ' * 4, variable_assignments))
                     read_request.append("""\
@@ -290,10 +293,19 @@ public void do%(request_method_camelized)s(final javax.servlet.http.HttpServletR
             message_types = []
             for function in self.functions:
                 message_types.extend(function.java_message_types())
-            sections.append(
-                "\n\n".join([repr(message_type)
-                           for message_type in message_types])
-            )
+            service_qname = self.java_qname()
+            if len(message_types) > 0:
+                message_types = "\n\n".join(indent(' ' * 4, [repr(message_type)
+                           for message_type in message_types]))
+                sections.append("""\
+@SuppressWarnings("unused")
+private final static class Messages extends %(service_qname)s.Messages {
+%(message_types)s
+}""" % locals())
+            else:
+                sections.append("""\
+private final static class Messages extends %(service_qname)s.Messages {
+}""" % locals())
 
             sections.append("\n".join(self._java_methods()))
 

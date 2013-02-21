@@ -1,19 +1,19 @@
 #-------------------------------------------------------------------------------
 # Copyright (c) 2013, Minor Gordon
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
 # are met:
-# 
+#
 #     * Redistributions of source code must retain the above copyright
 #       notice, this list of conditions and the following disclaimer.
-# 
+#
 #     * Redistributions in binary form must reproduce the above copyright
 #       notice, this list of conditions and the following disclaimer in
 #       the documentation and/or other materials provided with the
 #       distribution.
-# 
+#
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
 # CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
 # INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
@@ -48,11 +48,28 @@ class JavaService(Service, _JavaNamedConstruct):
             extends = ''
         else:
             extends = ' extends ' + extends
-        methods = \
-            lpad("\n", "\n".join(indent(' ' * 4,
-                [repr(function)
-                 for function in self.functions])))
+
         name = self.java_name()
+
+        sections = []
+
+        message_types = []
+        for function in self.functions:
+            message_types.extend(function.java_message_types())
+        if len(message_types) > 0:
+            message_types = \
+                "\n\n".join(indent(' ' * 4,
+                    [repr(message_type) for message_type in message_types]
+                ))
+            sections.append("""\
+public static class Messages {
+%(message_types)s    
+}""" % locals())
+
+        sections.append("\n".join(repr(function) for function in self.functions))
+
+        sections = lpad("\n", "\n\n".join(indent(' ' * 4, sections)))
+
         return """\
-public interface %(name)s%(extends)s {%(methods)s
+public interface %(name)s%(extends)s {%(sections)s
 }""" % locals()

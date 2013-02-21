@@ -13,13 +13,14 @@ class JsonrpcServletJavaGenerator(_servlet_java_generator._ServletJavaGenerator)
     class Function(_servlet_java_generator._ServletJavaGenerator._Function):
         def __repr__(self):
             name = self.java_name()
+            service_qname = self.parent.java_qname()
             upper_camelized_name = upper_camelize(self.name)
 
             if len(self.parameters) > 0:
                 read_request = """
-    final %(name)sRequest serviceRequest;
+    final %(service_qname)s.Messages.%(name)sRequest serviceRequest;
     try {
-        serviceRequest = new %(name)sRequest(new org.thryft.core.protocol.JsonProtocol(jsonrpcRequestParams), jsonrpcRequestParams.isObject() ? org.apache.thrift.protocol.TType.STRUCT : org.apache.thrift.protocol.TType.LIST);
+        serviceRequest = new %(service_qname)s.Messages.%(name)sRequest(new org.thryft.core.protocol.JsonProtocol(jsonrpcRequestParams), jsonrpcRequestParams.isObject() ? org.apache.thrift.protocol.TType.STRUCT : org.apache.thrift.protocol.TType.LIST);
     } catch (final org.apache.thrift.TException e) {
         logger.error("error deserializing service request: ", e);
         __doPostError(httpServletRequest, httpServletResponse, null, -32602, "invalid jsonrpcRequestMethod parameters: " + e.getMessage(), jsonrpcRequestId);
@@ -262,20 +263,8 @@ private void __doPostResponse(final javax.servlet.http.HttpServletRequest httpSe
             name = self._java_name()
 
             sections = []
-
-            message_types = []
-            for function in self.functions:
-                if len(function.parameters) > 0:
-                    message_types.append(function.java_request_type(java_suppress_warnings=tuple()))
-            sections.append(
-                "\n\n".join([repr(message_type)
-                           for message_type in message_types])
-            )
-
             sections.append("\n".join(self._java_methods()))
-
             sections.append("\n".join(self._java_member_declarations()))
-
             sections = "\n\n".join(indent(' ' * 4, sections))
 
             return """\

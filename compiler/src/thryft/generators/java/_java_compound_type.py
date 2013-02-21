@@ -214,6 +214,7 @@ if (ifield.name.equals("%s")) {
                  for field in self.fields
             )))
         field_protocol_positional_initializers = []
+        need_read_list_return = False
         for field_i, field in enumerate(self.fields):
             if field.required:
                 field_required = True
@@ -233,10 +234,12 @@ if (ifield.name.equals("%s")) {
 if (__list.size > %(field_i)u) {
 %(field_protocol_initializer)s
 }""" % locals()
+                need_read_list_return = True
             field_protocol_positional_initializers.append(field_protocol_initializer)
         field_protocol_positional_initializers = \
             lpad("\n", indent(' ' * 12, "\n".join(field_protocol_positional_initializers)))
         name = self.java_name()
+        read_list = need_read_list_return and "org.apache.thrift.protocol.TList __list = " or ''
         return """\
 public %(name)s(final org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
     this(iprot, org.apache.thrift.protocol.TType.STRUCT);
@@ -245,7 +248,7 @@ public %(name)s(final org.apache.thrift.protocol.TProtocol iprot) throws org.apa
 public %(name)s(final org.apache.thrift.protocol.TProtocol iprot, final byte readAsTType) throws org.apache.thrift.TException {%(field_declarations)s
     switch (readAsTType) {
         case org.apache.thrift.protocol.TType.LIST:
-            org.apache.thrift.protocol.TList __list = iprot.readListBegin();%(field_protocol_positional_initializers)s
+            %(read_list)siprot.readListBegin();%(field_protocol_positional_initializers)s
             iprot.readListEnd();
             break;
     

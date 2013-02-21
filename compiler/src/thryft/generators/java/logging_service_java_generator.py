@@ -17,14 +17,6 @@ class LoggingServiceJavaGenerator(java_generator.JavaGenerator):
     Document = LoggingServiceJavaDocument
 
     class Function(JavaFunction):
-        def java_message_types(self):
-            message_types = []
-            if len(self.parameters) > 0:
-                message_types.append(self.java_request_type(java_suppress_warnings=('serial',)))
-            if self.return_type is not None:
-                message_types.append(self.java_response_type())
-            return message_types
-
         def __repr__(self):
             java_name = self.java_name()
             name = self.name
@@ -47,7 +39,7 @@ class LoggingServiceJavaGenerator(java_generator.JavaGenerator):
 try {
     __logMessageStringWriter = new java.io.StringWriter();
     __logMessageProtocol = new org.thryft.core.protocol.LogMessageProtocol(__logMessageStringWriter);               
-    new %(java_name)sRequest(%(parameter_names)s).write(__logMessageProtocol);
+    new Messages.%(java_name)sRequest(%(parameter_names)s).write(__logMessageProtocol);
     __logMessageProtocol.flush();
     __logMessageStringBuilder.append(__logMessageStringWriter.toString());
 } catch (final java.io.IOException e) {
@@ -74,7 +66,7 @@ __logMessageStringBuilder.append(" -> ");
 try {
     __logMessageStringWriter = new java.io.StringWriter();
     __logMessageProtocol = new org.thryft.core.protocol.LogMessageProtocol(__logMessageStringWriter);
-    new %(java_name)sResponse(__returnValue).write(__logMessageProtocol, org.apache.thrift.protocol.TType.VOID);
+    new Messages.%(java_name)sResponse(__returnValue).write(__logMessageProtocol, org.apache.thrift.protocol.TType.VOID);
     __logMessageProtocol.flush();
     __logMessageStringBuilder.append(__logMessageStringWriter.toString());
 } catch (final java.io.IOException e) {
@@ -153,15 +145,6 @@ public %(name)s(final %(service_qname)s service) {
             name = self._java_name()
 
             sections = []
-
-            message_types = []
-            for function in self.functions:
-                message_types.extend(function.java_message_types())
-            sections.append(
-                "\n\n".join([repr(message_type)
-                           for message_type in message_types])
-            )
-
             sections.append("\n\n".join([self._java_constructor()] + self._java_methods()))
             sections.append("\n".join(self._java_member_declarations()))
             sections = "\n\n".join(indent(' ' * 4, sections))

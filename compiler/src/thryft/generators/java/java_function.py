@@ -108,6 +108,9 @@ public %(name)s(final org.apache.thrift.protocol.TProtocol iprot) throws org.apa
         return """\
 public %(return_type_name)s %(name)s(%(parameters)s)%(throws)s;""" % locals()
 
+    def java_message_types(self):
+        return [self.java_request_type(), self.java_response_type()]
+
     def java_name(self):
         return lower_camelize(self.name)
 
