@@ -32,8 +32,8 @@
 
 package org.thryft.web.server.store;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.thryft.core.Preconditions.checkNotEmpty;
 
 import java.util.Map;
 import java.util.Set;
@@ -60,13 +60,8 @@ public abstract class KeyValueStore<ModelT extends TBase<?, ?>> extends
         }
 
         public Key(final String modelId, final String username) {
-            checkNotNull(modelId);
-            checkArgument(!modelId.isEmpty());
-            this.modelId = modelId;
-
-            checkNotNull(username);
-            checkArgument(!username.isEmpty());
-            this.username = username;
+            this.modelId = checkNotEmpty(modelId);
+            this.username = checkNotEmpty(username);
         }
 
         @Override

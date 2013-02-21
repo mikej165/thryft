@@ -32,8 +32,8 @@
 
 package org.thryft.web.server.store;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.thryft.core.Preconditions.checkNotEmpty;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -103,9 +103,7 @@ public final class S3Store<ModelT extends TBase<?, ?>> extends
         public Configuration(final String bucketNamePrefix,
                 final AWSCredentials credentials) {
             super(credentials);
-            checkNotNull(bucketNamePrefix);
-            checkArgument(!bucketNamePrefix.isEmpty());
-            this.bucketNamePrefix = bucketNamePrefix;
+            this.bucketNamePrefix = checkNotEmpty(bucketNamePrefix);
         }
 
         public Configuration(final String bucketNamePrefix,
@@ -113,9 +111,7 @@ public final class S3Store<ModelT extends TBase<?, ?>> extends
                 final long objectCacheExpireAfterAccessDuration,
                 final TimeUnit objectCacheExpireAfterAccessTimeUnit) {
             super(credentials);
-            checkNotNull(bucketNamePrefix);
-            checkArgument(!bucketNamePrefix.isEmpty());
-            this.bucketNamePrefix = bucketNamePrefix;
+            this.bucketNamePrefix = checkNotEmpty(bucketNamePrefix);
             this.objectCacheExpireAfterAccessDuration = objectCacheExpireAfterAccessDuration;
             this.objectCacheExpireAfterAccessTimeUnit = checkNotNull(objectCacheExpireAfterAccessTimeUnit);
         }

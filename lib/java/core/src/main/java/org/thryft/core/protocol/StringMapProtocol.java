@@ -32,9 +32,9 @@
 
 package org.thryft.core.protocol;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
+import static org.thryft.core.Preconditions.checkNotEmpty;
 
 import java.util.Map;
 import java.util.Set;
@@ -506,7 +506,7 @@ public class StringMapProtocol extends StackedProtocol {
 
     private final static String __joinKeys(final String parentKey,
             final String childKey) {
-        checkArgument(!childKey.isEmpty());
+        checkNotEmpty(childKey);
         if (parentKey.isEmpty()) {
             return childKey;
         } else {
