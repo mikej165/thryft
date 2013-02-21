@@ -63,6 +63,15 @@ class Document(_NamedConstruct):
         return [header for header in self.headers
                 if isinstance(header, Include)]
 
+    def namespace_by_scope(self, scope):
+        for namespace in self.namespaces:
+            if namespace.scope == scope:
+                return namespace
+        for namespace in self.namespaces:
+            if namespace.scope == '*':
+                return namespace
+        raise KeyError, scope
+
     @property
     def namespaces(self):
         return [header for header in self.headers

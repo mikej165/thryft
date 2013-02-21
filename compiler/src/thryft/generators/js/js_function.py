@@ -32,12 +32,12 @@
 
 from thryft.generator.function import Function
 from thryft.generators.js._js_named_construct import _JsNamedConstruct
-from yutil import decamelize, indent
+from yutil import decamelize, indent, lower_camelize
 
 
 class JsFunction(Function, _JsNamedConstruct):
     def js_qname(self):
-        return self.parent.js_qname() + '.' + self.js_name()
+        return self.parent.js_qname() + '.' + lower_camelize(self.js_name())
 
     def __repr__(self):
         name = self.js_name()
@@ -56,16 +56,17 @@ error:function () {
     result = false;
 }""")
 
-        jsonrpc_parameters = ', '.join("'" + parameter.name + "':" + parameter.name
+        jsonrpc_params = ', '.join("'" + parameter.name + "':" + parameter.name
                                         for parameter in self.parameters)
 
-        jsonrpc_url = self.js_qname().split('.', 1)[0] + '.hostname()' + '/api/jsonrpc/'
+        jsonrpc_url = self.js_qname().split('.', 1)[0] + '.hostname()+\'/api/jsonrpc/'
         assert self.parent.name.endswith('Service')
         jsonrpc_url += '_'.join(decamelize(self.parent.name).split('_')[:-1])
+        jsonrpc_url += '\''
 
         qname = self.js_qname()
 
-        parameter_names = ', '.join([parameter.name for parameter in self.parameters])
+        parameter_names = ', '.join(parameter.name for parameter in self.parameters)
 
         return """\
 %(qname)s = function(%(parameter_names)s) {
@@ -78,7 +79,7 @@ error:function () {
         data:JSON.stringify({
             jsonrpc:'2.0',
             method:'%(name)s',
-            params:{%(jsonrpc_parameters)s},
+            params:{%(jsonrpc_params)s},
             id:'1234'
         }),
         dataType:'json',
