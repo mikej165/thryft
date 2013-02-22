@@ -1,19 +1,19 @@
 #-------------------------------------------------------------------------------
 # Copyright (c) 2013, Minor Gordon
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
 # are met:
-# 
+#
 #     * Redistributions of source code must retain the above copyright
 #       notice, this list of conditions and the following disclaimer.
-# 
+#
 #     * Redistributions in binary form must reproduce the above copyright
 #       notice, this list of conditions and the following disclaimer in
 #       the documentation and/or other materials provided with the
 #       distribution.
-# 
+#
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
 # CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
 # INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
@@ -62,16 +62,16 @@ class _JavaSequenceType(_JavaContainerType):
         return """\
 (new com.google.common.base.Function<org.apache.thrift.protocol.TProtocol, com.google.common.collect.Immutable%(interface_simple_name)s<%(element_type_name)s>>() {
     @Override
-    public com.google.common.collect.Immutable%(interface_simple_name)s<%(element_type_name)s> apply(org.apache.thrift.protocol.TProtocol iprot) {
+    public com.google.common.collect.Immutable%(interface_simple_name)s<%(element_type_name)s> apply(final org.apache.thrift.protocol.TProtocol iprot) {
         try {
-            org.apache.thrift.protocol.T%(interface_simple_name)s sequenceBegin = iprot.read%(interface_simple_name)sBegin();
-            java.util.%(interface_simple_name)s<%(element_type_name)s> sequence = new %(mutable_raw_qname)s<%(element_type_name)s>();
+            final org.apache.thrift.protocol.T%(interface_simple_name)s sequenceBegin = iprot.read%(interface_simple_name)sBegin();
+            final java.util.%(interface_simple_name)s<%(element_type_name)s> sequence = new %(mutable_raw_qname)s<%(element_type_name)s>();
             for (int elementI = 0; elementI < sequenceBegin.size; elementI++) {
                 sequence.add(%(element_read_protocol)s);
             }
             iprot.read%(interface_simple_name)sEnd();
             return com.google.common.collect.Immutable%(interface_simple_name)s.copyOf(sequence);
-        } catch (org.apache.thrift.TException e) {
+        } catch (final org.apache.thrift.TException e) {
             return com.google.common.collect.Immutable%(interface_simple_name)s.of();
         }
     }
@@ -90,7 +90,7 @@ class _JavaSequenceType(_JavaContainerType):
         interface_simple_name = self._java_interface_simple_name()
         return """\
 oprot.write%(interface_simple_name)sBegin(new org.apache.thrift.protocol.T%(interface_simple_name)s(org.apache.thrift.protocol.TType.%(element_ttype)s, %(value)s.size()));
-for (%(element_type_name)s _iter%(depth)u : %(value)s) {
+for (final %(element_type_name)s _iter%(depth)u : %(value)s) {
 %(element_write_protocol)s
 }
 oprot.write%(interface_simple_name)sEnd();""" % locals()

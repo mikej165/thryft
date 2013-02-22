@@ -212,7 +212,7 @@ if (ifield.name.equals("%s")) {
 %s
 }""" % (field.name, indent(' ' * 4, field.java_protocol_initializer()))
                  for field in self.fields
-            )))
+            )).lstrip())
         field_protocol_positional_initializers = []
         need_read_list_return = False
         for field_i, field in enumerate(self.fields):
@@ -239,7 +239,7 @@ if (__list.size > %(field_i)u) {
         field_protocol_positional_initializers = \
             lpad("\n", indent(' ' * 12, "\n".join(field_protocol_positional_initializers)))
         name = self.java_name()
-        read_list = need_read_list_return and "org.apache.thrift.protocol.TList __list = " or ''
+        read_list = need_read_list_return and "final org.apache.thrift.protocol.TList __list = " or ''
         return """\
 public %(name)s(final org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
     this(iprot, org.apache.thrift.protocol.TType.STRUCT);
@@ -256,7 +256,7 @@ public %(name)s(final org.apache.thrift.protocol.TProtocol iprot, final byte rea
         default:
             iprot.readStructBegin();
             while (true) {
-                org.apache.thrift.protocol.TField ifield = iprot.readFieldBegin();
+                final org.apache.thrift.protocol.TField ifield = iprot.readFieldBegin();
                 if (ifield.type == org.apache.thrift.protocol.TType.STOP) {
                     break;
                 }%(field_protocol_named_initializers)s
@@ -461,7 +461,7 @@ public %(method_signature)s {
                 ('fieldForId', 'org.apache.thrift.TFieldIdEnum fieldForId(final int fieldId)'),
                 ('getFieldValue', 'Object getFieldValue(final org.apache.thrift.TFieldIdEnum field)'),
                 ('isSet', 'boolean isSet(final org.apache.thrift.TFieldIdEnum field)'),
-                ('setFieldValue', 'void setFieldValue(final org.apache.thrift.TFieldIdEnum field, Object value)'),
+                ('setFieldValue', 'void setFieldValue(final org.apache.thrift.TFieldIdEnum field, final Object value)'),
                 ('read', 'void read(final org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException'),
                 ('write', 'void write(final org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException'),
             )
