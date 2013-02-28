@@ -1,19 +1,19 @@
 #-------------------------------------------------------------------------------
 # Copyright (c) 2013, Minor Gordon
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
 # are met:
-# 
+#
 #     * Redistributions of source code must retain the above copyright
 #       notice, this list of conditions and the following disclaimer.
-# 
+#
 #     * Redistributions in binary form must reproduce the above copyright
 #       notice, this list of conditions and the following disclaimer in
 #       the documentation and/or other materials provided with the
 #       distribution.
-# 
+#
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
 # CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
 # INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
@@ -43,23 +43,29 @@ except ImportError:
     sys.path.append(os.path.join(THRYFT_ROOT_DIR_PATH, 'compiler', 'src'))
 from thryft.compiler import Compiler
 from thryft.generators.java.java_generator import JavaGenerator
+from thryft.generators.js.js_generator import JsGenerator
 from thryft.generators.py.py_generator import PyGenerator
 
 for in_dir_path, generator, out_dir_path in (
-    (
-        os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'thrift', 'src'),
-        JavaGenerator(),
-        os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'java', 'src', 'gen', 'java')
-    ),
-    (
-        os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'thrift', 'src'),
-        PyGenerator(),
-        os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'py', 'src')
-    ),
+#    (
+#        os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'thrift', 'src'),
+#        JavaGenerator(),
+#        os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'java', 'src', 'gen', 'java')
+#    ),
+#    (
+#        os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'thrift', 'src'),
+#        PyGenerator(),
+#        os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'py', 'src')
+#    ),
     (
         os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'thrift', 'test'),
         JavaGenerator(),
-        os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'java', 'src', 'test', 'java')
+        os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'java', 'core', 'src', 'test', 'java')
+    ),
+    (
+        os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'thrift', 'test'),
+        JsGenerator(),
+        os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'js', 'test')
     ),
     (
         os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'thrift', 'test'),

@@ -1,5 +1,5 @@
 namespace java org.thryft.core.protocol.test
-namespace py thryft_test.protocol.test
+namespace * thryft_test.core.protocol.test
 
 include "protocol_test_enum.thrift"
 include "thryft/util/date.thrift"

@@ -1,41 +1,9 @@
-#-------------------------------------------------------------------------------
-# Copyright (c) 2013, Minor Gordon
-# All rights reserved.
-# 
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions
-# are met:
-# 
-#     * Redistributions of source code must retain the above copyright
-#       notice, this list of conditions and the following disclaimer.
-# 
-#     * Redistributions in binary form must reproduce the above copyright
-#       notice, this list of conditions and the following disclaimer in
-#       the documentation and/or other materials provided with the
-#       distribution.
-# 
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
-# CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
-# INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
-# MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
-# CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL  DAMAGES (INCLUDING,
-# BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-# LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
-# OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
-# OF SUCH DAMAGE.
-#-------------------------------------------------------------------------------
-
 from __future__ import absolute_import; import decimal
 from datetime import datetime
 from itertools import ifilterfalse
 from time import mktime
 import __builtin__
-import thryft_test.protocol.test.protocol_test_enum
+import thryft_test.core.protocol.test.protocol_test_enum
 
 
 class ProtocolTestStruct(object):
@@ -210,7 +178,7 @@ class ProtocolTestStruct(object):
         self.__decimal_field = decimal_field
 
         if enum_field is not None:
-            if not isinstance(enum_field, thryft_test.protocol.test.protocol_test_enum.ProtocolTestEnum):
+            if not isinstance(enum_field, thryft_test.core.protocol.test.protocol_test_enum.ProtocolTestEnum):
                 raise TypeError(getattr(__builtin__, 'type')(enum_field))
         self.__enum_field = enum_field
 
@@ -250,7 +218,7 @@ class ProtocolTestStruct(object):
         self.__string_field = string_field
 
         if struct_field is not None:
-            if not isinstance(struct_field, thryft_test.protocol.test.protocol_test_struct.ProtocolTestStruct):
+            if not isinstance(struct_field, thryft_test.core.protocol.test.protocol_test_struct.ProtocolTestStruct):
                 raise TypeError(getattr(__builtin__, 'type')(struct_field))
         self.__struct_field = struct_field
 
@@ -453,7 +421,7 @@ class ProtocolTestStruct(object):
                     pass
             elif ifield_name == 'enum_field':
                 try:
-                    init_kwds['enum_field'] = thryft_test.protocol.test.protocol_test_enum.ProtocolTestEnum.value_of(iprot.readString().strip().upper())
+                    init_kwds['enum_field'] = thryft_test.core.protocol.test.protocol_test_enum.ProtocolTestEnum.value_of(iprot.readString().strip().upper())
                 except (TypeError,):
                     pass
             elif ifield_name == 'i16_field':
@@ -483,7 +451,7 @@ class ProtocolTestStruct(object):
                 except (TypeError, ValueError,):
                     pass
             elif ifield_name == 'struct_field':
-                init_kwds['struct_field'] = thryft_test.protocol.test.protocol_test_struct.ProtocolTestStruct.read(iprot)
+                init_kwds['struct_field'] = thryft_test.core.protocol.test.protocol_test_struct.ProtocolTestStruct.read(iprot)
             iprot.readFieldEnd()
         iprot.readStructEnd()
 
@@ -539,17 +507,17 @@ class ProtocolTestStruct(object):
 
         if self.binary_field is not None:
             oprot.writeFieldBegin('binary_field', 11, -1)
-            oprot.writeBinary(self.binary_field)
+            oprot.writeBinary(self.binary_field);
             oprot.writeFieldEnd()
 
         if self.bool_field is not None:
             oprot.writeFieldBegin('bool_field', 2, -1)
-            oprot.writeBool(self.bool_field)
+            oprot.writeBool(self.bool_field);
             oprot.writeFieldEnd()
 
         if self.byte_field is not None:
             oprot.writeFieldBegin('byte_field', 3, -1)
-            oprot.writeByte(self.byte_field)
+            oprot.writeByte(self.byte_field);
             oprot.writeFieldEnd()
 
         if self.date_field is not None:
@@ -569,29 +537,29 @@ class ProtocolTestStruct(object):
 
         if self.enum_field is not None:
             oprot.writeFieldBegin('enum_field', 11, -1)
-            oprot.writeString([attr for attr in dir(thryft_test.protocol.test.protocol_test_enum.ProtocolTestEnum) if getattr(thryft_test.protocol.test.protocol_test_enum.ProtocolTestEnum, attr) == self.enum_field][0])
+            oprot.writeString([attr for attr in dir(thryft_test.core.protocol.test.protocol_test_enum.ProtocolTestEnum) if getattr(thryft_test.core.protocol.test.protocol_test_enum.ProtocolTestEnum, attr) == self.enum_field][0])
             oprot.writeFieldEnd()
 
         if self.i16_field is not None:
             oprot.writeFieldBegin('i16_field', 6, -1)
-            oprot.writeI16(self.i16_field)
+            oprot.writeI16(self.i16_field);
             oprot.writeFieldEnd()
 
         if self.i32_field is not None:
             oprot.writeFieldBegin('i32_field', 8, -1)
-            oprot.writeI32(self.i32_field)
+            oprot.writeI32(self.i32_field);
             oprot.writeFieldEnd()
 
         if self.i64_field is not None:
             oprot.writeFieldBegin('i64_field', 10, -1)
-            oprot.writeI64(self.i64_field)
+            oprot.writeI64(self.i64_field);
             oprot.writeFieldEnd()
 
         if self.list_string_field is not None:
             oprot.writeFieldBegin('list_string_field', 15, -1)
             oprot.writeListBegin(11, len(self.list_string_field))
             for _0 in self.list_string_field:
-                oprot.writeString(_0)
+                oprot.writeString(_0);
             oprot.writeListEnd()
             oprot.writeFieldEnd()
 
@@ -599,8 +567,8 @@ class ProtocolTestStruct(object):
             oprot.writeFieldBegin('map_string_string_field', 13, -1)
             oprot.writeMapBegin(11, len(self.map_string_string_field), 11)
             for __key0, __value0 in self.map_string_string_field.iteritems():
-                oprot.writeString(__key0)
-                oprot.writeString(__value0)
+                oprot.writeString(__key0);
+                oprot.writeString(__value0);
             oprot.writeMapEnd()
             oprot.writeFieldEnd()
 
@@ -608,13 +576,13 @@ class ProtocolTestStruct(object):
             oprot.writeFieldBegin('set_string_field', 14, -1)
             oprot.writeSetBegin(11, len(self.set_string_field))
             for _0 in self.set_string_field:
-                oprot.writeString(_0)
+                oprot.writeString(_0);
             oprot.writeSetEnd()
             oprot.writeFieldEnd()
 
         if self.string_field is not None:
             oprot.writeFieldBegin('string_field', 11, -1)
-            oprot.writeString(self.string_field)
+            oprot.writeString(self.string_field);
             oprot.writeFieldEnd()
 
         if self.struct_field is not None:

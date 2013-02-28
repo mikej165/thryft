@@ -1,35 +1,3 @@
-/*******************************************************************************
- * Copyright (c) 2013, Minor Gordon
- * All rights reserved.
- * 
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- * 
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in
- *       the documentation and/or other materials provided with the
- *       distribution.
- * 
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
- * CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
- * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
- * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL  DAMAGES (INCLUDING,
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
- * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
- * OF SUCH DAMAGE.
- ******************************************************************************/
-
 package org.thryft.core.protocol.test;
 
 @SuppressWarnings({"serial"})
@@ -201,91 +169,121 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
 
         switch (readAsTType) {
             case org.apache.thrift.protocol.TType.LIST:
-                iprot.readListBegin();
-                binaryField = iprot.readBinary();
-                boolField = iprot.readBool();
-                try {
-                    byteField = iprot.readByte();
-                } catch (NumberFormatException e) {
+                final org.apache.thrift.protocol.TList __list = iprot.readListBegin();
+                if (__list.size > 0) {
+                    binaryField = iprot.readBinary();
                 }
-                try {
-                    dateField = (iprot instanceof org.thryft.core.protocol.Protocol) ? ((org.thryft.core.protocol.Protocol)iprot).readDateTime() : new org.joda.time.DateTime(iprot.readI64());
-                } catch (IllegalArgumentException e) {
+                if (__list.size > 1) {
+                    boolField = iprot.readBool();
                 }
-                try {
-                    dateTimeField = (iprot instanceof org.thryft.core.protocol.Protocol) ? ((org.thryft.core.protocol.Protocol)iprot).readDateTime() : new org.joda.time.DateTime(iprot.readI64());
-                } catch (IllegalArgumentException e) {
-                }
-                try {
-                    decimalField = (iprot instanceof org.thryft.core.protocol.Protocol) ? ((org.thryft.core.protocol.Protocol)iprot).readDecimal() : new java.math.BigDecimal(iprot.readString());
-                } catch (NumberFormatException e) {
-                }
-                try {
-                    enumField = (iprot instanceof org.thryft.core.protocol.Protocol) ? ((org.thryft.core.protocol.Protocol)iprot).readEnum(org.thryft.core.protocol.test.ProtocolTestEnum.class) : org.thryft.core.protocol.test.ProtocolTestEnum.valueOf(iprot.readString().trim().toUpperCase());
-                } catch (IllegalArgumentException e) {
-                }
-                try {
-                    i16Field = iprot.readI16();
-                } catch (NumberFormatException e) {
-                }
-                try {
-                    i32Field = iprot.readI32();
-                } catch (NumberFormatException e) {
-                }
-                try {
-                    i64Field = iprot.readI64();
-                } catch (NumberFormatException e) {
-                }
-                listStringField = (new com.google.common.base.Function<org.apache.thrift.protocol.TProtocol, com.google.common.collect.ImmutableList<String>>() {
-                    @Override
-                    public com.google.common.collect.ImmutableList<String> apply(org.apache.thrift.protocol.TProtocol iprot) {
-                        try {
-                            org.apache.thrift.protocol.TList sequenceBegin = iprot.readListBegin();
-                            java.util.List<String> sequence = new java.util.ArrayList<String>();
-                            for (int elementI = 0; elementI < sequenceBegin.size; elementI++) {
-                                sequence.add(iprot.readString());
-                            }
-                            iprot.readListEnd();
-                            return com.google.common.collect.ImmutableList.copyOf(sequence);
-                        } catch (org.apache.thrift.TException e) {
-                            return com.google.common.collect.ImmutableList.of();
-                        }
+                if (__list.size > 2) {
+                    try {
+                        byteField = iprot.readByte();
+                    } catch (NumberFormatException e) {
                     }
-                }).apply(iprot);
-                mapStringStringField = (new com.google.common.base.Function<org.apache.thrift.protocol.TProtocol, com.google.common.collect.ImmutableMap<String, String>>() {
-                    @Override
-                    public com.google.common.collect.ImmutableMap<String, String> apply(org.apache.thrift.protocol.TProtocol iprot) {
-                        try {
-                            org.apache.thrift.protocol.TMap mapBegin = iprot.readMapBegin();
-                            java.util.Map<String, String> map = new java.util.HashMap<String, String>();
-                            for (int entryI = 0; entryI < mapBegin.size; entryI++) {
-                                map.put(iprot.readString(), iprot.readString());
-                            }
-                            iprot.readMapEnd();
-                            return com.google.common.collect.ImmutableMap.copyOf(map);
-                        } catch (org.apache.thrift.TException e) {
-                            return com.google.common.collect.ImmutableMap.of();
-                        }
+                }
+                if (__list.size > 3) {
+                    try {
+                        dateField = (iprot instanceof org.thryft.core.protocol.Protocol) ? ((org.thryft.core.protocol.Protocol)iprot).readDateTime() : new org.joda.time.DateTime(iprot.readI64());
+                    } catch (IllegalArgumentException e) {
                     }
-                }).apply(iprot);
-                setStringField = (new com.google.common.base.Function<org.apache.thrift.protocol.TProtocol, com.google.common.collect.ImmutableSet<String>>() {
-                    @Override
-                    public com.google.common.collect.ImmutableSet<String> apply(org.apache.thrift.protocol.TProtocol iprot) {
-                        try {
-                            org.apache.thrift.protocol.TSet sequenceBegin = iprot.readSetBegin();
-                            java.util.Set<String> sequence = new java.util.LinkedHashSet<String>();
-                            for (int elementI = 0; elementI < sequenceBegin.size; elementI++) {
-                                sequence.add(iprot.readString());
-                            }
-                            iprot.readSetEnd();
-                            return com.google.common.collect.ImmutableSet.copyOf(sequence);
-                        } catch (org.apache.thrift.TException e) {
-                            return com.google.common.collect.ImmutableSet.of();
-                        }
+                }
+                if (__list.size > 4) {
+                    try {
+                        dateTimeField = (iprot instanceof org.thryft.core.protocol.Protocol) ? ((org.thryft.core.protocol.Protocol)iprot).readDateTime() : new org.joda.time.DateTime(iprot.readI64());
+                    } catch (IllegalArgumentException e) {
                     }
-                }).apply(iprot);
-                stringField = iprot.readString();
-                structField = new org.thryft.core.protocol.test.ProtocolTestStruct(iprot);
+                }
+                if (__list.size > 5) {
+                    try {
+                        decimalField = (iprot instanceof org.thryft.core.protocol.Protocol) ? ((org.thryft.core.protocol.Protocol)iprot).readDecimal() : new java.math.BigDecimal(iprot.readString());
+                    } catch (NumberFormatException e) {
+                    }
+                }
+                if (__list.size > 6) {
+                    try {
+                        enumField = (iprot instanceof org.thryft.core.protocol.Protocol) ? ((org.thryft.core.protocol.Protocol)iprot).readEnum(org.thryft.core.protocol.test.ProtocolTestEnum.class) : org.thryft.core.protocol.test.ProtocolTestEnum.valueOf(iprot.readString().trim().toUpperCase());
+                    } catch (IllegalArgumentException e) {
+                    }
+                }
+                if (__list.size > 7) {
+                    try {
+                        i16Field = iprot.readI16();
+                    } catch (NumberFormatException e) {
+                    }
+                }
+                if (__list.size > 8) {
+                    try {
+                        i32Field = iprot.readI32();
+                    } catch (NumberFormatException e) {
+                    }
+                }
+                if (__list.size > 9) {
+                    try {
+                        i64Field = iprot.readI64();
+                    } catch (NumberFormatException e) {
+                    }
+                }
+                if (__list.size > 10) {
+                    listStringField = (new com.google.common.base.Function<org.apache.thrift.protocol.TProtocol, com.google.common.collect.ImmutableList<String>>() {
+                        @Override
+                        public com.google.common.collect.ImmutableList<String> apply(final org.apache.thrift.protocol.TProtocol iprot) {
+                            try {
+                                final org.apache.thrift.protocol.TList sequenceBegin = iprot.readListBegin();
+                                final java.util.List<String> sequence = new java.util.ArrayList<String>();
+                                for (int elementI = 0; elementI < sequenceBegin.size; elementI++) {
+                                    sequence.add(iprot.readString());
+                                }
+                                iprot.readListEnd();
+                                return com.google.common.collect.ImmutableList.copyOf(sequence);
+                            } catch (final org.apache.thrift.TException e) {
+                                return com.google.common.collect.ImmutableList.of();
+                            }
+                        }
+                    }).apply(iprot);
+                }
+                if (__list.size > 11) {
+                    mapStringStringField = (new com.google.common.base.Function<org.apache.thrift.protocol.TProtocol, com.google.common.collect.ImmutableMap<String, String>>() {
+                        @Override
+                        public com.google.common.collect.ImmutableMap<String, String> apply(org.apache.thrift.protocol.TProtocol iprot) {
+                            try {
+                                org.apache.thrift.protocol.TMap mapBegin = iprot.readMapBegin();
+                                java.util.Map<String, String> map = new java.util.HashMap<String, String>();
+                                for (int entryI = 0; entryI < mapBegin.size; entryI++) {
+                                    map.put(iprot.readString(), iprot.readString());
+                                }
+                                iprot.readMapEnd();
+                                return com.google.common.collect.ImmutableMap.copyOf(map);
+                            } catch (org.apache.thrift.TException e) {
+                                return com.google.common.collect.ImmutableMap.of();
+                            }
+                        }
+                    }).apply(iprot);
+                }
+                if (__list.size > 12) {
+                    setStringField = (new com.google.common.base.Function<org.apache.thrift.protocol.TProtocol, com.google.common.collect.ImmutableSet<String>>() {
+                        @Override
+                        public com.google.common.collect.ImmutableSet<String> apply(final org.apache.thrift.protocol.TProtocol iprot) {
+                            try {
+                                final org.apache.thrift.protocol.TSet sequenceBegin = iprot.readSetBegin();
+                                final java.util.Set<String> sequence = new java.util.LinkedHashSet<String>();
+                                for (int elementI = 0; elementI < sequenceBegin.size; elementI++) {
+                                    sequence.add(iprot.readString());
+                                }
+                                iprot.readSetEnd();
+                                return com.google.common.collect.ImmutableSet.copyOf(sequence);
+                            } catch (final org.apache.thrift.TException e) {
+                                return com.google.common.collect.ImmutableSet.of();
+                            }
+                        }
+                    }).apply(iprot);
+                }
+                if (__list.size > 13) {
+                    stringField = iprot.readString();
+                }
+                if (__list.size > 14) {
+                    structField = new org.thryft.core.protocol.test.ProtocolTestStruct(iprot);
+                }
                 iprot.readListEnd();
                 break;
 
@@ -293,10 +291,10 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
             default:
                 iprot.readStructBegin();
                 while (true) {
-                    org.apache.thrift.protocol.TField ifield = iprot.readFieldBegin();
+                    final org.apache.thrift.protocol.TField ifield = iprot.readFieldBegin();
                     if (ifield.type == org.apache.thrift.protocol.TType.STOP) {
                         break;
-                    } else                 if (ifield.name.equals("binary_field")) {
+                    } else if (ifield.name.equals("binary_field")) {
                         binaryField = iprot.readBinary();
                     } else if (ifield.name.equals("bool_field")) {
                         boolField = iprot.readBool();
@@ -343,16 +341,16 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
                     } else if (ifield.name.equals("list_string_field")) {
                         listStringField = (new com.google.common.base.Function<org.apache.thrift.protocol.TProtocol, com.google.common.collect.ImmutableList<String>>() {
                             @Override
-                            public com.google.common.collect.ImmutableList<String> apply(org.apache.thrift.protocol.TProtocol iprot) {
+                            public com.google.common.collect.ImmutableList<String> apply(final org.apache.thrift.protocol.TProtocol iprot) {
                                 try {
-                                    org.apache.thrift.protocol.TList sequenceBegin = iprot.readListBegin();
-                                    java.util.List<String> sequence = new java.util.ArrayList<String>();
+                                    final org.apache.thrift.protocol.TList sequenceBegin = iprot.readListBegin();
+                                    final java.util.List<String> sequence = new java.util.ArrayList<String>();
                                     for (int elementI = 0; elementI < sequenceBegin.size; elementI++) {
                                         sequence.add(iprot.readString());
                                     }
                                     iprot.readListEnd();
                                     return com.google.common.collect.ImmutableList.copyOf(sequence);
-                                } catch (org.apache.thrift.TException e) {
+                                } catch (final org.apache.thrift.TException e) {
                                     return com.google.common.collect.ImmutableList.of();
                                 }
                             }
@@ -377,16 +375,16 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
                     } else if (ifield.name.equals("set_string_field")) {
                         setStringField = (new com.google.common.base.Function<org.apache.thrift.protocol.TProtocol, com.google.common.collect.ImmutableSet<String>>() {
                             @Override
-                            public com.google.common.collect.ImmutableSet<String> apply(org.apache.thrift.protocol.TProtocol iprot) {
+                            public com.google.common.collect.ImmutableSet<String> apply(final org.apache.thrift.protocol.TProtocol iprot) {
                                 try {
-                                    org.apache.thrift.protocol.TSet sequenceBegin = iprot.readSetBegin();
-                                    java.util.Set<String> sequence = new java.util.LinkedHashSet<String>();
+                                    final org.apache.thrift.protocol.TSet sequenceBegin = iprot.readSetBegin();
+                                    final java.util.Set<String> sequence = new java.util.LinkedHashSet<String>();
                                     for (int elementI = 0; elementI < sequenceBegin.size; elementI++) {
                                         sequence.add(iprot.readString());
                                     }
                                     iprot.readSetEnd();
                                     return com.google.common.collect.ImmutableSet.copyOf(sequence);
-                                } catch (org.apache.thrift.TException e) {
+                                } catch (final org.apache.thrift.TException e) {
                                     return com.google.common.collect.ImmutableSet.of();
                                 }
                             }
@@ -676,7 +674,7 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
     }
 
     @Override
-    public void setFieldValue(final org.apache.thrift.TFieldIdEnum field, Object value) {
+    public void setFieldValue(final org.apache.thrift.TFieldIdEnum field, final Object value) {
         throw new UnsupportedOperationException();
     }
 
@@ -804,7 +802,7 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
 
                 if (getListStringField() != null) {
                     oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, getListStringField().size()));
-                    for (String _iter0 : getListStringField()) {
+                    for (final String _iter0 : getListStringField()) {
                         oprot.writeString(_iter0);
                     }
                     oprot.writeListEnd();
@@ -825,7 +823,7 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
 
                 if (getSetStringField() != null) {
                     oprot.writeSetBegin(new org.apache.thrift.protocol.TSet(org.apache.thrift.protocol.TType.STRING, getSetStringField().size()));
-                    for (String _iter0 : getSetStringField()) {
+                    for (final String _iter0 : getSetStringField()) {
                         oprot.writeString(_iter0);
                     }
                     oprot.writeSetEnd();
@@ -915,7 +913,7 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
                 if (getListStringField() != null) {
                     oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("list_string_field", org.apache.thrift.protocol.TType.LIST, (short)-1));
                     oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, getListStringField().size()));
-                    for (String _iter0 : getListStringField()) {
+                    for (final String _iter0 : getListStringField()) {
                         oprot.writeString(_iter0);
                     }
                     oprot.writeListEnd();
@@ -936,7 +934,7 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
                 if (getSetStringField() != null) {
                     oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("set_string_field", org.apache.thrift.protocol.TType.SET, (short)-1));
                     oprot.writeSetBegin(new org.apache.thrift.protocol.TSet(org.apache.thrift.protocol.TType.STRING, getSetStringField().size()));
-                    for (String _iter0 : getSetStringField()) {
+                    for (final String _iter0 : getSetStringField()) {
                         oprot.writeString(_iter0);
                     }
                     oprot.writeSetEnd();
