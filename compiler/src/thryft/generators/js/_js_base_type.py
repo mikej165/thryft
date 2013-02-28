@@ -31,7 +31,14 @@
 #-------------------------------------------------------------------------------
 
 from thryft.generators.js._js_type import _JsType
+from yutil import upper_camelize
 
 
 class _JsBaseType(_JsType):
-    pass
+    def js_read_protocol(self):
+        name = upper_camelize(getattr(self, 'name'))
+        return "iprot.read%(name)s()" % locals()
+
+    def js_write_protocol(self, value, depth=0):
+        name = upper_camelize(getattr(self, 'name'))
+        return "oprot.write%(name)s(%(value)s);" % locals()

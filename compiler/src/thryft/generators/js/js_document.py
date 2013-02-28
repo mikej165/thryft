@@ -42,7 +42,7 @@ class JsDocument(Document, _JsNamedConstruct):
         for i in xrange(1, len(js_namespace_parts) + 1):
             js_namespace_prefix = '.'.join(js_namespace_parts[:i])
             create_namespace.append("""\
-if (%(js_namespace_prefix)s === undefined) {
+if (typeof %(js_namespace_prefix)s === "undefined") {
     %(js_namespace_prefix)s = new Object();
 }""" % locals())
         create_namespace = "\n".join(create_namespace)

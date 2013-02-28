@@ -31,17 +31,82 @@
 #-------------------------------------------------------------------------------
 
 from thryft.generators.js._js_type import _JsType
-from yutil import indent
+from yutil import indent, lpad
 
 
 class _JsCompoundType(_JsType):
+    def js_read_protocol(self):
+        name = self.js_qname()
+        return "%(name)s.read(iprot)" % locals()
+
+    def js_write_protocol(self, value, depth=0):
+        return "%(value)s.write(oprot);" % locals()
+
+    def _js_class_methods(self):
+        class_methods = {}
+        class_methods.update(self._js_class_method_read())
+        return [class_methods[method_name] for method_name in sorted(class_methods.iterkeys())]
+
+    def _js_class_method_read(self):
+        field_reads = \
+            lpad(' else ', indent(' ' * 8, ' else '.join(
+                field.js_read_protocol() for field in self.fields
+            )))
+        name = self.js_qname()
+        return {'read': """\
+read: function(iprot) {
+    var fields = {};
+    iprot.readStructBegin();
+    while (true) {
+        var field = iprot.readFieldBegin();
+        if (field.fname.length == 0) {
+            break;
+        }%(field_reads)s
+        iprot.readFieldEnd();
+    }
+    iprot.readStructEnd();
+    return new %(name)s(fields);
+}""" % locals()}
+
+    def _js_methods(self):
+        methods = {}
+        methods.update(self._js_method_write())
+        return [methods[method_name] for method_name in sorted(methods.iterkeys())]
+
+    def _js_method_write(self):
+        field_writes = indent(' ' * 4, "\n".join(field.js_write_protocol() for field in self.fields))
+        name = self.js_name()
+        return {'write': """\
+write: function(oprot) {
+    oprot.writeStructBegin("%(name)s");
+%(field_writes)s
+    oprot.writeStructEnd();
+    return oprot;
+}""" % locals()}
+
     def __repr__(self):
-        fields = \
-            ",\n".join(indent(' ' * 4,
-                [field.name + ':undefined' for field in self.fields]
-            ))
+        class_properties = []
+        class_properties.append("\n\n".join(indent(' ' * 8, self._js_class_methods())))
+        class_properties = ",\n\n".join(class_properties)
+
+        properties = []
+        if len(self.fields) > 0:
+            properties.append(
+                ",\n".join(indent(' ' * 8,
+                    [field.name + ':undefined' for field in self.fields]
+                ))
+            )
+        properties.append("\n\n".join(indent(' ' * 8, self._js_methods())))
+        properties = ",\n\n".join(properties)
+
         qname = self.js_qname()
+
         return """\
-%(qname)s = Backbone.Model.extend({
-%(fields)s
-});""" % locals()
+%(qname)s = Backbone.Model.extend(
+    {
+%(properties)s
+    },
+    {
+%(class_properties)s
+    }
+);""" % locals()

@@ -31,7 +31,35 @@
 #-------------------------------------------------------------------------------
 
 from thryft.generators.js._js_container_type import _JsContainerType
+from yutil import decamelize, indent
 
 
 class _JsSequenceType(_JsContainerType):
-    pass
+    def js_read_protocol(self):
+        class_name_split = decamelize(self.__class__.__name__).split('_')
+        assert len(class_name_split) == 3
+        assert class_name_split[0] == 'js'
+        assert class_name_split[2] == 'type'
+
+        element_ttype_id = self.element_type.thrift_ttype_id()
+        element_read_protocol = self.element_type.js_read_protocol()
+        type_name = class_name_split[1].capitalize()
+        return """function(iprot) { var sequenceBegin = iprot.read%(type_name)sBegin(); var sequence = new Array(); for (var i = 0; i < sequenceBegin.size; i++) { sequence.push(%(element_read_protocol)s); } iprot.read%(type_name)sEnd(); return sequence; }(iprot)""" % locals()
+
+    def js_write_protocol(self, value, depth=0):
+        class_name_split = decamelize(self.__class__.__name__).split('_')
+        assert len(class_name_split) == 3
+        assert class_name_split[0] == 'js'
+        assert class_name_split[2] == 'type'
+
+        element_ttype_id = self.element_type.thrift_ttype_id()
+        element_write_protocol = \
+            indent(' ' * 4, self.element_type.js_write_protocol("__sequence%(depth)u[__i%(depth)u]" % locals(), depth=depth + 1))
+        type_name = class_name_split[1].capitalize()
+        return """\
+var __sequence%(depth)u = %(value)s;
+oprot.write%(type_name)sBegin(%(element_ttype_id)u, __sequence%(depth)u.length);
+for (var __i%(depth)u = 0; __i%(depth)u < __sequence%(depth)u.length; __i%(depth)u++) {
+%(element_write_protocol)s
+}
+oprot.write%(type_name)sEnd();""" % locals()

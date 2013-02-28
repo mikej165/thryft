@@ -32,28 +32,78 @@
 
 from thryft.generator.function import Function
 from thryft.generators.js._js_named_construct import _JsNamedConstruct
+from thryft.generators.js.js_field import JsField
+from thryft.generators.js.js_struct_type import JsStructType
 from yutil import decamelize, indent, lower_camelize
 
 
 class JsFunction(Function, _JsNamedConstruct):
+    class _JsRequestType(JsStructType):
+        def __init__(self, parent_function):
+            JsStructType.__init__(
+                self,
+                name=parent_function.parent.js_name() + '.Messages.' + parent_function.js_name() + 'Request',
+                parent=parent_function.parent
+            )
+
+            for parameter in parent_function.parameters:
+                self.fields.append(
+                    JsField(
+                        name=parameter.name,
+                        type=parameter.type,
+                        parent=self,
+                        required=parameter.required
+                    )
+                )
+
+    class _JsResponseType(JsStructType):
+        def __init__(self, parent_function):
+            JsStructType.__init__(
+                self,
+                name=parent_function.parent.js_name() + '.Messages.' + parent_function.js_name() + 'Response',
+                parent=parent_function.parent
+            )
+            if parent_function.return_type is not None:
+                self.fields.append(
+                    JsField(
+                        name='return_value',
+                        parent=self,
+                        required=True,
+                        type=parent_function.return_type
+                    )
+                )
+
+    def js_message_types(self):
+        return [self.js_request_type(), self.js_response_type()]
+
+    def js_name(self):
+        return lower_camelize(self.name)
+
     def js_qname(self):
-        return self.parent.js_qname() + '.' + lower_camelize(self.js_name())
+        return self.parent.js_qname() + '.' + self.js_name()
+
+    def js_request_type(self, **kwds):
+        return self._JsRequestType(parent_function=self, **kwds)
+
+    def js_response_type(self, **kwds):
+        return self._JsResponseType(parent_function=self, **kwds)
 
     def __repr__(self):
         name = self.js_name()
 
         if self.return_type is not None:
+            response_type_qname = self.js_response_type().js_qname()
             ajax_callbacks = indent(' ' * 8, """\
-success:function (reply) {
-    result = reply.result;
-}""")
+success:function (__response) {
+    __result = %(response_type_qname)s.read(new thryft.core.protocol.BuiltinsProtocol(__response.result)).return_value;
+}""" % locals())
         else:
             ajax_callbacks = indent(' ' * 8, """\
 success:function (reply) {
-    result = true;
+    __result = true;
 },
 error:function () {
-    result = false;
+    __result = false;
 }""")
 
         jsonrpc_params = ', '.join("'" + parameter.name + "':" + parameter.name
@@ -68,10 +118,11 @@ error:function () {
 
         parameter_names = ', '.join(parameter.name for parameter in self.parameters)
 
+        request_type_qname = self.js_request_type().js_qname()
+
         return """\
 %(qname)s = function(%(parameter_names)s) {
-    var self = this;
-    var result;
+    var __result = null;
 
     $.ajax({
         url:%(jsonrpc_url)s,
@@ -79,7 +130,7 @@ error:function () {
         data:JSON.stringify({
             jsonrpc:'2.0',
             method:'%(name)s',
-            params:{%(jsonrpc_params)s},
+            params:new %(request_type_qname)s(%(parameter_names)s).write(new thryft.core.protocol.BuiltinsProtocol()).freeze(),
             id:'1234'
         }),
         dataType:'json',
@@ -88,6 +139,6 @@ error:function () {
 %(ajax_callbacks)s
     });
     
-    return result;
+    return __result;
 };
 """ % locals()

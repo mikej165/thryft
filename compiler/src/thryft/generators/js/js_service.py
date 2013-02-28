@@ -44,4 +44,19 @@ class JsService(Service, _JsNamedConstruct):
 };            
 """ % locals()
 
-        return "\n".join(repr(function) for function in self.functions)
+        sections = []
+
+        message_types = []
+        for function in self.functions:
+            message_types.extend(function.js_message_types())
+        if len(message_types) > 0:
+            sections.append("%(qname)s.Messages = {};" % locals())
+            message_types = \
+                "\n\n".join(
+                    repr(message_type) for message_type in message_types
+                )
+            sections.append(message_types)
+
+        sections.append("\n".join(repr(function) for function in self.functions))
+
+        return "\n\n".join(sections)

@@ -35,5 +35,31 @@ from thryft.generators.js._js_type import _JsType
 
 
 class JsEnumType(EnumType, _JsType):
+    def js_read_protocol(self):
+        name = self.js_qname()
+        return "%(name)s[iprot.readString()]" % locals()
+
+    def js_write_protocol(self, value, depth=0):
+        name = self.js_qname()
+        return "oprot.writeString(function(enumerator_value) { for (var enumerator_name in %(name)s) { if (%(name)s[enumerator_name] == enumerator_value) { return enumerator_name; } } }(%(value)s));" % locals()
+
     def __repr__(self):
-        return ''
+        name = self.js_qname()
+
+        enumerators = []
+        if len(self.enumerators) > 0:
+            enumerator_values = []
+            for enumerator in self.enumerators:
+                if enumerator.value is not None:
+                    for enumerator in self.enumerators:
+                        assert enumerator.value is not None
+                        enumerator_values.append(enumerator.value)
+            if len(enumerator_values) == 0:
+                enumerator_values = [enumerator.id for enumerator in self.enumerators]
+
+            for enumerator, enumerator_value in zip(self.enumerators, enumerator_values):
+                enumerator_name = enumerator.name
+                enumerators.append("%(enumerator_name)s: %(enumerator_value)u" % locals())
+        enumerators = ', '.join(enumerators)
+        return """\
+%(name)s = Object.freeze({%(enumerators)s});""" % locals()

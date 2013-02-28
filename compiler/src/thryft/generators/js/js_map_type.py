@@ -32,7 +32,41 @@
 
 from thryft.generator.map_type import MapType
 from thryft.generators.js._js_container_type import _JsContainerType
+from yutil import indent
 
 
 class JsMapType(MapType, _JsContainerType):
-    pass
+    def js_read_protocol(self):
+        key_read_protocol = self.key_type.js_read_protocol()
+        value_read_protocol = self.value_type.js_read_protocol()
+        return """function(iprot) { var map = {}; var mapBegin = iprot.readMapBegin(); for (var i = 0; i < mapBegin.size; i++) { var key = %(key_read_protocol)s; var value = %(value_read_protocol)s; map[key] = value; } iprot.readMapEnd(); return map; }(iprot)""" % locals()
+
+    def js_write_protocol(self, value, depth=0):
+        key_ttype_id = self.key_type.thrift_ttype_id()
+        key_write_protocol = \
+            indent(' ' * 4,
+                self.key_type.js_write_protocol(
+                    "__key%(depth)u" % locals(),
+                    depth=depth + 1
+                )
+            )
+        value_ttype_id = self.value_type.thrift_ttype_id()
+        value_write_protocol = \
+            indent(' ' * 4,
+                self.value_type.js_write_protocol(
+                    "__map%(depth)u[__key%(depth)u]" % locals(),
+                    depth=depth + 1
+                )
+            )
+        return """\
+var __map%(depth)u = %(value)s;
+var __mapSize%(depth)u = 0;
+for (var __key%(depth)u in __map%(depth)u) {
+    __mapSize%(depth)u++;
+}
+oprot.writeMapBegin(%(key_ttype_id)u, %(value_ttype_id)u, __mapSize%(depth)u);
+for (var __key%(depth)u in __map%(depth)u) {
+%(key_write_protocol)s
+%(value_write_protocol)s
+}
+oprot.writeMapEnd();""" % locals()
