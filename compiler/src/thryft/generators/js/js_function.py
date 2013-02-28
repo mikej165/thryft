@@ -42,7 +42,7 @@ class JsFunction(Function, _JsNamedConstruct):
         def __init__(self, parent_function):
             JsStructType.__init__(
                 self,
-                name=parent_function.parent.js_name() + '.Messages.' + parent_function.js_name() + 'Request',
+                name=parent_function.parent.js_name() + 'Messages.' + parent_function.js_name() + 'Request',
                 parent=parent_function.parent
             )
 
@@ -60,7 +60,7 @@ class JsFunction(Function, _JsNamedConstruct):
         def __init__(self, parent_function):
             JsStructType.__init__(
                 self,
-                name=parent_function.parent.js_name() + '.Messages.' + parent_function.js_name() + 'Response',
+                name=parent_function.parent.js_name() + 'Messages.' + parent_function.js_name() + 'Response',
                 parent=parent_function.parent
             )
             if parent_function.return_type is not None:
@@ -91,54 +91,47 @@ class JsFunction(Function, _JsNamedConstruct):
     def __repr__(self):
         name = self.js_name()
 
+        function_parameter_names = ', '.join([parameter.name for parameter in self.parameters] + ['successCallback', 'errorCallback'])
+        request_type_qname = self.js_request_type().js_qname()
+
         if self.return_type is not None:
             response_type_qname = self.js_response_type().js_qname()
-            ajax_callbacks = indent(' ' * 8, """\
-success:function (__response) {
-    __result = %(response_type_qname)s.read(new thryft.core.protocol.BuiltinsProtocol(__response.result)).return_value;
-}""" % locals())
+            success_callback = "successCallback(%(response_type_qname)s.read(new thryft.core.protocol.BuiltinsProtocol(__response.result)).return_value);" % locals()
         else:
-            ajax_callbacks = indent(' ' * 8, """\
-success:function (reply) {
-    __result = true;
-},
-error:function () {
-    __result = false;
-}""")
+            success_callback = 'successCallback();'
 
         jsonrpc_params = ', '.join("'" + parameter.name + "':" + parameter.name
                                         for parameter in self.parameters)
 
-        jsonrpc_url = self.js_qname().split('.', 1)[0] + '.hostname()+\'/api/jsonrpc/'
+        jsonrpc_url = 'this.hostname()+\'/api/jsonrpc/'
         assert self.parent.name.endswith('Service')
         jsonrpc_url += '_'.join(decamelize(self.parent.name).split('_')[:-1])
         jsonrpc_url += '\''
 
-        qname = self.js_qname()
-
-        parameter_names = ', '.join(parameter.name for parameter in self.parameters)
-
-        request_type_qname = self.js_request_type().js_qname()
+        if len(self.parameters) > 0:
+            request_parameter_names = ', '.join(parameter.name for parameter in self.parameters)
+            params = "new %(request_type_qname)s(%(request_parameter_names)s).write(new thryft.core.protocol.BuiltinsProtocol()).freeze()" % locals()
+        else:
+            params = '{}'
 
         return """\
-%(qname)s = function(%(parameter_names)s) {
-    var __result = null;
-
+%(name)s : function(%(function_parameter_names)s) {
     $.ajax({
         url:%(jsonrpc_url)s,
         type:'POST',
         data:JSON.stringify({
             jsonrpc:'2.0',
             method:'%(name)s',
-            params:new %(request_type_qname)s(%(parameter_names)s).write(new thryft.core.protocol.BuiltinsProtocol()).freeze(),
+            params:%(params)s,
             id:'1234'
         }),
         dataType:'json',
         mimeType:'application/json',
-        async:false,
-%(ajax_callbacks)s
+        success:function(__response) {
+            if (typeof successCallback !== "undefined") {
+                %(success_callback)s
+            }
+        },
+        error:errorCallback,
     });
-    
-    return __result;
-};
-""" % locals()
+}""" % locals()

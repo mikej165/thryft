@@ -32,6 +32,7 @@
 
 from thryft.generator.service import Service
 from thryft.generators.js._js_named_construct import _JsNamedConstruct
+from yutil import indent
 
 
 class JsService(Service, _JsNamedConstruct):
@@ -41,7 +42,7 @@ class JsService(Service, _JsNamedConstruct):
         if len(self.functions) == 0:
             return """\
 %(qname)s = function() {
-};            
+};
 """ % locals()
 
         sections = []
@@ -50,13 +51,21 @@ class JsService(Service, _JsNamedConstruct):
         for function in self.functions:
             message_types.extend(function.js_message_types())
         if len(message_types) > 0:
-            sections.append("%(qname)s.Messages = {};" % locals())
+            sections.append("%(qname)sMessages = {};" % locals())
             message_types = \
                 "\n\n".join(
                     repr(message_type) for message_type in message_types
                 )
             sections.append(message_types)
 
-        sections.append("\n".join(repr(function) for function in self.functions))
+        functions = ",\n\n".join(indent(' ' * 4, [repr(function) for function in self.functions]))
+        sections.append("""
+%(qname)s = function(hostname) {
+    this.hostname = hostname;
+};
+
+%(qname)s.prototype = {
+%(functions)s
+};""" % locals())
 
         return "\n\n".join(sections)
