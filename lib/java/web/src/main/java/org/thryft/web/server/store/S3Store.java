@@ -192,8 +192,14 @@ public final class S3Store<ModelT extends TBase<?, ?>> extends
         }
         final Map<String, ModelT> updatedModels = Maps.newLinkedHashMap(models);
         updatedModels.remove(modelKey.getModelId());
-        __putModels(ImmutableMap.copyOf(updatedModels), modelKey.getUsername());
-        return true;
+        try {
+            __putModels(ImmutableMap.copyOf(updatedModels),
+                    modelKey.getUsername());
+            return true;
+        } catch (final ModelIoException e) {
+            logger.error("model I/O exception on deleteModelById: ", e);
+            return false;
+        }
     }
 
     @Override
@@ -278,12 +284,14 @@ public final class S3Store<ModelT extends TBase<?, ?>> extends
     }
 
     @Override
-    protected void _putModel(final ModelT model, final Key modelKey) {
+    protected void _putModel(final ModelT model, final Key modelKey)
+            throws ModelIoException {
         _putModels(ImmutableMap.of(modelKey, model));
     }
 
     @Override
-    protected void _putModels(final ImmutableMap<Key, ModelT> models) {
+    protected void _putModels(final ImmutableMap<Key, ModelT> models)
+            throws ModelIoException {
         try {
             final String username = models.keySet().iterator().next()
                     .getUsername();
@@ -297,8 +305,7 @@ public final class S3Store<ModelT extends TBase<?, ?>> extends
             }
             __putModels(ImmutableMap.copyOf(updatedModels), username);
         } catch (final AmazonServiceException e) {
-            logger.error("AWS service exception on putModels: ", e);
-            return;
+            throw new ModelIoException(e);
         }
     }
 
@@ -379,7 +386,7 @@ public final class S3Store<ModelT extends TBase<?, ?>> extends
     }
 
     private void __putModels(final ImmutableMap<String, ModelT> models,
-            final String username) {
+            final String username) throws ModelIoException {
         if (models.isEmpty()) {
             _deleteModels(username);
             return;
@@ -400,11 +407,9 @@ public final class S3Store<ModelT extends TBase<?, ?>> extends
             oprot.flush();
             ostring = ostringWriter.toString();
         } catch (final IOException e) {
-            logger.error("error serializing models: ", e);
-            return;
+            throw new ModelIoException(e);
         } catch (final TException e) {
-            logger.error("error serializing models: ", e);
-            return;
+            throw new ModelIoException(e);
         }
 
         final byte[] obytes = ostring.getBytes();

@@ -49,7 +49,6 @@ import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Test;
 import org.thryft.web.server.store.Store;
-import org.thryft.web.server.store.Store.NoSuchModelException;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -98,7 +97,7 @@ public abstract class StoreTest {
     }
 
     @Test
-    public void testDeleteModelById() {
+    public void testDeleteModelById() throws Store.ModelIoException {
         __putModels();
 
         final StoreTestStruct deleteModel = models.asList().get(0);
@@ -120,7 +119,7 @@ public abstract class StoreTest {
     }
 
     @Test
-    public void testDeleteModels() {
+    public void testDeleteModels() throws Store.ModelIoException {
         ImmutableSet<StoreTestStruct> models = store.getModels(USERNAME);
         assertEquals(0, models.size());
 
@@ -136,7 +135,8 @@ public abstract class StoreTest {
     }
 
     @Test
-    public void testGetModelById() throws Store.NoSuchModelException {
+    public void testGetModelById() throws Store.ModelIoException,
+            Store.NoSuchModelException {
         __putModels();
 
         for (final StoreTestStruct model : models) {
@@ -146,7 +146,8 @@ public abstract class StoreTest {
     }
 
     @Test
-    public void testGetModelByIdCached() throws NoSuchModelException {
+    public void testGetModelByIdCached() throws Store.ModelIoException,
+            Store.NoSuchModelException {
         __putModels();
 
         for (final StoreTestStruct model : models) {
@@ -159,7 +160,7 @@ public abstract class StoreTest {
     }
 
     @Test
-    public void testGetModelByIdMissing() {
+    public void testGetModelByIdMissing() throws Store.ModelIoException {
         __putModels();
 
         try {
@@ -170,7 +171,7 @@ public abstract class StoreTest {
     }
 
     @Test
-    public void testGetModelCount() {
+    public void testGetModelCount() throws Store.ModelIoException {
         __putModels();
 
         final int modelCount = store.getModelCount(USERNAME);
@@ -178,7 +179,7 @@ public abstract class StoreTest {
     }
 
     @Test
-    public void testGetModelIds() {
+    public void testGetModelIds() throws Store.ModelIoException {
         __putModels();
 
         final ImmutableSet<String> modelIds = store.getModelIds(USERNAME);
@@ -186,7 +187,7 @@ public abstract class StoreTest {
     }
 
     @Test
-    public void testGetModels() {
+    public void testGetModels() throws Store.ModelIoException {
         __putModels();
 
         final ImmutableSet<StoreTestStruct> models = store.getModels(USERNAME);
@@ -194,7 +195,8 @@ public abstract class StoreTest {
     }
 
     @Test
-    public void testGetModelsByIds() throws Store.NoSuchModelException {
+    public void testGetModelsByIds() throws Store.ModelIoException,
+            Store.NoSuchModelException {
         __putModels();
 
         final ImmutableSet<StoreTestStruct> models = store.getModelsByIds(
@@ -219,7 +221,7 @@ public abstract class StoreTest {
     }
 
     @Test
-    public void testGetUsernames() {
+    public void testGetUsernames() throws Store.ModelIoException {
         __putModels();
 
         ImmutableSet<String> usernames;
@@ -233,7 +235,8 @@ public abstract class StoreTest {
     }
 
     @Test
-    public void testHeadModelById() throws Store.NoSuchModelException {
+    public void testHeadModelById() throws Store.ModelIoException,
+            Store.NoSuchModelException {
         __putModels();
 
         for (final StoreTestStruct model : models) {
@@ -244,7 +247,8 @@ public abstract class StoreTest {
     }
 
     @Test
-    public void testPutModel() throws Store.NoSuchModelException {
+    public void testPutModel() throws Store.ModelIoException,
+            Store.NoSuchModelException {
         final StoreTestStruct expectedModel = models.asList().get(0);
         store.putModel(expectedModel, __getModelId(expectedModel), USERNAME);
         final StoreTestStruct model = store.getModelById(
@@ -253,7 +257,7 @@ public abstract class StoreTest {
     }
 
     @Test
-    public void testPutModels() {
+    public void testPutModels() throws Store.ModelIoException {
         assertThat(store.getModels(USERNAME), hasSize(0));
         store.putModels(ImmutableMap.<String, StoreTestStruct> of(), USERNAME);
         assertThat(store.getModels(USERNAME), hasSize(0));
@@ -273,7 +277,7 @@ public abstract class StoreTest {
         return model.getStringField();
     }
 
-    private void __putModels() {
+    private void __putModels() throws Store.ModelIoException {
         final Map<String, StoreTestStruct> models = Maps.newLinkedHashMap();
         for (final StoreTestStruct model : this.models) {
             models.put(__getModelId(model), model);

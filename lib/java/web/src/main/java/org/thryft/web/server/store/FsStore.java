@@ -221,7 +221,8 @@ public final class FsStore<ModelT extends TBase<?, ?>> extends Store<ModelT> {
 
     @Override
     protected synchronized void _putModel(final ModelT model,
-            final String modelId, final String username) {
+            final String modelId, final String username)
+            throws org.thryft.web.server.store.Store.ModelIoException {
         final File modelDirectoryPath = __createModelDirectory(username);
         if (modelDirectoryPath == null) {
             return;
@@ -231,7 +232,8 @@ public final class FsStore<ModelT extends TBase<?, ?>> extends Store<ModelT> {
 
     @Override
     protected synchronized void _putModels(
-            final ImmutableMap<String, ModelT> models, final String username) {
+            final ImmutableMap<String, ModelT> models, final String username)
+            throws ModelIoException {
         final File modelDirectoryPath = __createModelDirectory(username);
         for (final ImmutableMap.Entry<String, ModelT> model : models.entrySet()) {
             __putModel(model.getValue(), modelDirectoryPath, model.getKey());
@@ -290,7 +292,7 @@ public final class FsStore<ModelT extends TBase<?, ?>> extends Store<ModelT> {
     }
 
     private void __putModel(final ModelT model, final File modelDirectoryPath,
-            final String modelId) {
+            final String modelId) throws ModelIoException {
         final File modelFilePath = __getModelFilePath(modelDirectoryPath,
                 modelId);
 
@@ -329,9 +331,9 @@ public final class FsStore<ModelT extends TBase<?, ?>> extends Store<ModelT> {
             }
 
         } catch (final IOException e) {
-            logger.error("error writing model to disk:", e);
+            throw new ModelIoException(e, modelId);
         } catch (final TException e) {
-            logger.error("error writing model to disk:", e);
+            throw new ModelIoException(e, modelId);
         }
     }
 

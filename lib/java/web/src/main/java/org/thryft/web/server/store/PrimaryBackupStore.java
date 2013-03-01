@@ -105,14 +105,14 @@ public class PrimaryBackupStore<ModelT extends TBase<?, ?>> extends
 
     @Override
     protected void _putModel(final ModelT model, final String modelId,
-            final String username) {
+            final String username) throws ModelIoException {
         primaryStore.putModel(model, modelId, username);
         backupStore.putModel(model, modelId, username);
     }
 
     @Override
     protected void _putModels(final ImmutableMap<String, ModelT> models,
-            final String username) {
+            final String username) throws ModelIoException {
         primaryStore.putModels(models, username);
         backupStore.putModels(models, username);
     }

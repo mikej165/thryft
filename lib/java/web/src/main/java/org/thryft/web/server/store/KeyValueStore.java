@@ -168,19 +168,21 @@ public abstract class KeyValueStore<ModelT extends TBase<?, ?>> extends
         return _headModelById(new Key(modelId, username));
     }
 
-    protected abstract void _putModel(ModelT model, Key modelKey);
+    protected abstract void _putModel(ModelT model, Key modelKey)
+            throws ModelIoException;
 
     @Override
     protected void _putModel(final ModelT model, final String modelId,
-            final String username) {
+            final String username) throws ModelIoException {
         _putModel(model, new Key(modelId, username));
     }
 
-    protected abstract void _putModels(ImmutableMap<Key, ModelT> models);
+    protected abstract void _putModels(ImmutableMap<Key, ModelT> models)
+            throws ModelIoException;
 
     @Override
     protected void _putModels(final ImmutableMap<String, ModelT> models,
-            final String username) {
+            final String username) throws ModelIoException {
         final Map<Key, ModelT> modelMap = Maps.newLinkedHashMap();
         for (final Map.Entry<String, ModelT> model : models.entrySet()) {
             modelMap.put(new Key(model.getKey(), username), model.getValue());

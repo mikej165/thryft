@@ -33,6 +33,7 @@
 package org.thryft.web.server.store;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.thryft.core.Preconditions.checkNotEmpty;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -45,6 +46,25 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 public abstract class Store<ModelT extends TBase<?, ?>> {
+    @SuppressWarnings("serial")
+    public final static class ModelIoException extends Exception {
+        public ModelIoException(final Throwable cause) {
+            super(cause);
+            this.id = "";
+        }
+
+        public ModelIoException(final Throwable cause, final String id) {
+            super(cause);
+            this.id = checkNotEmpty(id);
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        private final String id;
+    }
+
     @SuppressWarnings("serial")
     public final static class NoSuchModelException extends Exception {
         public NoSuchModelException(final String id) {
@@ -121,7 +141,7 @@ public abstract class Store<ModelT extends TBase<?, ?>> {
     }
 
     public final void putModel(final ModelT model, final String modelId,
-            final String username) {
+            final String username) throws ModelIoException {
         checkNotNull(model);
         checkNotNull(modelId);
         checkNotNull(username);
@@ -129,7 +149,7 @@ public abstract class Store<ModelT extends TBase<?, ?>> {
     }
 
     public final void putModels(final ImmutableMap<String, ModelT> models,
-            final String username) {
+            final String username) throws ModelIoException {
         checkNotNull(models);
         if (models.isEmpty()) {
             return;
@@ -187,10 +207,11 @@ public abstract class Store<ModelT extends TBase<?, ?>> {
             final String username);
 
     protected abstract void _putModel(final ModelT model, final String modelId,
-            final String username);
+            final String username) throws ModelIoException;
 
     protected abstract void _putModels(
-            final ImmutableMap<String, ModelT> models, final String username);
+            final ImmutableMap<String, ModelT> models, final String username)
+            throws ModelIoException;
 
     protected final Logger logger;
 

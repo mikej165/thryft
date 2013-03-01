@@ -473,7 +473,7 @@ public final class JdbcStore<ModelT extends TBase<?, ?>> extends Store<ModelT> {
 
     @Override
     protected void _putModel(final ModelT model, final String modelId,
-            final String username) {
+            final String username) throws ModelIoException {
         try {
             final Connection connection = connectionPool.getConnection();
             try {
@@ -489,18 +489,14 @@ public final class JdbcStore<ModelT extends TBase<?, ?>> extends Store<ModelT> {
             } finally {
                 connection.close();
             }
-        } catch (final IOException e) {
-            logger.error("exception putting model: ", e);
         } catch (final SQLException e) {
-            logger.error("exception putting model: ", e);
-        } catch (final TException e) {
-            logger.error("exception putting model: ", e);
+            throw new ModelIoException(e);
         }
     }
 
     @Override
     protected void _putModels(final ImmutableMap<String, ModelT> models,
-            final String username) {
+            final String username) throws ModelIoException {
         try {
             final Connection connection = connectionPool.getConnection();
             try {
@@ -520,12 +516,8 @@ public final class JdbcStore<ModelT extends TBase<?, ?>> extends Store<ModelT> {
             } finally {
                 connection.close();
             }
-        } catch (final IOException e) {
-            logger.error("exception putting models: ", e);
         } catch (final SQLException e) {
-            logger.error("exception putting models: ", e);
-        } catch (final TException e) {
-            logger.error("exception putting models: ", e);
+            throw new ModelIoException(e);
         }
     }
 
@@ -579,17 +571,25 @@ public final class JdbcStore<ModelT extends TBase<?, ?>> extends Store<ModelT> {
 
     private void __putModel(final Connection connection, final ModelT model,
             final String modelId, final PreparedStatement statement,
-            final String username) throws SQLException, IOException, TException {
-        __deleteModelById(connection, modelId, username);
-        final StringWriter stringWriter = new StringWriter();
-        final JsonProtocol oprot = new JsonProtocol(stringWriter);
-        model.write(oprot);
-        oprot.flush();
-        final String json = stringWriter.toString();
-        statement.setString(1, modelId);
-        statement.setString(2, json);
-        statement.setString(3, username);
-        statement.execute();
+            final String username) throws ModelIoException {
+        try {
+            __deleteModelById(connection, modelId, username);
+            final StringWriter stringWriter = new StringWriter();
+            final JsonProtocol oprot = new JsonProtocol(stringWriter);
+            model.write(oprot);
+            oprot.flush();
+            final String json = stringWriter.toString();
+            statement.setString(1, modelId);
+            statement.setString(2, json);
+            statement.setString(3, username);
+            statement.execute();
+        } catch (final IOException e) {
+            throw new ModelIoException(e, modelId);
+        } catch (final SQLException e) {
+            throw new ModelIoException(e, modelId);
+        } catch (final TException e) {
+            throw new ModelIoException(e, modelId);
+        }
     }
 
     private final JdbcConnectionPool connectionPool;

@@ -242,7 +242,8 @@ public final class RedisStore<ModelT extends TBase<?, ?>> extends
     }
 
     @Override
-    protected void _putModel(final ModelT model, final Key modelKey) {
+    protected void _putModel(final ModelT model, final Key modelKey)
+            throws ModelIoException {
         try {
             final Jedis jedis = jedisPool.getResource();
             try {
@@ -259,12 +260,13 @@ public final class RedisStore<ModelT extends TBase<?, ?>> extends
                 jedisPool.returnResource(jedis);
             }
         } catch (final JedisException e) {
-            logger.error("JedisException on _putModel: ", e);
+            throw new ModelIoException(e, modelKey.getModelId());
         }
     }
 
     @Override
-    protected void _putModels(final ImmutableMap<Key, ModelT> models) {
+    protected void _putModels(final ImmutableMap<Key, ModelT> models)
+            throws ModelIoException {
         for (final ImmutableMap.Entry<Key, ModelT> model : models.entrySet()) {
             _putModel(model.getValue(), model.getKey());
         }
