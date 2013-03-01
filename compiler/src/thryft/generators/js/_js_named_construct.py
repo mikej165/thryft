@@ -35,7 +35,7 @@ from thryft.generators.js._js_construct import _JsConstruct
 
 class _JsNamedConstruct(_JsConstruct):
     def js_name(self):
-        return getattr(self, 'name')
+        return self.name
 
     def js_qname(self):
         return self._qname(include_parent_document_name=False, scope='js')

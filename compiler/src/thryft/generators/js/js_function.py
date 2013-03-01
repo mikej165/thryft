@@ -34,7 +34,7 @@ from thryft.generator.function import Function
 from thryft.generators.js._js_named_construct import _JsNamedConstruct
 from thryft.generators.js.js_field import JsField
 from thryft.generators.js.js_struct_type import JsStructType
-from yutil import decamelize, indent, lower_camelize
+from yutil import decamelize, lower_camelize
 
 
 class JsFunction(Function, _JsNamedConstruct):
@@ -89,21 +89,22 @@ class JsFunction(Function, _JsNamedConstruct):
         return self._JsResponseType(parent_function=self, **kwds)
 
     def __repr__(self):
-        name = self.js_name()
+        name = self.name
+        js_name = self.js_name()
 
-        function_parameter_names = ', '.join([parameter.name for parameter in self.parameters] + ['successCallback', 'errorCallback'])
+        function_parameter_names = ', '.join([parameter.js_name() for parameter in self.parameters] + ['successCallback', 'errorCallback'])
         request_type_qname = self.js_request_type().js_qname()
 
         if self.return_type is not None:
             response_type_qname = self.js_response_type().js_qname()
-            success_callback = "successCallback(%(response_type_qname)s.read(new thryft.core.protocol.BuiltinsProtocol(__response.result)).return_value);" % locals()
+            return_value = """%(response_type_qname)s.read(new thryft.core.protocol.BuiltinsProtocol({return_value:__response.result})).get("returnValue")""" % locals()
         else:
-            success_callback = 'successCallback();'
+            return_value = 'true'
 
-        jsonrpc_params = ', '.join("'" + parameter.name + "':" + parameter.name
+        jsonrpc_params = ', '.join("'" + parameter.name + "':" + parameter.js_name()
                                         for parameter in self.parameters)
 
-        jsonrpc_url = 'this.hostname()+\'/api/jsonrpc/'
+        jsonrpc_url = 'this.hostname+\'/api/jsonrpc/'
         assert self.parent.name.endswith('Service')
         jsonrpc_url += '_'.join(decamelize(self.parent.name).split('_')[:-1])
         jsonrpc_url += '\''
@@ -115,10 +116,12 @@ class JsFunction(Function, _JsNamedConstruct):
             params = '{}'
 
         return """\
-%(name)s : function(%(function_parameter_names)s) {
+%(js_name)s : function(%(function_parameter_names)s) {
+    var __async = typeof successCallback !== "undefined" || typeof errorCallback !== "undefined";
+    var __returnValue = null; // For synchronous requests
+
     $.ajax({
-        url:%(jsonrpc_url)s,
-        type:'POST',
+        async:__async,
         data:JSON.stringify({
             jsonrpc:'2.0',
             method:'%(name)s',
@@ -126,12 +129,38 @@ class JsFunction(Function, _JsNamedConstruct):
             id:'1234'
         }),
         dataType:'json',
-        mimeType:'application/json',
-        success:function(__response) {
-            if (typeof successCallback !== "undefined") {
-                %(success_callback)s
+        error:function(jqXHR, textStatus, errorThrown) {
+            if (__async) {
+                if (typeof errorCallback !== "undefined") {
+                    errorCallback(jqXHR, textStatus, errorThrown);
+                }
+            } else {
+                __returnValue = false;
             }
         },
-        error:errorCallback,
+        mimeType:'application/json',
+        type:'POST',
+        success:function(__response) {
+            if (typeof __response.result !== "undefined") {
+                if (__async) {
+                    if (typeof successCallback !== "undefined") {
+                        successCallback(%(return_value)s);
+                    }
+                } else {
+                    __returnValue = %(return_value)s;
+                }
+            } else {
+                if (__async) {
+                    if (typeof errorCallback !== "undefined") {
+                        errorCallback(null, __response.error.message, null);
+                    }
+                } else {
+                    __returnValue = __response.error;
+                }
+            }
+        },
+        url:%(jsonrpc_url)s,
     });
+    
+    return __returnValue;
 }""" % locals()

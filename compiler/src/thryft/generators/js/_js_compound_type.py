@@ -93,7 +93,7 @@ write: function(oprot) {
         if len(self.fields) > 0:
             properties.append(
                 ",\n".join(indent(' ' * 8,
-                    [field.name + ':undefined' for field in self.fields]
+                    [field.js_name() + ':undefined' for field in self.fields]
                 ))
             )
         properties.append("\n\n".join(indent(' ' * 8, self._js_methods())))

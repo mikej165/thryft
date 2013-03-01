@@ -32,25 +32,30 @@
 
 from thryft.generator.field import Field
 from thryft.generators.js._js_named_construct import _JsNamedConstruct
-from yutil import indent
+from yutil import indent, lower_camelize
 
 
 class JsField(Field, _JsNamedConstruct):
+    def js_name(self):
+        return lower_camelize(self.name)
+
     def js_read_protocol(self):
         name = self.name
+        js_name = self.js_name()
         read_protocol = self.type.js_read_protocol()
         return """\
 if (field.fname == "%(name)s") {
-    fields["%(name)s"] = %(read_protocol)s;
+    fields["%(js_name)s"] = %(read_protocol)s;
 }""" % locals()
 
     def js_write_protocol(self):
-        name = self.js_name()
+        name = self.name
+        js_name = self.js_name()
         write_protocol = self.type.js_write_protocol("this.get(\"" + self.js_name() + "\")")
         if not self.required:
             write_protocol = indent(' ' * 4, write_protocol)
             write_protocol = """\
-if (this.has("%(name)s")) {
+if (this.has("%(js_name)s")) {
     oprot.writeFieldBegin("%(name)s");
 %(write_protocol)s
     oprot.writeFieldEnd();
