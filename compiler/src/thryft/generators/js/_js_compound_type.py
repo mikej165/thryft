@@ -36,8 +36,8 @@ from yutil import indent, lpad
 
 class _JsCompoundType(_JsType):
     def js_read_protocol(self):
-        name = self.js_qname()
-        return "%(name)s.read(iprot)" % locals()
+        qname = self.js_qname()
+        return "%(qname)s.read(iprot)" % locals()
 
     def js_write_protocol(self, value, depth=0):
         return "%(value)s.write(oprot);" % locals()

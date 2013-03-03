@@ -1,19 +1,19 @@
 #-------------------------------------------------------------------------------
 # Copyright (c) 2013, Minor Gordon
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
 # are met:
-# 
+#
 #     * Redistributions of source code must retain the above copyright
 #       notice, this list of conditions and the following disclaimer.
-# 
+#
 #     * Redistributions in binary form must reproduce the above copyright
 #       notice, this list of conditions and the following disclaimer in
 #       the documentation and/or other materials provided with the
 #       distribution.
-# 
+#
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
 # CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
 # INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
@@ -32,6 +32,7 @@
 
 from thryft.generator.struct_type import StructType
 from thryft.generators.java.java_struct_type import JavaStructType
+from thryft.generators.js.js_struct_type import JsStructType
 from thryft.generators.py.py_struct_type import PyStructType
 
 
@@ -47,6 +48,14 @@ class JavaDateTime(JavaStructType):
 
     def java_write_protocol(self, value, depth=0):
         return "if (oprot instanceof org.thryft.core.protocol.Protocol) { ((org.thryft.core.protocol.Protocol)oprot).writeDateTime(%(value)s); } else { oprot.writeI64(%(value)s.getMillis()); }" % locals()
+
+
+class JsDateTime(JsStructType):
+    def js_read_protocol(self):
+        return '((typeof iprot.readDateTime !== "undefined") ? iprot.readDateTime() : new Date(iprot.readI64()))'
+
+    def js_write_protocol(self, value, depth=0):
+        return """if (typeof oprot.writeDateTime !== "undefined") { oprot.writeDateTime(%(value)s); } else { oprot.writeI64(%(value)s.getTime()); }""" % locals()
 
 
 class PyDateTime(PyStructType):
