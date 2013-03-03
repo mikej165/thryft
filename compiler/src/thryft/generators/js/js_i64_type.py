@@ -35,4 +35,8 @@ from thryft.generators.js._js_base_type import _JsBaseType
 
 
 class JsI64Type(I64Type, _JsBaseType):
-    pass
+    def js_name(self):
+        return 'number'
+
+    def js_qname(self):
+        return 'number'

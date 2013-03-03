@@ -34,7 +34,7 @@ from thryft.generator.function import Function
 from thryft.generators.js._js_named_construct import _JsNamedConstruct
 from thryft.generators.js.js_field import JsField
 from thryft.generators.js.js_struct_type import JsStructType
-from yutil import decamelize, lower_camelize
+from yutil import decamelize, lower_camelize, lpad, indent
 
 
 class JsFunction(Function, _JsNamedConstruct):
@@ -95,72 +95,83 @@ class JsFunction(Function, _JsNamedConstruct):
         function_parameter_names = ', '.join([parameter.js_name() for parameter in self.parameters] + ['successCallback', 'errorCallback'])
         request_type_qname = self.js_request_type().js_qname()
 
-        if self.return_type is not None:
-            response_type_qname = self.js_response_type().js_qname()
-            return_value = """%(response_type_qname)s.read(new thryft.core.protocol.BuiltinsProtocol({return_value:__response.result})).get("returnValue")""" % locals()
+        if len(self.parameters) > 0:
+            jsonrpc_params = "new %(request_type_qname)s(params).write(new thryft.core.protocol.BuiltinsProtocol()).freeze()" % locals()
         else:
-            return_value = 'true'
-
-        jsonrpc_params = ', '.join("'" + parameter.name + "':" + parameter.js_name()
-                                        for parameter in self.parameters)
+            jsonrpc_params = '{}'
+        jsdoc_lines = ["@param {%s} %s" % (parameter.type.js_qname(), parameter.name)
+                        for parameter in self.parameters]
 
         jsonrpc_url = 'this.hostname+\'/api/jsonrpc/'
         assert self.parent.name.endswith('Service')
         jsonrpc_url += '_'.join(decamelize(self.parent.name).split('_')[:-1])
         jsonrpc_url += '\''
 
-        if len(self.parameters) > 0:
-            request_parameter_names = ', '.join(parameter.js_name() for parameter in self.parameters)
-            params = "new %(request_type_qname)s(%(request_parameter_names)s).write(new thryft.core.protocol.BuiltinsProtocol()).freeze()" % locals()
+        if self.return_type is not None:
+            jsdoc_lines.append("@return {%s}" % self.return_type.js_qname())
+            response_type_qname = self.js_response_type().js_qname()
+            return_value = """%(response_type_qname)s.read(new thryft.core.protocol.BuiltinsProtocol({return_value:__response.result})).get("returnValue")""" % locals()
         else:
-            params = '{}'
+            return_value = 'true'
+
+        if len(self.throws) > 0:
+            jsdoc_lines.extend("@throws {%s}" % exception.type.js_qname() for exception in self.throws)
+
+        jsdoc_lines = lpad("\n", "\n".join(indent(' * ', jsdoc_lines)))
+
+        service_js_qname = self.parent.js_qname()
 
         return """\
-%(js_name)s : function(%(function_parameter_names)s) {
-    var __async = typeof successCallback !== "undefined" || typeof errorCallback !== "undefined";
-    var __returnValue = null; // For synchronous requests
+/**
+ * %(js_name)s
+ *
+ * @this {%(service_js_qname)s}%(jsdoc_lines)s
+ */        
+%(js_name)s : function(params) {
+    var async = typeof successCallback !== "undefined" || typeof errorCallback !== "undefined";
+    var returnValue = null; // For synchronous requests
 
     $.ajax({
-        async:__async,
+        async:async,
         data:JSON.stringify({
             jsonrpc:'2.0',
             method:'%(name)s',
-            params:%(params)s,
+            params:%(jsonrpc_params)s,
             id:'1234'
         }),
         dataType:'json',
         error:function(jqXHR, textStatus, errorThrown) {
-            if (__async) {
+            if (async) {
                 if (typeof errorCallback !== "undefined") {
                     errorCallback(jqXHR, textStatus, errorThrown);
                 }
             } else {
-                __returnValue = false;
+                returnValue = false;
             }
         },
         mimeType:'application/json',
         type:'POST',
         success:function(__response) {
             if (typeof __response.result !== "undefined") {
-                if (__async) {
+                if (async) {
                     if (typeof successCallback !== "undefined") {
                         successCallback(%(return_value)s);
                     }
                 } else {
-                    __returnValue = %(return_value)s;
+                    returnValue = %(return_value)s;
                 }
             } else {
-                if (__async) {
+                if (async) {
                     if (typeof errorCallback !== "undefined") {
                         errorCallback(null, __response.error.message, null);
                     }
                 } else {
-                    __returnValue = __response.error;
+                    returnValue = __response.error;
                 }
             }
         },
         url:%(jsonrpc_url)s,
     });
     
-    return __returnValue;
+    return returnValue;
 }""" % locals()

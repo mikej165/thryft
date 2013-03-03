@@ -36,6 +36,12 @@ from yutil import indent
 
 
 class JsMapType(MapType, _JsContainerType):
+    def js_name(self):
+        return "Object.<%s, %s>" % (self.key_type.js_qname(), self.value_type.js_qname())
+
+    def js_qname(self):
+        return "Object.<%s, %s>" % (self.key_type.js_qname(), self.value_type.js_qname())
+
     def js_read_protocol(self):
         key_read_protocol = self.key_type.js_read_protocol()
         value_read_protocol = self.value_type.js_read_protocol()

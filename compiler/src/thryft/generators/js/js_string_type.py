@@ -35,4 +35,8 @@ from thryft.generators.js._js_base_type import _JsBaseType
 
 
 class JsStringType(StringType, _JsBaseType):
-    pass
+    def js_name(self):
+        return 'string'
+
+    def js_qname(self):
+        return 'string'

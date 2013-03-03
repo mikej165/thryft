@@ -35,6 +35,12 @@ from yutil import decamelize, indent
 
 
 class _JsSequenceType(_JsContainerType):
+    def js_name(self):
+        return "Array.<%s>" % self.element_type.js_qname()
+
+    def js_qname(self):
+        return "Array.<%s>" % self.element_type.js_qname()
+
     def js_read_protocol(self):
         class_name_split = decamelize(self.__class__.__name__).split('_')
         assert len(class_name_split) == 3
