@@ -110,7 +110,7 @@ class JsFunction(Function, _JsNamedConstruct):
         jsonrpc_url += '\''
 
         if len(self.parameters) > 0:
-            request_parameter_names = ', '.join(parameter.name for parameter in self.parameters)
+            request_parameter_names = ', '.join(parameter.js_name() for parameter in self.parameters)
             params = "new %(request_type_qname)s(%(request_parameter_names)s).write(new thryft.core.protocol.BuiltinsProtocol()).freeze()" % locals()
         else:
             params = '{}'
