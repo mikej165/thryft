@@ -89,6 +89,10 @@ class JsFunction(Function, _JsNamedConstruct):
         return self._JsResponseType(parent_function=self, **kwds)
 
     def __repr__(self):
+        for parameter in self.parameters:
+            assert parameter.name != 'error', self.parent.name
+            assert parameter.name != 'success', self.parent.name
+
         name = self.name
         js_name = self.js_name()
 
@@ -126,10 +130,25 @@ class JsFunction(Function, _JsNamedConstruct):
  * %(js_name)s
  *
  * @this {%(service_js_qname)s}%(jsdoc_lines)s
- */        
-%(js_name)s : function(params) {
-    var async = typeof successCallback !== "undefined" || typeof errorCallback !== "undefined";
+ */
+%(js_name)s : function(kwds) {
+    var async = false;
+    var errorCallback = undefined;
+    var params = jQuery.extend({}, kwds);
+    var successCallback = undefined;
     var returnValue = null; // For synchronous requests
+
+    for (var key in kwds) {
+        if (key === "error") {
+            async = true;
+            errorCallback = kwds[key];
+            delete params[key];
+        } else if (key === "success") {
+            async = true;
+            successCallback = kwds[key];
+            delete params[key];
+        }
+    }
 
     $.ajax({
         async:async,
@@ -172,6 +191,6 @@ class JsFunction(Function, _JsNamedConstruct):
         },
         url:%(jsonrpc_url)s,
     });
-    
+
     return returnValue;
 }""" % locals()
