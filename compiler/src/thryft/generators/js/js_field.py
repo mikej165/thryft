@@ -52,12 +52,14 @@ if (field.fname == "%(name)s") {
         name = self.name
         js_name = self.js_name()
         write_protocol = self.type.js_write_protocol("this.get(\"" + self.js_name() + "\")")
+        write_protocol = """\
+oprot.writeFieldBegin("%(name)s");
+%(write_protocol)s
+oprot.writeFieldEnd();""" % locals()
         if not self.required:
             write_protocol = indent(' ' * 4, write_protocol)
             write_protocol = """\
 if (this.has("%(js_name)s")) {
-    oprot.writeFieldBegin("%(name)s");
 %(write_protocol)s
-    oprot.writeFieldEnd();
 }""" % locals()
         return write_protocol
