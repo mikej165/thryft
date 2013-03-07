@@ -95,11 +95,13 @@ try {
     final %(request_type_name)s __serviceRequest = new %(request_type_name)s(__restRequestProtocol);
 %(variable_assignments)s
 } catch (final NullPointerException e) {
-    logger.error("error deserializing service request: ", e);
+    logger.debug("error deserializing service request: ", e);
     __httpServletResponse.sendError(400);
     return;
 } catch (final org.apache.thrift.TException e) {
-    logger.error("error deserializing service request: ", e);
+    logger.debug("error deserializing service request: ", e);
+    __httpServletResponse.sendError(400);
+    return;
 }
 """ % locals())
 
@@ -175,7 +177,7 @@ try {
     String __httpServletResponseBody = __httpServletResponseBodyWriter.toString();
 
     __httpServletResponse.setStatus(200);
-    
+
 %(write_http_servlet_response_body)s
 """ % locals()
             sections.append(write_response)

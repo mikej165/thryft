@@ -141,7 +141,7 @@ protected %(name)s _build(%(field_parameters)s) {
                 self._java_constructors() + [methods[key] for key in sorted(methods.iterkeys())]
             )))
             sections.append("\n".join(indent(' ' * 4, self._java_member_declarations())))
-            sections = lpad("\n", "\n\n".join(sections))
+            sections = lpad("\n", "\n\n".join(section for section in sections if len(section) > 0))
             return """\
 public static class Builder {%(sections)s
 }""" % locals()
@@ -244,14 +244,14 @@ if (__list.size > %(field_i)u) {
 public %(name)s(final org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
     this(iprot, org.apache.thrift.protocol.TType.STRUCT);
 }
-        
+
 public %(name)s(final org.apache.thrift.protocol.TProtocol iprot, final byte readAsTType) throws org.apache.thrift.TException {%(field_declarations)s
     switch (readAsTType) {
         case org.apache.thrift.protocol.TType.LIST:
             %(read_list)siprot.readListBegin();%(field_protocol_positional_initializers)s
             iprot.readListEnd();
             break;
-    
+
         case org.apache.thrift.protocol.TType.STRUCT:
         default:
             iprot.readStructBegin();
@@ -264,7 +264,7 @@ public %(name)s(final org.apache.thrift.protocol.TProtocol iprot, final byte rea
             }
             iprot.readStructEnd();
             break;
-    }%(field_initializers)s    
+    }%(field_initializers)s
 }""" % locals()
 
     def _java_constructor_required(self):
@@ -530,7 +530,7 @@ if (%(field_java_getter_call)s != null) {
 
         name = self.java_name()
         return {'write': """\
-@Override        
+@Override
 public void write(final org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
     write(oprot, org.apache.thrift.protocol.TType.STRUCT);
 }
@@ -542,16 +542,16 @@ public void write(final org.apache.thrift.protocol.TProtocol oprot, final byte w
             oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.VOID, %(field_count)u));%(field_value_write_protocols)s
             oprot.writeListEnd();
             break;
-    
+
         case org.apache.thrift.protocol.TType.STRUCT:
         default:
             oprot.writeStructBegin(new org.apache.thrift.protocol.TStruct(\"%(name)s\"));%(field_write_protocols)s
-        
+
             oprot.writeFieldStop();
-        
+
             oprot.writeStructEnd();
             break;
-    }    
+    }
 }
 """ % locals()}
 
@@ -595,7 +595,7 @@ public void write(final org.apache.thrift.protocol.TProtocol oprot, final byte w
             self._java_constructors() + \
             [methods[key] for key in sorted(methods.iterkeys())])))
         sections.append("\n".join(indent(' ' * 4, self._java_member_declarations())))
-        sections = lpad("\n", "\n\n".join(sections))
+        sections = lpad("\n", "\n\n".join(section for section in sections if len(section) > 0))
         return """\
 %(class_annotations)s%(class_modifiers)sclass %(name)s%(extends)s%(implements)s {%(sections)s
 }""" % locals()

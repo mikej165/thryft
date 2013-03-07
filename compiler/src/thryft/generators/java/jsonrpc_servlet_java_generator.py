@@ -21,11 +21,15 @@ class JsonrpcServletJavaGenerator(_servlet_java_generator._ServletJavaGenerator)
     final %(service_qname)s.Messages.%(name)sRequest serviceRequest;
     try {
         serviceRequest = new %(service_qname)s.Messages.%(name)sRequest(new org.thryft.core.protocol.JsonProtocol(jsonrpcRequestParams), jsonrpcRequestParams.isObject() ? org.apache.thrift.protocol.TType.STRUCT : org.apache.thrift.protocol.TType.LIST);
-    } catch (final org.apache.thrift.TException e) {
-        logger.error("error deserializing service request: ", e);
-        __doPostError(httpServletRequest, httpServletResponse, null, -32602, "invalid jsonrpcRequestMethod parameters: " + e.getMessage(), jsonrpcRequestId);
+    } catch (final NullPointerException e) {
+        logger.debug("error deserializing service request: ", e);
+        __doPostError(httpServletRequest, httpServletResponse, null, -32602, "missing JSON-RPC request method parameter: " + e.getMessage(), jsonrpcRequestId);
         return;
-    }    
+    } catch (final org.apache.thrift.TException e) {
+        logger.debug("error deserializing service request: ", e);
+        __doPostError(httpServletRequest, httpServletResponse, null, -32602, "invalid JSON-RPC request method parameters: " + e.getMessage(), jsonrpcRequestId);
+        return;
+    }
 """ % locals()
             else:
                 read_request = ''
@@ -106,7 +110,7 @@ if (jsonrpcRequestMethod.equals("%s")) {
             return """\
 protected void doPost(final javax.servlet.http.HttpServletRequest httpServletRequest, final javax.servlet.http.HttpServletResponse httpServletResponse) throws java.io.IOException, javax.servlet.ServletException {
 %(read_http_servlet_request_body)s
-    
+
     final com.fasterxml.jackson.databind.JsonNode jsonrpcRequestNode;
     try {
         jsonrpcRequestNode = new com.fasterxml.jackson.databind.ObjectMapper().readTree(httpServletRequestBody);
@@ -116,12 +120,12 @@ protected void doPost(final javax.servlet.http.HttpServletRequest httpServletReq
         return;
     }
 
-    final com.fasterxml.jackson.databind.JsonNode jsonrpcRequestIdNode = jsonrpcRequestNode.get("id"); 
+    final com.fasterxml.jackson.databind.JsonNode jsonrpcRequestIdNode = jsonrpcRequestNode.get("id");
     if (jsonrpcRequestIdNode == null) {
         __doPostError(httpServletRequest, httpServletResponse, null, -32600, "missing id field", null);
         return;
     }
-    final Object jsonrpcRequestId;    
+    final Object jsonrpcRequestId;
     if (jsonrpcRequestIdNode.isTextual()) {
         jsonrpcRequestId = jsonrpcRequestIdNode.asText();
     } else if (jsonrpcRequestIdNode.isNumber()) {
@@ -133,12 +137,12 @@ protected void doPost(final javax.servlet.http.HttpServletRequest httpServletReq
         return;
     }
 
-    final com.fasterxml.jackson.databind.JsonNode jsonrpcRequestVersionNode = jsonrpcRequestNode.get("jsonrpc"); 
+    final com.fasterxml.jackson.databind.JsonNode jsonrpcRequestVersionNode = jsonrpcRequestNode.get("jsonrpc");
     if (jsonrpcRequestVersionNode == null || !jsonrpcRequestVersionNode.asText().equals("2.0")) {
         __doPostError(httpServletRequest, httpServletResponse, null, -32600, "invalid jsonrpc field, expected \\"2.0\\"", jsonrpcRequestId);
-        return; 
+        return;
     }
-        
+
     com.fasterxml.jackson.databind.JsonNode jsonrpcRequestMethodNode = jsonrpcRequestNode.get("method");
     if (jsonrpcRequestMethodNode == null) {
         __doPostError(httpServletRequest, httpServletResponse, null, -32600, "missing jsonrpcRequestMethod field", jsonrpcRequestId);
@@ -149,11 +153,11 @@ protected void doPost(final javax.servlet.http.HttpServletRequest httpServletReq
     final com.fasterxml.jackson.databind.JsonNode jsonrpcRequestParams = jsonrpcRequestNode.get("params");
     if (jsonrpcRequestParams == null) {
         __doPostError(httpServletRequest, httpServletResponse, null, -32600, "missing params field", jsonrpcRequestId);
-        return; 
+        return;
     } else if (!jsonrpcRequestParams.isObject() && !jsonrpcRequestParams.isArray()) {
-        __doPostError(httpServletRequest, httpServletResponse, null, -32600, "expected params object or array", jsonrpcRequestId);    
+        __doPostError(httpServletRequest, httpServletResponse, null, -32600, "expected params object or array", jsonrpcRequestId);
     }
-    
+
 %(function_dispatches)s
 }
 """ % locals()
@@ -167,22 +171,22 @@ private void __doPostError(final javax.servlet.http.HttpServletRequest httpServl
 
     try {
         oprot.writeStructBegin(new org.apache.thrift.protocol.TStruct("response"));
-    
+
         oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("jsonrpc", org.apache.thrift.protocol.TType.STRING, (short)-1));
         oprot.writeString("2.0");
         oprot.writeFieldEnd();
-    
+
         oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("id", org.apache.thrift.protocol.TType.STRING, (short)-1));
         oprot.writeMixed(jsonrpcRequestId);
         oprot.writeFieldEnd();
-    
+
         oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("error", org.apache.thrift.protocol.TType.STRUCT, (short)-1));
         oprot.writeStructBegin(new org.apache.thrift.protocol.TStruct("error"));
-        
+
         oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("code", org.apache.thrift.protocol.TType.I32, (short)-1));
         oprot.writeI32(jsonrpcErrorCode);
         oprot.writeFieldEnd();
-        
+
         if (jsonrpcErrorData != null && jsonrpcErrorData instanceof org.apache.thrift.TBase<?, ?>) {
             oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("@class", org.apache.thrift.protocol.TType.STRING, (short)-1));
             oprot.writeString(jsonrpcErrorData.getClass().getName());
@@ -191,22 +195,22 @@ private void __doPostError(final javax.servlet.http.HttpServletRequest httpServl
             ((org.apache.thrift.TBase<?, ?>)jsonrpcErrorData).write(oprot);
             oprot.writeFieldEnd();
         }
-        
+
         oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("message", org.apache.thrift.protocol.TType.STRING, (short)-1));
         oprot.writeString(jsonrpcErrorMessage);
         oprot.writeFieldEnd();
-        
+
         oprot.writeFieldStop(); // error
         oprot.writeStructEnd(); // error
         oprot.writeFieldEnd(); // error
-        
+
         oprot.writeFieldStop(); // httpServletResponse
         oprot.writeStructEnd(); // httpServletResponse
     } catch (final org.apache.thrift.TException e) {
         logger.error("error serializing service error response: ", e);
-        throw new IllegalStateException(e);    
+        throw new IllegalStateException(e);
     }
-    
+
     oprot.flush();
     String httpServletResponseBody = httpServletResponseBodyWriter.toString();
 
@@ -223,29 +227,29 @@ private void __doPostResponse(final javax.servlet.http.HttpServletRequest httpSe
 
     try {
         oprot.writeStructBegin(new org.apache.thrift.protocol.TStruct("response"));
-    
+
         oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("jsonrpc", org.apache.thrift.protocol.TType.STRING, (short)-1));
         oprot.writeString("2.0");
         oprot.writeFieldEnd();
-    
+
         oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("id", org.apache.thrift.protocol.TType.STRING, (short)-1));
         oprot.writeMixed(jsonrpcRequestId);
         oprot.writeFieldEnd();
-    
+
         oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("result", org.apache.thrift.protocol.TType.STRING, (short)-1));
         oprot.writeMixed(jsonrpcResult);
         oprot.writeFieldEnd();
-                        
+
         oprot.writeFieldStop(); // httpServletResponse
         oprot.writeStructEnd(); // httpServletResponse
     } catch (org.apache.thrift.TException e) {
         logger.error("error serializing service response: ", e);
         throw new IllegalStateException(e);
     }
-    
+
     oprot.flush();
     String httpServletResponseBody = httpServletResponseBodyWriter.toString();
-    
+
 %(write_http_servlet_response_body)s
 }
 """ % locals()
@@ -268,7 +272,7 @@ private void __doPostResponse(final javax.servlet.http.HttpServletRequest httpSe
             sections = "\n\n".join(indent(' ' * 4, sections))
 
             return """\
-@com.google.inject.Singleton           
+@com.google.inject.Singleton
 @SuppressWarnings("serial")
 public class %(name)s extends javax.servlet.http.HttpServlet {
 %(sections)s

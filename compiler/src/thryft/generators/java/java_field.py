@@ -84,9 +84,11 @@ public %(final)s%(type_name)s %(getter_name)s() {
 
     def java_initializer(self):
         lhs = 'this.' + self.java_name()
+        name = self.java_name()
+        parent_qname = self.parent.java_qname()
         rhs = self.java_name()
         if self.required and self.type.java_is_reference():
-            rhs = "com.google.common.base.Preconditions.checkNotNull(%(rhs)s)" % locals()
+            rhs = """com.google.common.base.Preconditions.checkNotNull(%(rhs)s, "%(parent_qname)s: missing %(name)s")""" % locals()
         return """\
 %(lhs)s = %(rhs)s;""" % locals()
 
