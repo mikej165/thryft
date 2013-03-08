@@ -1,19 +1,19 @@
 #-------------------------------------------------------------------------------
 # Copyright (c) 2013, Minor Gordon
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
 # are met:
-# 
+#
 #     * Redistributions of source code must retain the above copyright
 #       notice, this list of conditions and the following disclaimer.
-# 
+#
 #     * Redistributions in binary form must reproduce the above copyright
 #       notice, this list of conditions and the following disclaimer in
 #       the documentation and/or other materials provided with the
 #       distribution.
-# 
+#
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
 # CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
 # INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
@@ -33,24 +33,23 @@
 from thryft.generator.generator import Generator
 
 
- # @PydevCodeAnalysisIgnore
 class JavaGenerator(Generator):
-    from thryft.generators.java.java_binary_type import JavaBinaryType as BinaryType
-    from thryft.generators.java.java_bool_type import JavaBoolType as BoolType
-    from thryft.generators.java.java_byte_type import JavaByteType as ByteType
-    from thryft.generators.java.java_double_type import JavaDoubleType as DoubleType
-    from thryft.generators.java.java_i16_type import JavaI16Type as I16Type
-    from thryft.generators.java.java_i32_type import JavaI32Type as I32Type
-    from thryft.generators.java.java_i64_type import JavaI64Type as I64Type
-    from thryft.generators.java.java_string_type import JavaStringType as StringType
-    from thryft.generators.java.java_enum_type import JavaEnumType as EnumType
-    from thryft.generators.java.java_exception_type import JavaExceptionType as ExceptionType
-    from thryft.generators.java.java_struct_type import JavaStructType as StructType
-    from thryft.generators.java.java_list_type import JavaListType as ListType
-    from thryft.generators.java.java_map_type import JavaMapType as MapType
-    from thryft.generators.java.java_set_type import JavaSetType as SetType
-    from thryft.generators.java.java_document import JavaDocument as Document
-    from thryft.generators.java.java_field import JavaField as Field
-    from thryft.generators.java.java_function import JavaFunction as Function
-    from thryft.generators.java.java_include import JavaInclude as Include
-    from thryft.generators.java.java_service import JavaService as Service
+    from thryft.generators.java.java_binary_type import JavaBinaryType as BinaryType  # @UnusedImport
+    from thryft.generators.java.java_bool_type import JavaBoolType as BoolType  # @UnusedImport
+    from thryft.generators.java.java_byte_type import JavaByteType as ByteType  # @UnusedImport
+    from thryft.generators.java.java_document import JavaDocument as Document  # @UnusedImport
+    from thryft.generators.java.java_double_type import JavaDoubleType as DoubleType  # @UnusedImport
+    from thryft.generators.java.java_enum_type import JavaEnumType as EnumType  # @UnusedImport
+    from thryft.generators.java.java_exception_type import JavaExceptionType as ExceptionType  # @UnusedImport
+    from thryft.generators.java.java_field import JavaField as Field  # @UnusedImport
+    from thryft.generators.java.java_function import JavaFunction as Function  # @UnusedImport
+    from thryft.generators.java.java_i16_type import JavaI16Type as I16Type  # @UnusedImport
+    from thryft.generators.java.java_i32_type import JavaI32Type as I32Type  # @UnusedImport
+    from thryft.generators.java.java_i64_type import JavaI64Type as I64Type  # @UnusedImport
+    from thryft.generators.java.java_include import JavaInclude as Include  # @UnusedImport
+    from thryft.generators.java.java_list_type import JavaListType as ListType  # @UnusedImport
+    from thryft.generators.java.java_map_type import JavaMapType as MapType  # @UnusedImport
+    from thryft.generators.java.java_service import JavaService as Service  # @UnusedImport
+    from thryft.generators.java.java_set_type import JavaSetType as SetType  # @UnusedImport
+    from thryft.generators.java.java_string_type import JavaStringType as StringType  # @UnusedImport
+    from thryft.generators.java.java_struct_type import JavaStructType as StructType  # @UnusedImport

@@ -33,24 +33,23 @@
 from thryft.generator.generator import Generator
 
 
- # @JsdevCodeAnalysisIgnore
 class JsGenerator(Generator):
-    from thryft.generators.js.js_binary_type import JsBinaryType as BinaryType
-    from thryft.generators.js.js_bool_type import JsBoolType as BoolType
-    from thryft.generators.js.js_byte_type import JsByteType as ByteType
-    from thryft.generators.js.js_double_type import JsDoubleType as DoubleType
-    from thryft.generators.js.js_i16_type import JsI16Type as I16Type
-    from thryft.generators.js.js_i32_type import JsI32Type as I32Type
-    from thryft.generators.js.js_i64_type import JsI64Type as I64Type
-    from thryft.generators.js.js_string_type import JsStringType as StringType
-    from thryft.generators.js.js_enum_type import JsEnumType as EnumType
-    from thryft.generators.js.js_exception_type import JsExceptionType as ExceptionType
-    from thryft.generators.js.js_struct_type import JsStructType as StructType
-    from thryft.generators.js.js_list_type import JsListType as ListType
-    from thryft.generators.js.js_map_type import JsMapType as MapType
-    from thryft.generators.js.js_set_type import JsSetType as SetType
-    from thryft.generators.js.js_document import JsDocument as Document
-    from thryft.generators.js.js_field import JsField as Field
-    from thryft.generators.js.js_function import JsFunction as Function
-    from thryft.generators.js.js_include import JsInclude as Include
-    from thryft.generators.js.js_service import JsService as Service
+    from thryft.generators.js.js_binary_type import JsBinaryType as BinaryType  # @UnusedImport
+    from thryft.generators.js.js_bool_type import JsBoolType as BoolType  # @UnusedImport
+    from thryft.generators.js.js_byte_type import JsByteType as ByteType  # @UnusedImport
+    from thryft.generators.js.js_document import JsDocument as Document  # @UnusedImport
+    from thryft.generators.js.js_double_type import JsDoubleType as DoubleType  # @UnusedImport
+    from thryft.generators.js.js_enum_type import JsEnumType as EnumType  # @UnusedImport
+    from thryft.generators.js.js_exception_type import JsExceptionType as ExceptionType  # @UnusedImport
+    from thryft.generators.js.js_field import JsField as Field  # @UnusedImport
+    from thryft.generators.js.js_function import JsFunction as Function  # @UnusedImport
+    from thryft.generators.js.js_i16_type import JsI16Type as I16Type  # @UnusedImport
+    from thryft.generators.js.js_i32_type import JsI32Type as I32Type  # @UnusedImport
+    from thryft.generators.js.js_i64_type import JsI64Type as I64Type  # @UnusedImport
+    from thryft.generators.js.js_include import JsInclude as Include  # @UnusedImport
+    from thryft.generators.js.js_map_type import JsMapType as MapType  # @UnusedImport
+    from thryft.generators.js.js_list_type import JsListType as ListType  # @UnusedImport
+    from thryft.generators.js.js_service import JsService as Service  # @UnusedImport
+    from thryft.generators.js.js_set_type import JsSetType as SetType  # @UnusedImport
+    from thryft.generators.js.js_string_type import JsStringType as StringType  # @UnusedImport
+    from thryft.generators.js.js_struct_type import JsStructType as StructType  # @UnusedImport
