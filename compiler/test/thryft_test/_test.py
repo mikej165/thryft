@@ -30,19 +30,48 @@
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
 
-from thryft.grammar import Grammar
-from thryft_test import _test
+import os.path
+import unittest
 
 
-class GrammarTest(_test._Test):
+class _Test(unittest.TestCase):
+    def __init__(self, *args, **kwds):
+        self.__thrift_file_path = kwds.pop('thrift_file_path', None)
+        unittest.TestCase.__init__(self, *args, **kwds)
+
+    @classmethod
+    def suite(cls):
+        suite = unittest.TestSuite()
+
+        for dir_path, _, file_names in \
+            os.walk(
+                os.path.join(
+                    os.path.dirname(os.path.realpath(__file__)),
+                    'grammar_tests'
+                )
+            ):
+            for file_name in file_names:
+                if os.path.splitext(file_name)[1] != '.thrift':
+                    continue
+                thrift_file_path = os.path.join(dir_path, file_name)
+                suite.addTest(cls(thrift_file_path=thrift_file_path))
+
+        return suite
+
+    def runTest(self):
+        if self.__thrift_file_path is None:
+            return
+
+        thrift_file_name = os.path.split(self.__thrift_file_path)[1]
+        # print thrift_file_name
+        try:
+            self._runTest(self.__thrift_file_path)
+        except RuntimeError:
+            if thrift_file_name != 'include.thrift':
+                raise
+        except:
+            # print
+            raise
+
     def _runTest(self, thrift_file_path):
-        tokens = \
-            Grammar().document.parseFile(
-                thrift_file_path,
-                parseAll=True
-            )
-        self.assertTrue(len(tokens) > 0)
-
-
-def load_tests(*args, **kwds):
-    return GrammarTest.suite()
+        pass

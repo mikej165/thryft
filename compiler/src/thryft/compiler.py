@@ -226,9 +226,6 @@ class Compiler(object):
 
     def _parse_const(self, tokens):
         comment = self.__merge_comments(tokens)
-
-        print tokens
-
         const = \
             self.__construct(
                 'Const',

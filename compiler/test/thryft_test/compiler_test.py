@@ -1,19 +1,19 @@
 #-------------------------------------------------------------------------------
 # Copyright (c) 2013, Minor Gordon
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
 # are met:
-# 
+#
 #     * Redistributions of source code must retain the above copyright
 #       notice, this list of conditions and the following disclaimer.
-# 
+#
 #     * Redistributions in binary form must reproduce the above copyright
 #       notice, this list of conditions and the following disclaimer in
 #       the documentation and/or other materials provided with the
 #       distribution.
-# 
+#
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
 # CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
 # INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
@@ -32,33 +32,15 @@
 
 from thryft.compiler import Compiler
 from thryft.generators.thrift.thrift_generator import ThriftGenerator
-import os.path
-import unittest
+from thryft_test import _test
 
 
-class CompilerTest(unittest.TestCase):
-    def runTest(self):
+class CompilerTest(_test._Test):
+    def _runTest(self, thrift_file_path):
         generator = ThriftGenerator()
         compiler = Compiler(generator=generator)
+        compiler((thrift_file_path,))
 
-        for dir_path, _, file_names in \
-            os.walk(
-                os.path.join(
-                    os.path.dirname(os.path.realpath(__file__)),
-                    'grammar_tests'
-                )
-            ):
-            for file_name in file_names:
-                if os.path.splitext(file_name)[1] != '.thrift':
-                    continue
-                thrift_file_path = os.path.join(dir_path, file_name)
 
-                print file_name
-                try:
-                    compiler((thrift_file_path,))
-                except RuntimeError:
-                    if file_name != 'include.thrift':
-                        raise
-                except:
-                    print
-                    raise
+def load_tests(*args, **kwds):
+    return CompilerTest.suite()
