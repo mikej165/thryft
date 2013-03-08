@@ -39,6 +39,9 @@ class _Test(unittest.TestCase):
         self.__thrift_file_path = kwds.pop('thrift_file_path', None)
         unittest.TestCase.__init__(self, *args, **kwds)
 
+    def shortDescription(self):
+        return "%s(%s)" % (self.__class__.__name__, os.path.split(self.__thrift_file_path)[1])
+
     @classmethod
     def suite(cls):
         suite = unittest.TestSuite()
