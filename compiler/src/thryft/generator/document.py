@@ -128,6 +128,3 @@ class Document(_NamedConstruct):
             print 'wrote', out_file_path
 
         return out_file_path
-
-    def _set_comment(self, comment):
-        self._comment = comment

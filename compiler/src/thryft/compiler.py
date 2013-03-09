@@ -32,7 +32,6 @@
 
 from inspect import isclass
 from pyparsing import ParseException
-from thryft.generator.comment import Comment
 from thryft.generator.document import Document
 from thryft.generator._type import _Type
 from thryft.grammar import Grammar
@@ -43,10 +42,13 @@ import sys
 
 
 class Compiler(object):
-    def __init__(self, generator, include_dir_paths=None):
+    class __Comment(str):
+        pass
+
+    def __init__(self, generator, debug=False, include_dir_paths=None):
         object.__init__(self)
 
-        self.__grammar = grammar = Grammar()
+        self.__grammar = grammar = Grammar(debug=debug)
 
         if include_dir_paths is None:
             include_dir_paths = []
@@ -153,19 +155,12 @@ class Compiler(object):
 
     def __merge_comments(self, tokens):
         comments = []
-        while isinstance(tokens[0], Comment):
-            comment = tokens.pop(0)
-            if len(comments) > 0:
-                assert comment.__class__ is comments[0].__class__
-                assert comment.parent is comments[0].parent
-            comments.append(comment)
+        while len(tokens) > 0 and isinstance(tokens[0], self.__Comment):
+            comments.append(tokens.pop(0))
+        while len(tokens) > 0 and isinstance(tokens[-1], self.__Comment):
+            comments.append(tokens.pop(-1))
         if len(comments) > 0:
-            return self.__construct(
-                       'Comment',
-                       parent=comments[0].parent,
-                       text="\n".join(comment.text
-                                       for comment in comments),
-                   )
+            return self.__Comment("\n".join(comments))
 
     def _parse_comment(self, tokens):
         text = tokens[0]
@@ -186,12 +181,7 @@ class Compiler(object):
         else:
             raise NotImplementedError(text)
 
-        comment = \
-            self.__construct(
-                'Comment',
-                text=text
-            )
-        return [comment]
+        return [self.__Comment(text)]
 
     def __parse_compound_type(self, keyword, tokens):
         compound_type = tokens[0]
@@ -207,12 +197,12 @@ class Compiler(object):
         return [compound_type]
 
     def __parse_compound_type_declarator(self, keyword, tokens):
-        comment = self.__merge_comments(tokens)
+        doc = self.__merge_comments(tokens)
 
         compound_type = \
             self.__construct(
                 keyword.capitalize() + 'Type',
-                comment=comment,
+                doc=doc,
                 name=tokens[1]
             )
 
@@ -225,11 +215,11 @@ class Compiler(object):
         return [compound_type]
 
     def _parse_const(self, tokens):
-        comment = self.__merge_comments(tokens)
+        doc = self.__merge_comments(tokens)
         const = \
             self.__construct(
                 'Const',
-                comment=comment,
+                doc=doc,
                 name=tokens[2],
                 type=self.__resolve_type(tokens[1]),
                 value=tokens[3]
@@ -237,9 +227,9 @@ class Compiler(object):
         return [const]
 
     def _parse_document(self, tokens):
-        comment = self.__merge_comments(tokens)
+        doc = self.__merge_comments(tokens)
         document = self.__scope_stack[-1]
-        document._set_comment(comment)
+        document.doc = doc
         document.definitions.extend(tokens[1])
         document.headers.extend(tokens[0])
         return [document]
@@ -264,7 +254,7 @@ class Compiler(object):
         return self.__parse_compound_type_declarator('enum', tokens)
 
     def _parse_enumerator(self, tokens):
-        comment = self.__merge_comments(tokens)
+        doc = self.__merge_comments(tokens)
 
         if len(tokens) > 1:
             value = tokens[1]
@@ -273,7 +263,7 @@ class Compiler(object):
         enumerator = \
             self.__construct(
                 'Field',
-                comment=comment,
+                doc=doc,
                 name=tokens[0],
                 type=self.__resolve_type('i32'),
                 value=value
@@ -286,9 +276,12 @@ class Compiler(object):
     def _parse_exception_declarator(self, tokens):
         return self.__parse_compound_type_declarator('exception', tokens)
 
-    def _parse_field(self, tokens):
-        comment = self.__merge_comments(tokens)
+    def _parse_compound_type_field(self, tokens):
+        field = tokens[0]
+        field.doc = self.__merge_comments(tokens)
+        return [field]
 
+    def _parse_field(self, tokens):
         if isinstance(tokens[0], int) and \
            not isinstance(tokens[0], bool):
             id = tokens.pop(0)  # @ReservedAssignment
@@ -308,7 +301,6 @@ class Compiler(object):
         field = \
             self.__construct(
                 'Field',
-                comment=comment,
                 id=id,
                 name=name,
                 required=required,
@@ -329,10 +321,16 @@ class Compiler(object):
             else:
                 function.parameters.extend(tokens.pop(0))
 
+        doc = function.doc
+        if doc is not None and len(doc) > 0:
+            for doc_line in doc.split("\n"):
+                # print doc_line
+                doc_line = doc_line.lstrip().lstrip('*').lstrip()
+
         return [function]
 
     def _parse_function_declarator(self, tokens):
-        comment = self.__merge_comments(tokens)
+        doc = self.__merge_comments(tokens)
 
         if tokens[0] == 'oneway':
             tokens.pop(0)
@@ -349,7 +347,7 @@ class Compiler(object):
         function = \
             self.__construct(
                 'Function',
-                comment=comment,
+                doc=doc,
                 name=tokens[0],
                 oneway=oneway,
                 return_type=return_type
@@ -426,14 +424,14 @@ class Compiler(object):
         return [service]
 
     def _parse_service_declarator(self, tokens):
-        comment = self.__merge_comments(tokens)
+        doc = self.__merge_comments(tokens)
 
         service = \
             self.__construct(
                 'Service',
-                comment=comment,
-                extends=len(tokens) > 2 and tokens[3] or None,
-                name=tokens[1]
+                doc=doc,
+                extends=len(tokens) > 1 and tokens[2] or None,
+                name=tokens[0]
             )
 
         self.__scope_stack.append(service)
@@ -450,12 +448,12 @@ class Compiler(object):
         return self.__parse_compound_type_declarator('struct', tokens)
 
     def _parse_typedef(self, tokens):
-        comment = self.__merge_comments(tokens)
+        doc = self.__merge_comments(tokens)
 
         typedef = \
             self.__construct(
                 'Typedef',
-                comment=comment,
+                doc=doc,
                 name=tokens[2],
                 type=self.__resolve_type(tokens[1])
             )
@@ -483,6 +481,7 @@ class Compiler(object):
     @staticmethod
     def _wrap_parse_action(parse_action):
         def wrapped_parse_action(in_tokens):
+            print parse_action
             in_tokens_copy = list(in_tokens)
             try:
                 out_tokens = parse_action(in_tokens_copy)

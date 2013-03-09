@@ -48,5 +48,5 @@ class ThriftField(Field, _ThriftNamedConstruct):
         repr_.append(self.name)
         if self.value is not None:
             repr_.extend(('=', str(self.value)))
-        return (self.comment is not None and rpad(repr(self.comment), "\n") or '') + \
+        return (self.doc is not None and rpad(repr(self.doc), "\n") or '') + \
                ' '.join(repr_)

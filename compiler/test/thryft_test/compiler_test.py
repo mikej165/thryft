@@ -37,9 +37,13 @@ from thryft_test import _test
 
 class CompilerTest(_test._Test):
     def _runTest(self, thrift_file_path):
+        import os.path
+        if os.path.split(thrift_file_path)[1] != 'comment.thrift':
+            return
         generator = ThriftGenerator()
-        compiler = Compiler(generator=generator)
-        compiler((thrift_file_path,))
+        compiler = Compiler(debug=True, generator=generator)
+        documents = compiler((thrift_file_path,))
+        print repr(documents[0])
 
 
 def load_tests(*args, **kwds):

@@ -38,7 +38,7 @@ class ThriftDocument(Document, _ThriftNamedConstruct):
     def __repr__(self):
         sections = []
         for section in (
-            self.comment is not None and repr(self.comment) or '',
+            self.doc is not None and repr(self.doc) or '',
             "\n".join(repr(include) for include in self.includes),
             "\n".join(repr(namespace) for namespace in self.namespaces),
         ):

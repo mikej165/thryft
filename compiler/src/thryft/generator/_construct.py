@@ -1,19 +1,19 @@
 #-------------------------------------------------------------------------------
 # Copyright (c) 2013, Minor Gordon
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
 # are met:
-# 
+#
 #     * Redistributions of source code must retain the above copyright
 #       notice, this list of conditions and the following disclaimer.
-# 
+#
 #     * Redistributions in binary form must reproduce the above copyright
 #       notice, this list of conditions and the following disclaimer in
 #       the documentation and/or other materials provided with the
 #       distribution.
-# 
+#
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
 # CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
 # INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
@@ -31,14 +31,20 @@
 #-------------------------------------------------------------------------------
 
 class _Construct(object):
-    def __init__(self, parent, comment=None, **kwds):
+    def __init__(self, parent, doc=None, **kwds):
         object.__init__(self)
-        self._comment = comment
+        assert doc is None or isinstance(doc, str)
+        self.__doc = doc
         self.__parent = parent
 
     @property
-    def comment(self):
-        return self._comment
+    def doc(self):
+        return self.__doc
+
+    @doc.setter
+    def doc(self, doc):
+        assert doc is None or isinstance(doc, str)
+        self.__doc = doc
 
     @property
     def parent(self):
