@@ -52,7 +52,7 @@ class _Test(unittest.TestCase):
             os.walk(
                 os.path.join(
                     os.path.dirname(os.path.realpath(__file__)),
-                    'grammar_tests'
+                    '_tests'
                 )
             ):
             for file_name in file_names:

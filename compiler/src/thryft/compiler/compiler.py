@@ -32,9 +32,9 @@
 
 from inspect import isclass
 from pyparsing import ParseException
+from thryft.compiler.grammar import Grammar
 from thryft.generator.document import Document
 from thryft.generator._type import _Type
-from thryft.grammar import Grammar
 import imp
 import logging
 import os.path
