@@ -13,28 +13,53 @@ class Ast(object):
         def __getitem__(self, i):
             return self.__children[i]
 
-    class _CompoundTypeNode(Node):
+    class _NamedNode(Node):
+        def __init__(self, name, children=None):
+            Ast.Node.__init__(self, children=children)
+
+            assert isinstance(name, str) and len(name) > 0
+            self.__name = name
+
+        @property
+        def name(self):
+            return self.__name
+
+    class _CompoundTypeNode(_NamedNode):
         def __init__(self, fields, name):
-            Ast.Node.__init__(self, fields)
+            Ast.Node.__init__(self, children=fields, name=name)
 
             assert isinstance(fields, tuple)
             for field in fields:
                 assert isinstance(field, Ast.Node.FieldNode)
             self.__fields = fields
 
-            assert isinstance(name, str) and len(name) > 0
-            self.__name = name
-
         @property
         def fields(self):
             return self.__fields
 
-        @property
-        def name(self):
-            return self.__name
-
         def __repr__(self):
             return "Ast.%s(name=%s, fields=%s)" % (self.__class__.__name__, self.name, self.fields)
+
+    class ConstNode(_NamedNode):
+        def __init__(self, name, type_, value):
+            Ast._NamedNode.__init__(self, name=name)
+
+            assert type_ is not None
+            self.__type = type_
+
+            assert value is not None
+            self.__value = value
+
+        @property
+        def type(self):
+            return self.__type
+
+        def __repr__(self):
+            return "Ast.%s(name=%s, type=%s, value=%s)" % (self.__class__.__name__, self.name, self.type, self.value)
+
+        @property
+        def value(self):
+            return self.__value
 
     class DocumentNode(Node):
         def __init__(self, headers, definitions):
@@ -57,17 +82,14 @@ class Ast(object):
         def __repr__(self):
             return "Ast.%s(definitions=%s, headers=%s)" % (self.__class__.__name__, self.definitions, self.headers)
 
-    class FieldNode(Node):
+    class FieldNode(_NamedNode):
         def __init__(self, name, type_, default_value=None, id_=None):
-            Ast.Node.__init__(self)
+            Ast._NamedNode.__init__(self, name=name)
 
             self.__default_value = default_value
 
             assert id_ is None or (isinstance(id_, int) and id_ >= 0)
             self.__id = id_
-
-            assert isinstance(name, str) and len(name) > 0
-            self.__name = name
 
             assert type_ is not None
             self.__type = type_
@@ -77,22 +99,15 @@ class Ast(object):
             return self.__id
 
         @property
-        def name(self):
-            return self.__name
-
-        @property
         def type(self):
             return self.__type
 
         def __repr__(self):
             return "Ast.%s(id=%s, name=%s, type=%s)" % (self.__class__.__name__, self.id, self.name, self.type)
 
-    class FunctionNode(Node):
+    class FunctionNode(_NamedNode):
         def __init__(self, name, parameters, return_type_name):
-            Ast.Node.__init__(self, parameters)
-
-            assert isinstance(name, str) and len(name) > 0
-            self.__name = name
+            Ast._NamedNode.__init__(self, children=parameters, name=name)
 
             assert isinstance(parameters, tuple)
             for parameter in parameters:
@@ -101,10 +116,6 @@ class Ast(object):
 
             assert isinstance(return_type_name, str) and len(return_type_name) > 0
             self.__return_type_name = return_type_name
-
-        @property
-        def name(self):
-            return self.__name
 
         @property
         def parameters(self):
@@ -152,30 +163,21 @@ class Ast(object):
         def value_type(self):
             return self.__value_type
 
-    class ServiceNode(Node):
+    class ServiceNode(_NamedNode):
         def __init__(self, functions, name):
-            Ast.Node.__init__(self, functions)
+            Ast._NamedNode.__init__(self, children=functions, name=name)
 
             assert isinstance(functions, tuple)
             for function in functions:
                 assert isinstance(function, Ast.FunctionNode), type(function)
             self.__functions = functions
 
-            assert isinstance(name, str) and len(name) > 0
-            self.__name = name
-
         @property
         def functions(self):
             return self.__functions
-
-        @property
-        def name(self):
-            return self.__name
 
         def __repr__(self):
             return "Ast.%s(name=%s, functions=%s)" % (self.__class__.__name__, self.name, self.functions)
 
     class SetTypeNode(_SequenceTypeNode):
         pass
-
-

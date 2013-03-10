@@ -21,6 +21,19 @@ class Parser(GenericParser):
                 flattened_args.append(arg)
         return tuple(flattened_args)
 
+    def p_bool_literal(self, args):
+        '''
+        bool_literal ::= KEYWORD_FALSE
+        bool_literal ::= KEYWORD_TRUE
+        '''
+        return args[0].text.lower() == 'true'
+
+    def p_const(self, args):
+        '''
+        const ::= KEYWORD_CONST type identifier EQUALS literal semicolon_optional
+        '''
+        return Ast.ConstNode(name=args[2], type_=args[1], value=args[4])
+
     def p_document(self, args):
         '''
         document ::= headers definitions EOF
@@ -29,6 +42,7 @@ class Parser(GenericParser):
 
     def p_definition(self, args):
         '''
+        definition ::= const
         definition ::= service
         '''
         return args[0]
@@ -45,6 +59,12 @@ class Parser(GenericParser):
         field ::= type identifier
         '''
         return Ast.FieldNode(name=args[1], type_=args[0])
+
+    def p_float_literal(self, args):
+        '''
+        float_literal ::= DIGITS PERIOD DIGITS
+        '''
+        return float(''.join(arg.text for arg in args))
 
     def p_function(self, args):
         '''
@@ -98,9 +118,29 @@ class Parser(GenericParser):
         '''
         identifier_body ::= ALPHAS identifier_body
         identifier_body ::= DIGITS identifier_body
+        identifier_body ::= UNDERSCORE identifier_body
         identifier_body ::=
         '''
         return ''.join(str(arg) for arg in args)
+
+    def p_int_literal(self, args):
+        '''
+        int_literal ::= DIGITS
+        '''
+        return int(args[0].text)
+
+    def p_list_literal(self, args):
+        '''
+        list_literal ::= LEFT_SQUARE_BRACKET list_literal_body RIGHT_SQUARE_BRACKET
+        '''
+        return args[1]
+
+    def p_list_literal_body(self, args):
+        '''
+        list_literal_body ::= literal
+        list_literal_body ::= literal COMMA list_literal_body
+        '''
+        return tuple(args[i] for i in len(xrange(0, len(args), 2)))
 
     def p_list_separator(self, args):
         '''
@@ -122,11 +162,41 @@ class Parser(GenericParser):
         '''
         pass
 
+    def p_literal(self, args):
+        '''
+        literal ::= bool_literal
+        literal ::= float_literal
+        literal ::= int_literal
+        literal ::= list_literal
+        literal ::= map_literal
+        '''
+        return args[0]
+
+    def p_map_literal(self, args):
+        '''
+        map_literal ::= LEFT_BRACE map_literal_body RIGHT_BRACE
+        '''
+        return args[1]
+
+    def p_map_literal_body(self, args):
+        '''
+        map_literal_body ::= literal COLON literal
+        map_literal_body ::= map_literal_body COMMA map_literal_body
+        '''
+        raise NotImplementedError
+
     def p_map_type(self, args):
         '''
         map_type ::= MAP_TYPE LEFT_ANGLE_BRACKET type COMMA type RIGHT_ANGLE_BRACKET
         '''
         return Ast.MapTypeNode(key_type=args[2], value_type=args[4])
+
+    def p_semicolon_optional(self, args):
+        '''
+        semicolon_optional ::= SEMICOLON
+        semicolon_optional ::=
+        '''
+        pass
 
     def p_service(self, args):
         '''

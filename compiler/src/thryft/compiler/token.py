@@ -13,6 +13,7 @@ class Token(object):
         KEYWORD_CONST = None
         KEYWORD_ENUM = None
         KEYWORD_EXCEPTION = None
+        KEYWORD_FALSE = None
         KEYWORD_LIST = None
         KEYWORD_MAP = None
         KEYWORD_NAMESPACE = None
@@ -24,6 +25,7 @@ class Token(object):
         KEYWORD_STRUCT = None
         KEYWORD_THROWS = None
         KEYWORD_TYPEDEF = None
+        KEYWORD_TRUE = None
         LEFT_ANGLE_BRACKET = None
         LEFT_BRACE = None
         LEFT_PARENTHESIS = None

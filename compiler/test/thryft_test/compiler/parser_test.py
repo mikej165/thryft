@@ -37,9 +37,9 @@ from thryft_test import _test
 
 class ParserTest(_test._Test):
     def _runTest(self, thrift_file_path):
-        import os.path
-        if os.path.split(thrift_file_path)[1] != 'service.thrift':
-            return
+#        import os.path
+#        if os.path.split(thrift_file_path)[1] != 'service.thrift':
+#            return
         tokens = Scanner().tokenize(thrift_file_path)
         print thrift_file_path
         for token in tokens:
