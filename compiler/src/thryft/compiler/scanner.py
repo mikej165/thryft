@@ -55,7 +55,10 @@ class Scanner(GenericScanner):
 
     def t_alphas(self, offset, text):
         r'[a-zA-Z]+'
-        self.__t(offset, text, Token.Type.ALPHAS)
+        try:
+            self.__t(offset, text, getattr(Token.Type, 'KEYWORD_' + text.upper()))
+        except AttributeError:
+            self.__t(offset, text, Token.Type.ALPHAS)
 
     def t_asterisk(self, offset, text):
         r'\*'
@@ -95,7 +98,8 @@ class Scanner(GenericScanner):
 
     def t_eol(self, offset, text):
         r'\n'
-        self.__t(offset, text, Token.Type.EOL)
+        pass
+        # self.__t(offset, text, Token.Type.EOL)
 
     def t_left_angle_bracket(self, offset, text):
         r'\<'

@@ -30,27 +30,23 @@
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
 
+from thryft.compiler.parser import Parser
 from thryft.compiler.scanner import Scanner
 from thryft_test import _test
 
 
-class ScannerTest(_test._Test):
+class ParserTest(_test._Test):
     def _runTest(self, thrift_file_path):
-#        import os.path
-#        if os.path.split(thrift_file_path)[1] != 'comment.thrift':
-#            return
+        import os.path
+        if os.path.split(thrift_file_path)[1] != 'service.thrift':
+            return
         tokens = Scanner().tokenize(thrift_file_path)
-        self.assertNotEquals(0, len(tokens))
         print thrift_file_path
         for token in tokens:
             print token.type, ':', len(token.text), ':', token.text
         print
-        actual_text = ''.join(token.text for token in tokens)
-        with open(thrift_file_path, 'rb') as thrift_file:
-            actual_text = actual_text.replace(' ', '').replace("\r", '').replace("\t", '')
-            expected_text = thrift_file.read()
-            expected_text = expected_text.replace(' ', '').replace("\r", '').replace("\t", '')
-            self.assertEquals(expected_text, actual_text)
+        ast = Parser().parse(tokens)
+
 
 def load_tests(*args, **kwds):
-    return ScannerTest.suite()
+    return ParserTest.suite()

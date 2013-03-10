@@ -10,6 +10,20 @@ class Token(object):
         EOF = None
         EOL = None
         EQUALS = None
+        KEYWORD_CONST = None
+        KEYWORD_ENUM = None
+        KEYWORD_EXCEPTION = None
+        KEYWORD_LIST = None
+        KEYWORD_MAP = None
+        KEYWORD_NAMESPACE = None
+        KEYWORD_ONEWAY = None
+        KEYWORD_OPTIONAL = None
+        KEYWORD_REQUIRED = None
+        KEYWORD_SERVICE = None
+        KEYWORD_SET = None
+        KEYWORD_STRUCT = None
+        KEYWORD_THROWS = None
+        KEYWORD_TYPEDEF = None
         LEFT_ANGLE_BRACKET = None
         LEFT_BRACE = None
         LEFT_PARENTHESIS = None
@@ -71,7 +85,7 @@ class Token(object):
         self.__type = type_
 
     def __cmp__(self, other):
-        return self.type is other.type
+        return cmp(self.type, other)
 
     @property
     def colno(self):
@@ -99,4 +113,3 @@ class Token(object):
 
     def __repr__(self):
         return "%s(colno=%u, input_filename=%s, lineno=%u, offset=%u, text='%s', type=%s)" % (self.__class__.__name__, self.colno, self.input_filename, self.lineno, self.offset, self.text, self.type)
-
