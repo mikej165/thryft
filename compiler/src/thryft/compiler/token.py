@@ -48,40 +48,25 @@ class Token(object):
     def __init__(self, colno, input_, input_filename, lineno, offset, text, type_):
         object.__init__(self)
 
-        if not isinstance(colno, int):
-            raise TypeError(type(colno))
-        if colno < 0:
-            raise ValueError(colno)
+        assert isinstance(colno, int) and colno >= 0, colno
         self.__colno = colno
 
-        if not isinstance(input_, str):
-            raise TypeError(type(input_))
+        assert isinstance(input_, str)
         self.__input = input_
 
-        if not isinstance(input_filename, str):
-            raise TypeError(type(input_filename))
-        if len(input_filename) == 0:
-            raise ValueError(input_filename)
+        assert isinstance(input_filename, str) and len(input_filename) > 0
         self.__input_filename = input_filename
 
-        if not isinstance(lineno, int):
-            raise TypeError(type(lineno))
-        if lineno < 0:
-            raise ValueError(lineno)
+        assert isinstance(lineno, int) and lineno >= 0, lineno
         self.__lineno = lineno
 
-        if not isinstance(offset, int):
-            raise TypeError(type(offset))
-        if offset < 0:
-            raise ValueError(offset)
+        assert isinstance(offset, int) and offset >= 0, offset
         self.__offset = offset
 
-        if not isinstance(text, str):
-            raise TypeError(type(text))
+        assert isinstance(text, str)
         self.__text = text
 
-        if not isinstance(type_, str):
-            raise TypeError(type(type_))
+        assert isinstance(type_, str) and len(type_) > 0
         self.__type = type_
 
     def __cmp__(self, other):
@@ -113,3 +98,6 @@ class Token(object):
 
     def __repr__(self):
         return "%s(colno=%u, input_filename=%s, lineno=%u, offset=%u, text='%s', type=%s)" % (self.__class__.__name__, self.colno, self.input_filename, self.lineno, self.offset, self.text, self.type)
+
+    def __str__(self):
+        return self.text

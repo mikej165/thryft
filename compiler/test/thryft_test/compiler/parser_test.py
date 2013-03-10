@@ -46,6 +46,7 @@ class ParserTest(_test._Test):
             print token.type, ':', len(token.text), ':', token.text
         print
         ast = Parser().parse(tokens)
+        print ast
 
 
 def load_tests(*args, **kwds):
