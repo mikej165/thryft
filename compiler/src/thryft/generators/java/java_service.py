@@ -63,7 +63,7 @@ class JavaService(Service, _JavaNamedConstruct):
                 ))
             sections.append("""\
 public static class Messages {
-%(message_types)s    
+%(message_types)s
 }""" % locals())
 
         sections.append("\n".join(repr(function) for function in self.functions))

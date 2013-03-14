@@ -1,14 +1,15 @@
 class Token(object):
     class Type(object):
-        ALPHAS = None
         ASTERISK = None
         COMMA = None
         COMMENT = None
-        DIGITS = None
         COLON = None
         EOF = None
         EOL = None
         EQUALS = None
+        FLOAT_LITERAL = None
+        IDENTIFIER = None
+        INT_LITERAL = None
         KEYWORD_BINARY = None
         KEYWORD_BOOL = None
         KEYWORD_BYTE = None
@@ -115,7 +116,23 @@ class Token(object):
         return self.__type
 
     def __repr__(self):
-        return "%s(colno=%u, index=%u, input_filename=%s, lineno=%u, offset=%u, text='%s', type=%s)" % (self.__class__.__name__, self.colno, self.index, self.input_filename, self.lineno, self.offset, self.text, self.type)
+        dict_ = self.to_dict()
+        repr_ = []
+        for key in sorted(dict_.iterkeys()):
+            value = dict_[key]
+            if isinstance(value, str):
+                value = "'" + value + "'"
+            repr_.append("%(key)s=%(value)s" % locals())
+        return "%s(%s)" % (self.__class__.__name__, ', '.join(repr_))
 
     def __str__(self):
         return self.text
+
+    def to_dict(self):
+        dict_ = {}
+        for attr in dir(self):
+            if attr[0] == '_' or attr[0] != attr[0].lower() or attr == 'to_dict':
+                continue
+            value = getattr(self, attr)
+            dict_[attr] = value
+        return dict_

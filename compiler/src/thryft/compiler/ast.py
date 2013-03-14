@@ -1,35 +1,90 @@
+from thryft.compiler.token import Token
 from yutil import decamelize
 
 
 class Ast(object):
     class Node(object):
-        def __init__(self, doc=None):
+        def __init__(self, doc=None, start_token=None, stop_token=None):
             object.__init__(self)
+
             self.__doc = doc
+
+            if start_token is not None:
+                assert isinstance(start_token, Token), repr(start_token)
+                assert stop_token is not None
+            else:
+                assert stop_token is None
+            self.__start_token = start_token
+
+            if stop_token is not None:
+                assert isinstance(stop_token, Token), repr(stop_token)
+                assert stop_token.index >= start_token.index
+            self.__stop_token = stop_token
 
         def accept(self, visitor):
             return getattr(visitor, 'visit_' + decamelize(self.__class__.__name__))(self)
+
 
         @property
         def doc(self):
             return self.__doc
 
-        def __repr__(self):
+        def __properties(self):
             properties = {}
             for attr in dir(self):
-                if attr[0] == '_' or attr == 'accept':
+                if attr[0] == '_' or attr in ('accept', 'to_dict'):
                     continue
                 value = getattr(self, attr)
                 if value is None:
                     continue
+                elif attr == 'stop_token' and value == self.start_token:
+                    continue
                 properties[attr] = value
-            return "Ast.%s(%s)" % (self.__class__.__name__, ', '.join("%s=%s" % (key, properties[key]) for key in properties.iterkeys()))
+            return properties
+
+        def __repr__(self):
+            properties = self.__properties()
+            return "Ast.%s(%s)" % (self.__class__.__name__, ', '.join("%s=%s" % (key, repr(properties[key])) for key in sorted(properties.iterkeys())))
+
+        @property
+        def start_token(self):
+            return self.__start_token
+
+        @property
+        def stop_token(self):
+            return self.__stop_token
+
+        def to_dict(self):
+            dict_ = {}
+            properties = self.__properties()
+            for key in sorted(properties.iterkeys()):
+                dict_[key] = self.__to_dict_value(properties[key])
+            return dict_
+
+        @staticmethod
+        def __to_dict_value(value):
+            if isinstance(value, tuple):
+                return tuple(Ast.Node.__to_dict_value(value) for value in value)
+            elif hasattr(value, 'to_dict'):
+                return value.to_dict()
+            else:
+                return value
+
+    class _LiteralNode(Node):
+        def __init__(self, value, **kwds):
+            Ast.Node.__init__(self, **kwds)
+            assert value is not None
+            self.__value = value
+
+        @property
+        def value(self):
+            return self.__value
 
     class _NamedNode(Node):
         def __init__(self, name, **kwds):
             Ast.Node.__init__(self, **kwds)
 
-            assert isinstance(name, str) and len(name) > 0
+            assert isinstance(name, str) and len(name) > 0, name
             self.__name = name
 
         @property
@@ -52,6 +107,11 @@ class Ast(object):
 
     class BaseTypeNode(TypeNode):
         pass
+
+    class BoolLiteralNode(_LiteralNode):
+        def __init__(self, **kwds):
+            Ast._LiteralNode.__init__(self, **kwds)
+            assert isinstance(self.value, bool)
 
     class _CompoundTypeNode(TypeNode):
         def __init__(self, fields, **kwds):
@@ -141,7 +201,7 @@ class Ast(object):
         def __init__(self, id_, required, type_, value, **kwds):
             Ast._NamedNode.__init__(self, **kwds)
 
-            assert id_ is None or (isinstance(id_, int) and id_ >= 0)
+            assert id_ is None or (isinstance(id_, int) and id_ >= 0), id_
             self.__id = id_
 
             assert type_ is not None
@@ -167,6 +227,11 @@ class Ast(object):
         @property
         def value(self):
             return self.__value
+
+    class FloatLiteralNode(_LiteralNode):
+        def __init__(self, **kwds):
+            Ast._LiteralNode.__init__(self, **kwds)
+            assert isinstance(self.value, float)
 
     class FunctionNode(_NamedNode):
         def __init__(self, oneway, parameters, return_type, throws, **kwds):
@@ -204,9 +269,18 @@ class Ast(object):
         def throws(self):
             return self.__throws
 
-    class IdentifierNode(str, Node):
-        def __init__(self, text):
-            Ast.Node.__init__(self)
+    class IdentifierNode(Node):
+        def __init__(self, text, **kwds):
+            Ast.Node.__init__(self, **kwds)
+            assert isinstance(text, str) and len(text) > 0
+            self.__text = text
+
+        def __str__(self):
+            return self.text
+
+        @property
+        def text(self):
+            return self.__text
 
     class IncludeNode(Node):
         def __init__(self, path, **kwds):
@@ -219,6 +293,11 @@ class Ast(object):
         def path(self):
             return self.__path
 
+    class IntLiteralNode(_LiteralNode):
+        def __init__(self, **kwds):
+            Ast._LiteralNode.__init__(self, **kwds)
+            assert isinstance(self.value, int)
+
     class _SequenceTypeNode(TypeNode):
         def __init__(self, element_type, **kwds):
             Ast.TypeNode.__init__(self, **kwds)
@@ -230,9 +309,19 @@ class Ast(object):
         def element_type(self):
             return self.__element_type
 
+    class ListLiteralNode(_LiteralNode):
+        def __init__(self, **kwds):
+            Ast._LiteralNode.__init__(self, **kwds)
+            assert isinstance(self.value, tuple)
+
     class ListTypeNode(_SequenceTypeNode):
         def __init__(self, element_type, **kwds):
             Ast._SequenceTypeNode.__init__(self, element_type=element_type, name="list<%s>" % element_type.qname)
+
+    class MapLiteralNode(_LiteralNode):
+        def __init__(self, **kwds):
+            Ast._LiteralNode.__init__(self, **kwds)
+            assert isinstance(self.value, dict)
 
     class MapTypeNode(TypeNode):
         def __init__(self, key_type, value_type, **kwds):
@@ -279,6 +368,11 @@ class Ast(object):
     class SetTypeNode(_SequenceTypeNode):
         def __init__(self, element_type, **kwds):
             Ast._SequenceTypeNode.__init__(self, element_type=element_type, name="set<%s>" % element_type.qname)
+
+    class StringLiteralNode(_LiteralNode):
+        def __init__(self, **kwds):
+            Ast._LiteralNode.__init__(self, **kwds)
+            assert isinstance(self.value, str)
 
     class StructTypeNode(_CompoundTypeNode):
         pass

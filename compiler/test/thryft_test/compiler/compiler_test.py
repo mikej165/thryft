@@ -33,17 +33,24 @@
 from thryft.compiler import Compiler
 from thryft.generators.thrift.thrift_generator import ThriftGenerator
 from thryft_test import _test
+import sys
+import traceback
 
 
 class CompilerTest(_test._Test):
     def _runTest(self, thrift_file_path):
-#        import os.path
-#        if os.path.split(thrift_file_path)[1] != 'exception_type.thrift':
-#            return
+        import os.path
+        if os.path.split(thrift_file_path)[1] != 'function.thrift':
+            return
         generator = ThriftGenerator()
         compiler = Compiler(generator=generator)
-        documents = compiler((thrift_file_path,))
-        print 'document', repr(documents[0])
+        try:
+            compiler((thrift_file_path,))
+#            print repr(documents[0])
+        except:
+            print >> sys.stderr, 'Error parsing', thrift_file_path
+            traceback.print_exc()
+            raise
 
 
 def load_tests(*args, **kwds):

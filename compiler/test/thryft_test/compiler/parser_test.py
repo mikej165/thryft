@@ -30,24 +30,33 @@
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
 
+from pprint import pprint
 from thryft.compiler.parser import Parser
 from thryft.compiler.scanner import Scanner
 from thryft_test import _test
+import sys
+import traceback
 
 
 class ParserTest(_test._Test):
     def _runTest(self, thrift_file_path):
+#        import logging
+#        logging.basicConfig(level=logging.DEBUG)
 #        import os.path
-#        if os.path.split(thrift_file_path)[1] != 'byte_type.thrift':
+#        if os.path.split(thrift_file_path)[1] != 'function.thrift':
 #            return
-        tokens = Scanner().tokenize(thrift_file_path)
-        print thrift_file_path
-        for token in tokens:
-            print token.index, token.type, ':', len(token.text), ':', token.text
-        print
-        ast = Parser().parse(tokens)
-        print ast
-
+        tokens = []
+        try:
+            tokens = Scanner().tokenize(thrift_file_path)
+            ast = Parser().parse(tokens)  # @UnusedVariable
+#            pprint(ast.to_dict())
+        except:
+            print >> sys.stderr, 'Error parsing', thrift_file_path
+            traceback.print_exc()
+            for token in tokens:
+                print >> sys.stderr, token.index, token.type, ':', len(token.text), ':', token.text
+            print >> sys.stderr
+            raise
 
 def load_tests(*args, **kwds):
     return ParserTest.suite()

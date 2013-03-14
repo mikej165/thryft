@@ -32,6 +32,7 @@
 
 from inspect import isclass
 from thryft.compiler.ast import Ast
+from thryft.compiler.compile_exception import CompileException
 from thryft.compiler.parser import Parser
 from thryft.compiler.scanner import Scanner
 from thryft.generator.document import Document
@@ -145,10 +146,10 @@ class Compiler(object):
             document = self.__construct('Document', path=document_node.path)
             self.__scope_stack.append(document)
 
-            for definition in document_node.definitions:
-                document.definitions.append(definition.accept(self))
             for header in document_node.headers:
                 document.headers.append(header.accept(self))
+            for definition in document_node.definitions:
+                document.definitions.append(definition.accept(self))
 
             self.__scope_stack.pop(-1)
 
@@ -201,7 +202,7 @@ class Compiler(object):
                     include_dir_paths.append(os.path.dirname(scope.path))
                     break
 
-            include_file_relpath = include_node.path
+            include_file_relpath = include_node.path.replace('/', os.path.sep)
             for include_dir_path in include_dir_paths:
                 include_file_path = os.path.join(include_dir_path, include_file_relpath)
                 if os.path.exists(include_file_path):
@@ -262,13 +263,16 @@ class Compiler(object):
 
         def visit_type_node(self, type_node):
             try:
-                return self.__type_cache[type_node.qname]
+                try:
+                    return self.__type_cache[type_node.qname]
+                except KeyError:
+                    if type_node.qname == type_node.name:
+                        document = self.__scope_stack[0]
+                        return self.__type_cache[document.name + '.' + type_node.qname]
+                    else:
+                        raise
             except KeyError:
-                if type_node.qname == type_node.name:
-                    document = self.__scope_stack[0]
-                    return self.__type_cache[document.name + '.' + type_node.qname]
-                else:
-                    raise
+                raise CompileException("unrecognized type '%s'" % type_node.qname, ast_node=type_node)
 
         def visit_typedef_node(self, typedef_node):
             typedef = \
@@ -297,7 +301,7 @@ class Compiler(object):
         lib_thrift_src_dir_path = \
             os.path.abspath(os.path.join(
                 my_dir_path,
-                '..', '..', '..',
+                '..', '..', '..', '..',
                 'lib', 'thrift', 'src'
             ))
         if not lib_thrift_src_dir_path in include_dir_paths:
