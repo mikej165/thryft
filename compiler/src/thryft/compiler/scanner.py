@@ -33,6 +33,7 @@ class Scanner(GenericScanner):
         self.__output_tokens.append(
             Token(
                 colno=0,
+                index=len(self.__output_tokens),
                 input_=self.__input,
                 input_filename=self.__input_filename,
                 lineno=len(self.__input_lines),
@@ -77,7 +78,7 @@ class Scanner(GenericScanner):
         self.__t(offset, text, Token.Type.COMMENT)
 
     def t_cpp_style_comment(self, offset, text):
-        r' \/\/(\\\n|.)* '
+        r'\/\/(\\\n|.)*'
         self.__t(offset, text, Token.Type.COMMENT)
 
     def t_default(self, offset, text):
@@ -87,10 +88,6 @@ class Scanner(GenericScanner):
     def t_digits(self, offset, text):
         r'\d+'
         self.__t(offset, text, Token.Type.DIGITS)
-
-    def t_double_quote(self, offset, text):
-        r'\"'
-        self.__t(offset, text, Token.Type.DOUBLE_QUOTE)
 
     def t_equals(self, offset, text):
         r'='
@@ -125,6 +122,10 @@ class Scanner(GenericScanner):
         r'#.*'
         self.__t(offset, text, Token.Type.COMMENT)
 
+    def t_quoted_string(self, offset, text):
+        r'"(?:[^"\n\r\\]|(?:"")|(?:\\x[0-9a-fA-F]+)|(?:\\.))*"'
+        self.__t(offset, text, Token.Type.QUOTED_STRING)
+
     def t_right_angle_bracket(self, offset, text):
         r'\>'
         self.__t(offset, text, Token.Type.RIGHT_ANGLE_BRACKET)
@@ -145,10 +146,6 @@ class Scanner(GenericScanner):
         r';'
         self.__t(offset, text, Token.Type.SEMICOLON)
 
-    def t_single_quote(self, offset, text):
-        r'\''
-        self.__t(offset, text, Token.Type.SINGLE_QUOTE)
-
     def t_underscore(self, offset, text):
         r'_'
         self.__t(offset, text, Token.Type.UNDERSCORE)
@@ -163,6 +160,7 @@ class Scanner(GenericScanner):
         token = \
             Token(
                 colno=colno,
+                index=len(self.__output_tokens),
                 input_=self.__input,
                 input_filename=self.__input_filename,
                 lineno=lineno,

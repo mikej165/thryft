@@ -5,7 +5,6 @@ class Token(object):
         COMMA = None
         COMMENT = None
         DIGITS = None
-        DOUBLE_QUOTE = None
         COLON = None
         EOF = None
         EOL = None
@@ -14,6 +13,7 @@ class Token(object):
         KEYWORD_ENUM = None
         KEYWORD_EXCEPTION = None
         KEYWORD_FALSE = None
+        KEYWORD_INCLUDE = None
         KEYWORD_LIST = None
         KEYWORD_MAP = None
         KEYWORD_NAMESPACE = None
@@ -31,12 +31,12 @@ class Token(object):
         LEFT_PARENTHESIS = None
         LEFT_SQUARE_BRACKET = None
         PERIOD = None
+        QUOTED_STRING = None
         RIGHT_ANGLE_BRACKET = None
         RIGHT_BRACE = None
         RIGHT_PARENTHESIS = None
         RIGHT_SQUARE_BRACKET = None
         SEMICOLON = None
-        SINGLE_QUOTE = None
         UNDERSCORE = None
 
     for __attr in dir(Type):
@@ -47,11 +47,14 @@ class Token(object):
             continue
         setattr(Type, __attr, __attr)
 
-    def __init__(self, colno, input_, input_filename, lineno, offset, text, type_):
+    def __init__(self, colno, index, input_, input_filename, lineno, offset, text, type_):
         object.__init__(self)
 
         assert isinstance(colno, int) and colno >= 0, colno
         self.__colno = colno
+
+        assert isinstance(index, int) and index >= 0, index
+        self.__index = index
 
         assert isinstance(input_, str)
         self.__input = input_
@@ -79,6 +82,10 @@ class Token(object):
         return self.__colno
 
     @property
+    def index(self):
+        return self.__index
+
+    @property
     def input_filename(self):
         return self.__input_filename
 
@@ -99,7 +106,7 @@ class Token(object):
         return self.__type
 
     def __repr__(self):
-        return "%s(colno=%u, input_filename=%s, lineno=%u, offset=%u, text='%s', type=%s)" % (self.__class__.__name__, self.colno, self.input_filename, self.lineno, self.offset, self.text, self.type)
+        return "%s(colno=%u, index=%u, input_filename=%s, lineno=%u, offset=%u, text='%s', type=%s)" % (self.__class__.__name__, self.colno, self.index, self.input_filename, self.lineno, self.offset, self.text, self.type)
 
     def __str__(self):
         return self.text

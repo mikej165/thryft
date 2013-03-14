@@ -1,1 +1,2 @@
+// namespace comment
 namespace * testnamespace
