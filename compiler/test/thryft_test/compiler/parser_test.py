@@ -38,7 +38,7 @@ from thryft_test import _test
 class ParserTest(_test._Test):
     def _runTest(self, thrift_file_path):
 #        import os.path
-#        if os.path.split(thrift_file_path)[1] != 'typedef.thrift':
+#        if os.path.split(thrift_file_path)[1] != 'byte_type.thrift':
 #            return
         tokens = Scanner().tokenize(thrift_file_path)
         print thrift_file_path

@@ -1,5 +1,5 @@
 from spark import GenericScanner
-from thryft.compiler.scanner_exception import ScannerException
+from thryft.compiler.scan_exception import ScanException
 from thryft.compiler.token import Token
 import os.path
 
@@ -7,7 +7,7 @@ import os.path
 class Scanner(GenericScanner):
     def error(self, text, offset):
         colno, lineno = self.__find_offset(offset)
-        raise ScannerException(colno=colno, filename=self.__input_filename, lineno=lineno, offset=offset, text=text)
+        raise ScanException(colno=colno, filename=self.__input_filename, lineno=lineno, offset=offset, text=text)
 
     def tokenize(self, input_):
         if isinstance(input_, file):
@@ -54,12 +54,19 @@ class Scanner(GenericScanner):
                 return colno, lineno + 1
         return colno, lineno + 1
 
+    def t_alphanum_keywords(self, offset, text):
+        r'i16|i32|i64'
+        self.__t(offset, text, getattr(Token.Type, 'KEYWORD_' + text.upper()))
+
     def t_alphas(self, offset, text):
         r'[a-zA-Z]+'
         try:
-            self.__t(offset, text, getattr(Token.Type, 'KEYWORD_' + text.upper()))
+            if text == text.lower():
+                self.__t(offset, text, getattr(Token.Type, 'KEYWORD_' + text.upper()))
+                return
         except AttributeError:
-            self.__t(offset, text, Token.Type.ALPHAS)
+            pass
+        self.__t(offset, text, Token.Type.ALPHAS)
 
     def t_asterisk(self, offset, text):
         r'\*'

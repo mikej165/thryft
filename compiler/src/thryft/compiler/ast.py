@@ -1,22 +1,23 @@
+from yutil import decamelize
+
+
 class Ast(object):
     class Node(object):
-        def __init__(self, children=None):
+        def __init__(self, doc=None):
             object.__init__(self)
-            if children is None:
-                self.__children = tuple()
-            else:
-                assert isinstance(children, tuple)
-                for child in children:
-                    assert child is not None
-                self.__children = children
+            self.__doc = doc
 
-        def __getitem__(self, i):
-            return self.__children[i]
+        def accept(self, visitor):
+            return getattr(visitor, 'visit_' + decamelize(self.__class__.__name__))(self)
+
+        @property
+        def doc(self):
+            return self.__doc
 
         def __repr__(self):
             properties = {}
             for attr in dir(self):
-                if attr[0] == '_':
+                if attr[0] == '_' or attr == 'accept':
                     continue
                 value = getattr(self, attr)
                 if value is None:
@@ -25,8 +26,8 @@ class Ast(object):
             return "Ast.%s(%s)" % (self.__class__.__name__, ', '.join("%s=%s" % (key, properties[key]) for key in properties.iterkeys()))
 
     class _NamedNode(Node):
-        def __init__(self, name, children=None):
-            Ast.Node.__init__(self, children=children)
+        def __init__(self, name, **kwds):
+            Ast.Node.__init__(self, **kwds)
 
             assert isinstance(name, str) and len(name) > 0
             self.__name = name
@@ -35,9 +36,26 @@ class Ast(object):
         def name(self):
             return self.__name
 
-    class _CompoundTypeNode(_NamedNode):
-        def __init__(self, fields, name):
-            Ast._NamedNode.__init__(self, children=fields, name=name)
+    class TypeNode(_NamedNode):
+        def __init__(self, name, qname=None, **kwds):
+            Ast._NamedNode.__init__(self, name=name, **kwds)
+
+            if qname is None:
+                qname = name
+            else:
+                assert isinstance(qname, str) and len(qname) >= len(name)
+            self.__qname = qname
+
+        @property
+        def qname(self):
+            return self.__qname
+
+    class BaseTypeNode(TypeNode):
+        pass
+
+    class _CompoundTypeNode(TypeNode):
+        def __init__(self, fields, **kwds):
+            Ast.TypeNode.__init__(self, **kwds)
 
             assert isinstance(fields, tuple)
             for field in fields:
@@ -49,8 +67,8 @@ class Ast(object):
             return self.__fields
 
     class ConstNode(_NamedNode):
-        def __init__(self, name, type_, value):
-            Ast._NamedNode.__init__(self, name=name)
+        def __init__(self, type_, value, **kwds):
+            Ast._NamedNode.__init__(self, **kwds)
 
             assert type_ is not None
             self.__type = type_
@@ -67,14 +85,17 @@ class Ast(object):
             return self.__value
 
     class DocumentNode(Node):
-        def __init__(self, headers, definitions):
-            Ast.Node.__init__(self, tuple(list(headers) + list(definitions)))
+        def __init__(self, headers, definitions, path, **kwds):
+            Ast.Node.__init__(self, **kwds)
 
             assert isinstance(headers, tuple)
             self.__headers = headers
 
             assert isinstance(definitions, tuple)
             self.__definitions = definitions
+
+            assert isinstance(path, str) and len(path) > 0
+            self.__path = path
 
         @property
         def definitions(self):
@@ -84,9 +105,13 @@ class Ast(object):
         def headers(self):
             return self.__headers
 
+        @property
+        def path(self):
+            return self.__path
+
     class EnumTypeNode(_NamedNode):
-        def __init__(self, enumerators, name):
-            Ast._NamedNode.__init__(self, children=enumerators, name=name)
+        def __init__(self, enumerators, **kwds):
+            Ast._NamedNode.__init__(self, **kwds)
 
             assert isinstance(enumerators, tuple)
             for enumerator in enumerators:
@@ -98,8 +123,8 @@ class Ast(object):
             return self.__enumerators
 
     class EnumeratorNode(_NamedNode):
-        def __init__(self, name, value):
-            Ast._NamedNode.__init__(self, name=name)
+        def __init__(self, value, **kwds):
+            Ast._NamedNode.__init__(self, **kwds)
 
             if value is not None:
                 assert isinstance(value, int)
@@ -113,8 +138,8 @@ class Ast(object):
         pass
 
     class FieldNode(_NamedNode):
-        def __init__(self, id_, name, required, type_, value):
-            Ast._NamedNode.__init__(self, name=name)
+        def __init__(self, id_, required, type_, value, **kwds):
+            Ast._NamedNode.__init__(self, **kwds)
 
             assert id_ is None or (isinstance(id_, int) and id_ >= 0)
             self.__id = id_
@@ -144,8 +169,8 @@ class Ast(object):
             return self.__value
 
     class FunctionNode(_NamedNode):
-        def __init__(self, name, oneway, parameters, return_type_name, throws):
-            Ast._NamedNode.__init__(self, children=parameters, name=name)
+        def __init__(self, oneway, parameters, return_type, throws, **kwds):
+            Ast._NamedNode.__init__(self, **kwds)
 
             assert isinstance(oneway, bool)
             self.__oneway = oneway
@@ -155,8 +180,8 @@ class Ast(object):
                 assert isinstance(parameter, Ast.FieldNode)
             self.__parameters = parameters
 
-            assert isinstance(return_type_name, str) and len(return_type_name) > 0
-            self.__return_type_name = return_type_name
+            assert isinstance(return_type, Ast.TypeNode)
+            self.__return_type = return_type
 
             assert isinstance(throws, tuple)
             for throw in throws:
@@ -172,8 +197,8 @@ class Ast(object):
             return self.__parameters
 
         @property
-        def return_type_name(self):
-            return self.__return_type_name
+        def return_type(self):
+            return self.__return_type
 
         @property
         def throws(self):
@@ -184,8 +209,8 @@ class Ast(object):
             Ast.Node.__init__(self)
 
     class IncludeNode(Node):
-        def __init__(self, path):
-            Ast.Node.__init__(self)
+        def __init__(self, path, **kwds):
+            Ast.Node.__init__(self, **kwds)
 
             assert isinstance(path, str) and len(path) > 0
             self.__path = path
@@ -194,9 +219,9 @@ class Ast(object):
         def path(self):
             return self.__path
 
-    class _SequenceTypeNode(Node):
-        def __init__(self, element_type):
-            Ast.Node.__init__(self, (element_type,))
+    class _SequenceTypeNode(TypeNode):
+        def __init__(self, element_type, **kwds):
+            Ast.TypeNode.__init__(self, **kwds)
 
             assert element_type is not None
             self.__element_type = element_type
@@ -206,11 +231,12 @@ class Ast(object):
             return self.__element_type
 
     class ListTypeNode(_SequenceTypeNode):
-        pass
+        def __init__(self, element_type, **kwds):
+            Ast._SequenceTypeNode.__init__(self, element_type=element_type, name="list<%s>" % element_type.qname)
 
-    class MapTypeNode(Node):
-        def __init__(self, key_type, value_type):
-            Ast.Node.__init__(self, (key_type, value_type))
+    class MapTypeNode(TypeNode):
+        def __init__(self, key_type, value_type, **kwds):
+            Ast.TypeNode.__init__(self, name="map<%s, %s>" % (key_type.qname, value_type.qname), **kwds)
 
             assert key_type is not None
             self.__key_type = key_type
@@ -227,8 +253,8 @@ class Ast(object):
             return self.__value_type
 
     class NamespaceNode(_NamedNode):
-        def __init__(self, name, scope):
-            Ast._NamedNode.__init__(self, name=name)
+        def __init__(self, scope, **kwds):
+            Ast._NamedNode.__init__(self, **kwds)
 
             assert isinstance(scope, str) and len(scope) > 0
             self.__scope = scope
@@ -238,8 +264,8 @@ class Ast(object):
             return self.__scope
 
     class ServiceNode(_NamedNode):
-        def __init__(self, functions, name):
-            Ast._NamedNode.__init__(self, children=functions, name=name)
+        def __init__(self, functions, **kwds):
+            Ast._NamedNode.__init__(self, **kwds)
 
             assert isinstance(functions, tuple)
             for function in functions:
@@ -251,14 +277,15 @@ class Ast(object):
             return self.__functions
 
     class SetTypeNode(_SequenceTypeNode):
-        pass
+        def __init__(self, element_type, **kwds):
+            Ast._SequenceTypeNode.__init__(self, element_type=element_type, name="set<%s>" % element_type.qname)
 
     class StructTypeNode(_CompoundTypeNode):
         pass
 
     class TypedefNode(_NamedNode):
-        def __init__(self, type_, name):
-            Ast._NamedNode.__init__(self, name=name)
+        def __init__(self, type_, **kwds):
+            Ast._NamedNode.__init__(self, **kwds)
 
             assert type_ is not None
             self.__type = type_

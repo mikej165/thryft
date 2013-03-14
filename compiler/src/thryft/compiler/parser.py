@@ -1,6 +1,6 @@
 from spark import GenericParser
 from thryft.compiler.ast import Ast
-from thryft.compiler.parser_exception import ParserException
+from thryft.compiler.parse_exception import ParseException
 from thryft.compiler.token import Token
 
 
@@ -10,7 +10,7 @@ class Parser(GenericParser):
         GenericParser.__init__(self, start='document')
 
     def error(self, token):
-        raise ParserException(token)
+        raise ParseException(token)
 
     @staticmethod
     def __flatten_args(args):
@@ -21,6 +21,28 @@ class Parser(GenericParser):
             else:
                 flattened_args.append(arg)
         return tuple(flattened_args)
+
+    @staticmethod
+    def __merge_comments(comments):
+        merged_comment = []
+        for comment in comments:
+            assert isinstance(comment, Token) and comment.type == Token.Type.COMMENT
+            merged_comment.append(comment.text)
+        return ''.join(merged_comment)
+
+    def p_base_type(self, args):
+        '''
+        base_type ::= KEYWORD_BINARY
+        base_type ::= KEYWORD_BOOL
+        base_type ::= KEYWORD_BYTE
+        base_type ::= KEYWORD_DOUBLE
+        base_type ::= KEYWORD_FLOAT
+        base_type ::= KEYWORD_I16
+        base_type ::= KEYWORD_I32
+        base_type ::= KEYWORD_I64
+        base_type ::= KEYWORD_STRING
+        '''
+        return Ast.BaseTypeNode(name=args[0].text)
 
     def p_bool_literal(self, args):
         '''
@@ -61,9 +83,9 @@ class Parser(GenericParser):
         document ::= comments EOF
         '''
         if len(args) == 2:
-            return ''.join(arg.text for arg in args[0])
+            return Ast.DocumentNode(definitions=tuple(), doc=self.__merge_comments(args[0]), headers=tuple(), path=args[1].input_filename)
         else:
-            return Ast.DocumentNode(definitions=args[1], headers=args[0])
+            return Ast.DocumentNode(definitions=args[1], doc=None, headers=args[0], path=args[2].input_filename)
 
     def p_definition(self, args):
         '''
@@ -163,9 +185,9 @@ class Parser(GenericParser):
 
     def p_function(self, args):
         '''
-        function ::= comments function_oneway type identifier LEFT_PARENTHESIS function_parameters RIGHT_PARENTHESIS function_throws list_separator_optional
+        function ::= comments function_oneway function_return_type identifier LEFT_PARENTHESIS function_parameters RIGHT_PARENTHESIS function_throws list_separator_optional
         '''
-        return Ast.FunctionNode(name=args[3], oneway=args[1], parameters=args[5], return_type_name=args[2], throws=args[7])
+        return Ast.FunctionNode(name=args[3], oneway=args[1], parameters=args[5], return_type=args[2], throws=args[7])
 
     def p_function_oneway(self, args):
         '''
@@ -187,6 +209,16 @@ class Parser(GenericParser):
             elif isinstance(arg, Ast.FieldNode):
                 function_parameters.append(arg)
         return tuple(function_parameters)
+
+    def p_function_return_type(self, args):
+        '''
+        function_return_type ::= KEYWORD_VOID
+        function_return_type ::= type
+        '''
+        if isinstance(args[0], Token):
+            return Ast.TypeNode(name='void')
+        else:
+            return args[0]
 
     def p_function_throws(self, args):
         '''
@@ -383,13 +415,23 @@ class Parser(GenericParser):
 
     def p_type(self, args):
         '''
+        type ::= base_type
         type ::= list_type
         type ::= map_type
         type ::= set_type
-        type ::= identifier
-        type ::= identifier PERIOD identifier
+        type ::= type_qname
         '''
         return args[0]
+
+    def p_type_qname(self, args):
+        '''
+        type_qname ::= identifier PERIOD identifier
+        type_qname ::= identifier
+        '''
+        if len(args) == 1:
+            return Ast.TypeNode(name=str(args[0]))
+        else:
+            return Ast.TypeNode(name=args[2], qname=''.join(args))
 
     def p_typedef(self, args):
         '''

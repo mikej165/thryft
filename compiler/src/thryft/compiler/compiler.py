@@ -31,24 +31,259 @@
 #-------------------------------------------------------------------------------
 
 from inspect import isclass
-from pyparsing import ParseException
-from thryft.compiler.grammar import Grammar
+from thryft.compiler.ast import Ast
+from thryft.compiler.parser import Parser
+from thryft.compiler.scanner import Scanner
 from thryft.generator.document import Document
-from thryft.generator._type import _Type
 import imp
 import logging
 import os.path
-import sys
 
 
 class Compiler(object):
-    class __Comment(str):
-        pass
+    class __AstVisitor(object):
+        def __init__(self, compiler, generator, include_dir_paths):
+            object.__init__(self)
+            self.__compiler = compiler
+            self.__generator = generator
+            self.__include_dir_paths = include_dir_paths
+            self.__scope_stack = []
+            self.__type_cache = {}
 
-    def __init__(self, generator, debug=False, include_dir_paths=None):
+        def __construct(self, class_name, parent=None, **kwds):
+            if parent is None and len(self.__scope_stack) > 0:
+                parent = self.__scope_stack[-1]
+            kwds['parent'] = parent
+
+            name = kwds.get('name')
+            if name is not None:
+                for scope in reversed(self.__scope_stack):
+                    if isinstance(scope, Document):
+                        document = scope
+                        overrides_module_file_path = os.path.splitext(document.path)[0] + '.py'
+                        if os.path.isfile(overrides_module_file_path):
+                            overrides_module_dir_path, overrides_module_file_name = \
+                                os.path.split(overrides_module_file_path)
+                            overrides_module_name = \
+                                os.path.splitext(overrides_module_file_name)[0]
+                            try:
+                                overrides_module = \
+                                    imp.load_module(
+                                        overrides_module_name,
+                                        *imp.find_module(
+                                            overrides_module_name,
+                                            [overrides_module_dir_path]
+                                        )
+                                    )
+                            except ImportError:
+                                logging.error(
+                                    "error importing overrides module %s",
+                                    overrides_module_file_path,
+                                    exc_info=True
+                                )
+                                overrides_module = None
+
+                            if overrides_module is not None:
+                                default_construct_class = getattr(self.__generator, class_name)
+                                for attr in dir(overrides_module):
+                                    value = getattr(overrides_module, attr)
+                                    if isclass(value) and issubclass(value, default_construct_class):
+                                        return getattr(overrides_module, attr)(**kwds)
+                        break
+
+            return getattr(self.__generator, class_name)(**kwds)
+
+        def visit_base_type_node(self, base_type_node):
+            try:
+                return self.__type_cache[base_type_node.name]
+            except:
+                base_type = getattr(self.__generator, base_type_node.name.capitalize() + 'Type')(name=base_type_node.name)
+                self.__type_cache[base_type_node.name] = base_type
+                return base_type
+
+        def __visit_compound_type_node(self, construct_class_name, compound_type_node):
+            compound_type = \
+                self.__construct(
+                    construct_class_name,
+                    name=compound_type_node.name
+                )
+            self.__scope_stack.append(compound_type)
+
+            # Insert the compound type into the type_map here to allow recursive
+            # definitions
+            self.__type_cache[compound_type.thrift_qname()] = compound_type
+
+            if construct_class_name == 'EnumType':
+                for enumerator_i, enumerator_node in enumerate(compound_type_node.enumerators):
+                    compound_type.enumerators.append(
+                        self.__construct(
+                            'Field',
+                            id=enumerator_i,
+                            name=enumerator_node.name,
+                            type=Ast.BaseTypeNode('i32').accept(self),
+                            value=enumerator_node.value
+                        )
+                    )
+            else:
+                for field in compound_type_node.fields:
+                    compound_type.fields.append(field.accept(self))
+
+            self.__scope_stack.pop(-1)
+
+            return compound_type
+
+        def visit_const_node(self, const_node):
+            return \
+                self.__construct(
+                    'Const',
+                    name=const_node.name,
+                    type=const_node.type.accept(self),
+                    value=const_node.value
+                )
+
+        def visit_document_node(self, document_node):
+            document = self.__construct('Document', path=document_node.path)
+            self.__scope_stack.append(document)
+
+            for definition in document_node.definitions:
+                document.definitions.append(definition.accept(self))
+            for header in document_node.headers:
+                document.headers.append(header.accept(self))
+
+            self.__scope_stack.pop(-1)
+
+            return document
+
+        def visit_enum_type_node(self, enum_node):
+            return self.__visit_compound_type_node('EnumType', enum_node)
+
+        def visit_exception_type_node(self, exception_type_node):
+            return self.__visit_compound_type_node('ExceptionType', exception_type_node)
+
+        def visit_field_node(self, field_node):
+            return \
+                self.__construct(
+                    'Field',
+                    id=field_node.id,
+                    name=field_node.name,
+                    required=field_node.required,
+                    type=field_node.type.accept(self),
+                    value=field_node.value
+                )
+
+        def visit_function_node(self, function_node):
+            if function_node.return_type.name == 'void':
+                return_type = None
+            else:
+                return_type = function_node.return_type.accept(self)
+
+            function = \
+                self.__construct(
+                    'Function',
+                    name=function_node.name,
+                    oneway=function_node.oneway,
+                    return_type=return_type
+                )
+            self.__scope_stack.append(function)
+
+            for parameter_node in function_node.parameters:
+                function.parameters.append(parameter_node.accept(self))
+            for throws_node in function_node.throws:
+                function.throws.append(throws_node.accept(self))
+
+            self.__scope_stack.pop(-1)
+            return function
+
+        def visit_include_node(self, include_node):
+            include_dir_paths = list(self.__include_dir_paths)
+            for scope in reversed(self.__scope_stack):
+                if isinstance(scope, Document):
+                    include_dir_paths.append(os.path.dirname(scope.path))
+                    break
+
+            include_file_relpath = include_node.path
+            for include_dir_path in include_dir_paths:
+                include_file_path = os.path.join(include_dir_path, include_file_relpath)
+                if os.path.exists(include_file_path):
+                    include_file_path = os.path.abspath(include_file_path)
+                    document = self.__compiler.compile((include_file_path,))[0]
+                    include = \
+                        self.__construct(
+                            'Include',
+                            document=document,
+                            path=include_file_relpath
+                        )
+                    return include
+            raise RuntimeError("include path not found: %s" % include_file_relpath)
+
+        def visit_list_type_node(self, list_type_node):
+            return self.__visit_sequence_type_node('ListType', list_type_node)
+
+        def visit_map_type_node(self, map_type_node):
+            try:
+                return self.__type_cache[map_type_node.name]
+            except:
+                map_type = self.__construct('MapType', key_type=map_type_node.key_type.accept(self), value_type=map_type_node.value_type.accept(self))
+                self.__type_cache[map_type_node.name] = map_type
+                return map_type
+
+        def visit_namespace_node(self, namespace_node):
+            return \
+                self.__construct(
+                    'Namespace',
+                    name=namespace_node.name,
+                    scope=namespace_node.scope
+                )
+
+        def __visit_sequence_type_node(self, construct_class_name, sequence_type_node):
+            try:
+                return self.__type_cache[sequence_type_node.name]
+            except:
+                sequence_type = self.__construct(construct_class_name, element_type=sequence_type_node.element_type.accept(self))
+                self.__type_cache[sequence_type_node.name] = sequence_type
+                return sequence_type
+
+        def visit_service_node(self, service_node):
+            service = self.__construct('Service', name=service_node.name)
+            self.__scope_stack.append(service)
+
+            for function_node in service_node.functions:
+                service.functions.append(function_node.accept(self))
+
+            self.__scope_stack.pop(-1)
+
+            return service
+
+        def visit_set_type_node(self, set_type_node):
+            return self.__visit_sequence_type_node('SetType', set_type_node)
+
+        def visit_struct_type_node(self, struct_type_node):
+            return self.__visit_compound_type_node('StructType', struct_type_node)
+
+        def visit_type_node(self, type_node):
+            try:
+                return self.__type_cache[type_node.qname]
+            except KeyError:
+                if type_node.qname == type_node.name:
+                    document = self.__scope_stack[0]
+                    return self.__type_cache[document.name + '.' + type_node.qname]
+                else:
+                    raise
+
+        def visit_typedef_node(self, typedef_node):
+            typedef = \
+                self.__construct(
+                    'Typedef',
+                    name=typedef_node.name,
+                    type=typedef_node.type.accept(self)
+                )
+
+            self.__type_cache[typedef.thrift_qname()] = typedef.type
+
+            return typedef
+
+    def __init__(self, generator, include_dir_paths=None):
         object.__init__(self)
-
-        self.__grammar = grammar = Grammar(debug=debug)
 
         if include_dir_paths is None:
             include_dir_paths = []
@@ -67,21 +302,10 @@ class Compiler(object):
             ))
         if not lib_thrift_src_dir_path in include_dir_paths:
             include_dir_paths.append(lib_thrift_src_dir_path)
-        self.__include_dir_paths = include_dir_paths
 
-        self.__generator = generator
-
-        self.__scope_stack = []
-        self.__type_map = {}
-
-        for attr in dir(self):
-            if not attr.startswith('_parse_'):
-                continue
-            parser_element = getattr(grammar, attr[len('_parse_'):])
-            parse_action = getattr(self, attr)
-            parser_element.setParseAction(
-                self._wrap_parse_action(parse_action)
-            )
+        self.__scanner = Scanner()
+        self.__parser = Parser()
+        self.__ast_visitor = self.__AstVisitor(compiler=self, generator=generator, include_dir_paths=include_dir_paths)
 
     def __call__(self, thrift_file_paths):
         return self.compile(thrift_file_paths)
@@ -92,412 +316,10 @@ class Compiler(object):
 
         documents = []
         for thrift_file_path in thrift_file_paths:
-            document = self.__construct('Document', path=thrift_file_path)
-            self.__scope_stack.append(document)
-
-            try:
-                self.__grammar.document.parseFile(thrift_file_path, parseAll=True)
-            except ParseException, e:
-                print >> sys.stderr, 'Error parsing', thrift_file_path + ':'
-                print >> sys.stderr, e.line
-                print >> sys.stderr, ' ' * (e.column - 1) + '^'
-                print >> sys.stderr, e
-                raise
-
-            assert self.__scope_stack[-1] is document
-            self.__scope_stack.pop(-1)
+            tokens = self.__scanner.tokenize(thrift_file_path)
+            ast = self.__parser.parse(tokens)
+            if not isinstance(ast, Ast.DocumentNode):
+                continue
+            document = ast.accept(self.__ast_visitor)
             documents.append(document)
-
         return documents
-
-    def __construct(self, class_name, parent=None, **kwds):
-        if parent is None and len(self.__scope_stack) > 0:
-            parent = self.__scope_stack[-1]
-        kwds['parent'] = parent
-
-        name = kwds.get('name')
-        if name is not None:
-            for scope in reversed(self.__scope_stack):
-                if isinstance(scope, Document):
-                    document = scope
-                    overrides_module_file_path = os.path.splitext(document.path)[0] + '.py'
-                    if os.path.isfile(overrides_module_file_path):
-                        overrides_module_dir_path, overrides_module_file_name = \
-                            os.path.split(overrides_module_file_path)
-                        overrides_module_name = \
-                            os.path.splitext(overrides_module_file_name)[0]
-                        try:
-                            overrides_module = \
-                                imp.load_module(
-                                    overrides_module_name,
-                                    *imp.find_module(
-                                        overrides_module_name,
-                                        [overrides_module_dir_path]
-                                    )
-                                )
-                        except ImportError:
-                            logging.error(
-                                "error importing overrides module %s",
-                                overrides_module_file_path,
-                                exc_info=True
-                            )
-                            overrides_module = None
-
-                        if overrides_module is not None:
-                            default_construct_class = getattr(self.__generator, class_name)
-                            for attr in dir(overrides_module):
-                                value = getattr(overrides_module, attr)
-                                if isclass(value) and issubclass(value, default_construct_class):
-                                    return getattr(overrides_module, attr)(**kwds)
-                    break
-
-        return getattr(self.__generator, class_name)(**kwds)
-
-    def __merge_comments(self, tokens):
-        comments = []
-        while len(tokens) > 0 and isinstance(tokens[0], self.__Comment):
-            comments.append(tokens.pop(0))
-        while len(tokens) > 0 and isinstance(tokens[-1], self.__Comment):
-            comments.append(tokens.pop(-1))
-        if len(comments) > 0:
-            return self.__Comment("\n".join(comments))
-
-    def _parse_comment(self, tokens):
-        text = tokens[0]
-        if text.startswith('/*'):
-            text = text[2:-2]
-            lines = []
-            for line in text.splitlines():
-                if line.lstrip().startswith(' * '):
-                    line = line.lstrip().lstrip(' * ')
-                line = line.rstrip()
-                if len(line) > 0:
-                    lines.append(line)
-            text = "\n".join(lines)
-        elif text.startswith('//'):
-            text = text[2:].strip()
-        elif text.startswith('#'):
-            text = text[2:].strip()
-        else:
-            raise NotImplementedError(text)
-
-        return [self.__Comment(text)]
-
-    def __parse_compound_type(self, keyword, tokens):
-        compound_type = tokens[0]
-        self.__scope_stack.pop(-1)
-
-        if len(tokens) > 1:
-            for field in tokens[1]:
-                if keyword == 'enum':
-                    compound_type.enumerators.append(field)
-                else:
-                    compound_type.fields.append(field)
-
-        return [compound_type]
-
-    def __parse_compound_type_declarator(self, keyword, tokens):
-        doc = self.__merge_comments(tokens)
-
-        compound_type = \
-            self.__construct(
-                keyword.capitalize() + 'Type',
-                doc=doc,
-                name=tokens[1]
-            )
-
-        self.__scope_stack.append(compound_type)
-
-        # Insert the compound type into the type_map here to allow recursive
-        # definitions
-        self.__type_map[compound_type.thrift_qname()] = compound_type
-
-        return [compound_type]
-
-    def _parse_const(self, tokens):
-        doc = self.__merge_comments(tokens)
-        const = \
-            self.__construct(
-                'Const',
-                doc=doc,
-                name=tokens[2],
-                type=self.__resolve_type(tokens[1]),
-                value=tokens[3]
-            )
-        return [const]
-
-    def _parse_document(self, tokens):
-        doc = self.__merge_comments(tokens)
-        document = self.__scope_stack[-1]
-        document.doc = doc
-        document.definitions.extend(tokens[1])
-        document.headers.extend(tokens[0])
-        return [document]
-
-    def _parse_enum(self, tokens):
-        enum = self.__parse_compound_type('enum', tokens)[0]
-        enumerators = list(enum.enumerators)
-        del enum.enumerators[::]
-        for enumerator_i, enumerator in enumerate(enumerators):
-            enum.enumerators.append(
-                enumerator.__class__(
-                    id=enumerator_i,
-                    name=enumerator.name,
-                    parent=enumerator.parent,
-                    type=enumerator.type,
-                    value=enumerator.value
-                )
-            )
-        return [enum]
-
-    def _parse_enum_declarator(self, tokens):
-        return self.__parse_compound_type_declarator('enum', tokens)
-
-    def _parse_enumerator(self, tokens):
-        doc = self.__merge_comments(tokens)
-
-        if len(tokens) > 1:
-            value = tokens[1]
-        else:
-            value = None
-        enumerator = \
-            self.__construct(
-                'Field',
-                doc=doc,
-                name=tokens[0],
-                type=self.__resolve_type('i32'),
-                value=value
-            )
-        return [enumerator]
-
-    def _parse_exception(self, tokens):
-        return self.__parse_compound_type('exception', tokens)
-
-    def _parse_exception_declarator(self, tokens):
-        return self.__parse_compound_type_declarator('exception', tokens)
-
-    def _parse_compound_type_field(self, tokens):
-        field = tokens[0]
-        field.doc = self.__merge_comments(tokens)
-        return [field]
-
-    def _parse_field(self, tokens):
-        if isinstance(tokens[0], int) and \
-           not isinstance(tokens[0], bool):
-            id = tokens.pop(0)  # @ReservedAssignment
-        else:
-            id = None  # @ReservedAssignment
-        if isinstance(tokens[0], bool):
-            required = tokens.pop(0)
-        else:
-            required = True
-        type = self.__resolve_type(tokens.pop(0))  # @ReservedAssignment
-        name = tokens.pop(0)
-        if len(tokens) > 0:
-            value = tokens.pop(0)
-        else:
-            value = None
-
-        field = \
-            self.__construct(
-                'Field',
-                id=id,
-                name=name,
-                required=required,
-                type=type,
-                value=value
-            )
-
-        return [field]
-
-    def _parse_function(self, tokens):
-        function = tokens.pop(0)
-        self.__scope_stack.pop(-1)
-
-        while len(tokens) > 0:
-            if tokens[0] == 'throws':
-                tokens.pop(0)
-                function.throws.extend(tokens.pop(0))
-            else:
-                function.parameters.extend(tokens.pop(0))
-
-        doc = function.doc
-        if doc is not None and len(doc) > 0:
-            for doc_line in doc.split("\n"):
-                # print doc_line
-                doc_line = doc_line.lstrip().lstrip('*').lstrip()
-
-        return [function]
-
-    def _parse_function_declarator(self, tokens):
-        doc = self.__merge_comments(tokens)
-
-        if tokens[0] == 'oneway':
-            tokens.pop(0)
-            oneway = True
-        else:
-            oneway = False
-
-        return_type_name = tokens.pop(0)
-        if return_type_name == 'void':
-            return_type = None
-        else:
-            return_type = self.__resolve_type(return_type_name)
-
-        function = \
-            self.__construct(
-                'Function',
-                doc=doc,
-                name=tokens[0],
-                oneway=oneway,
-                return_type=return_type
-            )
-
-        self.__scope_stack.append(function)
-
-        return [function]
-
-    def _parse_include(self, tokens):
-        include_dir_paths = list(self.__include_dir_paths)
-        for scope in reversed(self.__scope_stack):
-            if isinstance(scope, Document):
-                include_dir_paths.append(os.path.dirname(scope.path))
-                break
-
-        include_file_relpath = tokens[1]
-        for include_dir_path in include_dir_paths:
-            include_file_path = os.path.join(include_dir_path, include_file_relpath)
-            if os.path.exists(include_file_path):
-                include_file_path = os.path.abspath(include_file_path)
-                document = self.compile((include_file_path,))[0]
-                include = \
-                    self.__construct(
-                        'Include',
-                        document=document,
-                        path=include_file_relpath
-                    )
-                return [include]
-        raise RuntimeError("include path not found: %s" % include_file_relpath)
-
-    def _parse_list_type(self, tokens):
-        return self.__parse_sequence_type('list', tokens)
-
-    def _parse_map_type(self, tokens):
-        key_type = self.__resolve_type(tokens[1])
-        value_type = self.__resolve_type(tokens[2])
-        map_type = \
-            self.__construct(
-                'MapType',
-                key_type=key_type,
-                name="map<%s, %s>" % (key_type.thrift_qname(), value_type.thrift_qname()),
-                value_type=value_type
-            )
-        return [map_type]
-
-    def _parse_namespace(self, tokens):
-        namespace = \
-            self.__construct(
-                'Namespace',
-                name=tokens[2],
-                scope=tokens[1]
-            )
-        return [namespace]
-
-    def __parse_sequence_type(self, keyword, tokens):
-        assert tokens[0] == keyword
-        element_type = self.__resolve_type(tokens[1])
-        sequence_type = \
-            self.__construct(
-                keyword.capitalize() + 'Type',
-                element_type=element_type,
-                name="%s<%s>" % (keyword, element_type.thrift_qname())
-            )
-        return [sequence_type]
-
-    def _parse_service(self, tokens):
-        service = tokens[0]
-        self.__scope_stack.pop(-1)
-
-        if len(tokens) > 1:
-            service.functions.extend(tokens[1])
-
-        return [service]
-
-    def _parse_service_declarator(self, tokens):
-        doc = self.__merge_comments(tokens)
-
-        service = \
-            self.__construct(
-                'Service',
-                doc=doc,
-                extends=len(tokens) > 1 and tokens[2] or None,
-                name=tokens[0]
-            )
-
-        self.__scope_stack.append(service)
-
-        return [service]
-
-    def _parse_set_type(self, tokens):
-        return self.__parse_sequence_type('set', tokens)
-
-    def _parse_struct(self, tokens):
-        return self.__parse_compound_type('struct', tokens)
-
-    def _parse_struct_declarator(self, tokens):
-        return self.__parse_compound_type_declarator('struct', tokens)
-
-    def _parse_typedef(self, tokens):
-        doc = self.__merge_comments(tokens)
-
-        typedef = \
-            self.__construct(
-                'Typedef',
-                doc=doc,
-                name=tokens[2],
-                type=self.__resolve_type(tokens[1])
-            )
-
-        self.__type_map[typedef.thrift_qname()] = typedef.type
-
-        return [typedef]
-
-    def __resolve_type(self, type_):
-        if isinstance(type_, _Type):
-            return type_
-        type_name = type_
-        try:
-            return self.__type_map[type_name]
-        except KeyError:
-            if type_name in self.__grammar.base_type_names:
-                return getattr(self.__generator, type_name.capitalize() + 'Type')(name=type_name)
-            elif not '.' in type_name:
-                document = self.__scope_stack[0]
-                type_qname = document.name + '.' + type_name
-                return self.__type_map[type_qname]
-            else:
-                raise
-
-    @staticmethod
-    def _wrap_parse_action(parse_action):
-        def wrapped_parse_action(in_tokens):
-            print parse_action
-            in_tokens_copy = list(in_tokens)
-            try:
-                out_tokens = parse_action(in_tokens_copy)
-                logging.debug(
-                    "parsed %s with %s -> %s",
-                    in_tokens,
-                    parse_action,
-                    out_tokens
-                )
-                return out_tokens
-            except:
-                logging.error(
-                    "error parsing %s with %s",
-                    in_tokens,
-                    parse_action,
-                    exc_info=True
-                )
-                raise
-        return lambda in_tokens: wrapped_parse_action(in_tokens)
