@@ -73,6 +73,12 @@ class Parser(GenericParser):
 
         return doc, start_token, stop_token
 
+    def parse(self, tokens):
+        discard_token_types = (Token.Type.EOL, Token.Type.WS)
+        tokens = [token for token in tokens
+                  if token.type not in discard_token_types]
+        return GenericParser.parse(self, tokens)
+
     def p_base_type(self, args):
         '''
         base_type ::= KEYWORD_BINARY

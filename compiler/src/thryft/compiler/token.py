@@ -48,6 +48,7 @@ class Token(object):
         RIGHT_SQUARE_BRACKET = None
         SEMICOLON = None
         UNDERSCORE = None
+        WS = None
 
     for __attr in dir(Type):
         if __attr[0] == '_' or __attr != __attr.upper():

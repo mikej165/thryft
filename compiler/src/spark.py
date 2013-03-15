@@ -1,5 +1,5 @@
 #  Copyright (c) 1998-2000 John Aycock
-#
+#  
 #  Permission is hereby granted, free of charge, to any person obtaining
 #  a copy of this software and associated documentation files (the
 #  "Software"), to deal in the Software without restriction, including
@@ -7,10 +7,10 @@
 #  distribute, sublicense, and/or sell copies of the Software, and to
 #  permit persons to whom the Software is furnished to do so, subject to
 #  the following conditions:
-#
+#  
 #  The above copyright notice and this permission notice shall be
 #  included in all copies or substantial portions of the Software.
-#
+#  
 #  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 #  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 #  MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
@@ -39,11 +39,11 @@ def _namelist(instance):
 class GenericScanner:
 	def __init__(self):
 		pattern = self.reflect()
-		self.re = re.compile(pattern)
+		self.re = re.compile(pattern, re.VERBOSE)
 
 		self.index2func = {}
 		for name, number in self.re.groupindex.items():
-			self.index2func[number - 1] = getattr(self, 't_' + name)
+			self.index2func[number-1] = getattr(self, 't_' + name)
 
 	def makeRE(self, name):
 		doc = getattr(self, name).__doc__
@@ -72,12 +72,9 @@ class GenericScanner:
 				self.error(s, pos)
 
 			groups = m.groups()
-			groups_matched = 0
 			for i in range(len(groups)):
 				if groups[i] and self.index2func.has_key(i):
-					self.index2func[i](m.start(), groups[i])
-					groups_matched += 1
-			assert groups_matched <= 1
+					self.index2func[i](groups[i])
 			pos = m.end()
 
 	def t_default(self, s):
@@ -107,12 +104,12 @@ class GenericParser:
 		index = []
 		for i in range(len(rules)):
 			if rules[i] == '::=':
-				index.append(i - 1)
+				index.append(i-1)
 		index.append(len(rules))
 
-		for i in range(len(index) - 1):
+		for i in range(len(index)-1):
 			lhs = rules[index[i]]
-			rhs = rules[index[i] + 2:index[i + 1]]
+			rhs = rules[index[i]+2:index[i+1]]
 			rule = (lhs, tuple(rhs))
 
 			rule, fn = self.preprocess(rule, func)
@@ -138,7 +135,7 @@ class GenericParser:
 		#  to self.addRule() because the start rule shouldn't
 		#  be subject to preprocessing.
 		#
-		startRule = (self._START, (start, self._EOF))
+		startRule = (self._START, ( start, self._EOF ))
 		self.rule2func[startRule] = lambda args: args[0]
 		self.rules[self._START] = [ startRule ]
 		self.rule2name[startRule] = ''
@@ -147,7 +144,7 @@ class GenericParser:
 	def makeFIRST(self):
 		union = {}
 		self.first = {}
-
+		
 		for rulelist in self.rules.values():
 			for lhs, rhs in rulelist:
 				if not self.first.has_key(lhs):
@@ -177,7 +174,7 @@ class GenericParser:
 	#  "An Efficient Context-Free Parsing Algorithm", Ph.D. thesis,
 	#  Carnegie-Mellon University, August 1968, p. 27.
 	#
-
+	
 	def typestring(self, token):
 		return None
 
@@ -189,23 +186,23 @@ class GenericParser:
 		tree = {}
 		tokens.append(self._EOF)
 		states = { 0: [ (self.startRule, 0, 0) ] }
-
+		
 		if self.ruleschanged:
 			self.makeFIRST()
 
 		for i in xrange(len(tokens)):
-			states[i + 1] = []
+			states[i+1] = []
 
 			if states[i] == []:
-				break
+				break				
 			self.buildState(tokens[i], states, i, tree)
 
-		# _dump(tokens, states)
+		#_dump(tokens, states)
 
-		if i < len(tokens) - 1 or states[i + 1] != [(self.startRule, 2, 0)]:
+		if i < len(tokens)-1 or states[i+1] != [(self.startRule, 2, 0)]:
 			del tokens[-1]
-			self.error(tokens[i - 1])
-		rv = self.buildTree(tokens, tree, ((self.startRule, 2, 0), i + 1))
+			self.error(tokens[i-1])
+		rv = self.buildTree(tokens, tree, ((self.startRule, 2, 0), i+1))
 		del tokens[-1]
 		return rv
 
@@ -213,7 +210,7 @@ class GenericParser:
 		needsCompletion = {}
 		state = states[i]
 		predicted = {}
-
+		
 		for item in state:
 			rule, pos, parent = item
 			lhs, rhs = rule
@@ -232,9 +229,9 @@ class GenericParser:
 					prule, ppos, pparent = pitem
 					plhs, prhs = prule
 
-					if prhs[ppos:ppos + 1] == (lhs,):
+					if prhs[ppos:ppos+1] == (lhs,):
 						new = (prule,
-						       ppos + 1,
+						       ppos+1,
 						       pparent)
 						if new not in state:
 							state.append(new)
@@ -257,7 +254,7 @@ class GenericParser:
 				#  may not all be present when it runs.
 				#
 				if needsCompletion.has_key(nextSym):
-					new = (rule, pos + 1, parent)
+					new = (rule, pos+1, parent)
 					olditem_i = needsCompletion[nextSym]
 					if new not in state:
 						state.append(new)
@@ -322,8 +319,8 @@ class GenericParser:
 			#  A -> a . c (scanner)
 			#
 			elif token == nextSym:
-				# assert new not in states[i+1]
-				states[i + 1].append((rule, pos + 1, parent))
+				#assert new not in states[i+1]
+				states[i+1].append((rule, pos+1, parent))
 
 	def buildTree(self, tokens, tree, root):
 		stack = []
@@ -332,7 +329,7 @@ class GenericParser:
 
 	def buildTree_r(self, stack, tokens, tokpos, tree, root):
 		(rule, pos, parent), state = root
-
+		
 		while pos > 0:
 			want = ((rule, pos, parent), state)
 			if not tree.has_key(want):
@@ -361,14 +358,14 @@ class GenericParser:
 					child = self.ambiguity(children)
 				else:
 					child = children[0]
-
+				
 				tokpos = self.buildTree_r(stack,
 							  tokens, tokpos,
 							  tree, child)
 				pos = pos - 1
 				(crule, cpos, cparent), cstate = child
 				state = cparent
-
+				
 		lhs, rhs = rule
 		result = self.rule2func[rule](stack[:len(rhs)])
 		stack[:len(rhs)] = [result]
@@ -377,10 +374,10 @@ class GenericParser:
 	def ambiguity(self, children):
 		#
 		#  XXX - problem here and in collectRules() if the same
-		# 	 rule appears in >1 method.  But in that case the
-		# 	 user probably gets what they deserve :-)  Also
-		# 	 undefined results if rules causing the ambiguity
-		# 	 appear in the same method.
+		#	 rule appears in >1 method.  But in that case the
+		#	 user probably gets what they deserve :-)  Also
+		#	 undefined results if rules causing the ambiguity
+		#	 appear in the same method.
 		#
 		sortlist = []
 		name2index = {}
@@ -391,7 +388,7 @@ class GenericParser:
 			sortlist.append((len(rhs), name))
 			name2index[name] = i
 		sortlist.sort()
-		list = map(lambda (a, b): b, sortlist)
+		list = map(lambda (a,b): b, sortlist)
 		return children[name2index[self.resolve(list)]]
 
 	def resolve(self, list):
@@ -416,8 +413,8 @@ class GenericASTBuilder(GenericParser):
 		self.AST = AST
 
 	def preprocess(self, rule, func):
-		rebind = lambda lhs, self = self: \
-				lambda args, lhs = lhs, self = self: \
+		rebind = lambda lhs, self=self: \
+				lambda args, lhs=lhs, self=self: \
 					self.buildASTNode(args, lhs)
 		lhs, rhs = rule
 		return rule, rebind(lhs)
@@ -514,8 +511,8 @@ class GenericASTMatcher(GenericParser):
 		self.ast = ast
 
 	def preprocess(self, rule, func):
-		rebind = lambda func, self = self: \
-				lambda args, func = func, self = self: \
+		rebind = lambda func, self=self: \
+				lambda args, func=func, self=self: \
 					self.foundMatch(args, func)
 		lhs, rhs = rule
 		rhslist = list(rhs)

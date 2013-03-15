@@ -36,6 +36,7 @@ from thryft_test import _test
 
 class ScannerTest(_test._Test):
     def _runTest(self, thrift_file_path):
+#        import os.path
 #        if os.path.split(thrift_file_path)[1] != 'comment.thrift':
 #            return
         tokens = Scanner().tokenize(thrift_file_path)
@@ -44,12 +45,10 @@ class ScannerTest(_test._Test):
 #        for token in tokens:
 #            print token.type, ':', len(token.text), ':', token.text
 #        print
-#        actual_text = ''.join(token.text for token in tokens)
-#        with open(thrift_file_path, 'rb') as thrift_file:
-#            actual_text = actual_text.replace(' ', '').replace("\r", '').replace("\t", '')
-#            expected_text = thrift_file.read()
-#            expected_text = expected_text.replace(' ', '').replace("\r", '').replace("\t", '')
-#            self.assertEquals(expected_text, actual_text)
+        actual_text = ''.join(token.text for token in tokens)
+        with open(thrift_file_path, 'rb') as thrift_file:
+            expected_text = thrift_file.read()
+            self.assertEquals(expected_text, actual_text)
 
 def load_tests(*args, **kwds):
     return ScannerTest.suite()
