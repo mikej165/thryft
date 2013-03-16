@@ -38,7 +38,7 @@ class LoggingServiceJavaGenerator(java_generator.JavaGenerator):
                 parameters_toString = indent(' ' * 4, """
 try {
     __logMessageStringWriter = new java.io.StringWriter();
-    __logMessageProtocol = new org.thryft.core.protocol.LogMessageProtocol(__logMessageStringWriter);               
+    __logMessageProtocol = new org.thryft.core.protocol.LogMessageProtocol(__logMessageStringWriter);
     new Messages.%(java_name)sRequest(%(parameter_names)s).write(__logMessageProtocol);
     __logMessageProtocol.flush();
     __logMessageStringBuilder.append(__logMessageStringWriter.toString());
@@ -80,7 +80,7 @@ return __returnValue;
 """ % locals()
             else:
                 service_call += """
-logger.info(__logMessageStringBuilder.toString());                
+logger.info(__logMessageStringBuilder.toString());
 """
             service_call = indent(' ' * 4, service_call)
             if len(self.throws) > 0:
@@ -111,7 +111,7 @@ public %(return_type_name)s %(java_name)s(%(parameters)s)%(throws)s {
         __logMessageStringBuilder.append((String)currentUser.getPrincipal());
         __logMessageStringBuilder.append(": " );
     }
-    
+
     __logMessageStringBuilder.append("%(name)s(");%(parameters_toString)s
     __logMessageStringBuilder.append(")");
 
@@ -126,6 +126,7 @@ public %(return_type_name)s %(java_name)s(%(parameters)s)%(throws)s {
             name = self._java_name()
             service_qname = JavaService.java_qname(self)
             return """\
+@com.google.inject.Inject
 public %(name)s(final %(service_qname)s service) {
     this.service = service;
 }""" % locals()
@@ -152,7 +153,7 @@ public %(name)s(final %(service_qname)s service) {
             service_qname = self.java_qname()
 
             return """\
-@com.google.inject.Singleton           
+@com.google.inject.Singleton
 public class %(name)s implements %(service_qname)s {
 %(sections)s
 }""" % locals()

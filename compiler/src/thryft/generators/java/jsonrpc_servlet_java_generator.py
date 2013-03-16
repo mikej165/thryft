@@ -4,11 +4,8 @@ from thryft.generators.java import _servlet_java_generator
 
 class JsonrpcServletJavaGenerator(_servlet_java_generator._ServletJavaGenerator):
     class Document(_servlet_java_generator._ServletJavaGenerator._Document):
-        def java_package(self):
-            old_package = _servlet_java_generator._ServletJavaGenerator._Document.java_package(self)
-            old_package_split = old_package.split('.')
-            new_package = '.'.join(old_package_split[:-3] + ['server', 'controllers', 'api', 'jsonrpc'] + [old_package_split[-1]])
-            return new_package
+        def __init__(self, **kwds):
+            _servlet_java_generator._ServletJavaGenerator._Document.__init__(self, servlet_type='jsonrpc', **kwds)
 
     class Function(_servlet_java_generator._ServletJavaGenerator._Function):
         def __repr__(self):
@@ -62,10 +59,7 @@ private void __doPost%(upper_camelized_name)s(final javax.servlet.http.HttpServl
 
     class Service(_servlet_java_generator._ServletJavaGenerator._Service):
         def _java_name(self, boxed=False):
-            old_name = _servlet_java_generator._ServletJavaGenerator._Service.java_name(self)
-            assert old_name.endswith('Service')
-            new_name = old_name[:-len('Service')] + 'JsonrpcApiController'
-            return new_name
+            return _servlet_java_generator._ServletJavaGenerator._Service.java_name(self) + 'JsonrpcServlet'
 
         def _java_constructor(self):
             name = self._java_name()

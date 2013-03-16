@@ -7,11 +7,8 @@ from yutil import indent, rpad
 
 class RestServletJavaGenerator(_servlet_java_generator._ServletJavaGenerator, _RestGenerator):
     class Document(_servlet_java_generator._ServletJavaGenerator._Document):
-        def java_package(self):
-            old_package = _servlet_java_generator._ServletJavaGenerator._Document.java_package(self)
-            old_package_split = old_package.split('.')
-            new_package = '.'.join(old_package_split[:-3] + ['server', 'controllers', 'api', 'rest'] + [old_package_split[-1]])
-            return new_package
+        def __init__(self, **kwds):
+            _servlet_java_generator._ServletJavaGenerator._Document.__init__(self, servlet_type='rest', **kwds)
 
     class Function(_servlet_java_generator._ServletJavaGenerator._Function, _RestGenerator._RestFunction):
         def java_message_types(self):
@@ -193,10 +190,7 @@ try {
 
     class Service(_servlet_java_generator._ServletJavaGenerator._Service, _RestGenerator._RestService):
         def _java_name(self, boxed=False):
-            old_name = _servlet_java_generator._ServletJavaGenerator._Service.java_name(self)
-            assert old_name.endswith('Service')
-            new_name = old_name[:-len('Service')] + 'RestApiController'
-            return new_name
+            return _servlet_java_generator._ServletJavaGenerator._Service.java_name(self) + 'RestServlet'
 
         def _java_constructor(self):
             name = self._java_name()
@@ -225,8 +219,8 @@ public %(name)s(final %(service_qname)s service) {
                 dispatches = []
                 functions_by_path_info_prefix = functions_by_request_method[request_method]
                 path_info_prefixes = []
-                # Arrange the path_info_prefixes to do longest match first
-                for path_info_prefix in sorted(functions_by_path_info_prefix.iterkeys()):
+                # Arrange the path_info_prefixes to do longest match first, giving alphanums precedence over /
+                for path_info_prefix in sorted(functions_by_path_info_prefix.iterkeys(), lambda left, right: cmp(left.replace('/', '|'), right.replace('/', '|'))):
                     inserted_path_info_prefix = False
                     for other_path_info_prefix_i, other_path_info_prefix in enumerate(path_info_prefixes):
                         if path_info_prefix.startswith(other_path_info_prefix):
@@ -246,20 +240,20 @@ public %(name)s(final %(service_qname)s service) {
                 have_else = False
                 for path_info_prefix in path_info_prefixes:
                     functions = functions_by_path_info_prefix[path_info_prefix]
-                    assert len(functions) == 1, "%(request_method)s %(path_info_prefix)s" % locals()
-                    for function in functions:
-                        private_name = '__do' + function.java_name()[0].upper() + function.java_name()[1:]
-                        if len(path_info_prefix) > 0:
-                            dispatches.append("""\
+                    # assert len(functions) == 1, "%(request_method)s %(path_info_prefix)s " % locals() + ' '.join(function.name for function in functions)
+                    function = functions[0]
+                    private_name = '__do' + function.java_name()[0].upper() + function.java_name()[1:]
+                    if len(path_info_prefix) > 0:
+                        dispatches.append("""\
 if (request.getPathInfo().startsWith("%(path_info_prefix)s")) {
     %(private_name)s(request, response);
 }""" % locals())
-                        else:
-                            dispatches.append("""\
+                    else:
+                        dispatches.append("""\
 {
     %(private_name)s(request, response);
 }""" % locals())
-                            have_else = True
+                        have_else = True
                 if not have_else:
                     dispatches.append('''\
 {
@@ -289,8 +283,6 @@ public void do%(request_method_camelized)s(final javax.servlet.http.HttpServletR
             name = self._java_name()
 
             sections = []
-
-            sections.append("public final static String PATH_PREFIX = \"%s\";" % self.rest_path_prefix())
 
             message_types = []
             for function in self.functions:
