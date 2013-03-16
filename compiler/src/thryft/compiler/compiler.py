@@ -286,7 +286,7 @@ class Compiler(object):
 
             return typedef
 
-    def __init__(self, generator, include_dir_paths=None):
+    def __init__(self, include_dir_paths=None):
         object.__init__(self)
 
         if include_dir_paths is None:
@@ -309,21 +309,27 @@ class Compiler(object):
 
         self.__scanner = Scanner()
         self.__parser = Parser()
-        self.__ast_visitor = self.__AstVisitor(compiler=self, generator=generator, include_dir_paths=include_dir_paths)
 
-    def __call__(self, thrift_file_paths):
+    def __call__(self, thrift_file_paths, generator=None):
         return self.compile(thrift_file_paths)
 
-    def compile(self, thrift_file_paths):  # @ReservedAssignment
+    def compile(self, thrift_file_paths, generator=None):
         if not isinstance(thrift_file_paths, (list, tuple)):
             thrift_file_paths = (thrift_file_paths,)
 
         documents = []
         for thrift_file_path in thrift_file_paths:
             tokens = self.__scanner.tokenize(thrift_file_path)
-            ast = self.__parser.parse(tokens)
-            if not isinstance(ast, Ast.DocumentNode):
-                continue
-            document = ast.accept(self.__ast_visitor)
-            documents.append(document)
+            document_node = self.__parser.parse(tokens)
+            if generator is not None:
+                ast_visitor = \
+                    self.__AstVisitor(
+                        compiler=self,
+                        generator=generator,
+                        include_dir_paths=self.__include_dir_paths
+                    )
+                document = document_node.accept(ast_visitor)
+                documents.append(document)
+            else:
+                documents.append(document_node)
         return documents
