@@ -215,7 +215,7 @@ class Compiler(object):
                             path=include_file_relpath
                         )
                     return include
-            raise RuntimeError("include path not found: %s" % include_file_relpath)
+            raise CompileException("include path not found: %s" % include_file_relpath)
 
         def visit_list_type_node(self, list_type_node):
             return self.__visit_sequence_type_node('ListType', list_type_node)
