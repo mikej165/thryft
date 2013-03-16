@@ -35,7 +35,9 @@ from thryft.compiler.ast import Ast
 from thryft.compiler.compile_exception import CompileException
 from thryft.compiler.parser import Parser
 from thryft.compiler.scanner import Scanner
+from thryft.generator._type import _Type
 from thryft.generator.document import Document
+from thryft.generator.typedef import Typedef
 import imp
 import logging
 import os.path
@@ -207,13 +209,16 @@ class Compiler(object):
                 include_file_path = os.path.join(include_dir_path, include_file_relpath)
                 if os.path.exists(include_file_path):
                     include_file_path = os.path.abspath(include_file_path)
-                    document = self.__compiler.compile((include_file_path,))[0]
+                    included_document = self.__compiler.compile((include_file_path,), generator=self.__generator)[0]
                     include = \
                         self.__construct(
                             'Include',
-                            document=document,
+                            document=included_document,
                             path=include_file_relpath
                         )
+                    for definition in included_document.definitions:
+                        if isinstance(definition, _Type) or isinstance(definition, Typedef):
+                            self.__type_cache[definition.thrift_qname()] = definition
                     return include
             raise CompileException("include path not found: %s" % include_file_relpath)
 
@@ -306,12 +311,18 @@ class Compiler(object):
             ))
         if not lib_thrift_src_dir_path in include_dir_paths:
             include_dir_paths.append(lib_thrift_src_dir_path)
+        self.__include_dir_paths = []
+        for include_dir_path in include_dir_paths:
+            if not include_dir_path in self.__include_dir_paths:
+                self.__include_dir_paths.append(include_dir_path)
+        self.__include_dir_paths = tuple(self.__include_dir_paths)
 
+        self.__parsed_thrift_files_by_path = {}
         self.__scanner = Scanner()
         self.__parser = Parser()
 
     def __call__(self, thrift_file_paths, generator=None):
-        return self.compile(thrift_file_paths)
+        return self.compile(thrift_file_paths, generator=generator)
 
     def compile(self, thrift_file_paths, generator=None):
         if not isinstance(thrift_file_paths, (list, tuple)):
@@ -319,8 +330,12 @@ class Compiler(object):
 
         documents = []
         for thrift_file_path in thrift_file_paths:
-            tokens = self.__scanner.tokenize(thrift_file_path)
-            document_node = self.__parser.parse(tokens)
+            thrift_file_path = os.path.abspath(thrift_file_path)
+            document_node = self.__parsed_thrift_files_by_path.get(thrift_file_path)
+            if document_node is None:
+                tokens = self.__scanner.tokenize(thrift_file_path)
+                document_node = self.__parser.parse(tokens)
+                self.__parsed_thrift_files_by_path[thrift_file_path] = document_node
             if generator is not None:
                 ast_visitor = \
                     self.__AstVisitor(
