@@ -368,3 +368,7 @@ class Compiler(object):
             else:
                 documents.append(document_node)
         return tuple(documents)
+
+    @property
+    def include_dir_paths(self):
+        return self.__include_dir_paths

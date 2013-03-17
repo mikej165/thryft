@@ -11,5 +11,5 @@ sys.path.append(
     ))
 )
 
-import thryft.__main__
-thryft.__main__.main()
+import thryft.main
+thryft.main.Main.main()

@@ -78,10 +78,10 @@ class Parser(GenericParser):
                     out_doc_tags = {}
                     for doc_line in out_doc_lines:
                         if doc_line.startswith('@') and len(doc_line) > 1:
-                            value_split = doc_line.split(None, 1)
-                            tag = value_split[0][1:].lower()
-                            if len(value_split) == 2:
-                                out_doc_tags[tag] = value_split[1].rstrip()
+                            doc_line_split = doc_line.split(None, 1)
+                            tag = doc_line_split[0][1:].lower()
+                            if len(doc_line_split) == 2:
+                                out_doc_tags[tag] = doc_line_split[1].rstrip()
                             else:
                                 out_doc_tags[tag] = None
                         else:
@@ -461,7 +461,7 @@ class Parser(GenericParser):
                 elif tag == 'return' or tag == 'returns':
                     if return_field is None:
                         raise ParseException("'%s' refers to function with void return" % value, token=start_token)
-                    return_field.doc = value_split[1]
+                    return_field.doc = value
                 elif tag == 'throw' or tag == 'throws':
                     value_split = value.split(None, 1)
                     if len(value_split) == 2:
