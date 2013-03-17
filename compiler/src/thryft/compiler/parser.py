@@ -406,7 +406,7 @@ class Parser(GenericParser):
             for doc_line in doc.splitlines(False):
                 if doc_line.startswith('@') and len(doc_line) > 1:
                     doc_line_split = doc_line.split(None, 1)
-                    tag = doc_line_split[0][1:]
+                    tag = doc_line_split[0][1:].lower()
                     if tag == 'param':
                         doc_line_split = doc_line.split(None, 2)
                         if len(doc_line_split) == 3:
