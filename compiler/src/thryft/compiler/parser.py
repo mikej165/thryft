@@ -36,42 +36,65 @@ class Parser(GenericParser):
 
     @staticmethod
     def __p(args, doc=True, start_token=True, stop_token=True):
+        out_doc = None
         if doc:
             comments = args[0]
-            merged_comment = []
-            for comment in comments:
-                assert isinstance(comment, Token) and comment.type == Token.Type.COMMENT
-                merged_comment.append(comment.text)
-            doc = ''.join(merged_comment)
-        else:
-            doc = None
+            if len(comments) > 0:
+                out_doc_lines = []
+                for comment in comments:
+                    assert isinstance(comment, Token) and comment.type == Token.Type.COMMENT
+                    if comment.text.startswith('/*') and comment.text.endswith('*/'):
+                        doc_lines = comment.text[2:-2].splitlines(True)
+                        if len(doc_lines) > 2:
+                            javadoc_lines = []
+                            for doc_line in doc_lines[1:-1]:
+                                doc_line = doc_line.lstrip()
+                                if doc_line.startswith('*'):
+                                    javadoc_lines.append(doc_line.lstrip('*').lstrip())
+                                elif len(doc_line) == 0:
+                                    pass
+                                else:
+                                    javadoc_lines = []
+                                    break
+                        if len(javadoc_lines) > 0:
+                            out_doc_lines.extend(javadoc_lines)
+                        else:
+                            out_doc_lines.extend(doc_lines)
+                    elif comment.text.startswith('//'):
+                        doc_line = comment.text[2:].lstrip()
+                        if len(doc_line) > 0:
+                            out_doc_lines.append(doc_line)
+                    elif comment.text.startswith('#'):
+                        doc_line = comment.text[1:].lstrip()
+                        if len(doc_line) > 0:
+                            out_doc_lines.append(doc_line)
+                    else:
+                        raise NotImplementedError
+                if len(out_doc_lines) > 0:
+                    out_doc = ''.join(out_doc_lines)
 
+        out_start_token = None
         if start_token:
-            start_token = None
-            if doc is not None:
+            if doc:
                 comments = args[0]
                 if len(comments) > 0:
-                    start_token = comments[0]
-            if start_token is None:
+                    out_start_token = comments[0]
+            if out_start_token is None:
                 for arg in args:
                     if isinstance(arg, Token):
-                        start_token = arg
+                        out_start_token = arg
                         break
-        else:
-            stop_token = None
 
+        out_stop_token = None
         if stop_token:
-            stop_token = None
             for arg in reversed(args):
                 if isinstance(arg, Token):
-                    stop_token = arg
+                    out_stop_token = arg
                     break
-            if stop_token is None:
-                stop_token = start_token
-        else:
-            stop_token = None
+            if out_stop_token is None:
+                out_stop_token = out_start_token
 
-        return doc, start_token, stop_token
+        return out_doc, out_start_token, out_stop_token
 
     def parse(self, tokens):
         discard_token_types = (Token.Type.EOL, Token.Type.WS)
@@ -344,16 +367,45 @@ class Parser(GenericParser):
 
     def __p_function(self, args):
         doc, start_token, stop_token = self.__p(args)
+        function_name = args[3].text
+        parameters = args[5]
+        throws = args[7]
+
+        if doc is not None:
+            parameters_by_name = dict((parameter.name, parameter) for parameter in parameters)
+            throws_by_exception_type_name = dict((throw.type.name, throw) for throw in throws)
+            for doc_line in doc.splitlines(False):
+                if doc_line.startswith('@') and len(doc_line) > 1:
+                    tag = doc_line.split(None, 1)[0][1:]
+                    if tag == 'param':
+                        doc_line_split = doc_line.split(None, 2)
+                        if len(doc_line_split) == 3:
+                            param_name = doc_line_split[1].rstrip(':')
+                            try:
+                                parameter = parameters_by_name[param_name]
+                            except KeyError:
+                                raise ParseException("'%s' refers to unknown parameter '%s'" % (doc_line, param_name), token=start_token)
+                            parameter.doc = doc_line_split[2]
+                    elif tag == 'throw' or tag == 'throws':
+                        doc_line_split = doc_line.split(None, 2)
+                        if len(doc_line_split) == 3:
+                            exception_type_name = doc_line_split[1]
+                            try:
+                                throw = throws_by_exception_type_name[exception_type_name]
+                            except KeyError:
+                                raise ParseException("'%s' refers to unknown exception type '%s'" % (doc_line, exception_type_name), token=start_token)
+                            throw.doc = doc_line_split[2]
+
         return \
             Ast.FunctionNode(
                 doc=doc,
-                name=args[3].text,
+                name=function_name,
                 oneway=args[1],
-                parameters=args[5],
+                parameters=parameters,
                 return_type=args[2],
                 start_token=start_token,
                 stop_token=stop_token,
-                throws=args[7]
+                throws=throws
             )
 
     def p_function_oneway(self, args):

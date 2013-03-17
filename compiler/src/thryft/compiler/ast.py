@@ -24,10 +24,14 @@ class Ast(object):
         def accept(self, visitor):
             return getattr(visitor, 'visit_' + decamelize(self.__class__.__name__))(self)
 
-
         @property
         def doc(self):
             return self.__doc
+
+        @doc.setter
+        def doc(self, doc):
+            assert doc is None or isinstance(doc, str)
+            self.__doc = doc
 
         def __properties(self):
             properties = {}

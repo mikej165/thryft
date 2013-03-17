@@ -41,11 +41,6 @@ class _Construct(object):
     def doc(self):
         return self.__doc
 
-    @doc.setter
-    def doc(self, doc):
-        assert doc is None or isinstance(doc, str)
-        self.__doc = doc
-
     @property
     def parent(self):
         return self.__parent
