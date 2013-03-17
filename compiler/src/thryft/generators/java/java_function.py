@@ -107,6 +107,9 @@ public %(return_type_name)s %(name)s(%(parameters)s)%(throws)s;""" % locals()
     def java_name(self, boxed=False):
         return lower_camelize(self.name)
 
+    def java_qname(self, boxed=False):
+        return self.parent.java_qname() + '.' + self.java_name()
+
     def java_request_type(self, **kwds):
         return self._JavaRequestType(parent_function=self, **kwds)
 

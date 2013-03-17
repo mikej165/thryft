@@ -46,7 +46,7 @@ except urllib2.HTTPError, e:
     else:
         raise""" % locals()
                 elif isinstance(self.return_field.type, _BaseType):
-                    return_type_read = self.return_type.py_read_protocol()
+                    return_type_read = self.return_field.type.py_read_protocol()
                     super_call = """\
 __return_value = %(super_call)s
 iprot = thryft.core.protocol.json_protocol.JsonProtocol(__return_value)
