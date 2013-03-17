@@ -7,6 +7,8 @@ class Ast(object):
         def __init__(self, doc=None, start_token=None, stop_token=None):
             object.__init__(self)
 
+            if doc is not None:
+                assert isinstance(doc, Ast.DocNode)
             self.__doc = doc
 
             if start_token is not None:
@@ -148,6 +150,27 @@ class Ast(object):
         def value(self):
             return self.__value
 
+    class DocNode(Node):
+        def __init__(self, tags, text, **kwds):
+            Ast.Node.__init__(self, **kwds)
+
+            assert isinstance(tags, dict)
+            self.__tags = tags
+
+            assert isinstance(text, str)
+            self.__text = text
+
+        @property
+        def tags(self):
+            return self.__tags
+
+        @property
+        def text(self):
+            return self.__text
+
+        def __str__(self):
+            return self.text
+
     class DocumentNode(Node):
         def __init__(self, headers, definitions, path, **kwds):
             Ast.Node.__init__(self, **kwds)
@@ -202,8 +225,11 @@ class Ast(object):
         pass
 
     class FieldNode(_NamedNode):
-        def __init__(self, id_, required, type_, value, **kwds):
+        def __init__(self, id_, notempty, required, type_, value, **kwds):
             Ast._NamedNode.__init__(self, **kwds)
+
+            assert isinstance(notempty, bool)
+            self.__notempty = notempty
 
             assert id_ is None or (isinstance(id_, int) and id_ >= 0), id_
             self.__id = id_
@@ -219,6 +245,15 @@ class Ast(object):
         @property
         def id(self):
             return self.__id
+
+        @property
+        def notempty(self):
+            return self.__notempty
+
+        @notempty.setter
+        def notempty(self, notempty):
+            assert isinstance(notempty, bool)
+            self.__notempty = notempty
 
         @property
         def required(self):

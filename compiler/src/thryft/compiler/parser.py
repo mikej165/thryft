@@ -36,7 +36,7 @@ class Parser(GenericParser):
 
     @staticmethod
     def __p(args, doc=True, start_token=True, stop_token=True):
-        out_doc = None
+        out_doc_node = None
         if doc:
             comments = args[0]
             if len(comments) > 0:
@@ -72,8 +72,21 @@ class Parser(GenericParser):
                             out_doc_lines.append(doc_line)
                     else:
                         raise NotImplementedError
+
                 if len(out_doc_lines) > 0:
-                    out_doc = ''.join(out_doc_lines)
+                    out_doc_text = []
+                    out_doc_tags = {}
+                    for doc_line in out_doc_lines:
+                        if doc_line.startswith('@') and len(doc_line) > 1:
+                            value_split = doc_line.split(None, 1)
+                            tag = value_split[0][1:].lower()
+                            if len(value_split) == 2:
+                                out_doc_tags[tag] = value_split[1].rstrip()
+                            else:
+                                out_doc_tags[tag] = None
+                        else:
+                            out_doc_text.append(doc_line)
+                    out_doc_node = Ast.DocNode(tags=out_doc_tags, text=''.join(out_doc_text))
 
         out_start_token = None
         if start_token:
@@ -96,7 +109,7 @@ class Parser(GenericParser):
             if out_stop_token is None:
                 out_stop_token = out_start_token
 
-        return out_doc, out_start_token, out_stop_token
+        return out_doc_node, out_start_token, out_stop_token
 
     def parse(self, tokens):
         discard_token_types = (Token.Type.EOL, Token.Type.WS)
@@ -148,13 +161,19 @@ class Parser(GenericParser):
         return self.__dispatch(self.__p_compound_type_field, args)
 
     def __p_compound_type_field(self, args):
-        doc, start_token, stop_token = self.__p(args)
+        doc_node, start_token, stop_token = self.__p(args)
         field = args[1]
+        notempty = False
+        if doc_node is not None and len(doc_node.tags) > 0:
+            for tag, _value in doc_node.tags.iteritems():
+                if tag == 'notempty':
+                    notempty = True
         return \
             Ast.FieldNode(
-                doc=doc,
+                doc=doc_node,
                 id_=field.id,
                 name=field.name,
+                notempty=notempty,
                 required=field.required,
                 start_token=start_token,
                 stop_token=stop_token,
@@ -179,7 +198,7 @@ class Parser(GenericParser):
         return self.__dispatch(self.__p_const, args)
 
     def __p_const(self, args):
-        doc, start_token, stop_token = self.__p(args)
+        doc_node, start_token, stop_token = self.__p(args)
         name = args[3].text
         type_ = args[2]
         value = args[5]
@@ -209,7 +228,7 @@ class Parser(GenericParser):
                 raise NotImplementedError(type_.name)
         return \
             Ast.ConstNode(
-                doc=doc,
+                doc=doc_node,
                 name=name,
                 start_token=start_token,
                 stop_token=stop_token,
@@ -273,10 +292,10 @@ class Parser(GenericParser):
         return self.__dispatch(self.__p_enum, args)
 
     def __p_enum(self, args):
-        doc, start_token, stop_token = self.__p(args)
+        doc_node, start_token, stop_token = self.__p(args)
         return \
             Ast.EnumTypeNode(
-                doc=doc,
+                doc=doc_node,
                 enumerators=args[4],
                 name=args[2].text,
                 start_token=start_token,
@@ -290,8 +309,8 @@ class Parser(GenericParser):
         return self.__dispatch(self.__p_enumerator, args)
 
     def __p_enumerator(self, args):
-        doc, start_token, stop_token = self.__p(args)
-        return Ast.EnumeratorNode(doc=doc, name=args[1].text, start_token=start_token, stop_token=stop_token, value=args[2])
+        doc_node, start_token, stop_token = self.__p(args)
+        return Ast.EnumeratorNode(doc=doc_node, name=args[1].text, start_token=start_token, stop_token=stop_token, value=args[2])
 
     def p_enumerators(self, args):
         '''
@@ -321,8 +340,8 @@ class Parser(GenericParser):
         return self.__dispatch(self.__p_exception_type, args)
 
     def __p_exception_type(self, args):
-        doc, start_token, stop_token = self.__p(args)
-        return Ast.ExceptionTypeNode(doc=doc, name=args[2].text, fields=args[4], start_token=start_token, stop_token=stop_token)
+        doc_node, start_token, stop_token = self.__p(args)
+        return Ast.ExceptionTypeNode(doc=doc_node, name=args[2].text, fields=args[4], start_token=start_token, stop_token=stop_token)
 
     def p_field(self, args):
         '''
@@ -337,7 +356,17 @@ class Parser(GenericParser):
             id_ = args[0].value
         if args[-1] is not None:
             value = args[-1].value
-        return Ast.FieldNode(id_=id_, name=args[3].text, required=args[1], start_token=start_token, stop_token=stop_token, type_=args[2], value=value)
+        return \
+            Ast.FieldNode(
+                id_=id_,
+                name=args[3].text,
+                notempty=False,
+                required=args[1],
+                start_token=start_token,
+                stop_token=stop_token,
+                type_=args[2],
+                value=value
+            )
 
     def p_field_id(self, args):
         '''
@@ -391,48 +420,61 @@ class Parser(GenericParser):
         return self.__dispatch(self.__p_function, args)
 
     def __p_function(self, args):
-        doc, start_token, stop_token = self.__p(args)
+        doc_node, start_token, stop_token = self.__p(args)
         function_name = args[3].text
         parameters = args[5]
         if args[2] is not None:
-            return_field = Ast.FieldNode(id_=None, name='return_value', required=True, type_=args[2], value=None)
+            return_field = \
+                Ast.FieldNode(
+                    id_=None,
+                    name='return_value',
+                    notempty=False,
+                    required=True,
+                    type_=args[2],
+                    value=None
+                )
         else:
             return_field = None
         throws = args[7]
 
-        if doc is not None:
+        if doc_node is not None and len(doc_node.tags) > 0:
             parameters_by_name = dict((parameter.name, parameter) for parameter in parameters)
             throws_by_exception_type_name = dict((throw.type.name, throw) for throw in throws)
-            for doc_line in doc.splitlines(False):
-                if doc_line.startswith('@') and len(doc_line) > 1:
-                    doc_line_split = doc_line.split(None, 1)
-                    tag = doc_line_split[0][1:].lower()
-                    if tag == 'param':
-                        doc_line_split = doc_line.split(None, 2)
-                        if len(doc_line_split) == 3:
-                            param_name = doc_line_split[1].rstrip(':')
-                            try:
-                                parameter = parameters_by_name[param_name]
-                            except KeyError:
-                                raise ParseException("'%s' refers to unknown parameter '%s'" % (doc_line, param_name), token=start_token)
-                            parameter.doc = doc_line_split[2]
-                    elif tag == 'return' or tag == 'returns':
-                        if return_field is None:
-                            raise ParseException("'%s' refers to function with void return" % doc_line, token=start_token)
-                        return_field.doc = doc_line_split[1]
-                    elif tag == 'throw' or tag == 'throws':
-                        doc_line_split = doc_line.split(None, 2)
-                        if len(doc_line_split) == 3:
-                            exception_type_name = doc_line_split[1]
-                            try:
-                                throw = throws_by_exception_type_name[exception_type_name]
-                            except KeyError:
-                                raise ParseException("'%s' refers to unknown exception type '%s'" % (doc_line, exception_type_name), token=start_token)
-                            throw.doc = doc_line_split[2]
+            for tag, value in doc_node.tags.iteritems():
+                if tag == 'notempty':
+                    if value is not None:
+                        param_name = value.rstrip(':')
+                        try:
+                            parameter = parameters_by_name[param_name]
+                        except KeyError:
+                            raise ParseException("'%s' refers to unknown parameter '%s'" % (value, param_name), token=start_token)
+                        parameter.notempty = True
+                elif tag == 'param':
+                    value_split = value.split(None, 1)
+                    if len(value_split) == 2:
+                        param_name = value_split[0].rstrip(':')
+                        try:
+                            parameter = parameters_by_name[param_name]
+                        except KeyError:
+                            raise ParseException("'%s' refers to unknown parameter '%s'" % (value, param_name), token=start_token)
+                        parameter.doc = value_split[1]
+                elif tag == 'return' or tag == 'returns':
+                    if return_field is None:
+                        raise ParseException("'%s' refers to function with void return" % value, token=start_token)
+                    return_field.doc = value_split[1]
+                elif tag == 'throw' or tag == 'throws':
+                    value_split = value.split(None, 1)
+                    if len(value_split) == 2:
+                        exception_type_name = value_split[0]
+                        try:
+                            throw = throws_by_exception_type_name[exception_type_name]
+                        except KeyError:
+                            raise ParseException("'%s' refers to unknown exception type '%s'" % (value, exception_type_name), token=start_token)
+                        throw.doc = value_split[1]
 
         return \
             Ast.FunctionNode(
-                doc=doc,
+                doc=doc_node,
                 name=function_name,
                 oneway=args[1],
                 parameters=parameters,
@@ -553,10 +595,10 @@ class Parser(GenericParser):
         return self.__dispatch(self.__p_include, args)
 
     def __p_include(self, args):
-        doc, start_token, stop_token = self.__p(args)
+        doc_node, start_token, stop_token = self.__p(args)
         return \
             Ast.IncludeNode(
-                doc=doc,
+                doc=doc_node,
                 path=args[2].text[1:-1],
                 start_token=start_token,
                 stop_token=stop_token
@@ -683,10 +725,10 @@ class Parser(GenericParser):
         return self.__dispatch(self.__p_namespace, args)
 
     def __p_namespace(self, args):
-        doc, start_token, stop_token = self.__p(args)
+        doc_node, start_token, stop_token = self.__p(args)
         return \
             Ast.NamespaceNode(
-                doc=doc,
+                doc=doc_node,
                 name=args[3],
                 scope=args[2],
                 start_token=start_token,
@@ -731,10 +773,10 @@ class Parser(GenericParser):
         return self.__dispatch(self.__p_service, args)
 
     def __p_service(self, args):
-        doc, start_token, stop_token = self.__p(args)
+        doc_node, start_token, stop_token = self.__p(args)
         return \
             Ast.ServiceNode(
-                doc=doc,
+                doc=doc_node,
                 name=args[2].text,
                 functions=args[4],
                 start_token=start_token,
@@ -766,10 +808,10 @@ class Parser(GenericParser):
         return self.__dispatch(self.__p_struct_type, args)
 
     def __p_struct_type(self, args):
-        doc, start_token, stop_token = self.__p(args)
+        doc_node, start_token, stop_token = self.__p(args)
         return \
             Ast.StructTypeNode(
-                doc=doc,
+                doc=doc_node,
                 name=args[2].text,
                 fields=args[4],
                 start_token=start_token,
@@ -809,10 +851,10 @@ class Parser(GenericParser):
         return self.__dispatch(self.__p_typedef, args)
 
     def __p_typedef(self, args):
-        doc, start_token, stop_token = self.__p(args)
+        doc_node, start_token, stop_token = self.__p(args)
         return \
             Ast.TypedefNode(
-                doc=doc,
+                doc=doc_node,
                 name=args[3].text,
                 start_token=start_token,
                 stop_token=stop_token,

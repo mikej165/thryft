@@ -11,6 +11,7 @@ service TestService {
     /**
      * Long function comment
      * @param iparam input parameter
+     * Some other text
     */
     void TestFunction3(1:i32 iparam);
     bool TestFunction4();

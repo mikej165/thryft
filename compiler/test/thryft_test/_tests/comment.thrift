@@ -1,5 +1,7 @@
 /* Multi-line C-style
-    comment */
+    comment
+    @tag value
+    some other text */
 # Py-style comment
 // C++-style comment
 /* C-style comment */

@@ -30,7 +30,6 @@
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
 
-from pprint import pprint
 from thryft.compiler.parser import Parser
 from thryft.compiler.scanner import Scanner
 from thryft_test import _test
@@ -43,13 +42,13 @@ class ParserTest(_test._Test):
 #        import logging
 #        logging.basicConfig(level=logging.DEBUG)
 #        import os.path
-#        if os.path.split(thrift_file_path)[1] != 'function.thrift':
+#        if os.path.split(thrift_file_path)[1] != 'struct_type.thrift':
 #            return
         tokens = []
         try:
             tokens = Scanner().tokenize(thrift_file_path)
             ast = Parser().parse(tokens)  # @UnusedVariable
-#            pprint(ast.to_dict())
+            import pprint; pprint.pprint(ast.to_dict())
         except:
             print >> sys.stderr, 'Error parsing', thrift_file_path
             traceback.print_exc()

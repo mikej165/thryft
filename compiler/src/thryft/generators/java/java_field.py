@@ -31,8 +31,8 @@
 #-------------------------------------------------------------------------------
 
 from thryft.generator.field import Field
-from thryft.generators.java.java_bool_type import JavaBoolType
 from thryft.generators.java._java_named_construct import _JavaNamedConstruct
+from thryft.generators.java.java_bool_type import JavaBoolType
 from yutil import lower_camelize, upper_camelize, indent
 
 
@@ -87,7 +87,9 @@ public %(final)s%(type_name)s %(getter_name)s() {
         name = self.java_name()
         parent_qname = self.parent.java_qname()
         rhs = self.java_name()
-        if self.required and self.type.java_is_reference():
+        if self.notempty:
+            rhs = """org.thryft.core.Preconditions.checkNotEmpty(%(rhs)s, "%(parent_qname)s: %(name)s is empty")""" % locals()
+        elif self.required and self.type.java_is_reference():
             rhs = """com.google.common.base.Preconditions.checkNotNull(%(rhs)s, "%(parent_qname)s: missing %(name)s")""" % locals()
         return """\
 %(lhs)s = %(rhs)s;""" % locals()

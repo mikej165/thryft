@@ -38,12 +38,14 @@ class Field(_NamedConstruct):
         self,
         type,  # @ReservedAssignment
         id=None,  # @ReservedAssignment
+        notempty=False,
         required=True,
         value=None,
         **kwds
     ):
         _NamedConstruct.__init__(self, **kwds)
         self.__id = id
+        self.__notempty = notempty
         self.__type = type
         self.__required = required
         self.__value = value
@@ -51,6 +53,10 @@ class Field(_NamedConstruct):
     @property
     def id(self):  # @ReservedAssignment
         return self.__id
+
+    @property
+    def notempty(self):
+        return self.__notempty
 
     @property
     def required(self):
