@@ -70,15 +70,8 @@ class JavaFunction(Function, _JavaNamedConstruct):
                 name=parent_function.java_name() + 'Response',
                 parent=parent_function.parent
             )
-            if parent_function.return_type is not None:
-                self.fields.append(
-                    JavaField(
-                        name='return_value',
-                        parent=self,
-                        required=True,
-                        type=parent_function.return_type
-                    )
-                )
+            if parent_function.return_field is not None:
+                self.fields.append(parent_function.return_field)
 
         def _java_constructor_protocol(self):
             name = self.java_name()
@@ -96,8 +89,8 @@ public %(name)s(final org.apache.thrift.protocol.TProtocol iprot) throws org.apa
         parameters = \
             ', '.join(repr(parameter) for parameter in self.parameters)
         return_type_name = \
-            self.return_type is not None and \
-                self.return_type.java_declaration_name() or \
+            self.return_field is not None and \
+                self.return_field.type.java_declaration_name() or \
                 'void'
         throws = \
             lpad(

@@ -40,8 +40,8 @@ class PyFunction(Function, _PyNamedConstruct):
         imports = []
         for parameter in self.parameters:
             imports.extend(parameter.py_imports_use(caller_stack=caller_stack))
-        if self.return_type is not None:
-            imports.extend(self.return_type.py_imports_use(caller_stack=caller_stack))
+        if self.return_field is not None:
+            imports.extend(self.return_field.type.py_imports_use(caller_stack=caller_stack))
         imports.append('import __builtin__')
         return imports
 
@@ -80,7 +80,7 @@ def _%(name)s(%(parameters)s):
         call = ', '.join("%s=%s" % (parameter.py_name(), parameter.py_name())
                           for parameter in self.parameters)
 
-        if self.return_type is not None:
+        if self.return_field is not None:
             return_value = name + '_return_value'
             while True:
                 renamed_return_value = False
@@ -93,7 +93,7 @@ def _%(name)s(%(parameters)s):
                     break
             return_prefix = return_value + ' = '
             return_suffix = []
-            return_type_check = self.return_type.py_check(return_value)
+            return_type_check = self.return_field.type.py_check(return_value)
             return_suffix.append("""\
 if not %(return_type_check)s:
     raise TypeError(getattr(__builtin__, 'type')(%(return_value)s))""" % locals())

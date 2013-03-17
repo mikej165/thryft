@@ -56,8 +56,10 @@ class Parser(GenericParser):
                                 else:
                                     javadoc_lines = []
                                     break
-                        if len(javadoc_lines) > 0:
-                            out_doc_lines.extend(javadoc_lines)
+                            if len(javadoc_lines) > 0:
+                                out_doc_lines.extend(javadoc_lines)
+                            else:
+                                out_doc_lines.extend(doc_lines)
                         else:
                             out_doc_lines.extend(doc_lines)
                     elif comment.text.startswith('//'):
@@ -369,6 +371,10 @@ class Parser(GenericParser):
         doc, start_token, stop_token = self.__p(args)
         function_name = args[3].text
         parameters = args[5]
+        if args[2] is not None:
+            return_field = Ast.FieldNode(id_=None, name='return_value', required=True, type_=args[2], value=None)
+        else:
+            return_field = None
         throws = args[7]
 
         if doc is not None:
@@ -376,7 +382,8 @@ class Parser(GenericParser):
             throws_by_exception_type_name = dict((throw.type.name, throw) for throw in throws)
             for doc_line in doc.splitlines(False):
                 if doc_line.startswith('@') and len(doc_line) > 1:
-                    tag = doc_line.split(None, 1)[0][1:]
+                    doc_line_split = doc_line.split(None, 1)
+                    tag = doc_line_split[0][1:]
                     if tag == 'param':
                         doc_line_split = doc_line.split(None, 2)
                         if len(doc_line_split) == 3:
@@ -386,6 +393,10 @@ class Parser(GenericParser):
                             except KeyError:
                                 raise ParseException("'%s' refers to unknown parameter '%s'" % (doc_line, param_name), token=start_token)
                             parameter.doc = doc_line_split[2]
+                    elif tag == 'return' or tag == 'returns':
+                        if return_field is None:
+                            raise ParseException("'%s' refers to function with void return" % doc_line, token=start_token)
+                        return_field.doc = doc_line_split[1]
                     elif tag == 'throw' or tag == 'throws':
                         doc_line_split = doc_line.split(None, 2)
                         if len(doc_line_split) == 3:
@@ -402,7 +413,7 @@ class Parser(GenericParser):
                 name=function_name,
                 oneway=args[1],
                 parameters=parameters,
-                return_type=args[2],
+                return_field=return_field,
                 start_token=start_token,
                 stop_token=stop_token,
                 throws=throws
@@ -444,7 +455,7 @@ class Parser(GenericParser):
 
     def __p_function_return_type(self, args):
         if isinstance(args[0], Token):
-            return Ast.TypeNode(name='void')
+            return None  # void
         else:
             return args[0]
 

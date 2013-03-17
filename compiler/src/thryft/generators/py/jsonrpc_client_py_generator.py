@@ -8,15 +8,15 @@ from yutil import indent
 class JsonrpcClientPyGenerator(py_generator.PyGenerator):
     class Function(PyFunction):
         def __repr__(self):
-            if self.return_type is not None:
-                if isinstance(self.return_type, _BaseType):
+            if self.return_field is not None:
+                if isinstance(self.return_field.type, _BaseType):
                     call_prefix = 'return '
                     call_suffix = ''
                 else:
                     call_prefix = 'return_value = '
                     call_suffix = """
     iprot = thryft.core.protocol.json_protocol.JsonProtocol(return_value)
-    return %s""" % self.return_type.py_read_protocol()
+    return %s""" % self.return_field.type.py_read_protocol()
             else:
                 call_prefix = call_suffix = ''
             name = self.py_name()

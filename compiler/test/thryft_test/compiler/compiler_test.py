@@ -39,14 +39,15 @@ import traceback
 
 class CompilerTest(_test._Test):
     def _runTest(self, thrift_file_path):
-        import os.path
-        if os.path.split(thrift_file_path)[1] != 'function.thrift':
-            return
+#        import os.path
+#        if os.path.split(thrift_file_path)[1] != 'function.thrift':
+#            return
+        compiler = Compiler()
         generator = ThriftGenerator()
-        compiler = Compiler(generator=generator)
         try:
-            compiler((thrift_file_path,))
-#            print repr(documents[0])
+            documents = compiler((thrift_file_path,), generator=generator)
+            self.assertEquals(1, len(documents))
+            document_repr = repr(documents[0])  # @UnusedVariable
         except:
             print >> sys.stderr, 'Error parsing', thrift_file_path
             traceback.print_exc()

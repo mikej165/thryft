@@ -42,9 +42,9 @@ class ParserTest(_test._Test):
     def _runTest(self, thrift_file_path):
 #        import logging
 #        logging.basicConfig(level=logging.DEBUG)
-        import os.path
-        if os.path.split(thrift_file_path)[1] != 'function.thrift':
-            return
+#        import os.path
+#        if os.path.split(thrift_file_path)[1] != 'function.thrift':
+#            return
         tokens = []
         try:
             tokens = Scanner().tokenize(thrift_file_path)

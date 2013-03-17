@@ -33,8 +33,8 @@ class RestClientPyGenerator(py_generator.PyGenerator, _RestGenerator):
                 query = 'thryft.core.protocol.string_map_protocol.StringMapProtocol().writeMixed(dict((key, value) for key, value in kwds.iteritems() if value is not None)).to_string_map()'
             super_call = """self._request('%(request_method)s', %(request_url)s, data=%(data)s, query=%(query)s)""" % locals()
 
-            if self.return_type is not None:
-                if isinstance(self.return_type, BoolType) and \
+            if self.return_field is not None:
+                if isinstance(self.return_field.type, BoolType) and \
                    self.rest_request_method() in ('DELETE', 'HEAD'):
                     super_call = """\
 try:
@@ -45,7 +45,7 @@ except urllib2.HTTPError, e:
         return False
     else:
         raise""" % locals()
-                elif isinstance(self.return_type, _BaseType):
+                elif isinstance(self.return_field.type, _BaseType):
                     return_type_read = self.return_type.py_read_protocol()
                     super_call = """\
 __return_value = %(super_call)s
@@ -55,7 +55,7 @@ __return_value = %(return_type_read)s
 iprot.readListEnd()
 return __return_value""" % locals()
                 else:
-                    return_type_read = self.return_type.py_read_protocol()
+                    return_type_read = self.return_field.type.py_read_protocol()
                     super_call = """\
 __return_value = %(super_call)s
 iprot = thryft.core.protocol.json_protocol.JsonProtocol(__return_value)
@@ -77,7 +77,9 @@ def _%(name)s(%(parameters)s):
                     'import thryft.web.client.service._rest_client_service'] + \
                    PyService.py_imports_definition(self)
             for function in self.functions:
-                if function.rest_request_method() in ('DELETE', 'HEAD') and isinstance(function.return_type, BoolType):
+                if function.rest_request_method() in ('DELETE', 'HEAD') and \
+                   function.return_field is not None and \
+                   isinstance(function.return_field.type, BoolType):
                     imports.append('import urllib2')
                     break
             for function in self.functions:

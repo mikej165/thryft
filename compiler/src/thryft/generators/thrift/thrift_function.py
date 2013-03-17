@@ -40,7 +40,7 @@ class ThriftFunction(Function, _ThriftNamedConstruct):
         return "%s%s%s %s(%s)%s" % (
             self.doc is not None and rpad(repr(self.doc), "\n") or '',
             self.oneway and 'oneway ' or '',
-            self.return_type is not None and self.return_type.thrift_qname() or 'void',
+            self.return_field is not None and self.return_field.type.thrift_qname() or 'void',
             self.name,
             ', '.join(repr(parameter) for parameter in self.parameters),
             len(self.throws) > 0 and \

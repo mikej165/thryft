@@ -134,10 +134,10 @@ class Ast(object):
         def __init__(self, type_, value, **kwds):
             Ast._NamedNode.__init__(self, **kwds)
 
-            assert type_ is not None
+            assert isinstance(type_, Ast.TypeNode)
             self.__type = type_
 
-            assert value is not None
+            assert isinstance(value, Ast._LiteralNode)
             self.__value = value
 
         @property
@@ -238,7 +238,7 @@ class Ast(object):
             assert isinstance(self.value, float)
 
     class FunctionNode(_NamedNode):
-        def __init__(self, oneway, parameters, return_type, throws, **kwds):
+        def __init__(self, oneway, parameters, return_field, throws, **kwds):
             Ast._NamedNode.__init__(self, **kwds)
 
             assert isinstance(oneway, bool)
@@ -249,8 +249,9 @@ class Ast(object):
                 assert isinstance(parameter, Ast.FieldNode)
             self.__parameters = parameters
 
-            assert isinstance(return_type, Ast.TypeNode)
-            self.__return_type = return_type
+            if return_field is not None:
+                assert isinstance(return_field, Ast.FieldNode), type(return_field)
+            self.__return_field = return_field
 
             assert isinstance(throws, tuple)
             for throw in throws:
@@ -266,8 +267,8 @@ class Ast(object):
             return self.__parameters
 
         @property
-        def return_type(self):
-            return self.__return_type
+        def return_field(self):
+            return self.__return_field
 
         @property
         def throws(self):

@@ -33,7 +33,7 @@ class JsonrpcServletJavaGenerator(_servlet_java_generator._ServletJavaGenerator)
             parameters = ', '.join(['serviceRequest.' + parameter.java_getter_name() + '()'
                                     for parameter in self.parameters])
             service_call = "service.%(name)s(%(parameters)s);" % locals()
-            if self.return_type is not None:
+            if self.return_field is not None:
                 service_call = 'result = ' + service_call
             if len(self.throws) > 0:
                 catches = ' '.join(["""\

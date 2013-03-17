@@ -22,7 +22,7 @@ class LoggingServiceJavaGenerator(java_generator.JavaGenerator):
             name = self.name
 
             local_declarations = []
-            if len(self.parameters) > 0 or self.return_type is not None:
+            if len(self.parameters) > 0 or self.return_field is not None:
                 local_declarations.append('java.io.StringWriter __logMessageStringWriter;')
                 local_declarations.append('org.thryft.core.protocol.LogMessageProtocol __logMessageProtocol;')
             local_declarations.append('final StringBuilder __logMessageStringBuilder = new StringBuilder();')
@@ -52,15 +52,15 @@ try {
                 parameters_toString = ''
 
             return_type_name = \
-                self.return_type is not None and \
-                    self.return_type.java_declaration_name() or \
+                self.return_field is not None and \
+                    self.return_field.type.java_declaration_name() or \
                     'void'
 
             service_call = """\
 service.%(java_name)s(%(parameter_names)s);
 """ % locals()
-            if self.return_type is not None:
-                service_call = self.return_type.java_qname(boxed=False) + ' __returnValue = ' + service_call
+            if self.return_field is not None:
+                service_call = self.return_field.type.java_qname(boxed=False) + ' __returnValue = ' + service_call
                 service_call += """
 __logMessageStringBuilder.append(" -> ");
 try {

@@ -39,8 +39,8 @@ class RestServletJavaGenerator(_servlet_java_generator._ServletJavaGenerator, _R
             variable_declarations = []
             for parameter in self.parameters:
                 variable_declarations.append(parameter.java_local_declaration(final=False))
-            if self.return_type is not None:
-                variable_declarations.append(self.return_type.java_declaration_name() + " __return_value;")
+            if self.return_field is not None:
+                variable_declarations.append(self.return_field.type.java_declaration_name() + " __return_value;")
             if len(variable_declarations) > 0:
                 sections.append("\n".join(indent(' ' * 4, variable_declarations)))
 
@@ -110,7 +110,7 @@ try {
                     _servlet_java_generator._ServletJavaGenerator._Function.java_name(self),
                     ', '.join([parameter.java_name() for parameter in self.parameters])
                 )
-            if self.return_type is not None:
+            if self.return_field is not None:
                 service_call = '__return_value = ' + service_call
             if len(self.throws) > 0:
                 catches = ' '.join(["""\
@@ -139,10 +139,10 @@ try {
 """ % locals()
             sections.append(indent(' ' * 4, service_call))
 
-            if self.return_type is None:
+            if self.return_field is None:
                 write_response = """\
     __httpServletResponse.setStatus(204);"""
-            elif isinstance(self.return_type, JavaBoolType):
+            elif isinstance(self.return_field.type, JavaBoolType):
                 assert self.rest_request_method() in ('DELETE', 'HEAD'), self.rest_request_method()
                 write_response = """\
     if (__return_value) {
@@ -151,20 +151,20 @@ try {
         __httpServletResponse.setStatus(404);
     }""" % locals()
             else:
-                return_type_write = \
-                    indent(' ' * 8, self.return_type.java_write_protocol('__return_value'))
-                if isinstance(self.return_type, _JavaBaseType):
-                    return_ttype_id = self.return_type.thrift_ttype_id()
-                    return_type_write = """\
+                return_write = \
+                    indent(' ' * 8, self.return_field.type.java_write_protocol('__return_value'))
+                if isinstance(self.return_field.type, _JavaBaseType):
+                    return_ttype_id = self.return_field.type.thrift_ttype_id()
+                    return_write = """\
         oprot.writeListBegin(new org.apache.thrift.protocol.TList((byte)%(return_ttype_id)u, 1));
-%(return_type_write)s
+%(return_write)s
         oprot.writeListEnd();""" % locals()
                 write_http_servlet_response_body = indent(' ' * 4, self._java_write_http_servlet_response_body(variable_name_prefix='__'))
                 write_response = """\
     final java.io.StringWriter __httpServletResponseBodyWriter = new java.io.StringWriter();
     final org.thryft.core.protocol.JsonProtocol oprot = new org.thryft.core.protocol.JsonProtocol(__httpServletResponseBodyWriter);
     try {
-%(return_type_write)s
+%(return_write)s
     } catch (org.apache.thrift.TException e) {
         logger.error("error serializing service response: ", e);
         __httpServletResponse.sendError(500);

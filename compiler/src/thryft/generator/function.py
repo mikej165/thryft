@@ -1,19 +1,19 @@
 #-------------------------------------------------------------------------------
 # Copyright (c) 2013, Minor Gordon
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
 # are met:
-# 
+#
 #     * Redistributions of source code must retain the above copyright
 #       notice, this list of conditions and the following disclaimer.
-# 
+#
 #     * Redistributions in binary form must reproduce the above copyright
 #       notice, this list of conditions and the following disclaimer in
 #       the documentation and/or other materials provided with the
 #       distribution.
-# 
+#
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
 # CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
 # INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
@@ -38,7 +38,7 @@ class Function(_NamedConstruct):
         self,
         oneway=False,
         parameters=None,
-        return_type=None,
+        return_field=None,
         throws=None,
         **kwds
     ):
@@ -46,7 +46,7 @@ class Function(_NamedConstruct):
         self.__oneway = oneway
         self.__parameters = parameters is not None and list(parameters) or []
         self.__throws = throws is not None and list(throws) or []
-        self.__return_type = return_type
+        self.__return_field = return_field
 
     @property
     def oneway(self):
@@ -57,8 +57,12 @@ class Function(_NamedConstruct):
         return self.__parameters
 
     @property
-    def return_type(self):
-        return self.__return_type
+    def return_field(self):
+        return self.__return_field
+
+    @return_field.setter
+    def return_field(self, return_field):
+        self.__return_field = return_field
 
     @property
     def throws(self):

@@ -104,6 +104,9 @@ class Compiler(object):
                 self.__type_cache[base_type_node.name] = base_type
                 return base_type
 
+        def visit_bool_literal(self, bool_literal_node):
+            return bool_literal_node.value
+
         def __visit_compound_type_node(self, construct_class_name, compound_type_node):
             compound_type = \
                 self.__construct(
@@ -141,7 +144,7 @@ class Compiler(object):
                     'Const',
                     name=const_node.name,
                     type=const_node.type.accept(self),
-                    value=const_node.value
+                    value=const_node.value.accept(self)
                 )
 
         def visit_document_node(self, document_node):
@@ -175,22 +178,18 @@ class Compiler(object):
                 )
 
         def visit_function_node(self, function_node):
-            if function_node.return_type.name == 'void':
-                return_type = None
-            else:
-                return_type = function_node.return_type.accept(self)
-
             function = \
                 self.__construct(
                     'Function',
                     name=function_node.name,
-                    oneway=function_node.oneway,
-                    return_type=return_type
+                    oneway=function_node.oneway
                 )
             self.__scope_stack.append(function)
 
             for parameter_node in function_node.parameters:
                 function.parameters.append(parameter_node.accept(self))
+            if function_node.return_field is not None:
+                function.return_field = function_node.return_field.accept(self)
             for throws_node in function_node.throws:
                 function.throws.append(throws_node.accept(self))
 
@@ -221,6 +220,9 @@ class Compiler(object):
                             self.__type_cache[definition.thrift_qname()] = definition
                     return include
             raise CompileException("include path not found: %s" % include_file_relpath)
+
+        def visit_list_literal_node(self, list_literal_node):
+            return tuple(element_value.accept(self) for element_value in list_literal_node.value)
 
         def visit_list_type_node(self, list_type_node):
             return self.__visit_sequence_type_node('ListType', list_type_node)
@@ -262,6 +264,9 @@ class Compiler(object):
 
         def visit_set_type_node(self, set_type_node):
             return self.__visit_sequence_type_node('SetType', set_type_node)
+
+        def visit_string_literal_node(self, string_literal_node):
+            return string_literal_node.value
 
         def visit_struct_type_node(self, struct_type_node):
             return self.__visit_compound_type_node('StructType', struct_type_node)
@@ -347,4 +352,4 @@ class Compiler(object):
                 documents.append(document)
             else:
                 documents.append(document_node)
-        return documents
+        return tuple(documents)

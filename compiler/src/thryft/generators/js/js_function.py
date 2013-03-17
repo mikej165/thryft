@@ -63,15 +63,8 @@ class JsFunction(Function, _JsNamedConstruct):
                 name=parent_function.parent.js_name() + 'Messages.' + parent_function.js_name() + 'Response',
                 parent=parent_function.parent
             )
-            if parent_function.return_type is not None:
-                self.fields.append(
-                    JsField(
-                        name='return_value',
-                        parent=self,
-                        required=True,
-                        type=parent_function.return_type
-                    )
-                )
+            if parent_function.return_field is not None:
+                self.fields.append(parent_function.return_field)
 
     def js_message_types(self):
         return [self.js_request_type(), self.js_response_type()]
@@ -111,8 +104,8 @@ class JsFunction(Function, _JsNamedConstruct):
         jsonrpc_url += '_'.join(decamelize(self.parent.name).split('_')[:-1])
         jsonrpc_url += '\''
 
-        if self.return_type is not None:
-            jsdoc_lines.append("@return {%s}" % self.return_type.js_qname())
+        if self.return_field is not None:
+            jsdoc_lines.append("@return {%s}" % self.return_field.type.js_qname())
             response_type_qname = self.js_response_type().js_qname()
             return_value = """%(response_type_qname)s.read(new thryft.core.protocol.BuiltinsProtocol({return_value:__response.result})).get("returnValue")""" % locals()
         else:
