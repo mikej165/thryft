@@ -37,6 +37,7 @@ class JavaGenerator(Generator):
     from thryft.generators.java.java_binary_type import JavaBinaryType as BinaryType  # @UnusedImport
     from thryft.generators.java.java_bool_type import JavaBoolType as BoolType  # @UnusedImport
     from thryft.generators.java.java_byte_type import JavaByteType as ByteType  # @UnusedImport
+    from thryft.generators.java.java_const import JavaConst as Const  # @UnusedImport
     from thryft.generators.java.java_document import JavaDocument as Document  # @UnusedImport
     from thryft.generators.java.java_double_type import JavaDoubleType as DoubleType  # @UnusedImport
     from thryft.generators.java.java_enum_type import JavaEnumType as EnumType  # @UnusedImport
