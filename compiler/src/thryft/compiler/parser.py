@@ -180,14 +180,41 @@ class Parser(GenericParser):
 
     def __p_const(self, args):
         doc, start_token, stop_token = self.__p(args)
+        name = args[3].text
+        type_ = args[2]
+        value = args[5]
+        if value is not None:
+            if isinstance(type_, Ast.BaseTypeNode):
+                if type_.name == 'bool':
+                    if not isinstance(value, Ast.BoolLiteralNode):
+                        raise ParseException("expected bool literal for const '%s'" % name, token=value.start_token)
+                elif type_.name in 'double':
+                    if not isinstance(value, Ast.IntLiteralNode) and not isinstance(value, Ast.FloatLiteralNode):
+                        raise ParseException("expected int or float literal for const '%s'" % name, token=value.start_token)
+                elif type_.name in ('byte', 'i16', 'i32', 'i64'):
+                    if not isinstance(value, Ast.IntLiteralNode):
+                        raise ParseException("expected int literal for const '%s'" % name, token=value.start_token)
+                elif type_.name == 'string':
+                    if not isinstance(value, Ast.StringLiteralNode):
+                        raise ParseException("expected string literal for const '%s'" % name, token=value.start_token)
+                else:
+                    raise NotImplementedError(type_.name)
+            elif isinstance(type_, Ast.MapTypeNode):
+                if not isinstance(value, Ast.MapLiteralNode):
+                    raise ParseException("expected map literal for const '%s'" % name, token=value.start_token)
+            elif isinstance(type_, Ast.ListTypeNode) or isinstance(type_, Ast.SetTypeNode):
+                if not isinstance(value, Ast.ListLiteralNode):
+                    raise ParseException("expected list literal for const '%s'" % name, token=value.start_token)
+            else:
+                raise NotImplementedError(type_.name)
         return \
             Ast.ConstNode(
                 doc=doc,
-                name=args[3].text,
+                name=name,
                 start_token=start_token,
                 stop_token=stop_token,
-                type_=args[2],
-                value=args[5]
+                type_=type_,
+                value=value
             )
 
     def p_document(self, args):
@@ -264,11 +291,7 @@ class Parser(GenericParser):
 
     def __p_enumerator(self, args):
         doc, start_token, stop_token = self.__p(args)
-        if args[2] is not None:
-            value = args[2].value
-        else:
-            value = None
-        return Ast.EnumeratorNode(doc=doc, name=args[1].text, start_token=start_token, stop_token=stop_token, value=value)
+        return Ast.EnumeratorNode(doc=doc, name=args[1].text, start_token=start_token, stop_token=stop_token, value=args[2])
 
     def p_enumerators(self, args):
         '''
@@ -282,7 +305,7 @@ class Parser(GenericParser):
 
     def p_enumerator_value(self, args):
         '''
-        enumerator_value ::= EQUALS literal
+        enumerator_value ::= EQUALS int_literal
         enumerator_value ::=
         '''
         return self.__dispatch(self.__p_enumerator_value, args)

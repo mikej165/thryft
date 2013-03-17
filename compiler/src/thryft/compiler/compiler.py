@@ -104,7 +104,7 @@ class Compiler(object):
                 self.__type_cache[base_type_node.name] = base_type
                 return base_type
 
-        def visit_bool_literal(self, bool_literal_node):
+        def visit_bool_literal_node(self, bool_literal_node):
             return bool_literal_node.value
 
         def __visit_compound_type_node(self, construct_class_name, compound_type_node):
@@ -121,13 +121,18 @@ class Compiler(object):
 
             if construct_class_name == 'EnumType':
                 for enumerator_i, enumerator_node in enumerate(compound_type_node.enumerators):
+                    if enumerator_node.value is None:
+                        value = None
+                    else:
+                        assert isinstance(enumerator_node.value, Ast.IntLiteralNode), type(enumerator_node.value)
+                        value = enumerator_node.value.value
                     compound_type.enumerators.append(
                         self.__construct(
                             'Field',
                             id=enumerator_i,
                             name=enumerator_node.name,
                             type=Ast.BaseTypeNode('i32').accept(self),
-                            value=enumerator_node.value
+                            value=value
                         )
                     )
             else:
@@ -177,6 +182,9 @@ class Compiler(object):
                     value=field_node.value
                 )
 
+        def visit_float_literal_node(self, float_literal_node):
+            return float_literal_node.value
+
         def visit_function_node(self, function_node):
             function = \
                 self.__construct(
@@ -221,11 +229,17 @@ class Compiler(object):
                     return include
             raise CompileException("include path not found: %s" % include_file_relpath)
 
+        def visit_int_literal_node(self, int_literal_node):
+            return int_literal_node.value
+
         def visit_list_literal_node(self, list_literal_node):
             return tuple(element_value.accept(self) for element_value in list_literal_node.value)
 
         def visit_list_type_node(self, list_type_node):
             return self.__visit_sequence_type_node('ListType', list_type_node)
+
+        def visit_map_literal_node(self, map_literal_node):
+            return dict((key_value.accept(self), value_value.accept(self)) for key_value, value_value in map_literal_node.value.iteritems())
 
         def visit_map_type_node(self, map_type_node):
             try:

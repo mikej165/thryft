@@ -191,7 +191,7 @@ class Ast(object):
             Ast._NamedNode.__init__(self, **kwds)
 
             if value is not None:
-                assert isinstance(value, int)
+                assert isinstance(value, Ast.IntLiteralNode)
             self.__value = value
 
         @property
