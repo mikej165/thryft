@@ -95,15 +95,14 @@ write: function(oprot) {
     return oprot;
 }""" % locals()}
 
-    def js_validate(self, value, value_name, depth=0):
+    def js_validate(self, value, value_name, **kwds):
         qname = self.js_qname()
         return """\
 if (!(%(value)s instanceof %(qname)s)) {
     return "expected %(value_name)s to be a %(qname)s";
 }
-var __compoundTypeValidateReturn%(depth)u = %(value)s.validate();
-if (typeof __compoundTypeValidateReturn%(depth)u !== "undefined") {
-    return __compoundTypeValidateReturn%(depth)u;
+if (!%(value)s.isValid()) {
+    return %(value)s.validationError;
 }""" % locals()
 
     def __repr__(self):

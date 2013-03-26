@@ -96,15 +96,14 @@ class JsFunction(Function, _JsNamedConstruct):
             request = """
 
     var request = new %(request_type_qname)s(params);
-    var request_validate_error_message = request.validate();
-    if (typeof request_validate_error_message !== "undefined") {
+    if (!request.isValid()) {
         if (async) {
             if (typeof errorCallback !== "undefined") {
-                errorCallback(null, request_validate_error_message, null);
+                errorCallback(null, request.validationError, null);
             }
             return;
         } else {
-            throw new TypeError(request_validate_error_message);
+            throw new TypeError(request.validationError);
         }
     }""" % locals()
             jsonrpc_params = "request.write(new thryft.core.protocol.BuiltinsProtocol()).freeze()" % locals()

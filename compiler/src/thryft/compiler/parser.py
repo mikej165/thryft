@@ -18,7 +18,7 @@ class Parser(GenericParser):
         return ret
 
     def error(self, token):
-        raise ParseException(token)
+        raise ParseException('grammar exception', token=token)
 
     @staticmethod
     def __flatten_args(args):
@@ -581,6 +581,7 @@ class Parser(GenericParser):
     def p_identifier(self, args):
         '''
         identifier ::= IDENTIFIER
+        identifier ::= KEYWORD_INCLUDE
         identifier ::= KEYWORD_LIST
         '''
         return self.__dispatch(self.__p_identifier, args)

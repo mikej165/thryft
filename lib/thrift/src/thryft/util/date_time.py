@@ -60,6 +60,12 @@ class JsDateTime(JsStructType):
     def js_read_protocol(self):
         return '((typeof iprot.readDateTime !== "undefined") ? iprot.readDateTime() : new Date(iprot.readI64()))'
 
+    def js_validate(self, value, value_name, **kwds):
+        return """\
+if (!(%(value)s instanceof Date)) {
+    return "expected %(value_name)s to be a Date";
+}""" % locals()
+
     def js_write_protocol(self, value, depth=0):
         return """if (typeof oprot.writeDateTime !== "undefined") { oprot.writeDateTime(%(value)s); } else { oprot.writeI64(%(value)s.getTime()); }""" % locals()
 
