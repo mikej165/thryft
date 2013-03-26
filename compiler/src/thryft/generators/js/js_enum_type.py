@@ -39,27 +39,30 @@ class JsEnumType(EnumType, _JsType):
         name = self.js_qname()
         return "%(name)s[iprot.readString()]" % locals()
 
+    def js_validate(self, value, value_name, **kwds):
+        if len(self.enumerators) > 0:
+            qname = self.js_qname()
+            enumerator_comparisons = ' && '.join("%s !== %s" % (value, enumerator.value)
+                                                 for enumerator in self.enumerators)
+            enumerator_comparisons = """
+if (%(enumerator_comparisons)s) {
+    return "%(value_name)s is not a valid enumerator of %(qname)s";
+}""" % locals()
+        else:
+            enumerator_comparisons = ''
+        return """\
+if (typeof %(value)s !== "number") {
+    return "expected %(value_name)s to be a number";
+}%(enumerator_comparisons)s
+""" % locals()
+
     def js_write_protocol(self, value, depth=0):
         name = self.js_qname()
         return "oprot.writeString(function(enumerator_value) { for (var enumerator_name in %(name)s) { if (%(name)s[enumerator_name] == enumerator_value) { return enumerator_name; } } }(%(value)s));" % locals()
 
     def __repr__(self):
+        enumerators = ', '.join("%s: %u" % (enumerator.name, enumerator.value)
+                                for enumerator in self.enumerators)
         name = self.js_qname()
-
-        enumerators = []
-        if len(self.enumerators) > 0:
-            enumerator_values = []
-            for enumerator in self.enumerators:
-                if enumerator.value is not None:
-                    for enumerator in self.enumerators:
-                        assert enumerator.value is not None
-                        enumerator_values.append(enumerator.value)
-            if len(enumerator_values) == 0:
-                enumerator_values = [enumerator.id for enumerator in self.enumerators]
-
-            for enumerator, enumerator_value in zip(self.enumerators, enumerator_values):
-                enumerator_name = enumerator.name
-                enumerators.append("%(enumerator_name)s: %(enumerator_value)u" % locals())
-        enumerators = ', '.join(enumerators)
         return """\
 %(name)s = Object.freeze({%(enumerators)s});""" % locals()

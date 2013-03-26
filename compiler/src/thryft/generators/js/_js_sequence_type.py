@@ -52,6 +52,23 @@ class _JsSequenceType(_JsContainerType):
         type_name = class_name_split[1].capitalize()
         return """function(iprot) { var sequenceBegin = iprot.read%(type_name)sBegin(); var sequence = new Array(); for (var i = 0; i < sequenceBegin.size; i++) { sequence.push(%(element_read_protocol)s); } iprot.read%(type_name)sEnd(); return sequence; }(iprot)""" % locals()
 
+    def js_validate(self, value, value_name, depth=0):
+        element_validate = \
+            indent(' ' * 4,
+                self.element_type.js_validate(
+                    depth=depth + 1,
+                    value=value + "[__i%(depth)u]" % locals(),
+                    value_name=value_name + "[i]" % locals()
+                )
+            )
+        return """\
+if (!Array.isArray(%(value)s)) {
+    return "expected %(value_name)s to be an Array";
+}
+for (var __i%(depth)u = 0; __i%(depth)u < %(value)s.length; __i%(depth)u++) {
+%(element_validate)s
+}""" % locals()
+
     def js_write_protocol(self, value, depth=0):
         class_name_split = decamelize(self.__class__.__name__).split('_')
         assert len(class_name_split) == 3

@@ -51,8 +51,20 @@ class JavaDecimal(JavaStructType):
 
 
 class JsDecimal(JsStructType):
+    def js_name(self):
+        return 'string'
+
+    def js_qname(self):
+        return 'string'
+
     def js_read_protocol(self):
         return '((typeof iprot.readDecimal !== "undefined") ? iprot.readDecimal() : iprot.readString())'
+
+    def js_validate(self, value, value_name, **kwds):
+        return """\
+if (typeof %(value)s !== "string") {
+    return "expected %(value_name)s to be a string";
+}""" % locals()
 
     def js_write_protocol(self, value, depth=0):
         return """if (typeof oprot.writeDecimal !== "undefined") { oprot.writeDecimal(%(value)s); } else { oprot.writeString(%(value)s); }""" % locals()

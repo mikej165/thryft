@@ -39,6 +39,9 @@ class JsField(Field, _JsNamedConstruct):
     def js_name(self):
         return lower_camelize(self.name)
 
+    def js_qname(self):
+        return self.parent.js_qname() + '.' + self.js_name()
+
     def js_read_protocol(self):
         name = self.name
         js_name = self.js_name()
@@ -46,6 +49,23 @@ class JsField(Field, _JsNamedConstruct):
         return """\
 if (field.fname == "%(name)s") {
     fields["%(js_name)s"] = %(read_protocol)s;
+}""" % locals()
+
+    def js_validate(self):
+        name = self.js_name()
+        qname = self.js_qname()
+        validate = self.type.js_validate(depth=0, value='attributes.' + name, value_name=qname)
+        if self.required:
+            return """\
+if (typeof attributes.%(name)s === "undefined") {
+    return "required field %(qname)s is undefined";
+}
+%(validate)s""" % locals()
+        else:
+            validate = indent(' ' * 4, validate)
+            return """\
+if (typeof attributes.%(name)s !== "undefined") {
+%(validate)s
 }""" % locals()
 
     def js_write_protocol(self):

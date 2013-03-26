@@ -71,7 +71,18 @@ read: function(iprot) {
     def _js_methods(self):
         methods = {}
         methods.update(self._js_method_write())
+        methods.update(self._js_method_validate())
         return [methods[method_name] for method_name in sorted(methods.iterkeys())]
+
+    def _js_method_validate(self):
+        field_validates = lpad("\n", "\n\n".join(indent(' ' * 4,
+                              [field.js_validate()
+                               for field in self.fields]
+                          )))
+        return {'validate': """\
+validate: function(attributes) {%(field_validates)s
+}
+""" % locals()}
 
     def _js_method_write(self):
         field_writes = indent(' ' * 4, "\n".join(field.js_write_protocol() for field in self.fields))
@@ -83,6 +94,17 @@ write: function(oprot) {
     oprot.writeStructEnd();
     return oprot;
 }""" % locals()}
+
+    def js_validate(self, value, value_name, depth=0):
+        qname = self.js_qname()
+        return """\
+if (!(%(value)s instanceof %(qname)s)) {
+    return "expected %(value_name)s to be a %(qname)s";
+}
+var __compoundTypeValidateReturn%(depth)u = %(value)s.validate();
+if (typeof __compoundTypeValidateReturn%(depth)u !== "undefined") {
+    return __compoundTypeValidateReturn%(depth)u;
+}""" % locals()
 
     def __repr__(self):
         class_properties = []
@@ -96,7 +118,7 @@ write: function(oprot) {
                     [field.js_name() + ':undefined' for field in self.fields]
                 ))
             )
-        properties.append("\n\n".join(indent(' ' * 8, self._js_methods())))
+        properties.append(",\n\n".join(indent(' ' * 8, self._js_methods())))
         properties = ",\n\n".join(properties)
 
         qname = self.js_qname()

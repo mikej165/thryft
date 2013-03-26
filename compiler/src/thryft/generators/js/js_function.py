@@ -93,9 +93,24 @@ class JsFunction(Function, _JsNamedConstruct):
         request_type_qname = self.js_request_type().js_qname()
 
         if len(self.parameters) > 0:
-            jsonrpc_params = "new %(request_type_qname)s(params).write(new thryft.core.protocol.BuiltinsProtocol()).freeze()" % locals()
+            request = """
+
+    var request = new %(request_type_qname)s(params);
+    var request_validate_error_message = request.validate();
+    if (typeof request_validate_error_message !== "undefined") {
+        if (async) {
+            if (typeof errorCallback !== "undefined") {
+                errorCallback(null, request_validate_error_message, null);
+            }
+            return;
+        } else {
+            throw new TypeError(request_validate_error_message);
+        }
+    }""" % locals()
+            jsonrpc_params = "request.write(new thryft.core.protocol.BuiltinsProtocol()).freeze()" % locals()
         else:
             jsonrpc_params = '{}'
+            request = ''
         jsdoc_lines = ["@param {%s} %s" % (parameter.type.js_qname(), parameter.name)
                         for parameter in self.parameters]
 
@@ -128,8 +143,8 @@ class JsFunction(Function, _JsNamedConstruct):
     var async = false;
     var errorCallback = undefined;
     var params = jQuery.extend({}, kwds);
-    var successCallback = undefined;
     var returnValue = null; // For synchronous requests
+    var successCallback = undefined;
 
     for (var key in kwds) {
         if (key === "error") {
@@ -141,7 +156,7 @@ class JsFunction(Function, _JsNamedConstruct):
             successCallback = kwds[key];
             delete params[key];
         }
-    }
+    }%(request)s
 
     $.ajax({
         async:async,
@@ -178,7 +193,7 @@ class JsFunction(Function, _JsNamedConstruct):
                         errorCallback(null, __response.error.message, null);
                     }
                 } else {
-                    returnValue = __response.error;
+                    throw new Error(__response.error);
                 }
             }
         },

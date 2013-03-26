@@ -40,3 +40,9 @@ class JsBoolType(BoolType, _JsBaseType):
 
     def js_qname(self):
         return 'boolean'
+
+    def js_validate(self, value, value_name, **kwds):
+        return """\
+if (typeof %(value)s !== "boolean") {
+    return "expected %(value_name)s to be a boolean";
+}""" % locals()

@@ -51,6 +51,12 @@ class JavaDateTime(JavaStructType):
 
 
 class JsDateTime(JsStructType):
+    def js_name(self):
+        return 'Date'
+
+    def js_qname(self):
+        return 'Date'
+
     def js_read_protocol(self):
         return '((typeof iprot.readDateTime !== "undefined") ? iprot.readDateTime() : new Date(iprot.readI64()))'
 

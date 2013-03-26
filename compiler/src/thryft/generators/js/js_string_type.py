@@ -40,3 +40,9 @@ class JsStringType(StringType, _JsBaseType):
 
     def js_qname(self):
         return 'string'
+
+    def js_validate(self, value, value_name, **kwds):
+        return """\
+if (typeof %(value)s !== "string") {
+    return "expected %(value_name)s to be a string";
+}""" % locals()

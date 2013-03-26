@@ -47,6 +47,34 @@ class JsMapType(MapType, _JsContainerType):
         value_read_protocol = self.value_type.js_read_protocol()
         return """function(iprot) { var map = {}; var mapBegin = iprot.readMapBegin(); for (var i = 0; i < mapBegin.size; i++) { var key = %(key_read_protocol)s; var value = %(value_read_protocol)s; map[key] = value; } iprot.readMapEnd(); return map; }(iprot)""" % locals()
 
+    def js_validate(self, value, value_name, depth=0):
+        key_validate = \
+            indent(' ' * 4,
+                self.key_type.js_validate(
+                    depth=depth + 1,
+                    value="__key%(depth)u" % locals(),
+                    value_name=value_name + " key" % locals()
+                )
+            )
+        value_validate = \
+            indent(' ' * 4,
+                self.value_type.js_validate(
+                    depth=depth + 1,
+                    value="__value%(depth)u" % locals(),
+                    value_name=value_name + " value" % locals()
+                )
+            )
+        return """\
+if (typeof %(value)s !== "object") {
+    return "expected %(value_name)s to be an object";
+}
+for (var __key%(depth)u in %(value)s) {
+    var __value%(depth)u = %(value)s[__key%(depth)u];
+%(key_validate)s
+%(value_validate)s
+}""" % locals()
+
+
     def js_write_protocol(self, value, depth=0):
         key_ttype_id = self.key_type.thrift_ttype_id()
         key_write_protocol = \
