@@ -31,12 +31,8 @@
 #-------------------------------------------------------------------------------
 
 from thryft.generator.byte_type import ByteType
-from thryft.generators.js._js_base_type import _JsBaseType
+from thryft.generators.js._js_number_type import _JsNumberType
 
 
-class JsByteType(ByteType, _JsBaseType):
-    def js_name(self):
-        return 'number'
-
-    def js_qname(self):
-        return 'number'
+class JsByteType(ByteType, _JsNumberType):
+    pass

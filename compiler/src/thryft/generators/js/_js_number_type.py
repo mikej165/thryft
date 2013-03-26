@@ -30,9 +30,18 @@
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
 
-from thryft.generator.double_type import DoubleType
-from thryft.generators.js._js_number_type import _JsNumberType
+from thryft.generators.js._js_base_type import _JsBaseType
 
 
-class JsDoubleType(DoubleType, _JsNumberType):
-    pass
+class _JsNumberType(_JsBaseType):
+    def js_name(self):
+        return 'number'
+
+    def js_qname(self):
+        return 'number'
+
+    def js_validate(self, value, value_name, **kwds):
+        return """\
+if (typeof %(value)s !== "number") {
+    return "expected %(value_name)s to be a number";
+}""" % locals()

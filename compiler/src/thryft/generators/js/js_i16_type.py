@@ -31,12 +31,8 @@
 #-------------------------------------------------------------------------------
 
 from thryft.generator.i16_type import I16Type
-from thryft.generators.js._js_base_type import _JsBaseType
+from thryft.generators.js._js_number_type import _JsNumberType
 
 
-class JsI16Type(I16Type, _JsBaseType):
-    def js_name(self):
-        return 'number'
-
-    def js_qname(self):
-        return 'number'
+class JsI16Type(I16Type, _JsNumberType):
+    pass
