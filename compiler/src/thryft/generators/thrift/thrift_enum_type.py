@@ -41,10 +41,10 @@ class ThriftEnumType(EnumType, _ThriftCompoundType):
             self.doc is not None and rpad(self.doc.text, "\n") or '',
             self.name,
             pad("\n", indent(' ' * 4, ",\n".join(
-                "%s%s%s" % (
+                "%s%s = %s" % (
                     enumerator.doc is not None and rpad(repr(enumerator.doc), "\n") or '',
                     enumerator.name,
-                    enumerator.value is not None and " = %s" % enumerator.value or '',
+                    enumerator.value,
                 )
                 for enumerator in self.enumerators
             )), "\n")

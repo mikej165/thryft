@@ -120,9 +120,15 @@ class Compiler(object):
             self.__type_cache[compound_type.thrift_qname()] = compound_type
 
             if construct_class_name == 'EnumType':
+                have_enumerator_with_value = False
+                for enumerator_node in compound_type_node.enumerators:
+                    if enumerator_node.value is not None:
+                        have_enumerator_with_value = True
+                    elif have_enumerator_with_value:
+                        raise CompileException("%s has mix of enumerators with and without values, must be one or the other" % compound_type_node.name)
                 for enumerator_i, enumerator_node in enumerate(compound_type_node.enumerators):
                     if enumerator_node.value is None:
-                        value = None
+                        value = enumerator_i
                     else:
                         assert isinstance(enumerator_node.value, Ast.IntLiteralNode), type(enumerator_node.value)
                         value = enumerator_node.value.value

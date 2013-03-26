@@ -1,19 +1,19 @@
 #-------------------------------------------------------------------------------
 # Copyright (c) 2013, Minor Gordon
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
 # are met:
-# 
+#
 #     * Redistributions of source code must retain the above copyright
 #       notice, this list of conditions and the following disclaimer.
-# 
+#
 #     * Redistributions in binary form must reproduce the above copyright
 #       notice, this list of conditions and the following disclaimer in
 #       the documentation and/or other materials provided with the
 #       distribution.
-# 
+#
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
 # CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
 # INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
@@ -61,17 +61,9 @@ class PyEnumType(EnumType, _PyType):
         enumerator_placeholders = []
         value_of_statements = []
         if len(self.enumerators) > 0:
-            enumerator_values = []
             for enumerator in self.enumerators:
-                if enumerator.value is not None:
-                    for enumerator in self.enumerators:
-                        assert enumerator.value is not None
-                        enumerator_values.append(enumerator.value)
-            if len(enumerator_values) == 0:
-                enumerator_values = [enumerator.id for enumerator in self.enumerators]
-
-            for enumerator, enumerator_value in zip(self.enumerators, enumerator_values):
                 enumerator_name = enumerator.name
+                enumerator_value = enumerator.value
                 enumerator_placeholders.append("%(enumerator_name)s = None" % locals())
                 enumerators.append("%(name)s.%(enumerator_name)s = %(name)s('%(enumerator_name)s', %(enumerator_value)u)" % locals())
                 value_of_statements.append("""\
