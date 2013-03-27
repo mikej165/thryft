@@ -30,10 +30,9 @@
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
 
-from thryft.generator.double_type import DoubleType
-from thryft.generators.py._py_numeric_type import _PyNumericType
+from thryft.generator.typedef import Typedef
+from thryft.generators.py._py_named_construct import _PyNamedConstruct
 
 
-class PyDoubleType(DoubleType, _PyNumericType):
-    def py_check(self, value):
-        return "isinstance(%(value)s, float)" % locals()
+class PyTypedef(Typedef, _PyNamedConstruct):
+    pass

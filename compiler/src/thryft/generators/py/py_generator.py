@@ -37,6 +37,7 @@ class PyGenerator(Generator):
     from thryft.generators.py.py_binary_type import PyBinaryType as BinaryType  # @UnusedImport
     from thryft.generators.py.py_bool_type import PyBoolType as BoolType  # @UnusedImport
     from thryft.generators.py.py_byte_type import PyByteType as ByteType  # @UnusedImport
+    from thryft.generators.py.py_const import PyConst as Const  # @UnusedImport
     from thryft.generators.py.py_document import PyDocument as Document  # @UnusedImport
     from thryft.generators.py.py_double_type import PyDoubleType as DoubleType  # @UnusedImport
     from thryft.generators.py.py_enum_type import PyEnumType as EnumType  # @UnusedImport
@@ -53,3 +54,4 @@ class PyGenerator(Generator):
     from thryft.generators.py.py_set_type import PySetType as SetType  # @UnusedImport
     from thryft.generators.py.py_string_type import PyStringType as StringType  # @UnusedImport
     from thryft.generators.py.py_struct_type import PyStructType as StructType  # @UnusedImport
+    from thryft.generators.py.py_typedef import PyTypedef as Typedef  # @UnusedImport
