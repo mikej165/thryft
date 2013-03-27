@@ -36,6 +36,9 @@ from yutil import indent
 
 
 class JsMapType(MapType, _JsContainerType):
+    def js_literal(self, value):
+        return "{%s}" % ', '.join(self.key_type.js_literal(key) + ':' + self.value_type.js_literal(value_) for key, value_ in value.iteritems())
+
     def js_name(self):
         return "Object.<%s, %s>" % (self.key_type.js_qname(), self.value_type.js_qname())
 

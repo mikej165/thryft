@@ -36,23 +36,25 @@ from thryft.generators.js._js_named_construct import _JsNamedConstruct
 
 class JsDocument(Document, _JsNamedConstruct):
     def __repr__(self):
-        create_namespace = []
-        js_namespace = self.namespace_by_scope('js').name
-        js_namespace_parts = js_namespace.split('.')
-        for i in xrange(1, len(js_namespace_parts) + 1):
-            js_namespace_prefix = '.'.join(js_namespace_parts[:i])
-            create_namespace.append("""\
+        sections = []
+        try:
+            js_namespace = self.namespace_by_scope('js').name
+        except KeyError:
+            js_namespace = None
+        if js_namespace is not None:
+            create_namespace = []
+            js_namespace_parts = js_namespace.split('.')
+            for i in xrange(1, len(js_namespace_parts) + 1):
+                js_namespace_prefix = '.'.join(js_namespace_parts[:i])
+                create_namespace.append("""\
 if (typeof %(js_namespace_prefix)s === "undefined") {
     %(js_namespace_prefix)s = new Object();
 }""" % locals())
-        create_namespace = "\n".join(create_namespace)
+            sections.append("\n".join(create_namespace))
 
-        definitions = \
+        sections.append(
             "\n\n".join(repr(definition)
                          for definition in self.definitions) + "\n"
+        )
 
-        return """\
-%(create_namespace)s
-
-%(definitions)s
-""" % locals()
+        return "\n\n".join(sections)

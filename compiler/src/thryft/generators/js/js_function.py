@@ -114,8 +114,10 @@ class JsFunction(Function, _JsNamedConstruct):
                         for parameter in self.parameters]
 
         jsonrpc_url = 'this.hostname+\'/api/jsonrpc/'
-        assert self.parent.name.endswith('Service')
-        jsonrpc_url += '_'.join(decamelize(self.parent.name).split('_')[:-1])
+        if self.parent.name.endswith('Service'):
+            jsonrpc_url += '_'.join(decamelize(self.parent.name).split('_')[:-1])
+        else:
+            jsonrpc_url += decamelize(self.parent.name)
         jsonrpc_url += '\''
 
         if self.return_field is not None:

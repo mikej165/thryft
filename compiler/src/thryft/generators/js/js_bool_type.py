@@ -35,6 +35,9 @@ from thryft.generators.js._js_base_type import _JsBaseType
 
 
 class JsBoolType(BoolType, _JsBaseType):
+    def js_literal(self, value):
+        return value and 'true' or 'false'
+
     def js_name(self):
         return 'boolean'
 

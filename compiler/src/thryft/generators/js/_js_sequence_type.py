@@ -35,6 +35,9 @@ from yutil import decamelize, indent
 
 
 class _JsSequenceType(_JsContainerType):
+    def js_literal(self, value):
+        return "[%s]" % ', '.join(self.element_type.js_literal(element_value) for element_value in value)
+
     def js_name(self):
         return "Array.<%s>" % self.element_type.js_qname()
 

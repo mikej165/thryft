@@ -37,6 +37,7 @@ class JsGenerator(Generator):
     from thryft.generators.js.js_binary_type import JsBinaryType as BinaryType  # @UnusedImport
     from thryft.generators.js.js_bool_type import JsBoolType as BoolType  # @UnusedImport
     from thryft.generators.js.js_byte_type import JsByteType as ByteType  # @UnusedImport
+    from thryft.generators.js.js_const import JsConst as Const  # @UnusedImport
     from thryft.generators.js.js_document import JsDocument as Document  # @UnusedImport
     from thryft.generators.js.js_double_type import JsDoubleType as DoubleType  # @UnusedImport
     from thryft.generators.js.js_enum_type import JsEnumType as EnumType  # @UnusedImport

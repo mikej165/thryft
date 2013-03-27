@@ -30,21 +30,18 @@
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
 
-from thryft.generators.js._js_base_type import _JsBaseType
+from thryft.generator.const import Const
+from thryft.generators.js._js_named_construct import _JsNamedConstruct
 
 
-class _JsNumberType(_JsBaseType):
-    def js_literal(self, value):
-        return str(value).rstrip('l')
+class JsConst(Const, _JsNamedConstruct):
+    def js_value(self):
+        return self.type.js_literal(self.value)
 
-    def js_name(self):
-        return 'number'
-
-    def js_qname(self):
-        return 'number'
-
-    def js_validate(self, value, value_name, **kwds):
-        return """\
-if (typeof %(value)s !== "number") {
-    return "expected %(value_name)s to be a number";
-}""" % locals()
+    def __repr__(self):
+        name = self.js_name()
+        qname = self.js_qname()
+        if name == qname:
+            return "var %s = %s;" % (qname, self.js_value())
+        else:
+            return "%s = %s;" % (qname, self.js_value())

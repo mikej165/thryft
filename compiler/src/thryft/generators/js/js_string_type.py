@@ -35,6 +35,9 @@ from thryft.generators.js._js_base_type import _JsBaseType
 
 
 class JsStringType(StringType, _JsBaseType):
+    def js_literal(self, value):
+        return "\"%s\"" % value
+
     def js_name(self):
         return 'string'
 
