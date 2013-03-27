@@ -18,9 +18,13 @@ class JsonrpcServletJavaGenerator(_servlet_java_generator._ServletJavaGenerator)
     final %(service_qname)s.Messages.%(name)sRequest serviceRequest;
     try {
         serviceRequest = new %(service_qname)s.Messages.%(name)sRequest(new org.thryft.core.protocol.JsonProtocol(jsonrpcRequestParams), jsonrpcRequestParams.isObject() ? org.apache.thrift.protocol.TType.STRUCT : org.apache.thrift.protocol.TType.LIST);
+    } catch (final IllegalArgumentException e) {
+        logger.debug("error deserializing service request: ", e);
+        __doPostError(httpServletRequest, httpServletResponse, null, -32602, "invalid JSON-RPC request method parameters: " + e.getMessage(), jsonrpcRequestId);
+        return;
     } catch (final NullPointerException e) {
         logger.debug("error deserializing service request: ", e);
-        __doPostError(httpServletRequest, httpServletResponse, null, -32602, "missing JSON-RPC request method parameter: " + e.getMessage(), jsonrpcRequestId);
+        __doPostError(httpServletRequest, httpServletResponse, null, -32602, "invalid JSON-RPC request method parameters: " + e.getMessage(), jsonrpcRequestId);
         return;
     } catch (final org.apache.thrift.TException e) {
         logger.debug("error deserializing service request: ", e);

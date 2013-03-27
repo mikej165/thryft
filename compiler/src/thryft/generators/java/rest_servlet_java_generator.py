@@ -91,6 +91,10 @@ final org.apache.thrift.protocol.TProtocol __restRequestProtocol = new org.thryf
 try {
     final %(request_type_name)s __serviceRequest = new %(request_type_name)s(__restRequestProtocol);
 %(variable_assignments)s
+} catch (final IllegalArgumentException e) {
+    logger.debug("error deserializing service request: ", e);
+    __httpServletResponse.sendError(400);
+    return;
 } catch (final NullPointerException e) {
     logger.debug("error deserializing service request: ", e);
     __httpServletResponse.sendError(400);
