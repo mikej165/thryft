@@ -1,19 +1,19 @@
 #-------------------------------------------------------------------------------
 # Copyright (c) 2013, Minor Gordon
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
 # are met:
-# 
+#
 #     * Redistributions of source code must retain the above copyright
 #       notice, this list of conditions and the following disclaimer.
-# 
+#
 #     * Redistributions in binary form must reproduce the above copyright
 #       notice, this list of conditions and the following disclaimer in
 #       the documentation and/or other materials provided with the
 #       distribution.
-# 
+#
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
 # CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
 # INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
@@ -36,6 +36,13 @@ from yutil import indent
 
 
 class JavaMapType(MapType, _JavaContainerType):
+    def java_literal(self, value):
+        return "ImmutableMap.<%s, %s> of(%s)" % (
+            self.key_type.java_qname(boxed=True),
+            self.value_type.java_qname(boxed=True),
+            ', '.join(self.key_type.java_literal(key) + ', ' + self.value_type.java_literal(value_) for key, value_ in value.iteritems())
+        )
+
     def java_name(self, boxed=False):
         return self.java_qname(boxed=boxed)
 
@@ -57,7 +64,7 @@ class JavaMapType(MapType, _JavaContainerType):
         try {
             org.apache.thrift.protocol.TMap mapBegin = iprot.readMapBegin();
             java.util.Map<%(key_type_name)s, %(value_type_name)s> map = new java.util.HashMap<%(key_type_name)s, %(value_type_name)s>();
-            for (int entryI = 0; entryI < mapBegin.size; entryI++) {                    
+            for (int entryI = 0; entryI < mapBegin.size; entryI++) {
                 map.put(%(key_read_protocol)s, %(value_read_protocol)s);
             }
             iprot.readMapEnd();

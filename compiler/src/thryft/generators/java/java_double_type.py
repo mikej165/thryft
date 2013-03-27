@@ -41,6 +41,9 @@ class JavaDoubleType(DoubleType, _JavaBaseType):
     def java_hash_code(self, value):
         return "((int)(Double.doubleToLongBits(%(value)s) ^ (Double.doubleToLongBits(%(value)s) >>> 32)))" % locals()
 
+    def java_literal(self, value):
+        return str(value)
+
     def java_name(self, boxed=False):
         return boxed and 'Double' or 'double'
 

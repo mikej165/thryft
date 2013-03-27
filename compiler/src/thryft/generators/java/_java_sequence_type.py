@@ -54,6 +54,13 @@ class _JavaSequenceType(_JavaContainerType):
         assert class_name_split[2] == 'type'
         return class_name_split[1].capitalize()
 
+    def java_literal(self, value):
+        return "com.google.common.collect.Immutable%s.<%s> of(%s)" % (
+            self._java_interface_simple_name(),
+            self.element_type.java_qname(boxed=True),
+            ', '.join(self.element_type.java_literal(element_value) for element_value in value)
+        )
+
     def java_read_protocol(self):
         element_read_protocol = self.element_type.java_read_protocol()
         element_type_name = self.element_type.java_declaration_name(boxed=True)

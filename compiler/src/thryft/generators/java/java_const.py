@@ -32,35 +32,11 @@
 
 from thryft.generator.const import Const
 from thryft.generators.java._java_named_construct import _JavaNamedConstruct
-from thryft.generators.java.java_list_type import JavaListType
-from thryft.generators.java.java_set_type import JavaSetType
 
 
 class JavaConst(Const, _JavaNamedConstruct):
     def java_value(self):
-        return self._java_value(self.value)
-
-    def _java_value(self, value):
-        if isinstance(value, dict):
-            return "ImmutableMap.<%s, %s> of(%s)" % (
-                self.type.key_type.java_qname(boxed=True),
-                self.type.value_type.java_qname(boxed=True),
-                ', '.join(self._java_value(key) + ', ' + self._java_value(value_) for key, value_ in value.iteritems())
-            )
-        elif isinstance(value, (float, int)):
-            return str(value)
-        elif isinstance(value, str):
-            return "\"%s\"" % value
-        elif isinstance(value, tuple):
-            out_value = ".<%s> of(%s)" % (self.type.element_type.java_qname(boxed=True), ', '.join(self._java_value(element_value) for element_value in value))
-            if isinstance(self.type, JavaListType):
-                return 'ImmutableList' + out_value
-            elif isinstance(self.type, JavaSetType):
-                return 'ImmutableSet' + out_value
-            else:
-                raise NotImplementedError
-        else:
-            raise NotImplementedError(type(value))
+        return self.type.java_literal(self.value)
 
     def __repr__(self):
         name = self.java_name()
