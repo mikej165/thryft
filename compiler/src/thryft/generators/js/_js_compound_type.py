@@ -42,10 +42,10 @@ class _JsCompoundType(_JsType):
     def js_write_protocol(self, value, depth=0):
         return "%(value)s.write(oprot);" % locals()
 
-    def _js_class_methods(self):
-        class_methods = {}
-        class_methods.update(self._js_class_method_read())
-        return [class_methods[method_name] for method_name in sorted(class_methods.iterkeys())]
+    def _js_class_properties(self):
+        class_properties = {}
+        class_properties.update(self._js_class_method_read())
+        return [class_properties[method_name] for method_name in sorted(class_properties.iterkeys())]
 
     def _js_class_method_read(self):
         field_reads = \
@@ -68,21 +68,11 @@ read: function(iprot) {
     return new %(name)s(fields);
 }""" % locals()}
 
-    def _js_methods(self):
-        methods = {}
-        methods.update(self._js_method_write())
-        methods.update(self._js_method_validate())
-        return [methods[method_name] for method_name in sorted(methods.iterkeys())]
-
-    def _js_method_validate(self):
-        field_validates = lpad("\n", "\n\n".join(indent(' ' * 4,
-                              [field.js_validate()
-                               for field in self.fields]
-                          )))
-        return {'validate': """\
-validate: function(attributes) {%(field_validates)s
-}
-""" % locals()}
+    def _js_properties(self):
+        properties = {}
+        properties.update(self._js_property_validation())
+        properties.update(self._js_method_write())
+        return [properties[method_name] for method_name in sorted(properties.iterkeys())]
 
     def _js_method_write(self):
         field_writes = indent(' ' * 4, "\n".join(field.js_write_protocol() for field in self.fields))
@@ -94,6 +84,16 @@ write: function(oprot) {
     oprot.writeStructEnd();
     return oprot;
 }""" % locals()}
+
+    def _js_property_validation(self):
+        field_validations = lpad("\n", ",\n\n".join(indent(' ' * 4,
+                              [field.js_validation()
+                               for field in self.fields]
+                          )))
+        return {'validation': """\
+validation: {%(field_validations)s
+}
+""" % locals()}
 
     def js_validate(self, value, value_name, **kwds):
         qname = self.js_qname()
@@ -107,7 +107,7 @@ if (!%(value)s.isValid()) {
 
     def __repr__(self):
         class_properties = []
-        class_properties.append("\n\n".join(indent(' ' * 8, self._js_class_methods())))
+        class_properties.append("\n\n".join(indent(' ' * 8, self._js_class_properties())))
         class_properties = ",\n\n".join(class_properties)
 
         properties = []
@@ -117,7 +117,7 @@ if (!%(value)s.isValid()) {
                     [field.js_name() + ':undefined' for field in self.fields]
                 ))
             )
-        properties.append(",\n\n".join(indent(' ' * 8, self._js_methods())))
+        properties.append(",\n\n".join(indent(' ' * 8, self._js_properties())))
         properties = ",\n\n".join(properties)
 
         qname = self.js_qname()

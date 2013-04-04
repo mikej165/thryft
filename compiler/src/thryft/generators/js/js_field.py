@@ -32,7 +32,8 @@
 
 from thryft.generator.field import Field
 from thryft.generators.js._js_named_construct import _JsNamedConstruct
-from yutil import indent, lower_camelize
+from yutil import indent, lower_camelize, lpad
+import json
 
 
 class JsField(Field, _JsNamedConstruct):
@@ -51,21 +52,19 @@ if (field.fname == "%(name)s") {
     fields["%(js_name)s"] = %(read_protocol)s;
 }""" % locals()
 
-    def js_validate(self):
+    def js_validation(self):
         name = self.js_name()
         qname = self.js_qname()
-        validate = self.type.js_validate(depth=0, value='attributes.' + name, value_name=qname)
-        if self.required:
-            return """\
-if (typeof attributes.%(name)s === "undefined") {
-    return "required field %(qname)s is undefined";
-}
-%(validate)s""" % locals()
+        type_validate = indent(' ' * 8, self.type.js_validate(depth=0, value='value', value_name=qname))
+        if self.validation is not None:
+            validation = lpad(",\n", indent(' ' * 4, json.dumps(self.validation).lstrip('{').rstrip('}')))
         else:
-            validate = indent(' ' * 4, validate)
-            return """\
-if (typeof attributes.%(name)s !== "undefined") {
-%(validate)s
+            validation = ''
+        return """\
+%(name)s: {
+    "fn": function(value, attr, computedState) {
+%(type_validate)s
+    }%(validation)s
 }""" % locals()
 
     def js_write_protocol(self):
