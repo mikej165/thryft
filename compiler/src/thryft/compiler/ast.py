@@ -263,6 +263,8 @@ class Ast(object):
                 assert isinstance(validation, dict), type(validation)
                 validation = validation.copy()
                 validation['required'] = self.required
+            else:
+                validation = {'required': self.required}
             self.__validation = validation
 
         @property

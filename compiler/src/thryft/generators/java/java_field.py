@@ -87,14 +87,18 @@ public %(final)s%(type_name)s %(getter_name)s() {
         name = self.java_name()
         parent_qname = self.parent.java_qname()
         rhs = self.java_name()
-        if self.validation is not None:
+        if self.type.java_is_reference():  # Only reference types like String and containers can have lengths
             min_length = self.validation.get('minLength')
             if min_length == 1:
                 rhs = """org.thryft.core.Preconditions.checkNotEmpty(%(rhs)s, "%(parent_qname)s: %(name)s is empty")""" % locals()
+                if not self.required:
+                    rhs = self.java_name() + " != null ? " + rhs + " : null";
             elif min_length is not None:
                 rhs = """org.thryft.core.Preconditions.checkMinLength(%(rhs)s, %(min_length)u, "%(parent_qname)s: %(name)s must have a minimum length of %(min_length)u")""" % locals()
-        elif self.required and self.type.java_is_reference():
-            rhs = """com.google.common.base.Preconditions.checkNotNull(%(rhs)s, "%(parent_qname)s: missing %(name)s")""" % locals()
+                if not self.required:
+                    rhs = self.java_name() + " != null ? " + rhs + " : null";
+            elif self.required:
+                rhs = """com.google.common.base.Preconditions.checkNotNull(%(rhs)s, "%(parent_qname)s: missing %(name)s")""" % locals()
         return """\
 %(lhs)s = %(rhs)s;""" % locals()
 

@@ -32,7 +32,7 @@
 
 from thryft.generator.field import Field
 from thryft.generators.js._js_named_construct import _JsNamedConstruct
-from yutil import indent, lower_camelize, lpad
+from yutil import indent, lower_camelize
 import json
 
 
@@ -56,15 +56,13 @@ if (field.fname == "%(name)s") {
         name = self.js_name()
         qname = self.js_qname()
         type_validate = indent(' ' * 8, self.type.js_validate(depth=0, value='value', value_name=qname))
-        if self.validation is not None:
-            validation = lpad(",\n", indent(' ' * 4, json.dumps(self.validation).lstrip('{').rstrip('}')))
-        else:
-            validation = ''
+        validation = json.dumps(self.validation).lstrip('{').rstrip('}')
         return """\
 %(name)s: {
     "fn": function(value, attr, computedState) {
 %(type_validate)s
-    }%(validation)s
+    },
+    %(validation)s
 }""" % locals()
 
     def js_write_protocol(self):

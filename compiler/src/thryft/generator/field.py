@@ -47,6 +47,11 @@ class Field(_NamedConstruct):
         self.__id = id
         self.__type = type
         self.__required = required
+        if validation is None:
+            validation = {'required': required}
+        else:
+            validation = validation.copy()
+            validation['required'] = required
         self.__validation = validation
         self.__value = value
 
