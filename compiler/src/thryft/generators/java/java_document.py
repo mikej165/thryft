@@ -61,7 +61,9 @@ class JavaDocument(Document, _JavaNamedConstruct):
         if package_declaration is not None:
             sections.append(package_declaration)
 
-        sections.append("\n".join(self.java_imports()))
+        imports = self.java_imports()
+        if len(imports) > 0:
+            sections.append("\n".join(imports))
 
         sections.append(
             "\n\n".join(repr(definition)
