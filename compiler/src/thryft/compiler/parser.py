@@ -3,6 +3,7 @@ from thryft.compiler.ast import Ast
 from thryft.compiler.parse_exception import ParseException
 from thryft.compiler.token import Token
 from yutil import class_qname
+import json
 import logging
 
 
@@ -163,21 +164,21 @@ class Parser(GenericParser):
     def __p_compound_type_field(self, args):
         doc_node, start_token, stop_token = self.__p(args)
         field = args[1]
-        notempty = False
+        validation = None
         if doc_node is not None and len(doc_node.tags) > 0:
-            for tag, _value in doc_node.tags.iteritems():
-                if tag == 'notempty':
-                    notempty = True
+            for tag, value in doc_node.tags.iteritems():
+                if tag == 'validation':
+                    validation = self.__p_validation(token=start_token, validation=value)
         return \
             Ast.FieldNode(
                 doc=doc_node,
                 id_=field.id,
                 name=field.name,
-                notempty=notempty,
                 required=field.required,
                 start_token=start_token,
                 stop_token=stop_token,
                 type_=field.type,
+                validation=validation,
                 value=field.value
             )
 
@@ -360,11 +361,11 @@ class Parser(GenericParser):
             Ast.FieldNode(
                 id_=id_,
                 name=args[3].text,
-                notempty=False,
                 required=args[1],
                 start_token=start_token,
                 stop_token=stop_token,
                 type_=args[2],
+                validation=None,
                 value=value
             )
 
@@ -428,9 +429,9 @@ class Parser(GenericParser):
                 Ast.FieldNode(
                     id_=None,
                     name='return_value',
-                    notempty=False,
                     required=True,
                     type_=args[2],
+                    validation=None,
                     value=None
                 )
         else:
@@ -441,23 +442,36 @@ class Parser(GenericParser):
             parameters_by_name = dict((parameter.name, parameter) for parameter in parameters)
             throws_by_exception_type_name = dict((throw.type.name, throw) for throw in throws)
             for tag, value in doc_node.tags.iteritems():
-                if tag == 'notempty':
+                if tag in ('param', 'validation'):
                     if value is not None:
-                        param_name = value.rstrip(':')
-                        try:
-                            parameter = parameters_by_name[param_name]
-                        except KeyError:
-                            raise ParseException("'%s' refers to unknown parameter '%s'" % (value, param_name), token=start_token)
-                        parameter.notempty = True
+                        value_split = value.split(None, 1)
+                        if len(value_split) == 2:
+                            param_name = value_split[0].rstrip(':')
+                            try:
+                                parameter = parameters_by_name[param_name]
+                            except KeyError:
+                                raise ParseException("'%s' refers to unknown parameter '%s'" % (value, param_name), token=start_token)
+                            if tag == 'param':
+                                parameter.doc = value_split[1]
+                            else:
+                                parameter.validation = self.__p_validation(token=start_token, validation=value_split[1])
+                        else:
+                            raise ParseException("@%s tag has an invalid format '%s', expected a parameter name" % (tag, value), token=start_token)
+                    else:
+                        raise ParseException("@%s tag must contain a parameter name" % tag, token=start_token)
                 elif tag == 'param':
-                    value_split = value.split(None, 1)
-                    if len(value_split) == 2:
-                        param_name = value_split[0].rstrip(':')
-                        try:
-                            parameter = parameters_by_name[param_name]
-                        except KeyError:
-                            raise ParseException("'%s' refers to unknown parameter '%s'" % (value, param_name), token=start_token)
-                        parameter.doc = value_split[1]
+                    if value is not None:
+                        value_split = value.split(None, 1)
+                        if len(value_split) == 2:
+                            param_name = value_split[0].rstrip(':')
+                            try:
+                                parameter = parameters_by_name[param_name]
+                            except KeyError:
+                                raise ParseException("'%s' refers to unknown parameter '%s'" % (value, param_name), token=start_token)
+                        else:
+                            raise ParseException("@param tag has invalid format: '%s'" % value, token=start_token)
+                    else:
+                        raise ParseException("@param tag must contain a parameter name and description", token=start_token)
                 elif tag == 'return' or tag == 'returns':
                     if return_field is None:
                         raise ParseException("'%s' refers to function with void return" % value, token=start_token)
@@ -861,6 +875,15 @@ class Parser(GenericParser):
                 stop_token=stop_token,
                 type_=args[2]
             )
+
+    def __p_validation(self, token, validation):
+        try:
+            validation = json.loads(validation)
+        except ValueError, e:
+            raise ParseException('@validation contains invalid JSON: ' + str(e), token=token)
+        if not isinstance(validation, dict):
+            raise ParseException('expected @validation to contain a JSON object', token=token)
+        return validation
 
     def typestring(self, token):
         return token.type

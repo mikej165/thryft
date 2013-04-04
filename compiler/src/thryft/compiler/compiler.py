@@ -183,9 +183,9 @@ class Compiler(object):
                     'Field',
                     id=field_node.id,
                     name=field_node.name,
-                    notempty=field_node.notempty,
                     required=field_node.required,
                     type=field_node.type.accept(self),
+                    validation=field_node.validation,
                     value=field_node.value
                 )
 

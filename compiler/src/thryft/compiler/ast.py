@@ -225,11 +225,8 @@ class Ast(object):
         pass
 
     class FieldNode(_NamedNode):
-        def __init__(self, id_, notempty, required, type_, value, **kwds):
+        def __init__(self, id_, required, type_, validation, value, **kwds):
             Ast._NamedNode.__init__(self, **kwds)
-
-            assert isinstance(notempty, bool)
-            self.__notempty = notempty
 
             assert id_ is None or (isinstance(id_, int) and id_ >= 0), id_
             self.__id = id_
@@ -240,20 +237,13 @@ class Ast(object):
             assert isinstance(required, bool)
             self.__required = required
 
+            self.validation = validation  # Use setter
+
             self.__value = value
 
         @property
         def id(self):
             return self.__id
-
-        @property
-        def notempty(self):
-            return self.__notempty
-
-        @notempty.setter
-        def notempty(self, notempty):
-            assert isinstance(notempty, bool)
-            self.__notempty = notempty
 
         @property
         def required(self):
@@ -262,6 +252,18 @@ class Ast(object):
         @property
         def type(self):
             return self.__type
+
+        @property
+        def validation(self):
+            return self.__validation
+
+        @validation.setter
+        def validation(self, validation):
+            if validation is not None:
+                assert isinstance(validation, dict), type(validation)
+                validation = validation.copy()
+                validation['required'] = self.required
+            self.__validation = validation
 
         @property
         def value(self):
