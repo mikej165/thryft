@@ -32,11 +32,14 @@
 
 from thryft.generator.document import Document
 from thryft.generators.java._java_named_construct import _JavaNamedConstruct
-from yutil import rpad, camelize
+from yutil import camelize
 import os.path
 
 
 class JavaDocument(Document, _JavaNamedConstruct):
+    def java_imports(self):
+        return []
+
     def java_package(self):
         namespaces_by_scope = self.namespaces_by_scope
         for scope in ('java', '*'):
@@ -52,22 +55,20 @@ class JavaDocument(Document, _JavaNamedConstruct):
             return 'package ' + package + ';'
 
     def __repr__(self):
-        headers = []
+        sections = []
+
         package_declaration = self.java_package_declaration()
         if package_declaration is not None:
-            headers.append(package_declaration)
-# Don't import anything
-#        for include in self.includes:
-#            if len(headers) == 1 and headers[0].startswith('package'):
-#                headers.append('')
-#            headers.append(repr(include))
-        headers = "\n".join(headers)
+            sections.append(package_declaration)
 
-        definitions = \
+        sections.append("\n".join(self.java_imports()))
+
+        sections.append(
             "\n\n".join(repr(definition)
                          for definition in self.definitions)
+        )
 
-        return rpad(headers, "\n\n") + definitions + "\n"
+        return "\n\n".join(sections) + "\n"
 
     def save(self, out_path):
         return Document.save(self, out_path=out_path, language='java')
