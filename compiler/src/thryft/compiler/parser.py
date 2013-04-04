@@ -465,7 +465,12 @@ class Parser(GenericParser):
                         if len(value_split) == 2:
                             param_name = value_split[0].rstrip(':')
                             try:
-                                parameter = parameters_by_name[param_name]
+                                if param_name == 'return':
+                                    parameter = return_field
+                                    if parameter is None:
+                                        raise KeyError
+                                else:
+                                    parameter = parameters_by_name[param_name]
                             except KeyError:
                                 raise ParseException("'%s' refers to unknown parameter '%s'" % (value, param_name), token=start_token)
                         else:
@@ -883,6 +888,17 @@ class Parser(GenericParser):
             raise ParseException('@validation contains invalid JSON: ' + str(e), token=token)
         if not isinstance(validation, dict):
             raise ParseException('expected @validation to contain a JSON object', token=token)
+
+        for lengthPropertyName in ('maxLength', 'minLength'):
+            lengthPropertyValue = validation.get(lengthPropertyName)
+            if lengthPropertyValue is None:
+                continue
+            try:
+                lengthPropertyValue = int(lengthPropertyValue)
+            except ValueError:
+                raise ParseException("@validation %(lengthPropertyName)s must be an integer" % locals(), token=token)
+            if lengthPropertyValue < 0:
+                raise ParseException("@validation %(lengthPropertyName)s must be >= 0" % locals(), token=token)
         return validation
 
     def typestring(self, token):

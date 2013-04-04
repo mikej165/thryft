@@ -57,7 +57,8 @@ class JavaFunction(Function, _JavaNamedConstruct):
                         name=parameter.name,
                         type=parameter.type,
                         parent=self,
-                        required=parameter.required
+                        required=parameter.required,
+                        validation=parameter.validation
                     )
                 )
 
