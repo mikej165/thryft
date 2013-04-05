@@ -53,9 +53,11 @@ class Compiler(object):
             self.__scope_stack = []
             self.__type_cache = {}
 
-        def __construct(self, class_name, parent=None, **kwds):
-            if parent is None and len(self.__scope_stack) > 0:
+        def __construct(self, class_name, **kwds):
+            if len(self.__scope_stack) > 0:
                 parent = self.__scope_stack[-1]
+            else:
+                parent = self.__generator
             kwds['parent'] = parent
 
             name = kwds.get('name')
