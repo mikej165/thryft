@@ -16,7 +16,7 @@ class _ServletJavaGenerator(java_generator.JavaGenerator):
             out_dir_path, out_file_name = os.path.split(out_file_path)
             out_file_base_name, out_file_ext = os.path.splitext(out_file_name)
             out_file_path = os.path.join(out_dir_path, camelize(out_file_base_name) + self.__servlet_type.capitalize() + 'Servlet' + out_file_ext)
-            JavaDocument._save(self, out_file_path)
+            return JavaDocument._save(self, out_file_path)
 
     class _Function(JavaFunction):
         def _java_read_http_servlet_request_body(self, **kwds):

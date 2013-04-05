@@ -62,11 +62,11 @@ private void __doPost%(upper_camelized_name)s(final javax.servlet.http.HttpServl
 """ % locals()
 
     class Service(_servlet_java_generator._ServletJavaGenerator._Service):
-        def _java_name(self, boxed=False):
+        def java_name(self, boxed=False):
             return _servlet_java_generator._ServletJavaGenerator._Service.java_name(self) + 'JsonrpcServlet'
 
         def _java_constructor(self):
-            name = self._java_name()
+            name = self.java_name()
             service_qname = _servlet_java_generator._ServletJavaGenerator._Service.java_qname(self)
             return """\
 @com.google.inject.Inject
@@ -76,7 +76,7 @@ public %(name)s(final %(service_qname)s service) {
 """ % locals()
 
         def _java_member_declarations(self):
-            name = self._java_name()
+            name = self.java_name()
             service_qname = _servlet_java_generator._ServletJavaGenerator._Service.java_qname(self)
             return [
                 "private final static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(%(name)s.class);" % locals(),
@@ -262,7 +262,7 @@ private void __doPostResponse(final javax.servlet.http.HttpServletRequest httpSe
             return methods
 
         def __repr__(self):
-            name = self._java_name()
+            name = self.java_name()
 
             sections = []
             sections.append("\n".join(self._java_methods()))

@@ -7,15 +7,6 @@ import os.path
 
 
 class LoggingServiceJavaGenerator(java_generator.JavaGenerator):
-    class LoggingServiceJavaDocument(JavaDocument):
-        def _save(self, out_file_path):
-            out_dir_path, out_file_name = os.path.split(out_file_path)
-            out_file_base_name, out_file_ext = os.path.splitext(out_file_name)
-            out_file_path = os.path.join(out_dir_path, 'Logging' + camelize(out_file_base_name) + out_file_ext)
-            JavaDocument._save(self, out_file_path)
-
-    Document = LoggingServiceJavaDocument
-
     class Function(JavaFunction):
         def __repr__(self):
             java_name = self.java_name()
@@ -119,11 +110,11 @@ public %(return_type_name)s %(java_name)s(%(parameters)s)%(throws)s {
 }""" % locals()
 
     class Service(JavaService):
-        def _java_name(self, boxed=False):
+        def java_name(self, boxed=False):
             return 'Logging' + JavaService.java_name(self)
 
         def _java_constructor(self):
-            name = self._java_name()
+            name = self.java_name()
             service_qname = JavaService.java_qname(self)
             return """\
 @com.google.inject.Inject
@@ -132,7 +123,7 @@ public %(name)s(final %(service_qname)s service) {
 }""" % locals()
 
         def _java_member_declarations(self):
-            name = self._java_name()
+            name = self.java_name()
             service_qname = JavaService.java_qname(self)
             return [
                 "private final static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(%(name)s.class);" % locals(),
@@ -143,14 +134,14 @@ public %(name)s(final %(service_qname)s service) {
             return [repr(function) for function in self.functions]
 
         def __repr__(self):
-            name = self._java_name()
+            name = self.java_name()
 
             sections = []
             sections.append("\n\n".join([self._java_constructor()] + self._java_methods()))
             sections.append("\n".join(self._java_member_declarations()))
             sections = "\n\n".join(indent(' ' * 4, sections))
 
-            service_qname = self.java_qname()
+            service_qname = JavaService.java_qname(self)
 
             return """\
 @com.google.inject.Singleton

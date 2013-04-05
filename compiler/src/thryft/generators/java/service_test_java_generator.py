@@ -3,8 +3,7 @@ from thryft.generators.java import java_generator
 from thryft.generators.java.java_document import JavaDocument
 from thryft.generators.java.java_function import JavaFunction
 from thryft.generators.java.java_service import JavaService
-from yutil import indent, camelize, upper_camelize
-import os.path
+from yutil import indent, upper_camelize
 
 
 class ServiceTestJavaGenerator(java_generator.JavaGenerator):
@@ -12,12 +11,8 @@ class ServiceTestJavaGenerator(java_generator.JavaGenerator):
         def java_imports(self):
             return ['import org.junit.Test;']
 
-        def _save(self, out_file_path):
-            out_dir_path, out_file_name = os.path.split(out_file_path)
-            out_dir_path = os.path.join(out_dir_path)
-            out_file_base_name, out_file_ext = os.path.splitext(out_file_name)
-            out_file_path = os.path.join(out_dir_path, camelize(out_file_base_name) + 'Test' + out_file_ext + '.template')
-            return thryft.generator.document.Document._save(self, out_file_path)
+        def _java_file_ext(self):
+            return '.java.template'
 
     class Function(JavaFunction):
         def java_name(self):
@@ -31,11 +26,11 @@ public void %(name)s() {
 }""" % locals()
 
     class Service(JavaService):
-        def _java_name(self, boxed=False):
+        def java_name(self, boxed=False):
             return JavaService.java_name(self) + 'Test'
 
         def _java_constructor(self):
-            name = self._java_name()
+            name = self.java_name()
             service_qname = JavaService.java_qname(self)
             return """\
 public %(name)s(final %(service_qname)s service) {
@@ -52,7 +47,7 @@ public %(name)s(final %(service_qname)s service) {
             return [repr(function) for function in self.functions]
 
         def __repr__(self):
-            name = self._java_name()
+            name = self.java_name()
 
             sections = []
             sections.append("\n\n".join([self._java_constructor()] + self._java_methods()))

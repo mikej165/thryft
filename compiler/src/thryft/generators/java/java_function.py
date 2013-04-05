@@ -85,10 +85,10 @@ class JavaFunction(Function, _JavaNamedConstruct):
 public %(name)s(final org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {%(field_initializer)s
 }""" % locals()
 
-    def java_declaration(self, final_parameters=False):
+    def java_declaration(self):
         name = self.java_name()
         parameters = \
-            ', '.join(parameter.java_parameter(final=final_parameters) for parameter in self.parameters)
+            ', '.join(parameter.java_parameter() for parameter in self.parameters)
         return_type_name = \
             self.return_field is not None and \
                 self.return_field.type.java_declaration_name() or \

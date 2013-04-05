@@ -32,11 +32,13 @@
 
 from thryft.generator.document import Document
 from thryft.generators.java._java_named_construct import _JavaNamedConstruct
-from yutil import camelize
 import os.path
 
 
 class JavaDocument(Document, _JavaNamedConstruct):
+    def _java_file_ext(self):
+        return '.java'
+
     def java_imports(self):
         return []
 
@@ -76,11 +78,12 @@ class JavaDocument(Document, _JavaNamedConstruct):
         return Document.save(self, out_path=out_path, language='java')
 
     def _save(self, out_file_path):
-        out_dir_path, out_file_name = os.path.split(out_file_path)
-        out_file_base_name, out_file_ext = os.path.splitext(out_file_name)
-        assert out_file_ext == '.java', out_file_path
-        if out_file_base_name.lower() == out_file_base_name:
-            out_file_base_name = camelize(out_file_base_name)
-        out_file_path = \
-            os.path.join(out_dir_path, out_file_base_name + '.java')
-        return Document._save(self, out_file_path)
+        assert len(self.definitions) == 1, len(self.definitions)
+        return \
+            Document._save(
+                self,
+                os.path.join(
+                    os.path.dirname(out_file_path),
+                    self.definitions[0].java_name() + self._java_file_ext()
+                )
+            )

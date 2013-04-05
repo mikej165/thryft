@@ -193,11 +193,11 @@ try {
 """ % locals()
 
     class Service(_servlet_java_generator._ServletJavaGenerator._Service, _RestGenerator._RestService):
-        def _java_name(self, boxed=False):
+        def java_name(self, boxed=False):
             return _servlet_java_generator._ServletJavaGenerator._Service.java_name(self) + 'RestServlet'
 
         def _java_constructor(self):
-            name = self._java_name()
+            name = self.java_name()
             service_qname = _servlet_java_generator._ServletJavaGenerator._Service.java_qname(self)
             return """\
 @com.google.inject.Inject
@@ -207,7 +207,7 @@ public %(name)s(final %(service_qname)s service) {
 """ % locals()
 
         def _java_member_declarations(self):
-            name = self._java_name()
+            name = self.java_name()
             service_qname = _servlet_java_generator._ServletJavaGenerator._Service.java_qname(self)
             return [
                 "private final static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(%(name)s.class);" % locals(),
@@ -284,7 +284,7 @@ public void do%(request_method_camelized)s(final javax.servlet.http.HttpServletR
             return methods
 
         def __repr__(self):
-            name = self._java_name()
+            name = self.java_name()
 
             sections = []
 

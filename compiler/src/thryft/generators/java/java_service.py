@@ -42,6 +42,9 @@ class JavaService(Service, _JavaNamedConstruct):
     def java_name(self, boxed=False):
         return self.name
 
+    def java_qname(self, boxed=False):
+        return _JavaNamedConstruct.java_qname(self, name=self.name)
+
     def __repr__(self):
         extends = self.java_extends()
         if extends is None:

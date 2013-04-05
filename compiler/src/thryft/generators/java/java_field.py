@@ -83,24 +83,7 @@ public %(final)s%(type_name)s %(getter_name)s() {
 }""" % locals()
 
     def java_initializer(self):
-        lhs = 'this.' + self.java_name()
-        name = self.java_name()
-        parent_qname = self.parent.java_qname()
-        rhs = self.java_name()
-        if self.type.java_is_reference():  # Only reference types like String and containers can have lengths
-            min_length = self.validation.get('minLength')
-            if min_length == 1:
-                rhs = """org.thryft.core.Preconditions.checkNotEmpty(%(rhs)s, "%(parent_qname)s: %(name)s is empty")""" % locals()
-                if not self.required:
-                    rhs = self.java_name() + " != null ? " + rhs + " : null";
-            elif min_length is not None:
-                rhs = """org.thryft.core.Preconditions.checkMinLength(%(rhs)s, %(min_length)u, "%(parent_qname)s: %(name)s must have a minimum length of %(min_length)u")""" % locals()
-                if not self.required:
-                    rhs = self.java_name() + " != null ? " + rhs + " : null";
-            elif self.required:
-                rhs = """com.google.common.base.Preconditions.checkNotNull(%(rhs)s, "%(parent_qname)s: missing %(name)s")""" % locals()
-        return """\
-%(lhs)s = %(rhs)s;""" % locals()
+        return 'this.' + self.java_name() + ' = ' + self.java_validation() + ';'
 
     def java_local_declaration(self, boxed=None, final=False):
         if self.value is not None:
@@ -196,6 +179,27 @@ public %(return_type_name)s %(setter_name)s(final %(type_name)s %(name)s) {
 
     def java_setter_name(self):
         return 'set' + upper_camelize(self.name)
+
+    def java_validation(self, value=None):
+        name = self.java_name()
+        parent_qname = self.parent.java_qname()
+        if value is None:
+            validation = self.java_name()
+        else:
+            validation = value
+        if self.type.java_is_reference():  # Only reference types like String and containers can have lengths
+            min_length = self.validation.get('minLength')
+            if min_length == 1:
+                validation = """org.thryft.core.Preconditions.checkNotEmpty(%(validation)s, "%(parent_qname)s: %(name)s is empty")""" % locals()
+                if not self.required:
+                    validation = self.java_name() + " != null ? " + validation + " : null";
+            elif min_length is not None:
+                validation = """org.thryft.core.Preconditions.checkMinLength(%(validation)s, %(min_length)u, "%(parent_qname)s: %(name)s must have a minimum length of %(min_length)u")""" % locals()
+                if not self.required:
+                    validation = self.java_name() + " != null ? " + validation + " : null";
+            elif self.required:
+                validation = """com.google.common.base.Preconditions.checkNotNull(%(validation)s, "%(parent_qname)s: missing %(name)s")""" % locals()
+        return validation
 
     def java_value(self):
         if isinstance(self.value, str):
