@@ -2,7 +2,6 @@ namespace java org.thryft.core.protocol.test
 namespace * thryft_test.core.protocol.test
 
 include "protocol_test_enum.thrift"
-include "thryft/util/date.thrift"
 include "thryft/util/date_time.thrift"
 include "thryft/util/decimal.thrift"
 
@@ -10,7 +9,6 @@ struct ProtocolTestStruct {
     optional binary binary_field;
     optional bool bool_field;
     optional byte byte_field
-    optional date.Date date_field;
     optional date_time.DateTime date_time_field;
     optional decimal.Decimal decimal_field;
     optional protocol_test_enum.ProtocolTestEnum enum_field;

@@ -46,6 +46,8 @@ from thryft.generators.java.java_generator import JavaGenerator
 from thryft.generators.js.js_generator import JsGenerator
 from thryft.generators.py.py_generator import PyGenerator
 
+
+
 for in_dir_path, generator, out_dir_path in (
 #    (
 #        os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'thrift', 'src'),
@@ -78,8 +80,7 @@ for in_dir_path, generator, out_dir_path in (
             include_dir_paths=(
                 in_dir_path,
                 os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'thrift', 'src'),
-            ),
-            generator=generator
+            )
         )
 
     for dir_path, _, file_names in os.walk(in_dir_path):
@@ -91,5 +92,5 @@ for in_dir_path, generator, out_dir_path in (
                 continue
             file_path = os.path.join(dir_path, file_name)
 
-            for document in compiler(file_path):
+            for document in compiler(file_path, generator=generator):
                 document.save(out_dir_path)

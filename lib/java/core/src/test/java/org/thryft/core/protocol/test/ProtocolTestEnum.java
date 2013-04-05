@@ -7,7 +7,7 @@ public enum ProtocolTestEnum {
     private ProtocolTestEnum(int value) {
         this.value = value;
     }
-    
+
     public static ProtocolTestEnum valueOf(final int value) {
         switch (value) {
         case 1: return ENUMERATOR1;
@@ -23,6 +23,6 @@ public enum ProtocolTestEnum {
     public final int value() {
         return value;
     }
-        
+
     private final int value;
 }
