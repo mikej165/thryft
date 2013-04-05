@@ -96,7 +96,7 @@ class JsFunction(Function, _JsNamedConstruct):
             request = """
 
     var request = new %(request_type_qname)s(params);
-    if (!request.isValid()) {
+    if (!request.isValid(true)) {
         if (async) {
             if (typeof errorCallback !== "undefined") {
                 errorCallback(null, request.validationError, null);

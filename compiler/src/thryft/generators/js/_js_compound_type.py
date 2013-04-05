@@ -101,7 +101,7 @@ validation: {%(field_validations)s
 if (!(%(value)s instanceof %(qname)s)) {
     return "expected %(value_name)s to be a %(qname)s";
 }
-if (!%(value)s.isValid()) {
+if (!%(value)s.isValid(true)) {
     return %(value)s.validationError;
 }""" % locals()
 
