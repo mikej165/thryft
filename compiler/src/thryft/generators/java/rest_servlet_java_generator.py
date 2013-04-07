@@ -1,16 +1,17 @@
-from thryft.generators._rest_generator import _RestGenerator
-from thryft.generators.java.java_bool_type import JavaBoolType
-from thryft.generators.java._java_base_type import _JavaBaseType
+from thryft.generator._base_type import _BaseType
+from thryft.generator.enum_type import EnumType
 from thryft.generators.java import _servlet_java_generator
-from yutil import indent, rpad
+from thryft.generators.java._java_base_type import _JavaBaseType
+from thryft.generators.java.java_bool_type import JavaBoolType
+from yutil import indent, rpad, decamelize
 
 
-class RestServletJavaGenerator(_servlet_java_generator._ServletJavaGenerator, _RestGenerator):
+class RestServletJavaGenerator(_servlet_java_generator._ServletJavaGenerator):
     class Document(_servlet_java_generator._ServletJavaGenerator._Document):
         def __init__(self, **kwds):
             _servlet_java_generator._ServletJavaGenerator._Document.__init__(self, servlet_type='rest', **kwds)
 
-    class Function(_servlet_java_generator._ServletJavaGenerator._Function, _RestGenerator._RestFunction):
+    class Function(_servlet_java_generator._ServletJavaGenerator._Function):
         def java_message_types(self):
             message_types = []
             request_type = self.java_request_type()
@@ -192,7 +193,51 @@ try {
 }
 """ % locals()
 
-    class Service(_servlet_java_generator._ServletJavaGenerator._Service, _RestGenerator._RestService):
+        def rest_path_prefix(self):
+            name_split = self.name.split('_')
+            request_method = self.rest_request_method()
+            if request_method in ('GET', 'DELETE', 'HEAD'):
+                try:
+                    by_i = name_split.index('by')
+                except ValueError:
+                    by_i = None
+                if by_i is not None:
+                    path_prefix = '/' + '_'.join(name_split[1:by_i]) + '/'
+                else:
+                    path_prefix = '/' + '_'.join(name_split[1:])
+            elif request_method in ('POST', 'PUT'):
+                path_prefix = '/' + '_'.join(name_split[1:])
+            else:
+                raise NotImplementedError(request_method)
+
+            parent_path_prefix = self.parent.rest_path_prefix()
+            assert parent_path_prefix.endswith('/') and len(parent_path_prefix) > 1, parent_path_prefix
+            if path_prefix.startswith(parent_path_prefix.rstrip('/')):
+                path_prefix = path_prefix[len(parent_path_prefix) - 1:]
+                if len(path_prefix) > 0 and path_prefix[0] == '_':
+                    path_prefix = '/' + path_prefix[1:]
+            return path_prefix
+
+        def rest_path_parameter(self):
+            parameters = self.parameters
+            if len(parameters) == 0:
+                return None
+            if self.rest_request_method() not in ('GET', 'DELETE', 'HEAD'):
+                return None
+            if parameters[0].required and \
+               (isinstance(parameters[0].type, _BaseType) or isinstance(parameters[0].type, EnumType)) and \
+               (len(parameters) == 1 or \
+                len([parameter for parameter in parameters[1:] if not parameter.required]) == 0):
+                return parameters[0]
+            else:
+                return None
+
+        def rest_request_method(self):
+            request_method = self.name.split('_', 1)[0].upper()
+            assert request_method in ('GET', 'DELETE', 'HEAD', 'POST', 'PUT'), request_method
+            return request_method
+
+    class Service(_servlet_java_generator._ServletJavaGenerator._Service):
         def java_name(self, boxed=False):
             return _servlet_java_generator._ServletJavaGenerator._Service.java_name(self) + 'RestServlet'
 
@@ -317,3 +362,7 @@ private final static class Messages extends %(service_qname)s.Messages {
 public class %(name)s extends javax.servlet.http.HttpServlet {
 %(sections)s
 }""" % locals()
+
+        def rest_path_prefix(self):
+            assert self.name.endswith('Service')
+            return '/' + decamelize(self.name[:-len('Service')]) + '/'
