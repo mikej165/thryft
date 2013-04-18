@@ -33,6 +33,7 @@
 package org.thryft.core.protocol.test;
 
 import java.math.BigDecimal;
+import java.net.URL;
 import java.nio.ByteBuffer;
 import java.security.SecureRandom;
 
@@ -149,6 +150,12 @@ public abstract class ProtocolTest {
         // Empty struct
         _test(new ProtocolTestStruct.Builder().setStructField(
                 new ProtocolTestStruct()).build());
+    }
+
+    @Test
+    public void testUrl() throws Exception {
+        _test(new ProtocolTestStruct.Builder().setUrlField(
+                new URL("http://example.com/test")).build());
     }
 
     protected abstract void _test(final TBase<?, ?> expected) throws Exception;

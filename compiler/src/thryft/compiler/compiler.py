@@ -92,8 +92,11 @@ class Compiler(object):
                                 default_construct_class = getattr(self.__generator, class_name)
                                 for attr in dir(overrides_module):
                                     value = getattr(overrides_module, attr)
-                                    if isclass(value) and issubclass(value, default_construct_class):
+                                    if isclass(value) and \
+                                       issubclass(value, default_construct_class) and \
+                                       value != default_construct_class:
                                         return getattr(overrides_module, attr)(**kwds)
+                                # logging.warn("could not find override class for %s in %s" % (default_construct_class.__name__, overrides_module_name))
                         break
 
             return getattr(self.__generator, class_name)(**kwds)

@@ -35,6 +35,9 @@ package org.thryft.core.protocol;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.ByteBuffer;
 
 import javax.mail.internet.AddressException;
@@ -69,7 +72,7 @@ public abstract class Protocol extends TProtocol {
     }
 
     @Override
-    public java.nio.ByteBuffer readBinary() throws TException {
+    public ByteBuffer readBinary() throws TException {
         final String base64String = readString();
         final byte[] binaryBytes = Base64.decodeBase64(base64String);
         return ByteBuffer.wrap(binaryBytes);
@@ -93,8 +96,8 @@ public abstract class Protocol extends TProtocol {
         return new org.joda.time.DateTime(readI64());
     }
 
-    public java.math.BigDecimal readDecimal() throws TException {
-        return new java.math.BigDecimal(readString());
+    public BigDecimal readDecimal() throws TException {
+        return new BigDecimal(readString());
     }
 
     @Override
@@ -231,8 +234,12 @@ public abstract class Protocol extends TProtocol {
         throw new UnsupportedOperationException();
     }
 
+    public URL readUrl() throws TException, MalformedURLException {
+        return new URL(readString());
+    }
+
     @Override
-    public void writeBinary(final java.nio.ByteBuffer buf) throws TException {
+    public void writeBinary(final ByteBuffer buf) throws TException {
         writeString(Base64.encodeBase64String(buf.array()));
     }
 
@@ -251,8 +258,7 @@ public abstract class Protocol extends TProtocol {
         writeI64(dateTime.getMillis());
     }
 
-    public void writeDecimal(final java.math.BigDecimal decimal)
-            throws TException {
+    public void writeDecimal(final BigDecimal decimal) throws TException {
         writeString(decimal.toString());
     }
 
@@ -261,8 +267,7 @@ public abstract class Protocol extends TProtocol {
         throw new UnsupportedOperationException();
     }
 
-    public void writeEmailAddress(
-            final javax.mail.internet.InternetAddress emailAddress)
+    public void writeEmailAddress(final InternetAddress emailAddress)
             throws TException {
         writeString(emailAddress.toString());
     }
@@ -340,8 +345,8 @@ public abstract class Protocol extends TProtocol {
             writeByte((Byte) value);
         } else if (value instanceof org.joda.time.DateTime) {
             writeDateTime((org.joda.time.DateTime) value);
-        } else if (value instanceof java.math.BigDecimal) {
-            writeDecimal((java.math.BigDecimal) value);
+        } else if (value instanceof BigDecimal) {
+            writeDecimal((BigDecimal) value);
         } else if (value instanceof Double) {
             writeDouble((Double) value);
         } else if (value instanceof ImmutableList) {
@@ -370,6 +375,8 @@ public abstract class Protocol extends TProtocol {
             writeI64((Long) value);
         } else if (value instanceof String) {
             writeString((String) value);
+        } else if (value instanceof URL) {
+            writeUrl((URL) value);
         } else if (value instanceof TBase<?, ?>) {
             ((TBase<?, ?>) value).write(this);
         } else {
@@ -404,5 +411,9 @@ public abstract class Protocol extends TProtocol {
     @Override
     public void writeStructEnd() throws TException {
         throw new UnsupportedOperationException();
+    }
+
+    public void writeUrl(final URL url) throws TException {
+        writeString(url.toString());
     }
 }

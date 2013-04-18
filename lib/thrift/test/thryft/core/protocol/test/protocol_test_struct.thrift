@@ -5,6 +5,7 @@ include "protocol_test_enum.thrift"
 include "thryft/util/date_time.thrift"
 include "thryft/util/decimal.thrift"
 include "thryft/util/email_address.thrift"
+include "thryft/util/url.thrift"
 
 struct ProtocolTestStruct {
     optional binary binary_field;
@@ -22,4 +23,5 @@ struct ProtocolTestStruct {
     optional set<string> set_string_field;
     optional string string_field;
     optional ProtocolTestStruct struct_field;
+    optional url.Url url_field;
 }
