@@ -184,9 +184,9 @@ public %(return_type_name)s %(setter_name)s(final %(type_name)s %(name)s) {
         name = self.java_name()
         parent_qname = self.parent.java_qname()
         if value is None:
-            validation = self.java_name()
+            java_validation = self.java_name()
         else:
-            validation = value
+            java_validation = value
         if self.type.java_is_reference():  # Only reference types like String and containers can have lengths
             if 'validation' in self.annotations:
                 validation = self.annotations['validation']
@@ -194,14 +194,14 @@ public %(return_type_name)s %(setter_name)s(final %(type_name)s %(name)s) {
                 if min_length == 1:
                     validation = """org.thryft.core.Preconditions.checkNotEmpty(%(validation)s, "%(parent_qname)s: %(name)s is empty")""" % locals()
                     if not self.required:
-                        validation = self.java_name() + " != null ? " + validation + " : null";
+                        java_validation = self.java_name() + " != null ? " + java_validation + " : null";
                 elif min_length is not None:
                     validation = """org.thryft.core.Preconditions.checkMinLength(%(validation)s, %(min_length)u, "%(parent_qname)s: %(name)s must have a minimum length of %(min_length)u")""" % locals()
                     if not self.required:
-                        validation = self.java_name() + " != null ? " + validation + " : null";
+                        java_validation = self.java_name() + " != null ? " + java_validation + " : null";
                 elif self.required:
-                    validation = """com.google.common.base.Preconditions.checkNotNull(%(validation)s, "%(parent_qname)s: missing %(name)s")""" % locals()
-        return validation
+                    java_validation = """com.google.common.base.Preconditions.checkNotNull(%(validation)s, "%(parent_qname)s: missing %(name)s")""" % locals()
+        return java_validation
 
     def java_value(self):
         if isinstance(self.value, str):

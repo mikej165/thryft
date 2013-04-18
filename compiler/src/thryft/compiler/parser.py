@@ -515,7 +515,7 @@ class Parser(GenericParser):
                             name=tag_name,
                             start_token=doc_node.start_token,
                             stop_token=doc_node.stop_token,
-                            value=self.__p__annotation(name=tag_name, start_token=doc_node.start_token, value=tag_value)
+                            value=self.__p_annotation(name=tag_name, start_token=doc_node.start_token, value=tag_value)
                         )
                     )
             annotations = tuple(annotations)
@@ -928,6 +928,25 @@ class Parser(GenericParser):
         return token.type
 
 
+for __requires_x in ('authentication', 'guest', 'user'):
+    def __parse_requires_annotation(value):
+        if value is not None:
+            raise ValueError("@requires_%s does not take a value" % __requires_x)
+        return value
+    Parser.register_annotation('requires_' + __requires_x, __parse_requires_annotation)
+
+for __requires_x in ('permissions', 'roles'):
+    def __parse_requires_set_annotation(value):
+        if value is None or len(value) == 0:
+            raise ValueError("@requires_%s requires a value" % __requires_x)
+        if ',' in value:
+            values = value.split(',')
+        else:
+            values = value.split()
+        return frozenset(value.strip() for value in values)
+    Parser.register_annotation('requires_' + __requires_x, __parse_requires_set_annotation)
+
+
 def __parse_validation_annotation(value):
     try:
         value = json.loads(value)
@@ -948,5 +967,4 @@ def __parse_validation_annotation(value):
             raise ValueError("@validation %(lengthPropertyName)s must be >= 0" % locals())
 
     return value
-
 Parser.register_annotation('validation', __parse_validation_annotation)

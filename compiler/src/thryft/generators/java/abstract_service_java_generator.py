@@ -11,6 +11,17 @@ class AbstractServiceJavaGenerator(java_generator.JavaGenerator):
 
     class Function(JavaFunction):
         def __repr__(self):
+            annotations = []
+            for requires_x in ('authentication', 'guest', 'user'):
+                if 'requires_' + requires_x in self.annotations:
+                    annotations.append('@org.apache.shiro.authz.annotation.Requires' + requires_x.capitalize())
+            for requires_x in ('permissions', 'roles'):
+                if 'requires_' + requires_x in self.annotations:
+                    annotations.append("@org.apache.shiro.authz.annotation.Requires%s({ %s })" % (
+                        requires_x.capitalize(),
+                        ', '.join('"%s"' % x for x in self.annotations['requires_' + requires_x])
+                    ))
+            annotations = lpad("\n", "\n".join(annotations))
             name = self.java_name()
             public_parameters = \
                 ', '.join(parameter.java_parameter(final=True) for parameter in self.parameters)
@@ -54,7 +65,7 @@ protected void %(validate_method_name)s(%(public_parameters)s) {
                 )
 
             return """\
-@Override
+@Override%(annotations)s
 public %(return_type_name)s %(name)s(%(public_parameters)s)%(throws)s {%(validate_method_call)s
     %(protected_delegation)s;
 }%(validate_method)s
