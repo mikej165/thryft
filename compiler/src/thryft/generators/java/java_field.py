@@ -189,7 +189,7 @@ public %(return_type_name)s %(setter_name)s(final %(type_name)s %(name)s) {
             validation = value
         if self.type.java_is_reference():  # Only reference types like String and containers can have lengths
             if 'validation' in self.annotations:
-                validation = self.annotations['validation'].value
+                validation = self.annotations['validation']
                 min_length = validation.get('minLength')
                 if min_length == 1:
                     validation = """org.thryft.core.Preconditions.checkNotEmpty(%(validation)s, "%(parent_qname)s: %(name)s is empty")""" % locals()

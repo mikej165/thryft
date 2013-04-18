@@ -99,15 +99,7 @@ class Compiler(object):
             return getattr(self.__generator, class_name)(**kwds)
 
         def visit_annotation_node(self, annotation_node):
-            try:
-                return \
-                    self.__construct(
-                        'Annotation',
-                        name=annotation_node.name,
-                        value=annotation_node.value
-                    )
-            except ValueError, e:
-                raise CompileException(str(e), ast_node=annotation_node)
+            return annotation_node.value
 
         def __visit_annotation_nodes(self, annotation_nodes):
             if annotation_nodes is None:

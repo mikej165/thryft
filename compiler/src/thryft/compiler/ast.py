@@ -15,14 +15,6 @@ class Ast(object):
                 assert isinstance(annotations, tuple), type(annotations)
                 for annotation in annotations:
                     assert isinstance(annotation, Ast.AnnotationNode)
-            elif doc is not None:
-                annotations = [Ast.AnnotationNode(
-                                   name=key,
-                                   start_token=doc.start_token,
-                                   stop_token=doc.stop_token,
-                                   value=value
-                               )
-                               for key, value in doc.tags.iteritems()]
             self.__annotations = annotations
 
             if start_token is not None:
@@ -132,14 +124,11 @@ class Ast(object):
     class AnnotationNode(_NamedNode):
         def __init__(self, value=None, **kwds):
             Ast._NamedNode.__init__(self, **kwds)
-            assert value is None or (isinstance(value, str) and len(value) > 0)
             self.__value = value
 
         @property
         def value(self):
             return self.__value
-
-
 
     class BaseTypeNode(TypeNode):
         pass

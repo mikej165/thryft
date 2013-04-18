@@ -54,7 +54,7 @@ if (field.fname == "%(name)s") {
 
     def js_validation(self):
         try:
-            validation = self.annotations['validation'].value.copy()
+            validation = self.annotations['validation'].copy()
         except KeyError:
             validation = {}
         validation['required'] = self.required

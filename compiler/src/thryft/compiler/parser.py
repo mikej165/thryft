@@ -3,11 +3,13 @@ from thryft.compiler.ast import Ast
 from thryft.compiler.parse_exception import ParseException
 from thryft.compiler.token import Token
 from yutil import class_qname
+import json
 import logging
 
 
-# Helper functions
 class Parser(GenericParser):
+    __annotation_value_parsers_by_name = {}
+
     def __init__(self):
         GenericParser.__init__(self, start='document')
         self.__logger = logging.getLogger(class_qname(self))
@@ -125,6 +127,29 @@ class Parser(GenericParser):
                   if token.type not in discard_token_types]
         return GenericParser.parse(self, tokens)
 
+    def __p_annotation(self, name, start_token, value):
+        try:
+            value_parser = Parser.__annotation_value_parsers_by_name[name]
+        except KeyError:
+            raise ParseException("unknown annotation @%s" % name, token=start_token)
+
+        try:
+            return value_parser(value)
+        except ValueError, e:
+            raise ParseException("error parsing annotation @%s: %s" % (name, str(e)), token=start_token)
+
+    def __p_annotations(self, doc_node):
+        if doc_node is None:
+            return None
+        return tuple([
+            Ast.AnnotationNode(
+                name=tag_name,
+                start_token=doc_node.start_token,
+                stop_token=doc_node.stop_token,
+                value=self.__p_annotation(name=tag_name, start_token=doc_node.start_token, value=tag_value)
+            )
+            for tag_name, tag_value in doc_node.tags.iteritems()])
+
     def p_base_type(self, args):
         '''
         base_type ::= KEYWORD_BINARY
@@ -173,6 +198,7 @@ class Parser(GenericParser):
         field = args[1]
         return \
             Ast.FieldNode(
+                annotations=self.__p_annotations(doc_node),
                 doc=doc_node,
                 id_=field.id,
                 name=field.name,
@@ -230,6 +256,7 @@ class Parser(GenericParser):
                 raise NotImplementedError(type_.name)
         return \
             Ast.ConstNode(
+                annotations=self.__p_annotations(doc_node),
                 doc=doc_node,
                 name=name,
                 start_token=start_token,
@@ -257,7 +284,6 @@ class Parser(GenericParser):
             return \
                 Ast.DocumentNode(
                     definitions=args[1],
-                    doc=None,
                     headers=args[0],
                     path=args[2].input_filename
                 )
@@ -297,6 +323,7 @@ class Parser(GenericParser):
         doc_node, start_token, stop_token = self.__p(args)
         return \
             Ast.EnumTypeNode(
+                annotations=self.__p_annotations(doc_node),
                 doc=doc_node,
                 enumerators=args[4],
                 name=args[2].text,
@@ -343,7 +370,15 @@ class Parser(GenericParser):
 
     def __p_exception_type(self, args):
         doc_node, start_token, stop_token = self.__p(args)
-        return Ast.ExceptionTypeNode(doc=doc_node, name=args[2].text, fields=args[4], start_token=start_token, stop_token=stop_token)
+        return \
+            Ast.ExceptionTypeNode(
+                annotations=self.__p_annotations(doc_node),
+                doc=doc_node,
+                name=args[2].text,
+                fields=args[4],
+                start_token=start_token,
+                stop_token=stop_token
+            )
 
     def p_field(self, args):
         '''
@@ -480,7 +515,7 @@ class Parser(GenericParser):
                             name=tag_name,
                             start_token=doc_node.start_token,
                             stop_token=doc_node.stop_token,
-                            value=tag_value
+                            value=self.__p__annotation(name=tag_name, start_token=doc_node.start_token, value=tag_value)
                         )
                     )
             annotations = tuple(annotations)
@@ -615,6 +650,7 @@ class Parser(GenericParser):
         doc_node, start_token, stop_token = self.__p(args)
         return \
             Ast.IncludeNode(
+                annotations=self.__p_annotations(doc_node),
                 doc=doc_node,
                 path=args[2].text[1:-1],
                 start_token=start_token,
@@ -745,6 +781,7 @@ class Parser(GenericParser):
         doc_node, start_token, stop_token = self.__p(args)
         return \
             Ast.NamespaceNode(
+                annotations=self.__p_annotations(doc_node),
                 doc=doc_node,
                 name=args[3],
                 scope=args[2],
@@ -793,6 +830,7 @@ class Parser(GenericParser):
         doc_node, start_token, stop_token = self.__p(args)
         return \
             Ast.ServiceNode(
+                annotations=self.__p_annotations(doc_node),
                 doc=doc_node,
                 name=args[2].text,
                 functions=args[4],
@@ -828,6 +866,7 @@ class Parser(GenericParser):
         doc_node, start_token, stop_token = self.__p(args)
         return \
             Ast.StructTypeNode(
+                annotations=self.__p_annotations(doc_node),
                 doc=doc_node,
                 name=args[2].text,
                 fields=args[4],
@@ -871,6 +910,7 @@ class Parser(GenericParser):
         doc_node, start_token, stop_token = self.__p(args)
         return \
             Ast.TypedefNode(
+                annotations=self.__p_annotations(doc_node),
                 doc=doc_node,
                 name=args[3].text,
                 start_token=start_token,
@@ -878,5 +918,35 @@ class Parser(GenericParser):
                 type_=args[2]
             )
 
+    @classmethod
+    def register_annotation(cls, name, value_parser=None):
+        if value_parser is None:
+            value_parser = lambda value: value
+        cls.__annotation_value_parsers_by_name[name] = value_parser
+
     def typestring(self, token):
         return token.type
+
+
+def __parse_validation_annotation(value):
+    try:
+        value = json.loads(value)
+    except ValueError, e:
+        raise ValueError('@validation contains invalid JSON: ' + str(e))
+    if not isinstance(value, dict):
+        raise ValueError('expected @validation to contain a JSON object')
+
+    for lengthPropertyName in ('maxLength', 'minLength'):
+        lengthPropertyValue = value.get(lengthPropertyName)
+        if lengthPropertyValue is None:
+            continue
+        try:
+            lengthPropertyValue = int(lengthPropertyValue)
+        except ValueError:
+            raise ValueError("@validation %(lengthPropertyName)s must be an integer" % locals())
+        if lengthPropertyValue < 0:
+            raise ValueError("@validation %(lengthPropertyName)s must be >= 0" % locals())
+
+    return value
+
+Parser.register_annotation('validation', __parse_validation_annotation)
