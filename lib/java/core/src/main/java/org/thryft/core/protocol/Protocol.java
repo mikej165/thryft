@@ -37,6 +37,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+
 import org.apache.commons.codec.binary.Base64;
 import org.apache.thrift.TBase;
 import org.apache.thrift.TException;
@@ -97,6 +100,11 @@ public abstract class Protocol extends TProtocol {
     @Override
     public double readDouble() throws TException {
         throw new UnsupportedOperationException();
+    }
+
+    public InternetAddress readEmailAddress() throws TException,
+            AddressException {
+        return new InternetAddress(readString());
     }
 
     @SuppressWarnings("unchecked")
@@ -253,6 +261,12 @@ public abstract class Protocol extends TProtocol {
         throw new UnsupportedOperationException();
     }
 
+    public void writeEmailAddress(
+            final javax.mail.internet.InternetAddress emailAddress)
+            throws TException {
+        writeString(emailAddress.toString());
+    }
+
     public void writeEnum(final Enum<?> enum_) throws TException {
         writeString(enum_.toString().toUpperCase());
     }
@@ -346,6 +360,8 @@ public abstract class Protocol extends TProtocol {
                 writeMixed(element);
             }
             writeSetEnd();
+        } else if (value instanceof InternetAddress) {
+            writeEmailAddress((InternetAddress) value);
         } else if (value instanceof Short) {
             writeI16((Short) value);
         } else if (value instanceof Integer) {

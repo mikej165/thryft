@@ -36,6 +36,8 @@ import java.math.BigDecimal;
 import java.nio.ByteBuffer;
 import java.security.SecureRandom;
 
+import javax.mail.internet.InternetAddress;
+
 import org.apache.thrift.TBase;
 import org.joda.time.DateTime;
 import org.junit.Test;
@@ -74,6 +76,12 @@ public abstract class ProtocolTest {
     public void testDecimal() throws Exception {
         _test(new ProtocolTestStruct.Builder().setDecimalField(
                 new BigDecimal(100)).build());
+    }
+
+    @Test
+    public void testEmailAddress() throws Exception {
+        _test(new ProtocolTestStruct.Builder().setEmailAddressField(
+                new InternetAddress("test@example.com")).build());
     }
 
     @Test

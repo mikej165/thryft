@@ -12,6 +12,7 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
             this.byteField = other.getByteField();
             this.dateTimeField = other.getDateTimeField();
             this.decimalField = other.getDecimalField();
+            this.emailAddressField = other.getEmailAddressField();
             this.enumField = other.getEnumField();
             this.i16Field = other.getI16Field();
             this.i32Field = other.getI32Field();
@@ -23,12 +24,12 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
             this.structField = other.getStructField();
         }
 
-        protected ProtocolTestStruct _build(final java.nio.ByteBuffer binaryField, final Boolean boolField, final Byte byteField, final org.joda.time.DateTime dateTimeField, final java.math.BigDecimal decimalField, final org.thryft.core.protocol.test.ProtocolTestEnum enumField, final Short i16Field, final Integer i32Field, final Long i64Field, final com.google.common.collect.ImmutableList<String> listStringField, final com.google.common.collect.ImmutableMap<String, String> mapStringStringField, final com.google.common.collect.ImmutableSet<String> setStringField, final String stringField, final org.thryft.core.protocol.test.ProtocolTestStruct structField) {
-            return new ProtocolTestStruct(binaryField, boolField, byteField, dateTimeField, decimalField, enumField, i16Field, i32Field, i64Field, listStringField, mapStringStringField, setStringField, stringField, structField);
+        protected ProtocolTestStruct _build(final java.nio.ByteBuffer binaryField, final Boolean boolField, final Byte byteField, final org.joda.time.DateTime dateTimeField, final java.math.BigDecimal decimalField, final javax.mail.internet.InternetAddress emailAddressField, final org.thryft.core.protocol.test.ProtocolTestEnum enumField, final Short i16Field, final Integer i32Field, final Long i64Field, final com.google.common.collect.ImmutableList<String> listStringField, final com.google.common.collect.ImmutableMap<String, String> mapStringStringField, final com.google.common.collect.ImmutableSet<String> setStringField, final String stringField, final org.thryft.core.protocol.test.ProtocolTestStruct structField) {
+            return new ProtocolTestStruct(binaryField, boolField, byteField, dateTimeField, decimalField, emailAddressField, enumField, i16Field, i32Field, i64Field, listStringField, mapStringStringField, setStringField, stringField, structField);
         }
 
         public ProtocolTestStruct build() {
-            return _build(binaryField, boolField, byteField, dateTimeField, decimalField, enumField, i16Field, i32Field, i64Field, listStringField, mapStringStringField, setStringField, stringField, structField);
+            return _build(binaryField, boolField, byteField, dateTimeField, decimalField, emailAddressField, enumField, i16Field, i32Field, i64Field, listStringField, mapStringStringField, setStringField, stringField, structField);
         }
 
         public Builder setBinaryField(final java.nio.ByteBuffer binaryField) {
@@ -53,6 +54,11 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
 
         public Builder setDecimalField(final java.math.BigDecimal decimalField) {
             this.decimalField = decimalField;
+            return this;
+        }
+
+        public Builder setEmailAddressField(final javax.mail.internet.InternetAddress emailAddressField) {
+            this.emailAddressField = emailAddressField;
             return this;
         }
 
@@ -106,6 +112,7 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
         private Byte byteField;
         private org.joda.time.DateTime dateTimeField;
         private java.math.BigDecimal decimalField;
+        private javax.mail.internet.InternetAddress emailAddressField;
         private org.thryft.core.protocol.test.ProtocolTestEnum enumField;
         private Short i16Field;
         private Integer i32Field;
@@ -123,6 +130,7 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
         byteField = null;
         dateTimeField = null;
         decimalField = null;
+        emailAddressField = null;
         enumField = null;
         i16Field = null;
         i32Field = null;
@@ -135,7 +143,7 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
     }
 
     public ProtocolTestStruct(final ProtocolTestStruct other) {
-        this(other.getBinaryField(), other.isBoolField(), other.getByteField(), other.getDateTimeField(), other.getDecimalField(), other.getEnumField(), other.getI16Field(), other.getI32Field(), other.getI64Field(), other.getListStringField(), other.getMapStringStringField(), other.getSetStringField(), other.getStringField(), other.getStructField());
+        this(other.getBinaryField(), other.isBoolField(), other.getByteField(), other.getDateTimeField(), other.getDecimalField(), other.getEmailAddressField(), other.getEnumField(), other.getI16Field(), other.getI32Field(), other.getI64Field(), other.getListStringField(), other.getMapStringStringField(), other.getSetStringField(), other.getStringField(), other.getStructField());
     }
 
     public ProtocolTestStruct(final org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
@@ -148,6 +156,7 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
         Byte byteField = null;
         org.joda.time.DateTime dateTimeField = null;
         java.math.BigDecimal decimalField = null;
+        javax.mail.internet.InternetAddress emailAddressField = null;
         org.thryft.core.protocol.test.ProtocolTestEnum enumField = null;
         Short i16Field = null;
         Integer i32Field = null;
@@ -187,29 +196,35 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
                 }
                 if (__list.size > 5) {
                     try {
+                        emailAddressField = (iprot instanceof org.thryft.core.protocol.Protocol) ? ((org.thryft.core.protocol.Protocol)iprot).readEmailAddress() : new javax.mail.internet.InternetAddress(iprot.readString());
+                    } catch (javax.mail.internet.AddressException e) {
+                    }
+                }
+                if (__list.size > 6) {
+                    try {
                         enumField = (iprot instanceof org.thryft.core.protocol.Protocol) ? ((org.thryft.core.protocol.Protocol)iprot).readEnum(org.thryft.core.protocol.test.ProtocolTestEnum.class) : org.thryft.core.protocol.test.ProtocolTestEnum.valueOf(iprot.readString().trim().toUpperCase());
                     } catch (IllegalArgumentException e) {
                     }
                 }
-                if (__list.size > 6) {
+                if (__list.size > 7) {
                     try {
                         i16Field = iprot.readI16();
                     } catch (NumberFormatException e) {
                     }
                 }
-                if (__list.size > 7) {
+                if (__list.size > 8) {
                     try {
                         i32Field = iprot.readI32();
                     } catch (NumberFormatException e) {
                     }
                 }
-                if (__list.size > 8) {
+                if (__list.size > 9) {
                     try {
                         i64Field = iprot.readI64();
                     } catch (NumberFormatException e) {
                     }
                 }
-                if (__list.size > 9) {
+                if (__list.size > 10) {
                     listStringField = (new com.google.common.base.Function<org.apache.thrift.protocol.TProtocol, com.google.common.collect.ImmutableList<String>>() {
                         @Override
                         public com.google.common.collect.ImmutableList<String> apply(final org.apache.thrift.protocol.TProtocol iprot) {
@@ -227,7 +242,7 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
                         }
                     }).apply(iprot);
                 }
-                if (__list.size > 10) {
+                if (__list.size > 11) {
                     mapStringStringField = (new com.google.common.base.Function<org.apache.thrift.protocol.TProtocol, com.google.common.collect.ImmutableMap<String, String>>() {
                         @Override
                         public com.google.common.collect.ImmutableMap<String, String> apply(org.apache.thrift.protocol.TProtocol iprot) {
@@ -245,7 +260,7 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
                         }
                     }).apply(iprot);
                 }
-                if (__list.size > 11) {
+                if (__list.size > 12) {
                     setStringField = (new com.google.common.base.Function<org.apache.thrift.protocol.TProtocol, com.google.common.collect.ImmutableSet<String>>() {
                         @Override
                         public com.google.common.collect.ImmutableSet<String> apply(final org.apache.thrift.protocol.TProtocol iprot) {
@@ -263,10 +278,10 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
                         }
                     }).apply(iprot);
                 }
-                if (__list.size > 12) {
+                if (__list.size > 13) {
                     stringField = iprot.readString();
                 }
-                if (__list.size > 13) {
+                if (__list.size > 14) {
                     structField = new org.thryft.core.protocol.test.ProtocolTestStruct(iprot);
                 }
                 iprot.readListEnd();
@@ -297,6 +312,11 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
                         try {
                             decimalField = (iprot instanceof org.thryft.core.protocol.Protocol) ? ((org.thryft.core.protocol.Protocol)iprot).readDecimal() : new java.math.BigDecimal(iprot.readString());
                         } catch (NumberFormatException e) {
+                        }
+                    } else if (ifield.name.equals("email_address_field")) {
+                        try {
+                            emailAddressField = (iprot instanceof org.thryft.core.protocol.Protocol) ? ((org.thryft.core.protocol.Protocol)iprot).readEmailAddress() : new javax.mail.internet.InternetAddress(iprot.readString());
+                        } catch (javax.mail.internet.AddressException e) {
                         }
                     } else if (ifield.name.equals("enum_field")) {
                         try {
@@ -385,6 +405,7 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
         this.byteField = byteField;
         this.dateTimeField = dateTimeField;
         this.decimalField = decimalField;
+        this.emailAddressField = emailAddressField;
         this.enumField = enumField;
         this.i16Field = i16Field;
         this.i32Field = i32Field;
@@ -396,12 +417,13 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
         this.structField = structField;
     }
 
-    public ProtocolTestStruct(final java.nio.ByteBuffer binaryField, final Boolean boolField, final Byte byteField, final org.joda.time.DateTime dateTimeField, final java.math.BigDecimal decimalField, final org.thryft.core.protocol.test.ProtocolTestEnum enumField, final Short i16Field, final Integer i32Field, final Long i64Field, final com.google.common.collect.ImmutableList<String> listStringField, final com.google.common.collect.ImmutableMap<String, String> mapStringStringField, final com.google.common.collect.ImmutableSet<String> setStringField, final String stringField, final org.thryft.core.protocol.test.ProtocolTestStruct structField) {
+    public ProtocolTestStruct(final java.nio.ByteBuffer binaryField, final Boolean boolField, final Byte byteField, final org.joda.time.DateTime dateTimeField, final java.math.BigDecimal decimalField, final javax.mail.internet.InternetAddress emailAddressField, final org.thryft.core.protocol.test.ProtocolTestEnum enumField, final Short i16Field, final Integer i32Field, final Long i64Field, final com.google.common.collect.ImmutableList<String> listStringField, final com.google.common.collect.ImmutableMap<String, String> mapStringStringField, final com.google.common.collect.ImmutableSet<String> setStringField, final String stringField, final org.thryft.core.protocol.test.ProtocolTestStruct structField) {
         this.binaryField = binaryField;
         this.boolField = boolField;
         this.byteField = byteField;
         this.dateTimeField = dateTimeField;
         this.decimalField = decimalField;
+        this.emailAddressField = emailAddressField;
         this.enumField = enumField;
         this.i16Field = i16Field;
         this.i32Field = i32Field;
@@ -453,6 +475,9 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
             ((getDecimalField() == null && other.getDecimalField() == null) ||
             (getDecimalField() != null && other.getDecimalField() != null &&
             getDecimalField().equals(other.getDecimalField()))) &&
+            ((getEmailAddressField() == null && other.getEmailAddressField() == null) ||
+            (getEmailAddressField() != null && other.getEmailAddressField() != null &&
+            getEmailAddressField().equals(other.getEmailAddressField()))) &&
             ((getEnumField() == null && other.getEnumField() == null) ||
             (getEnumField() != null && other.getEnumField() != null &&
             getEnumField().equals(other.getEnumField()))) &&
@@ -498,6 +523,8 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
             return getDateTimeField();
         } else if (fieldName.equals("decimal_field")) {
             return getDecimalField();
+        } else if (fieldName.equals("email_address_field")) {
+            return getEmailAddressField();
         } else if (fieldName.equals("enum_field")) {
             return getEnumField();
         } else if (fieldName.equals("i16_field")) {
@@ -534,6 +561,10 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
 
     public final java.math.BigDecimal getDecimalField() {
         return decimalField;
+    }
+
+    public final javax.mail.internet.InternetAddress getEmailAddressField() {
+        return emailAddressField;
     }
 
     public final org.thryft.core.protocol.test.ProtocolTestEnum getEnumField() {
@@ -594,6 +625,9 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
         }
         if (getDecimalField() != null) {
             hashCode = 31 * hashCode + getDecimalField().hashCode();
+        }
+        if (getEmailAddressField() != null) {
+            hashCode = 31 * hashCode + getEmailAddressField().hashCode();
         }
         if (getEnumField() != null) {
             hashCode = 31 * hashCode + getEnumField().ordinal();
@@ -662,6 +696,9 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
         if (getDecimalField() != null) {
             helper.add("decimal_field", getDecimalField());
         }
+        if (getEmailAddressField() != null) {
+            helper.add("email_address_field", getEmailAddressField());
+        }
         if (getEnumField() != null) {
             helper.add("enum_field", getEnumField());
         }
@@ -701,7 +738,7 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
         switch (writeAsTType) {
             case org.apache.thrift.protocol.TType.VOID:
             case org.apache.thrift.protocol.TType.LIST:
-                oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.VOID, 14));
+                oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.VOID, 15));
 
                 if (getBinaryField() != null) {
                     oprot.writeBinary(getBinaryField());
@@ -729,6 +766,12 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
 
                 if (getDecimalField() != null) {
                     if (oprot instanceof org.thryft.core.protocol.Protocol) { ((org.thryft.core.protocol.Protocol)oprot).writeDecimal(getDecimalField()); } else { oprot.writeString(getDecimalField().toString()); }
+                } else {
+                    ((org.thryft.core.protocol.Protocol)oprot).writeNull();
+                }
+
+                if (getEmailAddressField() != null) {
+                    if (oprot instanceof org.thryft.core.protocol.Protocol) { ((org.thryft.core.protocol.Protocol)oprot).writeEmailAddress(getEmailAddressField()); } else { oprot.writeString(getEmailAddressField().toString()); }
                 } else {
                     ((org.thryft.core.protocol.Protocol)oprot).writeNull();
                 }
@@ -837,6 +880,12 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
                     oprot.writeFieldEnd();
                 }
 
+                if (getEmailAddressField() != null) {
+                    oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("email_address_field", org.apache.thrift.protocol.TType.STRUCT, (short)-1));
+                    if (oprot instanceof org.thryft.core.protocol.Protocol) { ((org.thryft.core.protocol.Protocol)oprot).writeEmailAddress(getEmailAddressField()); } else { oprot.writeString(getEmailAddressField().toString()); }
+                    oprot.writeFieldEnd();
+                }
+
                 if (getEnumField() != null) {
                     oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("enum_field", org.apache.thrift.protocol.TType.STRING, (short)-1));
                     if (oprot instanceof org.thryft.core.protocol.Protocol) { ((org.thryft.core.protocol.Protocol)oprot).writeEnum(getEnumField()); } else { oprot.writeString(getEnumField().toString()); }
@@ -916,6 +965,7 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
     private final Byte byteField;
     private final org.joda.time.DateTime dateTimeField;
     private final java.math.BigDecimal decimalField;
+    private final javax.mail.internet.InternetAddress emailAddressField;
     private final org.thryft.core.protocol.test.ProtocolTestEnum enumField;
     private final Short i16Field;
     private final Integer i32Field;

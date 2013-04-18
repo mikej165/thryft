@@ -4,6 +4,7 @@ namespace * thryft_test.core.protocol.test
 include "protocol_test_enum.thrift"
 include "thryft/util/date_time.thrift"
 include "thryft/util/decimal.thrift"
+include "thryft/util/email_address.thrift"
 
 struct ProtocolTestStruct {
     optional binary binary_field;
@@ -11,6 +12,7 @@ struct ProtocolTestStruct {
     optional byte byte_field
     optional date_time.DateTime date_time_field;
     optional decimal.Decimal decimal_field;
+    optional email_address.EmailAddress email_address_field;
     optional protocol_test_enum.ProtocolTestEnum enum_field;
     optional i16 i16_field;
     optional i32 i32_field;
