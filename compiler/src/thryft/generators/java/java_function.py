@@ -54,11 +54,12 @@ class JavaFunction(Function, _JavaNamedConstruct):
             for parameter in parameters:
                 self.fields.append(
                     JavaField(
+                        annotations=parameter.annotations,
+                        doc=parameter.doc,
                         name=parameter.name,
                         type=parameter.type,
                         parent=self,
                         required=parameter.required,
-                        validation=parameter.validation
                     )
                 )
 

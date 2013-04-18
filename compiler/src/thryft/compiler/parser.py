@@ -3,7 +3,6 @@ from thryft.compiler.ast import Ast
 from thryft.compiler.parse_exception import ParseException
 from thryft.compiler.token import Token
 from yutil import class_qname
-import json
 import logging
 
 
@@ -83,11 +82,19 @@ class Parser(GenericParser):
                             tag = doc_line_split[0][1:].lower()
                             if len(doc_line_split) == 2:
                                 out_doc_tags[tag] = doc_line_split[1].rstrip()
+                                if len(out_doc_tags[tag]) == 0:
+                                    out_doc_tags[tag] = None
                             else:
                                 out_doc_tags[tag] = None
                         else:
                             out_doc_text.append(doc_line)
-                    out_doc_node = Ast.DocNode(tags=out_doc_tags, text=''.join(out_doc_text))
+                    out_doc_node = \
+                        Ast.DocNode(
+                            start_token=comments[0],
+                            stop_token=comments[-1],
+                            tags=out_doc_tags,
+                            text=''.join(out_doc_text)
+                        )
 
         out_start_token = None
         if start_token:
@@ -164,11 +171,6 @@ class Parser(GenericParser):
     def __p_compound_type_field(self, args):
         doc_node, start_token, stop_token = self.__p(args)
         field = args[1]
-        validation = None
-        if doc_node is not None and len(doc_node.tags) > 0:
-            for tag, value in doc_node.tags.iteritems():
-                if tag == 'validation':
-                    validation = self.__p_validation(token=start_token, validation=value)
         return \
             Ast.FieldNode(
                 doc=doc_node,
@@ -178,7 +180,6 @@ class Parser(GenericParser):
                 start_token=start_token,
                 stop_token=stop_token,
                 type_=field.type,
-                validation=validation,
                 value=field.value
             )
 
@@ -365,7 +366,6 @@ class Parser(GenericParser):
                 start_token=start_token,
                 stop_token=stop_token,
                 type_=args[2],
-                validation=None,
                 value=value
             )
 
@@ -431,7 +431,6 @@ class Parser(GenericParser):
                     name='return_value',
                     required=True,
                     type_=args[2],
-                    validation=None,
                     value=None
                 )
         else:
@@ -439,31 +438,15 @@ class Parser(GenericParser):
         throws = args[7]
 
         if doc_node is not None and len(doc_node.tags) > 0:
+            annotations = []
             parameters_by_name = dict((parameter.name, parameter) for parameter in parameters)
             throws_by_exception_type_name = dict((throw.type.name, throw) for throw in throws)
-            for tag, value in doc_node.tags.iteritems():
-                if tag in ('param', 'validation'):
-                    if value is not None:
-                        value_split = value.split(None, 1)
-                        if len(value_split) == 2:
-                            param_name = value_split[0].rstrip(':')
-                            try:
-                                parameter = parameters_by_name[param_name]
-                            except KeyError:
-                                raise ParseException("'%s' refers to unknown parameter '%s'" % (value, param_name), token=start_token)
-                            if tag == 'param':
-                                parameter.doc = value_split[1]
-                            else:
-                                parameter.validation = self.__p_validation(token=start_token, validation=value_split[1])
-                        else:
-                            raise ParseException("@%s tag has an invalid format '%s', expected a parameter name" % (tag, value), token=start_token)
-                    else:
-                        raise ParseException("@%s tag must contain a parameter name" % tag, token=start_token)
-                elif tag == 'param':
-                    if value is not None:
-                        value_split = value.split(None, 1)
-                        if len(value_split) == 2:
-                            param_name = value_split[0].rstrip(':')
+            for tag_name, tag_value in doc_node.tags.iteritems():
+                if tag_name == 'param':
+                    if tag_value is not None:
+                        tag_value_split = tag_value.split(None, 1)
+                        if len(tag_value_split) == 2:
+                            param_name = tag_value_split[0].rstrip(':')
                             try:
                                 if param_name == 'return':
                                     parameter = return_field
@@ -471,28 +454,42 @@ class Parser(GenericParser):
                                         raise KeyError
                                 else:
                                     parameter = parameters_by_name[param_name]
+                                parameter.doc = Ast.DocNode(start_token=doc_node.start_token, stop_token=doc_node.stop_token, tags={}, text=tag_value_split[1])
                             except KeyError:
-                                raise ParseException("'%s' refers to unknown parameter '%s'" % (value, param_name), token=start_token)
+                                raise ParseException("'%s' refers to unknown parameter '%s'" % (tag_value, param_name), token=start_token)
                         else:
-                            raise ParseException("@param tag has invalid format: '%s'" % value, token=start_token)
+                            raise ParseException("@param tag has invalid format: '%s'" % tag_value, token=start_token)
                     else:
                         raise ParseException("@param tag must contain a parameter name and description", token=start_token)
-                elif tag == 'return' or tag == 'returns':
+                elif tag_name == 'return' or tag_name == 'returns':
                     if return_field is None:
-                        raise ParseException("'%s' refers to function with void return" % value, token=start_token)
-                    return_field.doc = value
-                elif tag == 'throw' or tag == 'throws':
-                    value_split = value.split(None, 1)
-                    if len(value_split) == 2:
-                        exception_type_name = value_split[0]
+                        raise ParseException("'%s' refers to function with void return" % tag_value, token=start_token)
+                    return_field.doc = Ast.DocNode(start_token=doc_node.start_token, stop_token=doc_node.stop_token, tags={}, text=tag_value)
+                elif tag_name == 'throw' or tag_name == 'throws':
+                    tag_value_split = tag_value.split(None, 1)
+                    if len(tag_value_split) == 2:
+                        exception_type_name = tag_value_split[0]
                         try:
                             throw = throws_by_exception_type_name[exception_type_name]
                         except KeyError:
-                            raise ParseException("'%s' refers to unknown exception type '%s'" % (value, exception_type_name), token=start_token)
-                        throw.doc = value_split[1]
+                            raise ParseException("'%s' refers to unknown exception type '%s'" % (tag_value, exception_type_name), token=start_token)
+                        throw.doc = Ast.DocNode(start_token=doc_node.start_token, stop_token=doc_node.stop_token, tags={}, text=tag_value_split[1])
+                else:
+                    annotations.append(
+                        Ast.AnnotationNode(
+                            name=tag_name,
+                            start_token=doc_node.start_token,
+                            stop_token=doc_node.stop_token,
+                            value=tag_value
+                        )
+                    )
+            annotations = tuple(annotations)
+        else:
+            annotations = None
 
         return \
             Ast.FunctionNode(
+                annotations=annotations,
                 doc=doc_node,
                 name=function_name,
                 oneway=args[1],
@@ -880,26 +877,6 @@ class Parser(GenericParser):
                 stop_token=stop_token,
                 type_=args[2]
             )
-
-    def __p_validation(self, token, validation):
-        try:
-            validation = json.loads(validation)
-        except ValueError, e:
-            raise ParseException('@validation contains invalid JSON: ' + str(e), token=token)
-        if not isinstance(validation, dict):
-            raise ParseException('expected @validation to contain a JSON object', token=token)
-
-        for lengthPropertyName in ('maxLength', 'minLength'):
-            lengthPropertyValue = validation.get(lengthPropertyName)
-            if lengthPropertyValue is None:
-                continue
-            try:
-                lengthPropertyValue = int(lengthPropertyValue)
-            except ValueError:
-                raise ParseException("@validation %(lengthPropertyName)s must be an integer" % locals(), token=token)
-            if lengthPropertyValue < 0:
-                raise ParseException("@validation %(lengthPropertyName)s must be >= 0" % locals(), token=token)
-        return validation
 
     def typestring(self, token):
         return token.type

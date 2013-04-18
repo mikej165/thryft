@@ -4,12 +4,26 @@ from yutil import decamelize
 
 class Ast(object):
     class Node(object):
-        def __init__(self, doc=None, start_token=None, stop_token=None):
+        def __init__(self, annotations=None, doc=None, start_token=None, stop_token=None):
             object.__init__(self)
 
             if doc is not None:
                 assert isinstance(doc, Ast.DocNode)
             self.__doc = doc
+
+            if annotations is not None:
+                assert isinstance(annotations, tuple), type(annotations)
+                for annotation in annotations:
+                    assert isinstance(annotation, Ast.AnnotationNode)
+            elif doc is not None:
+                annotations = [Ast.AnnotationNode(
+                                   name=key,
+                                   start_token=doc.start_token,
+                                   stop_token=doc.stop_token,
+                                   value=value
+                               )
+                               for key, value in doc.tags.iteritems()]
+            self.__annotations = annotations
 
             if start_token is not None:
                 assert isinstance(start_token, Token), repr(start_token)
@@ -27,12 +41,16 @@ class Ast(object):
             return getattr(visitor, 'visit_' + decamelize(self.__class__.__name__))(self)
 
         @property
+        def annotations(self):
+            return self.__annotations
+
+        @property
         def doc(self):
             return self.__doc
 
         @doc.setter
         def doc(self, doc):
-            assert doc is None or isinstance(doc, str)
+            assert doc is None or isinstance(doc, Ast.DocNode)
             self.__doc = doc
 
         def __properties(self):
@@ -110,6 +128,18 @@ class Ast(object):
         @property
         def qname(self):
             return self.__qname
+
+    class AnnotationNode(_NamedNode):
+        def __init__(self, value=None, **kwds):
+            Ast._NamedNode.__init__(self, **kwds)
+            assert value is None or (isinstance(value, str) and len(value) > 0)
+            self.__value = value
+
+        @property
+        def value(self):
+            return self.__value
+
+
 
     class BaseTypeNode(TypeNode):
         pass
@@ -225,7 +255,7 @@ class Ast(object):
         pass
 
     class FieldNode(_NamedNode):
-        def __init__(self, id_, required, type_, validation, value, **kwds):
+        def __init__(self, id_, required, type_, value, **kwds):
             Ast._NamedNode.__init__(self, **kwds)
 
             assert id_ is None or (isinstance(id_, int) and id_ >= 0), id_
@@ -236,8 +266,6 @@ class Ast(object):
 
             assert isinstance(required, bool)
             self.__required = required
-
-            self.validation = validation  # Use setter
 
             self.__value = value
 
@@ -252,20 +280,6 @@ class Ast(object):
         @property
         def type(self):
             return self.__type
-
-        @property
-        def validation(self):
-            return self.__validation
-
-        @validation.setter
-        def validation(self, validation):
-            if validation is not None:
-                assert isinstance(validation, dict), type(validation)
-                validation = validation.copy()
-                validation['required'] = self.required
-            else:
-                validation = {'required': self.required}
-            self.__validation = validation
 
         @property
         def value(self):

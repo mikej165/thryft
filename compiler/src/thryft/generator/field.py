@@ -39,7 +39,6 @@ class Field(_NamedConstruct):
         type,  # @ReservedAssignment
         id=None,  # @ReservedAssignment
         required=True,
-        validation=None,
         value=None,
         **kwds
     ):
@@ -47,12 +46,6 @@ class Field(_NamedConstruct):
         self.__id = id
         self.__type = type
         self.__required = required
-        if validation is None:
-            validation = {'required': required}
-        else:
-            validation = validation.copy()
-            validation['required'] = required
-        self.__validation = validation
         self.__value = value
 
     @property
@@ -66,10 +59,6 @@ class Field(_NamedConstruct):
     @property
     def type(self):  # @ReservedAssignment
         return self.__type
-
-    @property
-    def validation(self):
-        return self.__validation
 
     @property
     def value(self):

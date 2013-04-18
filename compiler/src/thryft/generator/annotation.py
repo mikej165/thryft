@@ -30,22 +30,35 @@
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
 
-from thryft.generator.enum_type import EnumType
-from thryft.generators.thrift._thrift_compound_type import _ThriftCompoundType
-from yutil import pad, indent, rpad
+from thryft.generator._named_construct import _NamedConstruct
+import json
 
+class Annotation(_NamedConstruct):
+    def __init__(self, name, value, **kwds):  # @ReservedAssignment
+        _NamedConstruct.__init__(self, name=name, **kwds)
+        if name == 'validation':
+            try:
+                value = json.loads(value)
+            except ValueError, e:
+                raise ValueError('@validation contains invalid JSON: ' + str(e))
+            if not isinstance(value, dict):
+                raise ValueError('expected @validation to contain a JSON object')
 
-class ThriftEnumType(EnumType, _ThriftCompoundType):
-    def __repr__(self):
-        return "%senum %s {%s}" % (
-            self.doc is not None and rpad(self.doc, "\n") or '',
-            self.name,
-            pad("\n", indent(' ' * 4, ",\n".join(
-                "%s%s = %s" % (
-                    enumerator.doc is not None and rpad(repr(enumerator.doc), "\n") or '',
-                    enumerator.name,
-                    enumerator.value,
-                )
-                for enumerator in self.enumerators
-            )), "\n")
-        )
+            for lengthPropertyName in ('maxLength', 'minLength'):
+                lengthPropertyValue = value.get(lengthPropertyName)
+                if lengthPropertyValue is None:
+                    continue
+                try:
+                    lengthPropertyValue = int(lengthPropertyValue)
+                except ValueError:
+                    raise ValueError("@validation %(lengthPropertyName)s must be an integer" % locals())
+                if lengthPropertyValue < 0:
+                    raise ValueError("@validation %(lengthPropertyName)s must be >= 0" % locals())
+        else:
+            raise ValueError("unknown annotation @%(name)s" % locals())
+
+        self.__value = value
+
+    @property
+    def value(self):
+        return self.__value

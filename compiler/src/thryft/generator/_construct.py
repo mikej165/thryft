@@ -31,11 +31,23 @@
 #-------------------------------------------------------------------------------
 
 class _Construct(object):
-    def __init__(self, parent, doc=None, **kwds):
+    def __init__(self, parent, annotations=None, doc=None, **kwds):
         object.__init__(self)
-        assert doc is None or isinstance(doc, str)
+        if annotations is not None:
+            annotations = annotations.copy()
+        else:
+            annotations = {}
+        self.__annotations = annotations
+        assert doc is None or isinstance(doc, str), type(doc)
         self.__doc = doc
         self.__parent = parent
+
+    @property
+    def annotations(self):
+        if self.__annotations is None:
+            return self.__annotations
+        else:
+            return self.__annotations.copy()
 
     @property
     def doc(self):

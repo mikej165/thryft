@@ -98,6 +98,23 @@ class Compiler(object):
 
             return getattr(self.__generator, class_name)(**kwds)
 
+        def visit_annotation_node(self, annotation_node):
+            try:
+                return \
+                    self.__construct(
+                        'Annotation',
+                        name=annotation_node.name,
+                        value=annotation_node.value
+                    )
+            except ValueError, e:
+                raise CompileException(str(e), ast_node=annotation_node)
+
+        def __visit_annotation_nodes(self, annotation_nodes):
+            if annotation_nodes is None:
+                return {}
+            return dict((annotation_node.name, annotation_node.accept(self))
+                         for annotation_node in annotation_nodes)
+
         def visit_base_type_node(self, base_type_node):
             try:
                 return self.__type_cache[base_type_node.name]
@@ -113,6 +130,8 @@ class Compiler(object):
             compound_type = \
                 self.__construct(
                     construct_class_name,
+                    annotations=self.__visit_annotation_nodes(compound_type_node.annotations),
+                    doc=self.__visit_doc_node(compound_type_node.doc),
                     name=compound_type_node.name
                 )
             self.__scope_stack.append(compound_type)
@@ -127,7 +146,7 @@ class Compiler(object):
                     if enumerator_node.value is not None:
                         have_enumerator_with_value = True
                     elif have_enumerator_with_value:
-                        raise CompileException("%s has mix of enumerators with and without values, must be one or the other" % compound_type_node.name)
+                        raise CompileException("%s has mix of enumerators with and without values, must be one or the other" % compound_type_node.name, ast_node=compound_type_node)
                 for enumerator_i, enumerator_node in enumerate(compound_type_node.enumerators):
                     if enumerator_node.value is None:
                         value = enumerator_i
@@ -137,6 +156,8 @@ class Compiler(object):
                     compound_type.enumerators.append(
                         self.__construct(
                             'Field',
+                            annotations=self.__visit_annotation_nodes(enumerator_node.annotations),
+                            doc=self.__visit_doc_node(enumerator_node.doc),
                             id=enumerator_i,
                             name=enumerator_node.name,
                             type=Ast.BaseTypeNode('i32').accept(self),
@@ -155,10 +176,18 @@ class Compiler(object):
             return \
                 self.__construct(
                     'Const',
+                    annotations=self.__visit_annotation_nodes(const_node.annotations),
+                    doc=self.__visit_doc_node(const_node.doc),
                     name=const_node.name,
                     type=const_node.type.accept(self),
                     value=const_node.value.accept(self)
                 )
+
+        def __visit_doc_node(self, doc_node):
+            if doc_node is not None:
+                return doc_node.text
+            else:
+                return None
 
         def visit_document_node(self, document_node):
             document = self.__construct('Document', path=document_node.path)
@@ -183,11 +212,12 @@ class Compiler(object):
             return \
                 self.__construct(
                     'Field',
+                    annotations=self.__visit_annotation_nodes(field_node.annotations),
+                    doc=self.__visit_doc_node(field_node.doc),
                     id=field_node.id,
                     name=field_node.name,
                     required=field_node.required,
                     type=field_node.type.accept(self),
-                    validation=field_node.validation,
                     value=field_node.value
                 )
 
@@ -198,6 +228,8 @@ class Compiler(object):
             function = \
                 self.__construct(
                     'Function',
+                    annotations=self.__visit_annotation_nodes(function_node.annotations),
+                    doc=self.__visit_doc_node(function_node.doc),
                     name=function_node.name,
                     oneway=function_node.oneway
                 )
@@ -229,6 +261,8 @@ class Compiler(object):
                     include = \
                         self.__construct(
                             'Include',
+                            annotations=self.__visit_annotation_nodes(include_node.annotations),
+                            doc=self.__visit_doc_node(include_node.doc),
                             document=included_document,
                             path=include_file_relpath
                         )
@@ -236,7 +270,7 @@ class Compiler(object):
                         if isinstance(definition, _Type) or isinstance(definition, Typedef):
                             self.__type_cache[definition.thrift_qname()] = definition
                     return include
-            raise CompileException("include path not found: %s" % include_file_relpath)
+            raise CompileException("include path not found: %s" % include_file_relpath, ast_node=include_node)
 
         def visit_int_literal_node(self, int_literal_node):
             return int_literal_node.value
@@ -262,6 +296,8 @@ class Compiler(object):
             return \
                 self.__construct(
                     'Namespace',
+                    annotations=self.__visit_annotation_nodes(namespace_node.annotations),
+                    doc=self.__visit_doc_node(namespace_node.doc),
                     name=namespace_node.name,
                     scope=namespace_node.scope
                 )
@@ -275,7 +311,13 @@ class Compiler(object):
                 return sequence_type
 
         def visit_service_node(self, service_node):
-            service = self.__construct('Service', name=service_node.name)
+            service = \
+                self.__construct(
+                    'Service',
+                    annotations=self.__visit_annotation_nodes(service_node.annotations),
+                    doc=self.__visit_doc_node(service_node.doc),
+                    name=service_node.name
+                )
             self.__scope_stack.append(service)
 
             for function_node in service_node.functions:
@@ -311,6 +353,8 @@ class Compiler(object):
             typedef = \
                 self.__construct(
                     'Typedef',
+                    annotations=self.__visit_annotation_nodes(typedef_node.annotations),
+                    doc=self.__visit_doc_node(typedef_node.doc),
                     name=typedef_node.name,
                     type=typedef_node.type.accept(self)
                 )
