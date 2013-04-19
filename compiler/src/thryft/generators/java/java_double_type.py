@@ -31,10 +31,10 @@
 #-------------------------------------------------------------------------------
 
 from thryft.generator.double_type import DoubleType
-from thryft.generators.java._java_base_type import _JavaBaseType
+from thryft.generators.java._java_numeric_type import _JavaNumericType
 
 
-class JavaDoubleType(DoubleType, _JavaBaseType):
+class JavaDoubleType(DoubleType, _JavaNumericType):
     def java_default_value(self):
         return '0.0'
 
@@ -46,9 +46,6 @@ class JavaDoubleType(DoubleType, _JavaBaseType):
 
     def java_name(self, boxed=False):
         return boxed and 'Double' or 'double'
-
-    def java_read_protocol_throws(self):
-        return ['NumberFormatException']
 
     def java_to_string(self, value):
         return "Double.toString(%(value)s)" % locals()
