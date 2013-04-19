@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Copyright (c) 2013, Minor Gordon
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
- * 
+ *
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in
  *       the documentation and/or other materials provided with the
  *       distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
  * CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
  * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
@@ -164,37 +164,40 @@ public final class FsStore<ModelT extends TBase<?, ?>> extends Store<ModelT> {
     }
 
     @Override
-    protected synchronized ImmutableSet<ModelT> _getModels(final String username) {
+    protected synchronized ImmutableMap<String, ModelT> _getModels(
+            final String username) {
         final File modelDirectoryPath = __getModelDirectoryPath(username);
         if (!modelDirectoryPath.isDirectory()) {
-            return ImmutableSet.of();
+            return ImmutableMap.of();
         }
 
-        final Set<ModelT> models = Sets.newHashSet();
+        final ImmutableMap.Builder<String, ModelT> models = ImmutableMap
+                .builder();
         for (final File modelFilePath : modelDirectoryPath.listFiles()) {
             final ModelT model = __getModel(modelFilePath);
             if (model != null) {
-                models.add(model);
+                models.put(__getModelId(modelFilePath), model);
             }
         }
-        return ImmutableSet.copyOf(models);
+        return models.build();
     }
 
     @Override
-    protected synchronized ImmutableSet<ModelT> _getModelsByIds(
+    protected synchronized ImmutableMap<String, ModelT> _getModelsByIds(
             final ImmutableSet<String> modelIds, final String username)
             throws org.thryft.web.server.store.Store.NoSuchModelException {
-        final Set<ModelT> models = Sets.newLinkedHashSet();
+        final ImmutableMap.Builder<String, ModelT> models = ImmutableMap
+                .builder();
         for (final String modelId : modelIds) {
             final ModelT model = __getModel(__getModelFilePath(modelId,
                     username));
             if (model != null) {
-                models.add(model);
+                models.put(modelId, model);
             } else {
                 throw new NoSuchModelException(modelId);
             }
         }
-        return ImmutableSet.copyOf(models);
+        return models.build();
     }
 
     @Override

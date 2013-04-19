@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Copyright (c) 2013, Minor Gordon
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
- * 
+ *
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in
  *       the documentation and/or other materials provided with the
  *       distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
  * CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
  * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
@@ -32,13 +32,10 @@
 
 package org.thryft.web.server.store;
 
-import java.util.Set;
-
 import org.apache.thrift.TBase;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
 
@@ -84,19 +81,21 @@ public final class MemStore<ModelT extends TBase<?, ?>> extends Store<ModelT> {
     }
 
     @Override
-    protected synchronized ImmutableSet<ModelT> _getModels(final String username) {
-        return ImmutableSet.copyOf(models.row(username).values());
+    protected synchronized ImmutableMap<String, ModelT> _getModels(
+            final String username) {
+        return ImmutableMap.copyOf(models.row(username));
     }
 
     @Override
-    protected synchronized ImmutableSet<ModelT> _getModelsByIds(
+    protected synchronized ImmutableMap<String, ModelT> _getModelsByIds(
             final ImmutableSet<String> modelIds, final String username)
             throws NoSuchModelException {
-        final Set<ModelT> models = Sets.newLinkedHashSet();
+        final ImmutableMap.Builder<String, ModelT> models = ImmutableMap
+                .builder();
         for (final String modelId : modelIds) {
-            models.add(getModelById(modelId, username));
+            models.put(modelId, getModelById(modelId, username));
         }
-        return ImmutableSet.copyOf(models);
+        return models.build();
     }
 
     @Override

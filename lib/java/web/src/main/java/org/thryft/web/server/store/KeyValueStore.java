@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Copyright (c) 2013, Minor Gordon
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
- * 
+ *
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in
  *       the documentation and/or other materials provided with the
  *       distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
  * CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
  * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
@@ -36,7 +36,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static org.thryft.core.Preconditions.checkNotEmpty;
 
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.thrift.TBase;
 import org.thryft.web.server.util.FileNameCodec;
@@ -44,7 +43,6 @@ import org.thryft.web.server.util.FileNameCodec;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 
 public abstract class KeyValueStore<ModelT extends TBase<?, ?>> extends
         Store<ModelT> {
@@ -132,19 +130,19 @@ public abstract class KeyValueStore<ModelT extends TBase<?, ?>> extends
         return _getModelById(new Key(modelId, username));
     }
 
-    protected abstract ImmutableSet<ModelT> _getModelsByIds(
+    protected abstract ImmutableMap<String, ModelT> _getModelsByIds(
             ImmutableSet<Key> modelKeys)
             throws org.thryft.web.server.store.Store.NoSuchModelException;
 
     @Override
-    protected ImmutableSet<ModelT> _getModelsByIds(
+    protected ImmutableMap<String, ModelT> _getModelsByIds(
             final ImmutableSet<String> modelIds, final String username)
             throws org.thryft.web.server.store.Store.NoSuchModelException {
-        final Set<Key> modelKeys = Sets.newLinkedHashSet();
+        final ImmutableSet.Builder<Key> modelKeys = ImmutableSet.builder();
         for (final String modelId : modelIds) {
             modelKeys.add(new Key(modelId, username));
         }
-        return _getModelsByIds(ImmutableSet.copyOf(modelKeys));
+        return _getModelsByIds(modelKeys.build());
     }
 
     @Override

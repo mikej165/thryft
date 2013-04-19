@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Copyright (c) 2013, Minor Gordon
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
- * 
+ *
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in
  *       the documentation and/or other materials provided with the
  *       distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
  * CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
  * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
@@ -73,7 +73,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
-import com.google.common.collect.Sets.SetView;
 import com.google.common.hash.Hashing;
 
 public final class SimpleDbStore<ModelT extends TBase<?, ?>> extends
@@ -202,26 +201,28 @@ public final class SimpleDbStore<ModelT extends TBase<?, ?>> extends
     }
 
     @Override
-    protected ImmutableSet<ModelT> _getModels(final String username) {
+    protected ImmutableMap<String, ModelT> _getModels(final String username) {
         final ImmutableList<Item> items = __selectItems("SELECT * FROM `"
                 + domainName + "` WHERE itemName() LIKE '"
                 + Key.prefix(username) + "%'");
-        final Set<ModelT> models = Sets.newLinkedHashSet();
+        final ImmutableMap.Builder<String, ModelT> models = ImmutableMap
+                .builder();
         for (final Item item : items) {
             final ModelT model = __getModelFromAttributes(item.getAttributes());
             if (model != null) {
-                models.add(model);
+                final Key modelKey = Key.parse(item.getName());
+                models.put(modelKey.getModelId(), model);
             }
         }
-        return ImmutableSet.copyOf(models);
+        return models.build();
     }
 
     @Override
-    protected ImmutableSet<ModelT> _getModelsByIds(
+    protected ImmutableMap<String, ModelT> _getModelsByIds(
             final ImmutableSet<Key> modelKeys) throws NoSuchModelException {
-        final Set<Key> foundModelKeys = Sets.newLinkedHashSet();
-        final Set<ModelT> models = Sets.newLinkedHashSet();
-
+        final ImmutableMap.Builder<String, ModelT> modelsBuilder = ImmutableMap
+                .builder();
+        ;
         // SimpleDB can only handle batches of 20 IN (...) values at a time
         for (final List<Key> modelKeyBatch : Lists.partition(
                 ImmutableList.copyOf(modelKeys), 20)) {
@@ -237,26 +238,26 @@ public final class SimpleDbStore<ModelT extends TBase<?, ?>> extends
 
             for (final Item item : items) {
                 final Key modelKey = Key.parse(item.getName());
-                foundModelKeys.add(modelKey);
-
                 final ModelT model = __getModelFromAttributes(item
                         .getAttributes());
-
                 if (model != null) {
-                    models.add(model);
+                    modelsBuilder.put(modelKey.getModelId(), model);
                 } else {
                     throw new NoSuchModelException(modelKey.getModelId());
                 }
             }
         }
+        final ImmutableMap<String, ModelT> models = modelsBuilder.build();
 
-        final SetView<Key> notFoundModelKeys = Sets.difference(modelKeys,
-                foundModelKeys);
-        if (notFoundModelKeys.isEmpty()) {
-            return ImmutableSet.copyOf(models);
+        if (models.size() == modelKeys.size()) {
+            return models;
         } else {
-            throw new NoSuchModelException(notFoundModelKeys.iterator().next()
-                    .getModelId());
+            for (final Key modelKey : modelKeys) {
+                if (models.get(modelKey.getModelId()) == null) {
+                    throw new NoSuchModelException(modelKey.getModelId());
+                }
+            }
+            throw new IllegalStateException();
         }
     }
 

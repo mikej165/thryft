@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Copyright (c) 2013, Minor Gordon
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
- * 
+ *
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in
  *       the documentation and/or other materials provided with the
  *       distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
  * CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
  * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
@@ -42,7 +42,6 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.IOUtils;
@@ -67,7 +66,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 
 public final class S3Store<ModelT extends TBase<?, ?>> extends
         AwsKeyValueStore<ModelT> {
@@ -252,35 +250,36 @@ public final class S3Store<ModelT extends TBase<?, ?>> extends
     }
 
     @Override
-    protected ImmutableSet<ModelT> _getModels(final String username) {
+    protected ImmutableMap<String, ModelT> _getModels(final String username) {
         try {
-            return ImmutableSet.copyOf(__getModels(username).values());
+            return __getModels(username);
         } catch (final AmazonServiceException e) {
             logger.error("AWS service exception on getModels: ", e);
-            return ImmutableSet.of();
+            return ImmutableMap.of();
         }
     }
 
     @Override
-    protected ImmutableSet<ModelT> _getModelsByIds(
+    protected ImmutableMap<String, ModelT> _getModelsByIds(
             final ImmutableSet<Key> modelKeys) throws NoSuchModelException {
         final ImmutableMap<String, ModelT> allModels;
         try {
             allModels = __getModels(modelKeys.iterator().next().getUsername());
         } catch (final AmazonServiceException e) {
             logger.error("AWS service exception on getModelsByIds: ", e);
-            return ImmutableSet.of();
+            return ImmutableMap.of();
         }
-        final Set<ModelT> outModels = Sets.newLinkedHashSet();
+        final ImmutableMap.Builder<String, ModelT> outModels = ImmutableMap
+                .builder();
         for (final Key modelKey : modelKeys) {
             final ModelT outModel = allModels.get(modelKey.getModelId());
             if (outModel != null) {
-                outModels.add(outModel);
+                outModels.put(modelKey.getModelId(), outModel);
             } else {
                 throw new NoSuchModelException(modelKey.getModelId());
             }
         }
-        return ImmutableSet.copyOf(outModels);
+        return outModels.build();
     }
 
     @Override

@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Copyright (c) 2013, Minor Gordon
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
- * 
+ *
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in
  *       the documentation and/or other materials provided with the
  *       distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
  * CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
  * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
@@ -315,7 +315,7 @@ public final class JdbcStore<ModelT extends TBase<?, ?>> extends Store<ModelT> {
     }
 
     @Override
-    protected ImmutableSet<ModelT> _getModels(final String username) {
+    protected ImmutableMap<String, ModelT> _getModels(final String username) {
         try {
             final Connection connection = connectionPool.getConnection();
             try {
@@ -325,14 +325,15 @@ public final class JdbcStore<ModelT extends TBase<?, ?>> extends Store<ModelT> {
                     statement.setString(1, username);
                     final ResultSet resultSet = statement.executeQuery();
                     try {
-                        final Set<ModelT> models = Sets.newLinkedHashSet();
+                        final ImmutableMap.Builder<String, ModelT> models = ImmutableMap
+                                .builder();
                         while (resultSet.next()) {
                             final ModelT model = __getModel(resultSet);
                             if (model != null) {
-                                models.add(model);
+                                models.put(__getModelId(resultSet), model);
                             }
                         }
-                        return ImmutableSet.copyOf(models);
+                        return models.build();
                     } finally {
                         resultSet.close();
                     }
@@ -343,17 +344,17 @@ public final class JdbcStore<ModelT extends TBase<?, ?>> extends Store<ModelT> {
                 connection.close();
             }
         } catch (final SQLException e) {
-            logger.error("exception getting model ids: ", e);
-            return ImmutableSet.of();
+            logger.error("exception getting models: ", e);
+            return ImmutableMap.of();
         }
     }
 
     @Override
-    protected ImmutableSet<ModelT> _getModelsByIds(
+    protected ImmutableMap<String, ModelT> _getModelsByIds(
             final ImmutableSet<String> modelIds, final String username)
             throws org.thryft.web.server.store.Store.NoSuchModelException {
         if (modelIds.isEmpty()) {
-            return ImmutableSet.of();
+            return ImmutableMap.of();
         }
 
         final StringBuilder getModelsByIdsSqlBuilder = new StringBuilder();
@@ -387,26 +388,28 @@ public final class JdbcStore<ModelT extends TBase<?, ?>> extends Store<ModelT> {
 
                     final ResultSet resultSet = statement.executeQuery();
                     try {
-                        final Set<ModelT> models = Sets.newLinkedHashSet();
-                        final Set<String> foundModelIds = Sets.newHashSet();
+                        final ImmutableMap.Builder<String, ModelT> modelsBuilder = ImmutableMap
+                                .builder();
                         while (resultSet.next()) {
                             final String modelId = resultSet
                                     .getString(tableName + "_id");
                             final ModelT model = __getModel(resultSet);
                             if (model != null) {
-                                foundModelIds.add(modelId);
-                                models.add(model);
+                                modelsBuilder.put(__getModelId(resultSet),
+                                        model);
                             } else {
                                 throw new NoSuchModelException(modelId);
                             }
                         }
+                        final ImmutableMap<String, ModelT> models = modelsBuilder
+                                .build();
 
-                        if (foundModelIds.equals(modelIds)) {
-                            return ImmutableSet.copyOf(models);
+                        if (models.keySet().equals(modelIds)) {
+                            return models;
                         } else {
                             final Set<String> missingModelIds = Sets
                                     .newHashSet(modelIds);
-                            missingModelIds.removeAll(foundModelIds);
+                            missingModelIds.removeAll(models.keySet());
                             final String missingModelId = missingModelIds
                                     .iterator().next();
                             throw new NoSuchModelException(missingModelId);
@@ -422,7 +425,7 @@ public final class JdbcStore<ModelT extends TBase<?, ?>> extends Store<ModelT> {
             }
         } catch (final SQLException e) {
             logger.error("exception getting models by ids: ", e);
-            return ImmutableSet.of();
+            return ImmutableMap.of();
         }
     }
 
@@ -544,6 +547,10 @@ public final class JdbcStore<ModelT extends TBase<?, ?>> extends Store<ModelT> {
             logger.error("error reading model: ", e);
         }
         return null;
+    }
+
+    private String __getModelId(final ResultSet resultSet) throws SQLException {
+        return resultSet.getString(tableName + "_id");
     }
 
     private boolean __headModelById(final Connection connection,

@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Copyright (c) 2013, Minor Gordon
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
- * 
+ *
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in
  *       the documentation and/or other materials provided with the
  *       distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
  * CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
  * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
@@ -33,7 +33,6 @@
 package org.thryft.web.server.store.test;
 
 import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
@@ -42,7 +41,6 @@ import static org.junit.Assert.fail;
 
 import java.math.BigDecimal;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
@@ -54,12 +52,11 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 
 public abstract class StoreTest {
     protected StoreTest() {
-        final Set<StoreTestStruct> models = Sets.newLinkedHashSet();
-        final Set<String> modelIds = Sets.newLinkedHashSet();
+        final ImmutableMap.Builder<String, StoreTestStruct> models = ImmutableMap
+                .builder();
         // models.size() should be > SimpleDBStore batch size of 25
         for (int modelI = 0; modelI < 32; modelI++) {
             // Use a long string to overflow SimpleDBStore's attribute
@@ -83,11 +80,9 @@ public abstract class StoreTest {
                     .setSetStringField(ImmutableSet.of("Test model " + modelI))
                     .setStringField("testmodel" + modelI)
                     .setStructField(new StoreTestStruct()).build();
-            models.add(model);
-            modelIds.add(__getModelId(model));
+            models.put(model.getStringField(), model);
         }
-        this.models = ImmutableSet.copyOf(models);
-        this.modelIds = ImmutableSet.copyOf(modelIds);
+        this.models = models.build();
     }
 
     @After
@@ -100,18 +95,17 @@ public abstract class StoreTest {
     public void testDeleteModelById() throws Store.ModelIoException {
         __putModels();
 
-        final StoreTestStruct deleteModel = models.asList().get(0);
+        final String deleteModelId = models.keySet().iterator().next();
 
-        boolean ret = store
-                .deleteModelById(__getModelId(deleteModel), USERNAME);
+        boolean ret = store.deleteModelById(deleteModelId, USERNAME);
         assertTrue(ret);
 
-        final ImmutableSet<StoreTestStruct> models = store.getModels(USERNAME);
-        Set<StoreTestStruct> expectedModels = Sets
-                .newLinkedHashSet(this.models);
-        ret = expectedModels.remove(deleteModel);
-        assertTrue(ret);
-        expectedModels = ImmutableSet.copyOf(expectedModels);
+        final ImmutableMap<String, StoreTestStruct> models = store
+                .getModels(USERNAME);
+
+        final Map<String, StoreTestStruct> expectedModels = Maps
+                .newLinkedHashMap(this.models);
+        expectedModels.remove(deleteModelId);
         assertEquals(expectedModels, models);
 
         ret = store.deleteModelById("nonextantmodel", USERNAME);
@@ -120,7 +114,8 @@ public abstract class StoreTest {
 
     @Test
     public void testDeleteModels() throws Store.ModelIoException {
-        ImmutableSet<StoreTestStruct> models = store.getModels(USERNAME);
+        ImmutableMap<String, StoreTestStruct> models = store
+                .getModels(USERNAME);
         assertEquals(0, models.size());
 
         __putModels();
@@ -139,9 +134,10 @@ public abstract class StoreTest {
             Store.NoSuchModelException {
         __putModels();
 
-        for (final StoreTestStruct model : models) {
-            assertEquals(model,
-                    store.getModelById(__getModelId(model), USERNAME));
+        for (final ImmutableMap.Entry<String, StoreTestStruct> modelEntry : models
+                .entrySet()) {
+            assertEquals(modelEntry.getValue(),
+                    store.getModelById(modelEntry.getKey(), USERNAME));
         }
     }
 
@@ -150,11 +146,12 @@ public abstract class StoreTest {
             Store.NoSuchModelException {
         __putModels();
 
-        for (final StoreTestStruct model : models) {
-            assertEquals(model,
-                    store.getModelById(__getModelId(model), USERNAME));
-            assertEquals(model,
-                    store.getModelById(__getModelId(model), USERNAME));
+        for (final ImmutableMap.Entry<String, StoreTestStruct> modelEntry : models
+                .entrySet()) {
+            assertEquals(modelEntry.getValue(),
+                    store.getModelById(modelEntry.getKey(), USERNAME));
+            assertEquals(modelEntry.getValue(),
+                    store.getModelById(modelEntry.getKey(), USERNAME));
             break;
         }
     }
@@ -183,14 +180,15 @@ public abstract class StoreTest {
         __putModels();
 
         final ImmutableSet<String> modelIds = store.getModelIds(USERNAME);
-        assertEquals(this.modelIds, modelIds);
+        assertEquals(models.keySet(), modelIds);
     }
 
     @Test
     public void testGetModels() throws Store.ModelIoException {
         __putModels();
 
-        final ImmutableSet<StoreTestStruct> models = store.getModels(USERNAME);
+        final ImmutableMap<String, StoreTestStruct> models = store
+                .getModels(USERNAME);
         assertEquals(this.models, models);
     }
 
@@ -199,16 +197,17 @@ public abstract class StoreTest {
             Store.NoSuchModelException {
         __putModels();
 
-        final ImmutableSet<StoreTestStruct> models = store.getModelsByIds(
-                modelIds, USERNAME);
+        final ImmutableMap<String, StoreTestStruct> models = store
+                .getModelsByIds(this.models.keySet(), USERNAME);
         assertEquals(this.models, models);
 
-        for (final StoreTestStruct model : models) {
-            assertEquals(model,
-                    store.getModelById(__getModelId(model), USERNAME));
+        for (final ImmutableMap.Entry<String, StoreTestStruct> modelEntry : models
+                .entrySet()) {
+            assertEquals(modelEntry.getValue(),
+                    store.getModelById(modelEntry.getKey(), USERNAME));
         }
 
-        for (final String modelId : modelIds) {
+        for (final String modelId : models.keySet()) {
             try {
                 store.getModelsByIds(
                         ImmutableSet.of(modelId, "nonextantmodel"), USERNAME);
@@ -239,8 +238,8 @@ public abstract class StoreTest {
             Store.NoSuchModelException {
         __putModels();
 
-        for (final StoreTestStruct model : models) {
-            assertTrue(store.headModelById(__getModelId(model), USERNAME));
+        for (final String modelId : models.keySet()) {
+            assertTrue(store.headModelById(modelId, USERNAME));
         }
 
         assertFalse(store.headModelById("nonextantsku", USERNAME));
@@ -249,45 +248,39 @@ public abstract class StoreTest {
     @Test
     public void testPutModel() throws Store.ModelIoException,
             Store.NoSuchModelException {
-        final StoreTestStruct expectedModel = models.asList().get(0);
-        store.putModel(expectedModel, __getModelId(expectedModel), USERNAME);
-        final StoreTestStruct model = store.getModelById(
-                __getModelId(expectedModel), USERNAME);
-        assertEquals(expectedModel, model);
+        for (final ImmutableMap.Entry<String, StoreTestStruct> modelEntry : models
+                .entrySet()) {
+            final StoreTestStruct expectedModel = modelEntry.getValue();
+            store.putModel(expectedModel, modelEntry.getKey(), USERNAME);
+            final StoreTestStruct actualModel = store.getModelById(
+                    modelEntry.getKey(), USERNAME);
+            assertEquals(expectedModel, actualModel);
+            break;
+        }
     }
 
     @Test
     public void testPutModels() throws Store.ModelIoException {
-        assertThat(store.getModels(USERNAME), hasSize(0));
+        assertEquals(0, store.getModels(USERNAME).size());
         store.putModels(ImmutableMap.<String, StoreTestStruct> of(), USERNAME);
-        assertThat(store.getModels(USERNAME), hasSize(0));
+        assertEquals(0, store.getModels(USERNAME).size());
 
         __putModels();
-        assertThat(store.getModels(USERNAME), hasSize(models.size()));
+        assertEquals(models, store.getModels(USERNAME));
 
         __putModels(); // Should overwrite
-        assertThat(store.getModels(USERNAME), hasSize(models.size()));
+        assertEquals(models, store.getModels(USERNAME));
     }
 
     protected void _setUp(final Store<StoreTestStruct> store) {
         this.store = store;
     }
 
-    private String __getModelId(final StoreTestStruct model) {
-        return model.getStringField();
-    }
-
     private void __putModels() throws Store.ModelIoException {
-        final Map<String, StoreTestStruct> models = Maps.newLinkedHashMap();
-        for (final StoreTestStruct model : this.models) {
-            models.put(__getModelId(model), model);
-        }
-        store.putModels(ImmutableMap.copyOf(models), USERNAME);
+        store.putModels(models, USERNAME);
     }
 
-    private final ImmutableSet<StoreTestStruct> models;
-
-    private final ImmutableSet<String> modelIds;
+    private final ImmutableMap<String, StoreTestStruct> models;
 
     private Store<StoreTestStruct> store;
 
