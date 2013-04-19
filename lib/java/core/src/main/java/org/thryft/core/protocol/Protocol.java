@@ -57,6 +57,7 @@ import org.apache.thrift.protocol.TType;
 import org.apache.thrift.transport.TTransport;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 public abstract class Protocol extends TProtocol {
@@ -357,6 +358,16 @@ public abstract class Protocol extends TProtocol {
                 writeMixed(element);
             }
             writeListEnd();
+        } else if (value instanceof ImmutableMap) {
+            @SuppressWarnings("unchecked")
+            final ImmutableMap<Object, Object> map = (ImmutableMap<Object, Object>) value;
+            writeMapBegin(new TMap(TType.VOID, TType.VOID, map.size()));
+            for (final ImmutableMap.Entry<Object, Object> entry : map
+                    .entrySet()) {
+                writeMixed(entry.getKey());
+                writeMixed(entry.getValue());
+            }
+            writeMapEnd();
         } else if (value instanceof ImmutableSet) {
             @SuppressWarnings("unchecked")
             final ImmutableSet<Object> set = (ImmutableSet<Object>) value;
@@ -380,7 +391,8 @@ public abstract class Protocol extends TProtocol {
         } else if (value instanceof TBase<?, ?>) {
             ((TBase<?, ?>) value).write(this);
         } else {
-            throw new UnsupportedOperationException();
+            throw new UnsupportedOperationException(value.getClass()
+                    .getCanonicalName());
         }
     }
 
