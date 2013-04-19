@@ -43,7 +43,7 @@ class JavaDecimal(JavaStructType):
     def java_read_protocol(self):
         return "(iprot instanceof org.thryft.core.protocol.Protocol) ? ((org.thryft.core.protocol.Protocol)iprot).readDecimal() : new java.math.BigDecimal(iprot.readString())" % locals()
 
-    def java_read_protocol_throws(self):
+    def java_read_protocol_throws_unchecked(self):
         return ['NumberFormatException']
 
     def java_write_protocol(self, value, depth=0):

@@ -43,7 +43,7 @@ class JavaEmailAddress(JavaStructType):
     def java_read_protocol(self):
         return "(iprot instanceof org.thryft.core.protocol.Protocol) ? ((org.thryft.core.protocol.Protocol)iprot).readEmailAddress() : new javax.mail.internet.InternetAddress(iprot.readString())" % locals()
 
-    def java_read_protocol_throws(self):
+    def java_read_protocol_throws_checked(self):
         return ['javax.mail.internet.AddressException']
 
     def java_write_protocol(self, value, depth=0):

@@ -125,14 +125,27 @@ public %(final)s%(type_name)s %(getter_name)s() {
         read_protocol = \
             self.java_name() + ' = ' + self.type.java_read_protocol() + ';'
 
-        read_protocol_throws = self.type.java_read_protocol_throws()
-        if not self.required and len(read_protocol_throws) > 0:
-            read_protocol = indent(' ' * 4, read_protocol)
+        if self.required:
+            read_protocol_throws = self.type.java_read_protocol_throws_checked()
+        else:
             read_protocol_throws = \
-                ''.join("""\
+                self.type.java_read_protocol_throws_checked() + \
+                self.type.java_read_protocol_throws_unchecked()
+        if len(read_protocol_throws) > 0:
+            if self.required:
+                read_protocol_throws = \
+                    ''.join("""\
+ catch (%(exception_type_name)s e) {
+     throw new IllegalArgumentException(e);
+}""" % locals()
+                         for exception_type_name in read_protocol_throws)
+            else:
+                read_protocol_throws = \
+                    ''.join("""\
  catch (%(exception_type_name)s e) {
 }""" % locals()
                          for exception_type_name in read_protocol_throws)
+            read_protocol = indent(' ' * 4, read_protocol)
             read_protocol = """\
 try {
 %(read_protocol)s

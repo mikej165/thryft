@@ -62,7 +62,10 @@ class _JavaType(_JavaNamedConstruct):
     def java_read_protocol(self):
         raise NotImplementedError(class_qname(self) + '.java_read_protocol')
 
-    def java_read_protocol_throws(self):
+    def java_read_protocol_throws_checked(self):
+        return []
+
+    def java_read_protocol_throws_unchecked(self):
         return []
 
     def java_to_string(self, value):

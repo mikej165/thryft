@@ -43,7 +43,7 @@ class JavaDateTime(JavaStructType):
     def java_read_protocol(self):
         return "(iprot instanceof org.thryft.core.protocol.Protocol) ? ((org.thryft.core.protocol.Protocol)iprot).readDateTime() : new org.joda.time.DateTime(iprot.readI64())" % locals()
 
-    def java_read_protocol_throws(self):
+    def java_read_protocol_throws_unchecked(self):
         return ['IllegalArgumentException']
 
     def java_write_protocol(self, value, depth=0):
