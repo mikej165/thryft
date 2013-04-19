@@ -118,7 +118,7 @@ public %(return_type_name)s %(java_name)s(%(parameters)s)%(throws)s {
             service_qname = JavaService.java_qname(self)
             return """\
 @com.google.inject.Inject
-public %(name)s(final %(service_qname)s service) {
+public %(name)s(@com.google.inject.name.Named("impl") final %(service_qname)s service) {
     this.service = service;
 }""" % locals()
 
