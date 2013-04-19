@@ -22,7 +22,7 @@ class RestServletJavaGenerator(_servlet_java_generator._ServletJavaGenerator):
         def java_request_type(self):
             if len(self.parameters) == 0:
                 return None
-            path_parameter = self.rest_path_parameter()
+            path_parameter = self.java_rest_path_parameter()
             if path_parameter is None:
                 return None
             parameters = [parameter for parameter in self.parameters
@@ -47,12 +47,12 @@ class RestServletJavaGenerator(_servlet_java_generator._ServletJavaGenerator):
 
             read_request = []
             if len(self.parameters) > 0:
-                path_parameter = self.rest_path_parameter()
+                path_parameter = self.java_rest_path_parameter()
                 if path_parameter is None or len(self.parameters) > 1:
                     request_type_name = 'Messages.' + self.java_name() + 'Request'
                 else:
                     request_type_name = None
-                if self.rest_request_method() in ('POST', 'PUT'):
+                if self.java_rest_request_method() in ('POST', 'PUT'):
                     read_http_servlet_request_body = self._java_read_http_servlet_request_body(variable_name_prefix='__')
                     read_request.append("""\
 %(read_http_servlet_request_body)s
@@ -60,7 +60,7 @@ final org.apache.thrift.protocol.TProtocol __restRequestProtocol = new org.thryf
 """ % locals())
                 else:
                     if path_parameter is not None:
-                        path_info_prefix = self.rest_path_prefix()
+                        path_info_prefix = self.java_rest_path_prefix()
                         path_info_prefix_len = len(path_info_prefix)
                         path_parameter_name = path_parameter.java_name()
                         path_parameter_from_string = path_parameter.type.java_from_string("java.net.URLDecoder.decode(__httpServletRequest.getPathInfo().substring(%(path_info_prefix_len)u), \"UTF-8\")" % locals())
@@ -148,7 +148,7 @@ try {
                 write_response = """\
     __httpServletResponse.setStatus(204);"""
             elif isinstance(self.return_field.type, JavaBoolType):
-                assert self.rest_request_method() in ('DELETE', 'HEAD'), self.rest_request_method()
+                assert self.java_rest_request_method() in ('DELETE', 'HEAD'), self.java_rest_request_method()
                 write_response = """\
     if (__return_value) {
         __httpServletResponse.setStatus(204);
@@ -193,36 +193,28 @@ try {
 }
 """ % locals()
 
-        def rest_path_prefix(self):
+        def java_rest_path_prefix(self):
             name_split = self.name.split('_')
-            request_method = self.rest_request_method()
+            request_method = self.java_rest_request_method()
             if request_method in ('GET', 'DELETE', 'HEAD'):
                 try:
                     by_i = name_split.index('by')
                 except ValueError:
                     by_i = None
                 if by_i is not None:
-                    path_prefix = '/' + '_'.join(name_split[1:by_i]) + '/'
+                    return '/' + '_'.join(name_split[1:by_i]) + '/'
                 else:
-                    path_prefix = '/' + '_'.join(name_split[1:])
+                    return '/' + '_'.join(name_split[1:])
             elif request_method in ('POST', 'PUT'):
-                path_prefix = '/' + '_'.join(name_split[1:])
+                return '/' + '_'.join(name_split[1:])
             else:
                 raise NotImplementedError(request_method)
 
-            parent_path_prefix = self.parent.rest_path_prefix()
-            assert parent_path_prefix.endswith('/') and len(parent_path_prefix) > 1, parent_path_prefix
-            if path_prefix.startswith(parent_path_prefix.rstrip('/')):
-                path_prefix = path_prefix[len(parent_path_prefix) - 1:]
-                if len(path_prefix) > 0 and path_prefix[0] == '_':
-                    path_prefix = '/' + path_prefix[1:]
-            return path_prefix
-
-        def rest_path_parameter(self):
+        def java_rest_path_parameter(self):
             parameters = self.parameters
             if len(parameters) == 0:
                 return None
-            if self.rest_request_method() not in ('GET', 'DELETE', 'HEAD'):
+            if self.java_rest_request_method() not in ('GET', 'DELETE', 'HEAD'):
                 return None
             if parameters[0].required and \
                (isinstance(parameters[0].type, _BaseType) or isinstance(parameters[0].type, EnumType)) and \
@@ -232,7 +224,7 @@ try {
             else:
                 return None
 
-        def rest_request_method(self):
+        def java_rest_request_method(self):
             request_method = self.name.split('_', 1)[0].upper()
             assert request_method in ('GET', 'DELETE', 'HEAD', 'POST', 'PUT'), request_method
             return request_method
@@ -263,7 +255,7 @@ public %(name)s(final %(service_qname)s service) {
             methods = []
             functions_by_request_method = {}
             for function in self.functions:
-                functions_by_request_method.setdefault(function.rest_request_method(), {}).setdefault(function.rest_path_prefix(), []).append(function)
+                functions_by_request_method.setdefault(function.java_rest_request_method(), {}).setdefault(function.java_rest_path_prefix(), []).append(function)
             for request_method in sorted(functions_by_request_method.iterkeys()):
                 dispatches = []
                 functions_by_path_info_prefix = functions_by_request_method[request_method]
@@ -289,8 +281,20 @@ public %(name)s(final %(service_qname)s service) {
                 have_else = False
                 for path_info_prefix in path_info_prefixes:
                     functions = functions_by_path_info_prefix[path_info_prefix]
-                    # assert len(functions) == 1, "%(request_method)s %(path_info_prefix)s " % locals() + ' '.join(function.name for function in functions)
-                    function = functions[0]
+                    if len(functions) == 1:
+                        function = functions[0]
+                    else:
+                        # Multiple functions with the same request method and path_info_prefix
+                        # Pick one
+                        lucky_function = None
+                        for function in functions:
+                            if function.name.endswith('_by_id'):
+                                lucky_function = function
+                                break
+                        if lucky_function is not None:
+                            function = lucky_function
+                        else:
+                            function = functions[0]
                     private_name = '__do' + function.java_name()[0].upper() + function.java_name()[1:]
                     if len(path_info_prefix) > 0:
                         dispatches.append("""\
@@ -328,6 +332,10 @@ public void do%(request_method_camelized)s(final javax.servlet.http.HttpServletR
             methods.extend(self._java_methods_private())
             return methods
 
+        def java_rest_path_prefix(self):
+            assert self.name.endswith('Service')
+            return '/' + decamelize(self.name[:-len('Service')]) + '/'
+
         def __repr__(self):
             name = self.java_name()
 
@@ -362,7 +370,3 @@ private final static class Messages extends %(service_qname)s.Messages {
 public class %(name)s extends javax.servlet.http.HttpServlet {
 %(sections)s
 }""" % locals()
-
-        def rest_path_prefix(self):
-            assert self.name.endswith('Service')
-            return '/' + decamelize(self.name[:-len('Service')]) + '/'
