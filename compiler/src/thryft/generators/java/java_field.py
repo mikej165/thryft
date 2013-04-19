@@ -187,7 +187,7 @@ public %(return_type_name)s %(setter_name)s(final %(type_name)s %(name)s) {
             java_validation = self.java_name()
         else:
             java_validation = value
-        if self.type.java_is_reference():  # Only reference types like String and containers can have lengths
+        if self.type.java_has_length():
             validation = self.annotations.get('validation', {})
             min_length = validation.get('minLength')
             if min_length == 1:
@@ -200,6 +200,8 @@ public %(return_type_name)s %(setter_name)s(final %(type_name)s %(name)s) {
                     java_validation = self.java_name() + " != null ? " + java_validation + " : null";
             elif self.required:
                 java_validation = """com.google.common.base.Preconditions.checkNotNull(%(java_validation)s, "%(parent_qname)s: missing %(name)s")""" % locals()
+        elif self.type.java_is_reference() and self.required:
+            java_validation = """com.google.common.base.Preconditions.checkNotNull(%(java_validation)s, "%(parent_qname)s: missing %(name)s")""" % locals()
         return java_validation
 
     def java_value(self):

@@ -47,6 +47,9 @@ class _JavaType(_JavaNamedConstruct):
     def java_hash_code(self, value):
         raise NotImplementedError(class_qname(self) + '.java_hash_code')
 
+    def java_has_length(self):
+        return False
+
     def java_is_reference(self):
         raise NotImplementedError(class_qname(self) + '.java_is_reference')
 

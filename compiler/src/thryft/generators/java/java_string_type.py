@@ -44,6 +44,9 @@ class JavaStringType(StringType, _JavaBaseType):
     def java_hash_code(self, value):
         return "%(value)s.hashCode()" % locals()
 
+    def java_has_length(self):
+        return True
+
     def java_is_reference(self):
         return True
 
