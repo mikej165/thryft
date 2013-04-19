@@ -52,8 +52,9 @@ public final class MemStore<ModelT extends TBase<?, ?>> extends Store<ModelT> {
 
     @Override
     protected synchronized void _deleteModels(final String username) {
-        for (final String columnKey : ImmutableSet.copyOf(models.row(username)
-                .keySet())) {
+        final ImmutableSet<String> columnKeys = ImmutableSet.copyOf(models.row(
+                username).keySet());
+        for (final String columnKey : columnKeys) {
             models.remove(username, columnKey);
         }
     }
