@@ -38,9 +38,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.List;
 import java.util.Properties;
-import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -52,8 +50,6 @@ import org.thryft.web.server.util.FileNameCodec;
 import com.google.common.base.CaseFormat;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 
 public final class FsStore<ModelT extends TBase<?, ?>> extends Store<ModelT> {
     public final static class Configuration {
@@ -152,7 +148,7 @@ public final class FsStore<ModelT extends TBase<?, ?>> extends Store<ModelT> {
             return ImmutableSet.of();
         }
 
-        final Set<String> modelIds = Sets.newHashSet();
+        final ImmutableSet.Builder<String> modelIds = ImmutableSet.builder();
         for (final File modelFilePath : modelDirectoryPath.listFiles()) {
             if (!modelFilePath.isFile()) {
                 continue;
@@ -160,7 +156,7 @@ public final class FsStore<ModelT extends TBase<?, ?>> extends Store<ModelT> {
 
             modelIds.add(__getModelId(modelFilePath));
         }
-        return ImmutableSet.copyOf(modelIds);
+        return modelIds.build();
     }
 
     @Override
@@ -206,14 +202,14 @@ public final class FsStore<ModelT extends TBase<?, ?>> extends Store<ModelT> {
             return ImmutableSet.of();
         }
 
-        final List<String> usernames = Lists.newArrayList();
+        final ImmutableSet.Builder<String> usernames = ImmutableSet.builder();
         for (final File userDirectoryPath : rootDirectoryPath.listFiles()) {
             if (!userDirectoryPath.isDirectory()) {
                 continue;
             }
             usernames.add(__getModelId(userDirectoryPath));
         }
-        return ImmutableSet.copyOf(usernames);
+        return usernames.build();
     }
 
     @Override

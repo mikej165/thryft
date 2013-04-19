@@ -42,7 +42,6 @@ import org.thryft.web.server.util.FileNameCodec;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Maps;
 
 public abstract class KeyValueStore<ModelT extends TBase<?, ?>> extends
         Store<ModelT> {
@@ -181,10 +180,11 @@ public abstract class KeyValueStore<ModelT extends TBase<?, ?>> extends
     @Override
     protected void _putModels(final ImmutableMap<String, ModelT> models,
             final String username) throws ModelIoException {
-        final Map<Key, ModelT> modelMap = Maps.newLinkedHashMap();
+        final ImmutableMap.Builder<Key, ModelT> modelMap = ImmutableMap
+                .builder();
         for (final Map.Entry<String, ModelT> model : models.entrySet()) {
             modelMap.put(new Key(model.getKey(), username), model.getValue());
         }
-        _putModels(ImmutableMap.copyOf(modelMap));
+        _putModels(modelMap.build());
     }
 }

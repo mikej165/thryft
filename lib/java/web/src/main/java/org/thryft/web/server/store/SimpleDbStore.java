@@ -40,7 +40,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 
 import org.apache.thrift.TBase;
 import org.apache.thrift.TException;
@@ -72,7 +71,6 @@ import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
-import com.google.common.collect.Sets;
 import com.google.common.hash.Hashing;
 
 public final class SimpleDbStore<ModelT extends TBase<?, ?>> extends
@@ -193,11 +191,11 @@ public final class SimpleDbStore<ModelT extends TBase<?, ?>> extends
                 + domainName
                 + "` WHERE itemName() LIKE '"
                 + Key.prefix(username) + "%'");
-        final Set<String> modelIds = Sets.newLinkedHashSet();
+        final ImmutableSet.Builder<String> modelIds = ImmutableSet.builder();
         for (final Item item : items) {
             modelIds.add(Key.parse(item.getName()).getModelId());
         }
-        return ImmutableSet.copyOf(modelIds);
+        return modelIds.build();
     }
 
     @Override
@@ -308,7 +306,8 @@ public final class SimpleDbStore<ModelT extends TBase<?, ?>> extends
         }
         final ImmutableMap<String, String> stringMap = oprot.toStringMap();
 
-        final List<ReplaceableAttribute> attributes = Lists.newArrayList();
+        final ImmutableList.Builder<ReplaceableAttribute> attributesBuilder = ImmutableList
+                .builder();
         for (final ImmutableMap.Entry<String, String> entry : stringMap
                 .entrySet()) {
             final String attributeName = entry.getKey();
@@ -321,7 +320,7 @@ public final class SimpleDbStore<ModelT extends TBase<?, ?>> extends
                 throw new IllegalStateException(e);
             }
             if (urlEncodedAttributeValue.getBytes().length < 1024) {
-                attributes.add(new ReplaceableAttribute(attributeName,
+                attributesBuilder.add(new ReplaceableAttribute(attributeName,
                         attributeValue, false));
             } else {
                 final String attributeValueHash = Hashing.md5()
@@ -345,17 +344,19 @@ public final class SimpleDbStore<ModelT extends TBase<?, ?>> extends
                         }
                     } catch (final UnsupportedEncodingException e) {
                     }
-                    attributes.add(new ReplaceableAttribute(attributeName,
-                            attributeValueChunk, false));
+                    attributesBuilder.add(new ReplaceableAttribute(
+                            attributeName, attributeValueChunk, false));
                     attributeValueChunkI++;
                 }
             }
         }
+        final ImmutableList<ReplaceableAttribute> attributes = attributesBuilder
+                .build();
         if (attributes.size() > 256) { // Limit imposed by the API
             logger.warn("model has " + Integer.toString(attributes.size())
                     + " attributes, more than the limit of 256.");
         }
-        return ImmutableList.copyOf(attributes);
+        return attributes;
     }
 
     private ModelT __getModelFromAttributes(final List<Attribute> attributes) {
@@ -457,7 +458,7 @@ public final class SimpleDbStore<ModelT extends TBase<?, ?>> extends
     }
 
     private ImmutableList<Item> __selectItems(final String selectExpression) {
-        final List<Item> items = Lists.newArrayList();
+        final ImmutableList.Builder<Item> items = ImmutableList.builder();
         SelectRequest selectRequest = new SelectRequest(selectExpression);
         selectRequest.setConsistentRead(true);
         SelectResult selectResult = client.select(selectRequest);
@@ -471,7 +472,7 @@ public final class SimpleDbStore<ModelT extends TBase<?, ?>> extends
             selectResult = client.select(selectRequest);
             items.addAll(selectResult.getItems());
         }
-        return ImmutableList.copyOf(items);
+        return items.build();
     }
 
     private final static int ITEM_BATCH_SIZE = 25;

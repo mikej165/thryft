@@ -294,11 +294,12 @@ public final class JdbcStore<ModelT extends TBase<?, ?>> extends Store<ModelT> {
                     statement.setString(1, username);
                     final ResultSet resultSet = statement.executeQuery();
                     try {
-                        final Set<String> modelIds = Sets.newLinkedHashSet();
+                        final ImmutableSet.Builder<String> modelIds = ImmutableSet
+                                .builder();
                         while (resultSet.next()) {
                             modelIds.add(resultSet.getString(1));
                         }
-                        return ImmutableSet.copyOf(modelIds);
+                        return modelIds.build();
                     } finally {
                         resultSet.close();
                     }
@@ -439,11 +440,12 @@ public final class JdbcStore<ModelT extends TBase<?, ?>> extends Store<ModelT> {
                     final ResultSet resultSet = statement
                             .executeQuery(getUsernamesSql);
                     try {
-                        final Set<String> usernames = Sets.newLinkedHashSet();
+                        final ImmutableSet.Builder<String> usernames = ImmutableSet
+                                .builder();
                         while (resultSet.next()) {
                             usernames.add(resultSet.getString(1));
                         }
-                        return ImmutableSet.copyOf(usernames);
+                        return usernames.build();
                     } finally {
                         resultSet.close();
                     }
