@@ -8,7 +8,7 @@ import logging
 
 
 class Parser(GenericParser):
-    __annotation_value_parsers_by_name = {}
+    __annotation_parsers = {}
 
     def __init__(self):
         GenericParser.__init__(self, start='document')
@@ -16,7 +16,29 @@ class Parser(GenericParser):
 
     def __dispatch(self, p_method, args):
         ret = p_method(args)
+
+        if isinstance(ret, Ast.Node):
+            ast_node = ret
+            if ast_node.doc is not None and len(ast_node.doc.tags) > 0:
+                for tag_name, tag_value in ast_node.doc.tags.iteritems():
+                    try:
+                        annotation_parser = self.__class__.__annotation_parsers[ast_node.__class__][tag_name]
+                    except KeyError:
+                        raise ParseException("unknown annotation @%s" % tag_name, token=ast_node.doc.start_token)
+
+                    try:
+                        annotation_parser(
+                            ast_node=ast_node,
+                            name=tag_name,
+                            start_token=ast_node.doc.start_token,
+                            stop_token=ast_node.doc.stop_token,
+                            value=tag_value,
+                        )
+                    except ValueError, e:
+                        raise ParseException("error parsing annotation @%s: %s" % (tag_name, str(e)), token=ast_node.doc.start_token)
+
         self.__logger.debug("%s(%s) -> %s", p_method.im_func.func_name, repr(args), repr(ret))
+
         return ret
 
     def error(self, token):
@@ -127,29 +149,6 @@ class Parser(GenericParser):
                   if token.type not in discard_token_types]
         return GenericParser.parse(self, tokens)
 
-    def __p_annotation(self, name, start_token, value):
-        try:
-            value_parser = Parser.__annotation_value_parsers_by_name[name]
-        except KeyError:
-            raise ParseException("unknown annotation @%s" % name, token=start_token)
-
-        try:
-            return value_parser(value)
-        except ValueError, e:
-            raise ParseException("error parsing annotation @%s: %s" % (name, str(e)), token=start_token)
-
-    def __p_annotations(self, doc_node):
-        if doc_node is None:
-            return None
-        return tuple([
-            Ast.AnnotationNode(
-                name=tag_name,
-                start_token=doc_node.start_token,
-                stop_token=doc_node.stop_token,
-                value=self.__p_annotation(name=tag_name, start_token=doc_node.start_token, value=tag_value)
-            )
-            for tag_name, tag_value in doc_node.tags.iteritems()])
-
     def p_base_type(self, args):
         '''
         base_type ::= KEYWORD_BINARY
@@ -198,7 +197,6 @@ class Parser(GenericParser):
         field = args[1]
         return \
             Ast.FieldNode(
-                annotations=self.__p_annotations(doc_node),
                 doc=doc_node,
                 id_=field.id,
                 name=field.name,
@@ -256,7 +254,6 @@ class Parser(GenericParser):
                 raise NotImplementedError(type_.name)
         return \
             Ast.ConstNode(
-                annotations=self.__p_annotations(doc_node),
                 doc=doc_node,
                 name=name,
                 start_token=start_token,
@@ -323,7 +320,6 @@ class Parser(GenericParser):
         doc_node, start_token, stop_token = self.__p(args)
         return \
             Ast.EnumTypeNode(
-                annotations=self.__p_annotations(doc_node),
                 doc=doc_node,
                 enumerators=args[4],
                 name=args[2].text,
@@ -372,7 +368,6 @@ class Parser(GenericParser):
         doc_node, start_token, stop_token = self.__p(args)
         return \
             Ast.ExceptionTypeNode(
-                annotations=self.__p_annotations(doc_node),
                 doc=doc_node,
                 name=args[2].text,
                 fields=args[4],
@@ -472,75 +467,8 @@ class Parser(GenericParser):
             return_field = None
         throws = args[7]
 
-        if doc_node is not None and len(doc_node.tags) > 0:
-            annotations = []
-            parameters_by_name = dict((parameter.name, parameter) for parameter in parameters)
-            throws_by_exception_type_name = dict((throw.type.name, throw) for throw in throws)
-            for tag_name, tag_value in doc_node.tags.iteritems():
-                if tag_name in ('param', 'validation'):
-                    if tag_value is not None:
-                        tag_value_split = tag_value.split(None, 1)
-                        if len(tag_value_split) == 2:
-                            param_name = tag_value_split[0].rstrip(':')
-                            try:
-                                if param_name == 'return':
-                                    parameter = return_field
-                                    if parameter is None:
-                                        raise KeyError
-                                else:
-                                    parameter = parameters_by_name[param_name]
-                                if tag_name == 'param':
-                                    parameter.doc = Ast.DocNode(start_token=doc_node.start_token, stop_token=doc_node.stop_token, tags={}, text=tag_value_split[1])
-                                else:
-                                    parameter_annotations = parameter.annotations
-                                    if parameter_annotations is not  None:
-                                        parameter_annotations = list(parameter_annotations)
-                                    else:
-                                        parameter_annotations = []
-                                    parameter_annotations.append(
-                                        Ast.AnnotationNode(
-                                            name=tag_name,
-                                            start_token=doc_node.start_token,
-                                            stop_token=doc_node.stop_token,
-                                            value=self.__p_annotation(name=tag_name, start_token=doc_node.start_token, value=tag_value_split[1])
-                                        )
-                                    )
-                                    parameter.annotations = tuple(parameter_annotations)
-                            except KeyError:
-                                raise ParseException("@%s %s refers to unknown parameter '%s'" % (tag_name, tag_value, param_name), token=start_token)
-                        else:
-                            raise ParseException("@%s tag has invalid format: '%s'" % (tag_name, tag_value), token=start_token)
-                    else:
-                        raise ParseException("@param tag must contain a parameter name and description", token=start_token)
-                elif tag_name == 'return' or tag_name == 'returns':
-                    if return_field is None:
-                        raise ParseException("'%s' refers to function with void return" % tag_value, token=start_token)
-                    return_field.doc = Ast.DocNode(start_token=doc_node.start_token, stop_token=doc_node.stop_token, tags={}, text=tag_value)
-                elif tag_name == 'throw' or tag_name == 'throws':
-                    tag_value_split = tag_value.split(None, 1)
-                    if len(tag_value_split) == 2:
-                        exception_type_name = tag_value_split[0]
-                        try:
-                            throw = throws_by_exception_type_name[exception_type_name]
-                        except KeyError:
-                            raise ParseException("'%s' refers to unknown exception type '%s'" % (tag_value, exception_type_name), token=start_token)
-                        throw.doc = Ast.DocNode(start_token=doc_node.start_token, stop_token=doc_node.stop_token, tags={}, text=tag_value_split[1])
-                else:
-                    annotations.append(
-                        Ast.AnnotationNode(
-                            name=tag_name,
-                            start_token=doc_node.start_token,
-                            stop_token=doc_node.stop_token,
-                            value=self.__p_annotation(name=tag_name, start_token=doc_node.start_token, value=tag_value)
-                        )
-                    )
-            annotations = tuple(annotations)
-        else:
-            annotations = None
-
         return \
             Ast.FunctionNode(
-                annotations=annotations,
                 doc=doc_node,
                 name=function_name,
                 oneway=args[1],
@@ -666,7 +594,6 @@ class Parser(GenericParser):
         doc_node, start_token, stop_token = self.__p(args)
         return \
             Ast.IncludeNode(
-                annotations=self.__p_annotations(doc_node),
                 doc=doc_node,
                 path=args[2].text[1:-1],
                 start_token=start_token,
@@ -797,7 +724,6 @@ class Parser(GenericParser):
         doc_node, start_token, stop_token = self.__p(args)
         return \
             Ast.NamespaceNode(
-                annotations=self.__p_annotations(doc_node),
                 doc=doc_node,
                 name=args[3],
                 scope=args[2],
@@ -846,7 +772,6 @@ class Parser(GenericParser):
         doc_node, start_token, stop_token = self.__p(args)
         return \
             Ast.ServiceNode(
-                annotations=self.__p_annotations(doc_node),
                 doc=doc_node,
                 name=args[2].text,
                 functions=args[4],
@@ -882,7 +807,6 @@ class Parser(GenericParser):
         doc_node, start_token, stop_token = self.__p(args)
         return \
             Ast.StructTypeNode(
-                annotations=self.__p_annotations(doc_node),
                 doc=doc_node,
                 name=args[2].text,
                 fields=args[4],
@@ -926,7 +850,6 @@ class Parser(GenericParser):
         doc_node, start_token, stop_token = self.__p(args)
         return \
             Ast.TypedefNode(
-                annotations=self.__p_annotations(doc_node),
                 doc=doc_node,
                 name=args[3].text,
                 start_token=start_token,
@@ -935,41 +858,83 @@ class Parser(GenericParser):
             )
 
     @classmethod
-    def register_annotation(cls, name, value_parser=None):
+    def register_annotation(cls, ast_node_type, name, value_parser=None):
+        assert issubclass(ast_node_type, Ast.Node)
         if value_parser is None:
             value_parser = lambda value: value
-        cls.__annotation_value_parsers_by_name[name] = value_parser
+
+        try:
+            cls.__annotation_parsers[ast_node_type][name] = value_parser
+        except KeyError:
+            cls.__annotation_parsers[ast_node_type] = {name: value_parser}
 
     def typestring(self, token):
         return token.type
 
 
+def __parse_param_annotation(ast_node, name, value, **kwds):
+    parameter, value = __split_param_annotation(ast_node=ast_node, name=name, value=value)
+    parameter.doc = Ast.DocNode(text=value, **kwds)
+Parser.register_annotation(Ast.FunctionNode, 'param', __parse_param_annotation)
+
+
+def __parse_requires_annotation(ast_node, name, value, **kwds):
+    if value is not None:
+        raise ValueError("@%(name)s does not take a value" % locals())
+    ast_node.annotations.append(Ast.AnnotationNode(name=name, **kwds))
 for __requires_x in ('authentication', 'guest', 'user'):
-    def __parse_requires_annotation(value):
-        if value is not None:
-            raise ValueError("@requires_%s does not take a value" % __requires_x)
-        return value
-    Parser.register_annotation('requires_' + __requires_x, __parse_requires_annotation)
+    Parser.register_annotation(Ast.FunctionNode, 'requires_' + __requires_x, __parse_requires_annotation)
 
+def __parse_requires_set_annotation(ast_node, name, value, **kwds):
+    if value is None or len(value) == 0:
+        raise ValueError("@%(name)s requires a value" % locals())
+    if ',' in value:
+        values = value.split(',')
+    else:
+        values = value.split()
+    values = frozenset(value.strip() for value in values)
+    ast_node.annotations.append(Ast.AnnotationNode(name=name, value=values, **kwds))
 for __requires_x in ('permissions', 'roles'):
-    def __parse_requires_set_annotation(value):
-        if value is None or len(value) == 0:
-            raise ValueError("@requires_%s requires a value" % __requires_x)
-        if ',' in value:
-            values = value.split(',')
-        else:
-            values = value.split()
-        return frozenset(value.strip() for value in values)
-    Parser.register_annotation('requires_' + __requires_x, __parse_requires_set_annotation)
+    Parser.register_annotation(Ast.FunctionNode, 'requires_' + __requires_x, __parse_requires_set_annotation)
 
 
-def __parse_validation_annotation(value):
+def __parse_return_annotation(ast_node, name, value, **kwds):
+    if value is None:
+        raise ValueError("@%(name)s requires a value" % locals())
+    if ast_node.return_field is None:
+        raise ValueError("@%(name)s returns to a function with a void return" % locals())
+    ast_node.return_field.doc = Ast.DocNode(text=value, **kwds)
+for __name in ('return', 'returns'):
+    Parser.register_annotation(Ast.FunctionNode, __name, __parse_return_annotation)
+
+
+def __parse_throw_annotation(ast_node, name, value, **kwds):
+    if value is None:
+        raise ValueError("@%(name)s requires a value" % locals())
+    value_split = value.split(None, 1)
+    if len(value_split) != 2:
+        raise ValueError("@%(name)s requires an exception type name and a description" % locals())
+    exception_type_name, value = value_split
+    exception_type_name = exception_type_name.rstrip(':')
+    try:
+        throw = ast_node.throws_by_exception_type_name[exception_type_name]
+    except KeyError:
+        raise ValueError("'%s' refers to unknown exception type '%s'" % (value, exception_type_name))
+    throw.doc = Ast.DocNode(text=value, **kwds)
+for __name in ('throw', 'throws'):
+    Parser.register_annotation(Ast.FunctionNode, __name, __parse_throw_annotation)
+
+
+def __parse_validation_annotation(ast_node, name, value, **kwds):
+    if isinstance(ast_node, Ast.FunctionNode):
+        parameter, value = __split_param_annotation(ast_node=ast_node, name=name, value=value)
+
     try:
         value = json.loads(value)
     except ValueError, e:
-        raise ValueError("@validation contains invalid JSON: '%s', exception: %s" % (value, e))
+        raise ValueError("@%s contains invalid JSON: '%s', exception: %s" % (name, value, e))
     if not isinstance(value, dict):
-        raise ValueError("expected @validation to contain a JSON object, found '%s'" % value)
+        raise ValueError("expected @%s to contain a JSON object, found '%s'" % (name, value))
 
     for lengthPropertyName in ('maxLength', 'minLength'):
         lengthPropertyValue = value.get(lengthPropertyName)
@@ -978,9 +943,41 @@ def __parse_validation_annotation(value):
         try:
             lengthPropertyValue = int(lengthPropertyValue)
         except ValueError:
-            raise ValueError("@validation %(lengthPropertyName)s must be an integer" % locals())
+            raise ValueError("@%(name)s %(lengthPropertyName)s must be an integer" % locals())
         if lengthPropertyValue < 0:
-            raise ValueError("@validation %(lengthPropertyName)s must be >= 0" % locals())
+            raise ValueError("@%(name)s %(lengthPropertyName)s must be >= 0" % locals())
 
-    return value
-Parser.register_annotation('validation', __parse_validation_annotation)
+    annotation = Ast.AnnotationNode(name=name, value=value, **kwds)
+
+    if isinstance(ast_node, Ast.FunctionNode):
+        parameter.annotations.append(annotation)
+    else:
+        ast_node.annotations.append(annotation)
+
+
+def __split_param_annotation(ast_node, name, value):
+    assert isinstance(ast_node, Ast.FunctionNode)
+
+    if value is None:
+        raise ValueError("@%(name)s requires a value" % locals())
+    value_split = value.split(None, 1)
+    if len(value_split) != 2:
+        raise ValueError("@%(name)s requires a parameter name and description" % locals())
+    param_name = value_split[0].rstrip(':')
+
+    if param_name == 'return':
+        if ast_node.return_field is not None:
+            parameter = ast_node.return_field
+        else:
+            raise ValueError("unknown parameter '%s'" % param_name)
+    else:
+        try:
+            parameter = ast_node.parameters_by_name[param_name]
+        except KeyError:
+            raise ValueError("unknown parameter '%s'" % param_name)
+
+    return parameter, value_split[1]
+
+
+for __ast_node_type in (Ast.FieldNode, Ast.FunctionNode):
+    Parser.register_annotation(__ast_node_type, 'validation', __parse_validation_annotation)

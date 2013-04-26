@@ -14,6 +14,7 @@ service TestService {
      * Some other text
     */
     void TestFunction3(1:i32 iparam);
+    // @return some boolean
     bool TestFunction4();
     // @throws TestException if it's a test
     bool TestFunction5() throws (1:TestException e);

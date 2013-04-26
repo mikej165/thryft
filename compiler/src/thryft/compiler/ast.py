@@ -4,10 +4,27 @@ from yutil import decamelize
 
 class Ast(object):
     class Node(object):
+        class __Annotations(object):
+            def __init__(self):
+                object.__init__(self)
+                self.__annotations = []
+
+            def append(self, annotation):
+                assert isinstance(annotation, Ast.AnnotationNode)
+                self.__annotations.append(annotation)
+
+            def __iter__(self):
+                return iter(self.__annotations)
+
         def __init__(self, annotations=None, doc=None, start_token=None, stop_token=None):
             object.__init__(self)
 
-            self.annotations = annotations
+            if annotations is None:
+                annotations = Ast.Node.__Annotations()
+            else:
+                assert isinstance(annotations, Ast.Node.__Annotations)
+            self.__annotations = annotations
+
             self.doc = doc
 
             if start_token is not None:
@@ -28,14 +45,6 @@ class Ast(object):
         @property
         def annotations(self):
             return self.__annotations
-
-        @annotations.setter
-        def annotations(self, annotations):
-            if annotations is not None:
-                assert isinstance(annotations, tuple), type(annotations)
-                for annotation in annotations:
-                    assert isinstance(annotation, Ast.AnnotationNode)
-            self.__annotations = annotations
 
         @property
         def doc(self):
@@ -171,10 +180,13 @@ class Ast(object):
             return self.__value
 
     class DocNode(Node):
-        def __init__(self, tags, text, **kwds):
+        def __init__(self, text, tags=None, **kwds):
             Ast.Node.__init__(self, **kwds)
 
-            assert isinstance(tags, dict)
+            if tags is not None:
+                assert isinstance(tags, dict)
+            else:
+                tags = {}
             self.__tags = tags
 
             assert isinstance(text, str)
@@ -310,12 +322,20 @@ class Ast(object):
             return self.__parameters
 
         @property
+        def parameters_by_name(self):
+            return dict((parameter.name, parameter) for parameter in self.parameters)
+
+        @property
         def return_field(self):
             return self.__return_field
 
         @property
         def throws(self):
             return self.__throws
+
+        @property
+        def throws_by_exception_type_name(self):
+            return dict((throw.type.name, throw) for throw in self.throws)
 
     class IdentifierNode(Node):
         def __init__(self, text, **kwds):
