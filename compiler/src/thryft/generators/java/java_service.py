@@ -52,6 +52,7 @@ class JavaService(Service, _JavaNamedConstruct):
         else:
             extends = ' extends ' + extends
 
+        javadoc = self.java_doc()
         name = self.java_name()
 
         sections = []
@@ -69,10 +70,10 @@ public static class Messages {
 %(message_types)s
 }""" % locals())
 
-        sections.append("\n".join(repr(function) for function in self.functions))
+        sections.append("\n\n".join(repr(function) for function in self.functions))
 
         sections = lpad("\n", "\n\n".join(indent(' ' * 4, sections)))
 
         return """\
-public interface %(name)s%(extends)s {%(sections)s
+%(javadoc)spublic interface %(name)s%(extends)s {%(sections)s
 }""" % locals()

@@ -62,6 +62,17 @@ class JavaField(Field, _JavaNamedConstruct):
         else:
             return "%(this_value)s == %(other_value)s" % locals()
 
+    def java_getter(self, final=True):
+        final = final and 'final ' or ''
+        getter_name = self.java_getter_name()
+        javadoc = self.java_doc()
+        name = self.java_name()
+        type_name = self.type.java_declaration_name(boxed=not self.required)
+        return """\
+%(javadoc)spublic %(final)s%(type_name)s %(getter_name)s() {
+    return %(name)s;
+}""" % locals()
+
     def java_getter_name(self):
         getter_name = upper_camelize(self.name)
         if isinstance(self.type, JavaBoolType):
@@ -71,16 +82,6 @@ class JavaField(Field, _JavaNamedConstruct):
                 return 'is' + getter_name
         else:
             return 'get' + getter_name
-
-    def java_getter(self, final=True):
-        final = final and 'final ' or ''
-        getter_name = self.java_getter_name()
-        name = self.java_name()
-        type_name = self.type.java_declaration_name(boxed=not self.required)
-        return """\
-public %(final)s%(type_name)s %(getter_name)s() {
-    return %(name)s;
-}""" % locals()
 
     def java_initializer(self):
         return 'this.' + self.java_name() + ' = ' + self.java_validation() + ';'
@@ -101,14 +102,15 @@ public %(final)s%(type_name)s %(getter_name)s() {
             return self.java_parameter(boxed=boxed, final=final)
 
     def java_member_declaration(self, boxed=None, final=False):
+        javadoc = self.java_doc()
         if self.value is not None:
-            return "private %s = %s;" % \
-                    (self.java_parameter(boxed=boxed), self.java_value())
+            return "%sprivate %s = %s;" % \
+                    (javadoc, self.java_parameter(boxed=boxed), self.java_value())
         else:
-            return "private %s;" % \
-                    self.java_parameter(boxed=boxed, final=final)
+            return "%sprivate %s;" % \
+                    (javadoc, self.java_parameter(boxed=boxed, final=final))
 
-    def java_name(self):
+    def java_name(self, boxed=False):
         return lower_camelize(self.name)
 
     def java_parameter(self, boxed=None, final=False):

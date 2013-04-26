@@ -87,21 +87,56 @@ public %(name)s(final org.apache.thrift.protocol.TProtocol iprot) throws org.apa
 }""" % locals()
 
     def java_declaration(self):
+        javadoc = self.java_doc()
+
         name = self.java_name()
+
         parameters = \
             ', '.join(parameter.java_parameter() for parameter in self.parameters)
-        return_type_name = \
-            self.return_field is not None and \
-                self.return_field.type.java_declaration_name() or \
-                'void'
+
+        if self.return_field is not None:
+            return_type_name = self.return_field.type.java_declaration_name()
+        else:
+            return_type_name = 'void'
+
         throws = \
             lpad(
                 ' throws ',
                 ', '.join(field.type.java_declaration_name()
                            for field in self.throws)
             )
+
         return """\
-public %(return_type_name)s %(name)s(%(parameters)s)%(throws)s;""" % locals()
+%(javadoc)spublic %(return_type_name)s %(name)s(%(parameters)s)%(throws)s;""" % locals()
+
+    def java_doc(self):
+        javadoc_lines = []
+        if self.doc is not None:
+            javadoc_lines.extend(line.strip() for line in self.doc.splitlines())
+            javadoc_lines.append('')
+
+        name = self.java_name()
+
+        for parameter in self.parameters:
+            if parameter.doc is not None:
+                javadoc_lines.append("@param %s %s" % (parameter.name, parameter.doc))
+
+        if self.return_field is not None and self.return_field.doc is not None:
+            javadoc_lines.append('@return ' + self.return_field.doc)
+
+        for field in self.throws:
+            if field.doc is not None:
+                javadoc_lines.append("@throws %s %s" % (field.type.java_qname(), field.doc))
+
+        if len(javadoc_lines) > 0:
+            javadoc_lines = "\n".join(' * ' + javadoc_line for javadoc_line in javadoc_lines)
+            return """\
+/**
+%(javadoc_lines)s
+ */
+""" % locals()
+        else:
+            return ''
 
     def java_message_types(self):
         return [self.java_request_type(), self.java_response_type()]

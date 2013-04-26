@@ -34,7 +34,7 @@ from thryft.generator.function import Function
 from thryft.generators.js._js_named_construct import _JsNamedConstruct
 from thryft.generators.js.js_field import JsField
 from thryft.generators.js.js_struct_type import JsStructType
-from yutil import decamelize, lower_camelize, lpad, indent
+from yutil import decamelize, lower_camelize
 
 
 class JsFunction(Function, _JsNamedConstruct):

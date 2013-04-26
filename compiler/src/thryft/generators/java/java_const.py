@@ -39,7 +39,8 @@ class JavaConst(Const, _JavaNamedConstruct):
         return self.type.java_literal(self.value)
 
     def __repr__(self):
+        javadoc = self.java_doc()
         name = self.java_name()
         type_name = self.type.java_qname()
         value = self.java_value()
-        return "public final static %(type_name)s %(name)s = %(value)s;" % locals()
+        return "%(javadoc)spublic final static %(type_name)s %(name)s = %(value)s;" % locals()

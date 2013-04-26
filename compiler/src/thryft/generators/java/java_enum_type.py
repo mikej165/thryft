@@ -56,10 +56,11 @@ class JavaEnumType(EnumType, _JavaType):
         return "if (oprot instanceof org.thryft.core.protocol.Protocol) { ((org.thryft.core.protocol.Protocol)oprot).writeEnum(%(value)s); } else { oprot.writeString(%(value)s.toString()); }" % locals()
 
     def __repr__(self):
+        javadoc = self.java_doc()
         name = self.java_name()
         if len(self.enumerators) == 0:
             return """\
-public enum %(qname)s {
+%(javadoc)spublic enum %(qname)s {
 }"""
         valueOf_cases = []
         enumerators = []
@@ -72,7 +73,7 @@ public enum %(qname)s {
         valueOf_cases = "\n".join(indent(' ' * 8, valueOf_cases))
         enumerators = ",\n".join(indent(' ' * 4, enumerators))
         return """\
-public enum %(name)s {
+%(javadoc)spublic enum %(name)s {
 %(enumerators)s;
 
     private %(name)s(int value) {

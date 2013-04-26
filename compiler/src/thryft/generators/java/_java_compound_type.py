@@ -585,6 +585,7 @@ public void write(final org.apache.thrift.protocol.TProtocol oprot, final byte w
                                for warning in sorted(self.__suppress_warnings)))
         class_annotations = rpad("\n".join(class_annotations), "\n")
         class_modifiers = rpad(' '.join(self.__class_modifiers), ' ')
+        javadoc = self.java_doc()
         name = self.java_name()
         extends = lpad(' extends ', self._java_extends())
         implements = lpad(' implements ', ', '.join(self._java_implements()))
@@ -594,8 +595,8 @@ public void write(final org.apache.thrift.protocol.TProtocol oprot, final byte w
         sections.append("\n\n".join(indent(' ' * 4,
             self._java_constructors() + \
             [methods[key] for key in sorted(methods.iterkeys())])))
-        sections.append("\n".join(indent(' ' * 4, self._java_member_declarations())))
+        sections.append("\n\n".join(indent(' ' * 4, self._java_member_declarations())))
         sections = lpad("\n", "\n\n".join(section for section in sections if len(section) > 0))
         return """\
-%(class_annotations)s%(class_modifiers)sclass %(name)s%(extends)s%(implements)s {%(sections)s
+%(javadoc)s%(class_annotations)s%(class_modifiers)sclass %(name)s%(extends)s%(implements)s {%(sections)s
 }""" % locals()
