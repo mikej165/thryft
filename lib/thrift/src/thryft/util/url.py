@@ -63,6 +63,9 @@ class JsUrl(JsStructType):
     def js_read_protocol(self):
         return '((typeof iprot.readUrl !== "undefined") ? iprot.readUrl() : iprot.readString())'
 
+    def js_schema(self):
+        return {'type': 'Text', 'validators': ['url']}
+
     def js_validate(self, value, value_name, **kwds):
         return """\
 if (typeof %(value)s !== "string") {

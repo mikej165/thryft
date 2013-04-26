@@ -43,6 +43,9 @@ class _JsNumberType(_JsBaseType):
     def js_qname(self):
         return 'number'
 
+    def js_schema(self):
+        return {'type': 'Number'}
+
     def js_validate(self, value, value_name, **kwds):
         return """\
 if (typeof %(value)s !== "number") {

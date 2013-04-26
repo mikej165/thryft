@@ -50,6 +50,9 @@ class JsMapType(MapType, _JsContainerType):
         value_read_protocol = self.value_type.js_read_protocol()
         return """function(iprot) { var map = {}; var mapBegin = iprot.readMapBegin(); for (var i = 0; i < mapBegin.size; i++) { var key = %(key_read_protocol)s; var value = %(value_read_protocol)s; map[key] = value; } iprot.readMapEnd(); return map; }(iprot)""" % locals()
 
+    def js_schema(self):
+        return {'type': 'Object', 'subSchema': self.value_type.js_schema()}
+
     def js_validate(self, value, value_name, depth=0):
         key_validate = \
             indent(' ' * 4,

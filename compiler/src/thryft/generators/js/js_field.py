@@ -52,6 +52,13 @@ if (field.fname == "%(name)s") {
     fields["%(js_name)s"] = %(read_protocol)s;
 }""" % locals()
 
+    def js_schema(self):
+        schema = self.type.js_schema()
+        if self.required:
+            schema = schema.copy()
+            schema.setdefault('validators', []).append('required')
+        return {self.js_name(): schema}
+
     def js_validation(self):
         try:
             validation = self.annotations['validation'].copy()

@@ -44,6 +44,9 @@ class JsBoolType(BoolType, _JsBaseType):
     def js_qname(self):
         return 'boolean'
 
+    def js_schema(self):
+        return {'type': 'Radio', 'options': ['True', 'False']}
+
     def js_validate(self, value, value_name, **kwds):
         return """\
 if (typeof %(value)s !== "boolean") {

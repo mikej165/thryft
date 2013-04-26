@@ -32,6 +32,8 @@
 
 from thryft.generators.js._js_type import _JsType
 from yutil import indent, lpad
+import json
+import re
 
 
 class _JsCompoundType(_JsType):
@@ -68,12 +70,6 @@ read: function(iprot) {
     return new %(name)s(fields);
 }""" % locals()}
 
-    def _js_properties(self):
-        properties = {}
-        properties.update(self._js_property_validation())
-        properties.update(self._js_method_write())
-        return [properties[method_name] for method_name in sorted(properties.iterkeys())]
-
     def _js_method_write(self):
         field_writes = indent(' ' * 4, "\n".join(field.js_write_protocol() for field in self.fields))
         name = self.js_name()
@@ -85,15 +81,34 @@ write: function(oprot) {
     return oprot;
 }""" % locals()}
 
+    def _js_properties(self):
+        properties = {}
+        properties.update(self._js_property_schema())
+        properties.update(self._js_property_validation())
+        properties.update(self._js_method_write())
+        return [properties[method_name] for method_name in sorted(properties.iterkeys())]
+
+    def _js_property_schema(self):
+        schema = {}
+        for field in self.fields:
+            schema.update(field.js_schema())
+        schema = json.dumps(schema, indent=4)
+        schema = re.sub('\"model\"\: \"([\w\.]+)"', '"model": \\1', schema)
+        return {'schema': """\
+schema: %s
+""" % schema}
+
     def _js_property_validation(self):
-        field_validations = lpad("\n", ",\n\n".join(indent(' ' * 4,
-                              [field.js_validation()
-                               for field in self.fields]
-                          )))
         return {'validation': """\
-validation: {%(field_validations)s
+validation: {%s
 }
-""" % locals()}
+""" % lpad("\n", ",\n\n".join(indent(' ' * 4,
+          [field.js_validation()
+           for field in self.fields]
+      )))}
+
+    def js_schema(self):
+        return {'type': 'NestedModel', 'model': self.js_qname()}
 
     def js_validate(self, value, value_name, **kwds):
         qname = self.js_qname()

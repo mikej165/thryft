@@ -60,6 +60,9 @@ class JsDateTime(JsStructType):
     def js_read_protocol(self):
         return '((typeof iprot.readDateTime !== "undefined") ? iprot.readDateTime() : new Date(iprot.readI64()))'
 
+    def js_schema(self):
+        return {'type': 'DateTime'}
+
     def js_validate(self, value, value_name, **kwds):
         return """\
 if (!(%(value)s instanceof Date)) {

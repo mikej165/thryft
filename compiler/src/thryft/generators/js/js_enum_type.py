@@ -39,6 +39,9 @@ class JsEnumType(EnumType, _JsType):
         name = self.js_qname()
         return "%(name)s[iprot.readString()]" % locals()
 
+    def js_schema(self):
+        return {'type': 'Select', 'options': [enumerator.name for enumerator in self.enumerators]}
+
     def js_validate(self, value, value_name, **kwds):
         if len(self.enumerators) > 0:
             qname = self.js_qname()

@@ -60,6 +60,9 @@ class JsEmailAddress(JsStructType):
     def js_read_protocol(self):
         return '((typeof iprot.readEmailAddress !== "undefined") ? iprot.readEmailAddress() : iprot.readString())'
 
+    def js_schema(self):
+        return {'type': 'Text', 'validators': ['email']}
+
     def js_validate(self, value, value_name, **kwds):
         return """\
 if (typeof %(value)s !== "string") {

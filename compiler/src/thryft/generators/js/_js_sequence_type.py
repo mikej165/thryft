@@ -75,6 +75,13 @@ class _JsSequenceType(_JsContainerType):
         type_name = class_name_split[1].capitalize()
         return """function(iprot) { var sequenceBegin = iprot.read%(type_name)sBegin(); var sequence = new Array(); for (var i = 0; i < sequenceBegin.size; i++) { sequence.push(%(element_read_protocol)s); } iprot.read%(type_name)sEnd(); return %(return_value)s; }(iprot)""" % locals()
 
+    def js_schema(self):
+        element_schema = self.element_type.js_schema()
+        schema = {'type': 'List', 'itemType': element_schema['type']}
+        if element_schema['type'] == 'NestedModel':
+            schema['model'] = element_schema['model']
+        return schema
+
     def js_validate(self, value, value_name, depth=0):
         if isinstance(self.element_type, _JsCompoundType):
             element_type_qname = self.element_type.js_qname()

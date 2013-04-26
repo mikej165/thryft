@@ -37,3 +37,6 @@ from yutil import class_qname
 class _JsType(_JsNamedConstruct):
     def js_check(self, value):
         raise NotImplementedError(class_qname(self) + '.js_check')
+
+    def js_schema(self):
+        raise NotImplementedError(class_qname(self) + '.js_schema')

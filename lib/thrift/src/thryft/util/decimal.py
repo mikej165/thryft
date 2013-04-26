@@ -60,6 +60,9 @@ class JsDecimal(JsStructType):
     def js_read_protocol(self):
         return '((typeof iprot.readDecimal !== "undefined") ? iprot.readDecimal() : iprot.readString())'
 
+    def js_schema(self):
+        return {'type': 'Number'}
+
     def js_validate(self, value, value_name, **kwds):
         return """\
 if (typeof %(value)s !== "string") {
