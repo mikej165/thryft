@@ -2,7 +2,7 @@ from thryft.generator._base_type import _BaseType
 from thryft.generators.py import py_generator
 from thryft.generators.py.py_function import PyFunction
 from thryft.generators.py.py_service import PyService
-from yutil import indent
+from yutil import indent, decamelize
 
 
 class JsonrpcClientPyGenerator(py_generator.PyGenerator):
@@ -44,11 +44,7 @@ def _%(name)s(self, **kwds):
                     ))
             else:
                 methods = indent(' ' * 4, 'pass')
-            try:
-                py_namespace = self.parent.namespaces_by_scope['py']
-            except KeyError:
-                py_namespace = self.parent.namespaces_by_scope['*']
-            service_endpoint_name = py_namespace.name.rsplit('.', 1)[-1]
+            service_endpoint_name = decamelize(PyService.py_name(self)).rsplit('_', 1)[0]
             service_qname = PyService.py_qname(self)
             return """\
 class %(name)s(thryft.web.client.service._jsonrpc_client_service._JsonrpcClientService, %(service_qname)s):

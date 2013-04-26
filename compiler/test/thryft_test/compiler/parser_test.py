@@ -48,7 +48,7 @@ class ParserTest(_test._Test):
         try:
             tokens = Scanner().tokenize(thrift_file_path)
             ast = Parser().parse(tokens)  # @UnusedVariable
-            import pprint; pprint.pprint(ast.to_dict())
+            # import pprint; pprint.pprint(ast.to_dict())
         except:
             print >> sys.stderr, 'Error parsing', thrift_file_path
             traceback.print_exc()

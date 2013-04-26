@@ -38,6 +38,9 @@ class JavaI32Type(I32Type, _JavaNumericType):
     def java_default_value(self):
         return '0'
 
+    def java_from_string(self, value):
+        return "Integer.parseInt(%(value)s)" % locals()
+
     def java_hash_code(self, value):
         return "((int)%(value)s)" % locals()
 

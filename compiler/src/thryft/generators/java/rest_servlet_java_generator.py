@@ -148,7 +148,7 @@ try {
                 write_response = """\
     __httpServletResponse.setStatus(204);"""
             elif isinstance(self.return_field.type, JavaBoolType):
-                assert self.java_rest_request_method() in ('DELETE', 'HEAD'), self.java_rest_request_method()
+                # assert self.java_rest_request_method() in ('DELETE', 'HEAD'), self.java_rest_request_method()
                 write_response = """\
     if (__return_value) {
         __httpServletResponse.setStatus(204);
@@ -226,8 +226,10 @@ try {
 
         def java_rest_request_method(self):
             request_method = self.name.split('_', 1)[0].upper()
-            assert request_method in ('GET', 'DELETE', 'HEAD', 'POST', 'PUT'), request_method
-            return request_method
+            if request_method in ('GET', 'DELETE', 'HEAD', 'POST', 'PUT'):
+                return request_method
+            else:
+                return 'GET'
 
     class Service(_servlet_java_generator._ServletJavaGenerator._Service):
         def java_name(self, boxed=False):
