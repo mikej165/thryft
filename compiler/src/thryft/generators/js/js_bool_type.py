@@ -45,7 +45,7 @@ class JsBoolType(BoolType, _JsBaseType):
         return 'boolean'
 
     def js_schema(self):
-        return {'type': 'Radio', 'options': ['True', 'False']}
+        return {'type': 'Checkboxes', 'options': ['']}
 
     def js_validate(self, value, value_name, **kwds):
         return """\

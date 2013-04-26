@@ -78,8 +78,9 @@ class _JsSequenceType(_JsContainerType):
     def js_schema(self):
         element_schema = self.element_type.js_schema()
         schema = {'type': 'List', 'itemType': element_schema['type']}
-        if element_schema['type'] == 'NestedModel':
-            schema['model'] = element_schema['model']
+        for key, value in element_schema.iteritems():
+            if key != 'type':
+                schema[key] = value
         return schema
 
     def js_validate(self, value, value_name, depth=0):
