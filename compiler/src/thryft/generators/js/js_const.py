@@ -42,6 +42,6 @@ class JsConst(Const, _JsNamedConstruct):
         name = self.js_name()
         qname = self.js_qname()
         if name == qname:
-            return "var %s = %s;" % (qname, self.js_value())
+            return "/** @constant */ var %s = %s;" % (qname, self.js_value())
         else:
             return "%s = %s;" % (qname, self.js_value())

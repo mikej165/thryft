@@ -88,6 +88,15 @@ class JsFunction(Function, _JsNamedConstruct):
 
         name = self.name
         js_name = self.js_name()
+        service_js_qname = self.parent.js_qname()
+
+        jsdoc_lines = []
+        if self.doc is not None:
+            jsdoc_lines.extend(line.strip() for line in self.doc.splitlines())
+        else:
+            jsdoc_lines.append(js_name)
+        jsdoc_lines.append('')
+        jsdoc_lines.append("@this {%(service_js_qname)s}" % locals())
 
         function_parameter_names = ', '.join([parameter.js_name() for parameter in self.parameters] + ['successCallback', 'errorCallback'])
         request_type_qname = self.js_request_type().js_qname()
@@ -110,8 +119,14 @@ class JsFunction(Function, _JsNamedConstruct):
         else:
             jsonrpc_params = '{}'
             request = ''
-        jsdoc_lines = ["@param {%s} %s" % (parameter.type.js_qname(), parameter.name)
-                        for parameter in self.parameters]
+
+        jsdoc_lines.extend(
+           "@param {%s} %s%s" % (
+                parameter.type.js_qname(), parameter.name,
+                parameter.doc is not None and (' ' + parameter.doc) or ''
+            )
+            for parameter in self.parameters
+        )
 
         jsonrpc_url = 'this.hostname+\'/api/jsonrpc/'
         if self.parent.name.endswith('Service'):
@@ -121,24 +136,30 @@ class JsFunction(Function, _JsNamedConstruct):
         jsonrpc_url += '\''
 
         if self.return_field is not None:
-            jsdoc_lines.append("@return {%s}" % self.return_field.type.js_qname())
+            jsdoc_lines.append(
+                "@returns {%s}%s" % (
+                    self.return_field.type.js_qname(),
+                    self.return_field.doc is not None and (' ' + self.return_field.doc) or '')
+            )
             response_type_qname = self.js_response_type().js_qname()
             return_value = """%(response_type_qname)s.read(new thryft.core.protocol.BuiltinsProtocol({return_value:__response.result})).get("returnValue")""" % locals()
         else:
             return_value = 'true'
 
         if len(self.throws) > 0:
-            jsdoc_lines.extend("@throws {%s}" % exception.type.js_qname() for exception in self.throws)
+            jsdoc_lines.extend(
+                "@throws {%s}%s" % (
+                    exception.type.js_qname(),
+                    exception.doc is not None and (' ' + exception.doc) or ''
+                )
+                for exception in self.throws
+            )
 
-        jsdoc_lines = lpad("\n", "\n".join(indent(' * ', jsdoc_lines)))
-
-        service_js_qname = self.parent.js_qname()
+        jsdoc_lines = "\n".join(' * ' + jsdoc_line for jsdoc_line in jsdoc_lines)
 
         return """\
 /**
- * %(js_name)s
- *
- * @this {%(service_js_qname)s}%(jsdoc_lines)s
+%(jsdoc_lines)s
  */
 %(js_name)s : function(kwds) {
     var async = false;

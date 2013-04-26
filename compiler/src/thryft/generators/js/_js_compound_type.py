@@ -129,7 +129,8 @@ if (!%(value)s.isValid(true)) {
         if len(self.fields) > 0:
             properties.append(
                 ",\n".join(indent(' ' * 8,
-                    [field.js_name() + ':undefined' for field in self.fields]
+                    ["/** @type %s */\n" % field.type.js_qname() + \
+                      field.js_name() + ':undefined' for field in self.fields]
                 ))
             )
         properties.append(",\n\n".join(indent(' ' * 8, self._js_properties())))

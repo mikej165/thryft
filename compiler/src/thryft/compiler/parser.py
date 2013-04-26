@@ -74,7 +74,9 @@ class Parser(GenericParser):
                             for doc_line in doc_lines[1:-1]:
                                 doc_line = doc_line.lstrip()
                                 if doc_line.startswith('*'):
-                                    javadoc_lines.append(doc_line.lstrip('*').lstrip())
+                                    doc_line = doc_line.lstrip('*').lstrip()
+                                    if len(doc_line.rstrip()) > 1:
+                                        javadoc_lines.append(doc_line)
                                 elif len(doc_line) == 0:
                                     pass
                                 else:
