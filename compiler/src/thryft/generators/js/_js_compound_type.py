@@ -110,15 +110,15 @@ validation: {%s
     def js_schema(self):
         return {'type': 'NestedModel', 'model': self.js_qname()}
 
-    def js_validate(self, value, value_name, **kwds):
+    def js_validation(self, value, value_name, **kwds):
         qname = self.js_qname()
-        return """\
+        return {'type': """\
 if (!(%(value)s instanceof %(qname)s)) {
     return "expected %(value_name)s to be a %(qname)s";
 }
 if (!%(value)s.isValid(true)) {
     return %(value)s.validationError;
-}""" % locals()
+}""" % locals()}
 
     def __repr__(self):
         class_properties = []

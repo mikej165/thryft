@@ -83,10 +83,10 @@ class _JsSequenceType(_JsContainerType):
                 schema[key] = value
         return schema
 
-    def js_validate(self, value, value_name, depth=0):
+    def js_validation(self, value, value_name, depth=0):
         if isinstance(self.element_type, _JsCompoundType):
             element_type_qname = self.element_type.js_qname()
-            return """\
+            return {'type': """\
 if (!(%(value)s instanceof Backbone.Collection)) {
     return "expected %(value_name)s to be a Backbone.Collection";
 }
@@ -95,23 +95,23 @@ if (%(value)s.model !== %(element_type_qname)s) {
 }
 if (!%(value)s.isValid(true)) {
     return %(value)s.validationError;
-}""" % locals()
+}""" % locals()}
         else:
             element_validate = \
                 indent(' ' * 4,
-                    self.element_type.js_validate(
+                    self.element_type.js_validation(
                         depth=depth + 1,
                         value=value + "[__i%(depth)u]" % locals(),
                         value_name=value_name + "[i]" % locals()
-                    )
+                    )['type']
                 )
-            return """\
+            return {'type': """\
 if (!Array.isArray(%(value)s)) {
     return "expected %(value_name)s to be an Array";
 }
 for (var __i%(depth)u = 0; __i%(depth)u < %(value)s.length; __i%(depth)u++) {
 %(element_validate)s
-}""" % locals()
+}""" % locals()}
 
     def js_write_protocol(self, value, depth=0):
         class_name_split = decamelize(self.__class__.__name__).split('_')

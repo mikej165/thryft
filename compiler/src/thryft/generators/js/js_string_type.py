@@ -47,8 +47,8 @@ class JsStringType(StringType, _JsBaseType):
     def js_schema(self):
         return {'type': 'Text'}
 
-    def js_validate(self, value, value_name, **kwds):
-        return """\
+    def js_validation(self, value, value_name, **kwds):
+        return {'type': """\
 if (typeof %(value)s !== "string") {
     return "expected %(value_name)s to be a string";
-}""" % locals()
+}""" % locals()}

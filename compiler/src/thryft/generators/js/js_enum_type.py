@@ -42,7 +42,7 @@ class JsEnumType(EnumType, _JsType):
     def js_schema(self):
         return {'type': 'Select', 'options': [enumerator.name for enumerator in self.enumerators]}
 
-    def js_validate(self, value, value_name, **kwds):
+    def js_validation(self, value, value_name, **kwds):
         if len(self.enumerators) > 0:
             qname = self.js_qname()
             enumerator_comparisons = ' && '.join("%s !== %s" % (value, enumerator.value)
@@ -53,11 +53,11 @@ if (%(enumerator_comparisons)s) {
 }""" % locals()
         else:
             enumerator_comparisons = ''
-        return """\
+        return {'type': """\
 if (typeof %(value)s !== "number") {
     return "expected %(value_name)s to be a number";
 }%(enumerator_comparisons)s
-""" % locals()
+""" % locals()}
 
     def js_write_protocol(self, value, depth=0):
         name = self.js_qname()

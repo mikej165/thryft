@@ -66,11 +66,11 @@ class JsUrl(JsStructType):
     def js_schema(self):
         return {'type': 'Text', 'validators': ['url']}
 
-    def js_validate(self, value, value_name, **kwds):
-        return """\
+    def js_validation(self, value, value_name, **kwds):
+        return {'pattern': 'url', 'type': """\
 if (typeof %(value)s !== "string") {
     return "expected %(value_name)s to be a string";
-}""" % locals()
+}""" % locals()}
 
     def js_write_protocol(self, value, depth=0):
         return """if (typeof oprot.writeUrl !== "undefined") { oprot.writeUrl(%(value)s); } else { oprot.writeString(%(value)s); }""" % locals()

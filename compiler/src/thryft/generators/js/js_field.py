@@ -67,12 +67,13 @@ if (field.fname == "%(name)s") {
         validation['required'] = self.required
         name = self.js_name()
         qname = self.js_qname()
-        type_validate = indent(' ' * 8, self.type.js_validate(depth=0, value='value', value_name=qname))
+        validation.update(self.type.js_validation(depth=0, value='value', value_name=qname))
+        type_validation = indent(' ' * 8, validation.pop('type'))
         validation = json.dumps(validation).lstrip('{').rstrip('}')
         return """\
 %(name)s: {
     "fn": function(value, attr, computedState) {
-%(type_validate)s
+%(type_validation)s
     },
     %(validation)s
 }""" % locals()

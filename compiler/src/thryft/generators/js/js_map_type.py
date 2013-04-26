@@ -53,32 +53,32 @@ class JsMapType(MapType, _JsContainerType):
     def js_schema(self):
         return {'type': 'Object', 'subSchema': self.value_type.js_schema()}
 
-    def js_validate(self, value, value_name, depth=0):
-        key_validate = \
+    def js_validation(self, value, value_name, depth=0):
+        key_type_validation = \
             indent(' ' * 4,
-                self.key_type.js_validate(
+                self.key_type.js_validation(
                     depth=depth + 1,
                     value="__key%(depth)u" % locals(),
                     value_name=value_name + " key" % locals()
-                )
+                )['type']
             )
-        value_validate = \
+        value_type_validation = \
             indent(' ' * 4,
-                self.value_type.js_validate(
+                self.value_type.js_validation(
                     depth=depth + 1,
                     value="__value%(depth)u" % locals(),
                     value_name=value_name + " value" % locals()
-                )
+                )['type']
             )
-        return """\
+        return {'type': """\
 if (typeof %(value)s !== "object") {
     return "expected %(value_name)s to be an object";
 }
 for (var __key%(depth)u in %(value)s) {
     var __value%(depth)u = %(value)s[__key%(depth)u];
-%(key_validate)s
-%(value_validate)s
-}""" % locals()
+%(key_type_validation)s
+%(value_type_validation)s
+}""" % locals()}
 
 
     def js_write_protocol(self, value, depth=0):

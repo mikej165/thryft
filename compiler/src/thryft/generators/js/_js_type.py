@@ -35,8 +35,11 @@ from yutil import class_qname
 
 
 class _JsType(_JsNamedConstruct):
-    def js_check(self, value):
+    def js_check(self, *args, **kwds):
         raise NotImplementedError(class_qname(self) + '.js_check')
 
-    def js_schema(self):
+    def js_schema(self, *args, **kwds):
         raise NotImplementedError(class_qname(self) + '.js_schema')
+
+    def js_validation(self, *args, **kwds):
+        raise NotImplementedError(class_qname(self) + '.js_validation')
