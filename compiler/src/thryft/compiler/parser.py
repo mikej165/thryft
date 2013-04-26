@@ -477,7 +477,7 @@ class Parser(GenericParser):
             parameters_by_name = dict((parameter.name, parameter) for parameter in parameters)
             throws_by_exception_type_name = dict((throw.type.name, throw) for throw in throws)
             for tag_name, tag_value in doc_node.tags.iteritems():
-                if tag_name == 'param':
+                if tag_name in ('param', 'validation'):
                     if tag_value is not None:
                         tag_value_split = tag_value.split(None, 1)
                         if len(tag_value_split) == 2:
@@ -489,11 +489,27 @@ class Parser(GenericParser):
                                         raise KeyError
                                 else:
                                     parameter = parameters_by_name[param_name]
-                                parameter.doc = Ast.DocNode(start_token=doc_node.start_token, stop_token=doc_node.stop_token, tags={}, text=tag_value_split[1])
+                                if tag_name == 'param':
+                                    parameter.doc = Ast.DocNode(start_token=doc_node.start_token, stop_token=doc_node.stop_token, tags={}, text=tag_value_split[1])
+                                else:
+                                    parameter_annotations = parameter.annotations
+                                    if parameter_annotations is not  None:
+                                        parameter_annotations = list(parameter_annotations)
+                                    else:
+                                        parameter_annotations = []
+                                    parameter_annotations.append(
+                                        Ast.AnnotationNode(
+                                            name=tag_name,
+                                            start_token=doc_node.start_token,
+                                            stop_token=doc_node.stop_token,
+                                            value=self.__p_annotation(name=tag_name, start_token=doc_node.start_token, value=tag_value_split[1])
+                                        )
+                                    )
+                                    parameter.annotations = tuple(parameter_annotations)
                             except KeyError:
-                                raise ParseException("'%s' refers to unknown parameter '%s'" % (tag_value, param_name), token=start_token)
+                                raise ParseException("@%s %s refers to unknown parameter '%s'" % (tag_name, tag_value, param_name), token=start_token)
                         else:
-                            raise ParseException("@param tag has invalid format: '%s'" % tag_value, token=start_token)
+                            raise ParseException("@%s tag has invalid format: '%s'" % (tag_name, tag_value), token=start_token)
                     else:
                         raise ParseException("@param tag must contain a parameter name and description", token=start_token)
                 elif tag_name == 'return' or tag_name == 'returns':
@@ -951,9 +967,9 @@ def __parse_validation_annotation(value):
     try:
         value = json.loads(value)
     except ValueError, e:
-        raise ValueError('@validation contains invalid JSON: ' + str(e))
+        raise ValueError("@validation contains invalid JSON: '%s', exception: %s" % (value, e))
     if not isinstance(value, dict):
-        raise ValueError('expected @validation to contain a JSON object')
+        raise ValueError("expected @validation to contain a JSON object, found '%s'" % value)
 
     for lengthPropertyName in ('maxLength', 'minLength'):
         lengthPropertyValue = value.get(lengthPropertyName)

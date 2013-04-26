@@ -7,15 +7,8 @@ class Ast(object):
         def __init__(self, annotations=None, doc=None, start_token=None, stop_token=None):
             object.__init__(self)
 
-            if doc is not None:
-                assert isinstance(doc, Ast.DocNode)
-            self.__doc = doc
-
-            if annotations is not None:
-                assert isinstance(annotations, tuple), type(annotations)
-                for annotation in annotations:
-                    assert isinstance(annotation, Ast.AnnotationNode)
-            self.__annotations = annotations
+            self.annotations = annotations
+            self.doc = doc
 
             if start_token is not None:
                 assert isinstance(start_token, Token), repr(start_token)
@@ -35,6 +28,14 @@ class Ast(object):
         @property
         def annotations(self):
             return self.__annotations
+
+        @annotations.setter
+        def annotations(self, annotations):
+            if annotations is not None:
+                assert isinstance(annotations, tuple), type(annotations)
+                for annotation in annotations:
+                    assert isinstance(annotation, Ast.AnnotationNode)
+            self.__annotations = annotations
 
         @property
         def doc(self):
