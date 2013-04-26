@@ -63,9 +63,25 @@ class _JavaSequenceType(_JavaContainerType):
 
     def java_read_protocol(self):
         element_read_protocol = self.element_type.java_read_protocol()
+        add_element = "sequence.add(%(element_read_protocol)s);" % locals()
+        element_read_protocol_throws = self.element_type.java_read_protocol_throws_checked()
+        if len(element_read_protocol_throws) > 0:
+            add_element = indent(' ' * 4, add_element)
+            add_element = """\
+try {
+%s
+}%s
+""" % (add_element, ''.join("""\
+ catch (%(exception_type_name)s e) {
+     throw new IllegalArgumentException(e);
+}""" % locals()
+                     for exception_type_name in element_read_protocol_throws))
+        add_element = indent(' ' * 16, add_element)
+
         element_type_name = self.element_type.java_declaration_name(boxed=True)
         interface_simple_name = self._java_interface_simple_name()
         mutable_raw_qname = self._java_mutable_raw_qname()
+
         return """\
 (new com.google.common.base.Function<org.apache.thrift.protocol.TProtocol, com.google.common.collect.Immutable%(interface_simple_name)s<%(element_type_name)s>>() {
     @Override
@@ -74,7 +90,7 @@ class _JavaSequenceType(_JavaContainerType):
             final org.apache.thrift.protocol.T%(interface_simple_name)s sequenceBegin = iprot.read%(interface_simple_name)sBegin();
             final java.util.%(interface_simple_name)s<%(element_type_name)s> sequence = new %(mutable_raw_qname)s<%(element_type_name)s>();
             for (int elementI = 0; elementI < sequenceBegin.size; elementI++) {
-                sequence.add(%(element_read_protocol)s);
+%(add_element)s
             }
             iprot.read%(interface_simple_name)sEnd();
             return com.google.common.collect.Immutable%(interface_simple_name)s.copyOf(sequence);
