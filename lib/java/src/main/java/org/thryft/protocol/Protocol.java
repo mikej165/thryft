@@ -40,18 +40,8 @@ import java.net.MalformedURLException;
 import java.nio.ByteBuffer;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.thrift.TBase;
-import org.apache.thrift.TException;
-import org.apache.thrift.protocol.TField;
-import org.apache.thrift.protocol.TList;
-import org.apache.thrift.protocol.TMap;
-import org.apache.thrift.protocol.TMessage;
-import org.apache.thrift.protocol.TProtocol;
-import org.apache.thrift.protocol.TSet;
-import org.apache.thrift.protocol.TStruct;
-import org.apache.thrift.protocol.TType;
-import org.apache.thrift.transport.TTransport;
 import org.joda.time.DateTime;
+import org.thryft.TBase;
 import org.thryft.native_.EmailAddress;
 import org.thryft.native_.Url;
 
@@ -59,59 +49,41 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
-public abstract class Protocol extends TProtocol {
-    protected Protocol() {
-        super(null);
-    }
-
-    protected Protocol(final TTransport trans) {
-        super(trans);
-    }
-
+public abstract class Protocol {
     public void flush() throws IOException {
     }
 
-    @Override
-    public ByteBuffer readBinary() throws TException {
-        final String base64String = readString();
-        final byte[] binaryBytes = Base64.decodeBase64(base64String);
-        return ByteBuffer.wrap(binaryBytes);
-    }
-
-    @Override
-    public boolean readBool() throws TException {
+    public boolean readBool() throws IOException {
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public byte readByte() throws TException {
+    public byte readByte() throws IOException {
         throw new UnsupportedOperationException();
     }
 
-    public DateTime readDate() throws TException {
+    public DateTime readDate() throws IOException {
         return new DateTime(readI64());
     }
 
-    public DateTime readDateTime() throws TException {
+    public DateTime readDateTime() throws IOException {
         return new DateTime(readI64());
     }
 
-    public BigDecimal readDecimal() throws TException {
+    public BigDecimal readDecimal() throws IOException {
         return new BigDecimal(readString());
     }
 
-    @Override
-    public double readDouble() throws TException {
+    public double readDouble() throws IOException {
         throw new UnsupportedOperationException();
     }
 
-    public EmailAddress readEmailAddress() throws TException {
+    public EmailAddress readEmailAddress() throws IOException {
         return new EmailAddress(readString());
     }
 
     @SuppressWarnings("unchecked")
     public <E extends Enum<E>> E readEnum(final Class<E> enumClass)
-            throws TException {
+            throws IOException {
         final String enumStringValue = readString().trim().toUpperCase();
         if (enumStringValue.isEmpty()) {
             throw new IllegalArgumentException("empty string");
@@ -148,193 +120,145 @@ public abstract class Protocol extends TProtocol {
         }
     }
 
-    @Override
-    public TField readFieldBegin() throws TException {
+    public TField readFieldBegin() throws IOException {
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public void readFieldEnd() throws TException {
+    public void readFieldEnd() throws IOException {
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public short readI16() throws TException {
+    public short readI16() throws IOException {
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public int readI32() throws TException {
+    public int readI32() throws IOException {
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public long readI64() throws TException {
+    public long readI64() throws IOException {
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public TList readListBegin() throws TException {
+    public TList readListBegin() throws IOException {
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public void readListEnd() throws TException {
+    public void readListEnd() throws IOException {
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public TMap readMapBegin() throws TException {
+    public TMap readMapBegin() throws IOException {
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public void readMapEnd() throws TException {
+    public void readMapEnd() throws IOException {
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public TMessage readMessageBegin() throws TException {
+    public Object readMixed() throws IOException {
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public void readMessageEnd() throws TException {
-        throw new UnsupportedOperationException();
-    }
-
-    public Object readMixed() throws TException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public TSet readSetBegin() throws TException {
+    public TSet readSetBegin() throws IOException {
         final TList list = readListBegin();
         return new TSet(list.elemType, list.size);
     }
 
-    @Override
-    public void readSetEnd() throws TException {
+    public void readSetEnd() throws IOException {
         readListEnd();
     }
 
-    @Override
-    public String readString() throws TException {
+    public String readString() throws IOException {
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public TStruct readStructBegin() throws TException {
+    public TStruct readStructBegin() throws IOException {
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public void readStructEnd() throws TException {
+    public void readStructEnd() throws IOException {
         throw new UnsupportedOperationException();
     }
 
-    public Url readUrl() throws TException, MalformedURLException {
+    public Url readUrl() throws IOException, MalformedURLException {
         return Url.parse(readString());
     }
 
-    @Override
-    public void writeBinary(final ByteBuffer buf) throws TException {
+    public void writeBinary(final ByteBuffer buf) throws IOException {
         writeString(Base64.encodeBase64String(buf.array()));
     }
 
-    @Override
-    public void writeBool(final boolean b) throws TException {
+    public void writeBool(final boolean b) throws IOException {
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public void writeByte(final byte b) throws TException {
+    public void writeByte(final byte b) throws IOException {
         throw new UnsupportedOperationException();
     }
 
-    public void writeDateTime(final DateTime dateTime) throws TException {
+    public void writeDateTime(final DateTime dateTime) throws IOException {
         writeI64(dateTime.getMillis());
     }
 
-    public void writeDecimal(final BigDecimal decimal) throws TException {
+    public void writeDecimal(final BigDecimal decimal) throws IOException {
         writeString(decimal.toString());
     }
 
-    @Override
-    public void writeDouble(final double dub) throws TException {
+    public void writeDouble(final double dub) throws IOException {
         throw new UnsupportedOperationException();
     }
 
     public void writeEmailAddress(final EmailAddress emailAddress)
-            throws TException {
+            throws IOException {
         writeString(emailAddress.toString());
     }
 
-    public void writeEnum(final Enum<?> enum_) throws TException {
+    public void writeEnum(final Enum<?> enum_) throws IOException {
         writeString(enum_.toString().toUpperCase());
     }
 
-    @Override
-    public void writeFieldBegin(final TField field) throws TException {
+    public void writeFieldBegin(final TField field) throws IOException {
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public void writeFieldEnd() throws TException {
+    public void writeFieldEnd() throws IOException {
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public void writeFieldStop() throws TException {
+    public void writeFieldStop() throws IOException {
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public void writeI16(final short i16) throws TException {
+    public void writeI16(final short i16) throws IOException {
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public void writeI32(final int i32) throws TException {
+    public void writeI32(final int i32) throws IOException {
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public void writeI64(final long i64) throws TException {
+    public void writeI64(final long i64) throws IOException {
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public void writeListBegin(final TList list) throws TException {
+    public void writeListBegin(final TList list) throws IOException {
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public void writeListEnd() throws TException {
+    public void writeListEnd() throws IOException {
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public void writeMapBegin(final TMap map) throws TException {
+    public void writeMapBegin(final TMap map) throws IOException {
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public void writeMapEnd() throws TException {
+    public void writeMapEnd() throws IOException {
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public void writeMessageBegin(final TMessage message) throws TException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void writeMessageEnd() throws TException {
-        throw new UnsupportedOperationException();
-    }
-
-    public void writeMixed(final Object value) throws TException {
+    public void writeMixed(final Object value) throws IOException {
         if (value == null) {
             writeNull();
         } else if (value instanceof Boolean) {
@@ -385,44 +309,39 @@ public abstract class Protocol extends TProtocol {
             writeString((String) value);
         } else if (value instanceof Url) {
             writeUrl((Url) value);
-        } else if (value instanceof TBase<?, ?>) {
-            ((TBase<?, ?>) value).write(this);
+        } else if (value instanceof TBase<?>) {
+            ((TBase<?>) value).write(this);
         } else {
             throw new UnsupportedOperationException(value.getClass()
                     .getCanonicalName());
         }
     }
 
-    public void writeNull() throws TException {
+    public void writeNull() throws IOException {
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public void writeSetBegin(final TSet set) throws TException {
+    public void writeSetBegin(final TSet set) throws IOException {
         writeListBegin(new TList(set.elemType, set.size));
     }
 
-    @Override
-    public void writeSetEnd() throws TException {
+    public void writeSetEnd() throws IOException {
         writeListEnd();
     }
 
-    @Override
-    public void writeString(final String str) throws TException {
+    public void writeString(final String str) throws IOException {
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public void writeStructBegin(final TStruct struct) throws TException {
+    public void writeStructBegin(final TStruct struct) throws IOException {
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public void writeStructEnd() throws TException {
+    public void writeStructEnd() throws IOException {
         throw new UnsupportedOperationException();
     }
 
-    public void writeUrl(final Url url) throws TException {
+    public void writeUrl(final Url url) throws IOException {
         writeString(url.toString());
     }
 }

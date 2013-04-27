@@ -36,19 +36,13 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
 
-import org.apache.thrift.TException;
-import org.apache.thrift.protocol.TField;
-import org.apache.thrift.protocol.TList;
-import org.apache.thrift.protocol.TMap;
-import org.apache.thrift.protocol.TStruct;
-
 import com.fasterxml.jackson.core.JsonGenerator;
 
 public class LogMessageProtocol extends JsonProtocol {
     private final class ArrayWriterProtocol extends
             JsonProtocol.ArrayWriterProtocol {
         @Override
-        public void writeBool(final boolean b) throws TException {
+        public void writeBool(final boolean b) throws IOException {
             if (size < SIZE_MAX) {
                 super.writeBool(b);
                 size++;
@@ -56,7 +50,7 @@ public class LogMessageProtocol extends JsonProtocol {
         }
 
         @Override
-        public void writeByte(final byte b) throws TException {
+        public void writeByte(final byte b) throws IOException {
             if (size < SIZE_MAX) {
                 super.writeByte(b);
                 size++;
@@ -64,7 +58,7 @@ public class LogMessageProtocol extends JsonProtocol {
         }
 
         @Override
-        public void writeDouble(final double dub) throws TException {
+        public void writeDouble(final double dub) throws IOException {
             if (size < SIZE_MAX) {
                 super.writeDouble(dub);
                 size++;
@@ -72,14 +66,14 @@ public class LogMessageProtocol extends JsonProtocol {
         }
 
         @Override
-        public void writeFieldBegin(final TField field) throws TException {
+        public void writeFieldBegin(final TField field) throws IOException {
             if (size < SIZE_MAX) {
                 super.writeFieldBegin(field);
             }
         }
 
         @Override
-        public void writeI16(final short i16) throws TException {
+        public void writeI16(final short i16) throws IOException {
             if (size < SIZE_MAX) {
                 super.writeI16(i16);
                 size++;
@@ -87,7 +81,7 @@ public class LogMessageProtocol extends JsonProtocol {
         }
 
         @Override
-        public void writeI32(final int i32) throws TException {
+        public void writeI32(final int i32) throws IOException {
             if (size < SIZE_MAX) {
                 super.writeI32(i32);
                 size++;
@@ -95,7 +89,7 @@ public class LogMessageProtocol extends JsonProtocol {
         }
 
         @Override
-        public void writeI64(final long i64) throws TException {
+        public void writeI64(final long i64) throws IOException {
             if (size < SIZE_MAX) {
                 super.writeI64(i64);
                 size++;
@@ -103,7 +97,7 @@ public class LogMessageProtocol extends JsonProtocol {
         }
 
         @Override
-        public void writeListBegin(final TList list) throws TException {
+        public void writeListBegin(final TList list) throws IOException {
             if (size < SIZE_MAX) {
                 super.writeListBegin(list);
             } else {
@@ -112,7 +106,7 @@ public class LogMessageProtocol extends JsonProtocol {
         }
 
         @Override
-        public void writeListEnd() throws TException {
+        public void writeListEnd() throws IOException {
             if (size < SIZE_MAX) {
                 super.writeListEnd();
                 size++;
@@ -120,7 +114,7 @@ public class LogMessageProtocol extends JsonProtocol {
         }
 
         @Override
-        public void writeMapBegin(final TMap map) throws TException {
+        public void writeMapBegin(final TMap map) throws IOException {
             if (size < SIZE_MAX) {
                 super.writeMapBegin(map);
             } else {
@@ -129,7 +123,7 @@ public class LogMessageProtocol extends JsonProtocol {
         }
 
         @Override
-        public void writeMapEnd() throws TException {
+        public void writeMapEnd() throws IOException {
             if (size < SIZE_MAX) {
                 super.writeMapEnd();
                 size++;
@@ -137,7 +131,7 @@ public class LogMessageProtocol extends JsonProtocol {
         }
 
         @Override
-        public void writeString(final String str) throws TException {
+        public void writeString(final String str) throws IOException {
             if (size < SIZE_MAX) {
                 super.writeString(__cropString(str));
                 size++;
@@ -145,7 +139,7 @@ public class LogMessageProtocol extends JsonProtocol {
         }
 
         @Override
-        public void writeStructBegin(final TStruct struct) throws TException {
+        public void writeStructBegin(final TStruct struct) throws IOException {
             if (size < SIZE_MAX) {
                 super.writeStructBegin(struct);
             } else {
@@ -154,7 +148,7 @@ public class LogMessageProtocol extends JsonProtocol {
         }
 
         @Override
-        public void writeStructEnd() throws TException {
+        public void writeStructEnd() throws IOException {
             if (size < SIZE_MAX) {
                 super.writeStructEnd();
                 size++;
@@ -169,7 +163,7 @@ public class LogMessageProtocol extends JsonProtocol {
     private final class MapObjectWriterProtocol extends
             JsonProtocol.MapObjectWriterProtocol {
         @Override
-        public void writeBool(final boolean b) throws TException {
+        public void writeBool(final boolean b) throws IOException {
             if (size < SIZE_MAX) {
                 super.writeBool(b);
                 size++;
@@ -177,7 +171,7 @@ public class LogMessageProtocol extends JsonProtocol {
         }
 
         @Override
-        public void writeByte(final byte b) throws TException {
+        public void writeByte(final byte b) throws IOException {
             if (size < SIZE_MAX) {
                 super.writeByte(b);
                 size++;
@@ -185,7 +179,7 @@ public class LogMessageProtocol extends JsonProtocol {
         }
 
         @Override
-        public void writeDouble(final double dub) throws TException {
+        public void writeDouble(final double dub) throws IOException {
             if (size < SIZE_MAX) {
                 super.writeDouble(dub);
                 size++;
@@ -193,14 +187,14 @@ public class LogMessageProtocol extends JsonProtocol {
         }
 
         @Override
-        public void writeFieldBegin(final TField field) throws TException {
+        public void writeFieldBegin(final TField field) throws IOException {
             if (size < SIZE_MAX) {
                 super.writeFieldBegin(field);
             }
         }
 
         @Override
-        public void writeI16(final short i16) throws TException {
+        public void writeI16(final short i16) throws IOException {
             if (size < SIZE_MAX) {
                 super.writeI16(i16);
                 size++;
@@ -208,7 +202,7 @@ public class LogMessageProtocol extends JsonProtocol {
         }
 
         @Override
-        public void writeI32(final int i32) throws TException {
+        public void writeI32(final int i32) throws IOException {
             if (size < SIZE_MAX) {
                 super.writeI32(i32);
                 size++;
@@ -216,7 +210,7 @@ public class LogMessageProtocol extends JsonProtocol {
         }
 
         @Override
-        public void writeI64(final long i64) throws TException {
+        public void writeI64(final long i64) throws IOException {
             if (size < SIZE_MAX) {
                 super.writeI64(i64);
                 size++;
@@ -224,7 +218,7 @@ public class LogMessageProtocol extends JsonProtocol {
         }
 
         @Override
-        public void writeListBegin(final TList list) throws TException {
+        public void writeListBegin(final TList list) throws IOException {
             if (size < SIZE_MAX) {
                 super.writeListBegin(list);
             } else {
@@ -233,7 +227,7 @@ public class LogMessageProtocol extends JsonProtocol {
         }
 
         @Override
-        public void writeListEnd() throws TException {
+        public void writeListEnd() throws IOException {
             if (size < SIZE_MAX) {
                 super.writeListEnd();
                 size++;
@@ -241,7 +235,7 @@ public class LogMessageProtocol extends JsonProtocol {
         }
 
         @Override
-        public void writeMapBegin(final TMap map) throws TException {
+        public void writeMapBegin(final TMap map) throws IOException {
             if (size < SIZE_MAX) {
                 super.writeMapBegin(map);
             } else {
@@ -250,7 +244,7 @@ public class LogMessageProtocol extends JsonProtocol {
         }
 
         @Override
-        public void writeMapEnd() throws TException {
+        public void writeMapEnd() throws IOException {
             if (size < SIZE_MAX) {
                 super.writeMapEnd();
                 size++;
@@ -258,7 +252,7 @@ public class LogMessageProtocol extends JsonProtocol {
         }
 
         @Override
-        public void writeString(final String str) throws TException {
+        public void writeString(final String str) throws IOException {
             if (size < SIZE_MAX) {
                 super.writeString(__cropString(str));
                 size++;
@@ -266,7 +260,7 @@ public class LogMessageProtocol extends JsonProtocol {
         }
 
         @Override
-        public void writeStructBegin(final TStruct struct) throws TException {
+        public void writeStructBegin(final TStruct struct) throws IOException {
             if (size < SIZE_MAX) {
                 super.writeStructBegin(struct);
             } else {
@@ -275,7 +269,7 @@ public class LogMessageProtocol extends JsonProtocol {
         }
 
         @Override
-        public void writeStructEnd() throws TException {
+        public void writeStructEnd() throws IOException {
             if (size < SIZE_MAX) {
                 super.writeStructEnd();
                 size++;
@@ -289,77 +283,77 @@ public class LogMessageProtocol extends JsonProtocol {
 
     private final class NopWriterProtocol extends Protocol {
         @Override
-        public void writeBool(final boolean b) throws TException {
+        public void writeBool(final boolean b) throws IOException {
         }
 
         @Override
-        public void writeByte(final byte b) throws TException {
+        public void writeByte(final byte b) throws IOException {
         }
 
         @Override
-        public void writeDouble(final double dub) throws TException {
+        public void writeDouble(final double dub) throws IOException {
         }
 
         @Override
-        public void writeFieldBegin(final TField field) throws TException {
+        public void writeFieldBegin(final TField field) throws IOException {
         }
 
         @Override
-        public void writeFieldEnd() throws TException {
+        public void writeFieldEnd() throws IOException {
         }
 
         @Override
-        public void writeFieldStop() throws TException {
+        public void writeFieldStop() throws IOException {
         }
 
         @Override
-        public void writeI16(final short i16) throws TException {
+        public void writeI16(final short i16) throws IOException {
         }
 
         @Override
-        public void writeI32(final int i32) throws TException {
+        public void writeI32(final int i32) throws IOException {
         }
 
         @Override
-        public void writeI64(final long i64) throws TException {
+        public void writeI64(final long i64) throws IOException {
         }
 
         @Override
-        public void writeListBegin(final TList list) throws TException {
+        public void writeListBegin(final TList list) throws IOException {
             _getProtocolStack().push(new NopWriterProtocol());
         }
 
         @Override
-        public void writeListEnd() throws TException {
+        public void writeListEnd() throws IOException {
         }
 
         @Override
-        public void writeMapBegin(final TMap map) throws TException {
+        public void writeMapBegin(final TMap map) throws IOException {
             _getProtocolStack().push(new NopWriterProtocol());
         }
 
         @Override
-        public void writeMapEnd() throws TException {
+        public void writeMapEnd() throws IOException {
         }
 
         @Override
-        public void writeString(final String str) throws TException {
+        public void writeString(final String str) throws IOException {
         }
 
         @Override
-        public void writeStructBegin(final TStruct struct) throws TException {
+        public void writeStructBegin(final TStruct struct) throws IOException {
             _getProtocolStack().push(new NopWriterProtocol());
         }
 
         @Override
-        public void writeStructEnd() throws TException {
+        public void writeStructEnd() throws IOException {
         }
     }
 
     private final class StructObjectWriterProtocol extends
             JsonProtocol.StructObjectWriterProtocol {
         @Override
-        public void writeString(final String str) throws TException {
+        public void writeString(final String str) throws IOException {
             super.writeString(__cropString(str));
         }
     }

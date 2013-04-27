@@ -32,511 +32,442 @@
 
 package org.thryft.protocol;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 
-import org.apache.thrift.TException;
-import org.apache.thrift.protocol.TField;
-import org.apache.thrift.protocol.TList;
-import org.apache.thrift.protocol.TMap;
-import org.apache.thrift.protocol.TMessage;
-import org.apache.thrift.protocol.TProtocol;
-import org.apache.thrift.protocol.TSet;
-import org.apache.thrift.protocol.TStruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class LoggingProtocol extends TProtocol {
-    public LoggingProtocol(final TProtocol wrappedProtocol) {
-        super(null);
+public class LoggingProtocol extends Protocol {
+    public LoggingProtocol(final Protocol wrappedProtocol) {
         logger = LoggerFactory.getLogger(wrappedProtocol.getClass());
         this.wrappedProtocol = wrappedProtocol;
     }
 
     @Override
-    public ByteBuffer readBinary() throws TException {
-        final String message = "readBinary() -> ";
-        try {
-            final ByteBuffer binary = wrappedProtocol.readBinary();
-            logger.info(message + __toString(binary));
-            return binary;
-        } catch (final TException e) {
-            logger.info(message + __toString(e));
-            throw e;
-        }
-    }
-
-    @Override
-    public boolean readBool() throws TException {
+    public boolean readBool() throws IOException {
         final String message = "readBool() -> ";
         try {
             final boolean bool = wrappedProtocol.readBool();
             logger.info(message + Boolean.toString(bool));
             return bool;
-        } catch (final TException e) {
+        } catch (final IOException e) {
             logger.info(message + __toString(e));
             throw e;
         }
     }
 
     @Override
-    public byte readByte() throws TException {
+    public byte readByte() throws IOException {
         final String message = "readByte() -> ";
         try {
             final byte byte_ = wrappedProtocol.readByte();
             logger.info(message + Byte.toString(byte_));
             return byte_;
-        } catch (final TException e) {
+        } catch (final IOException e) {
             logger.info(message + __toString(e));
             throw e;
         }
     }
 
     @Override
-    public double readDouble() throws TException {
+    public double readDouble() throws IOException {
         final String message = "readDouble() -> ";
         try {
             final double double_ = wrappedProtocol.readDouble();
             logger.info(message + Double.toString(double_));
             return double_;
-        } catch (final TException e) {
+        } catch (final IOException e) {
             logger.info(message + __toString(e));
             throw e;
         }
     }
 
     @Override
-    public TField readFieldBegin() throws TException {
+    public TField readFieldBegin() throws IOException {
         final String message = "readFieldBegin() -> ";
         try {
             final TField field = wrappedProtocol.readFieldBegin();
             logger.info(message + field.toString());
             return field;
-        } catch (final TException e) {
+        } catch (final IOException e) {
             logger.info(message + __toString(e));
             throw e;
         }
     }
 
     @Override
-    public void readFieldEnd() throws TException {
+    public void readFieldEnd() throws IOException {
         final String message = "readFieldEnd()";
         try {
             wrappedProtocol.readFieldEnd();
             logger.info(message);
-        } catch (final TException e) {
+        } catch (final IOException e) {
             logger.info(message + " -> " + __toString(e));
             throw e;
         }
     }
 
     @Override
-    public short readI16() throws TException {
+    public short readI16() throws IOException {
         final String message = "readI16() -> ";
         try {
             final short i16 = wrappedProtocol.readI16();
             logger.info(message + Short.toString(i16));
             return i16;
-        } catch (final TException e) {
+        } catch (final IOException e) {
             logger.info(message + __toString(e));
             throw e;
         }
     }
 
     @Override
-    public int readI32() throws TException {
+    public int readI32() throws IOException {
         final String message = "readI32() -> ";
         try {
             final int i32 = wrappedProtocol.readI32();
             logger.info(message + Integer.toString(i32));
             return i32;
-        } catch (final TException e) {
+        } catch (final IOException e) {
             logger.info(message + __toString(e));
             throw e;
         }
     }
 
     @Override
-    public long readI64() throws TException {
+    public long readI64() throws IOException {
         final String message = "readI64() -> ";
         try {
             final long i64 = wrappedProtocol.readI64();
             logger.info(message + Long.toString(i64));
             return i64;
-        } catch (final TException e) {
+        } catch (final IOException e) {
             logger.info(message + __toString(e));
             throw e;
         }
     }
 
     @Override
-    public TList readListBegin() throws TException {
+    public TList readListBegin() throws IOException {
         final String message = "readListBegin() ->";
         try {
             final TList list = wrappedProtocol.readListBegin();
             logger.info(message + __toString(list));
             return list;
-        } catch (final TException e) {
+        } catch (final IOException e) {
             logger.info(message + __toString(e));
             throw e;
         }
     }
 
     @Override
-    public void readListEnd() throws TException {
+    public void readListEnd() throws IOException {
         final String message = "readListEnd()";
         try {
             wrappedProtocol.readListEnd();
             logger.info(message);
-        } catch (final TException e) {
+        } catch (final IOException e) {
             logger.info(message + " -> " + __toString(e));
             throw e;
         }
     }
 
     @Override
-    public TMap readMapBegin() throws TException {
+    public TMap readMapBegin() throws IOException {
         final String message = "readMapBegin() -> ";
         try {
             final TMap map = wrappedProtocol.readMapBegin();
             logger.info(message + __toString(map));
             return map;
-        } catch (final TException e) {
+        } catch (final IOException e) {
             logger.info(message + __toString(e));
             throw e;
         }
     }
 
     @Override
-    public void readMapEnd() throws TException {
+    public void readMapEnd() throws IOException {
         final String message = "readMapEnd()";
         try {
             wrappedProtocol.readMapEnd();
             logger.info(message);
-        } catch (final TException e) {
+        } catch (final IOException e) {
             logger.info(message + " -> " + __toString(e));
             throw e;
         }
     }
 
     @Override
-    public TMessage readMessageBegin() throws TException {
-        final String message_ = "readMessageBegin() -> ";
-        try {
-            final TMessage message = wrappedProtocol.readMessageBegin();
-            logger.info(message_ + __toString(message));
-            return message;
-        } catch (final TException e) {
-            logger.info(message_ + __toString(e));
-            throw e;
-        }
-    }
-
-    @Override
-    public void readMessageEnd() throws TException {
-        final String message = "readMessageEnd()";
-        try {
-            wrappedProtocol.readMessageEnd();
-            logger.info(message);
-        } catch (final TException e) {
-            logger.info(message + " -> " + __toString(e));
-            throw e;
-        }
-    }
-
-    @Override
-    public TSet readSetBegin() throws TException {
+    public TSet readSetBegin() throws IOException {
         final String message = "readSetBegin() -> ";
         try {
             final TSet set = wrappedProtocol.readSetBegin();
             logger.info(message + "(" + __toString(set) + ")");
             return set;
-        } catch (final TException e) {
+        } catch (final IOException e) {
             logger.info(message + __toString(e));
             throw e;
         }
     }
 
     @Override
-    public void readSetEnd() throws TException {
+    public void readSetEnd() throws IOException {
         final String message = "readSetEnd()";
         try {
             wrappedProtocol.readSetEnd();
             logger.info(message);
-        } catch (final TException e) {
+        } catch (final IOException e) {
             logger.info(message + " -> " + __toString(e));
             throw e;
         }
     }
 
     @Override
-    public String readString() throws TException {
+    public String readString() throws IOException {
         final String message = "readString() -> ";
         try {
             final String string = wrappedProtocol.readString();
             logger.info(message + string);
             return string;
-        } catch (final TException e) {
+        } catch (final IOException e) {
             logger.info(message + __toString(e));
             throw e;
         }
     }
 
     @Override
-    public TStruct readStructBegin() throws TException {
+    public TStruct readStructBegin() throws IOException {
         final String message = "readStructBegin() -> ";
         try {
             final TStruct struct = wrappedProtocol.readStructBegin();
             logger.info(message + "TStruct(" + __toString(struct) + ")");
             return struct;
-        } catch (final TException e) {
+        } catch (final IOException e) {
             logger.info(message + __toString(e));
             throw e;
         }
     }
 
     @Override
-    public void readStructEnd() throws TException {
+    public void readStructEnd() throws IOException {
         final String message = "readStructEnd()";
         try {
             wrappedProtocol.readStructEnd();
             logger.info(message);
-        } catch (final TException e) {
+        } catch (final IOException e) {
             logger.info(message + " -> " + __toString(e));
             throw e;
         }
     }
 
     @Override
-    public void writeBinary(final ByteBuffer buf) throws TException {
+    public void writeBinary(final ByteBuffer buf) throws IOException {
         final String message = "writeBinary(" + __toString(buf) + " bytes)";
         try {
             wrappedProtocol.writeBinary(buf);
             logger.info(message);
-        } catch (final TException e) {
+        } catch (final IOException e) {
             logger.info(message + " -> " + __toString(e));
             throw e;
         }
     }
 
     @Override
-    public void writeBool(final boolean b) throws TException {
+    public void writeBool(final boolean b) throws IOException {
         final String message = "writeBool(" + b + ")";
         try {
             wrappedProtocol.writeBool(b);
             logger.info(message);
-        } catch (final TException e) {
+        } catch (final IOException e) {
             logger.info(message + " -> " + __toString(e));
         }
     }
 
     @Override
-    public void writeByte(final byte b) throws TException {
+    public void writeByte(final byte b) throws IOException {
         final String message = "writeByte(" + b + ")";
         try {
             wrappedProtocol.writeByte(b);
             logger.info(message);
-        } catch (final TException e) {
+        } catch (final IOException e) {
             logger.info(message + " -> " + __toString(e));
         }
     }
 
     @Override
-    public void writeDouble(final double dub) throws TException {
+    public void writeDouble(final double dub) throws IOException {
         final String message = "writeDouble(" + dub + ")";
         try {
             wrappedProtocol.writeDouble(dub);
             logger.info(message);
-        } catch (final TException e) {
+        } catch (final IOException e) {
             logger.info(message + " -> " + __toString(e));
         }
     }
 
     @Override
-    public void writeFieldBegin(final TField field) throws TException {
+    public void writeFieldBegin(final TField field) throws IOException {
         final String message = "writeFieldBegin(" + field.toString() + ")";
         try {
             wrappedProtocol.writeFieldBegin(field);
             logger.info(message);
-        } catch (final TException e) {
+        } catch (final IOException e) {
             logger.info(message + " -> " + __toString(e));
         }
     }
 
     @Override
-    public void writeFieldEnd() throws TException {
+    public void writeFieldEnd() throws IOException {
         final String message = "writeFieldEnd()";
         try {
             wrappedProtocol.writeFieldEnd();
             logger.info(message);
-        } catch (final TException e) {
+        } catch (final IOException e) {
             logger.info(message + " -> " + __toString(e));
         }
     }
 
     @Override
-    public void writeFieldStop() throws TException {
+    public void writeFieldStop() throws IOException {
         final String message = "writeFieldStop()";
         try {
             wrappedProtocol.writeFieldStop();
             logger.info(message);
-        } catch (final TException e) {
+        } catch (final IOException e) {
             logger.info(message + " -> " + __toString(e));
         }
     }
 
     @Override
-    public void writeI16(final short i16) throws TException {
+    public void writeI16(final short i16) throws IOException {
         final String message = "writeI16(" + i16 + ")";
         try {
             wrappedProtocol.writeI16(i16);
             logger.info(message);
-        } catch (final TException e) {
+        } catch (final IOException e) {
             logger.info(message + " -> " + __toString(e));
         }
     }
 
     @Override
-    public void writeI32(final int i32) throws TException {
+    public void writeI32(final int i32) throws IOException {
         final String message = "writeI32(" + i32 + ")";
         try {
             wrappedProtocol.writeI32(i32);
             logger.info(message);
-        } catch (final TException e) {
+        } catch (final IOException e) {
             logger.info(message + " -> " + __toString(e));
         }
     }
 
     @Override
-    public void writeI64(final long i64) throws TException {
+    public void writeI64(final long i64) throws IOException {
         final String message = "writeI64(" + i64 + ")";
         try {
             wrappedProtocol.writeI64(i64);
             logger.info(message);
-        } catch (final TException e) {
+        } catch (final IOException e) {
             logger.info(message + " -> " + __toString(e));
         }
     }
 
     @Override
-    public void writeListBegin(final TList list) throws TException {
+    public void writeListBegin(final TList list) throws IOException {
         final String message = "writeListBegin(" + __toString(list) + ")";
         try {
             wrappedProtocol.writeListBegin(list);
             logger.info(message);
-        } catch (final TException e) {
+        } catch (final IOException e) {
             logger.info(message + " -> " + __toString(e));
             throw e;
         }
     }
 
     @Override
-    public void writeListEnd() throws TException {
+    public void writeListEnd() throws IOException {
         final String message = "writeListEnd()";
         try {
             wrappedProtocol.writeListEnd();
             logger.info(message);
-        } catch (final TException e) {
+        } catch (final IOException e) {
             logger.info(message + " -> " + __toString(e));
         }
     }
 
     @Override
-    public void writeMapBegin(final TMap map) throws TException {
+    public void writeMapBegin(final TMap map) throws IOException {
         final String message = "writeMapBegin(" + __toString(map) + ")";
         try {
             wrappedProtocol.writeMapBegin(map);
             logger.info(message);
-        } catch (final TException e) {
+        } catch (final IOException e) {
             logger.info(message + " -> " + __toString(e));
         }
     }
 
     @Override
-    public void writeMapEnd() throws TException {
+    public void writeMapEnd() throws IOException {
         final String message = "writeMapEnd()";
         try {
             wrappedProtocol.writeMapEnd();
             logger.info(message);
-        } catch (final TException e) {
+        } catch (final IOException e) {
             logger.info(message + " -> " + __toString(e));
         }
     }
 
     @Override
-    public void writeMessageBegin(final TMessage message) throws TException {
-        final String message_ = "writeMessageBegin(" + __toString(message)
-                + ")";
-        try {
-            wrappedProtocol.writeMessageBegin(message);
-            logger.info(message_);
-        } catch (final TException e) {
-            logger.info(message_ + " -> " + __toString(e));
-        }
-    }
-
-    @Override
-    public void writeMessageEnd() throws TException {
-        final String message = "writeMessageEnd()";
-        try {
-            wrappedProtocol.writeMessageEnd();
-            logger.info(message);
-        } catch (final TException e) {
-            logger.info(message + " -> " + __toString(e));
-        }
-    }
-
-    @Override
-    public void writeSetBegin(final TSet set) throws TException {
+    public void writeSetBegin(final TSet set) throws IOException {
         final String message = "writeSetBegin(" + __toString(set) + ")";
         try {
             wrappedProtocol.writeSetBegin(set);
             logger.info(message);
-        } catch (final TException e) {
+        } catch (final IOException e) {
             logger.info(message + " -> " + __toString(e));
             throw e;
         }
     }
 
     @Override
-    public void writeSetEnd() throws TException {
+    public void writeSetEnd() throws IOException {
         final String message = "writeSetEnd()";
         try {
             wrappedProtocol.writeSetEnd();
             logger.info(message);
-        } catch (final TException e) {
+        } catch (final IOException e) {
             logger.info(message + " -> " + __toString(e));
         }
     }
 
     @Override
-    public void writeString(final String str) throws TException {
+    public void writeString(final String str) throws IOException {
         final String message = "writeString(" + str + ")";
         try {
             wrappedProtocol.writeString(str);
             logger.info(message);
-        } catch (final TException e) {
+        } catch (final IOException e) {
             logger.info(message + " -> " + __toString(e));
         }
     }
 
     @Override
-    public void writeStructBegin(final TStruct struct) throws TException {
+    public void writeStructBegin(final TStruct struct) throws IOException {
         final String message = "writeStructBegin(" + __toString(struct) + ")";
         try {
             wrappedProtocol.writeStructBegin(struct);
             logger.info(message);
-        } catch (final TException e) {
+        } catch (final IOException e) {
             logger.info(message + " -> " + __toString(e));
         }
     }
 
     @Override
-    public void writeStructEnd() throws TException {
+    public void writeStructEnd() throws IOException {
         final String message = "writeStructEnd()";
         try {
             wrappedProtocol.writeStructEnd();
             logger.info(message);
-        } catch (final TException e) {
+        } catch (final IOException e) {
             logger.info(message + " -> " + __toString(e));
         }
     }
@@ -561,11 +492,6 @@ public class LoggingProtocol extends TProtocol {
                 + Integer.toString(map.size) + ")";
     }
 
-    private final String __toString(final TMessage message) {
-        return "TMessage(" + message.name + ", " + Byte.toString(message.type)
-                + ", " + Integer.toString(message.seqid) + ")";
-    }
-
     private final String __toString(final TSet set) {
         return "TSet(" + Byte.toString(set.elemType) + ", "
                 + Integer.toString(set.size) + ")";
@@ -576,5 +502,5 @@ public class LoggingProtocol extends TProtocol {
     }
 
     private final Logger logger;
-    private final TProtocol wrappedProtocol;
+    private final Protocol wrappedProtocol;
 }

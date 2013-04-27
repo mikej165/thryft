@@ -83,7 +83,7 @@ class JavaFunction(Function, _JavaNamedConstruct):
             else:
                 field_initializer = ''
             return """\
-public %(name)s(final org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {%(field_initializer)s
+public %(name)s(final org.thryft.protocol.Protocol iprot) throws org.thryft.TException {%(field_initializer)s
 }""" % locals()
 
     def java_declaration(self):

@@ -58,18 +58,18 @@ class JavaMapType(MapType, _JavaContainerType):
         value_read_protocol = self.value_type.java_read_protocol()
         value_type_name = self.value_type.java_declaration_name(boxed=True)
         return """\
-(new com.google.common.base.Function<org.apache.thrift.protocol.TProtocol, com.google.common.collect.ImmutableMap<%(key_type_name)s, %(value_type_name)s>>() {
+(new com.google.common.base.Function<org.thryft.protocol.Protocol, com.google.common.collect.ImmutableMap<%(key_type_name)s, %(value_type_name)s>>() {
     @Override
-    public com.google.common.collect.ImmutableMap<%(key_type_name)s, %(value_type_name)s> apply(org.apache.thrift.protocol.TProtocol iprot) {
+    public com.google.common.collect.ImmutableMap<%(key_type_name)s, %(value_type_name)s> apply(org.thryft.protocol.Protocol iprot) {
         try {
-            org.apache.thrift.protocol.TMap mapBegin = iprot.readMapBegin();
+            org.thryft.protocol.TMap mapBegin = iprot.readMapBegin();
             java.util.Map<%(key_type_name)s, %(value_type_name)s> map = new java.util.HashMap<%(key_type_name)s, %(value_type_name)s>();
             for (int entryI = 0; entryI < mapBegin.size; entryI++) {
                 map.put(%(key_read_protocol)s, %(value_read_protocol)s);
             }
             iprot.readMapEnd();
             return com.google.common.collect.ImmutableMap.copyOf(map);
-        } catch (org.apache.thrift.TException e) {
+        } catch (final java.io.IOException e) {
             return com.google.common.collect.ImmutableMap.of();
         }
     }
@@ -95,7 +95,7 @@ class JavaMapType(MapType, _JavaContainerType):
                 )
             )
         return """\
-oprot.writeMapBegin(new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.%(key_ttype)s, org.apache.thrift.protocol.TType.%(value_ttype)s, %(value)s.size()));
+oprot.writeMapBegin(new org.thryft.protocol.TMap(org.thryft.protocol.TType.%(key_ttype)s, org.thryft.protocol.TType.%(value_ttype)s, %(value)s.size()));
 for (com.google.common.collect.ImmutableMap.Entry<%(key_type_name)s, %(value_type_name)s> _iter%(depth)u : %(value)s.entrySet()) {
 %(key_write_protocol)s
 %(value_write_protocol)s

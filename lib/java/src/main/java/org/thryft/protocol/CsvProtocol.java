@@ -39,11 +39,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 
-import org.apache.thrift.TException;
-import org.apache.thrift.protocol.TField;
-import org.apache.thrift.protocol.TList;
-import org.apache.thrift.protocol.TStruct;
-import org.apache.thrift.protocol.TType;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -61,12 +56,12 @@ public class CsvProtocol extends StackedProtocol {
                 }
 
                 @Override
-                public TList readListBegin() throws TException {
+                public TList readListBegin() throws IOException {
                     throw new IllegalStateException();
                 }
 
                 @Override
-                public String readString() throws TException {
+                public String readString() throws IOException {
                     return elements[currentElementI++];
                 }
 
@@ -82,7 +77,7 @@ public class CsvProtocol extends StackedProtocol {
             }
 
             @Override
-            public TField readFieldBegin() throws TException {
+            public TField readFieldBegin() throws IOException {
                 if (currentColumnI < columnValues.length) {
                     return _readFieldBegin();
                 } else {
@@ -96,7 +91,7 @@ public class CsvProtocol extends StackedProtocol {
             }
 
             @Override
-            public TList readListBegin() throws TException {
+            public TList readListBegin() throws IOException {
                 return _readListBegin(readString());
             }
 
@@ -124,12 +119,13 @@ public class CsvProtocol extends StackedProtocol {
                 return columnValues[currentColumnI];
             }
 
-            protected TField _readFieldBegin() throws TException {
+            protected TField _readFieldBegin() throws IOException {
                 return new TField(_getCurrentColumnName(), TType.STRING,
                         (short) 0);
             }
 
-            protected TList _readListBegin(final String list) throws TException {
+            protected TList _readListBegin(final String list)
+                    throws IOException {
                 final CSVReader listReader = new CSVReader(new StringReader(
                         list));
                 String[] listElements;
@@ -141,11 +137,7 @@ public class CsvProtocol extends StackedProtocol {
                 } catch (final IOException e) {
                     listElements = new String[0];
                 } finally {
-                    try {
-                        listReader.close();
-                    } catch (final IOException e) {
-                        throw new TException(e);
-                    }
+                    listReader.close();
                 }
                 _getProtocolStack().push(_createSequenceColumn(new String[0]));
                 return new TList(TType.STRING, 0);
@@ -176,17 +168,17 @@ public class CsvProtocol extends StackedProtocol {
         }
 
         @Override
-        public TList readListBegin() throws TException {
+        public TList readListBegin() throws IOException {
             return new TList(TType.STRUCT, rows.size());
         }
 
         @Override
-        public String readString() throws TException {
+        public String readString() throws IOException {
             throw new IllegalStateException();
         }
 
         @Override
-        public TStruct readStructBegin() throws TException {
+        public TStruct readStructBegin() throws IOException {
             _getProtocolStack().push(rows.pop());
             return new TStruct();
         }
@@ -201,32 +193,32 @@ public class CsvProtocol extends StackedProtocol {
 
     protected class ReaderProtocol extends Protocol {
         @Override
-        public boolean readBool() throws TException {
+        public boolean readBool() throws IOException {
             return readString().equals("1");
         }
 
         @Override
-        public byte readByte() throws TException {
+        public byte readByte() throws IOException {
             return Byte.parseByte(readString());
         }
 
         @Override
-        public double readDouble() throws TException {
+        public double readDouble() throws IOException {
             return Double.parseDouble(readString());
         }
 
         @Override
-        public short readI16() throws TException {
+        public short readI16() throws IOException {
             return Short.parseShort(readString());
         }
 
         @Override
-        public int readI32() throws TException {
+        public int readI32() throws IOException {
             return Integer.parseInt(readString());
         }
 
         @Override
-        public long readI64() throws TException {
+        public long readI64() throws IOException {
             final String value = readString();
             try {
                 return Long.parseLong(value);

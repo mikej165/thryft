@@ -32,291 +32,258 @@
 
 package org.thryft.protocol;
 
+import java.io.IOException;
 import java.util.Stack;
-
-import org.apache.thrift.TException;
-import org.apache.thrift.protocol.TField;
-import org.apache.thrift.protocol.TList;
-import org.apache.thrift.protocol.TMap;
-import org.apache.thrift.protocol.TMessage;
-import org.apache.thrift.protocol.TSet;
-import org.apache.thrift.protocol.TStruct;
 
 public class StackedProtocol extends Protocol {
     @Override
-    public java.nio.ByteBuffer readBinary() throws TException {
-        return protocolStack.peek().readBinary();
-    }
-
-    @Override
-    public boolean readBool() throws TException {
+    public boolean readBool() throws IOException {
         return protocolStack.peek().readBool();
     }
 
     @Override
-    public byte readByte() throws TException {
+    public byte readByte() throws IOException {
         return protocolStack.peek().readByte();
     }
 
     @Override
-    public org.joda.time.DateTime readDate() throws TException {
+    public org.joda.time.DateTime readDate() throws IOException {
         return protocolStack.peek().readDate();
     }
 
     @Override
-    public org.joda.time.DateTime readDateTime() throws TException {
+    public org.joda.time.DateTime readDateTime() throws IOException {
         return protocolStack.peek().readDateTime();
     }
 
     @Override
-    public java.math.BigDecimal readDecimal() throws TException {
+    public java.math.BigDecimal readDecimal() throws IOException {
         return protocolStack.peek().readDecimal();
     }
 
     @Override
-    public double readDouble() throws TException {
+    public double readDouble() throws IOException {
         return protocolStack.peek().readDouble();
     }
 
     @Override
     public <E extends Enum<E>> E readEnum(final Class<E> enumClass)
-            throws TException {
+            throws IOException {
         return protocolStack.peek().readEnum(enumClass);
     }
 
     @Override
-    public TField readFieldBegin() throws TException {
+    public TField readFieldBegin() throws IOException {
         return protocolStack.peek().readFieldBegin();
     }
 
     @Override
-    public void readFieldEnd() throws TException {
+    public void readFieldEnd() throws IOException {
         protocolStack.peek().readFieldEnd();
     }
 
     @Override
-    public short readI16() throws TException {
+    public short readI16() throws IOException {
         return protocolStack.peek().readI16();
     }
 
     @Override
-    public int readI32() throws TException {
+    public int readI32() throws IOException {
         return protocolStack.peek().readI32();
     }
 
     @Override
-    public long readI64() throws TException {
+    public long readI64() throws IOException {
         return protocolStack.peek().readI64();
     }
 
     @Override
-    public TList readListBegin() throws TException {
+    public TList readListBegin() throws IOException {
         return protocolStack.peek().readListBegin();
     }
 
     @Override
-    public void readListEnd() throws TException {
+    public void readListEnd() throws IOException {
         protocolStack.pop();
     }
 
     @Override
-    public TMap readMapBegin() throws TException {
+    public TMap readMapBegin() throws IOException {
         return protocolStack.peek().readMapBegin();
     }
 
     @Override
-    public void readMapEnd() throws TException {
+    public void readMapEnd() throws IOException {
         protocolStack.pop();
     }
 
     @Override
-    public TMessage readMessageBegin() throws TException {
-        return protocolStack.peek().readMessageBegin();
-    }
-
-    @Override
-    public void readMessageEnd() throws TException {
-        protocolStack.pop();
-    }
-
-    @Override
-    public Object readMixed() throws TException {
+    public Object readMixed() throws IOException {
         return protocolStack.peek().readMixed();
     }
 
     @Override
-    public TSet readSetBegin() throws TException {
+    public TSet readSetBegin() throws IOException {
         return protocolStack.peek().readSetBegin();
     }
 
     @Override
-    public void readSetEnd() throws TException {
+    public void readSetEnd() throws IOException {
         protocolStack.pop();
     }
 
     @Override
-    public String readString() throws TException {
+    public String readString() throws IOException {
         return protocolStack.peek().readString();
     }
 
     @Override
-    public TStruct readStructBegin() throws TException {
+    public TStruct readStructBegin() throws IOException {
         return protocolStack.peek().readStructBegin();
     }
 
     @Override
-    public void readStructEnd() throws TException {
+    public void readStructEnd() throws IOException {
         protocolStack.pop();
     }
 
     @Override
-    public void writeBinary(final java.nio.ByteBuffer buf) throws TException {
+    public void writeBinary(final java.nio.ByteBuffer buf) throws IOException {
         protocolStack.peek().writeBinary(buf);
     }
 
     @Override
-    public void writeBool(final boolean b) throws TException {
+    public void writeBool(final boolean b) throws IOException {
         protocolStack.peek().writeBool(b);
     }
 
     @Override
-    public void writeByte(final byte b) throws TException {
+    public void writeByte(final byte b) throws IOException {
         protocolStack.peek().writeByte(b);
     }
 
     @Override
     public void writeDateTime(final org.joda.time.DateTime dateTime)
-            throws TException {
+            throws IOException {
         protocolStack.peek().writeDateTime(dateTime);
     }
 
     @Override
     public void writeDecimal(final java.math.BigDecimal decimal)
-            throws TException {
+            throws IOException {
         protocolStack.peek().writeDecimal(decimal);
     }
 
     @Override
-    public void writeDouble(final double dub) throws TException {
+    public void writeDouble(final double dub) throws IOException {
         protocolStack.peek().writeDouble(dub);
     }
 
     @Override
-    public void writeEnum(final Enum<?> enum_) throws TException {
+    public void writeEnum(final Enum<?> enum_) throws IOException {
         protocolStack.peek().writeEnum(enum_);
     }
 
     @Override
-    public void writeFieldBegin(final TField field) throws TException {
+    public void writeFieldBegin(final TField field) throws IOException {
         protocolStack.peek().writeFieldBegin(field);
     }
 
     @Override
-    public void writeFieldEnd() throws TException {
+    public void writeFieldEnd() throws IOException {
         protocolStack.peek().writeFieldEnd();
     }
 
     @Override
-    public void writeFieldStop() throws TException {
+    public void writeFieldStop() throws IOException {
         protocolStack.peek().writeFieldStop();
     }
 
     @Override
-    public void writeI16(final short i16) throws TException {
+    public void writeI16(final short i16) throws IOException {
         protocolStack.peek().writeI16(i16);
     }
 
     @Override
-    public void writeI32(final int i32) throws TException {
+    public void writeI32(final int i32) throws IOException {
         protocolStack.peek().writeI32(i32);
     }
 
     @Override
-    public void writeI64(final long i64) throws TException {
+    public void writeI64(final long i64) throws IOException {
         protocolStack.peek().writeI64(i64);
     }
 
     @Override
-    public void writeListBegin(final TList list) throws TException {
+    public void writeListBegin(final TList list) throws IOException {
         final int protocolStackSize = protocolStack.size();
         protocolStack.peek().writeListBegin(list);
         if (protocolStack.size() != protocolStackSize + 1) {
-            throw new TException(
+            throw new IOException(
                     "writeListBegin must add one protocol to the top of the stack");
         }
     }
 
     @Override
-    public void writeListEnd() throws TException {
+    public void writeListEnd() throws IOException {
         protocolStack.pop();
         protocolStack.peek().writeListEnd();
     }
 
     @Override
-    public void writeMapBegin(final TMap map) throws TException {
+    public void writeMapBegin(final TMap map) throws IOException {
         final int protocolStackSize = protocolStack.size();
         protocolStack.peek().writeMapBegin(map);
         if (protocolStack.size() != protocolStackSize + 1) {
-            throw new TException(
+            throw new IOException(
                     "writeMapBegin must add one protocol to the top of the stack");
         }
     }
 
     @Override
-    public void writeMapEnd() throws TException {
+    public void writeMapEnd() throws IOException {
         protocolStack.pop();
         protocolStack.peek().writeMapEnd();
     }
 
     @Override
-    public void writeMessageBegin(final TMessage message) throws TException {
-        protocolStack.peek().writeMessageBegin(message);
-    }
-
-    @Override
-    public void writeMessageEnd() throws TException {
-        protocolStack.pop();
-        protocolStack.peek().writeMessageEnd();
-    }
-
-    @Override
-    public void writeMixed(final Object value) throws TException {
+    public void writeMixed(final Object value) throws IOException {
         super.writeMixed(value);
     }
 
     @Override
-    public void writeNull() throws TException {
+    public void writeNull() throws IOException {
         protocolStack.peek().writeNull();
     }
 
     @Override
-    public void writeSetBegin(final TSet set) throws TException {
+    public void writeSetBegin(final TSet set) throws IOException {
         protocolStack.peek().writeSetBegin(set);
     }
 
     @Override
-    public void writeSetEnd() throws TException {
+    public void writeSetEnd() throws IOException {
         protocolStack.pop();
         protocolStack.peek().writeSetEnd();
     }
 
     @Override
-    public void writeString(final String str) throws TException {
+    public void writeString(final String str) throws IOException {
         protocolStack.peek().writeString(str);
     }
 
     @Override
-    public void writeStructBegin(final TStruct struct) throws TException {
+    public void writeStructBegin(final TStruct struct) throws IOException {
         final int protocolStackSize = protocolStack.size();
         protocolStack.peek().writeStructBegin(struct);
         if (protocolStack.size() != protocolStackSize + 1) {
-            throw new TException(
+            throw new IOException(
                     "writeStructBegin must add one protocol to the top of the stack");
         }
     }
 
     @Override
-    public void writeStructEnd() throws TException {
+    public void writeStructEnd() throws IOException {
         protocolStack.pop();
         protocolStack.peek().writeStructEnd();
     }

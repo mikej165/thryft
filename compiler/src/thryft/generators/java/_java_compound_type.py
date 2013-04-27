@@ -96,27 +96,6 @@ protected %(name)s _build(%(field_parameters)s) {
     return new %(name)s(%(field_names)s);
 }""" % locals()}
 
-#        def _java_method_read_protocol(self):
-#            field_read_protocols = \
-#                lpad(' else ', indent(' ' * 8, ' else '.join(
-#                    [field.java_read_protocol()
-#                     for field in self.fields]
-#                )))
-#            name = self.java_name()
-#            readStructBegin = lpad("\n", indent(' ' * 4, 'iprot.readStructBegin();'))
-#            readStructEnd = lpad("\n", indent(' ' * 4, 'iprot.readStructEnd();'))
-#            return {'read': """\
-# @Override
-# public void read(final org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {%(readStructBegin)s
-#    while (true) {
-#        org.apache.thrift.protocol.TField ifield = iprot.readFieldBegin();
-#        if (ifield.type == org.apache.thrift.protocol.TType.STOP) {
-#            break;
-#        }%(field_read_protocols)s
-#        iprot.readFieldEnd();
-#    }%(readStructEnd)s
-# }""" % locals()}
-
         def _java_method_setters(self):
             return \
                 dict((
@@ -239,25 +218,25 @@ if (__list.size > %(field_i)u) {
         field_protocol_positional_initializers = \
             lpad("\n", indent(' ' * 12, "\n".join(field_protocol_positional_initializers)))
         name = self.java_name()
-        read_list = need_read_list_return and "final org.apache.thrift.protocol.TList __list = " or ''
+        read_list = need_read_list_return and "final org.thryft.protocol.TList __list = " or ''
         return """\
-public %(name)s(final org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
-    this(iprot, org.apache.thrift.protocol.TType.STRUCT);
+public %(name)s(final org.thryft.protocol.Protocol iprot) throws java.io.IOException {
+    this(iprot, org.thryft.protocol.TType.STRUCT);
 }
 
-public %(name)s(final org.apache.thrift.protocol.TProtocol iprot, final byte readAsTType) throws org.apache.thrift.TException {%(field_declarations)s
+public %(name)s(final org.thryft.protocol.Protocol iprot, final byte readAsTType) throws java.io.IOException {%(field_declarations)s
     switch (readAsTType) {
-        case org.apache.thrift.protocol.TType.LIST:
+        case org.thryft.protocol.TType.LIST:
             %(read_list)siprot.readListBegin();%(field_protocol_positional_initializers)s
             iprot.readListEnd();
             break;
 
-        case org.apache.thrift.protocol.TType.STRUCT:
+        case org.thryft.protocol.TType.STRUCT:
         default:
             iprot.readStructBegin();
             while (true) {
-                final org.apache.thrift.protocol.TField ifield = iprot.readFieldBegin();
-                if (ifield.type == org.apache.thrift.protocol.TType.STOP) {
+                final org.thryft.protocol.TField ifield = iprot.readFieldBegin();
+                if (ifield.type == org.thryft.protocol.TType.STOP) {
                     break;
                 }%(field_protocol_named_initializers)s
                 iprot.readFieldEnd();
@@ -356,7 +335,7 @@ public %(name)s(%(parameters)s) {
 
     def _java_implements(self):
         name = self.java_name()
-        return ["org.apache.thrift.TBase<%(name)s, org.apache.thrift.TFieldIdEnum>" % locals()]
+        return ["org.thryft.TBase<%(name)s>" % locals()]
 
     def _java_member_declarations(self):
         return [field.java_member_declaration(final=True)
@@ -455,15 +434,8 @@ public %(method_signature)s {
     throw new UnsupportedOperationException();
 }""" % locals())
             for method_name, method_signature in (
-                ('clear', 'void clear()'),
                 ('compareTo', "int compareTo(final %(name)s other)" % locals()),
-                ('deepCopy', "org.apache.thrift.TBase<%(name)s, org.apache.thrift.TFieldIdEnum> deepCopy()" % locals()),
-                ('fieldForId', 'org.apache.thrift.TFieldIdEnum fieldForId(final int fieldId)'),
-                ('getFieldValue', 'Object getFieldValue(final org.apache.thrift.TFieldIdEnum field)'),
-                ('isSet', 'boolean isSet(final org.apache.thrift.TFieldIdEnum field)'),
-                ('setFieldValue', 'void setFieldValue(final org.apache.thrift.TFieldIdEnum field, final Object value)'),
-                ('read', 'void read(final org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException'),
-                ('write', 'void write(final org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException'),
+                ('write', 'void write(final org.thryft.protocol.Protocol oprot)'),
             )
         )
 
@@ -487,7 +459,7 @@ public String toString() {
 }""" % locals()}
 
     def _java_method_write_protocol(self):
-        case_ttype_void = 'case org.apache.thrift.protocol.TType.VOID:'
+        case_ttype_void = 'case org.thryft.protocol.TType.VOID:'
         if len(self.fields) == 1:
             field = self.fields[0]
             from thryft.generators.java._java_container_type import _JavaContainerType
@@ -531,21 +503,21 @@ if (%(field_java_getter_call)s != null) {
         name = self.java_name()
         return {'write': """\
 @Override
-public void write(final org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
-    write(oprot, org.apache.thrift.protocol.TType.STRUCT);
+public void write(final org.thryft.protocol.Protocol oprot) throws java.io.IOException {
+    write(oprot, org.thryft.protocol.TType.STRUCT);
 }
 
-public void write(final org.apache.thrift.protocol.TProtocol oprot, final byte writeAsTType) throws org.apache.thrift.TException {
+public void write(final org.thryft.protocol.Protocol oprot, final byte writeAsTType) throws java.io.IOException {
     switch (writeAsTType) {
         %(case_ttype_void)s
-        case org.apache.thrift.protocol.TType.LIST:
-            oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.VOID, %(field_count)u));%(field_value_write_protocols)s
+        case org.thryft.protocol.TType.LIST:
+            oprot.writeListBegin(new org.thryft.protocol.TList(org.thryft.protocol.TType.VOID, %(field_count)u));%(field_value_write_protocols)s
             oprot.writeListEnd();
             break;
 
-        case org.apache.thrift.protocol.TType.STRUCT:
+        case org.thryft.protocol.TType.STRUCT:
         default:
-            oprot.writeStructBegin(new org.apache.thrift.protocol.TStruct(\"%(name)s\"));%(field_write_protocols)s
+            oprot.writeStructBegin(new org.thryft.protocol.TStruct(\"%(name)s\"));%(field_write_protocols)s
 
             oprot.writeFieldStop();
 

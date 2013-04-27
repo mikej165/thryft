@@ -35,7 +35,7 @@ try {
     __logMessageStringBuilder.append(__logMessageStringWriter.toString());
 } catch (final java.io.IOException e) {
     __logMessageStringBuilder.append("(serialization error)");
-} catch (final org.apache.thrift.TException e) {
+} catch (final org.thryft.TException e) {
     __logMessageStringBuilder.append("(serialization error)");
 }
 """ % locals())
@@ -57,12 +57,12 @@ __logMessageStringBuilder.append(" -> ");
 try {
     __logMessageStringWriter = new java.io.StringWriter();
     __logMessageProtocol = new org.thryft.protocol.LogMessageProtocol(__logMessageStringWriter);
-    new Messages.%(java_name)sResponse(__returnValue).write(__logMessageProtocol, org.apache.thrift.protocol.TType.VOID);
+    new Messages.%(java_name)sResponse(__returnValue).write(__logMessageProtocol, org.thryft.protocol.TType.VOID);
     __logMessageProtocol.flush();
     __logMessageStringBuilder.append(__logMessageStringWriter.toString());
 } catch (final java.io.IOException e) {
     __logMessageStringBuilder.append("(serialization error)");
-} catch (final org.apache.thrift.TException e) {
+} catch (final org.thryft.TException e) {
     __logMessageStringBuilder.append("(serialization error)");
 }
 logger.info(__logMessageStringBuilder.toString());

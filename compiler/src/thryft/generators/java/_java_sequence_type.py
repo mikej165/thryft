@@ -83,18 +83,18 @@ try {
         mutable_raw_qname = self._java_mutable_raw_qname()
 
         return """\
-(new com.google.common.base.Function<org.apache.thrift.protocol.TProtocol, com.google.common.collect.Immutable%(interface_simple_name)s<%(element_type_name)s>>() {
+(new com.google.common.base.Function<org.thryft.protocol.Protocol, com.google.common.collect.Immutable%(interface_simple_name)s<%(element_type_name)s>>() {
     @Override
-    public com.google.common.collect.Immutable%(interface_simple_name)s<%(element_type_name)s> apply(final org.apache.thrift.protocol.TProtocol iprot) {
+    public com.google.common.collect.Immutable%(interface_simple_name)s<%(element_type_name)s> apply(final org.thryft.protocol.Protocol iprot) {
         try {
-            final org.apache.thrift.protocol.T%(interface_simple_name)s sequenceBegin = iprot.read%(interface_simple_name)sBegin();
+            final org.thryft.protocol.T%(interface_simple_name)s sequenceBegin = iprot.read%(interface_simple_name)sBegin();
             final java.util.%(interface_simple_name)s<%(element_type_name)s> sequence = new %(mutable_raw_qname)s<%(element_type_name)s>();
             for (int elementI = 0; elementI < sequenceBegin.size; elementI++) {
 %(add_element)s
             }
             iprot.read%(interface_simple_name)sEnd();
             return com.google.common.collect.Immutable%(interface_simple_name)s.copyOf(sequence);
-        } catch (final org.apache.thrift.TException e) {
+        } catch (final java.io.IOException e) {
             return com.google.common.collect.Immutable%(interface_simple_name)s.of();
         }
     }
@@ -112,7 +112,7 @@ try {
             )
         interface_simple_name = self._java_interface_simple_name()
         return """\
-oprot.write%(interface_simple_name)sBegin(new org.apache.thrift.protocol.T%(interface_simple_name)s(org.apache.thrift.protocol.TType.%(element_ttype)s, %(value)s.size()));
+oprot.write%(interface_simple_name)sBegin(new org.thryft.protocol.T%(interface_simple_name)s(org.thryft.protocol.TType.%(element_ttype)s, %(value)s.size()));
 for (final %(element_type_name)s _iter%(depth)u : %(value)s) {
 %(element_write_protocol)s
 }

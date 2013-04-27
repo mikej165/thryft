@@ -235,7 +235,7 @@ public %(return_type_name)s %(setter_name)s(final %(type_name)s %(name)s) {
         write_protocol = \
             self.type.java_write_protocol(getter_name + "()", depth=depth)
         write_protocol = """\
-oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("%(name)s", org.apache.thrift.protocol.TType.%(ttype)s, (short)%(id_)d));
+oprot.writeFieldBegin(new org.thryft.protocol.TField("%(name)s", org.thryft.protocol.TType.%(ttype)s, (short)%(id_)d));
 %(write_protocol)s
 oprot.writeFieldEnd();
 """ % locals()

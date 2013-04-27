@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Copyright (c) 2013, Minor Gordon
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
- * 
+ *
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in
  *       the documentation and/or other materials provided with the
  *       distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
  * CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
  * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
@@ -37,14 +37,13 @@ import static org.junit.Assert.assertEquals;
 import java.io.StringReader;
 import java.io.StringWriter;
 
-import org.apache.thrift.TBase;
-import org.apache.thrift.protocol.TProtocol;
+import org.thryft.TBase;
 import org.thryft.protocol.JsonProtocol;
 import org.thryft.protocol.Protocol;
 
 public class JsonProtocolTest extends ProtocolTest {
     @Override
-    protected void _test(final TBase<?, ?> expected) throws Exception {
+    protected void _test(final TBase<?> expected) throws Exception {
         final StringWriter writer = new StringWriter();
         final Protocol oprot = new JsonProtocol(writer);
         expected.write(oprot);
@@ -54,8 +53,8 @@ public class JsonProtocolTest extends ProtocolTest {
 
         final StringReader reader = new StringReader(ostring);
         final Protocol iprot = new JsonProtocol(reader);
-        final TBase<?, ?> actual = expected.getClass()
-                .getConstructor(TProtocol.class).newInstance(iprot);
+        final TBase<?> actual = expected.getClass()
+                .getConstructor(Protocol.class).newInstance(iprot);
         assertEquals(expected, actual);
     }
 }

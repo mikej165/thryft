@@ -17,7 +17,7 @@ class JsonrpcServletJavaGenerator(_servlet_java_generator._ServletJavaGenerator)
                 read_request = """
     final %(service_qname)s.Messages.%(name)sRequest serviceRequest;
     try {
-        serviceRequest = new %(service_qname)s.Messages.%(name)sRequest(new org.thryft.protocol.JsonProtocol(jsonrpcRequestParams), jsonrpcRequestParams.isObject() ? org.apache.thrift.protocol.TType.STRUCT : org.apache.thrift.protocol.TType.LIST);
+        serviceRequest = new %(service_qname)s.Messages.%(name)sRequest(new org.thryft.protocol.JsonProtocol(jsonrpcRequestParams), jsonrpcRequestParams.isObject() ? org.thryft.protocol.TType.STRUCT : org.thryft.protocol.TType.LIST);
     } catch (final IllegalArgumentException e) {
         logger.debug("error deserializing service request: ", e);
         __doPostError(httpServletRequest, httpServletResponse, null, -32602, "invalid JSON-RPC request method parameters: " + e.getMessage(), jsonrpcRequestId);
@@ -26,7 +26,7 @@ class JsonrpcServletJavaGenerator(_servlet_java_generator._ServletJavaGenerator)
         logger.debug("error deserializing service request: ", e);
         __doPostError(httpServletRequest, httpServletResponse, null, -32602, "invalid JSON-RPC request method parameters: " + e.getMessage(), jsonrpcRequestId);
         return;
-    } catch (final org.apache.thrift.TException e) {
+    } catch (final org.thryft.TException e) {
         logger.debug("error deserializing service request: ", e);
         __doPostError(httpServletRequest, httpServletResponse, null, -32602, "invalid JSON-RPC request method parameters: " + e.getMessage(), jsonrpcRequestId);
         return;
@@ -168,33 +168,33 @@ private void __doPostError(final javax.servlet.http.HttpServletRequest httpServl
     final org.thryft.protocol.JsonProtocol oprot = new org.thryft.protocol.JsonProtocol(httpServletResponseBodyWriter);
 
     try {
-        oprot.writeStructBegin(new org.apache.thrift.protocol.TStruct("response"));
+        oprot.writeStructBegin(new org.thryft.protocol.TStruct("response"));
 
-        oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("jsonrpc", org.apache.thrift.protocol.TType.STRING, (short)-1));
+        oprot.writeFieldBegin(new org.thryft.protocol.TField("jsonrpc", org.thryft.protocol.TType.STRING, (short)-1));
         oprot.writeString("2.0");
         oprot.writeFieldEnd();
 
-        oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("id", org.apache.thrift.protocol.TType.STRING, (short)-1));
+        oprot.writeFieldBegin(new org.thryft.protocol.TField("id", org.thryft.protocol.TType.STRING, (short)-1));
         oprot.writeMixed(jsonrpcRequestId);
         oprot.writeFieldEnd();
 
-        oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("error", org.apache.thrift.protocol.TType.STRUCT, (short)-1));
-        oprot.writeStructBegin(new org.apache.thrift.protocol.TStruct("error"));
+        oprot.writeFieldBegin(new org.thryft.protocol.TField("error", org.thryft.protocol.TType.STRUCT, (short)-1));
+        oprot.writeStructBegin(new org.thryft.protocol.TStruct("error"));
 
-        oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("code", org.apache.thrift.protocol.TType.I32, (short)-1));
+        oprot.writeFieldBegin(new org.thryft.protocol.TField("code", org.thryft.protocol.TType.I32, (short)-1));
         oprot.writeI32(jsonrpcErrorCode);
         oprot.writeFieldEnd();
 
-        if (jsonrpcErrorData != null && jsonrpcErrorData instanceof org.apache.thrift.TBase<?, ?>) {
-            oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("@class", org.apache.thrift.protocol.TType.STRING, (short)-1));
+        if (jsonrpcErrorData != null && jsonrpcErrorData instanceof org.thryft.TBase<?, ?>) {
+            oprot.writeFieldBegin(new org.thryft.protocol.TField("@class", org.thryft.protocol.TType.STRING, (short)-1));
             oprot.writeString(jsonrpcErrorData.getClass().getName());
             oprot.writeFieldEnd();
-            oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("data", org.apache.thrift.protocol.TType.STRUCT, (short)-1));
-            ((org.apache.thrift.TBase<?, ?>)jsonrpcErrorData).write(oprot);
+            oprot.writeFieldBegin(new org.thryft.protocol.TField("data", org.thryft.protocol.TType.STRUCT, (short)-1));
+            ((org.thryft.TBase<?, ?>)jsonrpcErrorData).write(oprot);
             oprot.writeFieldEnd();
         }
 
-        oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("message", org.apache.thrift.protocol.TType.STRING, (short)-1));
+        oprot.writeFieldBegin(new org.thryft.protocol.TField("message", org.thryft.protocol.TType.STRING, (short)-1));
         oprot.writeString(jsonrpcErrorMessage);
         oprot.writeFieldEnd();
 
@@ -204,7 +204,7 @@ private void __doPostError(final javax.servlet.http.HttpServletRequest httpServl
 
         oprot.writeFieldStop(); // httpServletResponse
         oprot.writeStructEnd(); // httpServletResponse
-    } catch (final org.apache.thrift.TException e) {
+    } catch (final org.thryft.TException e) {
         logger.error("error serializing service error response: ", e);
         throw new IllegalStateException(e);
     }
@@ -224,23 +224,23 @@ private void __doPostResponse(final javax.servlet.http.HttpServletRequest httpSe
     final org.thryft.protocol.JsonProtocol oprot = new org.thryft.protocol.JsonProtocol(httpServletResponseBodyWriter);
 
     try {
-        oprot.writeStructBegin(new org.apache.thrift.protocol.TStruct("response"));
+        oprot.writeStructBegin(new org.thryft.protocol.TStruct("response"));
 
-        oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("jsonrpc", org.apache.thrift.protocol.TType.STRING, (short)-1));
+        oprot.writeFieldBegin(new org.thryft.protocol.TField("jsonrpc", org.thryft.protocol.TType.STRING, (short)-1));
         oprot.writeString("2.0");
         oprot.writeFieldEnd();
 
-        oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("id", org.apache.thrift.protocol.TType.STRING, (short)-1));
+        oprot.writeFieldBegin(new org.thryft.protocol.TField("id", org.thryft.protocol.TType.STRING, (short)-1));
         oprot.writeMixed(jsonrpcRequestId);
         oprot.writeFieldEnd();
 
-        oprot.writeFieldBegin(new org.apache.thrift.protocol.TField("result", org.apache.thrift.protocol.TType.STRING, (short)-1));
+        oprot.writeFieldBegin(new org.thryft.protocol.TField("result", org.thryft.protocol.TType.STRING, (short)-1));
         oprot.writeMixed(jsonrpcResult);
         oprot.writeFieldEnd();
 
         oprot.writeFieldStop(); // httpServletResponse
         oprot.writeStructEnd(); // httpServletResponse
-    } catch (org.apache.thrift.TException e) {
+    } catch (org.thryft.TException e) {
         logger.error("error serializing service response: ", e);
         throw new IllegalStateException(e);
     }

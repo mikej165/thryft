@@ -43,13 +43,6 @@ import java.io.Writer;
 import java.util.Iterator;
 import java.util.Stack;
 
-import org.apache.thrift.TException;
-import org.apache.thrift.protocol.TField;
-import org.apache.thrift.protocol.TList;
-import org.apache.thrift.protocol.TMap;
-import org.apache.thrift.protocol.TStruct;
-import org.apache.thrift.protocol.TType;
-
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -100,7 +93,7 @@ public class JsonProtocol extends StackedProtocol {
 
     protected class MapObjectWriterProtocol extends WriterProtocol {
         @Override
-        public void writeBool(final boolean b) throws TException {
+        public void writeBool(final boolean b) throws IOException {
             if (nextWriteIsKey) {
                 writeString(Boolean.toString(b));
             } else {
@@ -110,7 +103,7 @@ public class JsonProtocol extends StackedProtocol {
         }
 
         @Override
-        public void writeByte(final byte b) throws TException {
+        public void writeByte(final byte b) throws IOException {
             if (nextWriteIsKey) {
                 writeString(Byte.toString(b));
             } else {
@@ -120,7 +113,7 @@ public class JsonProtocol extends StackedProtocol {
         }
 
         @Override
-        public void writeDouble(final double dub) throws TException {
+        public void writeDouble(final double dub) throws IOException {
             if (nextWriteIsKey) {
                 writeString(Double.toString(dub));
             } else {
@@ -130,7 +123,7 @@ public class JsonProtocol extends StackedProtocol {
         }
 
         @Override
-        public void writeI16(final short i16) throws TException {
+        public void writeI16(final short i16) throws IOException {
             if (nextWriteIsKey) {
                 writeString(Short.toString(i16));
             } else {
@@ -140,7 +133,7 @@ public class JsonProtocol extends StackedProtocol {
         }
 
         @Override
-        public void writeI32(final int i32) throws TException {
+        public void writeI32(final int i32) throws IOException {
             if (nextWriteIsKey) {
                 writeString(Integer.toString(i32));
             } else {
@@ -150,7 +143,7 @@ public class JsonProtocol extends StackedProtocol {
         }
 
         @Override
-        public void writeI64(final long i64) throws TException {
+        public void writeI64(final long i64) throws IOException {
             if (nextWriteIsKey) {
                 writeString(Long.toString(i64));
             } else {
@@ -160,7 +153,7 @@ public class JsonProtocol extends StackedProtocol {
         }
 
         @Override
-        public void writeListBegin(final TList list) throws TException {
+        public void writeListBegin(final TList list) throws IOException {
             if (nextWriteIsKey) {
                 throw new UnsupportedOperationException();
             } else {
@@ -170,7 +163,7 @@ public class JsonProtocol extends StackedProtocol {
         }
 
         @Override
-        public void writeMapBegin(final TMap map) throws TException {
+        public void writeMapBegin(final TMap map) throws IOException {
             if (nextWriteIsKey) {
                 throw new UnsupportedOperationException();
             } else {
@@ -180,7 +173,7 @@ public class JsonProtocol extends StackedProtocol {
         }
 
         @Override
-        public void writeNull() throws TException {
+        public void writeNull() throws IOException {
             if (nextWriteIsKey) {
                 throw new UnsupportedOperationException();
             } else {
@@ -190,13 +183,13 @@ public class JsonProtocol extends StackedProtocol {
         }
 
         @Override
-        public void writeString(final String str) throws TException {
+        public void writeString(final String str) throws IOException {
             if (nextWriteIsKey) {
                 nextWriteIsKey = false;
                 try {
                     generator.writeFieldName(str);
                 } catch (final IOException e) {
-                    throw new TException(e);
+                    throw new IOException(e);
                 }
             } else {
                 nextWriteIsKey = true;
@@ -205,7 +198,7 @@ public class JsonProtocol extends StackedProtocol {
         }
 
         @Override
-        public void writeStructBegin(final TStruct struct) throws TException {
+        public void writeStructBegin(final TStruct struct) throws IOException {
             if (nextWriteIsKey) {
                 throw new UnsupportedOperationException();
             } else {
@@ -223,65 +216,65 @@ public class JsonProtocol extends StackedProtocol {
         }
 
         @Override
-        public boolean readBool() throws TException {
+        public boolean readBool() throws IOException {
             return _readChildNode().asBoolean();
         }
 
         @Override
-        public byte readByte() throws TException {
+        public byte readByte() throws IOException {
             return (byte) _readChildNode().asInt();
         }
 
         @Override
-        public double readDouble() throws TException {
+        public double readDouble() throws IOException {
             return _readChildNode().asDouble();
         }
 
         @Override
-        public short readI16() throws TException {
+        public short readI16() throws IOException {
             return (short) _readChildNode().asInt();
         }
 
         @Override
-        public int readI32() throws TException {
+        public int readI32() throws IOException {
             return _readChildNode().asInt();
         }
 
         @Override
-        public long readI64() throws TException {
+        public long readI64() throws IOException {
             return _readChildNode().asLong();
         }
 
         @Override
-        public TList readListBegin() throws TException {
+        public TList readListBegin() throws IOException {
             final JsonNode node = _readChildNode();
             if (!node.isArray()) {
-                throw new TException("expected JSON array");
+                throw new IOException("expected JSON array");
             }
             _getProtocolStack().push(_createArrayReaderProtocol(node));
             return new TList(TType.VOID, node.size());
         }
 
         @Override
-        public TMap readMapBegin() throws TException {
+        public TMap readMapBegin() throws IOException {
             final JsonNode node = _readChildNode();
             if (!node.isObject()) {
-                throw new TException("expected JSON object");
+                throw new IOException("expected JSON object");
             }
             _getProtocolStack().push(_createMapObjectReaderProtocol(node));
             return new TMap(TType.VOID, TType.VOID, node.size());
         }
 
         @Override
-        public String readString() throws TException {
+        public String readString() throws IOException {
             return _readChildNode().asText();
         }
 
         @Override
-        public TStruct readStructBegin() throws TException {
+        public TStruct readStructBegin() throws IOException {
             final JsonNode node = _readChildNode();
             if (!node.isObject()) {
-                throw new TException("expected JSON object");
+                throw new IOException("expected JSON object");
             }
             _getProtocolStack().push(_createStructObjectReaderProtocol(node));
             return new TStruct();
@@ -309,11 +302,11 @@ public class JsonProtocol extends StackedProtocol {
 
     protected class RootWriterProtocol extends WriterProtocol {
         @Override
-        public void writeFieldEnd() throws TException {
+        public void writeFieldEnd() throws IOException {
         }
 
         @Override
-        public void writeFieldStop() throws TException {
+        public void writeFieldStop() throws IOException {
         }
     }
 
@@ -327,7 +320,7 @@ public class JsonProtocol extends StackedProtocol {
         }
 
         @Override
-        public TField readFieldBegin() throws TException {
+        public TField readFieldBegin() throws IOException {
             if (!fieldNameStack.isEmpty()) {
                 return new TField(fieldNameStack.peek(), TType.VOID, (short) -1);
             } else {
@@ -336,7 +329,7 @@ public class JsonProtocol extends StackedProtocol {
         }
 
         @Override
-        public void readFieldEnd() throws TException {
+        public void readFieldEnd() throws IOException {
             fieldNameStack.pop();
         }
 
@@ -354,150 +347,150 @@ public class JsonProtocol extends StackedProtocol {
 
     protected class StructObjectWriterProtocol extends WriterProtocol {
         @Override
-        public void writeFieldBegin(final TField field) throws TException {
+        public void writeFieldBegin(final TField field) throws IOException {
             try {
                 generator.writeFieldName(field.name);
             } catch (final IOException e) {
-                throw new TException(e);
+                throw new IOException(e);
             }
         }
 
         @Override
-        public void writeFieldEnd() throws TException {
+        public void writeFieldEnd() throws IOException {
         }
 
         @Override
-        public void writeFieldStop() throws TException {
+        public void writeFieldStop() throws IOException {
         }
     }
 
     protected abstract class WriterProtocol extends Protocol {
         @Override
-        public void writeBool(final boolean b) throws TException {
+        public void writeBool(final boolean b) throws IOException {
             try {
                 generator.writeBoolean(b);
             } catch (final IOException e) {
-                throw new TException(e);
+                throw new IOException(e);
             }
         }
 
         @Override
-        public void writeByte(final byte b) throws TException {
+        public void writeByte(final byte b) throws IOException {
             try {
                 generator.writeNumber(b);
             } catch (final IOException e) {
-                throw new TException(e);
+                throw new IOException(e);
             }
         }
 
         @Override
-        public void writeDouble(final double dub) throws TException {
+        public void writeDouble(final double dub) throws IOException {
             try {
                 generator.writeNumber(dub);
             } catch (final IOException e) {
-                throw new TException(e);
+                throw new IOException(e);
             }
         }
 
         @Override
-        public void writeI16(final short i16) throws TException {
+        public void writeI16(final short i16) throws IOException {
             try {
                 generator.writeNumber(i16);
             } catch (final IOException e) {
-                throw new TException(e);
+                throw new IOException(e);
             }
         }
 
         @Override
-        public void writeI32(final int i32) throws TException {
+        public void writeI32(final int i32) throws IOException {
             try {
                 generator.writeNumber(i32);
             } catch (final IOException e) {
-                throw new TException(e);
+                throw new IOException(e);
             }
         }
 
         @Override
-        public void writeI64(final long i64) throws TException {
+        public void writeI64(final long i64) throws IOException {
             try {
                 generator.writeNumber(i64);
             } catch (final IOException e) {
-                throw new TException(e);
+                throw new IOException(e);
             }
         }
 
         @Override
-        public void writeListBegin(final TList list) throws TException {
+        public void writeListBegin(final TList list) throws IOException {
             try {
                 generator.writeStartArray();
                 _getProtocolStack().push(_createArrayWriterProtocol());
             } catch (final IOException e) {
-                throw new TException(e);
+                throw new IOException(e);
             }
         }
 
         @Override
-        public void writeListEnd() throws TException {
+        public void writeListEnd() throws IOException {
             try {
                 generator.writeEndArray();
             } catch (final IOException e) {
-                throw new TException(e);
+                throw new IOException(e);
             }
         }
 
         @Override
-        public void writeMapBegin(final TMap map) throws TException {
+        public void writeMapBegin(final TMap map) throws IOException {
             try {
                 generator.writeStartObject();
                 _getProtocolStack().push(_createMapObjectWriterProtocol());
             } catch (final IOException e) {
-                throw new TException(e);
+                throw new IOException(e);
             }
         }
 
         @Override
-        public void writeMapEnd() throws TException {
+        public void writeMapEnd() throws IOException {
             try {
                 generator.writeEndObject();
             } catch (final IOException e) {
-                throw new TException(e);
+                throw new IOException(e);
             }
         }
 
         @Override
-        public void writeNull() throws TException {
+        public void writeNull() throws IOException {
             try {
                 generator.writeNull();
             } catch (final IOException e) {
-                throw new TException(e);
+                throw new IOException(e);
             }
         }
 
         @Override
-        public void writeString(final String str) throws TException {
+        public void writeString(final String str) throws IOException {
             try {
                 generator.writeString(str);
             } catch (final IOException e) {
-                throw new TException(e);
+                throw new IOException(e);
             }
         }
 
         @Override
-        public void writeStructBegin(final TStruct struct) throws TException {
+        public void writeStructBegin(final TStruct struct) throws IOException {
             try {
                 generator.writeStartObject();
                 _getProtocolStack().push(_createStructObjectWriterProtocol());
             } catch (final IOException e) {
-                throw new TException(e);
+                throw new IOException(e);
             }
         }
 
         @Override
-        public void writeStructEnd() throws TException {
+        public void writeStructEnd() throws IOException {
             try {
                 generator.writeEndObject();
             } catch (final IOException e) {
-                throw new TException(e);
+                throw new IOException(e);
             }
         }
     }
