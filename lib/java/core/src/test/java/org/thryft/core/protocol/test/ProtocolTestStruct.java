@@ -1010,19 +1010,34 @@ public class ProtocolTestStruct implements org.apache.thrift.TBase<ProtocolTestS
     }
 
     private final java.nio.ByteBuffer binaryField;
+
     private final Boolean boolField;
+
     private final Byte byteField;
+
     private final org.joda.time.DateTime dateTimeField;
+
     private final java.math.BigDecimal decimalField;
+
     private final javax.mail.internet.InternetAddress emailAddressField;
+
     private final org.thryft.core.protocol.test.ProtocolTestEnum enumField;
+
     private final Short i16Field;
+
     private final Integer i32Field;
+
     private final Long i64Field;
+
     private final com.google.common.collect.ImmutableList<String> listStringField;
+
     private final com.google.common.collect.ImmutableMap<String, String> mapStringStringField;
+
     private final com.google.common.collect.ImmutableSet<String> setStringField;
+
     private final String stringField;
+
     private final org.thryft.core.protocol.test.ProtocolTestStruct structField;
+
     private final java.net.URL urlField;
 }

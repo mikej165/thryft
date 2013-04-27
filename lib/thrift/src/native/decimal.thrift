@@ -1,0 +1,4 @@
+namespace * native
+
+struct Decimal {
+}

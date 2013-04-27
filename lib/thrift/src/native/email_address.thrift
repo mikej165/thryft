@@ -1,4 +1,4 @@
-namespace * thryft.util
+namespace * native
 
 struct EmailAddress {
 }
