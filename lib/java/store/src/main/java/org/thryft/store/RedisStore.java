@@ -34,14 +34,14 @@ package org.thryft.store;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import org.apache.thrift.TBase;
-import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.thryft.TBase;
 import org.thryft.protocol.StringMapProtocol;
 
 import redis.clients.jedis.Jedis;
@@ -52,7 +52,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
-public final class RedisStore<ModelT extends TBase<?, ?>> extends
+public final class RedisStore<ModelT extends TBase<?>> extends
         KeyValueStore<ModelT> {
     public final static class Configuration {
         public Configuration(final Properties properties) {
@@ -252,8 +252,8 @@ public final class RedisStore<ModelT extends TBase<?, ?>> extends
                 final StringMapProtocol oprot = new StringMapProtocol();
                 try {
                     model.write(oprot);
-                } catch (final TException e) {
-                    return;
+                } catch (final IOException e) {
+                    throw new ModelIoException(e, modelKey.getModelId());
                 }
                 final ImmutableMap<String, String> hash = oprot.toStringMap();
                 jedis.hmset(modelKey.toString(), hash);

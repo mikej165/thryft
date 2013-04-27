@@ -46,9 +46,8 @@ import java.sql.Statement;
 import java.util.Properties;
 import java.util.Set;
 
-import org.apache.thrift.TBase;
-import org.apache.thrift.TException;
 import org.h2.jdbcx.JdbcConnectionPool;
+import org.thryft.TBase;
 import org.thryft.protocol.JsonProtocol;
 
 import com.google.common.base.CaseFormat;
@@ -56,7 +55,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
-public final class JdbcStore<ModelT extends TBase<?, ?>> extends Store<ModelT> {
+public final class JdbcStore<ModelT extends TBase<?>> extends Store<ModelT> {
     public final static class Configuration {
         public Configuration() {
             this(PASSWORD_DEFAULT, URL_DEFAULT, USER_DEFAULT);
@@ -595,8 +594,6 @@ public final class JdbcStore<ModelT extends TBase<?, ?>> extends Store<ModelT> {
         } catch (final IOException e) {
             throw new ModelIoException(e, modelId);
         } catch (final SQLException e) {
-            throw new ModelIoException(e, modelId);
-        } catch (final TException e) {
             throw new ModelIoException(e, modelId);
         }
     }

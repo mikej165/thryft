@@ -34,6 +34,7 @@ package org.thryft.store;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Collection;
@@ -41,8 +42,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.apache.thrift.TBase;
-import org.apache.thrift.TException;
+import org.thryft.TBase;
 import org.thryft.protocol.StringMapProtocol;
 
 import com.amazonaws.auth.AWSCredentials;
@@ -73,7 +73,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.hash.Hashing;
 
-public final class SimpleDbStore<ModelT extends TBase<?, ?>> extends
+public final class SimpleDbStore<ModelT extends TBase<?>> extends
         AwsKeyValueStore<ModelT> {
     public final static class Configuration extends
             AwsKeyValueStore.Configuration {
@@ -301,7 +301,7 @@ public final class SimpleDbStore<ModelT extends TBase<?, ?>> extends
         final StringMapProtocol oprot = new StringMapProtocol();
         try {
             model.write(oprot);
-        } catch (final TException e) {
+        } catch (final IOException e) {
             return ImmutableList.of();
         }
         final ImmutableMap<String, String> stringMap = oprot.toStringMap();

@@ -46,6 +46,8 @@ import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Test;
+import org.thryft.protocol.test.ProtocolTestEnum;
+import org.thryft.protocol.test.ProtocolTestStruct;
 import org.thryft.store.Store;
 
 import com.google.common.collect.ImmutableList;
@@ -55,19 +57,18 @@ import com.google.common.collect.Maps;
 
 public abstract class StoreTest {
     protected StoreTest() {
-        final ImmutableMap.Builder<String, StoreTestStruct> models = ImmutableMap
+        final ImmutableMap.Builder<String, ProtocolTestStruct> models = ImmutableMap
                 .builder();
         // models.size() should be > SimpleDBStore batch size of 25
         for (int modelI = 0; modelI < 32; modelI++) {
             // Use a long string to overflow SimpleDBStore's attribute
             // value limit of 1024
-            final StoreTestStruct model = new StoreTestStruct.Builder()
+            final ProtocolTestStruct model = new ProtocolTestStruct.Builder()
                     .setBoolField(true)
                     .setByteField((byte) modelI)
-                    .setDateField(DateTime.now())
                     .setDateTimeField(DateTime.now())
                     .setDecimalField(new BigDecimal(modelI))
-                    .setEnumField(StoreTestEnum.ENUMERATOR1)
+                    .setEnumField(ProtocolTestEnum.ENUMERATOR1)
                     .setI16Field((short) modelI)
                     .setI32Field(modelI)
                     .setI64Field((long) modelI)
@@ -79,7 +80,7 @@ public abstract class StoreTest {
                             ImmutableMap.of("key", "Test model " + modelI))
                     .setSetStringField(ImmutableSet.of("Test model " + modelI))
                     .setStringField("testmodel" + modelI)
-                    .setStructField(new StoreTestStruct()).build();
+                    .setStructField(new ProtocolTestStruct()).build();
             models.put(model.getStringField(), model);
         }
         this.models = models.build();
@@ -100,10 +101,10 @@ public abstract class StoreTest {
         boolean ret = store.deleteModelById(deleteModelId, USERNAME);
         assertTrue(ret);
 
-        final ImmutableMap<String, StoreTestStruct> models = store
+        final ImmutableMap<String, ProtocolTestStruct> models = store
                 .getModels(USERNAME);
 
-        final Map<String, StoreTestStruct> expectedModels = Maps
+        final Map<String, ProtocolTestStruct> expectedModels = Maps
                 .newLinkedHashMap(this.models);
         expectedModels.remove(deleteModelId);
         assertEquals(expectedModels, models);
@@ -114,7 +115,7 @@ public abstract class StoreTest {
 
     @Test
     public void testDeleteModels() throws Store.ModelIoException {
-        ImmutableMap<String, StoreTestStruct> models = store
+        ImmutableMap<String, ProtocolTestStruct> models = store
                 .getModels(USERNAME);
         assertEquals(0, models.size());
 
@@ -134,7 +135,7 @@ public abstract class StoreTest {
             Store.NoSuchModelException {
         __putModels();
 
-        for (final ImmutableMap.Entry<String, StoreTestStruct> modelEntry : models
+        for (final ImmutableMap.Entry<String, ProtocolTestStruct> modelEntry : models
                 .entrySet()) {
             assertEquals(modelEntry.getValue(),
                     store.getModelById(modelEntry.getKey(), USERNAME));
@@ -146,7 +147,7 @@ public abstract class StoreTest {
             Store.NoSuchModelException {
         __putModels();
 
-        for (final ImmutableMap.Entry<String, StoreTestStruct> modelEntry : models
+        for (final ImmutableMap.Entry<String, ProtocolTestStruct> modelEntry : models
                 .entrySet()) {
             assertEquals(modelEntry.getValue(),
                     store.getModelById(modelEntry.getKey(), USERNAME));
@@ -187,7 +188,7 @@ public abstract class StoreTest {
     public void testGetModels() throws Store.ModelIoException {
         __putModels();
 
-        final ImmutableMap<String, StoreTestStruct> models = store
+        final ImmutableMap<String, ProtocolTestStruct> models = store
                 .getModels(USERNAME);
         assertEquals(this.models, models);
     }
@@ -197,11 +198,11 @@ public abstract class StoreTest {
             Store.NoSuchModelException {
         __putModels();
 
-        final ImmutableMap<String, StoreTestStruct> models = store
+        final ImmutableMap<String, ProtocolTestStruct> models = store
                 .getModelsByIds(this.models.keySet(), USERNAME);
         assertEquals(this.models, models);
 
-        for (final ImmutableMap.Entry<String, StoreTestStruct> modelEntry : models
+        for (final ImmutableMap.Entry<String, ProtocolTestStruct> modelEntry : models
                 .entrySet()) {
             assertEquals(modelEntry.getValue(),
                     store.getModelById(modelEntry.getKey(), USERNAME));
@@ -248,11 +249,11 @@ public abstract class StoreTest {
     @Test
     public void testPutModel() throws Store.ModelIoException,
             Store.NoSuchModelException {
-        for (final ImmutableMap.Entry<String, StoreTestStruct> modelEntry : models
+        for (final ImmutableMap.Entry<String, ProtocolTestStruct> modelEntry : models
                 .entrySet()) {
-            final StoreTestStruct expectedModel = modelEntry.getValue();
+            final ProtocolTestStruct expectedModel = modelEntry.getValue();
             store.putModel(expectedModel, modelEntry.getKey(), USERNAME);
-            final StoreTestStruct actualModel = store.getModelById(
+            final ProtocolTestStruct actualModel = store.getModelById(
                     modelEntry.getKey(), USERNAME);
             assertEquals(expectedModel, actualModel);
             break;
@@ -262,7 +263,8 @@ public abstract class StoreTest {
     @Test
     public void testPutModels() throws Store.ModelIoException {
         assertEquals(0, store.getModels(USERNAME).size());
-        store.putModels(ImmutableMap.<String, StoreTestStruct> of(), USERNAME);
+        store.putModels(ImmutableMap.<String, ProtocolTestStruct> of(),
+                USERNAME);
         assertEquals(0, store.getModels(USERNAME).size());
 
         __putModels();
@@ -272,7 +274,7 @@ public abstract class StoreTest {
         assertEquals(models, store.getModels(USERNAME));
     }
 
-    protected void _setUp(final Store<StoreTestStruct> store) {
+    protected void _setUp(final Store<ProtocolTestStruct> store) {
         this.store = store;
     }
 
@@ -280,9 +282,9 @@ public abstract class StoreTest {
         store.putModels(models, USERNAME);
     }
 
-    private final ImmutableMap<String, StoreTestStruct> models;
+    private final ImmutableMap<String, ProtocolTestStruct> models;
 
-    private Store<StoreTestStruct> store;
+    private Store<ProtocolTestStruct> store;
 
     private final static String USERNAME = StoreTest.class.getSimpleName()
             + "_user";

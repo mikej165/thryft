@@ -46,7 +46,7 @@ public class CsvProtocolTest extends ProtocolTest {
 
         // final StringReader reader = new StringReader(ostring);
         // final Protocol iprot = new CsvProtocol(reader);
-        // final TBase<?, ?> actual = expected.getClass()
+        // final TBase<?> actual = expected.getClass()
         // .getConstructor(TProtocol.class).newInstance(iprot);
         // assertEquals(expected, actual);
     }

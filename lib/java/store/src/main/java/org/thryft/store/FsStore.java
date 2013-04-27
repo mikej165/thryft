@@ -42,15 +42,14 @@ import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.thrift.TBase;
-import org.apache.thrift.TException;
+import org.thryft.TBase;
 import org.thryft.protocol.JsonProtocol;
 
 import com.google.common.base.CaseFormat;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
-public final class FsStore<ModelT extends TBase<?, ?>> extends Store<ModelT> {
+public final class FsStore<ModelT extends TBase<?>> extends Store<ModelT> {
     public final static class Configuration {
         public Configuration() {
             this(ROOT_DIRECTORY_PATH_DEFAULT);
@@ -329,8 +328,6 @@ public final class FsStore<ModelT extends TBase<?, ?>> extends Store<ModelT> {
             }
 
         } catch (final IOException e) {
-            throw new ModelIoException(e, modelId);
-        } catch (final TException e) {
             throw new ModelIoException(e, modelId);
         }
     }

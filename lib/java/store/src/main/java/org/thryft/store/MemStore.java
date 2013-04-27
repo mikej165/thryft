@@ -32,14 +32,14 @@
 
 package org.thryft.store;
 
-import org.apache.thrift.TBase;
+import org.thryft.TBase;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
 
-public final class MemStore<ModelT extends TBase<?, ?>> extends Store<ModelT> {
+public final class MemStore<ModelT extends TBase<?>> extends Store<ModelT> {
     public MemStore(final Class<ModelT> modelClass) {
         super(modelClass);
     }

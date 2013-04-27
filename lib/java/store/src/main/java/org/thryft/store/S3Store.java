@@ -45,11 +45,10 @@ import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.thrift.TBase;
-import org.apache.thrift.TException;
-import org.apache.thrift.protocol.TMap;
-import org.apache.thrift.protocol.TType;
+import org.thryft.TBase;
 import org.thryft.protocol.JsonProtocol;
+import org.thryft.protocol.TMap;
+import org.thryft.protocol.TType;
 
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.auth.AWSCredentials;
@@ -67,7 +66,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 
-public final class S3Store<ModelT extends TBase<?, ?>> extends
+public final class S3Store<ModelT extends TBase<?>> extends
         AwsKeyValueStore<ModelT> {
     public final static class Configuration extends
             AwsKeyValueStore.Configuration {
@@ -374,9 +373,6 @@ public final class S3Store<ModelT extends TBase<?, ?>> extends
         } catch (final IOException e) {
             logger.error("IOException on __getModels: ", e);
             return ImmutableMap.of();
-        } catch (final TException e) {
-            logger.error("TException on __getModels: ", e);
-            return ImmutableMap.of();
         }
     }
 
@@ -406,8 +402,6 @@ public final class S3Store<ModelT extends TBase<?, ?>> extends
             oprot.flush();
             ostring = ostringWriter.toString();
         } catch (final IOException e) {
-            throw new ModelIoException(e);
-        } catch (final TException e) {
             throw new ModelIoException(e);
         }
 

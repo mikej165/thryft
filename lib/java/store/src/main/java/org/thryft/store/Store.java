@@ -37,15 +37,15 @@ import static org.thryft.Preconditions.checkNotEmpty;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.apache.thrift.TBase;
-import org.apache.thrift.protocol.TProtocol;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.thryft.TBase;
+import org.thryft.protocol.Protocol;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
-public abstract class Store<ModelT extends TBase<?, ?>> {
+public abstract class Store<ModelT extends TBase<?>> {
     @SuppressWarnings("serial")
     public final static class ModelIoException extends Exception {
         public ModelIoException(final Throwable cause) {
@@ -163,10 +163,9 @@ public abstract class Store<ModelT extends TBase<?, ?>> {
 
     protected abstract void _deleteModels(final String username);
 
-    protected ModelT _getModel(final TProtocol iprot) {
+    protected ModelT _getModel(final Protocol iprot) {
         try {
-            return modelClass.getConstructor(TProtocol.class)
-                    .newInstance(iprot);
+            return modelClass.getConstructor(Protocol.class).newInstance(iprot);
         } catch (final IllegalArgumentException e) {
             logger.error("exception reading:", e);
         } catch (final SecurityException e) {
