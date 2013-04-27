@@ -22,37 +22,186 @@ class JsonrpcClientPyGenerator(py_generator.PyGenerator):
             name = self.py_name()
             return """\
 def _%(name)s(self, **kwds):
-    %(call_prefix)sself._request('%(name)s', **kwds)%(call_suffix)s
+    %(call_prefix)sself.__request('%(name)s', **kwds)%(call_suffix)s
 """ % locals()
 
     class Service(PyService):
         def py_imports_definition(self):
             return ['import ' + PyService.py_qname(self).rsplit('.', 1)[0],
                     'import thryft.core.protocol.json_protocol',
-                    'import thryft.web.client.service._jsonrpc_client_service'] + \
+                    'from thryft.core.protocol.builtins_protocol import BuiltinsProtocol',
+                    'from urlparse import urlparse',
+                    'import base64',
+                    'import json',
+                    'import logging',
+                    'import re',
+                    'import urllib2',
+                    ] + \
                    PyService.py_imports_definition(self)
+
+        def __py_methods(self):
+            methods = {}
+            methods.update(self.__py_method_import_exception_class())
+            methods.update(self.__py_method_init())
+            methods.update(self.__py_method_request())
+            for function in self.functions:
+                methods[function.py_name()] = repr(function)
+            return [methods[method_name] for method_name in sorted(methods.iterkeys())]
+
+        def __py_method_import_exception_class(self):
+            return {'__import_exception_class': """\
+@staticmethod
+def __import_exception_class(exception_class_qname):
+    def decamelize(name):
+        return re.sub('(((?<=[a-z])[A-Z])|([A-Z](?![A-Z]|$)))', '_\\\\1', name)\\
+                   .lower()\\
+                   .strip('_')
+
+    exception_class_qname = exception_class_qname.split('.')
+    if len(exception_class_qname) < 2:
+        raise
+    elif exception_class_qname[0] not in ('com', 'org'):
+        raise
+
+    exception_class_name = exception_class_qname[-1]
+    exception_module_qname = \\
+        exception_class_qname[1:-1] + \\
+            [decamelize(exception_class_name)]
+
+    exception_module = __import__('.'.join(exception_module_qname))
+    for module_name in exception_module_qname[1:]:
+        exception_module = getattr(exception_module, module_name)
+
+    return getattr(exception_module, exception_class_name)
+""" % locals()}
+
+        def __py_method_init(self):
+            name = self._py_name()
+            service_endpoint_name = decamelize(PyService.py_name(self)).rsplit('_', 1)[0]
+            service_qname = PyService.py_qname(self)
+            return {'__init__': """\
+def __init__(self, api_url, headers=None):
+    %(service_qname)s.__init__(self)
+
+    api_url = api_url.rstrip('/')
+    if not api_url.endswith('/jsonrpc/%(service_endpoint_name)s'):
+        api_url += '/jsonrpc/%(service_endpoint_name)s'
+    self.__api_url = api_url.rstrip('/')
+    parsed_api_url = urlparse(api_url)
+    parsed_api_url_netloc = parsed_api_url.netloc.split('@', 1)
+    if len(parsed_api_url_netloc) == 2:
+        username_password = parsed_api_url_netloc[0].split(':', 1)
+        if len(username_password) == 2:
+            username, password = username_password
+            netloc = parsed_api_url_netloc[1]
+            headers['Authorization'] = \\
+                'Basic ' + \\
+                    base64.b64encode(
+                        "%%s:%%s" %% (
+                            username,
+                            password
+                        )
+                    )
+            self.__api_url = \\
+                parsed_api_url.scheme + '://' + netloc + \\
+                    parsed_api_url.path + \\
+                    parsed_api_url.query
+
+#            auth_handler = urllib2.HTTPBasicAuthHandler()
+#            auth_handler.add_password(realm='Realm',
+#                                      uri=self.__api_url,
+#                                      user=username,
+#                                      passwd=password)
+#            opener = urllib2.build_opener(auth_handler)
+#            urllib2.install_opener(opener)
+
+    if headers is None:
+        headers = {}
+    else:
+        if not isinstance(headers, dict):
+            raise TypeError(headers)
+        headers = headers.copy()
+    self.__headers = headers
+
+    self.__logger = logging.getLogger(self.__class__.__module__ + '.' + self.__class__.__name__)
+
+    self.__next_id = 1
+""" % locals()}
+
+        def __py_method_request(self):
+            return {'__request': """\
+def __request(self, method, headers=None, **kwds):
+    request = {'jsonrpc': '2.0', 'method': method}
+    request['id'] = id(request)
+    params = {}
+    params_oprot = BuiltinsProtocol(params)
+    for key, value in kwds.iteritems():
+        if value is None:
+            continue
+        params_oprot.writeFieldBegin(key)
+        params_oprot.writeMixed(value)
+        params_oprot.writeFieldEnd()
+    request['params'] = params
+    request_json = json.dumps(request)
+
+    if headers is not None:
+        headers = headers.copy()
+        headers.update(self.__headers)
+    else:
+        headers = self.__headers
+
+    request = urllib2.Request(self.__api_url, request_json, headers)
+    request.get_method = lambda: 'POST'
+
+    response = urllib2.urlopen(request)
+
+    response_json = []
+    while True:
+        response_datum = response.read()
+        if len(response_datum) == 0:
+            break
+        response_json.append(response_datum)
+    response_json = ''.join(response_json)
+
+    response = json.loads(response_json)
+    if response.get('id') != str(request['id']):
+        raise RuntimeError("JSON-RPC: mismatched id: got %%s, expected %%s" %% (response.get('id'), request['id']))
+    if response.get('jsonrpc') != '2.0':
+        raise RuntimeError("JSON-RPC: unexpected version: " + str(response.get('jsonrpc')))
+    error = response.get('error')
+    if error is not None:
+        code = error.get('code')
+        if code is None:
+            raise RuntimeError("JSON-RPC: error response is missing code")
+        message = error.get('message')
+        if message is None:
+            raise RuntimeError("JSON-RPC: error response is missing message")
+        exception_class_qname = error.get('@class')
+        if exception_class_qname is not None:
+            try:
+                exception_class = self.__import_exception_class(exception_class_qname)
+            except ImportError:
+                raise RuntimeError("JSON-RPC: error: code=%%(code)u, message='%%(message)s'" %% locals())
+            data = error.get('data')
+            if isinstance(data, dict):
+                data_iprot = BuiltinsProtocol([data])
+                exception_ = exception_class.read(data_iprot)
+                raise exception_
+            else:
+                raise exception_class()
+        else:
+            raise RuntimeError("JSON-RPC error: code=%%s, message='%%s'" %% (code, message))
+    return response.get('result')
+""" % locals()}
 
         def _py_name(self):
             return 'JsonrpcClient' + PyService.py_name(self)
 
         def __repr__(self):
+            methods = indent(' ' * 4, "\n".join(self.__py_methods()))
             name = self._py_name()
-            if len(self.functions) > 0:
-                methods = \
-                    "\n\n".join(indent(' ' * 4,
-                        [repr(function) for function in self.functions]
-                    ))
-            else:
-                methods = indent(' ' * 4, 'pass')
-            service_endpoint_name = decamelize(PyService.py_name(self)).rsplit('_', 1)[0]
             service_qname = PyService.py_qname(self)
             return """\
-class %(name)s(thryft.web.client.service._jsonrpc_client_service._JsonrpcClientService, %(service_qname)s):
-    def __init__(self, api_url, headers=None):
-        api_url = api_url.rstrip('/')
-        if not api_url.endswith('/jsonrpc/%(service_endpoint_name)s'):
-            api_url += '/jsonrpc/%(service_endpoint_name)s'
-        thryft.web.client.service._jsonrpc_client_service._JsonrpcClientService.__init__(self, api_url=api_url, headers=headers)
-
+class %(name)s(%(service_qname)s):
 %(methods)s
 """ % locals()
