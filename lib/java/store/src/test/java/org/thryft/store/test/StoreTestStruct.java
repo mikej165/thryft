@@ -266,25 +266,25 @@ public class StoreTestStruct
             } catch (final NumberFormatException e) {
             }
             try {
-                dateField = (iprot instanceof org.thryft.core.protocol.Protocol) ? ((org.thryft.core.protocol.Protocol) iprot)
+                dateField = (iprot instanceof org.thryft.protocol.Protocol) ? ((org.thryft.protocol.Protocol) iprot)
                         .readDateTime() : new org.joda.time.DateTime(
                         iprot.readI64());
             } catch (final IllegalArgumentException e) {
             }
             try {
-                dateTimeField = (iprot instanceof org.thryft.core.protocol.Protocol) ? ((org.thryft.core.protocol.Protocol) iprot)
+                dateTimeField = (iprot instanceof org.thryft.protocol.Protocol) ? ((org.thryft.protocol.Protocol) iprot)
                         .readDateTime() : new org.joda.time.DateTime(
                         iprot.readI64());
             } catch (final IllegalArgumentException e) {
             }
             try {
-                decimalField = (iprot instanceof org.thryft.core.protocol.Protocol) ? ((org.thryft.core.protocol.Protocol) iprot)
+                decimalField = (iprot instanceof org.thryft.protocol.Protocol) ? ((org.thryft.protocol.Protocol) iprot)
                         .readDecimal() : new java.math.BigDecimal(
                         iprot.readString());
             } catch (final NumberFormatException e) {
             }
             try {
-                enumField = (iprot instanceof org.thryft.core.protocol.Protocol) ? ((org.thryft.core.protocol.Protocol) iprot)
+                enumField = (iprot instanceof org.thryft.protocol.Protocol) ? ((org.thryft.protocol.Protocol) iprot)
                         .readEnum(StoreTestEnum.class) : StoreTestEnum
                         .valueOf(iprot.readString().trim().toUpperCase());
             } catch (final IllegalArgumentException e) {
@@ -382,28 +382,28 @@ public class StoreTestStruct
                     }
                 } else if (ifield.name.equals("date_field")) {
                     try {
-                        dateField = (iprot instanceof org.thryft.core.protocol.Protocol) ? ((org.thryft.core.protocol.Protocol) iprot)
+                        dateField = (iprot instanceof org.thryft.protocol.Protocol) ? ((org.thryft.protocol.Protocol) iprot)
                                 .readDateTime() : new org.joda.time.DateTime(
                                 iprot.readI64());
                     } catch (final IllegalArgumentException e) {
                     }
                 } else if (ifield.name.equals("date_time_field")) {
                     try {
-                        dateTimeField = (iprot instanceof org.thryft.core.protocol.Protocol) ? ((org.thryft.core.protocol.Protocol) iprot)
+                        dateTimeField = (iprot instanceof org.thryft.protocol.Protocol) ? ((org.thryft.protocol.Protocol) iprot)
                                 .readDateTime() : new org.joda.time.DateTime(
                                 iprot.readI64());
                     } catch (final IllegalArgumentException e) {
                     }
                 } else if (ifield.name.equals("decimal_field")) {
                     try {
-                        decimalField = (iprot instanceof org.thryft.core.protocol.Protocol) ? ((org.thryft.core.protocol.Protocol) iprot)
+                        decimalField = (iprot instanceof org.thryft.protocol.Protocol) ? ((org.thryft.protocol.Protocol) iprot)
                                 .readDecimal() : new java.math.BigDecimal(
                                 iprot.readString());
                     } catch (final NumberFormatException e) {
                     }
                 } else if (ifield.name.equals("enum_field")) {
                     try {
-                        enumField = (iprot instanceof org.thryft.core.protocol.Protocol) ? ((org.thryft.core.protocol.Protocol) iprot)
+                        enumField = (iprot instanceof org.thryft.protocol.Protocol) ? ((org.thryft.protocol.Protocol) iprot)
                                 .readEnum(StoreTestEnum.class) : StoreTestEnum
                                 .valueOf(iprot.readString().trim()
                                         .toUpperCase());
@@ -841,81 +841,81 @@ public class StoreTestStruct
             if (getBinaryField() != null) {
                 oprot.writeBinary(getBinaryField());
             } else {
-                ((org.thryft.core.protocol.Protocol) oprot).writeNull();
+                ((org.thryft.protocol.Protocol) oprot).writeNull();
             }
 
             if (isBoolField() != null) {
                 oprot.writeBool(isBoolField());
             } else {
-                ((org.thryft.core.protocol.Protocol) oprot).writeNull();
+                ((org.thryft.protocol.Protocol) oprot).writeNull();
             }
 
             if (getByteField() != null) {
                 oprot.writeByte(getByteField());
             } else {
-                ((org.thryft.core.protocol.Protocol) oprot).writeNull();
+                ((org.thryft.protocol.Protocol) oprot).writeNull();
             }
 
             if (getDateField() != null) {
-                if (oprot instanceof org.thryft.core.protocol.Protocol) {
-                    ((org.thryft.core.protocol.Protocol) oprot)
+                if (oprot instanceof org.thryft.protocol.Protocol) {
+                    ((org.thryft.protocol.Protocol) oprot)
                             .writeDateTime(getDateField());
                 } else {
                     oprot.writeI64(getDateField().getMillis());
                 }
             } else {
-                ((org.thryft.core.protocol.Protocol) oprot).writeNull();
+                ((org.thryft.protocol.Protocol) oprot).writeNull();
             }
 
             if (getDateTimeField() != null) {
-                if (oprot instanceof org.thryft.core.protocol.Protocol) {
-                    ((org.thryft.core.protocol.Protocol) oprot)
+                if (oprot instanceof org.thryft.protocol.Protocol) {
+                    ((org.thryft.protocol.Protocol) oprot)
                             .writeDateTime(getDateTimeField());
                 } else {
                     oprot.writeI64(getDateTimeField().getMillis());
                 }
             } else {
-                ((org.thryft.core.protocol.Protocol) oprot).writeNull();
+                ((org.thryft.protocol.Protocol) oprot).writeNull();
             }
 
             if (getDecimalField() != null) {
-                if (oprot instanceof org.thryft.core.protocol.Protocol) {
-                    ((org.thryft.core.protocol.Protocol) oprot)
+                if (oprot instanceof org.thryft.protocol.Protocol) {
+                    ((org.thryft.protocol.Protocol) oprot)
                             .writeDecimal(getDecimalField());
                 } else {
                     oprot.writeString(getDecimalField().toString());
                 }
             } else {
-                ((org.thryft.core.protocol.Protocol) oprot).writeNull();
+                ((org.thryft.protocol.Protocol) oprot).writeNull();
             }
 
             if (getEnumField() != null) {
-                if (oprot instanceof org.thryft.core.protocol.Protocol) {
-                    ((org.thryft.core.protocol.Protocol) oprot)
+                if (oprot instanceof org.thryft.protocol.Protocol) {
+                    ((org.thryft.protocol.Protocol) oprot)
                             .writeEnum(getEnumField());
                 } else {
                     oprot.writeString(getEnumField().toString());
                 }
             } else {
-                ((org.thryft.core.protocol.Protocol) oprot).writeNull();
+                ((org.thryft.protocol.Protocol) oprot).writeNull();
             }
 
             if (getI16Field() != null) {
                 oprot.writeI16(getI16Field());
             } else {
-                ((org.thryft.core.protocol.Protocol) oprot).writeNull();
+                ((org.thryft.protocol.Protocol) oprot).writeNull();
             }
 
             if (getI32Field() != null) {
                 oprot.writeI32(getI32Field());
             } else {
-                ((org.thryft.core.protocol.Protocol) oprot).writeNull();
+                ((org.thryft.protocol.Protocol) oprot).writeNull();
             }
 
             if (getI64Field() != null) {
                 oprot.writeI64(getI64Field());
             } else {
-                ((org.thryft.core.protocol.Protocol) oprot).writeNull();
+                ((org.thryft.protocol.Protocol) oprot).writeNull();
             }
 
             if (getListStringField() != null) {
@@ -927,7 +927,7 @@ public class StoreTestStruct
                 }
                 oprot.writeListEnd();
             } else {
-                ((org.thryft.core.protocol.Protocol) oprot).writeNull();
+                ((org.thryft.protocol.Protocol) oprot).writeNull();
             }
 
             if (getMapStringStringField() != null) {
@@ -942,7 +942,7 @@ public class StoreTestStruct
                 }
                 oprot.writeMapEnd();
             } else {
-                ((org.thryft.core.protocol.Protocol) oprot).writeNull();
+                ((org.thryft.protocol.Protocol) oprot).writeNull();
             }
 
             if (getSetStringField() != null) {
@@ -954,19 +954,19 @@ public class StoreTestStruct
                 }
                 oprot.writeSetEnd();
             } else {
-                ((org.thryft.core.protocol.Protocol) oprot).writeNull();
+                ((org.thryft.protocol.Protocol) oprot).writeNull();
             }
 
             if (getStringField() != null) {
                 oprot.writeString(getStringField());
             } else {
-                ((org.thryft.core.protocol.Protocol) oprot).writeNull();
+                ((org.thryft.protocol.Protocol) oprot).writeNull();
             }
 
             if (getStructField() != null) {
                 getStructField().write(oprot);
             } else {
-                ((org.thryft.core.protocol.Protocol) oprot).writeNull();
+                ((org.thryft.protocol.Protocol) oprot).writeNull();
             }
 
             oprot.writeListEnd();
@@ -1005,8 +1005,8 @@ public class StoreTestStruct
                 oprot.writeFieldBegin(new org.apache.thrift.protocol.TField(
                         "date_field", org.apache.thrift.protocol.TType.STRUCT,
                         (short) -1));
-                if (oprot instanceof org.thryft.core.protocol.Protocol) {
-                    ((org.thryft.core.protocol.Protocol) oprot)
+                if (oprot instanceof org.thryft.protocol.Protocol) {
+                    ((org.thryft.protocol.Protocol) oprot)
                             .writeDateTime(getDateField());
                 } else {
                     oprot.writeI64(getDateField().getMillis());
@@ -1018,8 +1018,8 @@ public class StoreTestStruct
                 oprot.writeFieldBegin(new org.apache.thrift.protocol.TField(
                         "date_time_field",
                         org.apache.thrift.protocol.TType.STRUCT, (short) -1));
-                if (oprot instanceof org.thryft.core.protocol.Protocol) {
-                    ((org.thryft.core.protocol.Protocol) oprot)
+                if (oprot instanceof org.thryft.protocol.Protocol) {
+                    ((org.thryft.protocol.Protocol) oprot)
                             .writeDateTime(getDateTimeField());
                 } else {
                     oprot.writeI64(getDateTimeField().getMillis());
@@ -1031,8 +1031,8 @@ public class StoreTestStruct
                 oprot.writeFieldBegin(new org.apache.thrift.protocol.TField(
                         "decimal_field",
                         org.apache.thrift.protocol.TType.STRUCT, (short) -1));
-                if (oprot instanceof org.thryft.core.protocol.Protocol) {
-                    ((org.thryft.core.protocol.Protocol) oprot)
+                if (oprot instanceof org.thryft.protocol.Protocol) {
+                    ((org.thryft.protocol.Protocol) oprot)
                             .writeDecimal(getDecimalField());
                 } else {
                     oprot.writeString(getDecimalField().toString());
@@ -1044,8 +1044,8 @@ public class StoreTestStruct
                 oprot.writeFieldBegin(new org.apache.thrift.protocol.TField(
                         "enum_field", org.apache.thrift.protocol.TType.STRING,
                         (short) -1));
-                if (oprot instanceof org.thryft.core.protocol.Protocol) {
-                    ((org.thryft.core.protocol.Protocol) oprot)
+                if (oprot instanceof org.thryft.protocol.Protocol) {
+                    ((org.thryft.protocol.Protocol) oprot)
                             .writeEnum(getEnumField());
                 } else {
                     oprot.writeString(getEnumField().toString());

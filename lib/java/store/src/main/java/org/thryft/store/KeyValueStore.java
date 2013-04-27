@@ -33,7 +33,7 @@
 package org.thryft.store;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static org.thryft.core.Preconditions.checkNotEmpty;
+import static org.thryft.Preconditions.checkNotEmpty;
 
 import java.util.Map;
 

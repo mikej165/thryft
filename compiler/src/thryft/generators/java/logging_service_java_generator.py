@@ -15,7 +15,7 @@ class LoggingServiceJavaGenerator(java_generator.JavaGenerator):
             local_declarations = []
             if len(self.parameters) > 0 or self.return_field is not None:
                 local_declarations.append('java.io.StringWriter __logMessageStringWriter;')
-                local_declarations.append('org.thryft.core.protocol.LogMessageProtocol __logMessageProtocol;')
+                local_declarations.append('org.thryft.protocol.LogMessageProtocol __logMessageProtocol;')
             local_declarations.append('final StringBuilder __logMessageStringBuilder = new StringBuilder();')
             local_declarations = "\n".join(indent(' ' * 4, local_declarations))
 
@@ -29,7 +29,7 @@ class LoggingServiceJavaGenerator(java_generator.JavaGenerator):
                 parameters_toString = indent(' ' * 4, """
 try {
     __logMessageStringWriter = new java.io.StringWriter();
-    __logMessageProtocol = new org.thryft.core.protocol.LogMessageProtocol(__logMessageStringWriter);
+    __logMessageProtocol = new org.thryft.protocol.LogMessageProtocol(__logMessageStringWriter);
     new Messages.%(java_name)sRequest(%(parameter_names)s).write(__logMessageProtocol);
     __logMessageProtocol.flush();
     __logMessageStringBuilder.append(__logMessageStringWriter.toString());
@@ -56,7 +56,7 @@ service.%(java_name)s(%(parameter_names)s);
 __logMessageStringBuilder.append(" -> ");
 try {
     __logMessageStringWriter = new java.io.StringWriter();
-    __logMessageProtocol = new org.thryft.core.protocol.LogMessageProtocol(__logMessageStringWriter);
+    __logMessageProtocol = new org.thryft.protocol.LogMessageProtocol(__logMessageStringWriter);
     new Messages.%(java_name)sResponse(__returnValue).write(__logMessageProtocol, org.apache.thrift.protocol.TType.VOID);
     __logMessageProtocol.flush();
     __logMessageStringBuilder.append(__logMessageStringWriter.toString());

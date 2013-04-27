@@ -49,7 +49,7 @@ import java.util.Set;
 import org.apache.thrift.TBase;
 import org.apache.thrift.TException;
 import org.h2.jdbcx.JdbcConnectionPool;
-import org.thryft.core.protocol.JsonProtocol;
+import org.thryft.protocol.JsonProtocol;
 
 import com.google.common.base.CaseFormat;
 import com.google.common.collect.ImmutableMap;

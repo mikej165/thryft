@@ -1,4 +1,0 @@
-namespace * native
-
-struct Decimal {
-}

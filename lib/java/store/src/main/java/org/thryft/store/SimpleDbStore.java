@@ -43,7 +43,7 @@ import java.util.Properties;
 
 import org.apache.thrift.TBase;
 import org.apache.thrift.TException;
-import org.thryft.core.protocol.StringMapProtocol;
+import org.thryft.protocol.StringMapProtocol;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.services.simpledb.AmazonSimpleDBClient;

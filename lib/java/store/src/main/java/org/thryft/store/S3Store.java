@@ -33,7 +33,7 @@
 package org.thryft.store;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static org.thryft.core.Preconditions.checkNotEmpty;
+import static org.thryft.Preconditions.checkNotEmpty;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -49,7 +49,7 @@ import org.apache.thrift.TBase;
 import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TMap;
 import org.apache.thrift.protocol.TType;
-import org.thryft.core.protocol.JsonProtocol;
+import org.thryft.protocol.JsonProtocol;
 
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.auth.AWSCredentials;

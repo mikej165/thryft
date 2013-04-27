@@ -206,11 +206,11 @@ public %(return_type_name)s %(setter_name)s(final %(type_name)s %(name)s) {
             validation = self.annotations.get('validation', {})
             min_length = validation.get('minLength')
             if min_length == 1:
-                java_validation = """org.thryft.core.Preconditions.checkNotEmpty(%(java_validation)s, "%(parent_qname)s: %(name)s is empty")""" % locals()
+                java_validation = """org.thryft.Preconditions.checkNotEmpty(%(java_validation)s, "%(parent_qname)s: %(name)s is empty")""" % locals()
                 if not self.required:
                     java_validation = self.java_name() + " != null ? " + java_validation + " : null";
             elif min_length is not None:
-                java_validation = """org.thryft.core.Preconditions.checkMinLength(%(java_validation)s, %(min_length)u, "%(parent_qname)s: %(name)s must have a minimum length of %(min_length)u")""" % locals()
+                java_validation = """org.thryft.Preconditions.checkMinLength(%(java_validation)s, %(min_length)u, "%(parent_qname)s: %(name)s must have a minimum length of %(min_length)u")""" % locals()
                 if not self.required:
                     java_validation = self.java_name() + " != null ? " + java_validation + " : null";
             elif self.required:

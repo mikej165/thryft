@@ -44,7 +44,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.thrift.TBase;
 import org.apache.thrift.TException;
-import org.thryft.core.protocol.JsonProtocol;
+import org.thryft.protocol.JsonProtocol;
 
 import com.google.common.base.CaseFormat;
 import com.google.common.collect.ImmutableMap;

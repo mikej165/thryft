@@ -1,11 +1,11 @@
-namespace java org.thryft.core.protocol.test
-namespace * thryft_test.core.protocol.test
+namespace java org.thryft.protocol.test
+namespace * thryft_test.protocol.test
 
 include "protocol_test_enum.thrift"
-include "native/date_time.thrift"
-include "native/decimal.thrift"
-include "native/email_address.thrift"
-include "native/url.thrift"
+include "thryft/native/date_time.thrift"
+include "thryft/native/decimal.thrift"
+include "thryft/native/email_address.thrift"
+include "thryft/native/url.thrift"
 
 struct ProtocolTestStruct {
     optional binary binary_field;

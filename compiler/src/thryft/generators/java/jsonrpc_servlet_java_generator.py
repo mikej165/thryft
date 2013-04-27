@@ -17,7 +17,7 @@ class JsonrpcServletJavaGenerator(_servlet_java_generator._ServletJavaGenerator)
                 read_request = """
     final %(service_qname)s.Messages.%(name)sRequest serviceRequest;
     try {
-        serviceRequest = new %(service_qname)s.Messages.%(name)sRequest(new org.thryft.core.protocol.JsonProtocol(jsonrpcRequestParams), jsonrpcRequestParams.isObject() ? org.apache.thrift.protocol.TType.STRUCT : org.apache.thrift.protocol.TType.LIST);
+        serviceRequest = new %(service_qname)s.Messages.%(name)sRequest(new org.thryft.protocol.JsonProtocol(jsonrpcRequestParams), jsonrpcRequestParams.isObject() ? org.apache.thrift.protocol.TType.STRUCT : org.apache.thrift.protocol.TType.LIST);
     } catch (final IllegalArgumentException e) {
         logger.debug("error deserializing service request: ", e);
         __doPostError(httpServletRequest, httpServletResponse, null, -32602, "invalid JSON-RPC request method parameters: " + e.getMessage(), jsonrpcRequestId);
@@ -165,7 +165,7 @@ protected void doPost(final javax.servlet.http.HttpServletRequest httpServletReq
             return """\
 private void __doPostError(final javax.servlet.http.HttpServletRequest httpServletRequest, final javax.servlet.http.HttpServletResponse httpServletResponse, final Throwable jsonrpcErrorData, final int jsonrpcErrorCode, final String jsonrpcErrorMessage, final Object jsonrpcRequestId) throws java.io.IOException {
     final java.io.StringWriter httpServletResponseBodyWriter = new java.io.StringWriter();
-    final org.thryft.core.protocol.JsonProtocol oprot = new org.thryft.core.protocol.JsonProtocol(httpServletResponseBodyWriter);
+    final org.thryft.protocol.JsonProtocol oprot = new org.thryft.protocol.JsonProtocol(httpServletResponseBodyWriter);
 
     try {
         oprot.writeStructBegin(new org.apache.thrift.protocol.TStruct("response"));
@@ -221,7 +221,7 @@ private void __doPostError(final javax.servlet.http.HttpServletRequest httpServl
             return """\
 private void __doPostResponse(final javax.servlet.http.HttpServletRequest httpServletRequest, final javax.servlet.http.HttpServletResponse httpServletResponse, final Object jsonrpcRequestId, final Object jsonrpcResult) throws java.io.IOException {
     final java.io.StringWriter httpServletResponseBodyWriter = new java.io.StringWriter();
-    final org.thryft.core.protocol.JsonProtocol oprot = new org.thryft.core.protocol.JsonProtocol(httpServletResponseBodyWriter);
+    final org.thryft.protocol.JsonProtocol oprot = new org.thryft.protocol.JsonProtocol(httpServletResponseBodyWriter);
 
     try {
         oprot.writeStructBegin(new org.apache.thrift.protocol.TStruct("response"));

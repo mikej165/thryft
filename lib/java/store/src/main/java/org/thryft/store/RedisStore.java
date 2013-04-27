@@ -42,7 +42,7 @@ import org.apache.thrift.TBase;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.thryft.core.protocol.StringMapProtocol;
+import org.thryft.protocol.StringMapProtocol;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
