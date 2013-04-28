@@ -281,7 +281,7 @@ public class LogMessageProtocol extends JsonProtocol {
         private int size = 0;
     }
 
-    private final class NopWriterProtocol extends TProtocol {
+    private final class NopWriterProtocol extends AbstractProtocol {
         @Override
         public void writeBool(final boolean b) throws IOException {
         }
@@ -381,17 +381,17 @@ public class LogMessageProtocol extends JsonProtocol {
     }
 
     @Override
-    protected TProtocol _createArrayWriterProtocol() {
+    protected AbstractProtocol _createArrayWriterProtocol() {
         return new ArrayWriterProtocol();
     }
 
     @Override
-    protected TProtocol _createMapObjectWriterProtocol() {
+    protected AbstractProtocol _createMapObjectWriterProtocol() {
         return new MapObjectWriterProtocol();
     }
 
     @Override
-    protected TProtocol _createStructObjectWriterProtocol() {
+    protected AbstractProtocol _createStructObjectWriterProtocol() {
         return new StructObjectWriterProtocol();
     }
 

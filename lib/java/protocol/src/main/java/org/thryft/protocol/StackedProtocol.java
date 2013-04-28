@@ -35,7 +35,7 @@ package org.thryft.protocol;
 import java.io.IOException;
 import java.util.Stack;
 
-public class StackedProtocol extends TProtocol {
+public class StackedProtocol extends AbstractProtocol {
     @Override
     public byte[] readBinary() throws IOException {
         return protocolStack.peek().readBinary();

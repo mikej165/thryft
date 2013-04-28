@@ -183,15 +183,15 @@ public class CsvProtocol extends StackedProtocol {
             return new TStruct();
         }
 
-        protected TProtocol _createRowReaderProtocol(final String[] columnNames,
-                final String[] columnValues) {
+        protected TProtocol _createRowReaderProtocol(
+                final String[] columnNames, final String[] columnValues) {
             return new RowReaderProtocol(columnNames, columnValues);
         }
 
         private final Stack<TProtocol> rows;
     }
 
-    protected class ReaderProtocol extends TProtocol {
+    protected class ReaderProtocol extends AbstractProtocol {
         @Override
         public boolean readBool() throws IOException {
             return readString().equals("1");

@@ -210,7 +210,7 @@ public class JsonProtocol extends StackedProtocol {
         private boolean nextWriteIsKey = true;
     }
 
-    protected abstract class ReaderProtocol extends TProtocol {
+    protected abstract class ReaderProtocol extends AbstractProtocol {
         protected ReaderProtocol(final JsonNode node) {
             myNode = node;
         }
@@ -364,7 +364,7 @@ public class JsonProtocol extends StackedProtocol {
         }
     }
 
-    protected abstract class WriterProtocol extends TProtocol {
+    protected abstract class WriterProtocol extends AbstractProtocol {
         @Override
         public void writeBool(final boolean b) throws IOException {
             try {

@@ -33,318 +33,114 @@
 package org.thryft.protocol;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.math.BigDecimal;
 
-import org.apache.commons.codec.binary.Base64;
 import org.joda.time.DateTime;
-import org.thryft.TBase;
 import org.thryft.native_.EmailAddress;
 import org.thryft.native_.Url;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
+public interface TProtocol {
+    public byte[] readBinary() throws IOException;
 
-public abstract class TProtocol {
-    public void flush() throws IOException {
-    }
+    public boolean readBool() throws IOException;
 
-    public byte[] readBinary() throws IOException {
-        final String base64String = readString();
-        return Base64.decodeBase64(base64String);
-    }
+    public byte readByte() throws IOException;
 
-    public boolean readBool() throws IOException {
-        throw new UnsupportedOperationException();
-    }
+    public DateTime readDate() throws IOException;
 
-    public byte readByte() throws IOException {
-        throw new UnsupportedOperationException();
-    }
+    public DateTime readDateTime() throws IOException;
 
-    public DateTime readDate() throws IOException {
-        return new DateTime(readI64());
-    }
+    public BigDecimal readDecimal() throws IOException;
 
-    public DateTime readDateTime() throws IOException {
-        return new DateTime(readI64());
-    }
+    public double readDouble() throws IOException;
 
-    public BigDecimal readDecimal() throws IOException {
-        return new BigDecimal(readString());
-    }
+    public EmailAddress readEmailAddress() throws IOException;
 
-    public double readDouble() throws IOException {
-        throw new UnsupportedOperationException();
-    }
-
-    public EmailAddress readEmailAddress() throws IOException {
-        return new EmailAddress(readString());
-    }
-
-    @SuppressWarnings("unchecked")
     public <E extends Enum<E>> E readEnum(final Class<E> enumClass)
-            throws IOException {
-        final String enumStringValue = readString().trim().toUpperCase();
-        if (enumStringValue.isEmpty()) {
-            throw new IllegalArgumentException("empty string");
-        }
+            throws IOException;
 
-        try {
-            return Enum.valueOf(enumClass, enumStringValue);
-        } catch (final IllegalArgumentException e) {
-            Integer enumIntValue;
-            try {
-                enumIntValue = Integer.parseInt(enumStringValue);
-            } catch (final NumberFormatException e1) {
-                throw e;
-            }
+    public TField readFieldBegin() throws IOException;
 
-            final Method valueOfMethod;
-            try {
-                valueOfMethod = enumClass.getMethod("valueOf", Integer.class);
-            } catch (final SecurityException e1) {
-                throw e;
-            } catch (final NoSuchMethodException e1) {
-                throw e;
-            }
+    public void readFieldEnd() throws IOException;
 
-            try {
-                return (E) valueOfMethod.invoke(null, enumIntValue);
-            } catch (final IllegalArgumentException e1) {
-                throw e;
-            } catch (final IllegalAccessException e1) {
-                throw e;
-            } catch (final InvocationTargetException e1) {
-                throw e;
-            }
-        }
-    }
+    public short readI16() throws IOException;
 
-    public TField readFieldBegin() throws IOException {
-        throw new UnsupportedOperationException();
-    }
+    public int readI32() throws IOException;
 
-    public void readFieldEnd() throws IOException {
-        throw new UnsupportedOperationException();
-    }
+    public long readI64() throws IOException;
 
-    public short readI16() throws IOException {
-        throw new UnsupportedOperationException();
-    }
+    public TList readListBegin() throws IOException;
 
-    public int readI32() throws IOException {
-        throw new UnsupportedOperationException();
-    }
+    public void readListEnd() throws IOException;
 
-    public long readI64() throws IOException {
-        throw new UnsupportedOperationException();
-    }
+    public TMap readMapBegin() throws IOException;
 
-    public TList readListBegin() throws IOException {
-        throw new UnsupportedOperationException();
-    }
+    public void readMapEnd() throws IOException;
 
-    public void readListEnd() throws IOException {
-        throw new UnsupportedOperationException();
-    }
+    public Object readMixed() throws IOException;
 
-    public TMap readMapBegin() throws IOException {
-        throw new UnsupportedOperationException();
-    }
+    public TSet readSetBegin() throws IOException;
 
-    public void readMapEnd() throws IOException {
-        throw new UnsupportedOperationException();
-    }
+    public void readSetEnd() throws IOException;
 
-    public Object readMixed() throws IOException {
-        throw new UnsupportedOperationException();
-    }
+    public String readString() throws IOException;
 
-    public TSet readSetBegin() throws IOException {
-        final TList list = readListBegin();
-        return new TSet(list.elemType, list.size);
-    }
+    public TStruct readStructBegin() throws IOException;
 
-    public void readSetEnd() throws IOException {
-        readListEnd();
-    }
+    public void readStructEnd() throws IOException;
 
-    public String readString() throws IOException {
-        throw new UnsupportedOperationException();
-    }
+    public Url readUrl() throws IOException;
 
-    public TStruct readStructBegin() throws IOException {
-        throw new UnsupportedOperationException();
-    }
+    public void writeBinary(final byte[] buf) throws IOException;
 
-    public void readStructEnd() throws IOException {
-        throw new UnsupportedOperationException();
-    }
+    public void writeBool(final boolean b) throws IOException;
 
-    public Url readUrl() throws IOException {
-        return Url.parse(readString());
-    }
+    public void writeByte(final byte b) throws IOException;
 
-    public void writeBinary(final byte[] buf) throws IOException {
-        writeString(Base64.encodeBase64String(buf));
-    }
+    public void writeDateTime(final DateTime dateTime) throws IOException;
 
-    public void writeBool(final boolean b) throws IOException {
-        throw new UnsupportedOperationException();
-    }
+    public void writeDecimal(final BigDecimal decimal) throws IOException;
 
-    public void writeByte(final byte b) throws IOException {
-        throw new UnsupportedOperationException();
-    }
-
-    public void writeDateTime(final DateTime dateTime) throws IOException {
-        writeI64(dateTime.getMillis());
-    }
-
-    public void writeDecimal(final BigDecimal decimal) throws IOException {
-        writeString(decimal.toString());
-    }
-
-    public void writeDouble(final double dub) throws IOException {
-        throw new UnsupportedOperationException();
-    }
+    public void writeDouble(final double dub) throws IOException;
 
     public void writeEmailAddress(final EmailAddress emailAddress)
-            throws IOException {
-        writeString(emailAddress.toString());
-    }
+            throws IOException;
 
-    public void writeEnum(final Enum<?> enum_) throws IOException {
-        writeString(enum_.toString().toUpperCase());
-    }
+    public void writeEnum(final Enum<?> enum_) throws IOException;
 
-    public void writeFieldBegin(final TField field) throws IOException {
-        throw new UnsupportedOperationException();
-    }
+    public void writeFieldBegin(final TField field) throws IOException;
 
-    public void writeFieldEnd() throws IOException {
-        throw new UnsupportedOperationException();
-    }
+    public void writeFieldEnd() throws IOException;
 
-    public void writeFieldStop() throws IOException {
-        throw new UnsupportedOperationException();
-    }
+    public void writeFieldStop() throws IOException;
 
-    public void writeI16(final short i16) throws IOException {
-        throw new UnsupportedOperationException();
-    }
+    public void writeI16(final short i16) throws IOException;
 
-    public void writeI32(final int i32) throws IOException {
-        throw new UnsupportedOperationException();
-    }
+    public void writeI32(final int i32) throws IOException;
 
-    public void writeI64(final long i64) throws IOException {
-        throw new UnsupportedOperationException();
-    }
+    public void writeI64(final long i64) throws IOException;
 
-    public void writeListBegin(final TList list) throws IOException {
-        throw new UnsupportedOperationException();
-    }
+    public void writeListBegin(final TList list) throws IOException;
 
-    public void writeListEnd() throws IOException {
-        throw new UnsupportedOperationException();
-    }
+    public void writeListEnd() throws IOException;
 
-    public void writeMapBegin(final TMap map) throws IOException {
-        throw new UnsupportedOperationException();
-    }
+    public void writeMapBegin(final TMap map) throws IOException;
 
-    public void writeMapEnd() throws IOException {
-        throw new UnsupportedOperationException();
-    }
+    public void writeMapEnd() throws IOException;
 
-    public void writeMixed(final Object value) throws IOException {
-        if (value == null) {
-            writeNull();
-        } else if (value instanceof Boolean) {
-            writeBool((Boolean) value);
-        } else if (value instanceof Byte) {
-            writeByte((Byte) value);
-        } else if (value instanceof DateTime) {
-            writeDateTime((DateTime) value);
-        } else if (value instanceof BigDecimal) {
-            writeDecimal((BigDecimal) value);
-        } else if (value instanceof Double) {
-            writeDouble((Double) value);
-        } else if (value instanceof ImmutableList) {
-            @SuppressWarnings("unchecked")
-            final ImmutableList<Object> set = (ImmutableList<Object>) value;
-            writeListBegin(new TList(TType.VOID, set.size()));
-            for (final Object element : set) {
-                writeMixed(element);
-            }
-            writeListEnd();
-        } else if (value instanceof ImmutableMap) {
-            @SuppressWarnings("unchecked")
-            final ImmutableMap<Object, Object> map = (ImmutableMap<Object, Object>) value;
-            writeMapBegin(new TMap(TType.VOID, TType.VOID, map.size()));
-            for (final ImmutableMap.Entry<Object, Object> entry : map
-                    .entrySet()) {
-                writeMixed(entry.getKey());
-                writeMixed(entry.getValue());
-            }
-            writeMapEnd();
-        } else if (value instanceof ImmutableSet) {
-            @SuppressWarnings("unchecked")
-            final ImmutableSet<Object> set = (ImmutableSet<Object>) value;
-            writeSetBegin(new TSet(TType.VOID, set.size()));
-            for (final Object element : set) {
-                writeMixed(element);
-            }
-            writeSetEnd();
-        } else if (value instanceof EmailAddress) {
-            writeEmailAddress((EmailAddress) value);
-        } else if (value instanceof Short) {
-            writeI16((Short) value);
-        } else if (value instanceof Integer) {
-            writeI32((Integer) value);
-        } else if (value instanceof Long) {
-            writeI64((Long) value);
-        } else if (value instanceof String) {
-            writeString((String) value);
-        } else if (value instanceof Url) {
-            writeUrl((Url) value);
-        } else if (value instanceof TBase<?>) {
-            ((TBase<?>) value).write(this);
-        } else {
-            throw new UnsupportedOperationException(value.getClass()
-                    .getCanonicalName());
-        }
-    }
+    public void writeMixed(final Object value) throws IOException;
 
-    public void writeNull() throws IOException {
-        throw new UnsupportedOperationException();
-    }
+    public void writeNull() throws IOException;
 
-    public void writeSetBegin(final TSet set) throws IOException {
-        writeListBegin(new TList(set.elemType, set.size));
-    }
+    public void writeSetBegin(final TSet set) throws IOException;
 
-    public void writeSetEnd() throws IOException {
-        writeListEnd();
-    }
+    public void writeSetEnd() throws IOException;
 
-    public void writeString(final String str) throws IOException {
-        throw new UnsupportedOperationException();
-    }
+    public void writeString(final String str) throws IOException;
 
-    public void writeStructBegin(final TStruct struct) throws IOException {
-        throw new UnsupportedOperationException();
-    }
+    public void writeStructBegin(final TStruct struct) throws IOException;
 
-    public void writeStructEnd() throws IOException {
-        throw new UnsupportedOperationException();
-    }
+    public void writeStructEnd() throws IOException;
 
-    public void writeUrl(final Url url) throws IOException {
-        writeString(url.toString());
-    }
+    public void writeUrl(final Url url) throws IOException;
 }

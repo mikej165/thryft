@@ -37,8 +37,8 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class LoggingProtocol extends TProtocol {
-    public LoggingProtocol(final TProtocol wrappedProtocol) {
+public class LoggingProtocol extends AbstractProtocol {
+    public LoggingProtocol(final AbstractProtocol wrappedProtocol) {
         logger = LoggerFactory.getLogger(wrappedProtocol.getClass());
         this.wrappedProtocol = wrappedProtocol;
     }
@@ -513,5 +513,5 @@ public class LoggingProtocol extends TProtocol {
     }
 
     private final Logger logger;
-    private final TProtocol wrappedProtocol;
+    private final AbstractProtocol wrappedProtocol;
 }

@@ -89,12 +89,12 @@
 		</dependency>
 		<dependency>
 			<groupId>org.thryft</groupId>
-			<artifactId>libthryft</artifactId>
+			<artifactId>libthryft-protocol</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.thryft</groupId>
-			<artifactId>libthryft</artifactId>
+			<artifactId>libthryft-protocol</artifactId>
 			<version>${project.parent.version}</version>
 			<type>test-jar</type>
 			<scope>test</scope>
