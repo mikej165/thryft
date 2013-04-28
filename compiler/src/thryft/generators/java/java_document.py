@@ -74,8 +74,8 @@ class JavaDocument(Document, _JavaNamedConstruct):
 
         return "\n\n".join(sections) + "\n"
 
-    def save(self, out_path):
-        return Document.save(self, out_path=out_path, language='java')
+    def save(self, out_path, file_ext='.java', language='java'):
+        return Document.save(self, out_path=out_path, file_ext=file_ext, language=language)
 
     def _save(self, out_file_path):
         assert len(self.definitions) == 1, len(self.definitions)

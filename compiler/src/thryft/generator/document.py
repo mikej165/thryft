@@ -86,7 +86,7 @@ class Document(_NamedConstruct):
     def path(self):
         return self.__path
 
-    def save(self, out_path, language=None):
+    def save(self, out_path, file_ext=None, language=None):
         if os.path.isdir(out_path):
             out_dir_path = out_path
 
@@ -99,6 +99,9 @@ class Document(_NamedConstruct):
                 else:
                     raise ValueError('unknown language: ' + self.__class__.__name__)
 
+            if file_ext is None:
+                file_ext = '.' + language
+
             namespaces_by_scope = self.namespaces_by_scope
             for scope in (language, '*'):
                 scope_namespace = namespaces_by_scope.get(scope)
@@ -110,7 +113,7 @@ class Document(_NamedConstruct):
                         )
                     break
 
-            return self._save(os.path.join(out_dir_path, self.name + '.' + language))
+            return self._save(os.path.join(out_dir_path, self.name + file_ext))
         else:
             return self._save(out_path)
 
