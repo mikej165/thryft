@@ -41,13 +41,13 @@ class JavaDateTime(JavaStructType):
         return 'org.joda.time.DateTime'
 
     def java_read_protocol(self):
-        return "(iprot instanceof org.thryft.protocol.Protocol) ? ((org.thryft.protocol.Protocol)iprot).readDateTime() : new org.joda.time.DateTime(iprot.readI64())" % locals()
+        return 'iprot.readDateTime()'
 
     def java_read_protocol_throws_unchecked(self):
         return ['IllegalArgumentException']
 
     def java_write_protocol(self, value, depth=0):
-        return "if (oprot instanceof org.thryft.protocol.Protocol) { ((org.thryft.protocol.Protocol)oprot).writeDateTime(%(value)s); } else { oprot.writeI64(%(value)s.getMillis()); }" % locals()
+        return "oprot.writeDateTime(%(value)s);" % locals()
 
 
 class JsDateTime(JsStructType):
@@ -58,7 +58,7 @@ class JsDateTime(JsStructType):
         return 'Date'
 
     def js_read_protocol(self):
-        return '((typeof iprot.readDateTime !== "undefined") ? iprot.readDateTime() : new Date(iprot.readI64()))'
+        return 'iprot.readDateTime()'
 
     def js_schema(self):
         return {'type': 'DateTime'}
@@ -70,7 +70,7 @@ if (!(%(value)s instanceof Date)) {
 }""" % locals()}
 
     def js_write_protocol(self, value, depth=0):
-        return """if (typeof oprot.writeDateTime !== "undefined") { oprot.writeDateTime(%(value)s); } else { oprot.writeI64(%(value)s.getTime()); }""" % locals()
+        return "oprot.writeDateTime(%(value)s);" % locals()
 
 
 class PyDateTime(PyStructType):
@@ -84,10 +84,10 @@ class PyDateTime(PyStructType):
         return ['from datetime import datetime', 'from time import mktime']
 
     def py_read_protocol(self):
-        return "iprot.readDateTime() if hasattr(iprot, 'readDateTime') else datetime.fromtimestamp(iprot.readI64() / 1000.0)" % locals()
+        return 'iprot.readDateTime()'
 
     def py_read_protocol_throws(self):
         return ['TypeError']
 
     def py_write_protocol(self, value, depth=0):
-        return "oprot.writeDateTime(%(value)s) if hasattr(oprot, 'writeDateTime') else oprot.writeI64(long(mktime(%(value)s.timetuple())) * 1000l)" % locals()
+        return "oprot.writeDateTime(%(value)s)" % locals()

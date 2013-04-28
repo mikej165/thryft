@@ -46,7 +46,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 public class StringMapProtocol extends StackedProtocol {
-    protected abstract class ReaderProtocol extends Protocol {
+    protected abstract class ReaderProtocol extends TProtocol {
         protected ReaderProtocol(final ImmutableMap<String, String> input,
                 final String myKey) {
             this.input = input;
@@ -144,7 +144,7 @@ public class StringMapProtocol extends StackedProtocol {
         private final Stack<String> childKeyStack = new Stack<String>();
     }
 
-    protected abstract class WriterProtocol extends Protocol {
+    protected abstract class WriterProtocol extends TProtocol {
         protected WriterProtocol(final String myKey) {
             this.myKey = myKey;
         }

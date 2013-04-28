@@ -39,10 +39,10 @@ class JavaBinaryType(BinaryType, _JavaBaseType):
         return 'null'
 
     def java_from_string(self, value):
-        return "java.nio.ByteBuffer.wrap(%(value)s.getBytes())" % locals()
+        return "%(value)s.getBytes()" % locals()
 
     def java_hash_code(self, value):
-        return "%(value)s.hashCode()" % locals()
+        return "java.util.Arrays.hashCode(%(value)s)" % locals()
 
     def java_has_length(self):
         return True
@@ -51,7 +51,7 @@ class JavaBinaryType(BinaryType, _JavaBaseType):
         return True
 
     def java_name(self, boxed=False):
-        return 'java.nio.ByteBuffer'
+        return 'byte[]'
 
     def java_to_string(self, value):
-        return "%(value)s.toString()" % locals()
+        return "java.util.Arrays.toString(%(value)s)" % locals()

@@ -210,7 +210,7 @@ public class JsonProtocol extends StackedProtocol {
         private boolean nextWriteIsKey = true;
     }
 
-    protected abstract class ReaderProtocol extends Protocol {
+    protected abstract class ReaderProtocol extends TProtocol {
         protected ReaderProtocol(final JsonNode node) {
             myNode = node;
         }
@@ -364,7 +364,7 @@ public class JsonProtocol extends StackedProtocol {
         }
     }
 
-    protected abstract class WriterProtocol extends Protocol {
+    protected abstract class WriterProtocol extends TProtocol {
         @Override
         public void writeBool(final boolean b) throws IOException {
             try {
@@ -531,35 +531,35 @@ public class JsonProtocol extends StackedProtocol {
         generator.flush();
     }
 
-    protected Protocol _createArrayReaderProtocol(final JsonNode node) {
+    protected TProtocol _createArrayReaderProtocol(final JsonNode node) {
         return new ArrayReaderProtocol(node);
     }
 
-    protected Protocol _createArrayWriterProtocol() {
+    protected TProtocol _createArrayWriterProtocol() {
         return new ArrayWriterProtocol();
     }
 
-    protected Protocol _createMapObjectReaderProtocol(final JsonNode node) {
+    protected TProtocol _createMapObjectReaderProtocol(final JsonNode node) {
         return new MapObjectReaderProtocol(node);
     }
 
-    protected Protocol _createMapObjectWriterProtocol() {
+    protected TProtocol _createMapObjectWriterProtocol() {
         return new MapObjectWriterProtocol();
     }
 
-    protected Protocol _createRootReaderProtocol(final JsonNode parsedTree) {
+    protected TProtocol _createRootReaderProtocol(final JsonNode parsedTree) {
         return new RootReaderProtocol(parsedTree);
     }
 
-    protected Protocol _createRootWriterProtocol() {
+    protected TProtocol _createRootWriterProtocol() {
         return new RootWriterProtocol();
     }
 
-    protected Protocol _createStructObjectReaderProtocol(final JsonNode node) {
+    protected TProtocol _createStructObjectReaderProtocol(final JsonNode node) {
         return new StructObjectReaderProtocol(node);
     }
 
-    protected Protocol _createStructObjectWriterProtocol() {
+    protected TProtocol _createStructObjectWriterProtocol() {
         return new StructObjectWriterProtocol();
     }
 

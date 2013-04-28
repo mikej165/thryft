@@ -39,22 +39,22 @@ import java.io.StringWriter;
 
 import org.thryft.TBase;
 import org.thryft.protocol.JsonProtocol;
-import org.thryft.protocol.Protocol;
+import org.thryft.protocol.TProtocol;
 
 public class JsonProtocolTest extends ProtocolTest {
     @Override
     protected void _test(final TBase<?> expected) throws Exception {
         final StringWriter writer = new StringWriter();
-        final Protocol oprot = new JsonProtocol(writer);
+        final TProtocol oprot = new JsonProtocol(writer);
         expected.write(oprot);
         oprot.flush();
 
         final String ostring = writer.toString();
 
         final StringReader reader = new StringReader(ostring);
-        final Protocol iprot = new JsonProtocol(reader);
+        final TProtocol iprot = new JsonProtocol(reader);
         final TBase<?> actual = expected.getClass()
-                .getConstructor(Protocol.class).newInstance(iprot);
+                .getConstructor(TProtocol.class).newInstance(iprot);
         assertEquals(expected, actual);
     }
 }

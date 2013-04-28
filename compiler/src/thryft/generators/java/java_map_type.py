@@ -58,9 +58,9 @@ class JavaMapType(MapType, _JavaContainerType):
         value_read_protocol = self.value_type.java_read_protocol()
         value_type_name = self.value_type.java_declaration_name(boxed=True)
         return """\
-(new com.google.common.base.Function<org.thryft.protocol.Protocol, com.google.common.collect.ImmutableMap<%(key_type_name)s, %(value_type_name)s>>() {
+(new com.google.common.base.Function<org.thryft.protocol.TProtocol, com.google.common.collect.ImmutableMap<%(key_type_name)s, %(value_type_name)s>>() {
     @Override
-    public com.google.common.collect.ImmutableMap<%(key_type_name)s, %(value_type_name)s> apply(org.thryft.protocol.Protocol iprot) {
+    public com.google.common.collect.ImmutableMap<%(key_type_name)s, %(value_type_name)s> apply(org.thryft.protocol.TProtocol iprot) {
         try {
             org.thryft.protocol.TMap mapBegin = iprot.readMapBegin();
             java.util.Map<%(key_type_name)s, %(value_type_name)s> map = new java.util.HashMap<%(key_type_name)s, %(value_type_name)s>();

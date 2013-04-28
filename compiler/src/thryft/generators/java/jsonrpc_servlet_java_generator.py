@@ -26,7 +26,7 @@ class JsonrpcServletJavaGenerator(_servlet_java_generator._ServletJavaGenerator)
         logger.debug("error deserializing service request: ", e);
         __doPostError(httpServletRequest, httpServletResponse, null, -32602, "invalid JSON-RPC request method parameters: " + e.getMessage(), jsonrpcRequestId);
         return;
-    } catch (final org.thryft.TException e) {
+    } catch (final java.io.IOException e) {
         logger.debug("error deserializing service request: ", e);
         __doPostError(httpServletRequest, httpServletResponse, null, -32602, "invalid JSON-RPC request method parameters: " + e.getMessage(), jsonrpcRequestId);
         return;
@@ -185,12 +185,12 @@ private void __doPostError(final javax.servlet.http.HttpServletRequest httpServl
         oprot.writeI32(jsonrpcErrorCode);
         oprot.writeFieldEnd();
 
-        if (jsonrpcErrorData != null && jsonrpcErrorData instanceof org.thryft.TBase<?, ?>) {
+        if (jsonrpcErrorData != null && jsonrpcErrorData instanceof org.thryft.TBase<?>) {
             oprot.writeFieldBegin(new org.thryft.protocol.TField("@class", org.thryft.protocol.TType.STRING, (short)-1));
             oprot.writeString(jsonrpcErrorData.getClass().getName());
             oprot.writeFieldEnd();
             oprot.writeFieldBegin(new org.thryft.protocol.TField("data", org.thryft.protocol.TType.STRUCT, (short)-1));
-            ((org.thryft.TBase<?, ?>)jsonrpcErrorData).write(oprot);
+            ((org.thryft.TBase<?>)jsonrpcErrorData).write(oprot);
             oprot.writeFieldEnd();
         }
 
@@ -204,7 +204,7 @@ private void __doPostError(final javax.servlet.http.HttpServletRequest httpServl
 
         oprot.writeFieldStop(); // httpServletResponse
         oprot.writeStructEnd(); // httpServletResponse
-    } catch (final org.thryft.TException e) {
+    } catch (final java.io.IOException e) {
         logger.error("error serializing service error response: ", e);
         throw new IllegalStateException(e);
     }
@@ -240,7 +240,7 @@ private void __doPostResponse(final javax.servlet.http.HttpServletRequest httpSe
 
         oprot.writeFieldStop(); // httpServletResponse
         oprot.writeStructEnd(); // httpServletResponse
-    } catch (org.thryft.TException e) {
+    } catch (final java.io.IOException e) {
         logger.error("error serializing service response: ", e);
         throw new IllegalStateException(e);
     }

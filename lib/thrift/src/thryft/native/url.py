@@ -44,13 +44,13 @@ class JavaUrl(JavaStructType):
         return 'org.thryft.native_.Url'
 
     def java_read_protocol(self):
-        return "(iprot instanceof org.thryft.protocol.Protocol) ? ((org.thryft.protocol.Protocol)iprot).readUrl() : org.thryft.native_.Url.parse(iprot.readString())" % locals()
+        return 'iprot.readUrl()'
 
     def java_read_protocol_throws_checked(self):
         return ['java.net.MalformedURLException']
 
     def java_write_protocol(self, value, depth=0):
-        return "if (oprot instanceof org.thryft.protocol.Protocol) { ((org.thryft.protocol.Protocol)oprot).writeUrl(%(value)s); } else { oprot.writeString(%(value)s.toString()); }" % locals()
+        return "oprot.writeUrl(%(value)s);" % locals()
 
 
 class JsUrl(JsStructType):
@@ -61,7 +61,7 @@ class JsUrl(JsStructType):
         return 'string'
 
     def js_read_protocol(self):
-        return '((typeof iprot.readUrl !== "undefined") ? iprot.readUrl() : iprot.readString())'
+        return 'iprot.readUrl()'
 
     def js_schema(self):
         return {'type': 'Text', 'validators': ['url']}
@@ -73,7 +73,7 @@ if (typeof %(value)s !== "string") {
 }""" % locals()}
 
     def js_write_protocol(self, value, depth=0):
-        return """if (typeof oprot.writeUrl !== "undefined") { oprot.writeUrl(%(value)s); } else { oprot.writeString(%(value)s); }""" % locals()
+        return "oprot.writeUrl(%(value)s);" % locals()
 
 
 class PyUrl(PyStructType):
@@ -87,11 +87,11 @@ class PyUrl(PyStructType):
         return []
 
     def py_read_protocol(self):
-        return "iprot.readString()" % locals()
+        return 'iprot.readString()'
 
     def py_read_protocol_throws(self):
         return []
 
     def py_write_protocol(self, value, depth=0):
         qname = self.py_qname()
-        return "oprot.writeUrl(%(value)s) if hasattr(oprot, 'writeUrl') else oprot.writeString(str(%(value)s))" % locals()
+        return "oprot.writeUrl(%(value)s)" % locals()

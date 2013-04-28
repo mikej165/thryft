@@ -83,9 +83,9 @@ try {
         mutable_raw_qname = self._java_mutable_raw_qname()
 
         return """\
-(new com.google.common.base.Function<org.thryft.protocol.Protocol, com.google.common.collect.Immutable%(interface_simple_name)s<%(element_type_name)s>>() {
+(new com.google.common.base.Function<org.thryft.protocol.TProtocol, com.google.common.collect.Immutable%(interface_simple_name)s<%(element_type_name)s>>() {
     @Override
-    public com.google.common.collect.Immutable%(interface_simple_name)s<%(element_type_name)s> apply(final org.thryft.protocol.Protocol iprot) {
+    public com.google.common.collect.Immutable%(interface_simple_name)s<%(element_type_name)s> apply(final org.thryft.protocol.TProtocol iprot) {
         try {
             final org.thryft.protocol.T%(interface_simple_name)s sequenceBegin = iprot.read%(interface_simple_name)sBegin();
             final java.util.%(interface_simple_name)s<%(element_type_name)s> sequence = new %(mutable_raw_qname)s<%(element_type_name)s>();

@@ -397,12 +397,12 @@ class ProtocolTestStruct(object):
                     pass
             elif ifield_name == 'date_time_field':
                 try:
-                    init_kwds['date_time_field'] = iprot.readDateTime() if hasattr(iprot, 'readDateTime') else datetime.fromtimestamp(iprot.readI64() / 1000.0)
+                    init_kwds['date_time_field'] = iprot.readDateTime()
                 except (TypeError,):
                     pass
             elif ifield_name == 'decimal_field':
                 try:
-                    init_kwds['decimal_field'] = iprot.readDecimal() if hasattr(iprot, 'readDecimal') else decimal.Decimal(iprot.readString())
+                    init_kwds['decimal_field'] = iprot.readDecimal()
                 except (decimal.InvalidOperation, TypeError,):
                     pass
             elif ifield_name == 'email_address_field':
@@ -511,17 +511,17 @@ class ProtocolTestStruct(object):
 
         if self.date_time_field is not None:
             oprot.writeFieldBegin('date_time_field', 12, -1)
-            oprot.writeDateTime(self.date_time_field) if hasattr(oprot, 'writeDateTime') else oprot.writeI64(long(mktime(self.date_time_field.timetuple())) * 1000l)
+            oprot.writeDateTime(self.date_time_field)
             oprot.writeFieldEnd()
 
         if self.decimal_field is not None:
             oprot.writeFieldBegin('decimal_field', 12, -1)
-            oprot.writeDecimal(self.decimal_field) if hasattr(oprot, 'writeDecimal') else oprot.writeString(str(self.decimal_field))
+            oprot.writeDecimal(self.decimal_field)
             oprot.writeFieldEnd()
 
         if self.email_address_field is not None:
             oprot.writeFieldBegin('email_address_field', 12, -1)
-            oprot.writeEmailAddress(self.email_address_field) if hasattr(oprot, 'writeEmailAddress') else oprot.writeString(str(self.email_address_field))
+            oprot.writeEmailAddress(self.email_address_field)
             oprot.writeFieldEnd()
 
         if self.enum_field is not None:
@@ -581,7 +581,7 @@ class ProtocolTestStruct(object):
 
         if self.url_field is not None:
             oprot.writeFieldBegin('url_field', 12, -1)
-            oprot.writeUrl(self.url_field) if hasattr(oprot, 'writeUrl') else oprot.writeString(str(self.url_field))
+            oprot.writeUrl(self.url_field)
             oprot.writeFieldEnd()
 
         oprot.writeFieldStop()

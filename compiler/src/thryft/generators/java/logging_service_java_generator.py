@@ -35,8 +35,6 @@ try {
     __logMessageStringBuilder.append(__logMessageStringWriter.toString());
 } catch (final java.io.IOException e) {
     __logMessageStringBuilder.append("(serialization error)");
-} catch (final org.thryft.TException e) {
-    __logMessageStringBuilder.append("(serialization error)");
 }
 """ % locals())
             else:
@@ -61,8 +59,6 @@ try {
     __logMessageProtocol.flush();
     __logMessageStringBuilder.append(__logMessageStringWriter.toString());
 } catch (final java.io.IOException e) {
-    __logMessageStringBuilder.append("(serialization error)");
-} catch (final org.thryft.TException e) {
     __logMessageStringBuilder.append("(serialization error)");
 }
 logger.info(__logMessageStringBuilder.toString());

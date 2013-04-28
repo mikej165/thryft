@@ -35,7 +35,7 @@ package org.thryft.protocol.test;
 import static org.junit.Assert.assertEquals;
 
 import org.thryft.TBase;
-import org.thryft.protocol.Protocol;
+import org.thryft.protocol.TProtocol;
 import org.thryft.protocol.StringMapProtocol;
 
 import com.google.common.collect.ImmutableMap;
@@ -49,7 +49,7 @@ public class StringMapProtocolTest extends ProtocolTest {
 
         final StringMapProtocol iprot = new StringMapProtocol(ostringMap);
         final TBase<?> actual = expected.getClass()
-                .getConstructor(Protocol.class).newInstance(iprot);
+                .getConstructor(TProtocol.class).newInstance(iprot);
         assertEquals(expected, actual);
     }
 }

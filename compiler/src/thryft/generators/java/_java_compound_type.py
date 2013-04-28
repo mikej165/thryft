@@ -220,11 +220,11 @@ if (__list.size > %(field_i)u) {
         name = self.java_name()
         read_list = need_read_list_return and "final org.thryft.protocol.TList __list = " or ''
         return """\
-public %(name)s(final org.thryft.protocol.Protocol iprot) throws java.io.IOException {
+public %(name)s(final org.thryft.protocol.TProtocol iprot) throws java.io.IOException {
     this(iprot, org.thryft.protocol.TType.STRUCT);
 }
 
-public %(name)s(final org.thryft.protocol.Protocol iprot, final byte readAsTType) throws java.io.IOException {%(field_declarations)s
+public %(name)s(final org.thryft.protocol.TProtocol iprot, final byte readAsTType) throws java.io.IOException {%(field_declarations)s
     switch (readAsTType) {
         case org.thryft.protocol.TType.LIST:
             %(read_list)siprot.readListBegin();%(field_protocol_positional_initializers)s
@@ -435,7 +435,7 @@ public %(method_signature)s {
 }""" % locals())
             for method_name, method_signature in (
                 ('compareTo', "int compareTo(final %(name)s other)" % locals()),
-                ('write', 'void write(final org.thryft.protocol.Protocol oprot)'),
+                ('write', 'void write(final org.thryft.protocol.TProtocol oprot)'),
             )
         )
 
@@ -494,7 +494,7 @@ public String toString() {
 if (%(field_java_getter_call)s != null) {
 %(field_value_write_protocol)s
 } else {
-    ((org.thryft.protocol.Protocol)oprot).writeNull();
+    ((org.thryft.protocol.TProtocol)oprot).writeNull();
 }""" % locals()
             field_value_write_protocols.append(field_value_write_protocol)
         field_value_write_protocols = \
@@ -503,11 +503,11 @@ if (%(field_java_getter_call)s != null) {
         name = self.java_name()
         return {'write': """\
 @Override
-public void write(final org.thryft.protocol.Protocol oprot) throws java.io.IOException {
+public void write(final org.thryft.protocol.TProtocol oprot) throws java.io.IOException {
     write(oprot, org.thryft.protocol.TType.STRUCT);
 }
 
-public void write(final org.thryft.protocol.Protocol oprot, final byte writeAsTType) throws java.io.IOException {
+public void write(final org.thryft.protocol.TProtocol oprot, final byte writeAsTType) throws java.io.IOException {
     switch (writeAsTType) {
         %(case_ttype_void)s
         case org.thryft.protocol.TType.LIST:

@@ -33,15 +33,27 @@
 package org.thryft.protocol;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class LoggingProtocol extends Protocol {
-    public LoggingProtocol(final Protocol wrappedProtocol) {
+public class LoggingProtocol extends TProtocol {
+    public LoggingProtocol(final TProtocol wrappedProtocol) {
         logger = LoggerFactory.getLogger(wrappedProtocol.getClass());
         this.wrappedProtocol = wrappedProtocol;
+    }
+
+    @Override
+    public byte[] readBinary() throws IOException {
+        final String message = "readBinary() -> ";
+        try {
+            final byte[] binary = wrappedProtocol.readBinary();
+            logger.info(message + __toString(binary));
+            return binary;
+        } catch (final IOException e) {
+            logger.info(message + __toString(e));
+            throw e;
+        }
     }
 
     @Override
@@ -261,7 +273,7 @@ public class LoggingProtocol extends Protocol {
     }
 
     @Override
-    public void writeBinary(final ByteBuffer buf) throws IOException {
+    public void writeBinary(final byte[] buf) throws IOException {
         final String message = "writeBinary(" + __toString(buf) + " bytes)";
         try {
             wrappedProtocol.writeBinary(buf);
@@ -472,9 +484,8 @@ public class LoggingProtocol extends Protocol {
         }
     }
 
-    private final String __toString(final ByteBuffer byteBuffer) {
-        return "ByteBuffer(capacity=" + Integer.toString(byteBuffer.capacity())
-                + ")";
+    private final String __toString(final byte[] bytes) {
+        return "bytes[length=" + Integer.toString(bytes.length) + "]";
     }
 
     private final String __toString(final Exception e) {
@@ -502,5 +513,5 @@ public class LoggingProtocol extends Protocol {
     }
 
     private final Logger logger;
-    private final Protocol wrappedProtocol;
+    private final TProtocol wrappedProtocol;
 }

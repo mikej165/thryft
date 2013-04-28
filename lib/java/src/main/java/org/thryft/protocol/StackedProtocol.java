@@ -35,7 +35,12 @@ package org.thryft.protocol;
 import java.io.IOException;
 import java.util.Stack;
 
-public class StackedProtocol extends Protocol {
+public class StackedProtocol extends TProtocol {
+    @Override
+    public byte[] readBinary() throws IOException {
+        return protocolStack.peek().readBinary();
+    }
+
     @Override
     public boolean readBool() throws IOException {
         return protocolStack.peek().readBool();
@@ -148,7 +153,7 @@ public class StackedProtocol extends Protocol {
     }
 
     @Override
-    public void writeBinary(final java.nio.ByteBuffer buf) throws IOException {
+    public void writeBinary(final byte[] buf) throws IOException {
         protocolStack.peek().writeBinary(buf);
     }
 
@@ -288,9 +293,9 @@ public class StackedProtocol extends Protocol {
         protocolStack.peek().writeStructEnd();
     }
 
-    protected final Stack<Protocol> _getProtocolStack() {
+    protected final Stack<TProtocol> _getProtocolStack() {
         return protocolStack;
     }
 
-    private final Stack<Protocol> protocolStack = new Stack<Protocol>();
+    private final Stack<TProtocol> protocolStack = new Stack<TProtocol>();
 }

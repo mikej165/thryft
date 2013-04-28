@@ -107,7 +107,7 @@ public class CsvProtocol extends StackedProtocol {
                 return new TStruct();
             }
 
-            protected Protocol _createSequenceColumn(final String[] elements) {
+            protected TProtocol _createSequenceColumn(final String[] elements) {
                 return new SequenceColumnReaderProtocol(elements);
             }
 
@@ -159,7 +159,7 @@ public class CsvProtocol extends StackedProtocol {
         }
 
         public FileReaderProtocol(final List<String[]> rows) {
-            this.rows = new Stack<Protocol>();
+            this.rows = new Stack<TProtocol>();
             Collections.reverse(rows);
             final String[] columnNames = rows.remove(rows.size() - 1);
             for (final String[] row : rows) {
@@ -183,15 +183,15 @@ public class CsvProtocol extends StackedProtocol {
             return new TStruct();
         }
 
-        protected Protocol _createRowReaderProtocol(final String[] columnNames,
+        protected TProtocol _createRowReaderProtocol(final String[] columnNames,
                 final String[] columnValues) {
             return new RowReaderProtocol(columnNames, columnValues);
         }
 
-        private final Stack<Protocol> rows;
+        private final Stack<TProtocol> rows;
     }
 
-    protected class ReaderProtocol extends Protocol {
+    protected class ReaderProtocol extends TProtocol {
         @Override
         public boolean readBool() throws IOException {
             return readString().equals("1");
@@ -247,7 +247,7 @@ public class CsvProtocol extends StackedProtocol {
         _getProtocolStack().add(_createFileReaderProtocol(rows));
     }
 
-    protected Protocol _createFileReaderProtocol(final List<String[]> rows) {
+    protected TProtocol _createFileReaderProtocol(final List<String[]> rows) {
         return new FileReaderProtocol(rows);
     }
 

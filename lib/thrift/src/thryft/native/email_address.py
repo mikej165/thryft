@@ -41,10 +41,10 @@ class JavaEmailAddress(JavaStructType):
         return 'org.thryft.native_.EmailAddress'
 
     def java_read_protocol(self):
-        return "(iprot instanceof org.thryft.protocol.Protocol) ? ((org.thryft.protocol.Protocol)iprot).readEmailAddress() : new org.thryft.native_.EmailAddress(iprot.readString())" % locals()
+        return 'iprot.readEmailAddress()'
 
     def java_write_protocol(self, value, depth=0):
-        return "if (oprot instanceof org.thryft.protocol.Protocol) { ((org.thryft.protocol.Protocol)oprot).writeEmailAddress(%(value)s); } else { oprot.writeString(%(value)s.toString()); }" % locals()
+        return "oprot.writeEmailAddress(%(value)s);" % locals()
 
 
 class JsEmailAddress(JsStructType):
@@ -55,7 +55,7 @@ class JsEmailAddress(JsStructType):
         return 'string'
 
     def js_read_protocol(self):
-        return '((typeof iprot.readEmailAddress !== "undefined") ? iprot.readEmailAddress() : iprot.readString())'
+        return 'iprot.readEmailAddress()'
 
     def js_schema(self):
         return {'type': 'Text', 'validators': ['email']}
@@ -67,7 +67,7 @@ if (typeof %(value)s !== "string") {
 }""" % locals()}
 
     def js_write_protocol(self, value, depth=0):
-        return """if (typeof oprot.writeEmailAddress !== "undefined") { oprot.writeEmailAddress(%(value)s); } else { oprot.writeString(%(value)s); }""" % locals()
+        return """oprot.writeEmailAddress(%(value)s);""" % locals()
 
 
 class PyEmailAddress(PyStructType):
@@ -81,11 +81,11 @@ class PyEmailAddress(PyStructType):
         return []
 
     def py_read_protocol(self):
-        return "iprot.readString()" % locals()
+        return 'iprot.readString()'
 
     def py_read_protocol_throws(self):
         return []
 
     def py_write_protocol(self, value, depth=0):
         qname = self.py_qname()
-        return "oprot.writeEmailAddress(%(value)s) if hasattr(oprot, 'writeEmailAddress') else oprot.writeString(str(%(value)s))" % locals()
+        return "oprot.writeEmailAddress(%(value)s)" % locals()

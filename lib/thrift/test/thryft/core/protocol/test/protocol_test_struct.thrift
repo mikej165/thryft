@@ -8,6 +8,7 @@ include "thryft/native/email_address.thrift"
 include "thryft/native/url.thrift"
 
 struct ProtocolTestStruct {
+    optional binary binary_field;
     optional bool bool_field;
     optional byte byte_field
     optional date_time.DateTime date_time_field;

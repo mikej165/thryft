@@ -40,7 +40,7 @@ import java.lang.reflect.InvocationTargetException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.thryft.TBase;
-import org.thryft.protocol.Protocol;
+import org.thryft.protocol.TProtocol;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -163,9 +163,9 @@ public abstract class Store<ModelT extends TBase<?>> {
 
     protected abstract void _deleteModels(final String username);
 
-    protected ModelT _getModel(final Protocol iprot) {
+    protected ModelT _getModel(final TProtocol iprot) {
         try {
-            return modelClass.getConstructor(Protocol.class).newInstance(iprot);
+            return modelClass.getConstructor(TProtocol.class).newInstance(iprot);
         } catch (final IllegalArgumentException e) {
             logger.error("exception reading:", e);
         } catch (final SecurityException e) {

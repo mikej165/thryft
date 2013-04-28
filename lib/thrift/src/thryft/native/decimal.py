@@ -41,13 +41,13 @@ class JavaDecimal(JavaStructType):
         return 'java.math.BigDecimal'
 
     def java_read_protocol(self):
-        return "(iprot instanceof org.thryft.protocol.Protocol) ? ((org.thryft.protocol.Protocol)iprot).readDecimal() : new java.math.BigDecimal(iprot.readString())" % locals()
+        return 'iprot.readDecimal()'
 
     def java_read_protocol_throws_unchecked(self):
         return ['NumberFormatException']
 
     def java_write_protocol(self, value, depth=0):
-        return "if (oprot instanceof org.thryft.protocol.Protocol) { ((org.thryft.protocol.Protocol)oprot).writeDecimal(%(value)s); } else { oprot.writeString(%(value)s.toString()); }" % locals()
+        return "oprot.writeDecimal(%(value)s);" % locals()
 
 
 class JsDecimal(JsStructType):
@@ -58,7 +58,7 @@ class JsDecimal(JsStructType):
         return 'string'
 
     def js_read_protocol(self):
-        return '((typeof iprot.readDecimal !== "undefined") ? iprot.readDecimal() : iprot.readString())'
+        return 'iprot.readDecimal()'
 
     def js_schema(self):
         return {'type': 'Number'}
@@ -70,7 +70,7 @@ if (typeof %(value)s !== "string") {
 }""" % locals()}
 
     def js_write_protocol(self, value, depth=0):
-        return """if (typeof oprot.writeDecimal !== "undefined") { oprot.writeDecimal(%(value)s); } else { oprot.writeString(%(value)s); }""" % locals()
+        return """oprot.writeDecimal(%(value)s);""" % locals()
 
 
 class PyDecimal(PyStructType):
@@ -84,11 +84,11 @@ class PyDecimal(PyStructType):
         return ['from __future__ import absolute_import; import decimal']
 
     def py_read_protocol(self):
-        return "iprot.readDecimal() if hasattr(iprot, 'readDecimal') else decimal.Decimal(iprot.readString())" % locals()
+        return 'iprot.readDecimal()'
 
     def py_read_protocol_throws(self):
         return ['decimal.InvalidOperation', 'TypeError']
 
     def py_write_protocol(self, value, depth=0):
         qname = self.py_qname()
-        return "oprot.writeDecimal(%(value)s) if hasattr(oprot, 'writeDecimal') else oprot.writeString(str(%(value)s))" % locals()
+        return "oprot.writeDecimal(%(value)s)" % locals()

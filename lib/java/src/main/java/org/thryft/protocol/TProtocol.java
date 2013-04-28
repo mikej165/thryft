@@ -36,8 +36,6 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
-import java.net.MalformedURLException;
-import java.nio.ByteBuffer;
 
 import org.apache.commons.codec.binary.Base64;
 import org.joda.time.DateTime;
@@ -49,8 +47,13 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
-public abstract class Protocol {
+public abstract class TProtocol {
     public void flush() throws IOException {
+    }
+
+    public byte[] readBinary() throws IOException {
+        final String base64String = readString();
+        return Base64.decodeBase64(base64String);
     }
 
     public boolean readBool() throws IOException {
@@ -181,12 +184,12 @@ public abstract class Protocol {
         throw new UnsupportedOperationException();
     }
 
-    public Url readUrl() throws IOException, MalformedURLException {
+    public Url readUrl() throws IOException {
         return Url.parse(readString());
     }
 
-    public void writeBinary(final ByteBuffer buf) throws IOException {
-        writeString(Base64.encodeBase64String(buf.array()));
+    public void writeBinary(final byte[] buf) throws IOException {
+        writeString(Base64.encodeBase64String(buf));
     }
 
     public void writeBool(final boolean b) throws IOException {
