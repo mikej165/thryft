@@ -86,10 +86,21 @@ write: function(oprot) {
 
     def _js_properties(self):
         properties = {}
+        properties.update(self._js_property_defaults())
         properties.update(self._js_property_schema())
         properties.update(self._js_property_validation())
         properties.update(self._js_method_write())
         return [properties[method_name] for method_name in sorted(properties.iterkeys())]
+
+    def _js_property_defaults(self):
+        return {'defaults': """\
+defaults: function() {
+    return {
+%s
+    };
+}""" % (",\n".join(indent(' ' * 8,
+            [field.js_declaration() for field in self.fields]
+        )))}
 
     def _js_property_schema(self):
         schema = {}
@@ -129,12 +140,6 @@ if (!%(value)s.isValid(true)) {
         class_properties = ",\n\n".join(class_properties)
 
         properties = []
-        if len(self.fields) > 0:
-            properties.append(
-                ",\n".join(indent(' ' * 8,
-                    [field.js_declaration() for field in self.fields]
-                ))
-            )
         properties.append(",\n\n".join(indent(' ' * 8, self._js_properties())))
         properties = ",\n\n".join(properties)
 
