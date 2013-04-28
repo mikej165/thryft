@@ -34,6 +34,9 @@ from thryft.generators.js._js_base_type import _JsBaseType
 
 
 class _JsNumberType(_JsBaseType):
+    def js_default_value(self):
+        return '0'
+
     def js_literal(self, value):
         return str(value).rstrip('l')
 

@@ -51,6 +51,9 @@ class JavaDecimal(JavaStructType):
 
 
 class JsDecimal(JsStructType):
+    def js_default_value(self):
+        return '"0"'
+
     def js_name(self):
         return 'string'
 

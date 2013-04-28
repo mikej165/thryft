@@ -48,6 +48,9 @@ class JavaEmailAddress(JavaStructType):
 
 
 class JsEmailAddress(JsStructType):
+    def js_default_value(self):
+        return '""'
+
     def js_name(self):
         return 'string'
 

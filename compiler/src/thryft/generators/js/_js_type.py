@@ -38,6 +38,9 @@ class _JsType(_JsNamedConstruct):
     def js_check(self, *args, **kwds):
         raise NotImplementedError(class_qname(self) + '.js_check')
 
+    def js_default_value(self, *args, **kwds):
+        raise NotImplementedError(class_qname(self) + '.js_default_value')
+
     def js_schema(self, *args, **kwds):
         raise NotImplementedError(class_qname(self) + '.js_schema')
 

@@ -70,6 +70,9 @@ read: function(iprot) {
     return new %(name)s(fields);
 }""" % locals()}
 
+    def js_default_value(self):
+        return 'null'
+
     def _js_method_write(self):
         field_writes = indent(' ' * 4, "\n".join(field.js_write_protocol() for field in self.fields))
         name = self.js_name()
@@ -129,8 +132,7 @@ if (!%(value)s.isValid(true)) {
         if len(self.fields) > 0:
             properties.append(
                 ",\n".join(indent(' ' * 8,
-                    ["/** @type %s */\n" % field.type.js_qname() + \
-                      field.js_name() + ':undefined' for field in self.fields]
+                    [field.js_declaration() for field in self.fields]
                 ))
             )
         properties.append(",\n\n".join(indent(' ' * 8, self._js_properties())))

@@ -36,6 +36,9 @@ from yutil import decamelize, indent
 
 
 class _JsSequenceType(_JsContainerType):
+    def js_default_value(self):
+        return '[]'
+
     def js_literal(self, value):
         if isinstance(self.element_type, _JsCompoundType):
             return \

@@ -35,6 +35,12 @@ from thryft.generators.js._js_type import _JsType
 
 
 class JsEnumType(EnumType, _JsType):
+    def js_default_value(self):
+        if len(self.enumerators) > 0:
+            return str(self.enumerators[0].value)
+        else:
+            return '0'
+
     def js_read_protocol(self):
         name = self.js_qname()
         return "%(name)s[iprot.readString()]" % locals()

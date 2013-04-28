@@ -51,6 +51,9 @@ class JavaDateTime(JavaStructType):
 
 
 class JsDateTime(JsStructType):
+    def js_default_value(self):
+        return 'new Date()'
+
     def js_name(self):
         return 'Date'
 

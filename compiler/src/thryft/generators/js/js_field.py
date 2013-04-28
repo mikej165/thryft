@@ -37,6 +37,11 @@ import json
 
 
 class JsField(Field, _JsNamedConstruct):
+    def js_declaration(self):
+        return \
+            "/** @type %s */\n" % self.type.js_qname() + \
+            self.js_name() + ':' + self.type.js_default_value()
+
     def js_name(self):
         return lower_camelize(self.name)
 
