@@ -51,6 +51,7 @@ import org.thryft.TBase;
 import org.thryft.protocol.JsonProtocol;
 
 import com.google.common.base.CaseFormat;
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
@@ -227,9 +228,9 @@ public final class JdbcStore<ModelT extends TBase<?>> extends Store<ModelT> {
                     final ResultSet resultSet = statement.executeQuery();
                     try {
                         if (resultSet.next()) {
-                            final ModelT model = __getModel(resultSet);
-                            if (model != null) {
-                                return model;
+                            final Optional<ModelT> model = __getModel(resultSet);
+                            if (model.isPresent()) {
+                                return model.get();
                             } else {
                                 throw new NoSuchModelException(modelId);
                             }
@@ -328,9 +329,9 @@ public final class JdbcStore<ModelT extends TBase<?>> extends Store<ModelT> {
                         final ImmutableMap.Builder<String, ModelT> models = ImmutableMap
                                 .builder();
                         while (resultSet.next()) {
-                            final ModelT model = __getModel(resultSet);
-                            if (model != null) {
-                                models.put(__getModelId(resultSet), model);
+                            final Optional<ModelT> model = __getModel(resultSet);
+                            if (model.isPresent()) {
+                                models.put(__getModelId(resultSet), model.get());
                             }
                         }
                         return models.build();
@@ -393,10 +394,10 @@ public final class JdbcStore<ModelT extends TBase<?>> extends Store<ModelT> {
                         while (resultSet.next()) {
                             final String modelId = resultSet
                                     .getString(tableName + "_id");
-                            final ModelT model = __getModel(resultSet);
-                            if (model != null) {
+                            final Optional<ModelT> model = __getModel(resultSet);
+                            if (model.isPresent()) {
                                 modelsBuilder.put(__getModelId(resultSet),
-                                        model);
+                                        model.get());
                             } else {
                                 throw new NoSuchModelException(modelId);
                             }
@@ -538,7 +539,7 @@ public final class JdbcStore<ModelT extends TBase<?>> extends Store<ModelT> {
         }
     }
 
-    private ModelT __getModel(final ResultSet resultSet) {
+    private Optional<ModelT> __getModel(final ResultSet resultSet) {
         try {
             return _getModel(new JsonProtocol(new StringReader(
                     resultSet.getString(tableName + "_json"))));
@@ -547,7 +548,7 @@ public final class JdbcStore<ModelT extends TBase<?>> extends Store<ModelT> {
         } catch (final SQLException e) {
             logger.error("error reading model: ", e);
         }
-        return null;
+        return Optional.<ModelT> absent();
     }
 
     private String __getModelId(final ResultSet resultSet) throws SQLException {

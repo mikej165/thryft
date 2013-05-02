@@ -97,12 +97,11 @@ protected %(name)s _build(%(field_parameters)s) {
 }""" % locals()}
 
         def _java_method_setters(self):
-            return \
-                dict((
-                    field.java_setter_name(),
-                    field.java_setter(return_type_name='Builder')
-                )
-                for field in self.fields)
+            setters = {}
+            for field in self.fields:
+                for field_setter_i, field_setter in enumerate(field.java_setters(return_type_name='Builder')):
+                    setters[field.java_setter_name() + str(field_setter_i)] = field_setter
+            return setters
 
         def _java_methods(self):
             methods = {}
@@ -181,7 +180,7 @@ public %(name)s(final %(name)s other) {%(this_call)s
             )), "\n")
         field_initializers = \
             lpad("\n\n", "\n".join(indent(' ' * 4,
-                [field.java_initializer()
+                [field.java_initializer(check_optional_not_null=False)
                  for field in self.fields]
             )))
         field_protocol_named_initializers = \
@@ -394,7 +393,7 @@ if (fieldName.equals("%(field_name)s")) {
         fields = lpad("\n", indent(' ' * 4, ' else '.join(fields)))
         return {'get': """\
 public Object get(final String fieldName) {%(fields)s
-    return null;
+    throw new IllegalArgumentException(fieldName);
 }""" % locals()}
 
     def _java_method_getters(self):
@@ -403,18 +402,7 @@ public Object get(final String fieldName) {%(fields)s
 
     def _java_method_hash_code(self):
         statements = ['int hashCode = 17;']
-        for field in self.fields:
-            value = field.java_getter_name() + '()'
-            hashCode_update = \
-                'hashCode = 31 * hashCode + ' + \
-                    field.type.java_hash_code(value) + \
-                ';'
-            if not field.required:
-                hashCode_update = """\
-if (%(value)s != null) {
-    %(hashCode_update)s
-}""" % locals()
-            statements.append(hashCode_update)
+        statements.extend(field.java_hash_code_update() for field in self.fields)
         statements = \
             "\n".join(indent(' ' * 4, statements))
         return {'hashCode': """\
@@ -446,7 +434,7 @@ public %(method_signature)s {
                 """helper.add(\"%s\", %s());""" % (field.name, field.java_getter_name())
             if not field.required:
                 add_statement = """\
-if (%s() != null) {
+if (%s().isPresent()) {
     %s
 }""" % (field.java_getter_name(), add_statement)
             add_statements.append(add_statement)
@@ -466,7 +454,7 @@ public String toString() {
             from thryft.generators.java.java_struct_type import JavaStructType
             if isinstance(field.type, _JavaContainerType) or isinstance(field.type, JavaStructType):
                 field_value_java_write_protocol = \
-                    indent(' ' * 12, field.type.java_write_protocol(field.java_getter_name() + '()', depth=0))
+                    indent(' ' * 12, field.type.java_write_protocol(field.java_getter_name() + (field.required and '()' or '().get()'), depth=0))
                 field_thrift_ttype_name = field.type.thrift_ttype_name()
                 case_ttype_void = """\
 %(case_ttype_void)s {
@@ -479,26 +467,15 @@ public String toString() {
 
         field_write_protocols = \
             lpad("\n\n", "\n\n".join(indent(' ' * 12,
-                [field.java_write_protocol(depth=0)
+                [field.java_write_protocol(depth=0, write_field=True)
                  for field in self.fields]
             )))
 
-        field_value_write_protocols = []
-        for field in self.fields:
-            field_java_getter_call = field.java_getter_name() + '()'
-            field_value_write_protocol = \
-                field.type.java_write_protocol(field_java_getter_call, depth=0)
-            if not field.required:
-                field_value_write_protocol = indent(' ' * 4, field_value_write_protocol)
-                field_value_write_protocol = """\
-if (%(field_java_getter_call)s != null) {
-%(field_value_write_protocol)s
-} else {
-    ((org.thryft.protocol.TProtocol)oprot).writeNull();
-}""" % locals()
-            field_value_write_protocols.append(field_value_write_protocol)
         field_value_write_protocols = \
-            pad("\n\n", "\n\n".join(indent(' ' * 12, field_value_write_protocols)), "\n")
+            pad("\n\n", "\n\n".join(indent(' ' * 12,
+                [field.java_write_protocol(depth=0, write_field=False)
+                 for field in self.fields]
+            )), "\n")
 
         name = self.java_name()
         return {'write': """\

@@ -46,6 +46,7 @@ import org.thryft.TBase;
 import org.thryft.protocol.JsonProtocol;
 
 import com.google.common.base.CaseFormat;
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
@@ -112,9 +113,10 @@ public final class FsStore<ModelT extends TBase<?>> extends Store<ModelT> {
     @Override
     protected synchronized ModelT _getModelById(final String modelId,
             final String username) throws NoSuchModelException {
-        final ModelT model = __getModel(__getModelFilePath(modelId, username));
-        if (model != null) {
-            return model;
+        final Optional<ModelT> model = __getModel(__getModelFilePath(modelId,
+                username));
+        if (model.isPresent()) {
+            return model.get();
         } else {
             throw new NoSuchModelException(modelId);
         }
@@ -168,9 +170,9 @@ public final class FsStore<ModelT extends TBase<?>> extends Store<ModelT> {
         final ImmutableMap.Builder<String, ModelT> models = ImmutableMap
                 .builder();
         for (final File modelFilePath : modelDirectoryPath.listFiles()) {
-            final ModelT model = __getModel(modelFilePath);
-            if (model != null) {
-                models.put(__getModelId(modelFilePath), model);
+            final Optional<ModelT> model = __getModel(modelFilePath);
+            if (model.isPresent()) {
+                models.put(__getModelId(modelFilePath), model.get());
             }
         }
         return models.build();
@@ -183,10 +185,10 @@ public final class FsStore<ModelT extends TBase<?>> extends Store<ModelT> {
         final ImmutableMap.Builder<String, ModelT> models = ImmutableMap
                 .builder();
         for (final String modelId : modelIds) {
-            final ModelT model = __getModel(__getModelFilePath(modelId,
-                    username));
-            if (model != null) {
-                models.put(modelId, model);
+            final Optional<ModelT> model = __getModel(__getModelFilePath(
+                    modelId, username));
+            if (model.isPresent()) {
+                models.put(modelId, model.get());
             } else {
                 throw new NoSuchModelException(modelId);
             }
@@ -237,21 +239,21 @@ public final class FsStore<ModelT extends TBase<?>> extends Store<ModelT> {
         }
     }
 
-    private File __createModelDirectory(final String username) {
+    private File __createModelDirectory(final String username)
+            throws org.thryft.store.Store.ModelIoException {
         final File modelDirectoryPath = __getModelDirectoryPath(username);
         if (!modelDirectoryPath.isDirectory()) {
             if (!modelDirectoryPath.mkdirs()) {
-                logger.error("error creating user directory "
+                throw new ModelIoException("error creating user directory "
                         + modelDirectoryPath);
-                return null;
             }
         }
         return modelDirectoryPath;
     }
 
-    private ModelT __getModel(final File modelFilePath) {
+    private Optional<ModelT> __getModel(final File modelFilePath) {
         if (!modelFilePath.isFile()) {
-            return null;
+            return Optional.<ModelT> absent();
         }
 
         try {
@@ -265,7 +267,7 @@ public final class FsStore<ModelT extends TBase<?>> extends Store<ModelT> {
             logger.error("exception reading model from disk:", e);
         }
 
-        return null;
+        return Optional.<ModelT> absent();
     }
 
     private File __getModelDirectoryPath(final String username) {

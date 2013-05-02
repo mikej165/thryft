@@ -63,6 +63,7 @@ import com.amazonaws.services.simpledb.model.SelectRequest;
 import com.amazonaws.services.simpledb.model.SelectResult;
 import com.google.common.base.CaseFormat;
 import com.google.common.base.Joiner;
+import com.google.common.base.Optional;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -158,10 +159,10 @@ public final class SimpleDbStore<ModelT extends TBase<?>> extends
                 domainName, modelKey.toString());
         request.setConsistentRead(true);
         final GetAttributesResult attributes = client.getAttributes(request);
-        final ModelT model = __getModelFromAttributes(attributes
+        final Optional<ModelT> model = __getModelFromAttributes(attributes
                 .getAttributes());
-        if (model != null) {
-            return model;
+        if (model.isPresent()) {
+            return model.get();
         } else {
             throw new NoSuchModelException(modelKey.getModelId());
         }
@@ -206,10 +207,11 @@ public final class SimpleDbStore<ModelT extends TBase<?>> extends
         final ImmutableMap.Builder<String, ModelT> models = ImmutableMap
                 .builder();
         for (final Item item : items) {
-            final ModelT model = __getModelFromAttributes(item.getAttributes());
-            if (model != null) {
+            final Optional<ModelT> model = __getModelFromAttributes(item
+                    .getAttributes());
+            if (model.isPresent()) {
                 final Key modelKey = Key.parse(item.getName());
-                models.put(modelKey.getModelId(), model);
+                models.put(modelKey.getModelId(), model.get());
             }
         }
         return models.build();
@@ -236,10 +238,10 @@ public final class SimpleDbStore<ModelT extends TBase<?>> extends
 
             for (final Item item : items) {
                 final Key modelKey = Key.parse(item.getName());
-                final ModelT model = __getModelFromAttributes(item
+                final Optional<ModelT> model = __getModelFromAttributes(item
                         .getAttributes());
-                if (model != null) {
-                    modelsBuilder.put(modelKey.getModelId(), model);
+                if (model.isPresent()) {
+                    modelsBuilder.put(modelKey.getModelId(), model.get());
                 } else {
                     throw new NoSuchModelException(modelKey.getModelId());
                 }
@@ -359,9 +361,10 @@ public final class SimpleDbStore<ModelT extends TBase<?>> extends
         return attributes;
     }
 
-    private ModelT __getModelFromAttributes(final List<Attribute> attributes) {
+    private Optional<ModelT> __getModelFromAttributes(
+            final List<Attribute> attributes) {
         if (attributes.isEmpty()) {
-            return null;
+            return Optional.<ModelT> absent();
         }
 
         final Multimap<String, String> attributeMultimap = LinkedHashMultimap

@@ -59,6 +59,7 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectResult;
 import com.amazonaws.services.s3.model.S3Object;
 import com.google.common.base.CaseFormat;
+import com.google.common.base.Optional;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
@@ -356,9 +357,9 @@ public final class S3Store<ModelT extends TBase<?>> extends
                         .newLinkedHashMap();
                 for (int i = 0; i < map.size; i++) {
                     final String modelId = iprot.readString();
-                    final ModelT model = _getModel(iprot);
-                    if (model != null) {
-                        modelsMutable.put(modelId, model);
+                    final Optional<ModelT> model = _getModel(iprot);
+                    if (model.isPresent()) {
+                        modelsMutable.put(modelId, model.get());
                     }
                 }
                 iprot.readMapEnd();

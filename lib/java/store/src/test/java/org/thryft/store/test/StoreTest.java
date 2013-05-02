@@ -71,17 +71,18 @@ public abstract class StoreTest {
                     .setEnumField(ProtocolTestEnum.ENUMERATOR1)
                     .setI16Field((short) modelI)
                     .setI32Field(modelI)
-                    .setI64Field((long) modelI)
+                    .setI64Field(modelI)
                     .setListStringField(
                             ImmutableList.of("Test model "
                                     + StringUtils.repeat("0", 1024)
                                     + Integer.toString(modelI)))
                     .setMapStringStringField(
                             ImmutableMap.of("key", "Test model " + modelI))
+                    .setRequiredI32Field(1).setRequiredStringField("test")
                     .setSetStringField(ImmutableSet.of("Test model " + modelI))
                     .setStringField("testmodel" + modelI)
-                    .setStructField(new ProtocolTestStruct()).build();
-            models.put(model.getStringField(), model);
+                    .setStructField(new ProtocolTestStruct(1, "test")).build();
+            models.put(model.getStringField().get(), model);
         }
         this.models = models.build();
     }

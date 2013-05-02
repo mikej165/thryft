@@ -42,12 +42,18 @@ import org.slf4j.LoggerFactory;
 import org.thryft.TBase;
 import org.thryft.protocol.TProtocol;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 public abstract class Store<ModelT extends TBase<?>> {
     @SuppressWarnings("serial")
     public final static class ModelIoException extends Exception {
+        public ModelIoException(final String message) {
+            super(message);
+            this.id = "";
+        }
+
         public ModelIoException(final Throwable cause) {
             super(cause);
             this.id = "";
@@ -163,9 +169,10 @@ public abstract class Store<ModelT extends TBase<?>> {
 
     protected abstract void _deleteModels(final String username);
 
-    protected ModelT _getModel(final TProtocol iprot) {
+    protected Optional<ModelT> _getModel(final TProtocol iprot) {
         try {
-            return modelClass.getConstructor(TProtocol.class).newInstance(iprot);
+            return Optional.of(modelClass.getConstructor(TProtocol.class)
+                    .newInstance(iprot));
         } catch (final IllegalArgumentException e) {
             logger.error("exception reading:", e);
         } catch (final SecurityException e) {
@@ -180,7 +187,7 @@ public abstract class Store<ModelT extends TBase<?>> {
             logger.error("exception reading model:", e);
         }
 
-        return null;
+        return Optional.<ModelT> absent();
     }
 
     protected abstract ModelT _getModelById(final String modelId,

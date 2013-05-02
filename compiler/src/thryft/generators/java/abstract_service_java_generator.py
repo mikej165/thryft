@@ -53,7 +53,7 @@ protected void %(validate_method_name)s(%(public_parameters)s) {
                 "_%s(%s)" % (name, ', '.join(protected_parameter_names))
             protected_parameters = ', '.join(protected_parameters)
             if self.return_field is not None:
-                protected_delegation = 'return ' + self.return_field.java_validation(protected_delegation)
+                protected_delegation = 'return ' + self.return_field.java_validation(value=protected_delegation)
                 return_type_name = self.return_field.type.java_declaration_name()
             else:
                 return_type_name = 'void'

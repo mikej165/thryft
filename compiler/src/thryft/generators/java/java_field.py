@@ -33,7 +33,7 @@
 from thryft.generator.field import Field
 from thryft.generators.java._java_named_construct import _JavaNamedConstruct
 from thryft.generators.java.java_bool_type import JavaBoolType
-from yutil import lower_camelize, upper_camelize, indent
+from yutil import lower_camelize, upper_camelize, indent, lpad
 
 
 class JavaField(Field, _JavaNamedConstruct):
@@ -47,17 +47,12 @@ class JavaField(Field, _JavaNamedConstruct):
         if self.value is not None:
             return self.java_value()
         elif not self.required:
-            return 'null'
+            return 'com.google.common.base.Optional.absent()'
         else:
             return self.type.java_default_value()
 
     def java_equals(self, this_value, other_value):
-        if not self.required:
-            return """\
-((%(this_value)s == null && %(other_value)s == null) ||
-(%(this_value)s != null && %(other_value)s != null &&
-%(this_value)s.equals(%(other_value)s)))""" % locals()
-        elif self.type.java_is_reference():
+        if self.type.java_is_reference() or not self.required:
             return "%(this_value)s.equals(%(other_value)s)" % locals()
         else:
             return "%(this_value)s == %(other_value)s" % locals()
@@ -67,7 +62,7 @@ class JavaField(Field, _JavaNamedConstruct):
         getter_name = self.java_getter_name()
         javadoc = self.java_doc()
         name = self.java_name()
-        type_name = self.type.java_declaration_name(boxed=not self.required)
+        type_name = self.__java_type_name()
         return """\
 %(javadoc)spublic %(final)s%(type_name)s %(getter_name)s() {
     return %(name)s;
@@ -75,7 +70,7 @@ class JavaField(Field, _JavaNamedConstruct):
 
     def java_getter_name(self):
         getter_name = upper_camelize(self.name)
-        if isinstance(self.type, JavaBoolType):
+        if isinstance(self.type, JavaBoolType) and self.required:
             if getter_name.startswith('Is'):
                 return 'is' + getter_name[2:]
             else:
@@ -83,8 +78,20 @@ class JavaField(Field, _JavaNamedConstruct):
         else:
             return 'get' + getter_name
 
-    def java_initializer(self):
-        return 'this.' + self.java_name() + ' = ' + self.java_validation() + ';'
+    def java_hash_code_update(self):
+        hashCode_update = \
+            'hashCode = 31 * hashCode + ' + \
+                self.type.java_hash_code(self.java_getter_name() + (self.required and '()' or '().get()')) + \
+            ';'
+        if not self.required:
+            hashCode_update = """\
+if (%s().isPresent()) {
+    %s
+}""" % (self.java_getter_name(), hashCode_update)
+        return hashCode_update
+
+    def java_initializer(self, check_optional_not_null=True):
+        return 'this.' + self.java_name() + ' = ' + self.java_validation(check_optional_not_null=check_optional_not_null) + ';'
 
     def java_local_declaration(self, boxed=None, final=False):
         if self.value is not None:
@@ -96,19 +103,23 @@ class JavaField(Field, _JavaNamedConstruct):
                         (self.java_parameter(boxed=boxed, final=final),
                          self.type.java_default_value())
             else:
-                return "%s = null;" % \
+                return "%s = com.google.common.base.Optional.absent();" % \
                         self.java_parameter(boxed=boxed, final=final)
         else:
             return self.java_parameter(boxed=boxed, final=final)
 
     def java_member_declaration(self, boxed=None, final=False):
         javadoc = self.java_doc()
+        lhs = self.java_parameter(boxed=boxed, final=final)
         if self.value is not None:
-            return "%sprivate %s = %s;" % \
-                    (javadoc, self.java_parameter(boxed=boxed), self.java_value())
+            assert not self.required
+            rhs = "com.google.common.base.Optional.of(%s);" % self.java_value()
+        elif not self.required and not final:
+            rhs = 'com.google.common.base.Optional.absent()'
         else:
-            return "%sprivate %s;" % \
-                    (javadoc, self.java_parameter(boxed=boxed, final=final))
+            rhs = ''
+        rhs = lpad(' = ', rhs)
+        return "%(javadoc)sprivate %(lhs)s%(rhs)s;" % locals()
 
     def java_name(self, boxed=False):
         return lower_camelize(self.name)
@@ -119,13 +130,16 @@ class JavaField(Field, _JavaNamedConstruct):
         parameter = []
         if final:
             parameter.append('final')
-        parameter.append(self.type.java_declaration_name(boxed=boxed))
+        parameter.append(self.__java_type_name(boxed=boxed))
         parameter.append(self.java_name())
         return ' '.join(parameter)
 
     def java_protocol_initializer(self):
-        read_protocol = \
-            self.java_name() + ' = ' + self.type.java_read_protocol() + ';'
+        read_protocol_lhs = self.java_name()
+        read_protocol_rhs = self.type.java_read_protocol()
+        if not self.required:
+            read_protocol_rhs = "com.google.common.base.Optional.of(%s)" % read_protocol_rhs
+        read_protocol = read_protocol_lhs + ' = ' + read_protocol_rhs + ';'
 
         if self.required:
             read_protocol_throws = self.type.java_read_protocol_throws_checked()
@@ -155,68 +169,49 @@ try {
 
         return read_protocol
 
-#    def java_read_protocol(self):
-#        read_protocol = \
-#            self.java_setter_name() + '(' + \
-#                self.type.java_read_protocol() + \
-#            ');'
-#
-#        read_protocol_throws = self.type.java_read_protocol_throws()
-#        if len(read_protocol_throws) > 0:
-#            read_protocol = indent(' ' * 4, read_protocol)
-#            read_protocol_throws = \
-#                ''.join("""\
-# catch (%(exception_type_name)s e) {
-# }""" % locals()
-#                           for exception_type_name in read_protocol_throws)
-#            read_protocol = """\
-# try {
-# %(read_protocol)s
-# }%(read_protocol_throws)s""" % locals()
-#
-#        read_protocol = indent(' ' * 4, read_protocol)
-#        name = self.name
-#        return """\
-# if (ifield.name.equals("%(name)s")) {
-# %(read_protocol)s
-# }""" % locals()
-
-    def java_setter(self, return_type_name='void'):
+    def java_setters(self, return_type_name='void'):
         setter_name = self.java_setter_name()
         name = self.java_name()
         return_statement = \
             return_type_name != 'void' and "\n    return this;" or ''
-        type_name = self.type.java_declaration_name(boxed=not self.required)
-        return """\
+        type_name = self.__java_type_name()
+        setters = ["""\
 public %(return_type_name)s %(setter_name)s(final %(type_name)s %(name)s) {
     this.%(name)s = %(name)s;%(return_statement)s
-}""" % locals()
+}""" % locals()]
+        if not self.required:
+            type_name = self.type.java_declaration_name()
+            setters.append("""\
+public %(return_type_name)s %(setter_name)s(final %(type_name)s %(name)s) {
+    this.%(name)s = com.google.common.base.Optional.of(%(name)s);%(return_statement)s
+}""" % locals())
+        return setters
 
     def java_setter_name(self):
         return 'set' + upper_camelize(self.name)
 
-    def java_validation(self, value=None):
+    def __java_type_name(self, boxed=None):
+        if self.required:
+            return self.type.java_declaration_name(boxed=boxed)
+        else:
+            return "com.google.common.base.Optional<%s>" % self.type.java_declaration_name(boxed=True)
+
+    def java_validation(self, check_optional_not_null=True, value=None):
         name = self.java_name()
         parent_qname = self.parent.java_qname()
         if value is None:
-            java_validation = self.java_name()
-        else:
-            java_validation = value
+            value = self.java_name()
+        java_validation = value
+        if self.type.java_is_reference():
+            if self.required or check_optional_not_null:
+                java_validation = """com.google.common.base.Preconditions.checkNotNull(%(java_validation)s, "%(parent_qname)s: missing %(name)s")""" % locals()
         if self.type.java_has_length():
             validation = self.annotations.get('validation', {})
             min_length = validation.get('minLength')
             if min_length == 1:
                 java_validation = """org.thryft.Preconditions.checkNotEmpty(%(java_validation)s, "%(parent_qname)s: %(name)s is empty")""" % locals()
-                if not self.required:
-                    java_validation = self.java_name() + " != null ? " + java_validation + " : null";
             elif min_length is not None:
                 java_validation = """org.thryft.Preconditions.checkMinLength(%(java_validation)s, %(min_length)u, "%(parent_qname)s: %(name)s must have a minimum length of %(min_length)u")""" % locals()
-                if not self.required:
-                    java_validation = self.java_name() + " != null ? " + java_validation + " : null";
-            elif self.required:
-                java_validation = """com.google.common.base.Preconditions.checkNotNull(%(java_validation)s, "%(parent_qname)s: missing %(name)s")""" % locals()
-        elif self.type.java_is_reference() and self.required:
-            java_validation = """com.google.common.base.Preconditions.checkNotNull(%(java_validation)s, "%(parent_qname)s: missing %(name)s")""" % locals()
         return java_validation
 
     def java_value(self):
@@ -225,16 +220,20 @@ public %(return_type_name)s %(setter_name)s(final %(type_name)s %(name)s) {
         else:
             return self.value
 
-    def java_write_protocol(self, depth=0):
+    def java_write_protocol(self, write_field=True, depth=0):
         id_ = self.id
         if id_ is None:
             id_ = -1
         name = self.name
         getter_name = self.java_getter_name()
         ttype = self.type.thrift_ttype_name()
+        value = getter_name + "()"
+        if not self.required:
+            value += '.get()'
         write_protocol = \
-            self.type.java_write_protocol(getter_name + "()", depth=depth)
-        write_protocol = """\
+            self.type.java_write_protocol(value, depth=depth)
+        if write_field:
+            write_protocol = """\
 oprot.writeFieldBegin(new org.thryft.protocol.TField("%(name)s", org.thryft.protocol.TType.%(ttype)s, (short)%(id_)d));
 %(write_protocol)s
 oprot.writeFieldEnd();
@@ -242,9 +241,14 @@ oprot.writeFieldEnd();
         if not self.required:
             write_protocol = indent(' ' * 4, write_protocol)
             write_protocol = """\
-if (%(getter_name)s() != null) {
+if (%(getter_name)s().isPresent()) {
 %(write_protocol)s
 }""" % locals()
+            if not write_field:
+                write_protocol += """\
+ else {
+    oprot.writeNull();
+}"""
         return write_protocol
 
     def __repr__(self):

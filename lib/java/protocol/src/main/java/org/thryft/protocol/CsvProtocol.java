@@ -44,6 +44,7 @@ import org.joda.time.format.DateTimeFormatter;
 
 import au.com.bytecode.opencsv.CSVReader;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 
 public class CsvProtocol extends StackedProtocol {
@@ -143,14 +144,14 @@ public class CsvProtocol extends StackedProtocol {
                 return new TList(TType.STRING, 0);
             }
 
-            protected String _readString(final String columnName) {
+            protected Optional<String> _readString(final String columnName) {
                 for (int columnI = 0; columnI < columnNames.length; columnI++) {
                     if (columnNames[columnI].equals(columnName)) {
-                        return columnValues[columnI];
+                        return Optional.of(columnValues[columnI]);
                     }
                 }
 
-                return null;
+                return Optional.absent();
             }
 
             private int currentColumnI;

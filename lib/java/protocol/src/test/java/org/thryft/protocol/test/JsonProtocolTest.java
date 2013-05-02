@@ -37,13 +37,12 @@ import static org.junit.Assert.assertEquals;
 import java.io.StringReader;
 import java.io.StringWriter;
 
-import org.thryft.TBase;
-import org.thryft.protocol.JsonProtocol;
 import org.thryft.protocol.AbstractProtocol;
+import org.thryft.protocol.JsonProtocol;
 
 public class JsonProtocolTest extends ProtocolTest {
     @Override
-    protected void _test(final TBase<?> expected) throws Exception {
+    protected void _test(final ProtocolTestStruct expected) throws Exception {
         final StringWriter writer = new StringWriter();
         final AbstractProtocol oprot = new JsonProtocol(writer);
         expected.write(oprot);
@@ -53,8 +52,7 @@ public class JsonProtocolTest extends ProtocolTest {
 
         final StringReader reader = new StringReader(ostring);
         final AbstractProtocol iprot = new JsonProtocol(reader);
-        final TBase<?> actual = expected.getClass()
-                .getConstructor(AbstractProtocol.class).newInstance(iprot);
+        final ProtocolTestStruct actual = new ProtocolTestStruct(iprot);
         assertEquals(expected, actual);
     }
 }

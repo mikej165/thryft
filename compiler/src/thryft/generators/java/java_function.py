@@ -92,7 +92,7 @@ public %(name)s(final org.thryft.protocol.TProtocol iprot) throws java.io.IOExce
         name = self.java_name()
 
         parameters = \
-            ', '.join(parameter.java_parameter() for parameter in self.parameters)
+            ', '.join(parameter.java_parameter(final=True) for parameter in self.parameters)
 
         if self.return_field is not None:
             return_type_name = self.return_field.type.java_declaration_name()

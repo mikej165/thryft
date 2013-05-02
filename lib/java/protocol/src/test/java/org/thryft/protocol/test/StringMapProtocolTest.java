@@ -34,22 +34,19 @@ package org.thryft.protocol.test;
 
 import static org.junit.Assert.assertEquals;
 
-import org.thryft.TBase;
-import org.thryft.protocol.AbstractProtocol;
 import org.thryft.protocol.StringMapProtocol;
 
 import com.google.common.collect.ImmutableMap;
 
 public class StringMapProtocolTest extends ProtocolTest {
     @Override
-    protected void _test(final TBase<?> expected) throws Exception {
+    protected void _test(final ProtocolTestStruct expected) throws Exception {
         final StringMapProtocol oprot = new StringMapProtocol();
         expected.write(oprot);
         final ImmutableMap<String, String> ostringMap = oprot.toStringMap();
 
         final StringMapProtocol iprot = new StringMapProtocol(ostringMap);
-        final TBase<?> actual = expected.getClass()
-                .getConstructor(AbstractProtocol.class).newInstance(iprot);
+        final ProtocolTestStruct actual = new ProtocolTestStruct(iprot);
         assertEquals(expected, actual);
     }
 }

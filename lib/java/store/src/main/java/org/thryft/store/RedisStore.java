@@ -48,6 +48,7 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.exceptions.JedisException;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
@@ -161,9 +162,9 @@ public final class RedisStore<ModelT extends TBase<?>> extends
                     throw new NoSuchModelException(modelKey.getModelId());
                 }
                 final StringMapProtocol iprot = new StringMapProtocol(hash);
-                final ModelT model = _getModel(iprot);
-                if (model != null) {
-                    return model;
+                final Optional<ModelT> model = _getModel(iprot);
+                if (model.isPresent()) {
+                    return model.get();
                 } else {
                     throw new NoSuchModelException(modelKey.getModelId());
                 }

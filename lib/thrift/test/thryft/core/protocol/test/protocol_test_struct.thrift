@@ -20,7 +20,11 @@ struct ProtocolTestStruct {
     optional i64 i64_field;
     optional list<string> list_string_field;
     optional map<string, string> map_string_string_field;
+    required i32 required_i32_field;
+    // @validation {"minLength": 1}
+    required string required_string_field;
     optional set<string> set_string_field;
+    // @validation {"minLength": 1}
     optional string string_field;
     optional ProtocolTestStruct struct_field;
     optional url.Url url_field;
