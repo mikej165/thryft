@@ -52,10 +52,10 @@ class JavaField(Field, _JavaNamedConstruct):
             return self.type.java_default_value()
 
     def java_equals(self, this_value, other_value):
-        if self.type.java_is_reference() or not self.required:
+        if not self.required:
             return "%(this_value)s.equals(%(other_value)s)" % locals()
         else:
-            return "%(this_value)s == %(other_value)s" % locals()
+            return self.type.java_equals(this_value, other_value)
 
     def java_getter(self, final=True):
         final = final and 'final ' or ''

@@ -38,6 +38,9 @@ class JavaBinaryType(BinaryType, _JavaBaseType):
     def java_default_value(self):
         return 'null'
 
+    def java_equals(self, this_value, other_value):
+        return "java.util.Arrays.equals(%(this_value)s, %(other_value)s)" % locals()
+
     def java_from_string(self, value):
         return "%(value)s.getBytes()" % locals()
 
