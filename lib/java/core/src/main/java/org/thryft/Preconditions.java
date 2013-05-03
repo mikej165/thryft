@@ -29,16 +29,6 @@ public final class Preconditions {
     }
 
     public static <CollectionT extends Collection<?>> Optional<CollectionT> checkMinLength(
-            final Optional<CollectionT> collection, final int minLength) {
-        if (collection.isPresent()) {
-            if (collection.get().size() < minLength) {
-                throw new IllegalArgumentException();
-            }
-        }
-        return collection;
-    }
-
-    public static <CollectionT extends Collection<?>> Optional<CollectionT> checkMinLength(
             final Optional<CollectionT> collection, final int minLength,
             @Nullable final Object errorMessage) {
         if (collection.isPresent()) {
@@ -47,6 +37,40 @@ public final class Preconditions {
             }
         }
         return collection;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> Optional<T> checkMinLength(final Optional<T> object,
+            final Class<T> objectClass, final int minLength) {
+        if (object.isPresent()) {
+            if (Collection.class.isAssignableFrom(objectClass)) {
+                checkMinLength((Collection<T>) object.get(), minLength);
+            } else if (String.class.isAssignableFrom(objectClass)) {
+                checkMinLength((String) object.get(), minLength);
+            } else {
+                throw new IllegalArgumentException(
+                        objectClass.getCanonicalName());
+            }
+        }
+        return object;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> Optional<T> checkMinLength(final Optional<T> object,
+            final Class<T> objectClass, final int minLength,
+            @Nullable final Object errorMessage) {
+        if (object.isPresent()) {
+            if (Collection.class.isAssignableFrom(objectClass)) {
+                checkMinLength((Collection<T>) object.get(), minLength,
+                        errorMessage);
+            } else if (String.class.isAssignableFrom(objectClass)) {
+                checkMinLength((String) object.get(), minLength, errorMessage);
+            } else {
+                throw new IllegalArgumentException(
+                        objectClass.getCanonicalName());
+            }
+        }
+        return object;
     }
 
     public static String checkMinLength(final String string, final int minLength) {
@@ -84,15 +108,6 @@ public final class Preconditions {
         return collection;
     }
 
-    public static Optional<String> checkNotEmpty(final Optional<String> string) {
-        if (string.isPresent()) {
-            if (string.get().isEmpty()) {
-                throw new IllegalArgumentException();
-            }
-        }
-        return string;
-    }
-
     public static Optional<String> checkNotEmpty(final Optional<String> string,
             @Nullable final Object errorMessage) {
         if (string.isPresent()) {
@@ -101,6 +116,38 @@ public final class Preconditions {
             }
         }
         return string;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> Optional<T> checkNotEmpty(final Optional<T> object,
+            final Class<T> objectClass) {
+        if (object.isPresent()) {
+            if (Collection.class.isAssignableFrom(objectClass)) {
+                checkNotEmpty((Collection<T>) object.get());
+            } else if (String.class.isAssignableFrom(objectClass)) {
+                checkNotEmpty((String) object.get());
+            } else {
+                throw new IllegalArgumentException(
+                        objectClass.getCanonicalName());
+            }
+        }
+        return object;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> Optional<T> checkNotEmpty(final Optional<T> object,
+            final Class<T> objectClass, @Nullable final Object errorMessage) {
+        if (object.isPresent()) {
+            if (Collection.class.isAssignableFrom(objectClass)) {
+                checkNotEmpty((Collection<T>) object.get(), errorMessage);
+            } else if (String.class.isAssignableFrom(objectClass)) {
+                checkNotEmpty((String) object.get(), errorMessage);
+            } else {
+                throw new IllegalArgumentException(
+                        objectClass.getCanonicalName());
+            }
+        }
+        return object;
     }
 
     public static String checkNotEmpty(final String string) {
