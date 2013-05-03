@@ -140,7 +140,7 @@ public class CsvProtocol extends StackedProtocol {
                 } finally {
                     listReader.close();
                 }
-                _getProtocolStack().push(_createSequenceColumn(new String[0]));
+                _getProtocolStack().push(_createSequenceColumn(listElements));
                 return new TList(TType.STRING, 0);
             }
 
