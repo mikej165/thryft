@@ -2,8 +2,7 @@ from thryft.generators.java import java_generator
 from thryft.generators.java.java_document import JavaDocument
 from thryft.generators.java.java_function import JavaFunction
 from thryft.generators.java.java_service import JavaService
-from yutil import indent, camelize, lpad
-import os.path
+from yutil import indent, lpad
 
 
 class LoggingServiceJavaGenerator(java_generator.JavaGenerator):
@@ -25,12 +24,15 @@ class LoggingServiceJavaGenerator(java_generator.JavaGenerator):
             parameter_names = ', '.join([parameter.java_name()
                                          for parameter in self.parameters])
 
+            request_type_name = self.java_request_type().java_name()
+            response_type_name = self.java_response_type().java_name()
+
             if len(self.parameters) > 0:
                 parameters_toString = indent(' ' * 4, """
 try {
     __logMessageStringWriter = new java.io.StringWriter();
     __logMessageProtocol = new org.thryft.protocol.LogMessageProtocol(__logMessageStringWriter);
-    new Messages.%(java_name)sRequest(%(parameter_names)s).write(__logMessageProtocol);
+    new Messages.%(request_type_name)s(%(parameter_names)s).write(__logMessageProtocol);
     __logMessageProtocol.flush();
     __logMessageStringBuilder.append(__logMessageStringWriter.toString());
 } catch (final java.io.IOException e) {
@@ -55,7 +57,7 @@ __logMessageStringBuilder.append(" -> ");
 try {
     __logMessageStringWriter = new java.io.StringWriter();
     __logMessageProtocol = new org.thryft.protocol.LogMessageProtocol(__logMessageStringWriter);
-    new Messages.%(java_name)sResponse(__returnValue).write(__logMessageProtocol, org.thryft.protocol.TType.VOID);
+    new Messages.%(response_type_name)s(__returnValue).write(__logMessageProtocol, org.thryft.protocol.TType.VOID);
     __logMessageProtocol.flush();
     __logMessageStringBuilder.append(__logMessageStringWriter.toString());
 } catch (final java.io.IOException e) {

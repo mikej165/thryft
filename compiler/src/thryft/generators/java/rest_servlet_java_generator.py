@@ -3,7 +3,7 @@ from thryft.generator.enum_type import EnumType
 from thryft.generators.java import _servlet_java_generator
 from thryft.generators.java._java_base_type import _JavaBaseType
 from thryft.generators.java.java_bool_type import JavaBoolType
-from yutil import indent, rpad, decamelize
+from yutil import indent, rpad, decamelize, upper_camelize
 
 
 class RestServletJavaGenerator(_servlet_java_generator._ServletJavaGenerator):
@@ -49,7 +49,7 @@ class RestServletJavaGenerator(_servlet_java_generator._ServletJavaGenerator):
             if len(self.parameters) > 0:
                 path_parameter = self.java_rest_path_parameter()
                 if path_parameter is None or len(self.parameters) > 1:
-                    request_type_name = 'Messages.' + self.java_name() + 'Request'
+                    request_type_name = 'Messages.' + upper_camelize(self.name) + 'Request'
                 else:
                     request_type_name = None
                 if self.java_rest_request_method() in ('POST', 'PUT'):

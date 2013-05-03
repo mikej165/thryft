@@ -31,11 +31,10 @@
 #-------------------------------------------------------------------------------
 
 from thryft.generator.function import Function
-from thryft.generators.java.java_struct_type import \
-    JavaStructType
-from thryft.generators.java.java_field import JavaField
 from thryft.generators.java._java_named_construct import _JavaNamedConstruct
-from yutil import lower_camelize, lpad, indent
+from thryft.generators.java.java_field import JavaField
+from thryft.generators.java.java_struct_type import JavaStructType
+from yutil import lower_camelize, lpad, indent, upper_camelize
 
 
 class JavaFunction(Function, _JavaNamedConstruct):
@@ -45,7 +44,7 @@ class JavaFunction(Function, _JavaNamedConstruct):
                 self,
                 java_class_modifiers='public final static',
                 java_suppress_warnings=java_suppress_warnings,
-                name=parent_function.java_name() + 'Request',
+                name=upper_camelize(parent_function.name) + 'Request',
                 parent=parent_function.parent
             )
 
@@ -69,7 +68,7 @@ class JavaFunction(Function, _JavaNamedConstruct):
                 self,
                 java_class_modifiers='public final static',
                 java_suppress_warnings=java_suppress_warnings,
-                name=parent_function.java_name() + 'Response',
+                name=upper_camelize(parent_function.name) + 'Response',
                 parent=parent_function.parent
             )
             if parent_function.return_field is not None:

@@ -10,14 +10,15 @@ class JsonrpcServletJavaGenerator(_servlet_java_generator._ServletJavaGenerator)
     class Function(_servlet_java_generator._ServletJavaGenerator._Function):
         def __repr__(self):
             name = self.java_name()
+            request_type_name = self.java_request_type().java_name()
             service_qname = self.parent.java_qname()
             upper_camelized_name = upper_camelize(self.name)
 
             if len(self.parameters) > 0:
                 read_request = """
-    final %(service_qname)s.Messages.%(name)sRequest serviceRequest;
+    final %(service_qname)s.Messages.%(request_type_name)s serviceRequest;
     try {
-        serviceRequest = new %(service_qname)s.Messages.%(name)sRequest(new org.thryft.protocol.JsonProtocol(jsonrpcRequestParams), jsonrpcRequestParams.isObject() ? org.thryft.protocol.TType.STRUCT : org.thryft.protocol.TType.LIST);
+        serviceRequest = new %(service_qname)s.Messages.%(request_type_name)s(new org.thryft.protocol.JsonProtocol(jsonrpcRequestParams), jsonrpcRequestParams.isObject() ? org.thryft.protocol.TType.STRUCT : org.thryft.protocol.TType.LIST);
     } catch (final IllegalArgumentException e) {
         logger.debug("error deserializing service request: ", e);
         __doPostError(httpServletRequest, httpServletResponse, null, -32602, "invalid JSON-RPC request method parameters: " + e.getMessage(), jsonrpcRequestId);
