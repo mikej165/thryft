@@ -21,15 +21,15 @@ class JsonrpcServletJavaGenerator(_servlet_java_generator._ServletJavaGenerator)
         serviceRequest = new %(service_qname)s.Messages.%(request_type_name)s(new org.thryft.protocol.JsonProtocol(jsonrpcRequestParams), jsonrpcRequestParams.isObject() ? org.thryft.protocol.TType.STRUCT : org.thryft.protocol.TType.LIST);
     } catch (final IllegalArgumentException e) {
         logger.debug("error deserializing service request: ", e);
-        __doPostError(httpServletRequest, httpServletResponse, null, -32602, "invalid JSON-RPC request method parameters: " + e.getMessage(), jsonrpcRequestId);
+        __doPostError(httpServletRequest, httpServletResponse, null, -32602, "invalid JSON-RPC request method parameters: " + String.valueOf(e.getMessage()), jsonrpcRequestId);
         return;
     } catch (final NullPointerException e) {
         logger.debug("error deserializing service request: ", e);
-        __doPostError(httpServletRequest, httpServletResponse, null, -32602, "invalid JSON-RPC request method parameters: " + e.getMessage(), jsonrpcRequestId);
+        __doPostError(httpServletRequest, httpServletResponse, null, -32602, "invalid JSON-RPC request method parameters: " + String.valueOf(e.getMessage()), jsonrpcRequestId);
         return;
     } catch (final java.io.IOException e) {
         logger.debug("error deserializing service request: ", e);
-        __doPostError(httpServletRequest, httpServletResponse, null, -32602, "invalid JSON-RPC request method parameters: " + e.getMessage(), jsonrpcRequestId);
+        __doPostError(httpServletRequest, httpServletResponse, null, -32602, "invalid JSON-RPC request method parameters: " + String.valueOf(e.getMessage()), jsonrpcRequestId);
         return;
     }
 """ % locals()
@@ -43,7 +43,7 @@ class JsonrpcServletJavaGenerator(_servlet_java_generator._ServletJavaGenerator)
             if len(self.throws) > 0:
                 catches = ' '.join(["""\
 catch (final %s e) {
-    __doPostError(httpServletRequest, httpServletResponse, e, 1, e.getMessage() != null ? e.getMessage() : e.getClass().getCanonicalName(), jsonrpcRequestId);
+    __doPostError(httpServletRequest, httpServletResponse, e, 1, e.getClass().getCanonicalName() + ": " + String.valueOf(e.getMessage()), jsonrpcRequestId);
     return;
 }""" % throw.type.java_qname() for throw in self.throws])
                 service_call = """\
@@ -115,7 +115,7 @@ protected void doPost(final javax.servlet.http.HttpServletRequest httpServletReq
         jsonrpcRequestNode = new com.fasterxml.jackson.databind.ObjectMapper().readTree(httpServletRequestBody);
     } catch (final com.fasterxml.jackson.core.JsonParseException e ){
         logger.error("error deserializing service request: ", e);
-        __doPostError(httpServletRequest, httpServletResponse, null, -32700, e.getMessage(), null);
+        __doPostError(httpServletRequest, httpServletResponse, null, -32700, String.valueOf(e.getMessage()), null);
         return;
     }
 
