@@ -348,8 +348,11 @@ public void do%(request_method_camelized)s(final javax.servlet.http.HttpServletR
                 message_types.extend(function.java_message_types())
             service_qname = self.java_qname()
             if len(message_types) > 0:
-                message_types = "\n\n".join(indent(' ' * 4, [repr(message_type)
-                           for message_type in message_types]))
+                message_types = \
+                    "\n\n".join(indent(' ' * 4,
+                        (repr(message_type)
+                         for message_type in message_types)
+                    ))
                 sections.append("""\
 @SuppressWarnings("unused")
 private final static class Messages extends %(service_qname)s.Messages {

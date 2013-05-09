@@ -108,7 +108,6 @@ protected %(name)s _build(%(field_parameters)s) {
             methods.update(self._java_method_build())
             methods.update(self._java_method__build())
             methods.update(self._java_method_setters())
-            # methods.update(self._java_method_read_protocol()) # Must be after TBase
             return methods
 
         def __repr__(self):
@@ -152,8 +151,8 @@ public %(name)s() {
 
         initializers = \
             lpad("\n", "\n".join(indent(' ' * 4,
-                [field.java_default_initializer()
-                 for field in self.fields]
+                (field.java_default_initializer()
+                 for field in self.fields)
             )))
         return """\
 public %(name)s() {%(initializers)s
@@ -180,8 +179,8 @@ public %(name)s(final %(name)s other) {%(this_call)s
             )), "\n")
         field_initializers = \
             lpad("\n\n", "\n".join(indent(' ' * 4,
-                [field.java_initializer(check_optional_not_null=False)
-                 for field in self.fields]
+                (field.java_initializer(check_optional_not_null=False)
+                 for field in self.fields)
             )))
         field_protocol_named_initializers = \
             lpad(' else ', indent(' ' * 16, ' else '.join(
@@ -274,8 +273,8 @@ public %(name)s(%(parameters)s) {%(initializers)s
 
         initializers = \
             "\n".join(indent(' ' * 4,
-                [field.java_initializer()
-                 for field in self.fields]
+                (field.java_initializer()
+                 for field in self.fields)
             ))
         name = self.java_name()
         parameters = ', '.join(field.java_parameter(final=True)
@@ -295,8 +294,8 @@ public %(name)s(%(parameters)s) {
                 field.type.java_declaration_name(boxed=False)):
                 initializers = \
                     "\n".join(indent(' ' * 4,
-                        [field.java_initializer()
-                         for field in self.fields]
+                        (field.java_initializer()
+                         for field in self.fields)
                     ))
                 name = self.java_name()
                 parameters = ', '.join(field.java_parameter(boxed=True, final=True)
@@ -339,6 +338,19 @@ public %(name)s(%(parameters)s) {
     def _java_member_declarations(self):
         return [field.java_member_declaration(final=True)
                 for field in self.fields]
+
+    def _java_method_compare_to(self):
+        name = self.java_name()
+        field_compare_tos = \
+            lpad("\n", indent(' ' * 4,
+                (field.type.java_compare_to('other.' + name)
+                 for field in self.fields)
+            ))
+        return {'compareTo': """\
+@Override
+public int compareTo(final %(name)s other) {%(field_compare_tos)s
+    return 0;
+}""" % locals()}
 
     def _java_method_equals(self):
         name = self.java_name()
@@ -412,21 +424,6 @@ public int hashCode() {
     return hashCode;
 }""" % locals()}
 
-    def _java_method_TBase(self):
-        name = self.java_name()
-        return dict((
-            method_name,
-            """\
-@Override
-public %(method_signature)s {
-    throw new UnsupportedOperationException();
-}""" % locals())
-            for method_name, method_signature in (
-                ('compareTo', "int compareTo(final %(name)s other)" % locals()),
-                ('write', 'void write(final org.thryft.protocol.TProtocol oprot)'),
-            )
-        )
-
     def _java_method_to_string(self):
         add_statements = []
         for field in self.fields:
@@ -446,7 +443,7 @@ public String toString() {
     return helper.toString();
 }""" % locals()}
 
-    def _java_method_write_protocol(self):
+    def _java_method_write(self):
         case_ttype_void = 'case org.thryft.protocol.TType.VOID:'
         if len(self.fields) == 1:
             field = self.fields[0]
@@ -467,14 +464,14 @@ public String toString() {
 
         field_write_protocols = \
             lpad("\n\n", "\n\n".join(indent(' ' * 12,
-                [field.java_write_protocol(depth=0, write_field=True)
-                 for field in self.fields]
+                (field.java_write_protocol(depth=0, write_field=True)
+                 for field in self.fields)
             )))
 
         field_value_write_protocols = \
             pad("\n\n", "\n\n".join(indent(' ' * 12,
-                [field.java_write_protocol(depth=0, write_field=False)
-                 for field in self.fields]
+                (field.java_write_protocol(depth=0, write_field=False)
+                 for field in self.fields)
             )), "\n")
 
         name = self.java_name()
@@ -506,13 +503,13 @@ public void write(final org.thryft.protocol.TProtocol oprot, final byte writeAsT
 
     def _java_methods(self):
         methods = {}
+        methods.update(self._java_method_compare_to())
         methods.update(self._java_method_equals())
         methods.update(self._java_method_get())
         methods.update(self._java_method_getters())
         methods.update(self._java_method_hash_code())
-        methods.update(self._java_method_TBase())
         methods.update(self._java_method_to_string())
-        methods.update(self._java_method_write_protocol())  # Must be after TBase
+        methods.update(self._java_method_write())  # Must be after TBase
         return methods
 
     def java_read_protocol(self):

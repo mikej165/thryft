@@ -73,8 +73,8 @@ def _%(name)s(%(parameters)s):
 
         parameter_checks = \
             pad("\n", "\n".join(indent(' ' * 4,
-                [parameter.py_check()
-                 for parameter in self.parameters]
+                (parameter.py_check()
+                 for parameter in self.parameters)
             )), "\n")
 
         call = ', '.join("%s=%s" % (parameter.py_name(), parameter.py_name())

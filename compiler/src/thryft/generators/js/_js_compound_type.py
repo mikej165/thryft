@@ -117,8 +117,8 @@ schema: %s
 validation: {%s
 }
 """ % lpad("\n", ",\n\n".join(indent(' ' * 4,
-          [field.js_validation()
-           for field in self.fields]
+          (field.js_validation()
+           for field in self.fields)
       )))}
 
     def js_schema(self):

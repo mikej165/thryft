@@ -57,8 +57,8 @@ class _PyCompoundType(_PyType):
             parameters = ",\n".join(indent(' ' * 4, parameters))
             initializers = \
                 "\n".join(indent(' ' * 4,
-                    ['self.__%s = %s' % (field.py_name(), field.py_name())
-                     for field in self.fields]
+                    ('self.__%s = %s' % (field.py_name(), field.py_name())
+                     for field in self.fields)
                 ))
             return """\
 def __init__(
@@ -84,10 +84,11 @@ def build(self):
 
             name = self.py_name()
             other_name = decamelize(self.py_name())
-            object_updates = "\n".join(indent(' ' * 8,
-                          ["self.%s(%s.%s)" % (field.py_setter_name(), other_name, field.py_getter_call())
-                           for field in self.fields]
-                       ))
+            object_updates = \
+                "\n".join(indent(' ' * 8,
+                    ("self.%s(%s.%s)" % (field.py_setter_name(), other_name, field.py_getter_call())
+                     for field in self.fields)
+                 ))
             return {'update': """\
 def update(self, %(other_name)s):
     if isinstance(%(other_name)s, %(name)s):
@@ -142,7 +143,8 @@ class Builder:%(sections)s
         parameters = ",\n".join(indent(' ' * 4, parameters))
         initializers = \
             "\n\n".join(indent(' ' * 4,
-                [field.py_initializer() for field in self.fields]
+                (field.py_initializer()
+                 for field in self.fields)
             ))
         return """\
 def __init__(
@@ -212,8 +214,8 @@ def read(cls, iprot):
 
         field_read_protocols = \
             indent(' ' * 8, lpad('el', "el".join(
-                [field.py_read_protocol()
-                 for field in self.fields]
+                field.py_read_protocol()
+                for field in self.fields
             )))
         name = self.py_name()
         return {'read': """\
@@ -246,7 +248,7 @@ def read(cls, iprot):
             in_kwds.append("%(field_name)s=None" % locals())
             out_kwds.append("%(field_name)s=%(field_name)s" % locals())
             replacements.append("""\
-if %(field_name)s is None:            
+if %(field_name)s is None:
     %(field_name)s = self.%(field_getter_call)s
 """ % locals())
         in_kwds = ', '.join(in_kwds)
@@ -293,8 +295,8 @@ def %(method_name)s(self):
     def _py_method_write_protocol(self):
         field_write_protocols = \
             lpad("\n\n", "\n\n".join(indent(' ' * 4,
-                [field.py_write_protocol(depth=0)
-                 for field in self.fields]
+                (field.py_write_protocol(depth=0)
+                 for field in self.fields)
             )))
         name = self.py_name()
         return {'write': """\
@@ -304,7 +306,7 @@ def write(self, oprot):
     oprot.writeFieldStop()
 
     oprot.writeStructEnd()
-    
+
     return self
 """ % locals()}
 

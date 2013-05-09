@@ -73,13 +73,13 @@ logger.info(__logMessageStringBuilder.toString());
 """
             service_call = indent(' ' * 4, service_call)
             if len(self.throws) > 0:
-                catches = ' '.join(["""\
+                catches = ' '.join("""\
 catch (final %s e) {
         __logMessageStringBuilder.append(" -> ");
         __logMessageStringBuilder.append(e.getMessage());
         logger.error(__logMessageStringBuilder.toString());
         throw e;
-    }""" % throw.type.java_declaration_name() for throw in self.throws])
+    }""" % throw.type.java_declaration_name() for throw in self.throws)
                 service_call = """\
     try {
 %s

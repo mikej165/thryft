@@ -184,20 +184,20 @@ def fnmatch(path, pattern):
 
 
 def indent(spaces, text):
-    if len(spaces) > 0 and len(text) > 0:
-        if isinstance(text, tuple) or isinstance(text, list):
-            return [indent(spaces, line) for line in text]
-        else:
-            indented_lines = []
-            for line in StringIO(str(text)).readlines():
-                line = line.rstrip()
-                if len(line) > 0:
-                    indented_lines.append(spaces + line)
-                else:
-                    indented_lines.append(line)
-            return '\n'.join(indented_lines)
-    else:
+    if len(spaces) == 0:
         return text
+
+    if isinstance(text, str):
+        indented_lines = []
+        for line in StringIO(str(text)).readlines():
+            line = line.rstrip()
+            if len(line) > 0:
+                indented_lines.append(spaces + line)
+            else:
+                indented_lines.append(line)
+        return "\n".join(indented_lines)
+    else:
+        return [indent(spaces, line) for line in text]
 
 
 def ishidden(path):

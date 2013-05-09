@@ -28,7 +28,10 @@ class GwtClientAsyncJavaGenerator(GwtClientJavaGenerator):
             return JavaService.java_name(self) + 'GwtClientAsync'
 
         def __repr__(self):
-            functions = "\n\n".join(indent(' ' * 4, [repr(function) for function in self.functions]))
+            functions = \
+                "\n\n".join(indent(' ' * 4,
+                    (repr(function) for function in self.functions)
+                ))
             name = self.java_name()
             service_name = JavaService.java_name(self)
             return """\

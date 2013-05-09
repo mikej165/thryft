@@ -58,7 +58,11 @@ class JsService(Service, _JsNamedConstruct):
                 )
             sections.append(message_types)
 
-        functions = ",\n\n".join(indent(' ' * 4, [repr(function) for function in self.functions]))
+        functions = \
+            ",\n\n".join(indent(' ' * 4,
+                (repr(function)
+                 for function in self.functions)
+            ))
         sections.append("""
 %(qname)s = function(hostname) {
     if (typeof hostname !== "undefined") {

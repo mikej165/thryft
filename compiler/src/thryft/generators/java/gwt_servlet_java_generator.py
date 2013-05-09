@@ -59,7 +59,10 @@ public %(return_type_name)s %(name)s(%(parameters)s)%(throws)s {
                 except KeyError:
                     pass
             client_service_qname = client_service_package + JavaService.java_name(self) + 'GwtClient'
-            functions = lpad("\n", "\n\n".join(indent(' ' * 4, [repr(function) for function in self.functions])))
+            functions = \
+                lpad("\n", "\n\n".join(indent(' ' * 4,
+                    (repr(function) for function in self.functions)
+                )))
             name = self.java_name()
             service_qname = JavaService.java_qname(self)
             return """\

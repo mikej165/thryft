@@ -63,7 +63,8 @@ class JavaService(Service, _JavaNamedConstruct):
         if len(message_types) > 0:
             message_types = \
                 "\n\n".join(indent(' ' * 4,
-                    [repr(message_type) for message_type in message_types]
+                    (repr(message_type)
+                     for message_type in message_types)
                 ))
             sections.append("""\
 public static class Messages {
