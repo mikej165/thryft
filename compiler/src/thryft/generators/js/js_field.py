@@ -73,7 +73,15 @@ if (field.fname == "%(name)s") {
         name = self.js_name()
         qname = self.js_qname()
         validation.update(self.type.js_validation(depth=0, value='value', value_name=qname))
-        type_validation = indent(' ' * 8, validation.pop('type'))
+        type_validation = validation.pop('type')
+        if not self.required:
+            type_validation = indent(' ' * 4, type_validation)
+            type_validation = """\
+if (typeof attr !== "undefined" && attr !== "null") {
+%(type_validation)s
+}
+""" % locals()
+        type_validation = indent(' ' * 8, type_validation)
         validation = json.dumps(validation).lstrip('{').rstrip('}')
         return """\
 %(name)s: {
