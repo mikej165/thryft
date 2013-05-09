@@ -298,12 +298,12 @@ public class ProtocolTestStruct implements org.thryft.TBase<ProtocolTestStruct> 
                     public com.google.common.collect.ImmutableList<String> apply(final org.thryft.protocol.TProtocol iprot) {
                         try {
                             final org.thryft.protocol.TList sequenceBegin = iprot.readListBegin();
-                            final java.util.List<String> sequence = new java.util.ArrayList<String>();
+                            final com.google.common.collect.ImmutableList.Builder<String> sequence = com.google.common.collect.ImmutableList.builder();
                             for (int elementI = 0; elementI < sequenceBegin.size; elementI++) {
                                 sequence.add(iprot.readString());
                             }
                             iprot.readListEnd();
-                            return com.google.common.collect.ImmutableList.copyOf(sequence);
+                            return sequence.build();
                         } catch (final java.io.IOException e) {
                             return com.google.common.collect.ImmutableList.of();
                         }
@@ -313,13 +313,13 @@ public class ProtocolTestStruct implements org.thryft.TBase<ProtocolTestStruct> 
                     @Override
                     public com.google.common.collect.ImmutableMap<String, String> apply(org.thryft.protocol.TProtocol iprot) {
                         try {
-                            org.thryft.protocol.TMap mapBegin = iprot.readMapBegin();
-                            java.util.Map<String, String> map = new java.util.HashMap<String, String>();
+                            final org.thryft.protocol.TMap mapBegin = iprot.readMapBegin();
+                            final com.google.common.collect.ImmutableMap.Builder<String, String> map = com.google.common.collect.ImmutableMap.builder();
                             for (int entryI = 0; entryI < mapBegin.size; entryI++) {
                                 map.put(iprot.readString(), iprot.readString());
                             }
                             iprot.readMapEnd();
-                            return com.google.common.collect.ImmutableMap.copyOf(map);
+                            return map.build();
                         } catch (final java.io.IOException e) {
                             return com.google.common.collect.ImmutableMap.of();
                         }
@@ -333,12 +333,12 @@ public class ProtocolTestStruct implements org.thryft.TBase<ProtocolTestStruct> 
                         public com.google.common.collect.ImmutableSet<String> apply(final org.thryft.protocol.TProtocol iprot) {
                             try {
                                 final org.thryft.protocol.TSet sequenceBegin = iprot.readSetBegin();
-                                final java.util.Set<String> sequence = new java.util.LinkedHashSet<String>();
+                                final com.google.common.collect.ImmutableSet.Builder<String> sequence = com.google.common.collect.ImmutableSet.builder();
                                 for (int elementI = 0; elementI < sequenceBegin.size; elementI++) {
                                     sequence.add(iprot.readString());
                                 }
                                 iprot.readSetEnd();
-                                return com.google.common.collect.ImmutableSet.copyOf(sequence);
+                                return sequence.build();
                             } catch (final java.io.IOException e) {
                                 return com.google.common.collect.ImmutableSet.of();
                             }
@@ -414,12 +414,12 @@ public class ProtocolTestStruct implements org.thryft.TBase<ProtocolTestStruct> 
                             public com.google.common.collect.ImmutableList<String> apply(final org.thryft.protocol.TProtocol iprot) {
                                 try {
                                     final org.thryft.protocol.TList sequenceBegin = iprot.readListBegin();
-                                    final java.util.List<String> sequence = new java.util.ArrayList<String>();
+                                    final com.google.common.collect.ImmutableList.Builder<String> sequence = com.google.common.collect.ImmutableList.builder();
                                     for (int elementI = 0; elementI < sequenceBegin.size; elementI++) {
                                         sequence.add(iprot.readString());
                                     }
                                     iprot.readListEnd();
-                                    return com.google.common.collect.ImmutableList.copyOf(sequence);
+                                    return sequence.build();
                                 } catch (final java.io.IOException e) {
                                     return com.google.common.collect.ImmutableList.of();
                                 }
@@ -430,13 +430,13 @@ public class ProtocolTestStruct implements org.thryft.TBase<ProtocolTestStruct> 
                             @Override
                             public com.google.common.collect.ImmutableMap<String, String> apply(org.thryft.protocol.TProtocol iprot) {
                                 try {
-                                    org.thryft.protocol.TMap mapBegin = iprot.readMapBegin();
-                                    java.util.Map<String, String> map = new java.util.HashMap<String, String>();
+                                    final org.thryft.protocol.TMap mapBegin = iprot.readMapBegin();
+                                    final com.google.common.collect.ImmutableMap.Builder<String, String> map = com.google.common.collect.ImmutableMap.builder();
                                     for (int entryI = 0; entryI < mapBegin.size; entryI++) {
                                         map.put(iprot.readString(), iprot.readString());
                                     }
                                     iprot.readMapEnd();
-                                    return com.google.common.collect.ImmutableMap.copyOf(map);
+                                    return map.build();
                                 } catch (final java.io.IOException e) {
                                     return com.google.common.collect.ImmutableMap.of();
                                 }
@@ -452,12 +452,12 @@ public class ProtocolTestStruct implements org.thryft.TBase<ProtocolTestStruct> 
                             public com.google.common.collect.ImmutableSet<String> apply(final org.thryft.protocol.TProtocol iprot) {
                                 try {
                                     final org.thryft.protocol.TSet sequenceBegin = iprot.readSetBegin();
-                                    final java.util.Set<String> sequence = new java.util.LinkedHashSet<String>();
+                                    final com.google.common.collect.ImmutableSet.Builder<String> sequence = com.google.common.collect.ImmutableSet.builder();
                                     for (int elementI = 0; elementI < sequenceBegin.size; elementI++) {
                                         sequence.add(iprot.readString());
                                     }
                                     iprot.readSetEnd();
-                                    return com.google.common.collect.ImmutableSet.copyOf(sequence);
+                                    return sequence.build();
                                 } catch (final java.io.IOException e) {
                                     return com.google.common.collect.ImmutableSet.of();
                                 }
@@ -494,7 +494,7 @@ public class ProtocolTestStruct implements org.thryft.TBase<ProtocolTestStruct> 
         this.requiredI32Field = requiredI32Field;
         this.requiredStringField = org.thryft.Preconditions.checkNotEmpty(com.google.common.base.Preconditions.checkNotNull(requiredStringField, "org.thryft.protocol.test.ProtocolTestStruct: missing requiredStringField"), "org.thryft.protocol.test.ProtocolTestStruct: requiredStringField is empty");
         this.setStringField = setStringField;
-        this.stringField = org.thryft.Preconditions.checkNotEmpty(stringField, "org.thryft.protocol.test.ProtocolTestStruct: stringField is empty");
+        this.stringField = org.thryft.Preconditions.checkNotEmpty(stringField, String.class, "org.thryft.protocol.test.ProtocolTestStruct: stringField is empty");
         this.structField = structField;
         this.urlField = urlField;
     }
@@ -536,7 +536,7 @@ public class ProtocolTestStruct implements org.thryft.TBase<ProtocolTestStruct> 
         this.requiredI32Field = requiredI32Field;
         this.requiredStringField = org.thryft.Preconditions.checkNotEmpty(com.google.common.base.Preconditions.checkNotNull(requiredStringField, "org.thryft.protocol.test.ProtocolTestStruct: missing requiredStringField"), "org.thryft.protocol.test.ProtocolTestStruct: requiredStringField is empty");
         this.setStringField = com.google.common.base.Preconditions.checkNotNull(setStringField, "org.thryft.protocol.test.ProtocolTestStruct: missing setStringField");
-        this.stringField = org.thryft.Preconditions.checkNotEmpty(com.google.common.base.Preconditions.checkNotNull(stringField, "org.thryft.protocol.test.ProtocolTestStruct: missing stringField"), "org.thryft.protocol.test.ProtocolTestStruct: stringField is empty");
+        this.stringField = org.thryft.Preconditions.checkNotEmpty(com.google.common.base.Preconditions.checkNotNull(stringField, "org.thryft.protocol.test.ProtocolTestStruct: missing stringField"), String.class, "org.thryft.protocol.test.ProtocolTestStruct: stringField is empty");
         this.structField = com.google.common.base.Preconditions.checkNotNull(structField, "org.thryft.protocol.test.ProtocolTestStruct: missing structField");
         this.urlField = com.google.common.base.Preconditions.checkNotNull(urlField, "org.thryft.protocol.test.ProtocolTestStruct: missing urlField");
     }
@@ -557,14 +557,232 @@ public class ProtocolTestStruct implements org.thryft.TBase<ProtocolTestStruct> 
         this.requiredI32Field = requiredI32Field;
         this.requiredStringField = org.thryft.Preconditions.checkNotEmpty(com.google.common.base.Preconditions.checkNotNull(requiredStringField, "org.thryft.protocol.test.ProtocolTestStruct: missing requiredStringField"), "org.thryft.protocol.test.ProtocolTestStruct: requiredStringField is empty");
         this.setStringField = com.google.common.base.Preconditions.checkNotNull(setStringField, "org.thryft.protocol.test.ProtocolTestStruct: missing setStringField");
-        this.stringField = org.thryft.Preconditions.checkNotEmpty(com.google.common.base.Preconditions.checkNotNull(stringField, "org.thryft.protocol.test.ProtocolTestStruct: missing stringField"), "org.thryft.protocol.test.ProtocolTestStruct: stringField is empty");
+        this.stringField = org.thryft.Preconditions.checkNotEmpty(com.google.common.base.Preconditions.checkNotNull(stringField, "org.thryft.protocol.test.ProtocolTestStruct: missing stringField"), String.class, "org.thryft.protocol.test.ProtocolTestStruct: stringField is empty");
         this.structField = com.google.common.base.Preconditions.checkNotNull(structField, "org.thryft.protocol.test.ProtocolTestStruct: missing structField");
         this.urlField = com.google.common.base.Preconditions.checkNotNull(urlField, "org.thryft.protocol.test.ProtocolTestStruct: missing urlField");
     }
 
     @Override
     public int compareTo(final ProtocolTestStruct other) {
-        throw new UnsupportedOperationException();
+        int result;
+        if (this.binaryField.isPresent()) {
+            if (other.binaryField.isPresent()) {
+                result = org.thryft.Comparators.compare(this.binaryField.get(), other.binaryField.get());
+                if (result != 0) {
+                    return result;
+                }
+            } else {
+                return 1;
+            }
+        } else if (other.binaryField.isPresent()) {
+            return -1;
+        }
+
+        if (this.boolField.isPresent()) {
+            if (other.boolField.isPresent()) {
+                result = ((Boolean)this.boolField.get()).compareTo(other.boolField.get());
+                if (result != 0) {
+                    return result;
+                }
+            } else {
+                return 1;
+            }
+        } else if (other.boolField.isPresent()) {
+            return -1;
+        }
+
+        if (this.byteField.isPresent()) {
+            if (other.byteField.isPresent()) {
+                result = ((Byte)this.byteField.get()).compareTo(other.byteField.get());
+                if (result != 0) {
+                    return result;
+                }
+            } else {
+                return 1;
+            }
+        } else if (other.byteField.isPresent()) {
+            return -1;
+        }
+
+        if (this.dateTimeField.isPresent()) {
+            if (other.dateTimeField.isPresent()) {
+                result = this.dateTimeField.get().compareTo(other.dateTimeField.get());
+                if (result != 0) {
+                    return result;
+                }
+            } else {
+                return 1;
+            }
+        } else if (other.dateTimeField.isPresent()) {
+            return -1;
+        }
+
+        if (this.decimalField.isPresent()) {
+            if (other.decimalField.isPresent()) {
+                result = this.decimalField.get().compareTo(other.decimalField.get());
+                if (result != 0) {
+                    return result;
+                }
+            } else {
+                return 1;
+            }
+        } else if (other.decimalField.isPresent()) {
+            return -1;
+        }
+
+        if (this.emailAddressField.isPresent()) {
+            if (other.emailAddressField.isPresent()) {
+                result = this.emailAddressField.get().compareTo(other.emailAddressField.get());
+                if (result != 0) {
+                    return result;
+                }
+            } else {
+                return 1;
+            }
+        } else if (other.emailAddressField.isPresent()) {
+            return -1;
+        }
+
+        if (this.enumField.isPresent()) {
+            if (other.enumField.isPresent()) {
+                result = this.enumField.get().compareTo(other.enumField.get());
+                if (result != 0) {
+                    return result;
+                }
+            } else {
+                return 1;
+            }
+        } else if (other.enumField.isPresent()) {
+            return -1;
+        }
+
+        if (this.i16Field.isPresent()) {
+            if (other.i16Field.isPresent()) {
+                result = ((Short)this.i16Field.get()).compareTo(other.i16Field.get());
+                if (result != 0) {
+                    return result;
+                }
+            } else {
+                return 1;
+            }
+        } else if (other.i16Field.isPresent()) {
+            return -1;
+        }
+
+        if (this.i32Field.isPresent()) {
+            if (other.i32Field.isPresent()) {
+                result = ((Integer)this.i32Field.get()).compareTo(other.i32Field.get());
+                if (result != 0) {
+                    return result;
+                }
+            } else {
+                return 1;
+            }
+        } else if (other.i32Field.isPresent()) {
+            return -1;
+        }
+
+        if (this.i64Field.isPresent()) {
+            if (other.i64Field.isPresent()) {
+                result = ((Long)this.i64Field.get()).compareTo(other.i64Field.get());
+                if (result != 0) {
+                    return result;
+                }
+            } else {
+                return 1;
+            }
+        } else if (other.i64Field.isPresent()) {
+            return -1;
+        }
+
+        if (this.listStringField.isPresent()) {
+            if (other.listStringField.isPresent()) {
+                result = org.thryft.Comparators.compare(this.listStringField.get(), other.listStringField.get());
+                if (result != 0) {
+                    return result;
+                }
+            } else {
+                return 1;
+            }
+        } else if (other.listStringField.isPresent()) {
+            return -1;
+        }
+
+        if (this.mapStringStringField.isPresent()) {
+            if (other.mapStringStringField.isPresent()) {
+                result = org.thryft.Comparators.compare(this.mapStringStringField.get(), other.mapStringStringField.get());
+                if (result != 0) {
+                    return result;
+                }
+            } else {
+                return 1;
+            }
+        } else if (other.mapStringStringField.isPresent()) {
+            return -1;
+        }
+
+        result = ((Integer)this.requiredI32Field).compareTo(other.requiredI32Field);
+        if (result != 0) {
+            return result;
+        }
+
+        result = this.requiredStringField.compareTo(other.requiredStringField);
+        if (result != 0) {
+            return result;
+        }
+
+        if (this.setStringField.isPresent()) {
+            if (other.setStringField.isPresent()) {
+                result = org.thryft.Comparators.compare(this.setStringField.get(), other.setStringField.get());
+                if (result != 0) {
+                    return result;
+                }
+            } else {
+                return 1;
+            }
+        } else if (other.setStringField.isPresent()) {
+            return -1;
+        }
+
+        if (this.stringField.isPresent()) {
+            if (other.stringField.isPresent()) {
+                result = this.stringField.get().compareTo(other.stringField.get());
+                if (result != 0) {
+                    return result;
+                }
+            } else {
+                return 1;
+            }
+        } else if (other.stringField.isPresent()) {
+            return -1;
+        }
+
+        if (this.structField.isPresent()) {
+            if (other.structField.isPresent()) {
+                result = this.structField.get().compareTo(other.structField.get());
+                if (result != 0) {
+                    return result;
+                }
+            } else {
+                return 1;
+            }
+        } else if (other.structField.isPresent()) {
+            return -1;
+        }
+
+        if (this.urlField.isPresent()) {
+            if (other.urlField.isPresent()) {
+                result = this.urlField.get().compareTo(other.urlField.get());
+                if (result != 0) {
+                    return result;
+                }
+            } else {
+                return 1;
+            }
+        } else if (other.urlField.isPresent()) {
+            return -1;
+        }
+        return 0;
     }
 
     @Override

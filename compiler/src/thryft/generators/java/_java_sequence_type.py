@@ -31,13 +31,10 @@
 #-------------------------------------------------------------------------------
 
 from thryft.generators.java._java_container_type import _JavaContainerType
-from yutil import decamelize, indent, class_qname
+from yutil import decamelize, indent
 
 
 class _JavaSequenceType(_JavaContainerType):
-    def _java_mutable_raw_qname(self):
-        raise NotImplementedError(class_qname(self))
-
     def java_name(self, boxed=False):
         return self.java_qname(boxed=boxed)
 
@@ -80,7 +77,6 @@ try {
 
         element_type_name = self.element_type.java_declaration_name(boxed=True)
         interface_simple_name = self._java_interface_simple_name()
-        mutable_raw_qname = self._java_mutable_raw_qname()
 
         return """\
 (new com.google.common.base.Function<org.thryft.protocol.TProtocol, com.google.common.collect.Immutable%(interface_simple_name)s<%(element_type_name)s>>() {
@@ -88,12 +84,12 @@ try {
     public com.google.common.collect.Immutable%(interface_simple_name)s<%(element_type_name)s> apply(final org.thryft.protocol.TProtocol iprot) {
         try {
             final org.thryft.protocol.T%(interface_simple_name)s sequenceBegin = iprot.read%(interface_simple_name)sBegin();
-            final java.util.%(interface_simple_name)s<%(element_type_name)s> sequence = new %(mutable_raw_qname)s<%(element_type_name)s>();
+            final com.google.common.collect.Immutable%(interface_simple_name)s.Builder<%(element_type_name)s> sequence = com.google.common.collect.Immutable%(interface_simple_name)s.builder();
             for (int elementI = 0; elementI < sequenceBegin.size; elementI++) {
 %(add_element)s
             }
             iprot.read%(interface_simple_name)sEnd();
-            return com.google.common.collect.Immutable%(interface_simple_name)s.copyOf(sequence);
+            return sequence.build();
         } catch (final java.io.IOException e) {
             return com.google.common.collect.Immutable%(interface_simple_name)s.of();
         }

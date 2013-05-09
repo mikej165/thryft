@@ -62,13 +62,13 @@ class JavaMapType(MapType, _JavaContainerType):
     @Override
     public com.google.common.collect.ImmutableMap<%(key_type_name)s, %(value_type_name)s> apply(org.thryft.protocol.TProtocol iprot) {
         try {
-            org.thryft.protocol.TMap mapBegin = iprot.readMapBegin();
-            java.util.Map<%(key_type_name)s, %(value_type_name)s> map = new java.util.HashMap<%(key_type_name)s, %(value_type_name)s>();
+            final org.thryft.protocol.TMap mapBegin = iprot.readMapBegin();
+            final com.google.common.collect.ImmutableMap.Builder<%(key_type_name)s, %(value_type_name)s> map = com.google.common.collect.ImmutableMap.builder();
             for (int entryI = 0; entryI < mapBegin.size; entryI++) {
                 map.put(%(key_read_protocol)s, %(value_read_protocol)s);
             }
             iprot.readMapEnd();
-            return com.google.common.collect.ImmutableMap.copyOf(map);
+            return map.build();
         } catch (final java.io.IOException e) {
             return com.google.common.collect.ImmutableMap.of();
         }

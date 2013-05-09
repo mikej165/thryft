@@ -34,5 +34,9 @@ from thryft.generators.java._java_base_type import _JavaBaseType
 
 
 class _JavaNumericType(_JavaBaseType):
+    def java_compare_to(self, this_value, other_value):
+        boxed_name = self.java_name(boxed=True)
+        return "((%(boxed_name)s)%(this_value)s).compareTo(%(other_value)s)" % locals()
+
     def java_read_protocol_throws_unchecked(self):
         return ['NumberFormatException']

@@ -37,6 +37,33 @@ from yutil import lower_camelize, upper_camelize, indent, lpad
 
 
 class JavaField(Field, _JavaNamedConstruct):
+    def java_compare_to(self):
+        name = self.java_name()
+        this_value = 'this.' + name
+        other_value = 'other.' + name
+        if not self.required:
+            this_value += '.get()'
+            other_value += '.get()'
+        type_compare_to = self.type.java_compare_to(this_value, other_value)
+        compare_to = """\
+result = %(type_compare_to)s;
+if (result != 0) {
+    return result;
+}""" % locals()
+        if not self.required:
+            compare_to = indent(' ' * 8, compare_to)
+            compare_to = """\
+if (this.%(name)s.isPresent()) {
+    if (other.%(name)s.isPresent()) {
+%(compare_to)s
+    } else {
+        return 1;
+    }
+} else if (other.%(name)s.isPresent()) {
+    return -1;
+}""" % locals()
+        return compare_to
+
     def java_default_initializer(self):
         default_value = self.java_default_value()
         name = self.java_name()

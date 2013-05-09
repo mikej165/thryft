@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
  * @author Les Hazlewood
  */
 @SuppressWarnings("serial")
-public class EmailAddress implements Serializable {
+public class EmailAddress implements Comparable<EmailAddress>, Serializable {
     /**
      * Utility method that checks to see if the specified string is a valid
      * email address according to the * RFC 2822 specification.
@@ -52,6 +52,11 @@ public class EmailAddress implements Serializable {
     public EmailAddress(final String text) {
         super();
         setText(text);
+    }
+
+    @Override
+    public int compareTo(final EmailAddress o) {
+        return toString().compareTo(o.toString());
     }
 
     @Override

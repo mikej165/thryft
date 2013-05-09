@@ -32,7 +32,6 @@
 
 import os.path
 from shutil import copyfile
-from yutil import camelize
 
 THRYFT_ROOT_DIR_PATH = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', '..', '..'))
 
@@ -45,6 +44,7 @@ from thryft.compiler import Compiler
 from thryft.generators.java.java_generator import JavaGenerator
 from thryft.generators.js.js_generator import JsGenerator
 from thryft.generators.py.py_generator import PyGenerator
+from yutil import camelize
 
 
 

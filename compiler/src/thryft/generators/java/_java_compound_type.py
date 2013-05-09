@@ -340,12 +340,11 @@ public %(name)s(%(parameters)s) {
                 for field in self.fields]
 
     def _java_method_compare_to(self):
-        name = self.java_name()
         field_compare_tos = \
-            lpad("\n", indent(' ' * 4,
-                (field.type.java_compare_to('other.' + name)
-                 for field in self.fields)
-            ))
+            lpad("\n    int result;\n", "\n\n".join(indent(' ' * 4, \
+                (field.java_compare_to() for field in self.fields)
+            )))
+        name = self.java_name()
         return {'compareTo': """\
 @Override
 public int compareTo(final %(name)s other) {%(field_compare_tos)s

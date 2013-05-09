@@ -35,6 +35,9 @@ from thryft.generators.java._java_base_type import _JavaBaseType
 
 
 class JavaBinaryType(BinaryType, _JavaBaseType):
+    def java_compare_to(self, this_value, other_value):
+        return "org.thryft.Comparators.compare(%(this_value)s, %(other_value)s)" % locals()
+
     def java_default_value(self):
         return 'null'
 
