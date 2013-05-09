@@ -41,6 +41,6 @@ class ThriftExceptionType(ExceptionType, _ThriftCompoundType):
             self.doc is not None and rpad(repr(self.doc), "\n") or '',
             self.name,
             pad("\n", "\n".join(indent(' ' * 4,
-                repr(field) + ';' for field in self.fields
+                (repr(field) + ';' for field in self.fields)
             )), "\n")
         )

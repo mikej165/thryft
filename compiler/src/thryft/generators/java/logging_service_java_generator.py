@@ -1,5 +1,4 @@
 from thryft.generators.java import java_generator
-from thryft.generators.java.java_document import JavaDocument
 from thryft.generators.java.java_function import JavaFunction
 from thryft.generators.java.java_service import JavaService
 from yutil import indent, lpad

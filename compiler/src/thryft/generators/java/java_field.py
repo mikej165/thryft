@@ -139,8 +139,10 @@ if (%s().isPresent()) {
         javadoc = self.java_doc()
         lhs = self.java_parameter(boxed=boxed, final=final)
         if self.value is not None:
-            assert not self.required
-            rhs = "com.google.common.base.Optional.of(%s);" % self.java_value()
+            if self.required:
+                rhs = str(self.java_value())
+            else:
+                rhs = "com.google.common.base.Optional.of(%s);" % self.java_value()
         elif not self.required and not final:
             rhs = 'com.google.common.base.Optional.absent()'
         else:

@@ -130,16 +130,3 @@ class Scanner(object):
         )
 
         return output
-
-    def __find_offset(self, offset):
-        colno = offset
-        for lineno, line in enumerate(input_lines):
-            if len(line) < colno:
-                colno -= len(line)
-            else:
-                return colno, lineno
-        return colno, lineno
-
-    def __t(self, offset, text, type_):
-        assert offset >= 0
-        colno, lineno = self.__find_offset(offset)

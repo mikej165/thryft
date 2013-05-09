@@ -41,6 +41,6 @@ class ThriftService(Service, _ThriftNamedConstruct):
             self.name,
             self.extends is not None and (' ' + self.extends) or '',
             pad("\n", "\n".join(indent(' ' * 4,
-                repr(function) + ';' for function in self.functions
+                (repr(function) + ';' for function in self.functions)
             )), "\n")
         )
