@@ -564,6 +564,10 @@ public class ProtocolTestStruct implements org.thryft.TBase<ProtocolTestStruct> 
 
     @Override
     public int compareTo(final ProtocolTestStruct other) {
+        if (other == null) {
+            throw new NullPointerException();
+        }
+
         int result;
         if (this.binaryField.isPresent()) {
             if (other.binaryField.isPresent()) {
@@ -782,6 +786,7 @@ public class ProtocolTestStruct implements org.thryft.TBase<ProtocolTestStruct> 
         } else if (other.urlField.isPresent()) {
             return -1;
         }
+
         return 0;
     }
 

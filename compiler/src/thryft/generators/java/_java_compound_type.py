@@ -341,13 +341,16 @@ public %(name)s(%(parameters)s) {
 
     def _java_method_compare_to(self):
         field_compare_tos = \
-            lpad("\n    int result;\n", "\n\n".join(indent(' ' * 4, \
+            pad("\n\n    int result;\n", "\n\n".join(indent(' ' * 4, \
                 (field.java_compare_to() for field in self.fields)
-            )))
+            )), "\n")
         name = self.java_name()
         return {'compareTo': """\
 @Override
-public int compareTo(final %(name)s other) {%(field_compare_tos)s
+public int compareTo(final %(name)s other) {
+    if (other == null) {
+        throw new NullPointerException();
+    }%(field_compare_tos)s
     return 0;
 }""" % locals()}
 
