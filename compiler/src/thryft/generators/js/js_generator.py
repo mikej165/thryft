@@ -30,7 +30,11 @@
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
 
+from thryft.compiler.ast import Ast
+from thryft.compiler.parser import Parser
 from thryft.generator.generator import Generator
+import json
+import logging
 
 
 class JsGenerator(Generator):
@@ -54,3 +58,24 @@ class JsGenerator(Generator):
     from thryft.generators.js.js_set_type import JsSetType as SetType  # @UnusedImport
     from thryft.generators.js.js_string_type import JsStringType as StringType  # @UnusedImport
     from thryft.generators.js.js_struct_type import JsStructType as StructType  # @UnusedImport
+
+
+def __parse_js_view_metadata_annotation(ast_node, name, value, **kwds):
+    assert isinstance(ast_node, Ast.FieldNode)
+
+    try:
+        value = json.loads(value)
+    except ValueError, e:
+        raise ValueError("@%s contains invalid JSON: '%s', exception: %s" % (name, value, e))
+    if not isinstance(value, dict):
+        raise ValueError("expected @%s to contain a JSON object, found '%s'" % (name, value))
+
+    for subname, subvalue in value.iteritems():
+        if subname not in ('displayFormat', 'editControl'):
+            logging.warn("unknown %(name)s property '%s'" % locals())
+
+    annotation = Ast.AnnotationNode(name=name, value=value, **kwds)
+
+    ast_node.annotations.append(annotation)
+
+Parser.register_annotation(Ast.FieldNode, 'js_view_metadata', __parse_js_view_metadata_annotation)

@@ -24,7 +24,8 @@ class Parser(GenericParser):
                     try:
                         annotation_parser = self.__class__.__annotation_parsers[ast_node.__class__][tag_name]
                     except KeyError:
-                        raise ParseException("unknown annotation @%s" % tag_name, token=ast_node.doc.start_token)
+                        logging.warn("unknown annotation @%s at %s" % (tag_name, repr(ast_node.doc.start_token)))
+                        continue
 
                     try:
                         annotation_parser(

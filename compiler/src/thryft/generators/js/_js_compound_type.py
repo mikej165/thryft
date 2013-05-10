@@ -89,6 +89,7 @@ write: function(oprot) {
         # properties.update(self._js_property_defaults())
         properties.update(self._js_property_schema())
         properties.update(self._js_property_validation())
+        properties.update(self._js_property_view_metadata())
         properties.update(self._js_method_write())
         return [properties[method_name] for method_name in sorted(properties.iterkeys())]
 
@@ -120,6 +121,19 @@ validation: {%s
           (field.js_validation()
            for field in self.fields)
       )))}
+
+    def _js_property_view_metadata(self):
+        view_metadata = {}
+        for field in self.fields:
+            field_view_metadata = field.annotations.get('js_view_metadata', None)
+            if field_view_metadata is not None:
+                view_metadata[field.js_name()] = field_view_metadata
+        if len(view_metadata) == 0:
+            return {}
+        view_metadata = json.dumps(view_metadata, indent=4)
+        return {'viewMetadata': """\
+viewMetadata: %s
+""" % view_metadata}
 
     def js_schema(self):
         return {'type': 'NestedModel', 'model': self.js_qname()}
