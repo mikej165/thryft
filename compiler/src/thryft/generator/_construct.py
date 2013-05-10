@@ -30,6 +30,9 @@
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
 
+from yutil import class_qname
+import logging
+
 class _Construct(object):
     def __init__(self, parent, annotations=None, doc=None, **kwds):
         object.__init__(self)
@@ -40,6 +43,7 @@ class _Construct(object):
         self.__annotations = annotations
         assert doc is None or isinstance(doc, str), type(doc)
         self.__doc = doc
+        self.__logger = None
         self.__parent = parent
 
     @property
@@ -52,6 +56,12 @@ class _Construct(object):
     @property
     def doc(self):
         return self.__doc
+
+    @property
+    def _logger(self):
+        if self.__logger is None:
+            self.__logger = logging.getLogger(class_qname(self))
+        return self.__logger
 
     @property
     def parent(self):

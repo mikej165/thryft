@@ -34,59 +34,20 @@ from cStringIO import StringIO
 from copy import copy, deepcopy
 from fnmatch import fnmatch as _fnmatch
 from glob import iglob
-# pylint:disable=E0611
 from hashlib import md5
 from inspect import isclass
 from os import curdir, getcwd, listdir, makedirs, pardir, walk as _walk, \
     sep as os_sep
 from os.path import abspath, commonprefix, exists, isdir, isfile, join, relpath, \
     split
+import logging
 import os
 import re
 import shutil
 import stat
 import sys
+# pylint:disable=E0611
 # pylint:disable=C0111,R0912
-
-
-__all__ = [
-  'abspath', 'abspaths',
-  'bstrip',
-  'camelize',
-  'class_qname',
-  'commonprefix',
-  'copy_file',
-  'decamelize',
-  'deduplist',
-  'fnmatch',
-  'indent',
-  'ishidden',
-  'istype',
-  'list_files',
-  'list_subdirectories',
-  'lpad',
-  'lower_camelize',
-  'merge_dicts',
-  'mirror_subdirectories',
-  'ntpath', 'ntpaths',
-  'pad',
-  'posixpath', 'posixpaths',
-  'quote',
-  'quotestrlist',
-  'reinterpret_cast',
-  'relpath', 'relpaths',
-  'rglob',
-  'rpad',
-  'spacify',
-  'static_cast',
-  'strlist',
-  'touch',
-  'treepaths',
-  'tstrip',
-  'typelist',
-  'walk',
-  'write_file',
-]
 
 
 def abspaths(paths):
@@ -342,9 +303,8 @@ def relpaths(paths, start=None):
     return __applypaths(abspaths(paths), lambda path: relpath(path, start))
 
 
-def rglob(path, debug=False):
-    if debug:
-        print 'rglob(', path, ')'
+def rglob(path):
+    logging.debug("rglob(%s)" % path)
 
     if isinstance(path, tuple) or isinstance(path, list):
         for subpath in path:
@@ -361,19 +321,12 @@ def rglob(path, debug=False):
             path_parts.append(head)
         path_parts.reverse()
 
-        for path in __rglob(path_parts, 0, debug=debug):
-            if debug:
-                print 'rglob: yielding', path
-
+        for path in __rglob(path_parts, 0):
+            logging.debug('rglob: yielding ' + path)
             yield path
 
-        if debug:
-            print
-
-
-def __rglob(path_parts, path_part_i, debug=False):
-    if debug:
-        print ' __rglob(', path_parts, ',', path_part_i, ')'
+def __rglob(path_parts, path_part_i):
+    logging.debug(" __rglob(%s, %u)" % (path_parts, path_part_i))
 
     assert len(path_parts) > 0
     assert path_part_i < len(path_parts)
@@ -388,8 +341,7 @@ def __rglob(path_parts, path_part_i, debug=False):
             sub_path_parts = path_parts[:path_part_i] + \
                              path_parts[path_part_i + 1:]
             sub_path = join(*sub_path_parts)
-            if debug:
-                print ' __rglob: iglob1(', sub_path, ')'
+            logging.debug("__rglob: iglob1(%s)" % sub_path)
             for sub_path in iglob(sub_path):
                 yield sub_path
 
@@ -402,8 +354,7 @@ def __rglob(path_parts, path_part_i, debug=False):
                         [dir_path[len(path) + 1:]] + \
                         path_parts[path_part_i + 1:]
                     sub_path = join(*sub_path_parts)
-                    if debug:
-                        print ' __rglob: recursing into', dir_path, sub_path
+                    logging.debug("__rglob: recursing into %s %s" % (dir_path, sub_path))
                     for sub_path in __rglob(sub_path_parts, path_part_i + 1):
                         yield sub_path
         else:
@@ -413,16 +364,14 @@ def __rglob(path_parts, path_part_i, debug=False):
                     yield path
     elif path_part_i + 1 < len(path_parts):
         path = join(*path_parts[:path_part_i + 1])
-        if debug:
-            print ' __rglob: iglob2(', path, ')'
+        logging.debug("__rglob: iglob2(%s)" % path)
         for path in iglob(path):
             if isdir(path):
                 for path in __rglob(path_parts, path_part_i + 1):
                     yield path
     else:
         path = join(*path_parts[:path_part_i + 1])
-        if debug:
-            print ' __rglob: iglob3(', path, ')'
+        logging.debug("__rglob: iglob3(%s)" % path)
         for path in iglob(path):
             yield path
 
@@ -637,7 +586,7 @@ def which(executable_file_stem):
                 return executable_file_path
 
 
-def write_file(path, contents, force=False, newline='\n', quiet=False):
+def write_file(path, contents, force=False, newline='\n'):
     if isinstance(contents, basestring):
         pass
     elif isinstance(contents, tuple) or isinstance(contents, list):
@@ -669,6 +618,5 @@ def write_file(path, contents, force=False, newline='\n', quiet=False):
             pass
 
     open(path, 'wb').write(contents)
-    if not quiet:
-        print 'wrote', path
+    logging.info('wrote ' + path)
     return True

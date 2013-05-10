@@ -128,6 +128,6 @@ class Document(_NamedConstruct):
 
         with open(out_file_path, 'w+b') as out_file:
             out_file.write(repr_)
-            print 'wrote', out_file_path
+            self._logger.info('wrote ' + out_file_path)
 
         return out_file_path

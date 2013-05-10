@@ -134,14 +134,15 @@ class Main(object):
         )
 
     def __call__(self):
-        logging_kwds = {}
+        logging_kwds = {
+            'format': '%(asctime)s:%(module)s:%(lineno)s:%(name)s:%(levelname)s: %(message)s',
+            'level': logging.ERROR
+        }  # @IgnorePep8
         if self._debug:
             logging_kwds['level'] = logging.DEBUG
             if self.__log_filename is not None:
                 logging_kwds['filename'] = self.__log_filename
-        if len(logging_kwds) > 0:
-            logging_kwds['format'] = '%(asctime)s:%(module)s:%(lineno)s:%(name)s:%(levelname)s: %(message)s',  # @IgnorePep8
-            logging.basicConfig(**logging_kwds)
+        logging.basicConfig(**logging_kwds)
 
         compiler = Compiler(include_dir_paths=self._include_dir_paths)
         for compile_task in self._get_compile_tasks():

@@ -44,53 +44,54 @@ from thryft.compiler import Compiler
 from thryft.generators.java.java_generator import JavaGenerator
 from thryft.generators.js.js_generator import JsGenerator
 from thryft.generators.py.py_generator import PyGenerator
+import thryft.main
 from yutil import camelize
 
 
+class Main(thryft.main.Main):
+    def _get_compile_tasks(self):
+        gen = self._gen
 
-for in_dir_path, generator, out_dir_path in (
-#    (
-#        os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'thrift', 'src'),
-#        JavaGenerator(),
-#        os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'java', 'src', 'gen', 'java')
-#    ),
-#    (
-#        os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'thrift', 'src'),
-#        PyGenerator(),
-#        os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'py', 'src')
-#    ),
-    (
-        os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'thrift', 'test'),
-        JavaGenerator(),
-        os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'java', 'protocol', 'src', 'test', 'java')
-    ),
-    (
-        os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'thrift', 'test'),
-        JsGenerator(),
-        os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'js', 'test')
-    ),
-    (
-        os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'thrift', 'test'),
-        PyGenerator(),
-        os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'py', 'test')
-    ),
-):
-    compiler = \
-        Compiler(
-            include_dir_paths=(
-                in_dir_path,
-                os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'thrift', 'src'),
-            )
-        )
+        generators = {
+            'java': JavaGenerator(),
+            'js': JsGenerator(),
+            'py': PyGenerator()
+        }
 
-    for dir_path, _, file_names in os.walk(in_dir_path):
-        for file_name in file_names:
-            file_base_name, file_ext = os.path.splitext(file_name)
-            if file_ext != '.thrift':
-                continue
-            elif os.path.isfile(os.path.join(dir_path, file_base_name + '.py')):
-                continue
-            file_path = os.path.join(dir_path, file_name)
+        for in_dir_path, out_dir_paths in (
+              (
+                  os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'thrift', 'test'),
+                  {
+                      'java': os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'java', 'protocol', 'src', 'test', 'java'),
+                      'js': os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'js', 'test'),
+                      'py': os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'py', 'test'),
+                  },
+             ),
+        ):
+            for dir_path, _, file_names in os.walk(in_dir_path):
+                for file_name in file_names:
+                    file_base_name, file_ext = os.path.splitext(file_name)
+                    if file_ext != '.thrift':
+                        continue
+                    elif os.path.isfile(os.path.join(dir_path, file_base_name + '.py')):
+                        continue
+                    thrift_file_path = os.path.join(dir_path, file_name)
 
-            for document in compiler(file_path, generator=generator):
-                document.save(out_dir_path)
+                    compile_task_kwds = {
+                        'thrift_file_path': thrift_file_path
+                    }
+
+                    if self._dry_run:
+                        yield self._CompileTask(generator=None, out=None, **compile_task_kwds)
+                        continue
+
+                    if len(gen) == 0:
+                        gen_names = generators.keys()
+                    else:
+                        gen_names = gen.keys()
+                    for gen_name in gen_names:
+                        yield self._CompileTask(generator=generators[gen_name], out=out_dir_paths[gen_name], **compile_task_kwds)
+
+
+assert __name__ == '__main__'
+Main.main()
