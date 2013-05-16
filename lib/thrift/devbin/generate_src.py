@@ -42,6 +42,7 @@ except ImportError:
     sys.path.append(os.path.join(THRYFT_ROOT_DIR_PATH, 'compiler', 'src'))
 from thryft.compiler import Compiler
 from thryft.generators.java.java_generator import JavaGenerator
+from thryft.generators.java.faker_java_generator import FakerJavaGenerator
 from thryft.generators.js.js_generator import JsGenerator
 from thryft.generators.py.py_generator import PyGenerator
 import thryft.main
@@ -53,9 +54,9 @@ class Main(thryft.main.Main):
         gen = self._gen
 
         generators = {
-            'java': JavaGenerator(),
-            'js': JsGenerator(),
-            'py': PyGenerator()
+            'java': (JavaGenerator(), FakerJavaGenerator()),
+            'js': (JsGenerator(),),
+            'py': (PyGenerator(),),
         }
 
         for in_dir_path, out_dir_paths in (
@@ -90,7 +91,8 @@ class Main(thryft.main.Main):
                     else:
                         gen_names = gen.keys()
                     for gen_name in gen_names:
-                        yield self._CompileTask(generator=generators[gen_name], out=out_dir_paths[gen_name], **compile_task_kwds)
+                        for generator in generators[gen_name]:
+                            yield self._CompileTask(generator=generator, out=out_dir_paths[gen_name], **compile_task_kwds)
 
 
 assert __name__ == '__main__'

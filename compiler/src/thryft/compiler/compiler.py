@@ -37,6 +37,7 @@ from thryft.compiler.parser import Parser
 from thryft.compiler.scanner import Scanner
 from thryft.generator._type import _Type
 from thryft.generator.document import Document
+from thryft.generator.generator import Generator
 from thryft.generator.typedef import Typedef
 import imp
 import logging
@@ -45,6 +46,8 @@ import os.path
 
 class Compiler(object):
     class __AstVisitor(object):
+        __ROOT_GENERATOR = Generator()
+
         def __init__(self, compiler, generator, include_dir_paths):
             object.__init__(self)
             self.__compiler = compiler
@@ -89,13 +92,37 @@ class Compiler(object):
                                 overrides_module = None
 
                             if overrides_module is not None:
-                                default_construct_class = getattr(self.__generator, class_name)
-                                for attr in dir(overrides_module):
-                                    value = getattr(overrides_module, attr)
-                                    if isclass(value) and \
-                                       issubclass(value, default_construct_class) and \
-                                       value != default_construct_class:
-                                        return getattr(overrides_module, attr)(**kwds)
+                                # Find an override implementation corresponding to our generator
+                                # For example, find JavaDateTime by looking in the module for a
+                                # class that inherits JavaStructType, assuming class_name is
+                                # StructType.
+                                # The first_bases algorithm below covers the case where we want
+                                # JavaDateTime but the generator gave us something that itself
+                                # inherits from JavaStructType e.g., SubJavaStructType.
+                                # In this case there is no SubJavaDateTime(SubJavaStructType), so
+                                # we need to consider SubJavaStructType's parent (JavaStructType)
+                                # and look for a subclass of that.
+                                root_construct_class = getattr(self.__ROOT_GENERATOR, class_name)
+                                generator_construct_class = getattr(self.__generator, class_name)
+                                parent_construct_classes = [generator_construct_class]
+                                def __get_first_bases(class_, first_bases):
+                                    if len(class_.__bases__) == 0:
+                                        return
+                                    first_base = class_.__bases__[0]
+                                    if first_base is object or first_base is root_construct_class:
+                                        return
+                                    if first_base.__name__[0] != '_':
+                                        first_bases.append(first_base)
+                                    __get_first_bases(first_base, first_bases)
+                                __get_first_bases(generator_construct_class, parent_construct_classes)
+
+                                for parent_construct_class in parent_construct_classes:
+                                    for attr in dir(overrides_module):
+                                        value = getattr(overrides_module, attr)
+                                        if isclass(value) and \
+                                           issubclass(value, parent_construct_class) and \
+                                           value != parent_construct_class:
+                                            return getattr(overrides_module, attr)(**kwds)
                                 # logging.warn("could not find override class for %s in %s" % (default_construct_class.__name__, overrides_module_name))
                         break
 

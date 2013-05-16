@@ -53,6 +53,9 @@ class _JavaType(_JavaNamedConstruct):
         else:
             return "%(this_value)s == %(other_value)s" % locals()
 
+    def java_faker(self, field_faker=None):
+        raise NotImplementedError(class_qname(self) + '.java_faker')
+
     def java_from_string(self, value):
         raise NotImplementedError(class_qname(self) + '.java_from_string')
 

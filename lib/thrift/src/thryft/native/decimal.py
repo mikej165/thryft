@@ -40,6 +40,9 @@ class JavaDecimal(JavaStructType):
     def java_declaration_name(self, boxed=False):
         return 'java.math.BigDecimal'
 
+    def java_faker(self):
+        return 'org.thryft.Faker.randomDecimal()'
+
     def java_read_protocol(self):
         return 'iprot.readDecimal()'
 

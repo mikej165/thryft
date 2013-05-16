@@ -30,6 +30,7 @@
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
 
+from thryft.generators.java._java_named_construct import _JavaNamedConstruct
 from thryft.generators.java._java_type import _JavaType
 from yutil import lpad, indent, pad, rpad, upper_camelize
 
@@ -339,6 +340,12 @@ public %(name)s(%(parameters)s) {
         return [field.java_member_declaration(final=True)
                 for field in self.fields]
 
+    def _java_method_builder(self):
+        return {'builder': """\
+public static Builder builder() {
+    return new Builder();
+}"""}
+
     def _java_method_compare_to(self):
         field_compare_tos = \
             pad("\n\n    int result;\n", "\n\n".join(indent(' ' * 4, \
@@ -533,6 +540,7 @@ public void write(final org.thryft.protocol.TProtocol oprot, final byte writeAsT
 
     def _java_methods(self):
         methods = {}
+        methods.update(self._java_method_builder())
         methods.update(self._java_method_compare_to())
         methods.update(self._java_method_equals())
         methods.update(self._java_method_get())
@@ -542,6 +550,9 @@ public void write(final org.thryft.protocol.TProtocol oprot, final byte writeAsT
         methods.update(self._java_method_to_string())
         methods.update(self._java_method_write())  # Must be after TBase
         return methods
+
+    def java_qname(self, boxed=False):
+        return _JavaNamedConstruct.java_qname(self, name=self.name)
 
     def java_read_protocol(self):
         qname = self.java_qname()

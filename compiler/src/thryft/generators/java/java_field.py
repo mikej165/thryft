@@ -30,6 +30,7 @@
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
 
+from inspect import isfunction
 from thryft.generator.field import Field
 from thryft.generators.java._java_named_construct import _JavaNamedConstruct
 from thryft.generators.java.java_bool_type import JavaBoolType
@@ -83,6 +84,15 @@ if (this.%(name)s.isPresent()) {
             return "%(this_value)s.equals(%(other_value)s)" % locals()
         else:
             return self.type.java_equals(this_value, other_value)
+
+    def java_faker(self):
+        faker = self.annotations.get('faker')
+        if faker is not None:
+            if isfunction(faker):
+                return self.type.java_literal(faker())
+            else:
+                return 'org.thryft.Faker.' + faker
+        return self.type.java_faker()
 
     def java_getter(self, final=True):
         final = final and 'final ' or ''

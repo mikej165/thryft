@@ -40,6 +40,9 @@ class JavaDateTime(JavaStructType):
     def java_declaration_name(self, boxed=True):
         return 'org.joda.time.DateTime'
 
+    def java_faker(self):
+        return 'org.joda.time.DateTime.now()'
+
     def java_read_protocol(self):
         return 'iprot.readDateTime()'
 

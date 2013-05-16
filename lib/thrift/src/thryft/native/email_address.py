@@ -40,6 +40,9 @@ class JavaEmailAddress(JavaStructType):
     def java_declaration_name(self, boxed=False):
         return 'org.thryft.native_.EmailAddress'
 
+    def java_faker(self):
+        return 'org.thryft.Faker.Internet.email()'
+
     def java_read_protocol(self):
         return 'iprot.readEmailAddress()'
 

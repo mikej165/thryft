@@ -38,5 +38,8 @@ class _JavaNumericType(_JavaBaseType):
         boxed_name = self.java_name(boxed=True)
         return "((%(boxed_name)s)%(this_value)s).compareTo(%(other_value)s)" % locals()
 
+    def java_faker(self):
+        return "org.thryft.Faker.random%s()" % self.name.capitalize()
+
     def java_read_protocol_throws_unchecked(self):
         return ['NumberFormatException']

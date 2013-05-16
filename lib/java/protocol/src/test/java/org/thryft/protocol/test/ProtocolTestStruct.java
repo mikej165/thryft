@@ -562,6 +562,10 @@ public class ProtocolTestStruct implements org.thryft.TBase<ProtocolTestStruct> 
         this.urlField = com.google.common.base.Preconditions.checkNotNull(urlField, "org.thryft.protocol.test.ProtocolTestStruct: missing urlField");
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     @Override
     public int compareTo(final ProtocolTestStruct other) {
         if (other == null) {
@@ -993,6 +997,142 @@ public class ProtocolTestStruct implements org.thryft.TBase<ProtocolTestStruct> 
             hashCode = 31 * hashCode + getUrlField().get().hashCode();
         }
         return hashCode;
+    }
+
+    public ProtocolTestStruct replaceBinaryField(final com.google.common.base.Optional<byte[]> binaryField) {
+        return new ProtocolTestStruct(binaryField, this.boolField, this.byteField, this.dateTimeField, this.decimalField, this.emailAddressField, this.enumField, this.i16Field, this.i32Field, this.i64Field, this.listStringField, this.mapStringStringField, this.requiredI32Field, this.requiredStringField, this.setStringField, this.stringField, this.structField, this.urlField);
+    }
+
+    public ProtocolTestStruct replaceBinaryField(final byte[] binaryField) {
+        return replaceBinaryField(com.google.common.base.Optional.fromNullable(binaryField));
+    }
+
+    public ProtocolTestStruct replaceBoolField(final com.google.common.base.Optional<Boolean> boolField) {
+        return new ProtocolTestStruct(this.binaryField, boolField, this.byteField, this.dateTimeField, this.decimalField, this.emailAddressField, this.enumField, this.i16Field, this.i32Field, this.i64Field, this.listStringField, this.mapStringStringField, this.requiredI32Field, this.requiredStringField, this.setStringField, this.stringField, this.structField, this.urlField);
+    }
+
+    public ProtocolTestStruct replaceBoolField(final boolean boolField) {
+        return replaceBoolField(com.google.common.base.Optional.fromNullable(boolField));
+    }
+
+    public ProtocolTestStruct replaceByteField(final com.google.common.base.Optional<Byte> byteField) {
+        return new ProtocolTestStruct(this.binaryField, this.boolField, byteField, this.dateTimeField, this.decimalField, this.emailAddressField, this.enumField, this.i16Field, this.i32Field, this.i64Field, this.listStringField, this.mapStringStringField, this.requiredI32Field, this.requiredStringField, this.setStringField, this.stringField, this.structField, this.urlField);
+    }
+
+    public ProtocolTestStruct replaceByteField(final byte byteField) {
+        return replaceByteField(com.google.common.base.Optional.fromNullable(byteField));
+    }
+
+    public ProtocolTestStruct replaceDateTimeField(final com.google.common.base.Optional<org.joda.time.DateTime> dateTimeField) {
+        return new ProtocolTestStruct(this.binaryField, this.boolField, this.byteField, dateTimeField, this.decimalField, this.emailAddressField, this.enumField, this.i16Field, this.i32Field, this.i64Field, this.listStringField, this.mapStringStringField, this.requiredI32Field, this.requiredStringField, this.setStringField, this.stringField, this.structField, this.urlField);
+    }
+
+    public ProtocolTestStruct replaceDateTimeField(final org.joda.time.DateTime dateTimeField) {
+        return replaceDateTimeField(com.google.common.base.Optional.fromNullable(dateTimeField));
+    }
+
+    public ProtocolTestStruct replaceDecimalField(final com.google.common.base.Optional<java.math.BigDecimal> decimalField) {
+        return new ProtocolTestStruct(this.binaryField, this.boolField, this.byteField, this.dateTimeField, decimalField, this.emailAddressField, this.enumField, this.i16Field, this.i32Field, this.i64Field, this.listStringField, this.mapStringStringField, this.requiredI32Field, this.requiredStringField, this.setStringField, this.stringField, this.structField, this.urlField);
+    }
+
+    public ProtocolTestStruct replaceDecimalField(final java.math.BigDecimal decimalField) {
+        return replaceDecimalField(com.google.common.base.Optional.fromNullable(decimalField));
+    }
+
+    public ProtocolTestStruct replaceEmailAddressField(final com.google.common.base.Optional<org.thryft.native_.EmailAddress> emailAddressField) {
+        return new ProtocolTestStruct(this.binaryField, this.boolField, this.byteField, this.dateTimeField, this.decimalField, emailAddressField, this.enumField, this.i16Field, this.i32Field, this.i64Field, this.listStringField, this.mapStringStringField, this.requiredI32Field, this.requiredStringField, this.setStringField, this.stringField, this.structField, this.urlField);
+    }
+
+    public ProtocolTestStruct replaceEmailAddressField(final org.thryft.native_.EmailAddress emailAddressField) {
+        return replaceEmailAddressField(com.google.common.base.Optional.fromNullable(emailAddressField));
+    }
+
+    public ProtocolTestStruct replaceEnumField(final com.google.common.base.Optional<org.thryft.protocol.test.ProtocolTestEnum> enumField) {
+        return new ProtocolTestStruct(this.binaryField, this.boolField, this.byteField, this.dateTimeField, this.decimalField, this.emailAddressField, enumField, this.i16Field, this.i32Field, this.i64Field, this.listStringField, this.mapStringStringField, this.requiredI32Field, this.requiredStringField, this.setStringField, this.stringField, this.structField, this.urlField);
+    }
+
+    public ProtocolTestStruct replaceEnumField(final org.thryft.protocol.test.ProtocolTestEnum enumField) {
+        return replaceEnumField(com.google.common.base.Optional.fromNullable(enumField));
+    }
+
+    public ProtocolTestStruct replaceI16Field(final com.google.common.base.Optional<Short> i16Field) {
+        return new ProtocolTestStruct(this.binaryField, this.boolField, this.byteField, this.dateTimeField, this.decimalField, this.emailAddressField, this.enumField, i16Field, this.i32Field, this.i64Field, this.listStringField, this.mapStringStringField, this.requiredI32Field, this.requiredStringField, this.setStringField, this.stringField, this.structField, this.urlField);
+    }
+
+    public ProtocolTestStruct replaceI16Field(final short i16Field) {
+        return replaceI16Field(com.google.common.base.Optional.fromNullable(i16Field));
+    }
+
+    public ProtocolTestStruct replaceI32Field(final com.google.common.base.Optional<Integer> i32Field) {
+        return new ProtocolTestStruct(this.binaryField, this.boolField, this.byteField, this.dateTimeField, this.decimalField, this.emailAddressField, this.enumField, this.i16Field, i32Field, this.i64Field, this.listStringField, this.mapStringStringField, this.requiredI32Field, this.requiredStringField, this.setStringField, this.stringField, this.structField, this.urlField);
+    }
+
+    public ProtocolTestStruct replaceI32Field(final int i32Field) {
+        return replaceI32Field(com.google.common.base.Optional.fromNullable(i32Field));
+    }
+
+    public ProtocolTestStruct replaceI64Field(final com.google.common.base.Optional<Long> i64Field) {
+        return new ProtocolTestStruct(this.binaryField, this.boolField, this.byteField, this.dateTimeField, this.decimalField, this.emailAddressField, this.enumField, this.i16Field, this.i32Field, i64Field, this.listStringField, this.mapStringStringField, this.requiredI32Field, this.requiredStringField, this.setStringField, this.stringField, this.structField, this.urlField);
+    }
+
+    public ProtocolTestStruct replaceI64Field(final long i64Field) {
+        return replaceI64Field(com.google.common.base.Optional.fromNullable(i64Field));
+    }
+
+    public ProtocolTestStruct replaceListStringField(final com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> listStringField) {
+        return new ProtocolTestStruct(this.binaryField, this.boolField, this.byteField, this.dateTimeField, this.decimalField, this.emailAddressField, this.enumField, this.i16Field, this.i32Field, this.i64Field, listStringField, this.mapStringStringField, this.requiredI32Field, this.requiredStringField, this.setStringField, this.stringField, this.structField, this.urlField);
+    }
+
+    public ProtocolTestStruct replaceListStringField(final com.google.common.collect.ImmutableList<String> listStringField) {
+        return replaceListStringField(com.google.common.base.Optional.fromNullable(listStringField));
+    }
+
+    public ProtocolTestStruct replaceMapStringStringField(final com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> mapStringStringField) {
+        return new ProtocolTestStruct(this.binaryField, this.boolField, this.byteField, this.dateTimeField, this.decimalField, this.emailAddressField, this.enumField, this.i16Field, this.i32Field, this.i64Field, this.listStringField, mapStringStringField, this.requiredI32Field, this.requiredStringField, this.setStringField, this.stringField, this.structField, this.urlField);
+    }
+
+    public ProtocolTestStruct replaceMapStringStringField(final com.google.common.collect.ImmutableMap<String, String> mapStringStringField) {
+        return replaceMapStringStringField(com.google.common.base.Optional.fromNullable(mapStringStringField));
+    }
+
+    public ProtocolTestStruct replaceRequiredI32Field(final int requiredI32Field) {
+        return new ProtocolTestStruct(this.binaryField, this.boolField, this.byteField, this.dateTimeField, this.decimalField, this.emailAddressField, this.enumField, this.i16Field, this.i32Field, this.i64Field, this.listStringField, this.mapStringStringField, requiredI32Field, this.requiredStringField, this.setStringField, this.stringField, this.structField, this.urlField);
+    }
+
+    public ProtocolTestStruct replaceRequiredStringField(final String requiredStringField) {
+        return new ProtocolTestStruct(this.binaryField, this.boolField, this.byteField, this.dateTimeField, this.decimalField, this.emailAddressField, this.enumField, this.i16Field, this.i32Field, this.i64Field, this.listStringField, this.mapStringStringField, this.requiredI32Field, requiredStringField, this.setStringField, this.stringField, this.structField, this.urlField);
+    }
+
+    public ProtocolTestStruct replaceSetStringField(final com.google.common.base.Optional<com.google.common.collect.ImmutableSet<String>> setStringField) {
+        return new ProtocolTestStruct(this.binaryField, this.boolField, this.byteField, this.dateTimeField, this.decimalField, this.emailAddressField, this.enumField, this.i16Field, this.i32Field, this.i64Field, this.listStringField, this.mapStringStringField, this.requiredI32Field, this.requiredStringField, setStringField, this.stringField, this.structField, this.urlField);
+    }
+
+    public ProtocolTestStruct replaceSetStringField(final com.google.common.collect.ImmutableSet<String> setStringField) {
+        return replaceSetStringField(com.google.common.base.Optional.fromNullable(setStringField));
+    }
+
+    public ProtocolTestStruct replaceStringField(final com.google.common.base.Optional<String> stringField) {
+        return new ProtocolTestStruct(this.binaryField, this.boolField, this.byteField, this.dateTimeField, this.decimalField, this.emailAddressField, this.enumField, this.i16Field, this.i32Field, this.i64Field, this.listStringField, this.mapStringStringField, this.requiredI32Field, this.requiredStringField, this.setStringField, stringField, this.structField, this.urlField);
+    }
+
+    public ProtocolTestStruct replaceStringField(final String stringField) {
+        return replaceStringField(com.google.common.base.Optional.fromNullable(stringField));
+    }
+
+    public ProtocolTestStruct replaceStructField(final com.google.common.base.Optional<org.thryft.protocol.test.ProtocolTestStruct> structField) {
+        return new ProtocolTestStruct(this.binaryField, this.boolField, this.byteField, this.dateTimeField, this.decimalField, this.emailAddressField, this.enumField, this.i16Field, this.i32Field, this.i64Field, this.listStringField, this.mapStringStringField, this.requiredI32Field, this.requiredStringField, this.setStringField, this.stringField, structField, this.urlField);
+    }
+
+    public ProtocolTestStruct replaceStructField(final org.thryft.protocol.test.ProtocolTestStruct structField) {
+        return replaceStructField(com.google.common.base.Optional.fromNullable(structField));
+    }
+
+    public ProtocolTestStruct replaceUrlField(final com.google.common.base.Optional<org.thryft.native_.Url> urlField) {
+        return new ProtocolTestStruct(this.binaryField, this.boolField, this.byteField, this.dateTimeField, this.decimalField, this.emailAddressField, this.enumField, this.i16Field, this.i32Field, this.i64Field, this.listStringField, this.mapStringStringField, this.requiredI32Field, this.requiredStringField, this.setStringField, this.stringField, this.structField, urlField);
+    }
+
+    public ProtocolTestStruct replaceUrlField(final org.thryft.native_.Url urlField) {
+        return replaceUrlField(com.google.common.base.Optional.fromNullable(urlField));
     }
 
     @Override

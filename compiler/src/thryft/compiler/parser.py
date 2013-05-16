@@ -5,6 +5,7 @@ from thryft.compiler.token import Token
 from yutil import class_qname
 import json
 import logging
+import random
 
 
 class Parser(GenericParser):
@@ -873,6 +874,41 @@ class Parser(GenericParser):
 
     def typestring(self, token):
         return token.type
+
+
+try:
+    import faker as __faker_module
+    _real_faker = __faker_module.Faker()
+except ImportError:
+    _real_faker = None
+
+if _real_faker is not None:
+    class __Faker(object):
+        class _Provider(object):
+            def __getattr__(self, attr):
+                return getattr(_real_faker, attr)
+    for __provider_name in ('Address', 'DateTime', 'Internet', 'Lorem', 'Name'):
+        setattr(__Faker, __provider_name, __Faker._Provider())
+else:
+    __Faker = None
+
+def __parse_faker_annotation(ast_node, name, value, **kwds):
+    if value is None:
+        raise ValueError("@%(name)s requires a value" % locals())
+    valid_faker = False
+    if __Faker is not None:
+        try:
+            eval('__Faker.' + value)
+            valid_faker = True
+        except:
+            import traceback;
+            traceback.print_exc()
+            valid_faker = False
+    if not valid_faker:
+        value_copy = value
+        value = lambda: eval(value_copy, {}, {'random': random})
+    ast_node.annotations.append(Ast.AnnotationNode(name=name, value=value, **kwds))
+Parser.register_annotation(Ast.FieldNode, 'faker', __parse_faker_annotation)
 
 
 def __parse_param_annotation(ast_node, name, value, **kwds):
