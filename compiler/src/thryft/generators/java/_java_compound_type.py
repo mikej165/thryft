@@ -31,7 +31,7 @@
 #-------------------------------------------------------------------------------
 
 from thryft.generators.java._java_type import _JavaType
-from yutil import lpad, indent, pad, rpad
+from yutil import lpad, indent, pad, rpad, upper_camelize
 
 
 class _JavaCompoundType(_JavaType):
@@ -77,23 +77,23 @@ public Builder() {
                     for field in self.fields]
 
         def _java_method_build(self):
-            field_names = \
+            all_field_names = \
                 ', '.join(field.java_name() for field in self.fields)
             name = self.java_name()
             return {'build': """\
 public %(name)s build() {
-    return _build(%(field_names)s);
+    return _build(%(all_field_names)s);
 }""" % locals()}
 
         def _java_method__build(self):
-            field_names = \
+            all_field_names = \
                 ', '.join(field.java_name() for field in self.fields)
             field_parameters = \
                 ', '.join(field.java_parameter(final=True) for field in self.fields)
             name = self.java_name()
             return {'_build': """\
 protected %(name)s _build(%(field_parameters)s) {
-    return new %(name)s(%(field_names)s);
+    return new %(name)s(%(all_field_names)s);
 }""" % locals()}
 
         def _java_method_setters(self):
@@ -426,6 +426,34 @@ public int hashCode() {
     return hashCode;
 }""" % locals()}
 
+    def _java_method_replace(self):
+        methods = {}
+        compound_type_name = self.java_name()
+        all_field_names = [field.java_name() for field in self.fields]
+        for field_i, field in enumerate(self.fields):
+            field_name = field.java_name()
+            field_parameter = field.java_parameter(final=True)
+            all_field_names = []
+            for other_field_i, other_field in enumerate(self.fields):
+                if field_i == other_field_i:
+                    all_field_names.append(field.java_name())
+                else:
+                    all_field_names.append('this.' + other_field.java_name())
+            all_field_names = ', '.join(all_field_names)
+            method_name = 'replace' + upper_camelize(field.name)
+            methods[method_name] = """\
+public %(compound_type_name)s %(method_name)s(%(field_parameter)s) {
+    return new %(compound_type_name)s(%(all_field_names)s);
+}""" % locals()
+            if not field.required:
+                field_parameter = 'final ' + field.type.java_declaration_name() + ' ' + field.java_name()
+                methods[method_name + 'Ex'] = """\
+public %(compound_type_name)s %(method_name)s(%(field_parameter)s) {
+    return %(method_name)s(com.google.common.base.Optional.fromNullable(%(field_name)s));
+}""" % locals()
+
+        return methods
+
     def _java_method_to_string(self):
         add_statements = []
         for field in self.fields:
@@ -510,6 +538,7 @@ public void write(final org.thryft.protocol.TProtocol oprot, final byte writeAsT
         methods.update(self._java_method_get())
         methods.update(self._java_method_getters())
         methods.update(self._java_method_hash_code())
+        methods.update(self._java_method_replace())
         methods.update(self._java_method_to_string())
         methods.update(self._java_method_write())  # Must be after TBase
         return methods
