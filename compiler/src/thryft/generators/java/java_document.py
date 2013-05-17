@@ -31,6 +31,7 @@
 #-------------------------------------------------------------------------------
 
 from thryft.generator.document import Document
+from thryft.generator.typedef import Typedef
 from thryft.generators.java._java_named_construct import _JavaNamedConstruct
 import os.path
 
@@ -78,12 +79,15 @@ class JavaDocument(Document, _JavaNamedConstruct):
         return Document.save(self, out_path=out_path, file_ext=file_ext, language=language)
 
     def _save(self, out_file_path):
+        if len(self.definitions) == 0:
+            return
         assert len(self.definitions) == 1, len(self.definitions)
-        return \
-            Document._save(
-                self,
-                os.path.join(
-                    os.path.dirname(out_file_path),
-                    self.definitions[0].java_name() + self._java_file_ext()
+        if not isinstance(self.definitions[0], Typedef):
+            return \
+                Document._save(
+                    self,
+                    os.path.join(
+                        os.path.dirname(out_file_path),
+                        self.definitions[0].java_name() + self._java_file_ext()
+                    )
                 )
-            )

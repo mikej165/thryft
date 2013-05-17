@@ -215,10 +215,10 @@ class Compiler(object):
             document = self.__construct('Document', path=document_node.path)
             self.__scope_stack.append(document)
 
-            for header in document_node.headers:
-                document.headers.append(header.accept(self))
-            for definition in document_node.definitions:
-                document.definitions.append(definition.accept(self))
+            for header_node in document_node.headers:
+                document.headers.append(header_node.accept(self))
+            for definition_node in document_node.definitions:
+                document.definitions.append(definition_node.accept(self))
 
             self.__scope_stack.pop(-1)
 
@@ -289,8 +289,10 @@ class Compiler(object):
                             path=include_file_relpath
                         )
                     for definition in included_document.definitions:
-                        if isinstance(definition, _Type) or isinstance(definition, Typedef):
+                        if isinstance(definition, _Type):
                             self.__type_cache[definition.thrift_qname()] = definition
+                        elif isinstance(definition, Typedef):
+                            self.__type_cache[definition.thrift_qname()] = definition.type
                     return include
             raise CompileException("include path not found: %s" % include_file_relpath, ast_node=include_node)
 
