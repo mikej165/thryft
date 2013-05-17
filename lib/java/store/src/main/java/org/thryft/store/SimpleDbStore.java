@@ -137,14 +137,14 @@ public final class SimpleDbStore<ModelT extends TBase<?>> extends
     }
 
     @Override
-    protected void _deleteModels(final String username) {
-        final ImmutableSet<String> modelIds = getModelIds(username);
+    protected void _deleteModels(final String userId) {
+        final ImmutableSet<String> modelIds = getModelIds(userId);
         final List<List<String>> modelIdBatches = Lists.partition(
                 ImmutableList.copyOf(modelIds), ITEM_BATCH_SIZE);
         for (final List<String> modelIdBatch : modelIdBatches) {
             final List<DeletableItem> deleteItems = Lists.newArrayList();
             for (final String modelId : modelIdBatch) {
-                deleteItems.add(new DeletableItem(new Key(modelId, username)
+                deleteItems.add(new DeletableItem(new Key(modelId, userId)
                         .toString(), ImmutableList.<Attribute> of()));
             }
             client.batchDeleteAttributes(new BatchDeleteAttributesRequest(
@@ -169,11 +169,11 @@ public final class SimpleDbStore<ModelT extends TBase<?>> extends
     }
 
     @Override
-    protected int _getModelCount(final String username) {
+    protected int _getModelCount(final String userId) {
         final ImmutableList<Item> items = __selectItems("SELECT count(*) FROM `"
                 + domainName
                 + "` WHERE itemName() LIKE '"
-                + Key.prefix(username) + "%'");
+                + Key.prefix(userId) + "%'");
         for (final Item item : items) {
             if (item.getName().equalsIgnoreCase("Domain")) {
                 for (final Attribute attribute : item.getAttributes()) {
@@ -187,11 +187,11 @@ public final class SimpleDbStore<ModelT extends TBase<?>> extends
     }
 
     @Override
-    protected ImmutableSet<String> _getModelIds(final String username) {
+    protected ImmutableSet<String> _getModelIds(final String userId) {
         final ImmutableList<Item> items = __selectItems("SELECT itemName() FROM `"
                 + domainName
                 + "` WHERE itemName() LIKE '"
-                + Key.prefix(username) + "%'");
+                + Key.prefix(userId) + "%'");
         final ImmutableSet.Builder<String> modelIds = ImmutableSet.builder();
         for (final Item item : items) {
             modelIds.add(Key.parse(item.getName()).getModelId());
@@ -200,10 +200,10 @@ public final class SimpleDbStore<ModelT extends TBase<?>> extends
     }
 
     @Override
-    protected ImmutableMap<String, ModelT> _getModels(final String username) {
+    protected ImmutableMap<String, ModelT> _getModels(final String userId) {
         final ImmutableList<Item> items = __selectItems("SELECT * FROM `"
                 + domainName + "` WHERE itemName() LIKE '"
-                + Key.prefix(username) + "%'");
+                + Key.prefix(userId) + "%'");
         final ImmutableMap.Builder<String, ModelT> models = ImmutableMap
                 .builder();
         for (final Item item : items) {

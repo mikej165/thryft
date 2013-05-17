@@ -91,83 +91,83 @@ public abstract class Store<ModelT extends TBase<?>> {
     }
 
     public final boolean deleteModelById(final String modelId,
-            final String username) {
+            final String userId) {
         checkNotNull(modelId);
-        checkNotNull(username);
-        return _deleteModelById(modelId, username);
+        checkNotNull(userId);
+        return _deleteModelById(modelId, userId);
     }
 
-    public final void deleteModels(final String username) {
-        checkNotNull(username);
-        _deleteModels(username);
+    public final void deleteModels(final String userId) {
+        checkNotNull(userId);
+        _deleteModels(userId);
     }
 
-    public final ModelT getModelById(final String modelId, final String username)
+    public final ModelT getModelById(final String modelId, final String userId)
             throws NoSuchModelException {
         checkNotNull(modelId);
-        checkNotNull(username);
-        return checkNotNull(_getModelById(modelId, username));
+        checkNotNull(userId);
+        return checkNotNull(_getModelById(modelId, userId));
     }
 
-    public final int getModelCount(final String username) {
-        checkNotNull(username);
-        return _getModelCount(username);
+    public final int getModelCount(final String userId) {
+        checkNotNull(userId);
+        return _getModelCount(userId);
     }
 
-    public final ImmutableSet<String> getModelIds(final String username) {
-        checkNotNull(username);
-        return checkNotNull(_getModelIds(username));
+    public final ImmutableSet<String> getModelIds(final String userId) {
+        checkNotNull(userId);
+        return checkNotNull(_getModelIds(userId));
     }
 
-    public final ImmutableMap<String, ModelT> getModels(final String username) {
-        checkNotNull(username);
-        return checkNotNull(_getModels(username));
+    public final ImmutableMap<String, ModelT> getModels(final String userId) {
+        checkNotNull(userId);
+        return checkNotNull(_getModels(userId));
     }
 
     public final ImmutableMap<String, ModelT> getModelsByIds(
-            final ImmutableSet<String> modelIds, final String username)
+            final ImmutableSet<String> modelIds, final String userId)
             throws NoSuchModelException {
         checkNotNull(modelIds);
         if (modelIds.isEmpty()) {
             return ImmutableMap.of();
         }
-        checkNotNull(username);
-        return checkNotNull(_getModelsByIds(modelIds, username));
+        checkNotNull(userId);
+        return checkNotNull(_getModelsByIds(modelIds, userId));
     }
 
-    public final ImmutableSet<String> getUsernames() {
-        return checkNotNull(_getUsernames());
+    public final ImmutableSet<String> getUserIds() {
+        return checkNotNull(_getUserIds());
     }
 
     public final boolean headModelById(final String modelId,
-            final String username) {
+            final String userId) {
         checkNotNull(modelId);
-        checkNotNull(username);
-        return _headModelById(modelId, username);
+        checkNotNull(userId);
+        return _headModelById(modelId, userId);
     }
 
     public final void putModel(final ModelT model, final String modelId,
-            final String username) throws ModelIoException {
+            final String userId) throws ModelIoException {
         checkNotNull(model);
         checkNotNull(modelId);
-        checkNotNull(username);
-        _putModel(model, modelId, username);
+        checkNotNull(userId);
+        _putModel(model, modelId, userId);
     }
 
     public final void putModels(final ImmutableMap<String, ModelT> models,
-            final String username) throws ModelIoException {
+            final String userId) throws ModelIoException {
         checkNotNull(models);
         if (models.isEmpty()) {
             return;
         }
-        checkNotNull(username);
-        _putModels(models, username);
+        checkNotNull(userId);
+        _putModels(models, userId);
     }
 
     protected abstract boolean _deleteModelById(final String modelId,
-            final String username);
+            final String userId);
 
-    protected abstract void _deleteModels(final String username);
+    protected abstract void _deleteModels(final String userId);
 
     protected Optional<ModelT> _getModel(final TProtocol iprot) {
         try {
@@ -191,33 +191,33 @@ public abstract class Store<ModelT extends TBase<?>> {
     }
 
     protected abstract ModelT _getModelById(final String modelId,
-            final String username) throws NoSuchModelException;
+            final String userId) throws NoSuchModelException;
 
     protected final Class<ModelT> _getModelClass() {
         return modelClass;
     }
 
-    protected abstract int _getModelCount(final String username);
+    protected abstract int _getModelCount(final String userId);
 
-    protected abstract ImmutableSet<String> _getModelIds(final String username);
+    protected abstract ImmutableSet<String> _getModelIds(final String userId);
 
     protected abstract ImmutableMap<String, ModelT> _getModels(
-            final String username);
+            final String userId);
 
     protected abstract ImmutableMap<String, ModelT> _getModelsByIds(
-            final ImmutableSet<String> modelIds, final String username)
+            final ImmutableSet<String> modelIds, final String userId)
             throws NoSuchModelException;
 
-    protected abstract ImmutableSet<String> _getUsernames();
+    protected abstract ImmutableSet<String> _getUserIds();
 
     protected abstract boolean _headModelById(final String modelId,
-            final String username);
+            final String userId);
 
     protected abstract void _putModel(final ModelT model, final String modelId,
-            final String username) throws ModelIoException;
+            final String userId) throws ModelIoException;
 
     protected abstract void _putModels(
-            final ImmutableMap<String, ModelT> models, final String username)
+            final ImmutableMap<String, ModelT> models, final String userId)
             throws ModelIoException;
 
     protected final Logger logger;

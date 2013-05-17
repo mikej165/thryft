@@ -137,20 +137,20 @@ public final class JdbcStore<ModelT extends TBase<?>> extends Store<ModelT> {
                 + tableName
                 + "_id VARCHAR(255) NOT NULL, "
                 + tableName
-                + "_json TEXT NOT NULL, username VARCHAR(255) NOT NULL, PRIMARY KEY (id));";
+                + "_json TEXT NOT NULL, userId VARCHAR(255) NOT NULL, PRIMARY KEY (id));";
         deleteModelByIdSql = "DELETE FROM " + tableName + " WHERE " + tableName
-                + "_id = ? AND username = ?";
-        deleteModelsSql = "DELETE FROM " + tableName + " WHERE username = ?";
+                + "_id = ? AND userId = ?";
+        deleteModelsSql = "DELETE FROM " + tableName + " WHERE userId = ?";
         getModelByIdSql = "SELECT * FROM " + tableName + " WHERE " + tableName
-                + "_id = ? AND username = ?";
+                + "_id = ? AND userId = ?";
         getModelCountSql = "SELECT COUNT(*) FROM " + tableName
-                + " WHERE username = ?";
+                + " WHERE userId = ?";
         getModelIdsSql = "SELECT " + tableName + "_id FROM " + tableName
-                + " WHERE username = ?";
-        getModelsSql = "SELECT * FROM " + tableName + " WHERE username = ?";
-        getUsernamesSql = "SELECT username FROM " + tableName;
+                + " WHERE userId = ?";
+        getModelsSql = "SELECT * FROM " + tableName + " WHERE userId = ?";
+        getUsernameSql = "SELECT userId FROM " + tableName;
         headModelByIdSql = "SELECT " + tableName + "_id FROM " + tableName
-                + " WHERE " + tableName + "_id = ? AND username = ?";
+                + " WHERE " + tableName + "_id = ? AND userId = ?";
         putModelSql = "INSERT INTO " + tableName + " VALUES (NULL, ?, ?, ?)";
 
         try {
@@ -176,13 +176,13 @@ public final class JdbcStore<ModelT extends TBase<?>> extends Store<ModelT> {
 
     @Override
     protected boolean _deleteModelById(final String modelId,
-            final String username) {
+            final String userId) {
         try {
             final Connection connection = connectionPool.getConnection();
             final boolean existed = __headModelById(connection, modelId,
-                    username);
+                    userId);
             try {
-                __deleteModelById(connection, modelId, username);
+                __deleteModelById(connection, modelId, userId);
                 return existed;
             } finally {
                 connection.close();
@@ -194,14 +194,14 @@ public final class JdbcStore<ModelT extends TBase<?>> extends Store<ModelT> {
     }
 
     @Override
-    protected void _deleteModels(final String username) {
+    protected void _deleteModels(final String userId) {
         try {
             final Connection connection = connectionPool.getConnection();
             try {
                 final PreparedStatement statement = connection
                         .prepareStatement(deleteModelsSql);
                 try {
-                    statement.setString(1, username);
+                    statement.setString(1, userId);
                     statement.execute();
                 } finally {
                     statement.close();
@@ -215,7 +215,7 @@ public final class JdbcStore<ModelT extends TBase<?>> extends Store<ModelT> {
     }
 
     @Override
-    protected ModelT _getModelById(final String modelId, final String username)
+    protected ModelT _getModelById(final String modelId, final String userId)
             throws NoSuchModelException {
         try {
             final Connection connection = connectionPool.getConnection();
@@ -224,7 +224,7 @@ public final class JdbcStore<ModelT extends TBase<?>> extends Store<ModelT> {
                         .prepareStatement(getModelByIdSql);
                 try {
                     statement.setString(1, modelId);
-                    statement.setString(2, username);
+                    statement.setString(2, userId);
                     final ResultSet resultSet = statement.executeQuery();
                     try {
                         if (resultSet.next()) {
@@ -253,14 +253,14 @@ public final class JdbcStore<ModelT extends TBase<?>> extends Store<ModelT> {
     }
 
     @Override
-    protected int _getModelCount(final String username) {
+    protected int _getModelCount(final String userId) {
         try {
             final Connection connection = connectionPool.getConnection();
             try {
                 final PreparedStatement statement = connection
                         .prepareStatement(getModelCountSql);
                 try {
-                    statement.setString(1, username);
+                    statement.setString(1, userId);
                     final ResultSet resultSet = statement.executeQuery();
                     try {
                         if (resultSet.next()) {
@@ -284,14 +284,14 @@ public final class JdbcStore<ModelT extends TBase<?>> extends Store<ModelT> {
     }
 
     @Override
-    protected ImmutableSet<String> _getModelIds(final String username) {
+    protected ImmutableSet<String> _getModelIds(final String userId) {
         try {
             final Connection connection = connectionPool.getConnection();
             try {
                 final PreparedStatement statement = connection
                         .prepareStatement(getModelIdsSql);
                 try {
-                    statement.setString(1, username);
+                    statement.setString(1, userId);
                     final ResultSet resultSet = statement.executeQuery();
                     try {
                         final ImmutableSet.Builder<String> modelIds = ImmutableSet
@@ -316,14 +316,14 @@ public final class JdbcStore<ModelT extends TBase<?>> extends Store<ModelT> {
     }
 
     @Override
-    protected ImmutableMap<String, ModelT> _getModels(final String username) {
+    protected ImmutableMap<String, ModelT> _getModels(final String userId) {
         try {
             final Connection connection = connectionPool.getConnection();
             try {
                 final PreparedStatement statement = connection
                         .prepareStatement(getModelsSql);
                 try {
-                    statement.setString(1, username);
+                    statement.setString(1, userId);
                     final ResultSet resultSet = statement.executeQuery();
                     try {
                         final ImmutableMap.Builder<String, ModelT> models = ImmutableMap
@@ -352,7 +352,7 @@ public final class JdbcStore<ModelT extends TBase<?>> extends Store<ModelT> {
 
     @Override
     protected ImmutableMap<String, ModelT> _getModelsByIds(
-            final ImmutableSet<String> modelIds, final String username)
+            final ImmutableSet<String> modelIds, final String userId)
             throws org.thryft.store.Store.NoSuchModelException {
         if (modelIds.isEmpty()) {
             return ImmutableMap.of();
@@ -361,7 +361,7 @@ public final class JdbcStore<ModelT extends TBase<?>> extends Store<ModelT> {
         final StringBuilder getModelsByIdsSqlBuilder = new StringBuilder();
         getModelsByIdsSqlBuilder.append("SELECT * FROM ");
         getModelsByIdsSqlBuilder.append(tableName);
-        getModelsByIdsSqlBuilder.append(" WHERE username = ? AND ");
+        getModelsByIdsSqlBuilder.append(" WHERE userId = ? AND ");
         getModelsByIdsSqlBuilder.append(tableName);
         getModelsByIdsSqlBuilder.append("_id IN (");
         for (int modelI = 0; modelI < modelIds.size(); modelI++) {
@@ -380,7 +380,7 @@ public final class JdbcStore<ModelT extends TBase<?>> extends Store<ModelT> {
                 final PreparedStatement statement = connection
                         .prepareStatement(getModelsByIdsSql);
                 try {
-                    statement.setString(1, username);
+                    statement.setString(1, userId);
                     int parameterIndex = 2;
                     for (final String modelId : modelIds) {
                         statement.setString(parameterIndex, modelId);
@@ -431,21 +431,21 @@ public final class JdbcStore<ModelT extends TBase<?>> extends Store<ModelT> {
     }
 
     @Override
-    protected ImmutableSet<String> _getUsernames() {
+    protected ImmutableSet<String> _getUserIds() {
         try {
             final Connection connection = connectionPool.getConnection();
             try {
                 final Statement statement = connection.createStatement();
                 try {
                     final ResultSet resultSet = statement
-                            .executeQuery(getUsernamesSql);
+                            .executeQuery(getUsernameSql);
                     try {
-                        final ImmutableSet.Builder<String> usernames = ImmutableSet
+                        final ImmutableSet.Builder<String> userIds = ImmutableSet
                                 .builder();
                         while (resultSet.next()) {
-                            usernames.add(resultSet.getString(1));
+                            userIds.add(resultSet.getString(1));
                         }
-                        return usernames.build();
+                        return userIds.build();
                     } finally {
                         resultSet.close();
                     }
@@ -456,17 +456,17 @@ public final class JdbcStore<ModelT extends TBase<?>> extends Store<ModelT> {
                 connection.close();
             }
         } catch (final SQLException e) {
-            logger.error("exception getting usernames: ", e);
+            logger.error("exception getting userIds: ", e);
             return ImmutableSet.of();
         }
     }
 
     @Override
-    protected boolean _headModelById(final String modelId, final String username) {
+    protected boolean _headModelById(final String modelId, final String userId) {
         try {
             final Connection connection = connectionPool.getConnection();
             try {
-                return __headModelById(connection, modelId, username);
+                return __headModelById(connection, modelId, userId);
             } finally {
                 connection.close();
             }
@@ -478,7 +478,7 @@ public final class JdbcStore<ModelT extends TBase<?>> extends Store<ModelT> {
 
     @Override
     protected void _putModel(final ModelT model, final String modelId,
-            final String username) throws ModelIoException {
+            final String userId) throws ModelIoException {
         try {
             final Connection connection = connectionPool.getConnection();
             try {
@@ -486,7 +486,7 @@ public final class JdbcStore<ModelT extends TBase<?>> extends Store<ModelT> {
                 final PreparedStatement statement = connection
                         .prepareStatement(putModelSql);
                 try {
-                    __putModel(connection, model, modelId, statement, username);
+                    __putModel(connection, model, modelId, statement, userId);
                 } finally {
                     statement.close();
                 }
@@ -501,7 +501,7 @@ public final class JdbcStore<ModelT extends TBase<?>> extends Store<ModelT> {
 
     @Override
     protected void _putModels(final ImmutableMap<String, ModelT> models,
-            final String username) throws ModelIoException {
+            final String userId) throws ModelIoException {
         try {
             final Connection connection = connectionPool.getConnection();
             try {
@@ -512,7 +512,7 @@ public final class JdbcStore<ModelT extends TBase<?>> extends Store<ModelT> {
                     for (final ImmutableMap.Entry<String, ModelT> model : models
                             .entrySet()) {
                         __putModel(connection, model.getValue(),
-                                model.getKey(), statement, username);
+                                model.getKey(), statement, userId);
                     }
                 } finally {
                     statement.close();
@@ -527,12 +527,12 @@ public final class JdbcStore<ModelT extends TBase<?>> extends Store<ModelT> {
     }
 
     private void __deleteModelById(final Connection connection,
-            final String modelId, final String username) throws SQLException {
+            final String modelId, final String userId) throws SQLException {
         final PreparedStatement statement = connection
                 .prepareStatement(deleteModelByIdSql);
         try {
             statement.setString(1, modelId);
-            statement.setString(2, username);
+            statement.setString(2, userId);
             statement.execute();
         } finally {
             statement.close();
@@ -556,13 +556,13 @@ public final class JdbcStore<ModelT extends TBase<?>> extends Store<ModelT> {
     }
 
     private boolean __headModelById(final Connection connection,
-            final String modelId, final String username) {
+            final String modelId, final String userId) {
         try {
             final PreparedStatement statement = connection
                     .prepareStatement(headModelByIdSql);
             try {
                 statement.setString(1, modelId);
-                statement.setString(2, username);
+                statement.setString(2, userId);
                 final ResultSet resultSet = statement.executeQuery();
                 try {
                     return resultSet.next();
@@ -580,9 +580,9 @@ public final class JdbcStore<ModelT extends TBase<?>> extends Store<ModelT> {
 
     private void __putModel(final Connection connection, final ModelT model,
             final String modelId, final PreparedStatement statement,
-            final String username) throws ModelIoException {
+            final String userId) throws ModelIoException {
         try {
-            __deleteModelById(connection, modelId, username);
+            __deleteModelById(connection, modelId, userId);
             final StringWriter stringWriter = new StringWriter();
             final JsonProtocol oprot = new JsonProtocol(stringWriter);
             model.write(oprot);
@@ -590,7 +590,7 @@ public final class JdbcStore<ModelT extends TBase<?>> extends Store<ModelT> {
             final String json = stringWriter.toString();
             statement.setString(1, modelId);
             statement.setString(2, json);
-            statement.setString(3, username);
+            statement.setString(3, userId);
             statement.execute();
         } catch (final IOException e) {
             throw new ModelIoException(e, modelId);
@@ -613,7 +613,7 @@ public final class JdbcStore<ModelT extends TBase<?>> extends Store<ModelT> {
 
     private final String getModelsSql;
 
-    private final String getUsernamesSql;
+    private final String getUsernameSql;
 
     private final String headModelByIdSql;
 

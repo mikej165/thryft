@@ -97,14 +97,14 @@ public final class FsStore<ModelT extends TBase<?>> extends Store<ModelT> {
 
     @Override
     protected synchronized boolean _deleteModelById(final String modelId,
-            final String username) {
-        return __getModelFilePath(modelId, username).delete();
+            final String userId) {
+        return __getModelFilePath(modelId, userId).delete();
     }
 
     @Override
-    protected synchronized void _deleteModels(final String username) {
+    protected synchronized void _deleteModels(final String userId) {
         try {
-            FileUtils.deleteDirectory(__getModelDirectoryPath(username));
+            FileUtils.deleteDirectory(__getModelDirectoryPath(userId));
         } catch (final IOException e) {
             logger.error("error deleting models: ", e);
         }
@@ -112,9 +112,9 @@ public final class FsStore<ModelT extends TBase<?>> extends Store<ModelT> {
 
     @Override
     protected synchronized ModelT _getModelById(final String modelId,
-            final String username) throws NoSuchModelException {
+            final String userId) throws NoSuchModelException {
         final Optional<ModelT> model = __getModel(__getModelFilePath(modelId,
-                username));
+                userId));
         if (model.isPresent()) {
             return model.get();
         } else {
@@ -123,8 +123,8 @@ public final class FsStore<ModelT extends TBase<?>> extends Store<ModelT> {
     }
 
     @Override
-    protected synchronized int _getModelCount(final String username) {
-        final File modelDirectoryPath = __getModelDirectoryPath(username);
+    protected synchronized int _getModelCount(final String userId) {
+        final File modelDirectoryPath = __getModelDirectoryPath(userId);
         if (!modelDirectoryPath.isDirectory()) {
             return 0;
         }
@@ -142,8 +142,8 @@ public final class FsStore<ModelT extends TBase<?>> extends Store<ModelT> {
 
     @Override
     protected synchronized ImmutableSet<String> _getModelIds(
-            final String username) {
-        final File modelDirectoryPath = __getModelDirectoryPath(username);
+            final String userId) {
+        final File modelDirectoryPath = __getModelDirectoryPath(userId);
         if (!modelDirectoryPath.isDirectory()) {
             return ImmutableSet.of();
         }
@@ -161,8 +161,8 @@ public final class FsStore<ModelT extends TBase<?>> extends Store<ModelT> {
 
     @Override
     protected synchronized ImmutableMap<String, ModelT> _getModels(
-            final String username) {
-        final File modelDirectoryPath = __getModelDirectoryPath(username);
+            final String userId) {
+        final File modelDirectoryPath = __getModelDirectoryPath(userId);
         if (!modelDirectoryPath.isDirectory()) {
             return ImmutableMap.of();
         }
@@ -180,13 +180,13 @@ public final class FsStore<ModelT extends TBase<?>> extends Store<ModelT> {
 
     @Override
     protected synchronized ImmutableMap<String, ModelT> _getModelsByIds(
-            final ImmutableSet<String> modelIds, final String username)
+            final ImmutableSet<String> modelIds, final String userId)
             throws org.thryft.store.Store.NoSuchModelException {
         final ImmutableMap.Builder<String, ModelT> models = ImmutableMap
                 .builder();
         for (final String modelId : modelIds) {
             final Optional<ModelT> model = __getModel(__getModelFilePath(
-                    modelId, username));
+                    modelId, userId));
             if (model.isPresent()) {
                 models.put(modelId, model.get());
             } else {
@@ -197,32 +197,32 @@ public final class FsStore<ModelT extends TBase<?>> extends Store<ModelT> {
     }
 
     @Override
-    protected ImmutableSet<String> _getUsernames() {
+    protected ImmutableSet<String> _getUserIds() {
         if (!rootDirectoryPath.isDirectory()) {
             return ImmutableSet.of();
         }
 
-        final ImmutableSet.Builder<String> usernames = ImmutableSet.builder();
+        final ImmutableSet.Builder<String> userIds = ImmutableSet.builder();
         for (final File userDirectoryPath : rootDirectoryPath.listFiles()) {
             if (!userDirectoryPath.isDirectory()) {
                 continue;
             }
-            usernames.add(__getModelId(userDirectoryPath));
+            userIds.add(__getModelId(userDirectoryPath));
         }
-        return usernames.build();
+        return userIds.build();
     }
 
     @Override
     protected synchronized boolean _headModelById(final String modelId,
-            final String username) {
-        return __getModelFilePath(modelId, username).isFile();
+            final String userId) {
+        return __getModelFilePath(modelId, userId).isFile();
     }
 
     @Override
     protected synchronized void _putModel(final ModelT model,
-            final String modelId, final String username)
+            final String modelId, final String userId)
             throws org.thryft.store.Store.ModelIoException {
-        final File modelDirectoryPath = __createModelDirectory(username);
+        final File modelDirectoryPath = __createModelDirectory(userId);
         if (modelDirectoryPath == null) {
             return;
         }
@@ -231,17 +231,17 @@ public final class FsStore<ModelT extends TBase<?>> extends Store<ModelT> {
 
     @Override
     protected synchronized void _putModels(
-            final ImmutableMap<String, ModelT> models, final String username)
+            final ImmutableMap<String, ModelT> models, final String userId)
             throws ModelIoException {
-        final File modelDirectoryPath = __createModelDirectory(username);
+        final File modelDirectoryPath = __createModelDirectory(userId);
         for (final ImmutableMap.Entry<String, ModelT> model : models.entrySet()) {
             __putModel(model.getValue(), modelDirectoryPath, model.getKey());
         }
     }
 
-    private File __createModelDirectory(final String username)
+    private File __createModelDirectory(final String userId)
             throws org.thryft.store.Store.ModelIoException {
-        final File modelDirectoryPath = __getModelDirectoryPath(username);
+        final File modelDirectoryPath = __getModelDirectoryPath(userId);
         if (!modelDirectoryPath.isDirectory()) {
             if (!modelDirectoryPath.mkdirs()) {
                 throw new ModelIoException("error creating user directory "
@@ -270,9 +270,9 @@ public final class FsStore<ModelT extends TBase<?>> extends Store<ModelT> {
         return Optional.<ModelT> absent();
     }
 
-    private File __getModelDirectoryPath(final String username) {
+    private File __getModelDirectoryPath(final String userId) {
         return new File(new File(rootDirectoryPath,
-                FileNameCodec.encodeFileName(username)), modelSubdirectoryPath);
+                FileNameCodec.encodeFileName(userId)), modelSubdirectoryPath);
     }
 
     private File __getModelFilePath(final File modelDirectoryPath,
@@ -281,8 +281,8 @@ public final class FsStore<ModelT extends TBase<?>> extends Store<ModelT> {
                 FileNameCodec.encodeFileName(modelId) + ".json");
     }
 
-    private File __getModelFilePath(final String modelId, final String username) {
-        return __getModelFilePath(__getModelDirectoryPath(username), modelId);
+    private File __getModelFilePath(final String modelId, final String userId) {
+        return __getModelFilePath(__getModelDirectoryPath(userId), modelId);
     }
 
     private String __getModelId(final File modelFilePath) {

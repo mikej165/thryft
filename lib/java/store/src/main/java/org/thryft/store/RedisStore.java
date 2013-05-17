@@ -110,7 +110,7 @@ public final class RedisStore<ModelT extends TBase<?>> extends
             final Jedis jedis = jedisPool.getResource();
             try {
                 if (jedis.del(modelKey.toString()) > 0) {
-                    jedis.srem(modelKey.getEncodedUsername(),
+                    jedis.srem(modelKey.getEncodedUserId(),
                             modelKey.getModelId());
                     return true;
                 } else {
@@ -126,16 +126,16 @@ public final class RedisStore<ModelT extends TBase<?>> extends
     }
 
     @Override
-    protected void _deleteModels(final String username) {
-        final ImmutableSet<String> modelIds = _getModelIds(username);
+    protected void _deleteModels(final String userId) {
+        final ImmutableSet<String> modelIds = _getModelIds(userId);
         if (modelIds.isEmpty()) {
             return;
         }
         final Set<String> jedisKeys = Sets.newLinkedHashSet();
         for (final String modelId : modelIds) {
-            jedisKeys.add(new Key(modelId, username).toString());
+            jedisKeys.add(new Key(modelId, userId).toString());
         }
-        jedisKeys.add(_getKeyPrefix(username));
+        jedisKeys.add(_getKeyPrefix(userId));
         final String[] jedisKeysArray = new String[jedisKeys.size()];
         jedisKeys.toArray(jedisKeysArray);
         try {
@@ -178,11 +178,11 @@ public final class RedisStore<ModelT extends TBase<?>> extends
     }
 
     @Override
-    protected int _getModelCount(final String username) {
+    protected int _getModelCount(final String userId) {
         try {
             final Jedis jedis = jedisPool.getResource();
             try {
-                return jedis.scard(_getKeyPrefix(username)).intValue();
+                return jedis.scard(_getKeyPrefix(userId)).intValue();
             } finally {
                 jedisPool.returnResource(jedis);
             }
@@ -193,12 +193,12 @@ public final class RedisStore<ModelT extends TBase<?>> extends
     }
 
     @Override
-    protected ImmutableSet<String> _getModelIds(final String username) {
+    protected ImmutableSet<String> _getModelIds(final String userId) {
         try {
             final Jedis jedis = jedisPool.getResource();
             try {
                 return ImmutableSet.copyOf(jedis
-                        .smembers(_getKeyPrefix(username)));
+                        .smembers(_getKeyPrefix(userId)));
             } finally {
                 jedisPool.returnResource(jedis);
             }
@@ -209,16 +209,16 @@ public final class RedisStore<ModelT extends TBase<?>> extends
     }
 
     @Override
-    protected ImmutableMap<String, ModelT> _getModels(final String username) {
+    protected ImmutableMap<String, ModelT> _getModels(final String userId) {
         try {
             final Jedis jedis = jedisPool.getResource();
             try {
                 final ImmutableMap.Builder<String, ModelT> models = ImmutableMap
                         .builder();
                 for (final String modelId : jedis
-                        .smembers(_getKeyPrefix(username))) {
+                        .smembers(_getKeyPrefix(userId))) {
                     try {
-                        models.put(modelId, _getModelById(modelId, username));
+                        models.put(modelId, _getModelById(modelId, userId));
                     } catch (final org.thryft.store.Store.NoSuchModelException e) {
                     }
                 }
@@ -258,7 +258,7 @@ public final class RedisStore<ModelT extends TBase<?>> extends
                 }
                 final ImmutableMap<String, String> hash = oprot.toStringMap();
                 jedis.hmset(modelKey.toString(), hash);
-                jedis.sadd(modelKey.getEncodedUsername(), modelKey.getModelId());
+                jedis.sadd(modelKey.getEncodedUserId(), modelKey.getModelId());
             } finally {
                 jedisPool.returnResource(jedis);
             }

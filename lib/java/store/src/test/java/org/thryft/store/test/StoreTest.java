@@ -89,8 +89,8 @@ public abstract class StoreTest {
 
     @After
     public void tearDown() throws Exception {
-        store.deleteModels(USERNAME);
-        // assertEquals(0, store.getModelCount(USERNAME));
+        store.deleteModels(USER_ID);
+        // assertEquals(0, store.getModelCount(USER_ID));
     }
 
     @Test
@@ -99,35 +99,35 @@ public abstract class StoreTest {
 
         final String deleteModelId = models.keySet().iterator().next();
 
-        boolean ret = store.deleteModelById(deleteModelId, USERNAME);
+        boolean ret = store.deleteModelById(deleteModelId, USER_ID);
         assertTrue(ret);
 
         final ImmutableMap<String, ProtocolTestStruct> models = store
-                .getModels(USERNAME);
+                .getModels(USER_ID);
 
         final Map<String, ProtocolTestStruct> expectedModels = Maps
                 .newLinkedHashMap(this.models);
         expectedModels.remove(deleteModelId);
         assertEquals(expectedModels, models);
 
-        ret = store.deleteModelById("nonextantmodel", USERNAME);
+        ret = store.deleteModelById("nonextantmodel", USER_ID);
         assertFalse(ret);
     }
 
     @Test
     public void testDeleteModels() throws Store.ModelIoException {
         ImmutableMap<String, ProtocolTestStruct> models = store
-                .getModels(USERNAME);
+                .getModels(USER_ID);
         assertEquals(0, models.size());
 
         __putModels();
 
-        models = store.getModels(USERNAME);
+        models = store.getModels(USER_ID);
         assertEquals(this.models.size(), models.size());
 
-        store.deleteModels(USERNAME);
+        store.deleteModels(USER_ID);
 
-        models = store.getModels(USERNAME);
+        models = store.getModels(USER_ID);
         assertEquals(0, models.size());
     }
 
@@ -139,7 +139,7 @@ public abstract class StoreTest {
         for (final ImmutableMap.Entry<String, ProtocolTestStruct> modelEntry : models
                 .entrySet()) {
             assertEquals(modelEntry.getValue(),
-                    store.getModelById(modelEntry.getKey(), USERNAME));
+                    store.getModelById(modelEntry.getKey(), USER_ID));
         }
     }
 
@@ -151,9 +151,9 @@ public abstract class StoreTest {
         for (final ImmutableMap.Entry<String, ProtocolTestStruct> modelEntry : models
                 .entrySet()) {
             assertEquals(modelEntry.getValue(),
-                    store.getModelById(modelEntry.getKey(), USERNAME));
+                    store.getModelById(modelEntry.getKey(), USER_ID));
             assertEquals(modelEntry.getValue(),
-                    store.getModelById(modelEntry.getKey(), USERNAME));
+                    store.getModelById(modelEntry.getKey(), USER_ID));
             break;
         }
     }
@@ -163,7 +163,7 @@ public abstract class StoreTest {
         __putModels();
 
         try {
-            store.getModelById("nonextantmodel", USERNAME);
+            store.getModelById("nonextantmodel", USER_ID);
             fail();
         } catch (final Store.NoSuchModelException e) {
         }
@@ -173,7 +173,7 @@ public abstract class StoreTest {
     public void testGetModelCount() throws Store.ModelIoException {
         __putModels();
 
-        final int modelCount = store.getModelCount(USERNAME);
+        final int modelCount = store.getModelCount(USER_ID);
         assertEquals(models.size(), modelCount);
     }
 
@@ -181,7 +181,7 @@ public abstract class StoreTest {
     public void testGetModelIds() throws Store.ModelIoException {
         __putModels();
 
-        final ImmutableSet<String> modelIds = store.getModelIds(USERNAME);
+        final ImmutableSet<String> modelIds = store.getModelIds(USER_ID);
         assertEquals(models.keySet(), modelIds);
     }
 
@@ -190,7 +190,7 @@ public abstract class StoreTest {
         __putModels();
 
         final ImmutableMap<String, ProtocolTestStruct> models = store
-                .getModels(USERNAME);
+                .getModels(USER_ID);
         assertEquals(this.models, models);
     }
 
@@ -200,19 +200,19 @@ public abstract class StoreTest {
         __putModels();
 
         final ImmutableMap<String, ProtocolTestStruct> models = store
-                .getModelsByIds(this.models.keySet(), USERNAME);
+                .getModelsByIds(this.models.keySet(), USER_ID);
         assertEquals(this.models, models);
 
         for (final ImmutableMap.Entry<String, ProtocolTestStruct> modelEntry : models
                 .entrySet()) {
             assertEquals(modelEntry.getValue(),
-                    store.getModelById(modelEntry.getKey(), USERNAME));
+                    store.getModelById(modelEntry.getKey(), USER_ID));
         }
 
         for (final String modelId : models.keySet()) {
             try {
                 store.getModelsByIds(
-                        ImmutableSet.of(modelId, "nonextantmodel"), USERNAME);
+                        ImmutableSet.of(modelId, "nonextantmodel"), USER_ID);
                 fail();
             } catch (final Store.NoSuchModelException e) {
                 assertEquals("nonextantmodel", e.getId());
@@ -222,17 +222,17 @@ public abstract class StoreTest {
     }
 
     @Test
-    public void testGetUsernames() throws Store.ModelIoException {
+    public void testGetUserIds() throws Store.ModelIoException {
         __putModels();
 
-        ImmutableSet<String> usernames;
+        ImmutableSet<String> userIds;
         try {
-            usernames = store.getUsernames();
+            userIds = store.getUserIds();
         } catch (final UnsupportedOperationException e) {
             return;
         }
 
-        assertThat(usernames, contains(USERNAME));
+        assertThat(userIds, contains(USER_ID));
     }
 
     @Test
@@ -241,10 +241,10 @@ public abstract class StoreTest {
         __putModels();
 
         for (final String modelId : models.keySet()) {
-            assertTrue(store.headModelById(modelId, USERNAME));
+            assertTrue(store.headModelById(modelId, USER_ID));
         }
 
-        assertFalse(store.headModelById("nonextantsku", USERNAME));
+        assertFalse(store.headModelById("nonextantsku", USER_ID));
     }
 
     @Test
@@ -253,9 +253,9 @@ public abstract class StoreTest {
         for (final ImmutableMap.Entry<String, ProtocolTestStruct> modelEntry : models
                 .entrySet()) {
             final ProtocolTestStruct expectedModel = modelEntry.getValue();
-            store.putModel(expectedModel, modelEntry.getKey(), USERNAME);
+            store.putModel(expectedModel, modelEntry.getKey(), USER_ID);
             final ProtocolTestStruct actualModel = store.getModelById(
-                    modelEntry.getKey(), USERNAME);
+                    modelEntry.getKey(), USER_ID);
             assertEquals(expectedModel, actualModel);
             break;
         }
@@ -263,16 +263,15 @@ public abstract class StoreTest {
 
     @Test
     public void testPutModels() throws Store.ModelIoException {
-        assertEquals(0, store.getModels(USERNAME).size());
-        store.putModels(ImmutableMap.<String, ProtocolTestStruct> of(),
-                USERNAME);
-        assertEquals(0, store.getModels(USERNAME).size());
+        assertEquals(0, store.getModels(USER_ID).size());
+        store.putModels(ImmutableMap.<String, ProtocolTestStruct> of(), USER_ID);
+        assertEquals(0, store.getModels(USER_ID).size());
 
         __putModels();
-        assertEquals(models, store.getModels(USERNAME));
+        assertEquals(models, store.getModels(USER_ID));
 
         __putModels(); // Should overwrite
-        assertEquals(models, store.getModels(USERNAME));
+        assertEquals(models, store.getModels(USER_ID));
     }
 
     protected void _setUp(final Store<ProtocolTestStruct> store) {
@@ -280,13 +279,13 @@ public abstract class StoreTest {
     }
 
     private void __putModels() throws Store.ModelIoException {
-        store.putModels(models, USERNAME);
+        store.putModels(models, USER_ID);
     }
 
     private final ImmutableMap<String, ProtocolTestStruct> models;
 
     private Store<ProtocolTestStruct> store;
 
-    private final static String USERNAME = StoreTest.class.getSimpleName()
+    private final static String USER_ID = StoreTest.class.getSimpleName()
             + "_user";
 }

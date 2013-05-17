@@ -49,9 +49,9 @@ public class PrimaryBackupStore<ModelT extends TBase<?>> extends Store<ModelT> {
 
     @Override
     protected boolean _deleteModelById(final String modelId,
-            final String username) {
-        if (primaryStore._deleteModelById(modelId, username)) {
-            backupStore._deleteModelById(modelId, username);
+            final String userId) {
+        if (primaryStore._deleteModelById(modelId, userId)) {
+            backupStore._deleteModelById(modelId, userId);
             return true;
         } else {
             return false;
@@ -59,61 +59,61 @@ public class PrimaryBackupStore<ModelT extends TBase<?>> extends Store<ModelT> {
     }
 
     @Override
-    protected void _deleteModels(final String username) {
-        primaryStore._deleteModels(username);
-        backupStore._deleteModels(username);
+    protected void _deleteModels(final String userId) {
+        primaryStore._deleteModels(userId);
+        backupStore._deleteModels(userId);
     }
 
     @Override
-    protected ModelT _getModelById(final String modelId, final String username)
+    protected ModelT _getModelById(final String modelId, final String userId)
             throws org.thryft.store.Store.NoSuchModelException {
-        return primaryStore._getModelById(modelId, username);
+        return primaryStore._getModelById(modelId, userId);
     }
 
     @Override
-    protected int _getModelCount(final String username) {
-        return primaryStore._getModelCount(username);
+    protected int _getModelCount(final String userId) {
+        return primaryStore._getModelCount(userId);
     }
 
     @Override
-    protected ImmutableSet<String> _getModelIds(final String username) {
-        return primaryStore._getModelIds(username);
+    protected ImmutableSet<String> _getModelIds(final String userId) {
+        return primaryStore._getModelIds(userId);
     }
 
     @Override
-    protected ImmutableMap<String, ModelT> _getModels(final String username) {
-        return primaryStore._getModels(username);
+    protected ImmutableMap<String, ModelT> _getModels(final String userId) {
+        return primaryStore._getModels(userId);
     }
 
     @Override
     protected ImmutableMap<String, ModelT> _getModelsByIds(
-            final ImmutableSet<String> modelIds, final String username)
+            final ImmutableSet<String> modelIds, final String userId)
             throws org.thryft.store.Store.NoSuchModelException {
-        return primaryStore._getModelsByIds(modelIds, username);
+        return primaryStore._getModelsByIds(modelIds, userId);
     }
 
     @Override
-    protected ImmutableSet<String> _getUsernames() {
-        return primaryStore._getUsernames();
+    protected ImmutableSet<String> _getUserIds() {
+        return primaryStore._getUserIds();
     }
 
     @Override
-    protected boolean _headModelById(final String modelId, final String username) {
-        return primaryStore._headModelById(modelId, username);
+    protected boolean _headModelById(final String modelId, final String userId) {
+        return primaryStore._headModelById(modelId, userId);
     }
 
     @Override
     protected void _putModel(final ModelT model, final String modelId,
-            final String username) throws ModelIoException {
-        primaryStore.putModel(model, modelId, username);
-        backupStore.putModel(model, modelId, username);
+            final String userId) throws ModelIoException {
+        primaryStore.putModel(model, modelId, userId);
+        backupStore.putModel(model, modelId, userId);
     }
 
     @Override
     protected void _putModels(final ImmutableMap<String, ModelT> models,
-            final String username) throws ModelIoException {
-        primaryStore.putModels(models, username);
-        backupStore.putModels(models, username);
+            final String userId) throws ModelIoException {
+        primaryStore.putModels(models, userId);
+        backupStore.putModels(models, userId);
     }
 
     private final Store<ModelT> backupStore;

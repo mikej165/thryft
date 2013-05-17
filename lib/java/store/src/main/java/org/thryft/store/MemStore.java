@@ -46,23 +46,23 @@ public final class MemStore<ModelT extends TBase<?>> extends Store<ModelT> {
 
     @Override
     protected synchronized boolean _deleteModelById(final String modelId,
-            final String username) {
-        return models.remove(username, modelId) != null;
+            final String userId) {
+        return models.remove(userId, modelId) != null;
     }
 
     @Override
-    protected synchronized void _deleteModels(final String username) {
+    protected synchronized void _deleteModels(final String userId) {
         final ImmutableSet<String> columnKeys = ImmutableSet.copyOf(models.row(
-                username).keySet());
+                userId).keySet());
         for (final String columnKey : columnKeys) {
-            models.remove(username, columnKey);
+            models.remove(userId, columnKey);
         }
     }
 
     @Override
     protected synchronized ModelT _getModelById(final String modelId,
-            final String username) throws NoSuchModelException {
-        final ModelT model = models.get(username, modelId);
+            final String userId) throws NoSuchModelException {
+        final ModelT model = models.get(userId, modelId);
         if (model != null) {
             return model;
         } else {
@@ -71,59 +71,58 @@ public final class MemStore<ModelT extends TBase<?>> extends Store<ModelT> {
     }
 
     @Override
-    protected synchronized int _getModelCount(final String username) {
-        return models.row(username).size();
+    protected synchronized int _getModelCount(final String userId) {
+        return models.row(userId).size();
     }
 
     @Override
-    protected synchronized ImmutableSet<String> _getModelIds(
-            final String username) {
-        return ImmutableSet.copyOf(models.row(username).keySet());
+    protected synchronized ImmutableSet<String> _getModelIds(final String userId) {
+        return ImmutableSet.copyOf(models.row(userId).keySet());
     }
 
     @Override
     protected synchronized ImmutableMap<String, ModelT> _getModels(
-            final String username) {
-        return ImmutableMap.copyOf(models.row(username));
+            final String userId) {
+        return ImmutableMap.copyOf(models.row(userId));
     }
 
     @Override
     protected synchronized ImmutableMap<String, ModelT> _getModelsByIds(
-            final ImmutableSet<String> modelIds, final String username)
+            final ImmutableSet<String> modelIds, final String userId)
             throws NoSuchModelException {
         final ImmutableMap.Builder<String, ModelT> models = ImmutableMap
                 .builder();
         for (final String modelId : modelIds) {
-            models.put(modelId, getModelById(modelId, username));
+            models.put(modelId, getModelById(modelId, userId));
         }
         return models.build();
     }
 
     @Override
-    protected ImmutableSet<String> _getUsernames() {
+    protected ImmutableSet<String> _getUserIds() {
         return ImmutableSet.copyOf(models.rowKeySet());
     }
 
     @Override
     protected synchronized boolean _headModelById(final String modelId,
-            final String username) {
-        return models.get(username, modelId) != null;
+            final String userId) {
+        return models.get(userId, modelId) != null;
     }
 
     @Override
     protected synchronized void _putModel(final ModelT model,
-            final String modelId, final String username) {
-        models.put(username, modelId, model);
+            final String modelId, final String userId) {
+        models.put(userId, modelId, model);
     }
 
     @Override
     protected synchronized void _putModels(
-            final ImmutableMap<String, ModelT> models, final String username) {
+            final ImmutableMap<String, ModelT> models, final String userId) {
         for (final ImmutableMap.Entry<String, ModelT> model : models.entrySet()) {
-            this.models.put(username, model.getKey(), model.getValue());
+            this.models.put(userId, model.getKey(), model.getValue());
         }
     }
 
     private final Table<String, String, ModelT> models = TreeBasedTable
-            .create(); // Username, model ID, model
+            .create(); // user ID, model ID, model
 }
