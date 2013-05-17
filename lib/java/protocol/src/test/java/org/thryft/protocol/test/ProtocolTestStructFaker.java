@@ -18,7 +18,7 @@ public final class ProtocolTestStructFaker {
         builder.setRequiredI32Field(org.thryft.Faker.randomI32());
         builder.setRequiredStringField(org.thryft.Faker.Name.firstName());
         builder.setSetStringField(com.google.common.collect.ImmutableSet.of(org.thryft.Faker.Lorem.word()));
-        builder.setStringField("3");
+        builder.setStringField(org.thryft.Faker.Lorem.word());
         builder.setStructField(org.thryft.protocol.test.ProtocolTestStructFaker.fake());
         builder.setUrlField(org.thryft.Faker.Internet.url());
         return builder.build();

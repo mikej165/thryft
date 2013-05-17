@@ -67,7 +67,7 @@ class JsEmailAddress(JsStructType):
         return {'type': 'Text', 'validators': ['email']}
 
     def js_validation(self, value, value_name, **kwds):
-        return {'pattern': 'email', 'type': """\
+        return {"minLength": 6, 'pattern': 'email', 'type': """\
 if (typeof %(value)s !== "string") {
     return "expected %(value_name)s to be a string";
 }""" % locals()}

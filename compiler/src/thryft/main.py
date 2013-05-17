@@ -136,7 +136,7 @@ class Main(object):
     def __call__(self):
         logging_kwds = {
             'format': '%(asctime)s:%(module)s:%(lineno)s:%(name)s:%(levelname)s: %(message)s',
-            'level': logging.ERROR
+            'level': logging.WARN
         }  # @IgnorePep8
         if self._debug:
             logging_kwds['level'] = logging.DEBUG

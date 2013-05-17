@@ -25,7 +25,6 @@ struct ProtocolTestStruct {
     // @faker Name.firstName()
     required string required_string_field;
     optional set<string> set_string_field;
-    // @faker random.choice((1, 2, 3))
     // @validation {"minLength": 1}
     optional string string_field;
     optional ProtocolTestStruct struct_field;

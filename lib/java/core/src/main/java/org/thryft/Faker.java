@@ -12,6 +12,28 @@ import org.thryft.native_.UrlParser;
 import com.google.common.collect.ImmutableList;
 
 public final class Faker {
+    public final static class Address {
+        public static String secondaryAddress() {
+            return "Apt. 1";
+        }
+
+        public static String streetAddress() {
+            return "Main St.";
+        }
+
+        public static String ukCountry() {
+            return "USA";
+        }
+
+        public static String usState() {
+            return "OK";
+        }
+
+        public static String zipCode() {
+            return "74017";
+        }
+    }
+
     public final static class Internet {
         public static EmailAddress email() {
             return new EmailAddress("fake@example.com");
@@ -26,6 +48,14 @@ public final class Faker {
     }
 
     public final static class Lorem {
+        public static String paragraph() {
+            return "Lorem";
+        }
+
+        public static String sentence() {
+            return "Lorem";
+        }
+
         public static String word() {
             return "Lorem";
         }
@@ -35,11 +65,25 @@ public final class Faker {
     }
 
     public final static class Name {
+        public static String findName() {
+            return "John Doe";
+        }
+
         public static String firstName() {
-            return "Fred";
+            return "John";
+        }
+
+        public static String lastName() {
+            return "Doe";
         }
 
         private Name() {
+        }
+    }
+
+    public final static class PhoneNumber {
+        public static String phoneNumber() {
+            return "5555551212";
         }
     }
 

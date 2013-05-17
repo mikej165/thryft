@@ -51,7 +51,8 @@ class JsBoolType(BoolType, _JsBaseType):
         return {'type': 'Checkboxes', 'options': ['']}
 
     def js_validation(self, value, value_name, **kwds):
-        return {'type': """\
+        return {'oneOf': (True, False),
+                'type': """\
 if (typeof %(value)s !== "boolean") {
     return "expected %(value_name)s to be a boolean";
 }""" % locals()}

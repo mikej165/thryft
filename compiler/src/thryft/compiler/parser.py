@@ -5,7 +5,9 @@ from thryft.compiler.token import Token
 from yutil import class_qname
 import json
 import logging
+import os.path
 import random
+import sys
 
 
 class Parser(GenericParser):
@@ -876,37 +878,28 @@ class Parser(GenericParser):
         return token.type
 
 
-try:
-    import faker as __faker_module
-    _real_faker = __faker_module.Faker()
-except ImportError:
-    _real_faker = None
-
-if _real_faker is not None:
-    class __Faker(object):
-        class _Provider(object):
-            def __getattr__(self, attr):
-                return getattr(_real_faker, attr)
-    for __provider_name in ('Address', 'DateTime', 'Internet', 'Lorem', 'Name'):
-        setattr(__Faker, __provider_name, __Faker._Provider())
-else:
-    __Faker = None
-
 def __parse_faker_annotation(ast_node, name, value, **kwds):
     if value is None:
         raise ValueError("@%(name)s requires a value" % locals())
-    valid_faker = False
-    if __Faker is not None:
+
+    lib_py_src_thryft_dir_path = \
+        os.path.abspath(os.path.join(
+            os.path.dirname(__file__),
+            '..', '..', '..', '..',
+            'lib', 'py', 'src', 'thryft'
+        ))
+    if not lib_py_src_thryft_dir_path in sys.path:
+        sys.path.append(lib_py_src_thryft_dir_path)
+    from faker import Faker  # @UnresolvedImport
+    try:
+        eval('Faker.' + value, {}, {'Faker': Faker})
+    except AttributeError:
         try:
-            eval('__Faker.' + value)
-            valid_faker = True
+            eval(value)
         except:
-            import traceback;
-            traceback.print_exc()
-            valid_faker = False
-    if not valid_faker:
+            raise ValueError("invalid @%(name)s value '%(value)s" % locals())
         value_copy = value
-        value = lambda: eval(value_copy, {}, {'random': random})
+        value = lambda: eval(value_copy)
     ast_node.annotations.append(Ast.AnnotationNode(name=name, value=value, **kwds))
 Parser.register_annotation(Ast.FieldNode, 'faker', __parse_faker_annotation)
 
