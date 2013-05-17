@@ -92,7 +92,7 @@ if (this.%(name)s.isPresent()) {
                 return self.type.java_literal(faker())
             else:
                 return 'org.thryft.Faker.' + faker
-        return self.type.java_faker()
+        return self.type.java_faker(validation=self.annotations.get('validation'))
 
     def java_getter(self, final=True):
         final = final and 'final ' or ''

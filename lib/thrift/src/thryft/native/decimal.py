@@ -40,8 +40,23 @@ class JavaDecimal(JavaStructType):
     def java_declaration_name(self, boxed=False):
         return 'java.math.BigDecimal'
 
-    def java_faker(self):
-        return 'org.thryft.Faker.randomDecimal()'
+    def java_faker(self, validation=None, **kwds):
+        parameters = []
+        if validation is not None:
+            max_ = validation.get('max')
+            min_ = validation.get('min')
+            if min_ is not None or max_ is not None:
+                if min_ is not None:
+                    min_ = "java.math.BigDecimal.valueOf(%s)" % min_
+                else:
+                    min_ = 'null'
+                if max_ is not None:
+                    max_ = "java.math.BigDecimal.valueOf(%s)" % max_
+                else:
+                    max_ = 'null'
+                parameters.extend((min_, max_))
+        parameters = ', '.join(parameters)
+        return "org.thryft.Faker.randomDecimal(%(parameters)s)" % locals()
 
     def java_read_protocol(self):
         return 'iprot.readDecimal()'

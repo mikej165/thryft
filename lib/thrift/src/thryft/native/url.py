@@ -43,7 +43,7 @@ class JavaUrl(JavaStructType):
     def java_declaration_name(self, boxed=False):
         return 'org.thryft.native_.Url'
 
-    def java_faker(self):
+    def java_faker(self, **kwds):
         return 'org.thryft.Faker.Internet.url()'
 
     def java_read_protocol(self):

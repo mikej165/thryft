@@ -39,8 +39,5 @@ class JavaStructType(StructType, _JavaCompoundType):
         StructType.__init__(self, **kwds)
         _JavaCompoundType.__init__(self, **kwds)
 
-    def java_faker(self):
-        return self.java_qname() + 'Faker.fake()'
-
     def __repr__(self):
         return _JavaCompoundType.__repr__(self)

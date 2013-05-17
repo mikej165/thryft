@@ -35,8 +35,8 @@ from yutil import decamelize, indent
 
 
 class _JavaSequenceType(_JavaContainerType):
-    def java_faker(self):
-        return "com.google.common.collect.Immutable%s.of(%s)" % (self._java_interface_simple_name(), self.element_type.java_faker())
+    def java_faker(self, **kwds):
+        return "com.google.common.collect.Immutable%s.of(%s)" % (self._java_interface_simple_name(), self.element_type.java_faker(**kwds))
 
     def java_name(self, boxed=False):
         return self.java_qname(boxed=boxed)

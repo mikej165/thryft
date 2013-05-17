@@ -102,7 +102,24 @@ public final class Faker {
     }
 
     public static BigDecimal randomDecimal() {
-        return new BigDecimal(random.nextInt());
+        return BigDecimal.valueOf(random.nextInt());
+    }
+
+    public static BigDecimal randomDecimal(final BigDecimal min,
+            final BigDecimal max) {
+        if (min == null && max == null) {
+            return randomDecimal();
+        } else if (min != null) {
+            if (max != null) {
+                return BigDecimal.valueOf(random.nextInt(max.subtract(min)
+                        .intValue()) + min.intValue());
+            } else {
+                return BigDecimal.valueOf(random.nextInt(Integer.MAX_VALUE)
+                        + min.intValue());
+            }
+        } else {
+            return BigDecimal.valueOf(random.nextInt(max.intValue()));
+        }
     }
 
     public static <EnumT extends Enum<?>> EnumT randomEnum(
@@ -117,6 +134,16 @@ public final class Faker {
 
     public static short randomI16() {
         return (short) random.nextInt();
+    }
+
+    public static short randomI16(final int min, final int max) {
+        checkArgument(min >= Short.MIN_VALUE);
+        checkArgument(max <= Short.MAX_VALUE);
+        return randomI16((short) min, (short) max);
+    }
+
+    public static short randomI16(final short min, final short max) {
+        return (short) (random.nextInt(max - min) + min);
     }
 
     public static int randomI32() {

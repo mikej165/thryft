@@ -41,3 +41,8 @@ class _SequenceType(_ContainerType):
     @property
     def element_type(self):
         return self.__element_type
+
+    @property
+    def type_parameters(self):
+        return (self.__element_type,)
+

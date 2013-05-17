@@ -41,7 +41,7 @@ class JavaBoolType(BoolType, _JavaBaseType):
     def java_compare_to(self, this_value, other_value):
         return "((Boolean)%(this_value)s).compareTo(%(other_value)s)" % locals()
 
-    def java_faker(self):
+    def java_faker(self, **kwds):
         return 'org.thryft.Faker.randomBool()'
 
     def java_from_string(self, value):

@@ -323,6 +323,9 @@ public %(name)s(%(parameters)s) {
     def java_default_value(self):
         return 'null'
 
+    def java_faker(self, **kwds):
+        return self.java_qname() + '.fake()'
+
     def java_hash_code(self, value):
         return "%(value)s.hashCode()" % locals()
 
@@ -400,6 +403,30 @@ public boolean equals(final Object otherObject) {
 %(struct_equal_tests)s
 
     %(field_equal_tests)s;
+}""" % locals()}
+
+    def _java_method_fake(self):
+        name = self.java_name()
+        qname = self.java_qname()
+        setter_calls = []
+        for field in self.fields:
+            recursive = False
+            for type_ in [field.type] + list(field.type.type_parameters):
+                if qname == type_.java_qname():
+                    assert not field.required, qname + '.' + field.name
+                    recursive = True
+                    break
+            if not recursive:
+                setter_calls.append("builder.%s(%s);" % (field.java_setter_name(), field.java_faker()))
+        setter_calls = \
+            lpad("\n", "\n".join(indent(' ' * 4, setter_calls)))
+        return {'fakeBuilder': """\
+public static Builder fakeBuilder() {
+    Builder builder = new Builder();%(setter_calls)s
+    return builder;
+}""" % locals(), 'fake': """\
+public static %(name)s fake() {
+    return fakeBuilder().build();
 }""" % locals()}
 
     def _java_method_get(self):
@@ -543,6 +570,7 @@ public void write(final org.thryft.protocol.TProtocol oprot, final byte writeAsT
         methods.update(self._java_method_builder())
         methods.update(self._java_method_compare_to())
         methods.update(self._java_method_equals())
+        methods.update(self._java_method_fake())
         methods.update(self._java_method_get())
         methods.update(self._java_method_getters())
         methods.update(self._java_method_hash_code())

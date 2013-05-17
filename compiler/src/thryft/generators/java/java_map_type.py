@@ -36,7 +36,7 @@ from yutil import indent
 
 
 class JavaMapType(MapType, _JavaContainerType):
-    def java_faker(self):
+    def java_faker(self, **kwds):
         return "com.google.common.collect.ImmutableMap.of(%s, %s)" % (self.key_type.java_faker(), self.value_type.java_faker())
 
     def java_literal(self, value):

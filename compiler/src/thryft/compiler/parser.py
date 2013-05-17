@@ -6,7 +6,6 @@ from yutil import class_qname
 import json
 import logging
 import os.path
-import random
 import sys
 
 

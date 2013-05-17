@@ -42,7 +42,6 @@ except ImportError:
     sys.path.append(os.path.join(THRYFT_ROOT_DIR_PATH, 'compiler', 'src'))
 from thryft.compiler import Compiler
 from thryft.generators.java.java_generator import JavaGenerator
-from thryft.generators.java.faker_java_generator import FakerJavaGenerator
 from thryft.generators.js.js_generator import JsGenerator
 from thryft.generators.py.py_generator import PyGenerator
 import thryft.main
@@ -54,7 +53,7 @@ class Main(thryft.main.Main):
         gen = self._gen
 
         generators = {
-            'java': (JavaGenerator(), FakerJavaGenerator()),
+            'java': (JavaGenerator(),),
             'js': (JsGenerator(),),
             'py': (PyGenerator(),),
         }

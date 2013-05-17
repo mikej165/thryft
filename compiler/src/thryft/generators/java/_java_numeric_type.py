@@ -38,8 +38,25 @@ class _JavaNumericType(_JavaBaseType):
         boxed_name = self.java_name(boxed=True)
         return "((%(boxed_name)s)%(this_value)s).compareTo(%(other_value)s)" % locals()
 
-    def java_faker(self):
-        return "org.thryft.Faker.random%s()" % self.name.capitalize()
+    def java_faker(self, validation=None):
+        parameters = []
+        if validation is not None:
+            max_ = validation.get('max')
+            min_ = validation.get('min')
+            if min_ is not None or max_ is not None:
+                if min_ is None:
+                    min_ = self.java_min_value()
+                if max_ is None:
+                    max_ = self.java_max_value()
+                parameters.extend((str(min_), str(max_)))
+        parameters = ', '.join(parameters)
+        return "org.thryft.Faker.random%s(%s)" % (self.name.capitalize(), parameters)
+
+    def java_min_value(self):
+        return self.java_name(boxed=True) + '.MIN_VALUE'
+
+    def java_max_value(self):
+        return self.java_name(boxed=True) + '.MAX_VALUE'
 
     def java_read_protocol_throws_unchecked(self):
         return ['NumberFormatException']

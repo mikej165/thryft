@@ -32,7 +32,7 @@
 
 class _JavaConstruct(object):
     def java_doc(self):
-        if self.doc is not None:
+        if self.doc is not None and len(self.doc) > 0:
             return """\
 /**
 %s

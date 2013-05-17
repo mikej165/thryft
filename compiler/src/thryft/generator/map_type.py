@@ -50,5 +50,9 @@ class MapType(_ContainerType):
         return 'MAP'
 
     @property
+    def type_parameters(self):
+        return (self.__key_type, self.__value_type)
+
+    @property
     def value_type(self):
         return self.__value_type
