@@ -5,6 +5,10 @@ from yutil import indent, lpad
 
 
 class LoggingServiceJavaGenerator(java_generator.JavaGenerator):
+    def __init__(self, include_current_user=True, **kwds):
+        java_generator.JavaGenerator.__init__(self, **kwds)
+        self._include_current_user = include_current_user
+
     class Function(JavaFunction):
         def __repr__(self):
             java_name = self.java_name()
@@ -16,6 +20,16 @@ class LoggingServiceJavaGenerator(java_generator.JavaGenerator):
                 local_declarations.append('org.thryft.protocol.LogMessageProtocol __logMessageProtocol;')
             local_declarations.append('final StringBuilder __logMessageStringBuilder = new StringBuilder();')
             local_declarations = "\n".join(indent(' ' * 4, local_declarations))
+
+            if self.parent.parent.parent._include_current_user:
+                log_current_user = lpad("\n\n", """\
+    final org.apache.shiro.subject.Subject currentUser = org.apache.shiro.SecurityUtils.getSubject();
+    if (currentUser.getPrincipal() instanceof String) {
+        __logMessageStringBuilder.append((String)currentUser.getPrincipal());
+        __logMessageStringBuilder.append(": " );
+    }""" % locals())
+            else:
+                log_current_user = ''
 
             parameters = \
                 ', '.join([parameter.java_parameter(final=True)
@@ -92,13 +106,7 @@ catch (final %s e) {
                 )
             return """\
 public %(return_type_name)s %(java_name)s(%(parameters)s)%(throws)s {
-%(local_declarations)s
-
-    final org.apache.shiro.subject.Subject currentUser = org.apache.shiro.SecurityUtils.getSubject();
-    if (currentUser.getPrincipal() instanceof String) {
-        __logMessageStringBuilder.append((String)currentUser.getPrincipal());
-        __logMessageStringBuilder.append(": " );
-    }
+%(local_declarations)s%(log_current_user)s
 
     __logMessageStringBuilder.append("%(name)s(");%(parameters_toString)s
     __logMessageStringBuilder.append(")");
