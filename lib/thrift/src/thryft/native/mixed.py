@@ -36,8 +36,14 @@ from thryft.generators.py.py_struct_type import PyStructType
 
 
 class JavaMixed(JavaStructType):
+    def java_compare_to(self, this_value, other_value):
+        return "org.thryft.Comparators.compare(%(this_value)s, %(other_value)s)" % locals()
+
     def java_declaration_name(self, boxed=True):
         return 'java.lang.Object'
+
+    def java_faker(self, **kwds):
+        return 'org.thryft.Faker.Internet.url()'
 
     def java_read_protocol(self):
         return "iprot.readMixed()" % locals()

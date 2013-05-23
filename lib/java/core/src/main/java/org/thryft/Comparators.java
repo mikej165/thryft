@@ -68,6 +68,14 @@ public final class Comparators {
         return 0;
     }
 
+    public static int compare(final Object left, final Object right) {
+        if (left.equals(right)) {
+            return 0;
+        } else {
+            return -1;
+        }
+    }
+
     private Comparators() {
     }
 }
