@@ -43,7 +43,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 public abstract class KeyValueStore<ModelT extends TBase<?>> extends
-        Store<ModelT> {
+        AbstractStore<ModelT> {
     protected final static class Key {
         public static Key parse(final String key) {
             final String[] components = key.split(SEPARATOR, 2);
@@ -120,22 +120,22 @@ public abstract class KeyValueStore<ModelT extends TBase<?>> extends
     }
 
     protected abstract ModelT _getModelById(Key modelKey)
-            throws org.thryft.store.Store.NoSuchModelException;
+            throws org.thryft.store.AbstractStore.NoSuchModelException;
 
     @Override
     protected ModelT _getModelById(final String modelId, final String userId)
-            throws org.thryft.store.Store.NoSuchModelException {
+            throws org.thryft.store.AbstractStore.NoSuchModelException {
         return _getModelById(new Key(modelId, userId));
     }
 
     protected abstract ImmutableMap<String, ModelT> _getModelsByIds(
             ImmutableSet<Key> modelKeys)
-            throws org.thryft.store.Store.NoSuchModelException;
+            throws org.thryft.store.AbstractStore.NoSuchModelException;
 
     @Override
     protected ImmutableMap<String, ModelT> _getModelsByIds(
             final ImmutableSet<String> modelIds, final String userId)
-            throws org.thryft.store.Store.NoSuchModelException {
+            throws org.thryft.store.AbstractStore.NoSuchModelException {
         final ImmutableSet.Builder<Key> modelKeys = ImmutableSet.builder();
         for (final String modelId : modelIds) {
             modelKeys.add(new Key(modelId, userId));

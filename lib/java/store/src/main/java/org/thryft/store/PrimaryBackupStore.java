@@ -39,10 +39,10 @@ import org.thryft.TBase;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
-public class PrimaryBackupStore<ModelT extends TBase<?>> extends Store<ModelT> {
-    public PrimaryBackupStore(final Store<ModelT> primaryStore,
-            final Store<ModelT> backupStore) {
-        super(primaryStore._getModelClass());
+public class PrimaryBackupStore<ModelT extends TBase<?>> extends AbstractStore<ModelT> {
+    public PrimaryBackupStore(final AbstractStore<ModelT> primaryStore,
+            final AbstractStore<ModelT> backupStore) {
+        super(primaryStore.getModelClass());
         this.backupStore = checkNotNull(backupStore);
         this.primaryStore = checkNotNull(primaryStore);
     }
@@ -66,7 +66,7 @@ public class PrimaryBackupStore<ModelT extends TBase<?>> extends Store<ModelT> {
 
     @Override
     protected ModelT _getModelById(final String modelId, final String userId)
-            throws org.thryft.store.Store.NoSuchModelException {
+            throws org.thryft.store.AbstractStore.NoSuchModelException {
         return primaryStore._getModelById(modelId, userId);
     }
 
@@ -88,7 +88,7 @@ public class PrimaryBackupStore<ModelT extends TBase<?>> extends Store<ModelT> {
     @Override
     protected ImmutableMap<String, ModelT> _getModelsByIds(
             final ImmutableSet<String> modelIds, final String userId)
-            throws org.thryft.store.Store.NoSuchModelException {
+            throws org.thryft.store.AbstractStore.NoSuchModelException {
         return primaryStore._getModelsByIds(modelIds, userId);
     }
 
@@ -116,7 +116,7 @@ public class PrimaryBackupStore<ModelT extends TBase<?>> extends Store<ModelT> {
         backupStore.putModels(models, userId);
     }
 
-    private final Store<ModelT> backupStore;
+    private final AbstractStore<ModelT> backupStore;
 
-    private final Store<ModelT> primaryStore;
+    private final AbstractStore<ModelT> primaryStore;
 }

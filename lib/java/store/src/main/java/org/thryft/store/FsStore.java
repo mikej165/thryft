@@ -50,7 +50,7 @@ import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
-public final class FsStore<ModelT extends TBase<?>> extends Store<ModelT> {
+public final class FsStore<ModelT extends TBase<?>> extends AbstractStore<ModelT> {
     public final static class Configuration {
         public Configuration() {
             this(ROOT_DIRECTORY_PATH_DEFAULT);
@@ -181,7 +181,7 @@ public final class FsStore<ModelT extends TBase<?>> extends Store<ModelT> {
     @Override
     protected synchronized ImmutableMap<String, ModelT> _getModelsByIds(
             final ImmutableSet<String> modelIds, final String userId)
-            throws org.thryft.store.Store.NoSuchModelException {
+            throws org.thryft.store.AbstractStore.NoSuchModelException {
         final ImmutableMap.Builder<String, ModelT> models = ImmutableMap
                 .builder();
         for (final String modelId : modelIds) {
@@ -221,7 +221,7 @@ public final class FsStore<ModelT extends TBase<?>> extends Store<ModelT> {
     @Override
     protected synchronized void _putModel(final ModelT model,
             final String modelId, final String userId)
-            throws org.thryft.store.Store.ModelIoException {
+            throws org.thryft.store.AbstractStore.ModelIoException {
         final File modelDirectoryPath = __createModelDirectory(userId);
         if (modelDirectoryPath == null) {
             return;
@@ -240,7 +240,7 @@ public final class FsStore<ModelT extends TBase<?>> extends Store<ModelT> {
     }
 
     private File __createModelDirectory(final String userId)
-            throws org.thryft.store.Store.ModelIoException {
+            throws org.thryft.store.AbstractStore.ModelIoException {
         final File modelDirectoryPath = __getModelDirectoryPath(userId);
         if (!modelDirectoryPath.isDirectory()) {
             if (!modelDirectoryPath.mkdirs()) {

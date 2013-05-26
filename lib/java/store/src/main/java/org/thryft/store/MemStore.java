@@ -39,7 +39,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
 
-public final class MemStore<ModelT extends TBase<?>> extends Store<ModelT> {
+public final class MemStore<ModelT extends TBase<?>> extends AbstractStore<ModelT> {
     public MemStore(final Class<ModelT> modelClass) {
         super(modelClass);
     }

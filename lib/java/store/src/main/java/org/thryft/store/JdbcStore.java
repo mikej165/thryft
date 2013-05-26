@@ -56,7 +56,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
-public final class JdbcStore<ModelT extends TBase<?>> extends Store<ModelT> {
+public final class JdbcStore<ModelT extends TBase<?>> extends AbstractStore<ModelT> {
     public final static class Configuration {
         public Configuration() {
             this(PASSWORD_DEFAULT, URL_DEFAULT, USER_DEFAULT);
@@ -353,7 +353,7 @@ public final class JdbcStore<ModelT extends TBase<?>> extends Store<ModelT> {
     @Override
     protected ImmutableMap<String, ModelT> _getModelsByIds(
             final ImmutableSet<String> modelIds, final String userId)
-            throws org.thryft.store.Store.NoSuchModelException {
+            throws org.thryft.store.AbstractStore.NoSuchModelException {
         if (modelIds.isEmpty()) {
             return ImmutableMap.of();
         }
