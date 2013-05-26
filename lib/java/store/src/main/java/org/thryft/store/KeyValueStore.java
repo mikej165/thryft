@@ -107,11 +107,12 @@ public abstract class KeyValueStore<ModelT extends TBase<?>> extends
         super(modelClass);
     }
 
-    protected abstract boolean _deleteModelById(Key modelKey);
+    protected abstract boolean _deleteModelById(Key modelKey)
+            throws ModelIoException;
 
     @Override
-    protected boolean _deleteModelById(final String modelId,
-            final String userId) {
+    protected boolean _deleteModelById(final String modelId, final String userId)
+            throws ModelIoException {
         return _deleteModelById(new Key(modelId, userId));
     }
 
@@ -120,22 +121,22 @@ public abstract class KeyValueStore<ModelT extends TBase<?>> extends
     }
 
     protected abstract ModelT _getModelById(Key modelKey)
-            throws org.thryft.store.AbstractStore.NoSuchModelException;
+            throws ModelIoException, NoSuchModelException;
 
     @Override
     protected ModelT _getModelById(final String modelId, final String userId)
-            throws org.thryft.store.AbstractStore.NoSuchModelException {
+            throws ModelIoException, NoSuchModelException {
         return _getModelById(new Key(modelId, userId));
     }
 
     protected abstract ImmutableMap<String, ModelT> _getModelsByIds(
-            ImmutableSet<Key> modelKeys)
-            throws org.thryft.store.AbstractStore.NoSuchModelException;
+            ImmutableSet<Key> modelKeys) throws ModelIoException,
+            NoSuchModelException;
 
     @Override
     protected ImmutableMap<String, ModelT> _getModelsByIds(
             final ImmutableSet<String> modelIds, final String userId)
-            throws org.thryft.store.AbstractStore.NoSuchModelException {
+            throws ModelIoException, NoSuchModelException {
         final ImmutableSet.Builder<Key> modelKeys = ImmutableSet.builder();
         for (final String modelId : modelIds) {
             modelKeys.add(new Key(modelId, userId));
@@ -148,7 +149,8 @@ public abstract class KeyValueStore<ModelT extends TBase<?>> extends
         throw new UnsupportedOperationException();
     }
 
-    protected boolean _headModelById(final Key modelKey) {
+    protected boolean _headModelById(final Key modelKey)
+            throws ModelIoException {
         try {
             _getModelById(modelKey);
             return true;
@@ -158,7 +160,8 @@ public abstract class KeyValueStore<ModelT extends TBase<?>> extends
     }
 
     @Override
-    protected boolean _headModelById(final String modelId, final String userId) {
+    protected boolean _headModelById(final String modelId, final String userId)
+            throws ModelIoException {
         checkNotNull(modelId);
         checkNotNull(userId);
         return _headModelById(new Key(modelId, userId));

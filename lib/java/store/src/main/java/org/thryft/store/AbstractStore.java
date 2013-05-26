@@ -41,7 +41,6 @@ import org.slf4j.LoggerFactory;
 import org.thryft.TBase;
 import org.thryft.protocol.TProtocol;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
@@ -54,21 +53,21 @@ public abstract class AbstractStore<ModelT extends TBase<?>> implements
 
     @Override
     public final boolean deleteModelById(final String modelId,
-            final String userId) {
+            final String userId) throws ModelIoException {
         checkNotNull(modelId);
         checkNotNull(userId);
         return _deleteModelById(modelId, userId);
     }
 
     @Override
-    public final void deleteModels(final String userId) {
+    public final void deleteModels(final String userId) throws ModelIoException {
         checkNotNull(userId);
         _deleteModels(userId);
     }
 
     @Override
     public final ModelT getModelById(final String modelId, final String userId)
-            throws NoSuchModelException {
+            throws ModelIoException, NoSuchModelException {
         checkNotNull(modelId);
         checkNotNull(userId);
         return checkNotNull(_getModelById(modelId, userId));
@@ -79,19 +78,21 @@ public abstract class AbstractStore<ModelT extends TBase<?>> implements
     }
 
     @Override
-    public final int getModelCount(final String userId) {
+    public final int getModelCount(final String userId) throws ModelIoException {
         checkNotNull(userId);
         return _getModelCount(userId);
     }
 
     @Override
-    public final ImmutableSet<String> getModelIds(final String userId) {
+    public final ImmutableSet<String> getModelIds(final String userId)
+            throws ModelIoException {
         checkNotNull(userId);
         return checkNotNull(_getModelIds(userId));
     }
 
     @Override
-    public final ImmutableMap<String, ModelT> getModels(final String userId) {
+    public final ImmutableMap<String, ModelT> getModels(final String userId)
+            throws ModelIoException {
         checkNotNull(userId);
         return checkNotNull(_getModels(userId));
     }
@@ -99,7 +100,7 @@ public abstract class AbstractStore<ModelT extends TBase<?>> implements
     @Override
     public final ImmutableMap<String, ModelT> getModelsByIds(
             final ImmutableSet<String> modelIds, final String userId)
-            throws NoSuchModelException {
+            throws ModelIoException, NoSuchModelException {
         checkNotNull(modelIds);
         if (modelIds.isEmpty()) {
             return ImmutableMap.of();
@@ -109,12 +110,13 @@ public abstract class AbstractStore<ModelT extends TBase<?>> implements
     }
 
     @Override
-    public final ImmutableSet<String> getUserIds() {
+    public final ImmutableSet<String> getUserIds() throws ModelIoException {
         return checkNotNull(_getUserIds());
     }
 
     @Override
-    public final boolean headModelById(final String modelId, final String userId) {
+    public final boolean headModelById(final String modelId, final String userId)
+            throws ModelIoException {
         checkNotNull(modelId);
         checkNotNull(userId);
         return _headModelById(modelId, userId);
@@ -141,49 +143,51 @@ public abstract class AbstractStore<ModelT extends TBase<?>> implements
     }
 
     protected abstract boolean _deleteModelById(final String modelId,
-            final String userId);
+            final String userId) throws ModelIoException;
 
-    protected abstract void _deleteModels(final String userId);
+    protected abstract void _deleteModels(final String userId)
+            throws ModelIoException;
 
-    protected Optional<ModelT> _getModel(final TProtocol iprot) {
+    protected ModelT _getModel(final TProtocol iprot) throws ModelIoException {
         try {
-            return Optional.of(modelClass.getConstructor(TProtocol.class)
-                    .newInstance(iprot));
+            return modelClass.getConstructor(TProtocol.class)
+                    .newInstance(iprot);
         } catch (final IllegalArgumentException e) {
-            logger.error("exception reading:", e);
+            throw new ModelIoException(e.getMessage());
         } catch (final SecurityException e) {
-            logger.error("exception reading model:", e);
+            throw new ModelIoException(e.getMessage());
         } catch (final InstantiationException e) {
-            logger.error("exception reading model:", e);
+            throw new ModelIoException(e.getMessage());
         } catch (final IllegalAccessException e) {
-            logger.error("exception reading model:", e);
+            throw new ModelIoException(e.getMessage());
         } catch (final InvocationTargetException e) {
-            logger.error("exception reading model:", e);
+            throw new ModelIoException(e.getMessage());
         } catch (final NoSuchMethodException e) {
-            logger.error("exception reading model:", e);
+            throw new ModelIoException(e.getMessage());
         }
-
-        return Optional.<ModelT> absent();
     }
 
     protected abstract ModelT _getModelById(final String modelId,
-            final String userId) throws NoSuchModelException;
+            final String userId) throws ModelIoException, NoSuchModelException;
 
-    protected abstract int _getModelCount(final String userId);
+    protected abstract int _getModelCount(final String userId)
+            throws ModelIoException;
 
-    protected abstract ImmutableSet<String> _getModelIds(final String userId);
+    protected abstract ImmutableSet<String> _getModelIds(final String userId)
+            throws ModelIoException;
 
     protected abstract ImmutableMap<String, ModelT> _getModels(
-            final String userId);
+            final String userId) throws ModelIoException;
 
     protected abstract ImmutableMap<String, ModelT> _getModelsByIds(
             final ImmutableSet<String> modelIds, final String userId)
-            throws NoSuchModelException;
+            throws ModelIoException, NoSuchModelException;
 
-    protected abstract ImmutableSet<String> _getUserIds();
+    protected abstract ImmutableSet<String> _getUserIds()
+            throws ModelIoException;
 
     protected abstract boolean _headModelById(final String modelId,
-            final String userId);
+            final String userId) throws ModelIoException;
 
     protected abstract void _putModel(final ModelT model, final String modelId,
             final String userId) throws ModelIoException;

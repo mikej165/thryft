@@ -48,7 +48,6 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.exceptions.JedisException;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
@@ -151,8 +150,8 @@ public final class RedisStore<ModelT extends TBase<?>> extends
     }
 
     @Override
-    protected ModelT _getModelById(final Key modelKey)
-            throws org.thryft.store.AbstractStore.NoSuchModelException {
+    protected ModelT _getModelById(final Key modelKey) throws ModelIoException,
+            NoSuchModelException {
         try {
             final Jedis jedis = jedisPool.getResource();
             try {
@@ -162,12 +161,7 @@ public final class RedisStore<ModelT extends TBase<?>> extends
                     throw new NoSuchModelException(modelKey.getModelId());
                 }
                 final StringMapProtocol iprot = new StringMapProtocol(hash);
-                final Optional<ModelT> model = _getModel(iprot);
-                if (model.isPresent()) {
-                    return model.get();
-                } else {
-                    throw new NoSuchModelException(modelKey.getModelId());
-                }
+                return _getModel(iprot);
             } finally {
                 jedisPool.returnResource(jedis);
             }
@@ -209,7 +203,8 @@ public final class RedisStore<ModelT extends TBase<?>> extends
     }
 
     @Override
-    protected ImmutableMap<String, ModelT> _getModels(final String userId) {
+    protected ImmutableMap<String, ModelT> _getModels(final String userId)
+            throws ModelIoException {
         try {
             final Jedis jedis = jedisPool.getResource();
             try {
@@ -219,7 +214,7 @@ public final class RedisStore<ModelT extends TBase<?>> extends
                         .smembers(_getKeyPrefix(userId))) {
                     try {
                         models.put(modelId, _getModelById(modelId, userId));
-                    } catch (final org.thryft.store.AbstractStore.NoSuchModelException e) {
+                    } catch (final NoSuchModelException e) {
                     }
                 }
                 return models.build();
@@ -234,8 +229,8 @@ public final class RedisStore<ModelT extends TBase<?>> extends
 
     @Override
     protected ImmutableMap<String, ModelT> _getModelsByIds(
-            final ImmutableSet<Key> modelKeys)
-            throws org.thryft.store.AbstractStore.NoSuchModelException {
+            final ImmutableSet<Key> modelKeys) throws ModelIoException,
+            NoSuchModelException {
         final ImmutableMap.Builder<String, ModelT> models = ImmutableMap
                 .builder();
         for (final Key modelKey : modelKeys) {

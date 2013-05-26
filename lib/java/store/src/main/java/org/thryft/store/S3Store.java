@@ -59,7 +59,6 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectResult;
 import com.amazonaws.services.s3.model.S3Object;
 import com.google.common.base.CaseFormat;
-import com.google.common.base.Optional;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
@@ -182,7 +181,8 @@ public final class S3Store<ModelT extends TBase<?>> extends
     }
 
     @Override
-    protected boolean _deleteModelById(final Key modelKey) {
+    protected boolean _deleteModelById(final Key modelKey)
+            throws ModelIoException {
         final ImmutableMap<String, ModelT> models = __getModels(modelKey
                 .getUserId());
         if (models.get(modelKey.getModelId()) == null) {
@@ -190,36 +190,31 @@ public final class S3Store<ModelT extends TBase<?>> extends
         }
         final Map<String, ModelT> updatedModels = Maps.newLinkedHashMap(models);
         updatedModels.remove(modelKey.getModelId());
-        try {
-            __putModels(ImmutableMap.copyOf(updatedModels),
-                    modelKey.getUserId());
-            return true;
-        } catch (final ModelIoException e) {
-            logger.error("model I/O exception on deleteModelById: ", e);
-            return false;
-        }
+        __putModels(ImmutableMap.copyOf(updatedModels), modelKey.getUserId());
+        return true;
     }
 
     @Override
-    protected void _deleteModels(final String userId) {
+    protected void _deleteModels(final String userId) throws ModelIoException {
         final String objectKey = __getObjectKey(userId);
         objectCache.invalidate(objectKey);
         try {
             client.deleteObject(bucketName, objectKey);
         } catch (final AmazonServiceException e) {
             logger.error("AWS service exception on deleteModels: ", e);
+            throw new ModelIoException(e.getMessage());
         }
     }
 
     @Override
-    protected ModelT _getModelById(final Key modelKey)
-            throws NoSuchModelException {
+    protected ModelT _getModelById(final Key modelKey) throws ModelIoException,
+            NoSuchModelException {
         final ImmutableMap<String, ModelT> models;
         try {
             models = __getModels(modelKey.getUserId());
         } catch (final AmazonServiceException e) {
             logger.error("AWS service exception on getModelById: ", e);
-            throw new NoSuchModelException(modelKey.getModelId());
+            throw new ModelIoException(modelKey.getModelId());
         }
         final ModelT model = models.get(modelKey.getModelId());
         if (model != null) {
@@ -230,44 +225,47 @@ public final class S3Store<ModelT extends TBase<?>> extends
     }
 
     @Override
-    protected int _getModelCount(final String userId) {
+    protected int _getModelCount(final String userId) throws ModelIoException {
         try {
             return __getModels(userId).size();
         } catch (final AmazonServiceException e) {
             logger.error("AWS service exception on getModelCount: ", e);
-            return 0;
+            throw new ModelIoException(e.getMessage());
         }
     }
 
     @Override
-    protected ImmutableSet<String> _getModelIds(final String userId) {
+    protected ImmutableSet<String> _getModelIds(final String userId)
+            throws ModelIoException {
         try {
             return __getModels(userId).keySet();
         } catch (final AmazonServiceException e) {
             logger.error("AWS service exception on getModelIds: ", e);
-            return ImmutableSet.of();
+            throw new ModelIoException(e.getMessage());
         }
     }
 
     @Override
-    protected ImmutableMap<String, ModelT> _getModels(final String userId) {
+    protected ImmutableMap<String, ModelT> _getModels(final String userId)
+            throws ModelIoException {
         try {
             return __getModels(userId);
         } catch (final AmazonServiceException e) {
             logger.error("AWS service exception on getModels: ", e);
-            return ImmutableMap.of();
+            throw new ModelIoException(e.getMessage());
         }
     }
 
     @Override
     protected ImmutableMap<String, ModelT> _getModelsByIds(
-            final ImmutableSet<Key> modelKeys) throws NoSuchModelException {
+            final ImmutableSet<Key> modelKeys) throws ModelIoException,
+            NoSuchModelException {
         final ImmutableMap<String, ModelT> allModels;
         try {
             allModels = __getModels(modelKeys.iterator().next().getUserId());
         } catch (final AmazonServiceException e) {
             logger.error("AWS service exception on getModelsByIds: ", e);
-            return ImmutableMap.of();
+            throw new ModelIoException(e.getMessage());
         }
         final ImmutableMap.Builder<String, ModelT> outModels = ImmutableMap
                 .builder();
@@ -292,8 +290,7 @@ public final class S3Store<ModelT extends TBase<?>> extends
     protected void _putModels(final ImmutableMap<Key, ModelT> models)
             throws ModelIoException {
         try {
-            final String userId = models.keySet().iterator().next()
-                    .getUserId();
+            final String userId = models.keySet().iterator().next().getUserId();
             final ImmutableMap<String, ModelT> existingModels = __getModels(userId);
             final Map<String, ModelT> updatedModels = Maps
                     .newLinkedHashMap(existingModels);
@@ -308,7 +305,8 @@ public final class S3Store<ModelT extends TBase<?>> extends
         }
     }
 
-    private ImmutableMap<String, ModelT> __getModels(final String userId) {
+    private ImmutableMap<String, ModelT> __getModels(final String userId)
+            throws ModelIoException {
         final String objectKey = __getObjectKey(userId);
 
         final GetObjectRequest getObjectRequest = new GetObjectRequest(
@@ -353,18 +351,15 @@ public final class S3Store<ModelT extends TBase<?>> extends
             try {
                 final JsonProtocol iprot = new JsonProtocol(istringReader);
                 final TMap map = iprot.readMapBegin();
-                final Map<String, ModelT> modelsMutable = Maps
-                        .newLinkedHashMap();
+                final ImmutableMap.Builder<String, ModelT> modelsBuilder = ImmutableMap
+                        .builder();
                 for (int i = 0; i < map.size; i++) {
                     final String modelId = iprot.readString();
-                    final Optional<ModelT> model = _getModel(iprot);
-                    if (model.isPresent()) {
-                        modelsMutable.put(modelId, model.get());
-                    }
+                    modelsBuilder.put(modelId, _getModel(iprot));
                 }
                 iprot.readMapEnd();
-                final ImmutableMap<String, ModelT> models = ImmutableMap
-                        .copyOf(modelsMutable);
+                final ImmutableMap<String, ModelT> models = modelsBuilder
+                        .build();
                 objectCache.put(objectKey, new ObjectCacheEntry(models, object
                         .getObjectMetadata().getETag()));
                 return models;
@@ -373,7 +368,7 @@ public final class S3Store<ModelT extends TBase<?>> extends
             }
         } catch (final IOException e) {
             logger.error("IOException on __getModels: ", e);
-            return ImmutableMap.of();
+            throw new ModelIoException(e.getMessage());
         }
     }
 

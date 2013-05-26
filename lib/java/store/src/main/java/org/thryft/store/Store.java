@@ -41,7 +41,7 @@ import com.google.common.collect.ImmutableSet;
 
 public interface Store<ModelT extends TBase<?>> {
     @SuppressWarnings("serial")
-    public static class ModelIoException extends Exception {
+    public final static class ModelIoException extends Exception {
         public ModelIoException(final String message) {
             super(message);
             this.id = "";
@@ -65,7 +65,7 @@ public interface Store<ModelT extends TBase<?>> {
     }
 
     @SuppressWarnings("serial")
-    public static class NoSuchModelException extends Exception {
+    public final static class NoSuchModelException extends Exception {
         public NoSuchModelException(final String id) {
             super(id);
             this.id = id;
@@ -78,26 +78,30 @@ public interface Store<ModelT extends TBase<?>> {
         private final String id;
     }
 
-    public boolean deleteModelById(String modelId, String userId);
+    public boolean deleteModelById(String modelId, String userId)
+            throws ModelIoException;
 
-    public void deleteModels(String userId);
+    public void deleteModels(String userId) throws ModelIoException;
 
     public ModelT getModelById(String modelId, String userId)
-            throws NoSuchModelException;
+            throws ModelIoException, NoSuchModelException;
 
-    public int getModelCount(String userId);
+    public int getModelCount(String userId) throws ModelIoException;
 
-    public ImmutableSet<String> getModelIds(String userId);
+    public ImmutableSet<String> getModelIds(String userId)
+            throws ModelIoException;
 
-    public ImmutableMap<String, ModelT> getModels(String userId);
+    public ImmutableMap<String, ModelT> getModels(String userId)
+            throws ModelIoException;
 
     public ImmutableMap<String, ModelT> getModelsByIds(
             ImmutableSet<String> modelIds, String userId)
-            throws NoSuchModelException;
+            throws ModelIoException, NoSuchModelException;
 
-    public ImmutableSet<String> getUserIds();
+    public ImmutableSet<String> getUserIds() throws ModelIoException;
 
-    public boolean headModelById(String modelId, String userId);
+    public boolean headModelById(String modelId, String userId)
+            throws ModelIoException;
 
     public void putModel(ModelT model, String modelId, String userId)
             throws ModelIoException;

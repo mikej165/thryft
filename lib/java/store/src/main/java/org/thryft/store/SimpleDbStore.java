@@ -63,7 +63,6 @@ import com.amazonaws.services.simpledb.model.SelectRequest;
 import com.amazonaws.services.simpledb.model.SelectResult;
 import com.google.common.base.CaseFormat;
 import com.google.common.base.Joiner;
-import com.google.common.base.Optional;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -121,7 +120,8 @@ public final class SimpleDbStore<ModelT extends TBase<?>> extends
     }
 
     @Override
-    protected boolean _deleteModelById(final Key modelKey) {
+    protected boolean _deleteModelById(final Key modelKey)
+            throws ModelIoException {
         final String itemName = modelKey.toString();
         final GetAttributesRequest getAttributesRequest = new GetAttributesRequest(
                 domainName, itemName);
@@ -137,7 +137,7 @@ public final class SimpleDbStore<ModelT extends TBase<?>> extends
     }
 
     @Override
-    protected void _deleteModels(final String userId) {
+    protected void _deleteModels(final String userId) throws ModelIoException {
         final ImmutableSet<String> modelIds = getModelIds(userId);
         final List<List<String>> modelIdBatches = Lists.partition(
                 ImmutableList.copyOf(modelIds), ITEM_BATCH_SIZE);
@@ -153,19 +153,14 @@ public final class SimpleDbStore<ModelT extends TBase<?>> extends
     }
 
     @Override
-    protected ModelT _getModelById(final Key modelKey)
-            throws NoSuchModelException {
+    protected ModelT _getModelById(final Key modelKey) throws ModelIoException,
+            ModelIoException, NoSuchModelException {
         final GetAttributesRequest request = new GetAttributesRequest(
                 domainName, modelKey.toString());
         request.setConsistentRead(true);
         final GetAttributesResult attributes = client.getAttributes(request);
-        final Optional<ModelT> model = __getModelFromAttributes(attributes
-                .getAttributes());
-        if (model.isPresent()) {
-            return model.get();
-        } else {
-            throw new NoSuchModelException(modelKey.getModelId());
-        }
+        return __getModelFromAttributes(attributes.getAttributes(),
+                modelKey.getModelId());
     }
 
     @Override
@@ -173,7 +168,8 @@ public final class SimpleDbStore<ModelT extends TBase<?>> extends
         final ImmutableList<Item> items = __selectItems("SELECT count(*) FROM `"
                 + domainName
                 + "` WHERE itemName() LIKE '"
-                + Key.prefix(userId) + "%'");
+                + Key.prefix(userId)
+                + "%'");
         for (final Item item : items) {
             if (item.getName().equalsIgnoreCase("Domain")) {
                 for (final Attribute attribute : item.getAttributes()) {
@@ -191,7 +187,8 @@ public final class SimpleDbStore<ModelT extends TBase<?>> extends
         final ImmutableList<Item> items = __selectItems("SELECT itemName() FROM `"
                 + domainName
                 + "` WHERE itemName() LIKE '"
-                + Key.prefix(userId) + "%'");
+                + Key.prefix(userId)
+                + "%'");
         final ImmutableSet.Builder<String> modelIds = ImmutableSet.builder();
         for (final Item item : items) {
             modelIds.add(Key.parse(item.getName()).getModelId());
@@ -200,18 +197,21 @@ public final class SimpleDbStore<ModelT extends TBase<?>> extends
     }
 
     @Override
-    protected ImmutableMap<String, ModelT> _getModels(final String userId) {
+    protected ImmutableMap<String, ModelT> _getModels(final String userId)
+            throws ModelIoException {
         final ImmutableList<Item> items = __selectItems("SELECT * FROM `"
-                + domainName + "` WHERE itemName() LIKE '"
-                + Key.prefix(userId) + "%'");
+                + domainName + "` WHERE itemName() LIKE '" + Key.prefix(userId)
+                + "%'");
         final ImmutableMap.Builder<String, ModelT> models = ImmutableMap
                 .builder();
         for (final Item item : items) {
-            final Optional<ModelT> model = __getModelFromAttributes(item
-                    .getAttributes());
-            if (model.isPresent()) {
-                final Key modelKey = Key.parse(item.getName());
-                models.put(modelKey.getModelId(), model.get());
+            final Key modelKey = Key.parse(item.getName());
+            try {
+                final ModelT model = __getModelFromAttributes(
+                        item.getAttributes(), modelKey.getModelId());
+                models.put(modelKey.getModelId(), model);
+            } catch (final NoSuchModelException e) {
+                throw new IllegalStateException(e);
             }
         }
         return models.build();
@@ -219,7 +219,8 @@ public final class SimpleDbStore<ModelT extends TBase<?>> extends
 
     @Override
     protected ImmutableMap<String, ModelT> _getModelsByIds(
-            final ImmutableSet<Key> modelKeys) throws NoSuchModelException {
+            final ImmutableSet<Key> modelKeys) throws ModelIoException,
+            NoSuchModelException {
         final ImmutableMap.Builder<String, ModelT> modelsBuilder = ImmutableMap
                 .builder();
         ;
@@ -238,13 +239,9 @@ public final class SimpleDbStore<ModelT extends TBase<?>> extends
 
             for (final Item item : items) {
                 final Key modelKey = Key.parse(item.getName());
-                final Optional<ModelT> model = __getModelFromAttributes(item
-                        .getAttributes());
-                if (model.isPresent()) {
-                    modelsBuilder.put(modelKey.getModelId(), model.get());
-                } else {
-                    throw new NoSuchModelException(modelKey.getModelId());
-                }
+                final ModelT model = __getModelFromAttributes(
+                        item.getAttributes(), modelKey.getModelId());
+                modelsBuilder.put(modelKey.getModelId(), model);
             }
         }
         final ImmutableMap<String, ModelT> models = modelsBuilder.build();
@@ -361,10 +358,10 @@ public final class SimpleDbStore<ModelT extends TBase<?>> extends
         return attributes;
     }
 
-    private Optional<ModelT> __getModelFromAttributes(
-            final List<Attribute> attributes) {
+    private ModelT __getModelFromAttributes(final List<Attribute> attributes,
+            final String modelId) throws ModelIoException, NoSuchModelException {
         if (attributes.isEmpty()) {
-            return Optional.<ModelT> absent();
+            throw new NoSuchModelException(modelId);
         }
 
         final Multimap<String, String> attributeMultimap = LinkedHashMultimap

@@ -51,12 +51,12 @@ import org.thryft.TBase;
 import org.thryft.protocol.JsonProtocol;
 
 import com.google.common.base.CaseFormat;
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
-public final class JdbcStore<ModelT extends TBase<?>> extends AbstractStore<ModelT> {
+public final class JdbcStore<ModelT extends TBase<?>> extends
+        AbstractStore<ModelT> {
     public final static class Configuration {
         public Configuration() {
             this(PASSWORD_DEFAULT, URL_DEFAULT, USER_DEFAULT);
@@ -175,12 +175,10 @@ public final class JdbcStore<ModelT extends TBase<?>> extends AbstractStore<Mode
     }
 
     @Override
-    protected boolean _deleteModelById(final String modelId,
-            final String userId) {
+    protected boolean _deleteModelById(final String modelId, final String userId) {
         try {
             final Connection connection = connectionPool.getConnection();
-            final boolean existed = __headModelById(connection, modelId,
-                    userId);
+            final boolean existed = __headModelById(connection, modelId, userId);
             try {
                 __deleteModelById(connection, modelId, userId);
                 return existed;
@@ -216,7 +214,7 @@ public final class JdbcStore<ModelT extends TBase<?>> extends AbstractStore<Mode
 
     @Override
     protected ModelT _getModelById(final String modelId, final String userId)
-            throws NoSuchModelException {
+            throws ModelIoException, NoSuchModelException {
         try {
             final Connection connection = connectionPool.getConnection();
             try {
@@ -228,12 +226,7 @@ public final class JdbcStore<ModelT extends TBase<?>> extends AbstractStore<Mode
                     final ResultSet resultSet = statement.executeQuery();
                     try {
                         if (resultSet.next()) {
-                            final Optional<ModelT> model = __getModel(resultSet);
-                            if (model.isPresent()) {
-                                return model.get();
-                            } else {
-                                throw new NoSuchModelException(modelId);
-                            }
+                            return __getModel(resultSet);
                         } else {
                             throw new NoSuchModelException(modelId);
                         }
@@ -316,7 +309,8 @@ public final class JdbcStore<ModelT extends TBase<?>> extends AbstractStore<Mode
     }
 
     @Override
-    protected ImmutableMap<String, ModelT> _getModels(final String userId) {
+    protected ImmutableMap<String, ModelT> _getModels(final String userId)
+            throws ModelIoException {
         try {
             final Connection connection = connectionPool.getConnection();
             try {
@@ -329,10 +323,8 @@ public final class JdbcStore<ModelT extends TBase<?>> extends AbstractStore<Mode
                         final ImmutableMap.Builder<String, ModelT> models = ImmutableMap
                                 .builder();
                         while (resultSet.next()) {
-                            final Optional<ModelT> model = __getModel(resultSet);
-                            if (model.isPresent()) {
-                                models.put(__getModelId(resultSet), model.get());
-                            }
+                            models.put(__getModelId(resultSet),
+                                    __getModel(resultSet));
                         }
                         return models.build();
                     } finally {
@@ -353,11 +345,7 @@ public final class JdbcStore<ModelT extends TBase<?>> extends AbstractStore<Mode
     @Override
     protected ImmutableMap<String, ModelT> _getModelsByIds(
             final ImmutableSet<String> modelIds, final String userId)
-            throws org.thryft.store.AbstractStore.NoSuchModelException {
-        if (modelIds.isEmpty()) {
-            return ImmutableMap.of();
-        }
-
+            throws ModelIoException, NoSuchModelException {
         final StringBuilder getModelsByIdsSqlBuilder = new StringBuilder();
         getModelsByIdsSqlBuilder.append("SELECT * FROM ");
         getModelsByIdsSqlBuilder.append(tableName);
@@ -392,15 +380,8 @@ public final class JdbcStore<ModelT extends TBase<?>> extends AbstractStore<Mode
                         final ImmutableMap.Builder<String, ModelT> modelsBuilder = ImmutableMap
                                 .builder();
                         while (resultSet.next()) {
-                            final String modelId = resultSet
-                                    .getString(tableName + "_id");
-                            final Optional<ModelT> model = __getModel(resultSet);
-                            if (model.isPresent()) {
-                                modelsBuilder.put(__getModelId(resultSet),
-                                        model.get());
-                            } else {
-                                throw new NoSuchModelException(modelId);
-                            }
+                            modelsBuilder.put(__getModelId(resultSet),
+                                    __getModel(resultSet));
                         }
                         final ImmutableMap<String, ModelT> models = modelsBuilder
                                 .build();
@@ -425,8 +406,7 @@ public final class JdbcStore<ModelT extends TBase<?>> extends AbstractStore<Mode
                 connection.close();
             }
         } catch (final SQLException e) {
-            logger.error("exception getting models by ids: ", e);
-            return ImmutableMap.of();
+            throw new ModelIoException(e);
         }
     }
 
@@ -539,16 +519,16 @@ public final class JdbcStore<ModelT extends TBase<?>> extends AbstractStore<Mode
         }
     }
 
-    private Optional<ModelT> __getModel(final ResultSet resultSet) {
+    private ModelT __getModel(final ResultSet resultSet)
+            throws ModelIoException {
         try {
             return _getModel(new JsonProtocol(new StringReader(
                     resultSet.getString(tableName + "_json"))));
         } catch (final IOException e) {
-            logger.error("error reading model: ", e);
+            throw new ModelIoException(e.getMessage());
         } catch (final SQLException e) {
-            logger.error("error reading model: ", e);
+            throw new ModelIoException(e.getMessage());
         }
-        return Optional.<ModelT> absent();
     }
 
     private String __getModelId(final ResultSet resultSet) throws SQLException {

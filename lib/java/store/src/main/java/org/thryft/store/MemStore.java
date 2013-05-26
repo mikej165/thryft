@@ -39,7 +39,8 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
 
-public final class MemStore<ModelT extends TBase<?>> extends AbstractStore<ModelT> {
+public final class MemStore<ModelT extends TBase<?>> extends
+        AbstractStore<ModelT> {
     public MemStore(final Class<ModelT> modelClass) {
         super(modelClass);
     }
@@ -89,7 +90,7 @@ public final class MemStore<ModelT extends TBase<?>> extends AbstractStore<Model
     @Override
     protected synchronized ImmutableMap<String, ModelT> _getModelsByIds(
             final ImmutableSet<String> modelIds, final String userId)
-            throws NoSuchModelException {
+            throws ModelIoException, NoSuchModelException {
         final ImmutableMap.Builder<String, ModelT> models = ImmutableMap
                 .builder();
         for (final String modelId : modelIds) {

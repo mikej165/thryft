@@ -49,6 +49,8 @@ import org.junit.Test;
 import org.thryft.protocol.test.ProtocolTestEnum;
 import org.thryft.protocol.test.ProtocolTestStruct;
 import org.thryft.store.AbstractStore;
+import org.thryft.store.Store.ModelIoException;
+import org.thryft.store.Store.NoSuchModelException;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -94,7 +96,7 @@ public abstract class StoreTest {
     }
 
     @Test
-    public void testDeleteModelById() throws AbstractStore.ModelIoException {
+    public void testDeleteModelById() throws ModelIoException {
         __putModels();
 
         final String deleteModelId = models.keySet().iterator().next();
@@ -115,7 +117,7 @@ public abstract class StoreTest {
     }
 
     @Test
-    public void testDeleteModels() throws AbstractStore.ModelIoException {
+    public void testDeleteModels() throws ModelIoException {
         ImmutableMap<String, ProtocolTestStruct> models = store
                 .getModels(USER_ID);
         assertEquals(0, models.size());
@@ -132,8 +134,8 @@ public abstract class StoreTest {
     }
 
     @Test
-    public void testGetModelById() throws AbstractStore.ModelIoException,
-            AbstractStore.NoSuchModelException {
+    public void testGetModelById() throws ModelIoException,
+            NoSuchModelException {
         __putModels();
 
         for (final ImmutableMap.Entry<String, ProtocolTestStruct> modelEntry : models
@@ -144,8 +146,8 @@ public abstract class StoreTest {
     }
 
     @Test
-    public void testGetModelByIdCached() throws AbstractStore.ModelIoException,
-            AbstractStore.NoSuchModelException {
+    public void testGetModelByIdCached() throws ModelIoException,
+            NoSuchModelException {
         __putModels();
 
         for (final ImmutableMap.Entry<String, ProtocolTestStruct> modelEntry : models
@@ -159,18 +161,18 @@ public abstract class StoreTest {
     }
 
     @Test
-    public void testGetModelByIdMissing() throws AbstractStore.ModelIoException {
+    public void testGetModelByIdMissing() throws ModelIoException {
         __putModels();
 
         try {
             store.getModelById("nonextantmodel", USER_ID);
             fail();
-        } catch (final AbstractStore.NoSuchModelException e) {
+        } catch (final NoSuchModelException e) {
         }
     }
 
     @Test
-    public void testGetModelCount() throws AbstractStore.ModelIoException {
+    public void testGetModelCount() throws ModelIoException {
         __putModels();
 
         final int modelCount = store.getModelCount(USER_ID);
@@ -178,7 +180,7 @@ public abstract class StoreTest {
     }
 
     @Test
-    public void testGetModelIds() throws AbstractStore.ModelIoException {
+    public void testGetModelIds() throws ModelIoException {
         __putModels();
 
         final ImmutableSet<String> modelIds = store.getModelIds(USER_ID);
@@ -186,7 +188,7 @@ public abstract class StoreTest {
     }
 
     @Test
-    public void testGetModels() throws AbstractStore.ModelIoException {
+    public void testGetModels() throws ModelIoException {
         __putModels();
 
         final ImmutableMap<String, ProtocolTestStruct> models = store
@@ -195,8 +197,8 @@ public abstract class StoreTest {
     }
 
     @Test
-    public void testGetModelsByIds() throws AbstractStore.ModelIoException,
-            AbstractStore.NoSuchModelException {
+    public void testGetModelsByIds() throws ModelIoException,
+            NoSuchModelException {
         __putModels();
 
         final ImmutableMap<String, ProtocolTestStruct> models = store
@@ -214,7 +216,7 @@ public abstract class StoreTest {
                 store.getModelsByIds(
                         ImmutableSet.of(modelId, "nonextantmodel"), USER_ID);
                 fail();
-            } catch (final AbstractStore.NoSuchModelException e) {
+            } catch (final NoSuchModelException e) {
                 assertEquals("nonextantmodel", e.getId());
             }
             break;
@@ -222,7 +224,7 @@ public abstract class StoreTest {
     }
 
     @Test
-    public void testGetUserIds() throws AbstractStore.ModelIoException {
+    public void testGetUserIds() throws ModelIoException {
         __putModels();
 
         ImmutableSet<String> userIds;
@@ -236,8 +238,8 @@ public abstract class StoreTest {
     }
 
     @Test
-    public void testHeadModelById() throws AbstractStore.ModelIoException,
-            AbstractStore.NoSuchModelException {
+    public void testHeadModelById() throws ModelIoException,
+            NoSuchModelException {
         __putModels();
 
         for (final String modelId : models.keySet()) {
@@ -248,8 +250,7 @@ public abstract class StoreTest {
     }
 
     @Test
-    public void testPutModel() throws AbstractStore.ModelIoException,
-            AbstractStore.NoSuchModelException {
+    public void testPutModel() throws ModelIoException, NoSuchModelException {
         for (final ImmutableMap.Entry<String, ProtocolTestStruct> modelEntry : models
                 .entrySet()) {
             final ProtocolTestStruct expectedModel = modelEntry.getValue();
@@ -262,7 +263,7 @@ public abstract class StoreTest {
     }
 
     @Test
-    public void testPutModels() throws AbstractStore.ModelIoException {
+    public void testPutModels() throws ModelIoException {
         assertEquals(0, store.getModels(USER_ID).size());
         store.putModels(ImmutableMap.<String, ProtocolTestStruct> of(), USER_ID);
         assertEquals(0, store.getModels(USER_ID).size());
@@ -278,7 +279,7 @@ public abstract class StoreTest {
         this.store = store;
     }
 
-    private void __putModels() throws AbstractStore.ModelIoException {
+    private void __putModels() throws ModelIoException {
         store.putModels(models, USER_ID);
     }
 
