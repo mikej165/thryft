@@ -167,6 +167,8 @@ public final class FsStore<ModelT extends TBase<?>> extends
                 final ModelT model = __getModel(modelFilePath);
                 models.put(__getModelId(modelFilePath), model);
             } catch (final NoSuchModelException e) {
+                logger.error("unexpected NoSuchModelException in _getModels: ",
+                        e);
                 throw new IllegalStateException();
             }
         }
@@ -212,9 +214,6 @@ public final class FsStore<ModelT extends TBase<?>> extends
             final String modelId, final String userId)
             throws org.thryft.store.AbstractStore.ModelIoException {
         final File modelDirectoryPath = __createModelDirectory(userId);
-        if (modelDirectoryPath == null) {
-            return;
-        }
         __putModel(model, modelDirectoryPath, modelId);
     }
 
@@ -254,6 +253,7 @@ public final class FsStore<ModelT extends TBase<?>> extends
                 fileReader.close();
             }
         } catch (final IOException e) {
+            logger.error("error reading model from disk: ", e);
             throw new ModelIoException(e.getMessage());
         }
     }
@@ -288,7 +288,7 @@ public final class FsStore<ModelT extends TBase<?>> extends
             modelTempFilePath = File
                     .createTempFile(modelSubdirectoryName, null);
         } catch (final IOException e) {
-            logger.error("error creatinrg temp file for model:", e);
+            logger.error("error creating temp file for model:", e);
             return;
         }
 
@@ -318,6 +318,7 @@ public final class FsStore<ModelT extends TBase<?>> extends
             }
 
         } catch (final IOException e) {
+            logger.error("error writing model to disk: ", e);
             throw new ModelIoException(e, modelId);
         }
     }
