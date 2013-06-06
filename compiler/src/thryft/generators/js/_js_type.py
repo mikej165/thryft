@@ -41,6 +41,9 @@ class _JsType(_JsNamedConstruct):
     def js_default_value(self, *args, **kwds):
         raise NotImplementedError(class_qname(self) + '.js_default_value')
 
+    def js_is_model(self, *args, **kwds):
+        raise NotImplementedError(class_qname(self) + '.js_is_model')
+
     def js_schema(self, *args, **kwds):
         raise NotImplementedError(class_qname(self) + '.js_schema')
 

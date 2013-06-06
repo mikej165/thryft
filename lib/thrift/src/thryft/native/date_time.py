@@ -57,6 +57,9 @@ class JsDateTime(JsStructType):
     def js_default_value(self):
         return 'new Date()'
 
+    def js_is_model(self):
+        return False
+
     def js_name(self):
         return 'Date'
 

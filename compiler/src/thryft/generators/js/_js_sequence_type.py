@@ -123,7 +123,7 @@ for (var __i%(depth)u = 0; __i%(depth)u < %(value)s.length; __i%(depth)u++) {
         assert class_name_split[2] == 'type'
 
         element_ttype_id = self.element_type.thrift_ttype_id()
-        if isinstance(self.element_type, _JsCompoundType):
+        if self.element_type.js_is_model():
             elements_property = '.models'
         else:
             elements_property = ''

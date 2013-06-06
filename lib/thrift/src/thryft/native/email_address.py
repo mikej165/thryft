@@ -54,6 +54,9 @@ class JsEmailAddress(JsStructType):
     def js_default_value(self):
         return '""'
 
+    def js_is_model(self):
+        return False
+
     def js_name(self):
         return 'string'
 

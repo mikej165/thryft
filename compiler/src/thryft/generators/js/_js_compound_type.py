@@ -37,6 +37,9 @@ import re
 
 
 class _JsCompoundType(_JsType):
+    def js_is_model(self):
+        return True
+
     def js_read_protocol(self):
         qname = self.js_qname()
         return "%(qname)s.read(iprot)" % locals()

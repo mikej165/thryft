@@ -41,6 +41,9 @@ class JsEnumType(EnumType, _JsType):
         else:
             return '0'
 
+    def js_is_model(self):
+        return False
+
     def js_read_protocol(self):
         name = self.js_qname()
         return "%(name)s[iprot.readString()]" % locals()

@@ -35,6 +35,9 @@ from yutil import upper_camelize
 
 
 class _JsBaseType(_JsType):
+    def js_is_model(self):
+        return False
+
     def js_read_protocol(self):
         name = upper_camelize(getattr(self, 'name'))
         return "iprot.read%(name)s()" % locals()
