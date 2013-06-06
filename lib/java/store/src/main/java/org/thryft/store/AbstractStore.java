@@ -152,17 +152,10 @@ public abstract class AbstractStore<ModelT extends TBase<?>> implements
         try {
             return modelClass.getConstructor(TProtocol.class)
                     .newInstance(iprot);
-        } catch (final IllegalArgumentException e) {
-            throw new ModelIoException(e.getMessage());
-        } catch (final SecurityException e) {
-            throw new ModelIoException(e.getMessage());
-        } catch (final InstantiationException e) {
-            throw new ModelIoException(e.getMessage());
-        } catch (final IllegalAccessException e) {
-            throw new ModelIoException(e.getMessage());
-        } catch (final InvocationTargetException e) {
-            throw new ModelIoException(e.getMessage());
-        } catch (final NoSuchMethodException e) {
+        } catch (InstantiationException | IllegalAccessException
+                | IllegalArgumentException | InvocationTargetException
+                | NoSuchMethodException | SecurityException e) {
+            logger.error("error creating model from protocol: ", e);
             throw new ModelIoException(e.getMessage());
         }
     }
