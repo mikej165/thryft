@@ -222,7 +222,7 @@ public %(return_type_name)s %(setter_name)s(final %(type_name)s %(name)s) {
             type_name = self.type.java_declaration_name()
             setters.append("""\
 public %(return_type_name)s %(setter_name)s(final %(type_name)s %(name)s) {
-    this.%(name)s = com.google.common.base.Optional.of(%(name)s);%(return_statement)s
+    this.%(name)s = com.google.common.base.Optional.fromNullable(%(name)s);%(return_statement)s
 }""" % locals())
         return setters
 
