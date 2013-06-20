@@ -60,6 +60,13 @@ public abstract class AbstractStore<ModelT extends TBase<?>> implements
     }
 
     @Override
+    public void deleteModels() throws ModelIoException {
+        for (final String userId : getUserIds()) {
+            deleteModels(userId);
+        }
+    }
+
+    @Override
     public final void deleteModels(final String userId) throws ModelIoException {
         checkNotNull(userId);
         _deleteModels(userId);

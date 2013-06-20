@@ -81,6 +81,8 @@ public interface Store<ModelT extends TBase<?>> {
     public boolean deleteModelById(String modelId, String userId)
             throws ModelIoException;
 
+    public void deleteModels() throws ModelIoException;
+
     public void deleteModels(String userId) throws ModelIoException;
 
     public ModelT getModelById(String modelId, String userId)
