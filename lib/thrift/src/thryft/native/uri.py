@@ -30,44 +30,77 @@
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
 
-import os.path
-import sys; sys.path.append(os.path.dirname(__file__))
-from uri import JsUri, PyUri
 from thryft.generator.struct_type import StructType
 from thryft.generators.java.java_struct_type import JavaStructType
 from thryft.generators.js.js_struct_type import JsStructType
 from thryft.generators.py.py_struct_type import PyStructType
 
 
-class JavaUrl(JavaStructType):
+class JavaUri(JavaStructType):
     def __init__(self, *args, **kwds):
         JavaStructType.__init__(self, *args, **kwds)
 
     def java_declaration_name(self, boxed=False):
-        return 'org.thryft.native_.Url'
+        return 'org.thryft.native_.Uri'
 
     def java_faker(self, **kwds):
         return 'org.thryft.Faker.Internet.url()'
 
     def java_read_protocol(self):
-        return 'iprot.readUrl()'
+        return 'iprot.readUri()'
 
     def java_read_protocol_throws_checked(self):
         return ['java.net.MalformedURLException']
 
     def java_write_protocol(self, value, depth=0):
-        return "oprot.writeUrl(%(value)s);" % locals()
+        return "oprot.writeUri(%(value)s);" % locals()
 
 
-class JsUrl(JsUri):
+class JsUri(JsStructType):
+    def js_default_value(self):
+        return '""'
+
+    def js_is_model(self):
+        return False
+
+    def js_name(self):
+        return 'string'
+
+    def js_qname(self):
+        return 'string'
+
+    def js_read_protocol(self):
+        return 'iprot.readUri()'
+
+    def js_schema(self):
+        return {'type': 'Text', 'validators': ['url']}
+
     def js_validation(self, value, value_name, **kwds):
-        return {'pattern': 'url', 'type': """\
+        return {'type': """\
 if (typeof %(value)s !== "string") {
     return "expected %(value_name)s to be a string";
 }""" % locals()}
 
+    def js_write_protocol(self, value, depth=0):
+        return "oprot.writeUri(%(value)s);" % locals()
 
-class PyUrl(PyUri):
+
+class PyUri(PyStructType):
+    def py_check(self, value):
+        return "isinstance(%(value)s, str)" % locals()
+
+    def _py_imports_definition(self, caller_stack):
+        return []
+
+    def _py_imports_use(self, caller_stack):
+        return []
+
+    def py_read_protocol(self):
+        return 'iprot.readString()'
+
+    def py_read_protocol_throws(self):
+        return []
+
     def py_write_protocol(self, value, depth=0):
         qname = self.py_qname()
-        return "oprot.writeUrl(%(value)s)" % locals()
+        return "oprot.writeUri(%(value)s)" % locals()
