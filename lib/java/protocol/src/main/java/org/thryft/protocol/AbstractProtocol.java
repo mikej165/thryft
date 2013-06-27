@@ -41,6 +41,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.joda.time.DateTime;
 import org.thryft.TBase;
 import org.thryft.native_.EmailAddress;
+import org.thryft.native_.Uri;
 import org.thryft.native_.Url;
 
 import com.google.common.collect.ImmutableList;
@@ -206,6 +207,11 @@ public abstract class AbstractProtocol implements TProtocol {
     @Override
     public void readStructEnd() throws IOException {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Uri readUri() throws IOException {
+        return Uri.parse(readString());
     }
 
     @Override
@@ -392,6 +398,11 @@ public abstract class AbstractProtocol implements TProtocol {
     @Override
     public void writeStructEnd() throws IOException {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void writeUri(final Uri uri) throws IOException {
+        writeString(uri.toString());
     }
 
     @Override

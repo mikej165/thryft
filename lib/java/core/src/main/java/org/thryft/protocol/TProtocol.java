@@ -37,6 +37,7 @@ import java.math.BigDecimal;
 
 import org.joda.time.DateTime;
 import org.thryft.native_.EmailAddress;
+import org.thryft.native_.Uri;
 import org.thryft.native_.Url;
 
 public interface TProtocol {
@@ -88,6 +89,8 @@ public interface TProtocol {
     public TStruct readStructBegin() throws IOException;
 
     public void readStructEnd() throws IOException;
+
+    public Uri readUri() throws IOException;
 
     public Url readUrl() throws IOException;
 
@@ -141,6 +144,8 @@ public interface TProtocol {
     public void writeStructBegin(final TStruct struct) throws IOException;
 
     public void writeStructEnd() throws IOException;
+
+    public void writeUri(final Uri uri) throws IOException;
 
     public void writeUrl(final Url url) throws IOException;
 }
