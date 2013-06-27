@@ -80,7 +80,7 @@ class JavaMapType(MapType, _JavaContainerType):
 
     def java_write_protocol(self, value, depth=0):
         key_ttype = self.key_type.thrift_ttype_name()
-        key_type_name = self.key_type.java_declaration_name()
+        key_type_name = self.key_type.java_declaration_name(boxed=True)
         key_write_protocol = \
             indent(' ' * 4,
                 self.key_type.java_write_protocol(
@@ -89,7 +89,7 @@ class JavaMapType(MapType, _JavaContainerType):
                 )
             )
         value_ttype = self.value_type.thrift_ttype_name()
-        value_type_name = self.value_type.java_declaration_name()
+        value_type_name = self.value_type.java_declaration_name(boxed=True)
         value_write_protocol = \
             indent(' ' * 4,
                 self.value_type.java_write_protocol(

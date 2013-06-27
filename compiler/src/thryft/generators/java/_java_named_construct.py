@@ -37,9 +37,9 @@ class _JavaNamedConstruct(_JavaConstruct):
     def java_name(self, boxed=False):
         return getattr(self, 'name')
 
-    def java_qname(self, boxed=False, name=None):
+    def java_qname(self, name=None, **kwds):
         if name is None:
-            name = self.java_name(boxed=boxed)
+            name = self.java_name(**kwds)
         from thryft.generator.document import Document
         parent_document = self.parent
         while parent_document is not None and not isinstance(parent_document, Document):
