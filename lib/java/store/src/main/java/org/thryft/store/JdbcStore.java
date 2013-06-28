@@ -128,8 +128,10 @@ public final class JdbcStore<ModelT extends TBase<?>> extends
 
         public final static String DRIVER_CLASS_NAME_DEFAULT = "org.h2.Driver";
         public final static String PASSWORD_DEFAULT = "";
-        public final static String URL_DEFAULT = "jdbc:h2:store;TRACE_LEVEL_FILE=0;TRACE_LEVEL_SYSTEM_OUT=0";
-        public final static String USER_DEFAULT = "user";
+        // DB_CLOSE_DELAY = don't wipe the in-memory DB after the connection is
+        // closed, but keep it alive until the JVM exits
+        public final static String URL_DEFAULT = "jdbc:h2:mem;DB_CLOSE_DELAY=-1;TRACE_LEVEL_FILE=0;TRACE_LEVEL_SYSTEM_OUT=0";
+        public final static String USER_DEFAULT = "";
 
         private String driverClassName;
         private String password;
