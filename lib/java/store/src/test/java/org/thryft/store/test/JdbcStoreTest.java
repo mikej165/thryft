@@ -32,34 +32,16 @@
 
 package org.thryft.store.test;
 
-import java.io.File;
-import java.io.IOException;
-
-import org.junit.After;
 import org.junit.Before;
 import org.thryft.protocol.test.ProtocolTestStruct;
-import org.thryft.store.FileUtils;
 import org.thryft.store.JdbcStore;
 
-public class JdbcStoreTest extends StoreTest {
+public final class JdbcStoreTest extends StoreTest {
     @Before
-    public void setUp() throws IOException {
-        rootDirectoryPath = FileUtils.createTempDirectory(getClass()
-                .getSimpleName(), null);
-        jdbcStore = new JdbcStore<ProtocolTestStruct>(
-                new JdbcStore.Configuration(new File(rootDirectoryPath,
-                        "yogento")), ProtocolTestStruct.class);
-        super._setUp(jdbcStore);
+    public void setUp() throws Exception {
+        super._setUp(new JdbcStore<ProtocolTestStruct>(
+                new JdbcStore.Configuration("org.h2.Driver", "",
+                        "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1", ""),
+                ProtocolTestStruct.class));
     }
-
-    @Override
-    @After
-    public void tearDown() throws IOException {
-        jdbcStore.dispose();
-        org.apache.commons.io.FileUtils.deleteDirectory(rootDirectoryPath);
-    }
-
-    private JdbcStore<ProtocolTestStruct> jdbcStore;
-
-    private File rootDirectoryPath;
 }

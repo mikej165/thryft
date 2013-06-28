@@ -33,6 +33,7 @@
 package org.thryft.store;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.thryft.Preconditions.checkNotEmpty;
 
 import java.io.File;
 import java.io.IOException;
@@ -59,7 +60,8 @@ public final class JdbcStore<ModelT extends TBase<?>> extends
         AbstractStore<ModelT> {
     public final static class Configuration {
         public Configuration() {
-            this(PASSWORD_DEFAULT, URL_DEFAULT, USER_DEFAULT);
+            this(DRIVER_CLASS_NAME_DEFAULT, PASSWORD_DEFAULT, URL_DEFAULT,
+                    USER_DEFAULT);
         }
 
         public Configuration(final File filePath) {
@@ -68,16 +70,23 @@ public final class JdbcStore<ModelT extends TBase<?>> extends
 
         public Configuration(final File filePath, final String password,
                 final String user) {
-            this(password, "jdbc:h2:" + filePath.toString()
+            this(DRIVER_CLASS_NAME_DEFAULT, password, "jdbc:h2:"
+                    + filePath.toString()
                     + ";TRACE_LEVEL_FILE=0;TRACE_LEVEL_SYSTEM_OUT=0",
                     USER_DEFAULT);
         }
 
         public Configuration(final Properties properties) {
-            user = properties.getProperty(this.getClass().getCanonicalName()
-                    + ".password");
-            if (user == null) {
-                user = PASSWORD_DEFAULT;
+            driverClassName = properties.getProperty(this.getClass()
+                    .getCanonicalName() + ".driverClassName");
+            if (driverClassName == null) {
+                driverClassName = DRIVER_CLASS_NAME_DEFAULT;
+            }
+
+            password = properties.getProperty(this.getClass()
+                    .getCanonicalName() + ".password");
+            if (password == null) {
+                password = PASSWORD_DEFAULT;
             }
 
             url = properties.getProperty(this.getClass().getCanonicalName()
@@ -93,11 +102,16 @@ public final class JdbcStore<ModelT extends TBase<?>> extends
             }
         }
 
-        public Configuration(final String password, final String url,
-                final String user) {
+        public Configuration(final String driverClassName,
+                final String password, final String url, final String user) {
+            this.driverClassName = checkNotEmpty(driverClassName);
             this.password = checkNotNull(password);
-            this.url = checkNotNull(url);
+            this.url = checkNotEmpty(url);
             this.user = checkNotNull(user);
+        }
+
+        public String getDriverClassName() {
+            return driverClassName;
         }
 
         public String getPassword() {
@@ -112,19 +126,24 @@ public final class JdbcStore<ModelT extends TBase<?>> extends
             return user;
         }
 
+        public final static String DRIVER_CLASS_NAME_DEFAULT = "org.h2.Driver";
         public final static String PASSWORD_DEFAULT = "";
-        public final static String URL_DEFAULT = "jdbc:h2:yogento;TRACE_LEVEL_FILE=0;TRACE_LEVEL_SYSTEM_OUT=0";
-        public final static String USER_DEFAULT = "yogento";
+        public final static String URL_DEFAULT = "jdbc:h2:store;TRACE_LEVEL_FILE=0;TRACE_LEVEL_SYSTEM_OUT=0";
+        public final static String USER_DEFAULT = "user";
 
+        private String driverClassName;
         private String password;
         private String user;
         private String url;
     }
 
     public JdbcStore(final Configuration configuration,
-            final Class<ModelT> modelClass) {
+            final Class<ModelT> modelClass) throws ClassNotFoundException,
+            SQLException {
         super(modelClass);
         checkNotNull(configuration);
+
+        Class.forName(configuration.getDriverClassName());
 
         connectionPool = JdbcConnectionPool.create(configuration.getUrl(),
                 configuration.getUser(), configuration.getPassword());
@@ -153,20 +172,10 @@ public final class JdbcStore<ModelT extends TBase<?>> extends
                 + " WHERE " + tableName + "_id = ? AND userId = ?";
         putModelSql = "INSERT INTO " + tableName + " VALUES (NULL, ?, ?, ?)";
 
-        try {
-            final Connection connection = connectionPool.getConnection();
-            try {
-                final Statement statement = connection.createStatement();
-                try {
-                    statement.execute(createTableSql);
-                } finally {
-                    statement.close();
-                }
-            } finally {
-                connection.close();
+        try (final Connection connection = connectionPool.getConnection()) {
+            try (final Statement statement = connection.createStatement()) {
+                statement.execute(createTableSql);
             }
-        } catch (final SQLException e) {
-            logger.error("exception creating table: ", e);
         }
     }
 
@@ -175,170 +184,110 @@ public final class JdbcStore<ModelT extends TBase<?>> extends
     }
 
     @Override
-    protected boolean _deleteModelById(final String modelId, final String userId) {
-        try {
-            final Connection connection = connectionPool.getConnection();
+    protected boolean _deleteModelById(final String modelId, final String userId)
+            throws ModelIoException {
+        try (final Connection connection = connectionPool.getConnection()) {
             final boolean existed = __headModelById(connection, modelId, userId);
-            try {
-                __deleteModelById(connection, modelId, userId);
-                return existed;
-            } finally {
-                connection.close();
-            }
+            __deleteModelById(connection, modelId, userId);
+            return existed;
         } catch (final SQLException e) {
-            logger.error("exception deleting model " + modelId + ": ", e);
-            return false;
+            throw new ModelIoException(e);
         }
     }
 
     @Override
-    protected void _deleteModels(final String userId) {
-        try {
-            final Connection connection = connectionPool.getConnection();
-            try {
-                final PreparedStatement statement = connection
-                        .prepareStatement(deleteModelsSql);
-                try {
-                    statement.setString(1, userId);
-                    statement.execute();
-                } finally {
-                    statement.close();
-                }
-            } finally {
-                connection.close();
+    protected void _deleteModels(final String userId) throws ModelIoException {
+        try (final Connection connection = connectionPool.getConnection()) {
+            try (final PreparedStatement statement = connection
+                    .prepareStatement(deleteModelsSql)) {
+                statement.setString(1, userId);
+                statement.execute();
             }
         } catch (final SQLException e) {
-            logger.error("error deleting models: ", e);
+            throw new ModelIoException(e);
         }
     }
 
     @Override
     protected ModelT _getModelById(final String modelId, final String userId)
             throws ModelIoException, NoSuchModelException {
-        try {
-            final Connection connection = connectionPool.getConnection();
-            try {
-                final PreparedStatement statement = connection
-                        .prepareStatement(getModelByIdSql);
-                try {
-                    statement.setString(1, modelId);
-                    statement.setString(2, userId);
-                    final ResultSet resultSet = statement.executeQuery();
-                    try {
-                        if (resultSet.next()) {
-                            return __getModel(resultSet);
-                        } else {
-                            throw new NoSuchModelException(modelId);
-                        }
-                    } finally {
-                        resultSet.close();
+        try (final Connection connection = connectionPool.getConnection()) {
+            try (final PreparedStatement statement = connection
+                    .prepareStatement(getModelByIdSql)) {
+                statement.setString(1, modelId);
+                statement.setString(2, userId);
+                try (final ResultSet resultSet = statement.executeQuery()) {
+                    if (resultSet.next()) {
+                        return __getModel(resultSet);
+                    } else {
+                        throw new NoSuchModelException(modelId);
                     }
-                } finally {
-                    statement.close();
                 }
-            } finally {
-                connection.close();
             }
         } catch (final SQLException e) {
-            logger.error("exception getting model " + modelId + ": ", e);
-            throw new NoSuchModelException(modelId);
+            throw new ModelIoException(e);
         }
     }
 
     @Override
-    protected int _getModelCount(final String userId) {
-        try {
-            final Connection connection = connectionPool.getConnection();
-            try {
-                final PreparedStatement statement = connection
-                        .prepareStatement(getModelCountSql);
-                try {
-                    statement.setString(1, userId);
-                    final ResultSet resultSet = statement.executeQuery();
-                    try {
-                        if (resultSet.next()) {
-                            return resultSet.getInt(1);
-                        } else {
-                            return 0;
-                        }
-                    } finally {
-                        resultSet.close();
+    protected int _getModelCount(final String userId) throws ModelIoException {
+        try (final Connection connection = connectionPool.getConnection()) {
+            try (final PreparedStatement statement = connection
+                    .prepareStatement(getModelCountSql)) {
+                statement.setString(1, userId);
+                try (final ResultSet resultSet = statement.executeQuery()) {
+                    if (resultSet.next()) {
+                        return resultSet.getInt(1);
+                    } else {
+                        return 0;
                     }
-                } finally {
-                    statement.close();
                 }
-            } finally {
-                connection.close();
             }
         } catch (final SQLException e) {
-            logger.error("exception getting model count: ", e);
-            return 0;
+            throw new ModelIoException(e);
         }
     }
 
     @Override
-    protected ImmutableSet<String> _getModelIds(final String userId) {
-        try {
-            final Connection connection = connectionPool.getConnection();
-            try {
-                final PreparedStatement statement = connection
-                        .prepareStatement(getModelIdsSql);
-                try {
-                    statement.setString(1, userId);
-                    final ResultSet resultSet = statement.executeQuery();
-                    try {
-                        final ImmutableSet.Builder<String> modelIds = ImmutableSet
-                                .builder();
-                        while (resultSet.next()) {
-                            modelIds.add(resultSet.getString(1));
-                        }
-                        return modelIds.build();
-                    } finally {
-                        resultSet.close();
+    protected ImmutableSet<String> _getModelIds(final String userId)
+            throws ModelIoException {
+        try (final Connection connection = connectionPool.getConnection()) {
+            try (final PreparedStatement statement = connection
+                    .prepareStatement(getModelIdsSql)) {
+                statement.setString(1, userId);
+                try (final ResultSet resultSet = statement.executeQuery()) {
+                    final ImmutableSet.Builder<String> modelIds = ImmutableSet
+                            .builder();
+                    while (resultSet.next()) {
+                        modelIds.add(resultSet.getString(1));
                     }
-                } finally {
-                    statement.close();
+                    return modelIds.build();
                 }
-            } finally {
-                connection.close();
             }
         } catch (final SQLException e) {
-            logger.error("exception getting model ids: ", e);
-            return ImmutableSet.of();
+            throw new ModelIoException(e);
         }
     }
 
     @Override
     protected ImmutableMap<String, ModelT> _getModels(final String userId)
             throws ModelIoException {
-        try {
-            final Connection connection = connectionPool.getConnection();
-            try {
-                final PreparedStatement statement = connection
-                        .prepareStatement(getModelsSql);
-                try {
-                    statement.setString(1, userId);
-                    final ResultSet resultSet = statement.executeQuery();
-                    try {
-                        final ImmutableMap.Builder<String, ModelT> models = ImmutableMap
-                                .builder();
-                        while (resultSet.next()) {
-                            models.put(__getModelId(resultSet),
-                                    __getModel(resultSet));
-                        }
-                        return models.build();
-                    } finally {
-                        resultSet.close();
+        try (final Connection connection = connectionPool.getConnection()) {
+            try (final PreparedStatement statement = connection
+                    .prepareStatement(getModelsSql)) {
+                statement.setString(1, userId);
+                try (final ResultSet resultSet = statement.executeQuery()) {
+                    final ImmutableMap.Builder<String, ModelT> models = ImmutableMap
+                            .builder();
+                    while (resultSet.next()) {
+                        models.put(__getModelId(resultSet),
+                                __getModel(resultSet));
                     }
-                } finally {
-                    statement.close();
+                    return models.build();
                 }
-            } finally {
-                connection.close();
             }
         } catch (final SQLException e) {
-            logger.error("exception getting models: ", e);
-            return ImmutableMap.of();
+            throw new ModelIoException(e);
         }
     }
 
@@ -362,48 +311,37 @@ public final class JdbcStore<ModelT extends TBase<?>> extends
         getModelsByIdsSqlBuilder.append(")");
         final String getModelsByIdsSql = getModelsByIdsSqlBuilder.toString();
 
-        try {
-            final Connection connection = connectionPool.getConnection();
-            try {
-                final PreparedStatement statement = connection
-                        .prepareStatement(getModelsByIdsSql);
-                try {
-                    statement.setString(1, userId);
-                    int parameterIndex = 2;
-                    for (final String modelId : modelIds) {
-                        statement.setString(parameterIndex, modelId);
-                        parameterIndex++;
-                    }
-
-                    final ResultSet resultSet = statement.executeQuery();
-                    try {
-                        final ImmutableMap.Builder<String, ModelT> modelsBuilder = ImmutableMap
-                                .builder();
-                        while (resultSet.next()) {
-                            modelsBuilder.put(__getModelId(resultSet),
-                                    __getModel(resultSet));
-                        }
-                        final ImmutableMap<String, ModelT> models = modelsBuilder
-                                .build();
-
-                        if (models.keySet().equals(modelIds)) {
-                            return models;
-                        } else {
-                            final Set<String> missingModelIds = Sets
-                                    .newHashSet(modelIds);
-                            missingModelIds.removeAll(models.keySet());
-                            final String missingModelId = missingModelIds
-                                    .iterator().next();
-                            throw new NoSuchModelException(missingModelId);
-                        }
-                    } finally {
-                        resultSet.close();
-                    }
-                } finally {
-                    statement.close();
+        try (final Connection connection = connectionPool.getConnection()) {
+            try (final PreparedStatement statement = connection
+                    .prepareStatement(getModelsByIdsSql)) {
+                statement.setString(1, userId);
+                int parameterIndex = 2;
+                for (final String modelId : modelIds) {
+                    statement.setString(parameterIndex, modelId);
+                    parameterIndex++;
                 }
-            } finally {
-                connection.close();
+
+                try (final ResultSet resultSet = statement.executeQuery()) {
+                    final ImmutableMap.Builder<String, ModelT> modelsBuilder = ImmutableMap
+                            .builder();
+                    while (resultSet.next()) {
+                        modelsBuilder.put(__getModelId(resultSet),
+                                __getModel(resultSet));
+                    }
+                    final ImmutableMap<String, ModelT> models = modelsBuilder
+                            .build();
+
+                    if (models.keySet().equals(modelIds)) {
+                        return models;
+                    } else {
+                        final Set<String> missingModelIds = Sets
+                                .newHashSet(modelIds);
+                        missingModelIds.removeAll(models.keySet());
+                        final String missingModelId = missingModelIds
+                                .iterator().next();
+                        throw new NoSuchModelException(missingModelId);
+                    }
+                }
             }
         } catch (final SQLException e) {
             throw new ModelIoException(e);
@@ -411,69 +349,44 @@ public final class JdbcStore<ModelT extends TBase<?>> extends
     }
 
     @Override
-    protected ImmutableSet<String> _getUserIds() {
-        try {
-            final Connection connection = connectionPool.getConnection();
-            try {
-                final Statement statement = connection.createStatement();
-                try {
-                    final ResultSet resultSet = statement
-                            .executeQuery(getUsernameSql);
-                    try {
-                        final ImmutableSet.Builder<String> userIds = ImmutableSet
-                                .builder();
-                        while (resultSet.next()) {
-                            userIds.add(resultSet.getString(1));
-                        }
-                        return userIds.build();
-                    } finally {
-                        resultSet.close();
+    protected ImmutableSet<String> _getUserIds() throws ModelIoException {
+        try (final Connection connection = connectionPool.getConnection()) {
+            try (final Statement statement = connection.createStatement()) {
+                try (final ResultSet resultSet = statement
+                        .executeQuery(getUsernameSql)) {
+                    final ImmutableSet.Builder<String> userIds = ImmutableSet
+                            .builder();
+                    while (resultSet.next()) {
+                        userIds.add(resultSet.getString(1));
                     }
-                } finally {
-                    statement.close();
+                    return userIds.build();
                 }
-            } finally {
-                connection.close();
             }
         } catch (final SQLException e) {
-            logger.error("exception getting userIds: ", e);
-            return ImmutableSet.of();
+            throw new ModelIoException(e);
         }
     }
 
     @Override
-    protected boolean _headModelById(final String modelId, final String userId) {
-        try {
-            final Connection connection = connectionPool.getConnection();
-            try {
-                return __headModelById(connection, modelId, userId);
-            } finally {
-                connection.close();
-            }
+    protected boolean _headModelById(final String modelId, final String userId)
+            throws ModelIoException {
+        try (final Connection connection = connectionPool.getConnection()) {
+            return __headModelById(connection, modelId, userId);
         } catch (final SQLException e) {
-            logger.error("exception heading model by id: ", e);
-            return false;
+            throw new ModelIoException(e);
         }
     }
 
     @Override
     protected void _putModel(final ModelT model, final String modelId,
             final String userId) throws ModelIoException {
-        try {
-            final Connection connection = connectionPool.getConnection();
-            try {
-                connection.setAutoCommit(false);
-                final PreparedStatement statement = connection
-                        .prepareStatement(putModelSql);
-                try {
-                    __putModel(connection, model, modelId, statement, userId);
-                } finally {
-                    statement.close();
-                }
-                connection.commit();
-            } finally {
-                connection.close();
+        try (final Connection connection = connectionPool.getConnection()) {
+            connection.setAutoCommit(false);
+            try (final PreparedStatement statement = connection
+                    .prepareStatement(putModelSql)) {
+                __putModel(connection, model, modelId, statement, userId);
             }
+            connection.commit();
         } catch (final SQLException e) {
             throw new ModelIoException(e);
         }
@@ -482,24 +395,16 @@ public final class JdbcStore<ModelT extends TBase<?>> extends
     @Override
     protected void _putModels(final ImmutableMap<String, ModelT> models,
             final String userId) throws ModelIoException {
-        try {
-            final Connection connection = connectionPool.getConnection();
-            try {
-                connection.setAutoCommit(false);
-                final PreparedStatement statement = connection
-                        .prepareStatement(putModelSql);
-                try {
-                    for (final ImmutableMap.Entry<String, ModelT> model : models
-                            .entrySet()) {
-                        __putModel(connection, model.getValue(),
-                                model.getKey(), statement, userId);
-                    }
-                } finally {
-                    statement.close();
+        try (final Connection connection = connectionPool.getConnection()) {
+            connection.setAutoCommit(false);
+            try (final PreparedStatement statement = connection
+                    .prepareStatement(putModelSql)) {
+                for (final ImmutableMap.Entry<String, ModelT> model : models
+                        .entrySet()) {
+                    __putModel(connection, model.getValue(), model.getKey(),
+                            statement, userId);
                 }
                 connection.commit();
-            } finally {
-                connection.close();
             }
         } catch (final SQLException e) {
             throw new ModelIoException(e);
@@ -508,14 +413,11 @@ public final class JdbcStore<ModelT extends TBase<?>> extends
 
     private void __deleteModelById(final Connection connection,
             final String modelId, final String userId) throws SQLException {
-        final PreparedStatement statement = connection
-                .prepareStatement(deleteModelByIdSql);
-        try {
+        try (final PreparedStatement statement = connection
+                .prepareStatement(deleteModelByIdSql)) {
             statement.setString(1, modelId);
             statement.setString(2, userId);
             statement.execute();
-        } finally {
-            statement.close();
         }
     }
 
@@ -524,9 +426,7 @@ public final class JdbcStore<ModelT extends TBase<?>> extends
         try {
             return _getModel(new JsonProtocol(new StringReader(
                     resultSet.getString(tableName + "_json"))));
-        } catch (final IOException e) {
-            throw new ModelIoException(e.getMessage());
-        } catch (final SQLException e) {
+        } catch (final IOException | SQLException e) {
             throw new ModelIoException(e.getMessage());
         }
     }
@@ -536,25 +436,14 @@ public final class JdbcStore<ModelT extends TBase<?>> extends
     }
 
     private boolean __headModelById(final Connection connection,
-            final String modelId, final String userId) {
-        try {
-            final PreparedStatement statement = connection
-                    .prepareStatement(headModelByIdSql);
-            try {
-                statement.setString(1, modelId);
-                statement.setString(2, userId);
-                final ResultSet resultSet = statement.executeQuery();
-                try {
-                    return resultSet.next();
-                } finally {
-                    resultSet.close();
-                }
-            } finally {
-                statement.close();
+            final String modelId, final String userId) throws SQLException {
+        try (final PreparedStatement statement = connection
+                .prepareStatement(headModelByIdSql)) {
+            statement.setString(1, modelId);
+            statement.setString(2, userId);
+            try (final ResultSet resultSet = statement.executeQuery()) {
+                return resultSet.next();
             }
-        } catch (final SQLException e) {
-            logger.error("error heading model: ", e);
-            return false;
         }
     }
 
@@ -572,9 +461,7 @@ public final class JdbcStore<ModelT extends TBase<?>> extends
             statement.setString(2, json);
             statement.setString(3, userId);
             statement.execute();
-        } catch (final IOException e) {
-            throw new ModelIoException(e, modelId);
-        } catch (final SQLException e) {
+        } catch (final IOException | SQLException e) {
             throw new ModelIoException(e, modelId);
         }
     }
