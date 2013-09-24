@@ -13,6 +13,7 @@ public:
 
 public:
   virtual std::string ReadBinary() = 0;
+  virtual void ReadBinary(std::string& out_value) = 0;
   virtual bool ReadBool() = 0;
   virtual int8_t ReadByte() = 0;
   virtual double ReadDouble() = 0;

@@ -12,7 +12,12 @@ public:
 
 public:
   virtual std::string ReadBinary() {
-    return std::string();
+    std::string value;
+    ReadBinary(value);
+    return value;
+  }
+
+  virtual void ReadBinary(std::string& out_value) {
   }
 
   virtual bool ReadBool() {
