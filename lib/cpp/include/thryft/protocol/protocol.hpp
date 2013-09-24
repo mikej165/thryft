@@ -28,6 +28,7 @@ public:
   virtual void ReadSetBegin(uint16_t& out_element_type, uint32_t& out_size) = 0;
   virtual void ReadSetEnd() = 0;
   virtual std::string ReadString() = 0;
+  virtual void ReadString(std::string& out_value) = 0;
   virtual void ReadStructBegin(std::string& out_name) = 0;
   virtual void ReadStructEnd() = 0;
 

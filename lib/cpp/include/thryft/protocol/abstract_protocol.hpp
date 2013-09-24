@@ -64,7 +64,12 @@ public:
   }
 
   virtual std::string ReadString() {
-    return std::string();
+    std::string value;
+    ReadString(value);
+    return value;
+  }
+
+  virtual void ReadString(std::string& out_value) {
   }
 
   virtual void ReadStructBegin(std::string& out_name) {
