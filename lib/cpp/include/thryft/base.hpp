@@ -8,7 +8,7 @@ class Protocol;
 
 class Base {
 public:
-  virtual void Write(protocol::Protocol& oprot) = 0;
+  virtual void Write(protocol::Protocol& oprot) const = 0;
 };
 }
 
