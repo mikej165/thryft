@@ -122,6 +122,10 @@ public final class Faker {
         }
     }
 
+    public static double randomDouble() {
+        return random.nextDouble();
+    }
+
     public static <EnumT extends Enum<?>> EnumT randomEnum(
             final ImmutableList<EnumT> enumerators) {
         checkArgument(enumerators.size() > 0);
