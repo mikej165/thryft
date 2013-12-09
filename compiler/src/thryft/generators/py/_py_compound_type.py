@@ -50,9 +50,8 @@ class _PyCompoundType(_PyType):
             parameters = []
             for field in self.fields:
                 if field.required:
-                    parameters.append(field.py_parameter())
-            for field in self.fields:
-                if not field.required:
+                    parameters.append(field.py_name() + '=None')
+                else:
                     parameters.append(field.py_parameter())
             parameters = ",\n".join(indent(' ' * 4, parameters))
             initializers = \
