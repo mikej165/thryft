@@ -31,15 +31,21 @@
 #-------------------------------------------------------------------------------
 
 from thryft.generator.struct_type import StructType
+from thryft.generators.cpp.cpp_struct_type import CppStructType
 from thryft.generators.java.java_struct_type import JavaStructType
 from thryft.generators.js.js_struct_type import JsStructType
 from thryft.generators.py.py_struct_type import PyStructType
 
 
-class JavaUri(JavaStructType):
-    def __init__(self, *args, **kwds):
-        JavaStructType.__init__(self, *args, **kwds)
+class CppUri(CppStructType):
+    def cpp_includes_use(self):
+        return ('<string>',)
 
+    def cpp_qname(self):
+        return '::std::string'
+
+
+class JavaUri(JavaStructType):
     def java_declaration_name(self, boxed=False):
         return 'org.thryft.native_.Uri'
 
