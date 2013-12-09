@@ -57,6 +57,9 @@ class JavaEnumType(EnumType, _JavaType):
     def java_read_protocol_throws_unchecked(self):
         return ['IllegalArgumentException']
 
+    def java_to_string(self, value):
+        return "%(value)s.toString()" % locals()
+
     def java_write_protocol(self, value, depth=0):
         return "oprot.writeEnum(%(value)s);" % locals()
 
@@ -102,6 +105,3 @@ class JavaEnumType(EnumType, _JavaType):
 
     private final int value;
 }""" % locals()
-
-    def java_to_string(self, value):
-        return "%(value)s.toString()" % locals()
