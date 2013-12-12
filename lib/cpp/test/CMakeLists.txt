@@ -1,5 +1,5 @@
 file(GLOB SRC *.cpp *.hpp)
-file(GLOB SRC_THRYFT_TEST_PROTOCOL_TEST *.cpp *.hpp)
+file(GLOB SRC_THRYFT_TEST_PROTOCOL_TEST "thryft_test/protocol/test/*.cpp" "thryft_test/protocol/test/*.hpp")
 source_group("Source Files\\thryft_test\\protocol\\test\\" FILES ${SRC_THRYFT_TEST_PROTOCOL_TEST})
 add_executable(thryft_test ${SRC} ${SRC_THRYFT_TEST_PROTOCOL_TEST})
 add_test(thryft_test thryft_test --gtest_output=xml:${CMAKE_BINARY_DIR}/gtest_output/mdb-db_test.xml)

@@ -1,0 +1,18 @@
+add-brackets
+align-pointer=type
+convert-tabs
+formatted
+indent-classes
+indent-labels
+indent=spaces=2
+indent-preprocessor
+lineend=linux
+max-code-length=80
+pad-header
+pad-oper
+preserve-date
+# quiet
+# recursive
+style=java
+suffix=none
+unpad-paren
