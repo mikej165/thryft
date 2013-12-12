@@ -9,40 +9,40 @@
 namespace thryft {
 template <typename ElementCppT, ::thryft::protocol::Protocol::Type::Enum ElementThriftT>
 class List : public ::thryft::Base, public ::std::vector<ElementCppT> {
-public:
-  List() {
-  }
+  public:
+    List() {
+    }
 
-  List(protocol::Protocol& iprot) {
-    read(iprot);
-  }
+    List(protocol::Protocol& iprot) {
+      read(iprot);
+    }
 
-  virtual ~List() {
-  }
+    virtual ~List() {
+    }
 
-public:
-  void read(protocol::Protocol& iprot) {
-    protocol::Protocol::Type::Enum element_type;
-    uint32_t size = 0;
-    iprot.read_list_begin(element_type, size);
-    if (size == 0) {
+  public:
+    void read(protocol::Protocol& iprot) {
+      protocol::Protocol::Type::Enum element_type;
+      uint32_t size = 0;
+      iprot.read_list_begin(element_type, size);
+      if (size == 0) {
+        iprot.read_list_end();
+        return;
+      }
+      resize(size);
+      for (size_t i = 0; i < size; i++) {
+        iprot.read((*this)[i]);
+      }
       iprot.read_list_end();
-      return;
     }
-    resize(size);
-    for (size_t i = 0; i < size; i++) {
-      iprot.read((*this)[i]);
-    }
-    iprot.read_list_end();
-  }
 
-  void write(protocol::Protocol& oprot) const {
-    oprot.write_list_begin(ElementThriftT, size());
-    for (const_iterator i = begin(); i != end(); ++i) {
-      oprot.write(*i);
+    void write(protocol::Protocol& oprot) const {
+      oprot.write_list_begin(ElementThriftT, size());
+      for (const_iterator i = begin(); i != end(); ++i) {
+        oprot.write(*i);
+      }
+      oprot.write_list_end();
     }
-    oprot.write_list_end();
-  }
 };
 }
 

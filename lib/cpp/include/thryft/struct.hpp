@@ -5,9 +5,9 @@
 
 namespace thryft {
 class Struct : public ::thryft::Base {
-public:
-  virtual ~Struct() {
-  }
+  public:
+    virtual ~Struct() {
+    }
 };
 }
 

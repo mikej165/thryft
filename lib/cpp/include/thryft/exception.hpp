@@ -5,9 +5,9 @@
 
 namespace thryft {
 class Exception : public ::thryft::Base {
-public:
-  virtual ~Exception() {
-  }
+  public:
+    virtual ~Exception() {
+    }
 };
 }
 
