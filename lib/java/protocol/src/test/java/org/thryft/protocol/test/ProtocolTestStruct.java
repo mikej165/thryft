@@ -41,7 +41,7 @@ public class ProtocolTestStruct implements org.thryft.TBase<ProtocolTestStruct> 
         }
 
         public Builder setBinaryField(final byte[] binaryField) {
-            this.binaryField = com.google.common.base.Optional.of(binaryField);
+            this.binaryField = com.google.common.base.Optional.fromNullable(binaryField);
             return this;
         }
 
@@ -51,7 +51,7 @@ public class ProtocolTestStruct implements org.thryft.TBase<ProtocolTestStruct> 
         }
 
         public Builder setBoolField(final boolean boolField) {
-            this.boolField = com.google.common.base.Optional.of(boolField);
+            this.boolField = com.google.common.base.Optional.fromNullable(boolField);
             return this;
         }
 
@@ -61,7 +61,7 @@ public class ProtocolTestStruct implements org.thryft.TBase<ProtocolTestStruct> 
         }
 
         public Builder setByteField(final byte byteField) {
-            this.byteField = com.google.common.base.Optional.of(byteField);
+            this.byteField = com.google.common.base.Optional.fromNullable(byteField);
             return this;
         }
 
@@ -71,7 +71,7 @@ public class ProtocolTestStruct implements org.thryft.TBase<ProtocolTestStruct> 
         }
 
         public Builder setDateTimeField(final org.joda.time.DateTime dateTimeField) {
-            this.dateTimeField = com.google.common.base.Optional.of(dateTimeField);
+            this.dateTimeField = com.google.common.base.Optional.fromNullable(dateTimeField);
             return this;
         }
 
@@ -81,7 +81,7 @@ public class ProtocolTestStruct implements org.thryft.TBase<ProtocolTestStruct> 
         }
 
         public Builder setDecimalField(final java.math.BigDecimal decimalField) {
-            this.decimalField = com.google.common.base.Optional.of(decimalField);
+            this.decimalField = com.google.common.base.Optional.fromNullable(decimalField);
             return this;
         }
 
@@ -91,7 +91,7 @@ public class ProtocolTestStruct implements org.thryft.TBase<ProtocolTestStruct> 
         }
 
         public Builder setEmailAddressField(final org.thryft.native_.EmailAddress emailAddressField) {
-            this.emailAddressField = com.google.common.base.Optional.of(emailAddressField);
+            this.emailAddressField = com.google.common.base.Optional.fromNullable(emailAddressField);
             return this;
         }
 
@@ -101,7 +101,7 @@ public class ProtocolTestStruct implements org.thryft.TBase<ProtocolTestStruct> 
         }
 
         public Builder setEnumField(final org.thryft.protocol.test.ProtocolTestEnum enumField) {
-            this.enumField = com.google.common.base.Optional.of(enumField);
+            this.enumField = com.google.common.base.Optional.fromNullable(enumField);
             return this;
         }
 
@@ -111,7 +111,7 @@ public class ProtocolTestStruct implements org.thryft.TBase<ProtocolTestStruct> 
         }
 
         public Builder setI16Field(final short i16Field) {
-            this.i16Field = com.google.common.base.Optional.of(i16Field);
+            this.i16Field = com.google.common.base.Optional.fromNullable(i16Field);
             return this;
         }
 
@@ -121,7 +121,7 @@ public class ProtocolTestStruct implements org.thryft.TBase<ProtocolTestStruct> 
         }
 
         public Builder setI32Field(final int i32Field) {
-            this.i32Field = com.google.common.base.Optional.of(i32Field);
+            this.i32Field = com.google.common.base.Optional.fromNullable(i32Field);
             return this;
         }
 
@@ -131,7 +131,7 @@ public class ProtocolTestStruct implements org.thryft.TBase<ProtocolTestStruct> 
         }
 
         public Builder setI64Field(final long i64Field) {
-            this.i64Field = com.google.common.base.Optional.of(i64Field);
+            this.i64Field = com.google.common.base.Optional.fromNullable(i64Field);
             return this;
         }
 
@@ -141,7 +141,7 @@ public class ProtocolTestStruct implements org.thryft.TBase<ProtocolTestStruct> 
         }
 
         public Builder setListStringField(final com.google.common.collect.ImmutableList<String> listStringField) {
-            this.listStringField = com.google.common.base.Optional.of(listStringField);
+            this.listStringField = com.google.common.base.Optional.fromNullable(listStringField);
             return this;
         }
 
@@ -151,7 +151,7 @@ public class ProtocolTestStruct implements org.thryft.TBase<ProtocolTestStruct> 
         }
 
         public Builder setMapStringStringField(final com.google.common.collect.ImmutableMap<String, String> mapStringStringField) {
-            this.mapStringStringField = com.google.common.base.Optional.of(mapStringStringField);
+            this.mapStringStringField = com.google.common.base.Optional.fromNullable(mapStringStringField);
             return this;
         }
 
@@ -171,7 +171,7 @@ public class ProtocolTestStruct implements org.thryft.TBase<ProtocolTestStruct> 
         }
 
         public Builder setSetStringField(final com.google.common.collect.ImmutableSet<String> setStringField) {
-            this.setStringField = com.google.common.base.Optional.of(setStringField);
+            this.setStringField = com.google.common.base.Optional.fromNullable(setStringField);
             return this;
         }
 
@@ -181,7 +181,7 @@ public class ProtocolTestStruct implements org.thryft.TBase<ProtocolTestStruct> 
         }
 
         public Builder setStringField(final String stringField) {
-            this.stringField = com.google.common.base.Optional.of(stringField);
+            this.stringField = com.google.common.base.Optional.fromNullable(stringField);
             return this;
         }
 
@@ -191,7 +191,7 @@ public class ProtocolTestStruct implements org.thryft.TBase<ProtocolTestStruct> 
         }
 
         public Builder setStructField(final org.thryft.protocol.test.ProtocolTestStruct structField) {
-            this.structField = com.google.common.base.Optional.of(structField);
+            this.structField = com.google.common.base.Optional.fromNullable(structField);
             return this;
         }
 
@@ -201,7 +201,7 @@ public class ProtocolTestStruct implements org.thryft.TBase<ProtocolTestStruct> 
         }
 
         public Builder setUrlField(final org.thryft.native_.Url urlField) {
-            this.urlField = com.google.common.base.Optional.of(urlField);
+            this.urlField = com.google.common.base.Optional.fromNullable(urlField);
             return this;
         }
 
@@ -218,14 +218,8 @@ public class ProtocolTestStruct implements org.thryft.TBase<ProtocolTestStruct> 
         private com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> listStringField = com.google.common.base.Optional.absent();
         private com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> mapStringStringField = com.google.common.base.Optional.absent();
         private Integer requiredI32Field;
-        /**
-
-         */
         private String requiredStringField;
         private com.google.common.base.Optional<com.google.common.collect.ImmutableSet<String>> setStringField = com.google.common.base.Optional.absent();
-        /**
-
-         */
         private com.google.common.base.Optional<String> stringField = com.google.common.base.Optional.absent();
         private com.google.common.base.Optional<org.thryft.protocol.test.ProtocolTestStruct> structField = com.google.common.base.Optional.absent();
         private com.google.common.base.Optional<org.thryft.native_.Url> urlField = com.google.common.base.Optional.absent();
@@ -824,6 +818,32 @@ public class ProtocolTestStruct implements org.thryft.TBase<ProtocolTestStruct> 
             getUrlField().equals(other.getUrlField());
     }
 
+    public static ProtocolTestStruct fake() {
+        return fakeBuilder().build();
+    }
+
+    public static Builder fakeBuilder() {
+        Builder builder = new Builder();
+        builder.setBinaryField(org.thryft.Faker.randomBinary());
+        builder.setBoolField(org.thryft.Faker.randomBool());
+        builder.setByteField(org.thryft.Faker.randomByte());
+        builder.setDateTimeField(org.joda.time.DateTime.now());
+        builder.setDecimalField(org.thryft.Faker.randomDecimal());
+        builder.setEmailAddressField(org.thryft.Faker.Internet.email());
+        builder.setEnumField(org.thryft.Faker.randomEnum(com.google.common.collect.ImmutableList.of(org.thryft.protocol.test.ProtocolTestEnum.ENUMERATOR1, org.thryft.protocol.test.ProtocolTestEnum.ENUMERATOR2)));
+        builder.setI16Field(org.thryft.Faker.randomI16());
+        builder.setI32Field(org.thryft.Faker.randomI32());
+        builder.setI64Field(org.thryft.Faker.randomI64());
+        builder.setListStringField(com.google.common.collect.ImmutableList.of(org.thryft.Faker.Lorem.word()));
+        builder.setMapStringStringField(com.google.common.collect.ImmutableMap.of(org.thryft.Faker.Lorem.word(), org.thryft.Faker.Lorem.word()));
+        builder.setRequiredI32Field(org.thryft.Faker.randomI32());
+        builder.setRequiredStringField(org.thryft.Faker.Name.firstName());
+        builder.setSetStringField(com.google.common.collect.ImmutableSet.of(org.thryft.Faker.Lorem.word()));
+        builder.setStringField(org.thryft.Faker.Lorem.word());
+        builder.setUrlField(org.thryft.Faker.Internet.url());
+        return builder;
+    }
+
     public Object get(final String fieldName) {
         if (fieldName.equals("binary_field")) {
             return getBinaryField();
@@ -917,9 +937,6 @@ public class ProtocolTestStruct implements org.thryft.TBase<ProtocolTestStruct> 
         return requiredI32Field;
     }
 
-    /**
-
-     */
     public final String getRequiredStringField() {
         return requiredStringField;
     }
@@ -928,9 +945,6 @@ public class ProtocolTestStruct implements org.thryft.TBase<ProtocolTestStruct> 
         return setStringField;
     }
 
-    /**
-
-     */
     public final com.google.common.base.Optional<String> getStringField() {
         return stringField;
     }
@@ -1472,16 +1486,10 @@ public class ProtocolTestStruct implements org.thryft.TBase<ProtocolTestStruct> 
 
     private final int requiredI32Field;
 
-    /**
-
-     */
     private final String requiredStringField;
 
     private final com.google.common.base.Optional<com.google.common.collect.ImmutableSet<String>> setStringField;
 
-    /**
-
-     */
     private final com.google.common.base.Optional<String> stringField;
 
     private final com.google.common.base.Optional<org.thryft.protocol.test.ProtocolTestStruct> structField;

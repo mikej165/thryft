@@ -10,8 +10,6 @@ class ProtocolTestStruct(object):
     class Builder:
         def __init__(
             self,
-            required_i32_field,
-            required_string_field,
             binary_field=None,
             bool_field=None,
             byte_field=None,
@@ -24,6 +22,8 @@ class ProtocolTestStruct(object):
             i64_field=None,
             list_string_field=None,
             map_string_string_field=None,
+            required_i32_field=None,
+            required_string_field=None,
             set_string_field=None,
             string_field=None,
             struct_field=None,
@@ -676,7 +676,7 @@ class ProtocolTestStruct(object):
 
         if self.url_field is not None:
             oprot.writeFieldBegin('url_field', 12, -1)
-            oprot.writeUrl(self.url_field)
+            oprot.writeUri(self.url_field)
             oprot.writeFieldEnd()
 
         oprot.writeFieldStop()

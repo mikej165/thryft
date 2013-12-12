@@ -41,6 +41,7 @@ except ImportError:
     import sys
     sys.path.append(os.path.join(THRYFT_ROOT_DIR_PATH, 'compiler', 'src'))
 from thryft.compiler import Compiler
+from thryft.generators.cpp.cpp_generator import CppGenerator
 from thryft.generators.java.java_generator import JavaGenerator
 from thryft.generators.js.js_generator import JsGenerator
 from thryft.generators.py.py_generator import PyGenerator
@@ -53,6 +54,7 @@ class Main(thryft.main.Main):
         gen = self._gen
 
         generators = {
+            'cpp': (CppGenerator(),),
             'java': (JavaGenerator(),),
             'js': (JsGenerator(),),
             'py': (PyGenerator(),),
@@ -62,6 +64,7 @@ class Main(thryft.main.Main):
               (
                   os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'thrift', 'test'),
                   {
+                      'cpp': os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'cpp', 'test'),
                       'java': os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'java', 'protocol', 'src', 'test', 'java'),
                       'js': os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'js', 'test'),
                       'py': os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'py', 'test'),
