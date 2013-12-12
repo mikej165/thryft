@@ -35,4 +35,5 @@ from thryft.generators.cpp._cpp_base_type import _CppBaseType
 
 
 class CppBinaryType(BinaryType, _CppBaseType):
-    pass
+    def cpp_default_value(self):
+        return None
