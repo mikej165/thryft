@@ -1355,19 +1355,19 @@ public class ProtocolTestStruct implements org.thryft.TBase<ProtocolTestStruct> 
                 }
 
                 if (getDateTimeField().isPresent()) {
-                    oprot.writeFieldBegin(new org.thryft.protocol.TField("date_time_field", org.thryft.protocol.TType.STRUCT, (short)-1));
+                    oprot.writeFieldBegin(new org.thryft.protocol.TField("date_time_field", org.thryft.protocol.TType.I64, (short)-1));
                     oprot.writeDateTime(getDateTimeField().get());
                     oprot.writeFieldEnd();
                 }
 
                 if (getDecimalField().isPresent()) {
-                    oprot.writeFieldBegin(new org.thryft.protocol.TField("decimal_field", org.thryft.protocol.TType.STRUCT, (short)-1));
+                    oprot.writeFieldBegin(new org.thryft.protocol.TField("decimal_field", org.thryft.protocol.TType.STRING, (short)-1));
                     oprot.writeDecimal(getDecimalField().get());
                     oprot.writeFieldEnd();
                 }
 
                 if (getEmailAddressField().isPresent()) {
-                    oprot.writeFieldBegin(new org.thryft.protocol.TField("email_address_field", org.thryft.protocol.TType.STRUCT, (short)-1));
+                    oprot.writeFieldBegin(new org.thryft.protocol.TField("email_address_field", org.thryft.protocol.TType.STRING, (short)-1));
                     oprot.writeEmailAddress(getEmailAddressField().get());
                     oprot.writeFieldEnd();
                 }
@@ -1448,7 +1448,7 @@ public class ProtocolTestStruct implements org.thryft.TBase<ProtocolTestStruct> 
                 }
 
                 if (getUrlField().isPresent()) {
-                    oprot.writeFieldBegin(new org.thryft.protocol.TField("url_field", org.thryft.protocol.TType.STRUCT, (short)-1));
+                    oprot.writeFieldBegin(new org.thryft.protocol.TField("url_field", org.thryft.protocol.TType.STRING, (short)-1));
                     oprot.writeUrl(getUrlField().get());
                     oprot.writeFieldEnd();
                 }

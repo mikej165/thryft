@@ -597,17 +597,17 @@ class ProtocolTestStruct(object):
             oprot.writeFieldEnd()
 
         if self.date_time_field is not None:
-            oprot.writeFieldBegin('date_time_field', 12, -1)
+            oprot.writeFieldBegin('date_time_field', 10, -1)
             oprot.writeDateTime(self.date_time_field)
             oprot.writeFieldEnd()
 
         if self.decimal_field is not None:
-            oprot.writeFieldBegin('decimal_field', 12, -1)
+            oprot.writeFieldBegin('decimal_field', 11, -1)
             oprot.writeDecimal(self.decimal_field)
             oprot.writeFieldEnd()
 
         if self.email_address_field is not None:
-            oprot.writeFieldBegin('email_address_field', 12, -1)
+            oprot.writeFieldBegin('email_address_field', 11, -1)
             oprot.writeEmailAddress(self.email_address_field)
             oprot.writeFieldEnd()
 
@@ -675,8 +675,8 @@ class ProtocolTestStruct(object):
             oprot.writeFieldEnd()
 
         if self.url_field is not None:
-            oprot.writeFieldBegin('url_field', 12, -1)
-            oprot.writeUri(self.url_field)
+            oprot.writeFieldBegin('url_field', 11, -1)
+            oprot.writeUrl(self.url_field)
             oprot.writeFieldEnd()
 
         oprot.writeFieldStop()
