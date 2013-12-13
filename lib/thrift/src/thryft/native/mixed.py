@@ -30,12 +30,12 @@
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
 
-from thryft.generator.struct_type import StructType
-from thryft.generators.java.java_struct_type import JavaStructType
-from thryft.generators.py.py_struct_type import PyStructType
+from thryft.generator.native_type import NativeType
+from thryft.generators.java.java_native_type import JavaNativeType
+from thryft.generators.py.py_native_type import PyNativeType
 
 
-class JavaMixed(JavaStructType):
+class JavaMixed(JavaNativeType):
     def java_compare_to(self, this_value, other_value):
         return "org.thryft.Comparators.compare(%(this_value)s, %(other_value)s)" % locals()
 
@@ -52,7 +52,7 @@ class JavaMixed(JavaStructType):
         return "oprot.writeMixed(%(value)s);" % locals()
 
 
-class PyMixed(PyStructType):
+class PyMixed(PyNativeType):
     def py_check(self, value):
         return 'True'
 

@@ -34,6 +34,9 @@ from thryft.generator._container_type import _ContainerType
 
 
 class MapType(_ContainerType):
+    THRIFT_TTYPE_ID = 13
+    THRIFT_TTYPE_NAME = 'MAP'
+
     def __init__(self, parent, key_type, value_type):
         _ContainerType.__init__(self, name="map<%s, %s>" % (key_type.thrift_qname(), value_type.thrift_qname()), parent=parent)
         self.__key_type = key_type
@@ -44,10 +47,10 @@ class MapType(_ContainerType):
         return self.__key_type
 
     def thrift_ttype_id(self):
-        return 13
+        return MapType.THRIFT_TTYPE_ID
 
     def thrift_ttype_name(self):
-        return 'MAP'
+        return MapType.THRIFT_TTYPE_NAME
 
     @property
     def type_parameters(self):

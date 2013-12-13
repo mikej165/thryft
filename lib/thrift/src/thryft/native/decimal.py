@@ -30,13 +30,21 @@
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
 
-from thryft.generator.struct_type import StructType
-from thryft.generators.java.java_struct_type import JavaStructType
-from thryft.generators.js.js_struct_type import JsStructType
-from thryft.generators.py.py_struct_type import PyStructType
+from thryft.generator.native_type import NativeType
+from thryft.generator.string_type import StringType
+from thryft.generators.java.java_native_type import JavaNativeType
+from thryft.generators.js.js_native_type import JsNativeType
+from thryft.generators.py.py_native_type import PyNativeType
 
 
-class JavaDecimal(JavaStructType):
+class _Decimal(object):
+    def thrift_ttype_id(self):
+        return StringType.THRIFT_TTYPE_ID
+
+    def thrift_ttype_name(self):
+        return StringType.THRIFT_TTYPE_NAME
+
+class JavaDecimal(_Decimal, JavaNativeType):
     def java_declaration_name(self, boxed=False):
         return 'java.math.BigDecimal'
 
@@ -58,6 +66,9 @@ class JavaDecimal(JavaStructType):
         parameters = ', '.join(parameters)
         return "org.thryft.Faker.randomDecimal(%(parameters)s)" % locals()
 
+    def java_is_reference(self):
+        return True
+
     def java_read_protocol(self):
         return 'iprot.readDecimal()'
 
@@ -68,7 +79,7 @@ class JavaDecimal(JavaStructType):
         return "oprot.writeDecimal(%(value)s);" % locals()
 
 
-class JsDecimal(JsStructType):
+class JsDecimal(_Decimal, JsNativeType):
     def js_default_value(self):
         return '"0"'
 
@@ -97,7 +108,7 @@ if (typeof %(value)s !== "string") {
         return """oprot.writeDecimal(%(value)s);""" % locals()
 
 
-class PyDecimal(PyStructType):
+class PyDecimal(_Decimal, PyNativeType):
     def py_check(self, value):
         return "isinstance(%(value)s, decimal.Decimal)" % locals()
 

@@ -30,18 +30,30 @@
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
 
-from thryft.generator.struct_type import StructType
-from thryft.generators.java.java_struct_type import JavaStructType
-from thryft.generators.js.js_struct_type import JsStructType
-from thryft.generators.py.py_struct_type import PyStructType
+from thryft.generator.i64_type import I64Type
+from thryft.generator.native_type import NativeType
+from thryft.generators.java.java_native_type import JavaNativeType
+from thryft.generators.js.js_native_type import JsNativeType
+from thryft.generators.py.py_native_type import PyNativeType
 
 
-class JavaDateTime(JavaStructType):
+class _DateTime(object):
+    def thrift_ttype_id(self):
+        return I64Type.THRIFT_TTYPE_ID
+
+    def thrift_ttype_name(self):
+        return I64Type.THRIFT_TTYPE_NAME
+
+
+class JavaDateTime(_DateTime, JavaNativeType):
     def java_declaration_name(self, boxed=True):
         return 'org.joda.time.DateTime'
 
     def java_faker(self, **kwds):
         return 'org.joda.time.DateTime.now()'
+
+    def java_is_reference(self):
+        return True
 
     def java_read_protocol(self):
         return 'iprot.readDateTime()'
@@ -53,7 +65,7 @@ class JavaDateTime(JavaStructType):
         return "oprot.writeDateTime(%(value)s);" % locals()
 
 
-class JsDateTime(JsStructType):
+class JsDateTime(_DateTime, JsNativeType):
     def js_default_value(self):
         return 'new Date()'
 
@@ -82,7 +94,7 @@ if (!(%(value)s instanceof Date)) {
         return "oprot.writeDateTime(%(value)s);" % locals()
 
 
-class PyDateTime(PyStructType):
+class PyDateTime(_DateTime, PyNativeType):
     def py_check(self, value):
         return "isinstance(%(value)s, datetime)" % locals()
 

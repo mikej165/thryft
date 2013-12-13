@@ -30,14 +30,23 @@
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
 
-from thryft.generator.struct_type import StructType
-from thryft.generators.cpp.cpp_struct_type import CppStructType
-from thryft.generators.java.java_struct_type import JavaStructType
-from thryft.generators.js.js_struct_type import JsStructType
-from thryft.generators.py.py_struct_type import PyStructType
+from thryft.generator.native_type import NativeType
+from thryft.generator.string_type import StringType
+from thryft.generators.cpp.cpp_native_type import CppNativeType
+from thryft.generators.java.java_native_type import JavaNativeType
+from thryft.generators.js.js_native_type import JsNativeType
+from thryft.generators.py.py_native_type import PyNativeType
 
 
-class CppUri(CppStructType):
+class _Uri(object):
+    def thrift_ttype_id(self):
+        return StringType.THRIFT_TTYPE_ID
+
+    def thrift_ttype_name(self):
+        return StringType.THRIFT_TTYPE_NAME
+
+
+class CppUri(_Uri, CppNativeType):
     def cpp_includes_use(self):
         return ('<string>',)
 
@@ -45,12 +54,15 @@ class CppUri(CppStructType):
         return '::std::string'
 
 
-class JavaUri(JavaStructType):
+class JavaUri(_Uri, JavaNativeType):
     def java_declaration_name(self, boxed=False):
         return 'org.thryft.native_.Uri'
 
     def java_faker(self, **kwds):
         return 'org.thryft.Faker.Internet.url()'
+
+    def java_is_reference(self):
+        return True
 
     def java_read_protocol(self):
         return 'iprot.readUri()'
@@ -62,7 +74,7 @@ class JavaUri(JavaStructType):
         return "oprot.writeUri(%(value)s);" % locals()
 
 
-class JsUri(JsStructType):
+class JsUri(_Uri, JsNativeType):
     def js_default_value(self):
         return '""'
 
@@ -91,7 +103,7 @@ if (typeof %(value)s !== "string") {
         return "oprot.writeUri(%(value)s);" % locals()
 
 
-class PyUri(PyStructType):
+class PyUri(_Uri, PyNativeType):
     def py_check(self, value):
         return "isinstance(%(value)s, str)" % locals()
 

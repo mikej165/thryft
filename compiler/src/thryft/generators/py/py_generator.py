@@ -50,6 +50,7 @@ class PyGenerator(Generator):
     from thryft.generators.py.py_include import PyInclude as Include  # @UnusedImport
     from thryft.generators.py.py_list_type import PyListType as ListType  # @UnusedImport
     from thryft.generators.py.py_map_type import PyMapType as MapType  # @UnusedImport
+    from thryft.generators.py.py_native_type import PyNativeType as NativeType  # @UnusedImport
     from thryft.generators.py.py_service import PyService as Service  # @UnusedImport
     from thryft.generators.py.py_set_type import PySetType as SetType  # @UnusedImport
     from thryft.generators.py.py_string_type import PyStringType as StringType  # @UnusedImport

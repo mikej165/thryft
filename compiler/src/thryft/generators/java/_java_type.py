@@ -60,7 +60,7 @@ class _JavaType(_JavaNamedConstruct):
         raise NotImplementedError(class_qname(self) + '.java_from_string')
 
     def java_hash_code(self, value):
-        raise NotImplementedError(class_qname(self) + '.java_hash_code')
+        return "%(value)s.hashCode()" % locals()
 
     def java_has_length(self):
         return False

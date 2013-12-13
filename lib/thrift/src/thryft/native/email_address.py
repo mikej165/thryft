@@ -30,18 +30,30 @@
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
 
-from thryft.generator.struct_type import StructType
-from thryft.generators.java.java_struct_type import JavaStructType
-from thryft.generators.js.js_struct_type import JsStructType
-from thryft.generators.py.py_struct_type import PyStructType
+from thryft.generator.native_type import NativeType
+from thryft.generator.string_type import StringType
+from thryft.generators.java.java_native_type import JavaNativeType
+from thryft.generators.js.js_native_type import JsNativeType
+from thryft.generators.py.py_native_type import PyNativeType
 
 
-class JavaEmailAddress(JavaStructType):
+class _EmailAddress(object):
+    def thrift_ttype_id(self):
+        return StringType.THRIFT_TTYPE_ID
+
+    def thrift_ttype_name(self):
+        return StringType.THRIFT_TTYPE_NAME
+
+
+class JavaEmailAddress(_EmailAddress, JavaNativeType):
     def java_declaration_name(self, boxed=False):
         return 'org.thryft.native_.EmailAddress'
 
     def java_faker(self, **kwds):
         return 'org.thryft.Faker.Internet.email()'
+
+    def java_is_reference(self):
+        return True
 
     def java_read_protocol(self):
         return 'iprot.readEmailAddress()'
@@ -50,7 +62,7 @@ class JavaEmailAddress(JavaStructType):
         return "oprot.writeEmailAddress(%(value)s);" % locals()
 
 
-class JsEmailAddress(JsStructType):
+class JsEmailAddress(_EmailAddress, JsNativeType):
     def js_default_value(self):
         return '""'
 
@@ -79,7 +91,7 @@ if (typeof %(value)s !== "string") {
         return """oprot.writeEmailAddress(%(value)s);""" % locals()
 
 
-class PyEmailAddress(PyStructType):
+class PyEmailAddress(_EmailAddress, PyNativeType):
     def py_check(self, value):
         return "isinstance(%(value)s, str)" % locals()
 

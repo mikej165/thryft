@@ -32,17 +32,10 @@
 
 import os.path
 import sys; sys.path.append(os.path.dirname(__file__))
-from uri import JsUri, PyUri
-from thryft.generator.struct_type import StructType
-from thryft.generators.java.java_struct_type import JavaStructType
-from thryft.generators.js.js_struct_type import JsStructType
-from thryft.generators.py.py_struct_type import PyStructType
+from uri import JavaUri as _JavaUri, JsUri as _JsUri, PyUri as _PyUri
 
 
-class JavaUrl(JavaStructType):
-    def __init__(self, *args, **kwds):
-        JavaStructType.__init__(self, *args, **kwds)
-
+class JavaUrl(_JavaUri):
     def java_declaration_name(self, boxed=False):
         return 'org.thryft.native_.Url'
 
@@ -59,7 +52,7 @@ class JavaUrl(JavaStructType):
         return "oprot.writeUrl(%(value)s);" % locals()
 
 
-class JsUrl(JsUri):
+class JsUrl(_JsUri):
     def js_validation(self, value, value_name, **kwds):
         return {'pattern': 'url', 'type': """\
 if (typeof %(value)s !== "string") {
@@ -67,7 +60,7 @@ if (typeof %(value)s !== "string") {
 }""" % locals()}
 
 
-class PyUrl(PyUri):
+class PyUrl(_PyUri):
     def py_write_protocol(self, value, depth=0):
         qname = self.py_qname()
         return "oprot.writeUrl(%(value)s)" % locals()

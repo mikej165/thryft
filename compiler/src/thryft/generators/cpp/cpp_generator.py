@@ -50,6 +50,7 @@ class CppGenerator(Generator):
     from thryft.generators.cpp.cpp_include import CppInclude as Include  # @UnusedImport
     from thryft.generators.cpp.cpp_list_type import CppListType as ListType  # @UnusedImport
     from thryft.generators.cpp.cpp_map_type import CppMapType as MapType  # @UnusedImport
+    from thryft.generators.cpp.cpp_native_type import CppNativeType as NativeType  # @UnusedImport
     from thryft.generators.cpp.cpp_service import CppService as Service  # @UnusedImport
     from thryft.generators.cpp.cpp_set_type import CppSetType as SetType  # @UnusedImport
     from thryft.generators.cpp.cpp_string_type import CppStringType as StringType  # @UnusedImport

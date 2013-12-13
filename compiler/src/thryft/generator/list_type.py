@@ -34,11 +34,14 @@ from thryft.generator._sequence_type import _SequenceType
 
 
 class ListType(_SequenceType):
+    THRIFT_TTYPE_ID = 15
+    THRIFT_TTYPE_NAME = 'LIST'
+
     def __init__(self, element_type, **kwds):
         _SequenceType.__init__(self, element_type=element_type, name="list<%s>" % element_type.thrift_qname(), **kwds)
 
     def thrift_ttype_id(self):
-        return 15
+        return ListType.THRIFT_TTYPE_ID
 
     def thrift_ttype_name(self):
-        return 'LIST'
+        return ListType.THRIFT_TTYPE_NAME
