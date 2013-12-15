@@ -34,7 +34,4 @@ from thryft.generator.string_type import StringType
 
 
 class BinaryType(StringType):
-    THRIFT_TTYPE_NAME = 'STRING'
-
-    def thrift_ttype_name(self):
-        return BinaryType.THRIFT_TTYPE_NAME
+    pass

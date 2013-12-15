@@ -39,21 +39,24 @@ from yutil import lower_camelize, upper_camelize, indent, lpad
 
 class CppField(Field, _CppNamedConstruct):
     def cpp_default_initializer(self):
+        if not self.required:
+            return None
         if self.value is not None:
             value = self.cpp_value()
         else:
             value = self.type.cpp_default_value()
             if value is None:
-                return
+                return None
         return "%s_(%s)" % (self.cpp_name(), value)
 
     def cpp_getter(self):
+        member_name = self.cpp_member_name()
         name = self.cpp_name()
         type_name = self._cpp_type_qname()
-        return {self.cpp_name(): """\
+        return """\
 const %(type_name)s& %(name)s() const {
-  return %(name)s_;
-}""" % locals()}
+  return %(member_name)s;
+}""" % locals()
 
     def cpp_getter_name(self):
         return self.cpp_name()
@@ -66,8 +69,9 @@ const %(type_name)s& %(name)s() const {
         return includes
 
     def cpp_initializer(self):
+        member_name = self.cpp_member_name()
         name = self.cpp_name()
-        return "%(name)s_(%(name)s)" % locals()
+        return "%(member_name)s(%(name)s)" % locals()
 
     def cpp_local_declaration(self):
         name = self.cpp_name()
@@ -75,9 +79,10 @@ const %(type_name)s& %(name)s() const {
         return type_name + ' ' + name + ';'
 
     def cpp_member_declaration(self):
-        name = self.cpp_name()
-        type_name = self._cpp_type_qname()
-        return type_name + ' ' + name + '_;'
+        return self._cpp_type_qname() + ' ' + self.cpp_member_name() + ';'
+
+    def cpp_member_name(self):
+        return self.cpp_name() + '_'
 
     def cpp_parameter(self):
         name = self.cpp_name()
@@ -85,13 +90,29 @@ const %(type_name)s& %(name)s() const {
         return 'const ' + type_name + '& ' + name
 
     def cpp_read_protocol(self):
-        return self.type.cpp_read_protocol(self.cpp_name() + '_')
+        return self.type.cpp_read_protocol(self.cpp_member_name(), optional=not self.required)
 
     def _cpp_type_qname(self):
         type_qname = self.type.cpp_qname()
         if not self.required:
             type_qname = "::thryft::Optional< %s >" % type_qname
         return type_qname
+
+    def cpp_setter(self):
+        member_name = self.cpp_member_name()
+        name = self.cpp_name()
+        parameter = self.cpp_parameter()
+        parent_name = self.parent.cpp_name()
+        setter_name = self.cpp_setter_name()
+        type_name = self._cpp_type_qname()
+        return """\
+%(parent_name)s& %(setter_name)s(%(parameter)s) {
+  this->%(member_name)s = %(name)s;
+  return *this;
+}""" % locals()
+
+    def cpp_setter_name(self):
+        return 'set_' + self.cpp_name()
 
     def cpp_value(self):
         return self.type.cpp_literal(self.value)

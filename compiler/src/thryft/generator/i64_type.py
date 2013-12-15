@@ -37,5 +37,10 @@ class I64Type(_BaseType):
     THRIFT_TTYPE_ID = 10
     THRIFT_TTYPE_NAME = 'I64'
 
+    def __init__(self, name=None):
+        if name is None:
+            name = 'i64'
+        _BaseType.__init__(self, name=name)
+
     def thrift_ttype_id(self):
         return I64Type.THRIFT_TTYPE_ID

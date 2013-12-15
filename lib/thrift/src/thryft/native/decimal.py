@@ -32,6 +32,8 @@
 
 from thryft.generator.native_type import NativeType
 from thryft.generator.string_type import StringType
+from thryft.generators.cpp.cpp_native_type import CppNativeType
+from thryft.generators.cpp.cpp_string_type import CppStringType
 from thryft.generators.java.java_native_type import JavaNativeType
 from thryft.generators.js.js_native_type import JsNativeType
 from thryft.generators.py.py_native_type import PyNativeType
@@ -44,8 +46,25 @@ class _Decimal(object):
     def thrift_ttype_name(self):
         return StringType.THRIFT_TTYPE_NAME
 
+
+class CppDecimal(_Decimal, CppNativeType):
+    __cpp_string_type = CppStringType()
+
+    def cpp_default_value(self):
+        return '"0"'
+
+    def cpp_includes_use(self):
+        return self.__cpp_string_type.cpp_includes_use()
+
+    def cpp_qname(self):
+        return self.__cpp_string_type.cpp_qname()
+
+    def cpp_read_protocol(self, *args, **kwds):
+        return self.__cpp_string_type.cpp_read_protocol(*args, **kwds)
+
+
 class JavaDecimal(_Decimal, JavaNativeType):
-    def java_declaration_name(self, boxed=False):
+    def java_qname(self, boxed=False):
         return 'java.math.BigDecimal'
 
     def java_faker(self, validation=None, **kwds):
@@ -118,11 +137,17 @@ class PyDecimal(_Decimal, PyNativeType):
     def _py_imports_use(self, caller_stack):
         return ['from __future__ import absolute_import; import decimal']
 
+    def py_name(self):
+        return 'Decimal'
+
     def py_read_protocol(self):
         return 'iprot.readDecimal()'
 
     def py_read_protocol_throws(self):
         return ['decimal.InvalidOperation', 'TypeError']
+
+    def py_qname(self):
+        return 'Decimal'
 
     def py_write_protocol(self, value, depth=0):
         qname = self.py_qname()

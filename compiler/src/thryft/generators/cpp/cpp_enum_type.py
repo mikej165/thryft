@@ -43,6 +43,9 @@ class CppEnumType(EnumType, _CppType):
         else:
             return 0
 
+    def cpp_includes_definition(self):
+        return ('<thryft.hpp>',)
+
     def cpp_includes_use(self):
         parent = self.parent
         while not isinstance(parent, Document):
@@ -52,7 +55,7 @@ class CppEnumType(EnumType, _CppType):
     def cpp_qname(self):
         return _CppType.cpp_qname(self) + '::Enum'
 
-    def cpp_read_protocol(self, value):
+    def cpp_read_protocol(self, value, optional=False):
         name = _CppType.cpp_qname(self)
         return "%(value)s = %(name)s::read(iprot);" % locals()
 

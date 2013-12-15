@@ -1,6 +1,11 @@
 from thryft.generator.native_type import NativeType
 from thryft.generators.cpp._cpp_type import _CppType
+from yutil import class_qname
 
 
 class CppNativeType(NativeType, _CppType):
-    pass
+    def cpp_name(self):
+        return self.cpp_qname()
+
+    def cpp_qname(self, name=None, **kwds):
+        raise NotImplementedError(class_qname(self) + '.cpp_qname')

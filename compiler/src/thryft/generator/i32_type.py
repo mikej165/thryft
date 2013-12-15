@@ -36,5 +36,10 @@ from thryft.generator._base_type import _BaseType
 class I32Type(_BaseType):
     THRIFT_TTYPE_ID = 8
 
+    def __init__(self, name=None):
+        if name is None:
+            name = 'i32'
+        _BaseType.__init__(self, name=name)
+
     def thrift_ttype_id(self):
         return I32Type.THRIFT_TTYPE_ID

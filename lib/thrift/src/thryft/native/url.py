@@ -32,11 +32,15 @@
 
 import os.path
 import sys; sys.path.append(os.path.dirname(__file__))
-from uri import JavaUri as _JavaUri, JsUri as _JsUri, PyUri as _PyUri
+from uri import CppUri as _CppUri, JavaUri as _JavaUri, JsUri as _JsUri, PyUri as _PyUri
+
+
+class CppUrl(_CppUri):
+    pass
 
 
 class JavaUrl(_JavaUri):
-    def java_declaration_name(self, boxed=False):
+    def java_qname(self, boxed=False):
         return 'org.thryft.native_.Url'
 
     def java_faker(self, **kwds):

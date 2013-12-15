@@ -32,6 +32,8 @@
 
 from thryft.generator.i64_type import I64Type
 from thryft.generator.native_type import NativeType
+from thryft.generators.cpp.cpp_i64_type import CppI64Type
+from thryft.generators.cpp.cpp_native_type import CppNativeType
 from thryft.generators.java.java_native_type import JavaNativeType
 from thryft.generators.js.js_native_type import JsNativeType
 from thryft.generators.py.py_native_type import PyNativeType
@@ -45,8 +47,21 @@ class _DateTime(object):
         return I64Type.THRIFT_TTYPE_NAME
 
 
+class CppDateTime(_DateTime, CppNativeType):
+    __cpp_i64_type = CppI64Type()
+
+    def cpp_default_value(self):
+        return self.__cpp_i64_type.cpp_default_value()
+
+    def cpp_qname(self):
+        return self.__cpp_i64_type.cpp_qname()
+
+    def cpp_read_protocol(self, *args, **kwds):
+        return self.__cpp_i64_type.cpp_read_protocol(*args, **kwds)
+
+
 class JavaDateTime(_DateTime, JavaNativeType):
-    def java_declaration_name(self, boxed=True):
+    def java_qname(self, boxed=True):
         return 'org.joda.time.DateTime'
 
     def java_faker(self, **kwds):

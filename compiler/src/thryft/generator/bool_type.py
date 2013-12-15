@@ -36,5 +36,10 @@ from thryft.generator._base_type import _BaseType
 class BoolType(_BaseType):
     THRIFT_TTYPE_ID = 2
 
+    def __init__(self, name=None):
+        if name is None:
+            name = 'bool'
+        _BaseType.__init__(self, name=name)
+
     def thrift_ttype_id(self):
         return BoolType.THRIFT_TTYPE_ID

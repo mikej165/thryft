@@ -38,5 +38,9 @@ class _CppContainerType(_CppType):
     def cpp_default_value(self):
         return None
 
-    def cpp_read_protocol(self, value):
-        return "%(value)s.read(iprot);" % locals()
+    def cpp_read_protocol(self, value, optional=False):
+        if optional:
+            name = self.cpp_qname()
+            return "%(value)s.set(%(name)s())->read(iprot);" % locals()
+        else:
+            return "%(value)s.read(iprot);" % locals()

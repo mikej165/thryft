@@ -31,9 +31,8 @@
 #-------------------------------------------------------------------------------
 
 from thryft.generator.binary_type import BinaryType
-from thryft.generators.cpp._cpp_base_type import _CppBaseType
+from thryft.generators.cpp.cpp_string_type import CppStringType
 
 
-class CppBinaryType(BinaryType, _CppBaseType):
-    def cpp_default_value(self):
-        return None
+class CppBinaryType(CppStringType):
+    pass

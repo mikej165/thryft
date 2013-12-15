@@ -1,14 +1,13 @@
 namespace java org.thryft.protocol.test
 namespace * thryft_test.protocol.test
 
-include "nested_protocol_test_struct.thrift"
 include "protocol_test_enum.thrift"
 include "thryft/native/date_time.thrift"
 include "thryft/native/decimal.thrift"
 include "thryft/native/email_address.thrift"
 include "thryft/native/url.thrift"
 
-struct ProtocolTestStruct {
+struct NestedProtocolTestStruct {
     optional binary binary_field;
     optional bool bool_field;
     optional byte byte_field
@@ -28,6 +27,5 @@ struct ProtocolTestStruct {
     optional set<string> set_string_field;
     // @validation {"minLength": 1}
     optional string string_field;
-    optional nested_protocol_test_struct.NestedProtocolTestStruct struct_field;
     optional url.Url url_field;
 }

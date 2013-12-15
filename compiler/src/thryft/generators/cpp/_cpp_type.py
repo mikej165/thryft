@@ -35,8 +35,8 @@ from yutil import class_qname
 
 
 class _CppType(_CppNamedConstruct):
-    def cpp_read_protocol(self, value):
-        return "iprot.read(%(value)s);" % locals()
+    def cpp_read_protocol(self, value, optional=False):
+        raise NotImplementedError(class_qname(self))
 
     def cpp_write_protocol(self, value):
         return "oprot.write(%(value)s);" % locals()

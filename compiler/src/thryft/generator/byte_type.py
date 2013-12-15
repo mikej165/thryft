@@ -36,5 +36,10 @@ from thryft.generator._base_type import _BaseType
 class ByteType(_BaseType):
     THRIFT_TTYPE_ID = 3
 
+    def __init__(self, name=None):
+        if name is None:
+            name = 'byte'
+        _BaseType.__init__(self, name=name)
+
     def thrift_ttype_id(self):
         return ByteType.THRIFT_TTYPE_ID

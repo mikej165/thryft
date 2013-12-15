@@ -148,10 +148,7 @@ virtual ~%(name)s() {
                 for field in self.fields]
 
     def _cpp_method_getters(self):
-        getters = {}
-        for field in self.fields:
-            getters.update(field.cpp_getter())
-        return getters
+        return [field.cpp_getter() for field in self.fields]
 
     def _cpp_method_read(self):
         field_read_protocol_named = \
@@ -186,7 +183,7 @@ if (list_size > %(field_i)u) {
         field_read_protocol_positional = \
             lpad("\n", indent(' ' * 6, "\n".join(field_read_protocol_positional)))
         name = self.cpp_name()
-        return {'read': """\
+        return """\
 void read(::thryft::protocol::Protocol& iprot) {
   read(iprot, ::thryft::protocol::Protocol::Type::STRUCT);
 }
@@ -218,8 +215,10 @@ void read(::thryft::protocol::Protocol& iprot, ::thryft::protocol::Protocol::Typ
       break;
     }
   }
-}""" % locals()}
+}""" % locals()
 
+    def _cpp_method_setters(self):
+        return [field.cpp_setter() for field in self.fields]
 
     def _cpp_method_write(self):
         case_ttype_void = 'case ::thryft::protocol::Protocol::Type::VOID:'
@@ -252,7 +251,7 @@ void read(::thryft::protocol::Protocol& iprot, ::thryft::protocol::Protocol::Typ
 
         name = self.cpp_name()
 
-        return {'write': """\
+        return """\
 void write(::thryft::protocol::Protocol& oprot) const {
   write(oprot, ::thryft::protocol::Protocol::Type::STRUCT);
 }
@@ -275,18 +274,22 @@ void write(::thryft::protocol::Protocol& oprot, ::thryft::protocol::Protocol::Ty
     break;
   }
 }
-""" % locals()}
-
+""" % locals()
 
     def _cpp_methods(self):
-        methods = {}
-        methods.update(self._cpp_method_getters())
-        methods.update(self._cpp_method_read())
-        methods.update(self._cpp_method_write())
+        methods = []
+        methods.extend(self._cpp_method_getters())
+        methods.extend(self._cpp_method_setters())
+        methods.append(self._cpp_method_read())
+        methods.append(self._cpp_method_write())
         return methods
 
-    def cpp_read_protocol(self, value):
-        return "%(value)s.read(iprot);" % locals()
+    def cpp_read_protocol(self, value, optional=False):
+        if optional:
+            name = self.cpp_qname()
+            return "%(value)s.set(%(name)s())->read(iprot);" % locals()
+        else:
+            return "%(value)s.read(iprot);" % locals()
 
     def cpp_qname(self, boxed=False):
         return _CppNamedConstruct.cpp_qname(self, name=self.name)
@@ -298,8 +301,8 @@ void write(::thryft::protocol::Protocol& oprot, ::thryft::protocol::Protocol::Ty
         sections = []
         # sections.append(indent(' ' * 4, repr(self._CppBuilder(self))))
         sections.append(lpad("public:\n", "\n\n".join(indent(' ' * 2,
-            self._cpp_constructors() + [self._cpp_destructor()] + \
-            [methods[key] for key in sorted(methods.iterkeys())]))))
+            self._cpp_constructors() + [self._cpp_destructor()] + self._cpp_methods()
+            ))))
         sections.append(lpad("private:\n", "\n".join(indent(' ' * 2, self._cpp_member_declarations()))))
         sections = lpad("\n", "\n\n".join(section for section in sections if len(section) > 0))
         return """\

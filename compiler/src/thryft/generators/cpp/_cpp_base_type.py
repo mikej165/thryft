@@ -35,7 +35,7 @@ from yutil import upper_camelize
 
 
 class _CppBaseType(_CppType):
-    def cpp_read_protocol(self, value):
+    def cpp_read_protocol(self, value, optional=False):
         name = getattr(self, 'name')
         return "%(value)s = iprot.read_%(name)s();" % locals()
 

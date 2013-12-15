@@ -37,5 +37,13 @@ class StringType(_BaseType):
     THRIFT_TTYPE_ID = 11
     THRIFT_TTYPE_NAME = 'STRING'
 
+    def __init__(self, name=None):
+        if name is None:
+            name = 'string'
+        _BaseType.__init__(self, name=name)
+
     def thrift_ttype_id(self):
         return StringType.THRIFT_TTYPE_ID
+
+    def thrift_ttype_name(self):
+        return StringType.THRIFT_TTYPE_NAME

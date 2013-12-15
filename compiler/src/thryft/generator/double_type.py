@@ -36,5 +36,10 @@ from thryft.generator._base_type import _BaseType
 class DoubleType(_BaseType):
     THRIFT_TTYPE_ID = 4
 
+    def __init__(self, name=None):
+        if name is None:
+            name = 'double'
+        _BaseType.__init__(self, name=name)
+
     def thrift_ttype_id(self):
         return DoubleType.THRIFT_TTYPE_ID

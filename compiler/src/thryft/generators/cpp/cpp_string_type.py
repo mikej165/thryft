@@ -48,5 +48,8 @@ class CppStringType(StringType, _CppBaseType):
     def cpp_name(self, boxed=False):
         return '::std::string'
 
-    def cpp_read_protocol(self, value):
-        return "iprot.read_string(%(value)s);" % locals()
+    def cpp_read_protocol(self, value, optional=False):
+        if optional:
+            return "%(value)s = iprot.read_string();" % locals()
+        else:
+            return "iprot.read_string(%(value)s);" % locals()
