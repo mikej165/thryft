@@ -26,7 +26,7 @@ class JsonInputProtocol : public StackedInputProtocol {
     public:
       char Peek() const {
         RAPIDJSON_ASSERT(src_p_ - src_ < src_len_);
-        return *src_;
+        return *src_p_;
       }
 
 	    char* PutBegin() { RAPIDJSON_ASSERT(false); return 0; }

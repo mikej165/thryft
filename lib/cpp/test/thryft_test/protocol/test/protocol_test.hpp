@@ -8,14 +8,19 @@ namespace protocol {
 namespace test {
 template <class TypeParam>
 class ProtocolTest : public ::testing::Test {
+protected:
+  void test(const ProtocolTestStruct& expected) {
+    TypeParam::OutputProtocolT oprot;
+    expected.write(oprot);
+    ProtocolTestStruct actual(TypeParam(oprot.to_string()));
+    ASSERT_EQ(expected, actual);
+  }
 };
 
 TYPED_TEST_CASE_P(ProtocolTest);
 
 TYPED_TEST_P(ProtocolTest, bool_) {
-  TypeParam::OutputProtocolT oprot;
-  ProtocolTestStruct().set_bool_field(true).write(oprot);
-  TypeParam iprot(oprot.to_string());
+  test(ProtocolTestStruct().set_bool_field(true));
 }
 
 //@Test

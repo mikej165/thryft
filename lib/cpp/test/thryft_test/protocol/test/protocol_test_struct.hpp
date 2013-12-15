@@ -199,6 +199,82 @@ public:
     return *this;
   }
 
+  bool operator==(const ProtocolTestStruct& other) const {
+    if (!(binary_field() == other.binary_field())) {
+      return false;
+    }
+
+    if (!(bool_field() == other.bool_field())) {
+      return false;
+    }
+
+    if (!(byte_field() == other.byte_field())) {
+      return false;
+    }
+
+    if (!(date_time_field() == other.date_time_field())) {
+      return false;
+    }
+
+    if (!(decimal_field() == other.decimal_field())) {
+      return false;
+    }
+
+    if (!(email_address_field() == other.email_address_field())) {
+      return false;
+    }
+
+    if (!(enum_field() == other.enum_field())) {
+      return false;
+    }
+
+    if (!(i16_field() == other.i16_field())) {
+      return false;
+    }
+
+    if (!(i32_field() == other.i32_field())) {
+      return false;
+    }
+
+    if (!(i64_field() == other.i64_field())) {
+      return false;
+    }
+
+    if (!(list_string_field() == other.list_string_field())) {
+      return false;
+    }
+
+    if (!(map_string_string_field() == other.map_string_string_field())) {
+      return false;
+    }
+
+    if (!(required_i32_field() == other.required_i32_field())) {
+      return false;
+    }
+
+    if (!(required_string_field() == other.required_string_field())) {
+      return false;
+    }
+
+    if (!(set_string_field() == other.set_string_field())) {
+      return false;
+    }
+
+    if (!(string_field() == other.string_field())) {
+      return false;
+    }
+
+    if (!(struct_field() == other.struct_field())) {
+      return false;
+    }
+
+    if (!(url_field() == other.url_field())) {
+      return false;
+    }
+
+    return true;
+  }
+
   void read(::thryft::protocol::InputProtocol& iprot) {
     read(iprot, ::thryft::protocol::Type::STRUCT);
   }

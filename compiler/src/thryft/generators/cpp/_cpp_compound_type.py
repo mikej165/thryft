@@ -280,9 +280,28 @@ void write(::thryft::protocol::OutputProtocol& oprot, ::thryft::protocol::Type::
         methods = []
         methods.extend(self._cpp_method_getters())
         methods.extend(self._cpp_method_setters())
+        methods.extend(self._cpp_operators())
         methods.append(self._cpp_method_read())
         methods.append(self._cpp_method_write())
         return methods
+
+    def _cpp_operator_equality(self):
+        field_comparisons = \
+            pad("\n", "\n\n".join(indent(' ' * 2, ("""\
+if (!(%s() == other.%s())) {
+  return false;
+}""")) % (field.cpp_getter_name(), field.cpp_getter_name())
+         for field in self.fields), "\n")
+        name = self.cpp_name()
+        return """\
+bool operator==(const %(name)s& other) const {%(field_comparisons)s
+  return true;
+}""" % locals()
+
+    def _cpp_operators(self):
+        operators = []
+        operators.append(self._cpp_operator_equality())
+        return operators
 
     def cpp_read_protocol(self, value, optional=False):
         if optional:
