@@ -1,6 +1,8 @@
 #ifndef _THRYFT_TEST_PROTOCOL_TEST_PROTOCOL_TEST_ENUM_HPP_
 #define _THRYFT_TEST_PROTOCOL_TEST_PROTOCOL_TEST_ENUM_HPP_
 
+#include <thryft.hpp>
+
 namespace thryft_test {
 namespace protocol {
 namespace test {

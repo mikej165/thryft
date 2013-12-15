@@ -131,13 +131,13 @@ public abstract class ProtocolTest {
     @Test
     public void testStruct() throws Exception {
         _test(new ProtocolTestStruct.Builder()
-                .setStructField(new ProtocolTestStruct.Builder().setI32Field(1)
-                        .setRequiredI32Field(1).setRequiredStringField("test")
-                        .build()));
+                .setStructField(new NestedProtocolTestStruct.Builder()
+                        .setI32Field(1).setRequiredI32Field(1)
+                        .setRequiredStringField("test").build()));
 
         // Empty struct
         _test(new ProtocolTestStruct.Builder()
-                .setStructField(new ProtocolTestStruct.Builder()
+                .setStructField(new NestedProtocolTestStruct.Builder()
                         .setRequiredI32Field(1).setRequiredStringField("test")
                         .build()));
     }

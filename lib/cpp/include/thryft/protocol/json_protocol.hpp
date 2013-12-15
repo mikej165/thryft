@@ -7,10 +7,58 @@
 #include "thryft/protocol/stacked_protocol.hpp"
 
 #include <rapidjson/document.h>
+#include <rapidjson/writer.h>
 
 namespace thryft {
 namespace protocol {
 class JsonProtocol : public StackedProtocol {
+  private:
+    class IovecStream {
+    public:
+      IovecStream(const char* src, size_t src_len)
+        : src_(src), src_p_(src), src_len_(src_len_) {
+      }
+
+    public:
+      char Peek() const {
+        RAPIDJSON_ASSERT(src_p_ - src_ < src_len_);
+        return *src_;
+      }
+
+	    char* PutBegin() { RAPIDJSON_ASSERT(false); return 0; }
+	    void Put(char) { RAPIDJSON_ASSERT(false); }
+	    size_t PutEnd(char*) { RAPIDJSON_ASSERT(false); return 0; }
+
+      char Take() {
+        RAPIDJSON_ASSERT(src_p_ - src_ < src_len_);
+        return *src_p_++;
+      }
+
+      size_t Tell() const {
+        RAPIDJSON_ASSERT(src_p_ - src_ < src_len_);
+        return src_p_ - src_;
+      }
+
+    private:
+      const char *src_, *src_p_;
+      size_t src_len_;
+    };
+
+    class StlStringStream {
+    public:
+	    StlStringStream(::std::string& dst)
+        : dst_(dst) {
+        }
+
+    public:
+	    void Put(char c) { dst_.append(1, c); }
+
+    private:
+      ::std::string& dst_;
+    };
+
+    typedef ::rapidjson::Writer< StlStringStream > StlStringWriter;
+
   protected:
     class ReaderProtocolFactory;
 
@@ -250,8 +298,19 @@ class JsonProtocol : public StackedProtocol {
     };
 
   public:
-    JsonProtocol(const uint8_t* json, size_t json_len) {
-      init(json, json_len, new DefaultReaderProtocolFactory());
+    JsonProtocol()
+      : writer_stream_(writer_string_), writer_(writer_stream_) {
+      reader_protocol_factory_ = NULL;
+    }
+
+    JsonProtocol(const ::std::string& json)
+      : writer_stream_(writer_string_), writer_(writer_stream_) {
+      init(json.data(), json.size(), new DefaultReaderProtocolFactory);
+    }
+
+    JsonProtocol(const char* json, size_t json_len)
+      : writer_stream_(writer_string_), writer_(writer_stream_) {
+      init(json, json_len, new DefaultReaderProtocolFactory);
     }
 
     ~JsonProtocol() {
@@ -259,6 +318,78 @@ class JsonProtocol : public StackedProtocol {
     }
 
   public:
+    ::std::string to_string() {
+      if (reader_protocol_factory_ != NULL) {
+        ::std::string out;
+        StlStringStream stream(out);
+        StlStringWriter writer(stream);
+        document_.Accept(writer);
+        return out;
+      } else {
+        return writer_string_;
+      }
+    }
+
+  public:
+    // Protocol
+    virtual void write(const void* value, size_t value_len) {
+      writer_.String(static_cast<const char*>(value), value_len);
+    }
+
+    virtual void write(bool value) {
+      writer_.Bool(value);
+    }
+
+    virtual void write(double value) {
+      writer_.Double(value);
+    }
+
+    virtual void write_field_begin(const char* name, Type::Enum type,
+                                   int16_t id) {
+      writer_.String(name);
+    }
+
+    virtual void write(int32_t value) {
+      writer_.Int(value);
+    }
+
+    virtual void write(int64_t value) {
+      writer_.Int64(value);
+    }
+
+    virtual void write(const char* value, size_t value_len) {
+      writer_.String(value, value_len);
+    }
+
+    virtual void write_list_begin(Type::Enum element_type, uint32_t size) {
+      writer_.StartArray();
+    }
+
+    virtual void write_list_end() {
+      writer_.EndArray();
+    }
+
+    virtual void write_map_begin(Type::Enum key_type, Type::Enum value_type,
+                                 uint32_t size) {
+      writer_.StartObject();
+    }
+
+    virtual void write_map_end() {
+      writer_.EndObject();
+    }
+
+    virtual void write_null() {
+      writer_.Null();
+    }
+
+    virtual void write_struct_begin() {
+      writer_.StartObject();
+    }
+
+    virtual void write_struct_end() {
+      writer_.EndObject();
+    }
+
     // StackedProtocol
     void reset() {
       StackedProtocol::reset();
@@ -267,11 +398,12 @@ class JsonProtocol : public StackedProtocol {
     }
 
   private:
-    void init(const uint8_t* json, size_t json_len,
+    void init(const char* json, size_t json_len,
               ReaderProtocolFactory* reader_protocol_factory) {
       this->reader_protocol_factory_ = reader_protocol_factory;
-      document_.Parse<0>(::std::string(reinterpret_cast<const char*>(json),
-                                       json_len).c_str());
+
+      IovecStream stream(json, json_len);
+      document_.ParseStream<0>(stream);
       RAPIDJSON_ASSERT(!document_.HasParseError());
       reset();
     }
@@ -279,6 +411,9 @@ class JsonProtocol : public StackedProtocol {
   private:
     ::rapidjson::Document document_;
     ReaderProtocolFactory* reader_protocol_factory_;
+    StlStringWriter writer_;
+    StlStringStream writer_stream_;
+    ::std::string writer_string_;
 };
 }
 }

@@ -11,15 +11,15 @@ class Optional {
       : present_(false) {
     }
 
-    Optional(const T& value)
-      : present_(true) {
+    Optional(const T& value) {
       init(value);
     }
 
-    Optional(const Optional<T>& other)
-      : present_(other.present_) {
-      if (present_) {
+    Optional(const Optional<T>& other) {
+      if (other.present_) {
         init(other.get());
+      } else {
+        present_ = false;
       }
     }
 
@@ -43,27 +43,42 @@ class Optional {
       return get();
     }
 
+    const T* operator->() const {
+      return &get();
+    }
+
+    T* operator->() {
+      return &get();
+    }
+
     operator bool() const {
       return present_;
     }
 
     Optional<T>& operator=(const T& value) {
-      destroy();
-      this->present_ = true;
-      init(value);
-      return *this;
+      return set(value);
     }
 
     Optional<T>& operator=(const Optional<T>& value) {
-      destroy();
-      if (present_ == value.present_) {
-        init(value.get());
-      }
-      return *this;
+      return set(value);
     }
 
     bool present() const {
       return present_;
+    }
+
+    Optional<T>& set(const T& value) {
+      destroy();
+      init(value);
+      return *this;
+    }
+
+    Optional<T>& set(const Optional<T>& value) {
+      destroy();
+      if (value.present_) {
+        init(value.get());
+      }
+      return *this;
     }
 
   private:
@@ -76,6 +91,7 @@ class Optional {
 
     void init(const T& value) {
       new(this->value()) T(value);
+      present_ = true;
     }
 
     void* value() {

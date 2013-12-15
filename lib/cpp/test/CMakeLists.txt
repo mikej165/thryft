@@ -1,3 +1,4 @@
+include_directories(${CMAKE_SOURCE_DIR}/test)
 file(GLOB SRC *.cpp *.hpp)
 file(GLOB SRC_THRYFT_TEST_PROTOCOL_TEST "thryft_test/protocol/test/*.cpp" "thryft_test/protocol/test/*.hpp")
 source_group("Source Files\\thryft_test\\protocol\\test\\" FILES ${SRC_THRYFT_TEST_PROTOCOL_TEST})

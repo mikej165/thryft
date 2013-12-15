@@ -46,6 +46,7 @@ import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Test;
+import org.thryft.protocol.test.NestedProtocolTestStruct;
 import org.thryft.protocol.test.ProtocolTestEnum;
 import org.thryft.protocol.test.ProtocolTestStruct;
 import org.thryft.store.AbstractStore;
@@ -83,7 +84,8 @@ public abstract class StoreTest {
                     .setRequiredI32Field(1).setRequiredStringField("test")
                     .setSetStringField(ImmutableSet.of("Test model " + modelI))
                     .setStringField("testmodel" + modelI)
-                    .setStructField(new ProtocolTestStruct(1, "test")).build();
+                    .setStructField(new NestedProtocolTestStruct(1, "test"))
+                    .build();
             models.put(model.getStringField().get(), model);
         }
         this.models = models.build();

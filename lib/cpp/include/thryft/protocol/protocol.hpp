@@ -115,11 +115,12 @@ class Protocol {
                                 uint32_t& out_size) = 0;
     virtual void read_set_end() = 0;
 
-    void read_string(Optional< ::std::string >& out_value) {
-      std::string temp_value;
-      read_string(temp_value);
-      out_value = temp_value;
+    ::std::string read_string() {
+      ::std::string temp;
+      read_string(temp);
+      return temp;
     }
+
     virtual void read_string(std::string& out_value) = 0;
     virtual void read_string(char*& out_value, size_t& out_value_len) = 0;
 
