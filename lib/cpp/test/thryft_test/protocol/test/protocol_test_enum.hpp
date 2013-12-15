@@ -13,7 +13,7 @@ public:
     ENUMERATOR2 = 2
   };
 
-  static Enum read(::thryft::protocol::Protocol& iprot) {
+  static Enum read(::thryft::protocol::InputProtocol& iprot) {
     ::std::string name;
     iprot.read_string(name);
     if (name == "ENUMERATOR1") {
@@ -24,7 +24,7 @@ public:
     return ENUMERATOR1;
   }
 
-  static void write(::thryft::protocol::Protocol& oprot, Enum value) {
+  static void write(::thryft::protocol::OutputProtocol& oprot, Enum value) {
     switch (value) {
     case ENUMERATOR1: oprot.write("ENUMERATOR1", 11); break;
     case ENUMERATOR2: oprot.write("ENUMERATOR2", 11); break;

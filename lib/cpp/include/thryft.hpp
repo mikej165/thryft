@@ -8,7 +8,9 @@
 #include "thryft/optional.hpp"
 #include "thryft/set.hpp"
 #include "thryft/struct.hpp"
-#include "thryft/protocol/abstract_protocol.hpp"
-#include "thryft/protocol/protocol.hpp"
+#include "thryft/protocol/abstract_input_protocol.hpp"
+#include "thryft/protocol/abstract_output_protocol.hpp"
+#include "thryft/protocol/stacked_input_protocol.hpp"
+#include "thryft/protocol/stacked_output_protocol.hpp"
 
 #endif  // _THRYFT_HPP_

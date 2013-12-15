@@ -13,7 +13,7 @@ class ProtocolTest : public ::testing::Test {
 TYPED_TEST_CASE_P(ProtocolTest);
 
 TYPED_TEST_P(ProtocolTest, bool_) {
-  TypeParam oprot;
+  TypeParam::OutputProtocolT oprot;
   ProtocolTestStruct().set_bool_field(true).write(oprot);
   TypeParam iprot(oprot.to_string());
 }

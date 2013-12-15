@@ -169,7 +169,7 @@ class Response : public Message {
 
 %(message_types)s
 
-static Request* read_request(const char* function_name, ::thryft::protocol::Protocol& iprot, ::thryft::protocol::Protocol::Type::Enum as_type) {
+static Request* read_request(const char* function_name, ::thryft::protocol::Protocol& iprot, ::thryft::protocol::Type::Enum as_type) {
   if (function_name == NULL) {
     return NULL;
   }

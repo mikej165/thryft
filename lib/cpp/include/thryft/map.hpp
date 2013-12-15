@@ -4,21 +4,22 @@
 #include <map>
 
 #include "thryft/base.hpp"
-#include "thryft/protocol/protocol.hpp"
+#include "thryft/protocol/input_protocol.hpp"
+#include "thryft/protocol/output_protocol.hpp"
 
 namespace thryft {
 template <
   typename KeyCppT,
-  ::thryft::protocol::Protocol::Type::Enum KeyThriftT,
+  ::thryft::protocol::Type::Enum KeyThriftT,
   typename ValueCppT,
-  ::thryft::protocol::Protocol::Type::Enum ValueThriftT
+  ::thryft::protocol::Type::Enum ValueThriftT
   >
 class Map : public ::thryft::Base, public ::std::map< KeyCppT, ValueCppT > {
   public:
     Map() {
     }
 
-    Map(protocol::Protocol& iprot) {
+    Map(protocol::InputProtocol& iprot) {
       read(iprot);
     }
 
@@ -26,8 +27,8 @@ class Map : public ::thryft::Base, public ::std::map< KeyCppT, ValueCppT > {
     }
 
   public:
-    void read(protocol::Protocol& iprot) {
-      protocol::Protocol::Type::Enum key_type, value_type;
+    void read(protocol::InputProtocol& iprot) {
+      protocol::Type::Enum key_type, value_type;
       uint32_t size = 0;
       iprot.read_map_begin(key_type, value_type, size);
       if (size == 0) {
@@ -44,7 +45,7 @@ class Map : public ::thryft::Base, public ::std::map< KeyCppT, ValueCppT > {
       iprot.read_map_end();
     }
 
-    void write(protocol::Protocol& oprot) const {
+    void write(protocol::OutputProtocol& oprot) const {
       oprot.write_map_begin(KeyThriftT, ValueThriftT, size());
       for (const_iterator i = begin(); i != end(); ++i) {
         oprot.write(i->first);

@@ -90,13 +90,13 @@ public:
   enum Enum {%(enumerators)s
   };
 
-  static Enum read(::thryft::protocol::Protocol& iprot) {
+  static Enum read(::thryft::protocol::InputProtocol& iprot) {
     ::std::string name;
     iprot.read_string(name);%(enumerator_value_ofs)s
     return %(default_value)s;
   }
 
-  static void write(::thryft::protocol::Protocol& oprot, Enum value) {
+  static void write(::thryft::protocol::OutputProtocol& oprot, Enum value) {
     switch (value) {%(enumerator_write_cases)s
     default:
       oprot.write_null();

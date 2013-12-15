@@ -58,11 +58,11 @@ class _CppCompoundType(_CppType):
     def _cpp_constructor_protocol(self):
         name = self.cpp_name()
         return """\
-%(name)s(::thryft::protocol::Protocol& iprot) {
+%(name)s(::thryft::protocol::InputProtocol& iprot) {
   read(iprot);
 }
 
-%(name)s(::thryft::protocol::Protocol& iprot, ::thryft::protocol::Protocol::Type::Enum as_type) {
+%(name)s(::thryft::protocol::InputProtocol& iprot, ::thryft::protocol::Type::Enum as_type) {
   read(iprot, as_type);
 }""" % locals()
 
@@ -184,29 +184,29 @@ if (list_size > %(field_i)u) {
             lpad("\n", indent(' ' * 6, "\n".join(field_read_protocol_positional)))
         name = self.cpp_name()
         return """\
-void read(::thryft::protocol::Protocol& iprot) {
-  read(iprot, ::thryft::protocol::Protocol::Type::STRUCT);
+void read(::thryft::protocol::InputProtocol& iprot) {
+  read(iprot, ::thryft::protocol::Type::STRUCT);
 }
 
-void read(::thryft::protocol::Protocol& iprot, ::thryft::protocol::Protocol::Type::Enum as_type) {
+void read(::thryft::protocol::InputProtocol& iprot, ::thryft::protocol::Type::Enum as_type) {
   switch (as_type) {
-    case ::thryft::protocol::Protocol::Type::LIST: {
-      ::thryft::protocol::Protocol::Type::Enum list_element_type;
+    case ::thryft::protocol::Type::LIST: {
+      ::thryft::protocol::Type::Enum list_element_type;
       uint32_t list_size;
       iprot.read_list_begin(list_element_type, list_size);%(field_read_protocol_positional)s
       iprot.read_list_end();
       break;
     }
 
-    case ::thryft::protocol::Protocol::Type::STRUCT:
+    case ::thryft::protocol::Type::STRUCT:
     default: {
       iprot.read_struct_begin();
       int16_t ifield_id;
       ::std::string ifield_name;
-      ::thryft::protocol::Protocol::Type::Enum ifield_type;
+      ::thryft::protocol::Type::Enum ifield_type;
       for (;;) {
         iprot.read_field_begin(ifield_name, ifield_type, ifield_id);
-        if (ifield_type == ::thryft::protocol::Protocol::Type::STOP) {
+        if (ifield_type == ::thryft::protocol::Type::STOP) {
           break;
         }%(field_read_protocol_named)s
         iprot.read_field_end();
@@ -221,7 +221,7 @@ void read(::thryft::protocol::Protocol& iprot, ::thryft::protocol::Protocol::Typ
         return [field.cpp_setter() for field in self.fields]
 
     def _cpp_method_write(self):
-        case_ttype_void = 'case ::thryft::protocol::Protocol::Type::VOID:'
+        case_ttype_void = 'case ::thryft::protocol::Type::VOID:'
         if len(self.fields) == 1:
             field = self.fields[0]
             from thryft.generators.cpp._cpp_container_type import _CppContainerType
@@ -252,19 +252,19 @@ void read(::thryft::protocol::Protocol& iprot, ::thryft::protocol::Protocol::Typ
         name = self.cpp_name()
 
         return """\
-void write(::thryft::protocol::Protocol& oprot) const {
-  write(oprot, ::thryft::protocol::Protocol::Type::STRUCT);
+void write(::thryft::protocol::OutputProtocol& oprot) const {
+  write(oprot, ::thryft::protocol::Type::STRUCT);
 }
 
-void write(::thryft::protocol::Protocol& oprot, ::thryft::protocol::Protocol::Type::Enum as_type) const {
+void write(::thryft::protocol::OutputProtocol& oprot, ::thryft::protocol::Type::Enum as_type) const {
   switch (as_type) {
   %(case_ttype_void)s
-  case ::thryft::protocol::Protocol::Type::LIST:
-    oprot.write_list_begin(::thryft::protocol::Protocol::Type::VOID, %(field_count)u);%(field_value_write_protocols)s
+  case ::thryft::protocol::Type::LIST:
+    oprot.write_list_begin(::thryft::protocol::Type::VOID, %(field_count)u);%(field_value_write_protocols)s
     oprot.write_list_end();
     break;
 
-  case ::thryft::protocol::Protocol::Type::STRUCT:
+  case ::thryft::protocol::Type::STRUCT:
   default:
     oprot.write_struct_begin();%(field_write_protocols)s
 

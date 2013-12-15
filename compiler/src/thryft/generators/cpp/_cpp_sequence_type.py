@@ -45,7 +45,7 @@ class _CppSequenceType(_CppContainerType):
 
     def cpp_qname(self):
         return \
-            "::thryft::%s< %s, ::thryft::protocol::Protocol::Type::%s >" % (
+            "::thryft::%s< %s, ::thryft::protocol::Type::%s >" % (
                 self._thrift_name(),
                 self.element_type.cpp_qname(),
                 self.element_type.thrift_ttype_name()

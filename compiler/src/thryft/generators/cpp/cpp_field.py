@@ -130,7 +130,7 @@ const %(type_name)s& %(name)s() const {
         write_protocol = self.type.cpp_write_protocol(value)
         if write_field:
             write_protocol = """\
-oprot.write_field_begin("%(name)s", ::thryft::protocol::Protocol::Type::%(ttype)s, static_cast<int16_t>(%(id_)d));
+oprot.write_field_begin("%(name)s", ::thryft::protocol::Type::%(ttype)s, static_cast<int16_t>(%(id_)d));
 %(write_protocol)s
 oprot.write_field_end();
 """ % locals()

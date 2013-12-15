@@ -47,7 +47,7 @@ class CppMapType(MapType, _CppContainerType):
 
     def cpp_qname(self):
         return \
-            "::thryft::Map< %s, ::thryft::protocol::Protocol::Type::%s, %s, ::thryft::protocol::Protocol::Type::%s >" % (
+            "::thryft::Map< %s, ::thryft::protocol::Type::%s, %s, ::thryft::protocol::Type::%s >" % (
                 self.key_type.cpp_qname(),
                 self.key_type.thrift_ttype_name(),
                 self.value_type.cpp_qname(),
