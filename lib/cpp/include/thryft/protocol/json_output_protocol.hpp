@@ -1,8 +1,6 @@
 #ifndef _THRYFT_PROTOCOL_JSON_PROTOCOL_HPP_
 #define _THRYFT_PROTOCOL_JSON_PROTOCOL_HPP_
 
-#include <stack>
-
 #include "thryft/protocol/abstract_output_protocol.hpp"
 
 #include <rapidjson/document.h>
