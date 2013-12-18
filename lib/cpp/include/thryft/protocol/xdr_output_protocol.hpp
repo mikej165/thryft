@@ -53,12 +53,12 @@ class XdrOutputProtocol : public AbstractOutputProtocol {
     }
 
     virtual void write(int32_t value) {
-      value = my_htonl(value);
+      value = static_cast<int32_t>(my_htonl(static_cast<uint32_t>(value)));
       write(&value, sizeof(value));
     }
 
     virtual void write(int64_t value) {
-      value = my_htonll(value);
+      value = static_cast<int64_t>(my_htonll(static_cast<uint64_t>(value)));
       write(&value, sizeof(value));
     }
 

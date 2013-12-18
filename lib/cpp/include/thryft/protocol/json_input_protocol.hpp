@@ -312,8 +312,9 @@ class JsonInputProtocol : public StackedInputProtocol {
               JsonValueInputProtocolFactory* reader_protocol_factory) {
       this->reader_protocol_factory_ = reader_protocol_factory;
 
-      IovecStream stream(json, json_len);
-      document_.ParseStream<0>(stream);
+      //IovecStream stream(json, json_len);
+      document_.Parse<0>(::std::string(json, json_len).c_str());
+      //document_.ParseStream<0>(stream);
       RAPIDJSON_ASSERT(!document_.HasParseError());
       reset();
     }

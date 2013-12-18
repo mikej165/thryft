@@ -12,5 +12,7 @@
 #include "thryft/protocol/abstract_output_protocol.hpp"
 #include "thryft/protocol/stacked_input_protocol.hpp"
 #include "thryft/protocol/stacked_output_protocol.hpp"
+#include "thryft/protocol/xdr_input_protocol.hpp"
+#include "thryft/protocol/xdr_output_protocol.hpp"
 
 #endif  // _THRYFT_HPP_
