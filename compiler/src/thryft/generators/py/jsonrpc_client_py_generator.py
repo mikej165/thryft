@@ -182,21 +182,21 @@ def __request(self, method, headers=None, **kwds):
     else:
         headers = self.__headers
 
-    request = urllib2.Request(self.__api_url, request_json, headers)
-    request.get_method = lambda: 'POST'
+    http_request = urllib2.Request(self.__api_url, request_json, headers)
+    http_request.get_method = lambda: 'POST'
 
-    response = urllib2.urlopen(request)
+    http_response = urllib2.urlopen(http_request)
 
     response_json = []
     while True:
-        response_datum = response.read()
+        response_datum = http_response.read()
         if len(response_datum) == 0:
             break
         response_json.append(response_datum)
     response_json = ''.join(response_json)
 
     response = json.loads(response_json)
-    if response.get('id') != str(request['id']):
+    if str(response.get('id')) != str(request['id']):
         raise RuntimeError("JSON-RPC: mismatched id: got %%s, expected %%s" %% (response.get('id'), request['id']))
     if response.get('jsonrpc') != '2.0':
         raise RuntimeError("JSON-RPC: unexpected version: " + str(response.get('jsonrpc')))
