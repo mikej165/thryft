@@ -63,7 +63,8 @@ class XdrInputProtocol : public AbstractInputProtocol {
 
     void read_list_begin(Type::Enum& out_element_type,
                                       size_t& out_size) {
-      out_element_type = static_cast<Type::Enum>(read_i32());
+      //out_element_type = static_cast<Type::Enum>(read_i32());
+      // Stick with ONC-RPC variable-sized array rules = size + contents
       out_size = static_cast<size_t>(read_i32());
     }
 
@@ -72,8 +73,8 @@ class XdrInputProtocol : public AbstractInputProtocol {
 
     virtual void read_map_begin(Type::Enum& out_key_type,
                                 Type::Enum& out_value_type, uint32_t& out_size) {
-      out_key_type = static_cast<Type::Enum>(read_i32());
-      out_value_type = static_cast<Type::Enum>(read_i32());
+      //out_key_type = static_cast<Type::Enum>(read_i32());
+      //out_value_type = static_cast<Type::Enum>(read_i32());
       out_size = static_cast<uint32_t>(read_i32());
     }
 

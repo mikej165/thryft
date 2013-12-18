@@ -89,7 +89,8 @@ class XdrOutputProtocol : public AbstractOutputProtocol {
     }
 
     virtual void write_list_begin(Type::Enum element_type, uint32_t size) {
-      write(static_cast<int32_t>(element_type));
+      //write(static_cast<int32_t>(element_type));
+      // Stick with ONC-RPC variable-sized array rules = size + contents
       write(static_cast<int32_t>(size));
     }
 
@@ -98,8 +99,8 @@ class XdrOutputProtocol : public AbstractOutputProtocol {
 
     virtual void write_map_begin(Type::Enum key_type, Type::Enum value_type,
                                  uint32_t size) {
-      write(static_cast<int32_t>(key_type));
-      write(static_cast<int32_t>(value_type));
+      //write(static_cast<int32_t>(key_type));
+      //write(static_cast<int32_t>(value_type));
       write(static_cast<int32_t>(size));
     }
 
