@@ -250,7 +250,23 @@ class JsonInputProtocol : public StackedInputProtocol {
           if (next_child_node_i != node().MemberEnd()) {
             out_name.assign(next_child_node_i->name.GetString(),
                             next_child_node_i->name.GetStringLength());
-            out_type = Type::VOID;
+            if (next_child_node_i->value.IsArray()) {
+              out_type = Type::LIST;
+            } else if (next_child_node_i->value.IsBool()) {
+              out_type = Type::BOOL;
+            } else if (next_child_node_i->value.IsDouble()) {
+              out_type = Type::DOUBLE;
+            } else if (next_child_node_i->value.IsInt()) {
+              out_type = Type::I32;
+            } else if (next_child_node_i->value.IsInt64()) {
+              out_type = Type::I64;
+            } else if (next_child_node_i->value.IsObject()) {
+              out_type = Type::STRUCT;
+            } else if (next_child_node_i->value.IsString()) {
+              out_type = Type::STRING;
+            } else {
+              RAPIDJSON_ASSERT(false);
+            }
             out_id = -1;
           } else {
             out_name.clear();
