@@ -19,13 +19,13 @@ using ::thryft::protocol::Type;
 
 template <class TypeParam>
 class ProtocolTest : public ::testing::Test {
-protected:
-  void test(const ProtocolTestStruct& expected) {
-    TypeParam::OutputProtocolT oprot;
-    expected.write(oprot);
-    ProtocolTestStruct actual(TypeParam(oprot.to_string()));
-    ASSERT_EQ(expected, actual);
-  }
+  protected:
+    void test(const ProtocolTestStruct& expected) {
+      TypeParam::OutputProtocolT oprot;
+      expected.write(oprot);
+      ProtocolTestStruct actual(TypeParam(oprot.to_string()));
+      ASSERT_EQ(expected, actual);
+    }
 };
 
 TYPED_TEST_CASE_P(ProtocolTest);
@@ -57,7 +57,8 @@ TYPED_TEST_P(ProtocolTest, list_string) {
 }
 
 TYPED_TEST_P(ProtocolTest, list_string_empty) {
-  test(ProtocolTestStruct().set_list_string_field(List<::std::string, Type::STRING>()));
+  test(ProtocolTestStruct().set_list_string_field(
+         List<::std::string, Type::STRING>()));
 }
 
 TYPED_TEST_P(ProtocolTest, map_string_string) {
@@ -67,7 +68,8 @@ TYPED_TEST_P(ProtocolTest, map_string_string) {
 }
 
 TYPED_TEST_P(ProtocolTest, map_string_string_empty) {
-  test(ProtocolTestStruct().set_map_string_string_field(Map<::std::string, Type::STRING, ::std::string, Type::STRING>()));
+  test(ProtocolTestStruct().set_map_string_string_field(
+         Map<::std::string, Type::STRING, ::std::string, Type::STRING>()));
 }
 
 TYPED_TEST_P(ProtocolTest, set_string) {
@@ -77,7 +79,8 @@ TYPED_TEST_P(ProtocolTest, set_string) {
 }
 
 TYPED_TEST_P(ProtocolTest, set_string_empty) {
-  test(ProtocolTestStruct().set_set_string_field(Set<::std::string, Type::STRING>()));
+  test(ProtocolTestStruct().set_set_string_field(
+         Set<::std::string, Type::STRING>()));
 }
 
 TYPED_TEST_P(ProtocolTest, string) {
@@ -85,7 +88,8 @@ TYPED_TEST_P(ProtocolTest, string) {
 }
 
 TYPED_TEST_P(ProtocolTest, struct_) {
-  test(ProtocolTestStruct().set_struct_field(NestedProtocolTestStruct().set_string_field("test")));
+  test(ProtocolTestStruct().set_struct_field(
+         NestedProtocolTestStruct().set_string_field("test")));
 }
 
 TYPED_TEST_P(ProtocolTest, struct_empty) {

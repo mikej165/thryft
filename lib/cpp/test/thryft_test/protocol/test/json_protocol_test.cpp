@@ -7,7 +7,8 @@ namespace protocol {
 namespace test {
 using ::thryft::protocol::JsonInputProtocol;
 
-INSTANTIATE_TYPED_TEST_CASE_P(JsonInputProtocol, ProtocolTest, JsonInputProtocol);
+INSTANTIATE_TYPED_TEST_CASE_P(JsonInputProtocol, ProtocolTest,
+                              JsonInputProtocol);
 }
 }
 }

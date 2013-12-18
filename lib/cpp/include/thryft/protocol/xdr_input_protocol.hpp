@@ -36,7 +36,7 @@ class XdrInputProtocol : public AbstractInputProtocol {
     }
 
     void read_field_begin(std::string& out_name, Type::Enum& out_type,
-                                  int16_t& out_id) {
+                          int16_t& out_id) {
       read_string(out_name);
       out_type = static_cast<Type::Enum>(read_i32());
       out_id = read_i16();
@@ -62,7 +62,7 @@ class XdrInputProtocol : public AbstractInputProtocol {
     }
 
     void read_list_begin(Type::Enum& out_element_type,
-                                      size_t& out_size) {
+                         size_t& out_size) {
       //out_element_type = static_cast<Type::Enum>(read_i32());
       // Stick with ONC-RPC variable-sized array rules = size + contents
       out_size = static_cast<size_t>(read_i32());
@@ -117,27 +117,27 @@ class XdrInputProtocol : public AbstractInputProtocol {
 #ifdef __BIG_ENDIAN__
       return x;
 #else
-  return (x >> 24) |
-         ((x << 8) & 0x00FF0000) |
-         ((x >> 8) & 0x0000FF00) |
-         (x << 24);
+      return (x >> 24) |
+             ((x << 8) & 0x00FF0000) |
+             ((x >> 8) & 0x0000FF00) |
+             (x << 24);
 #endif
-}
+    }
 
-  static inline uint64_t my_ntohll(uint64_t x) {
+    static inline uint64_t my_ntohll(uint64_t x) {
 #ifdef __BIG_ENDIAN__
-  return x;
+      return x;
 #else
-  return (x >> 56) |
-         ((x << 40) & 0x00FF000000000000ULL) |
-         ((x << 24) & 0x0000FF0000000000ULL) |
-         ((x << 8)  & 0x000000FF00000000ULL) |
-         ((x >> 8)  & 0x00000000FF000000ULL) |
-         ((x >> 24) & 0x0000000000FF0000ULL) |
-         ((x >> 40) & 0x000000000000FF00ULL) |
-         (x << 56);
+      return (x >> 56) |
+             ((x << 40) & 0x00FF000000000000ULL) |
+             ((x << 24) & 0x0000FF0000000000ULL) |
+             ((x << 8)  & 0x000000FF00000000ULL) |
+             ((x >> 8)  & 0x00000000FF000000ULL) |
+             ((x >> 24) & 0x0000000000FF0000ULL) |
+             ((x >> 40) & 0x000000000000FF00ULL) |
+             (x << 56);
 #endif
-  }
+    }
 
     void read(void* buf, size_t len) {
       if (xdr_p_ + len <= xdr_pe_) {

@@ -11,16 +11,18 @@ namespace protocol {
 class JsonOutputProtocol : public AbstractOutputProtocol {
   private:
     class StlStringStream {
-    public:
-	    StlStringStream(::std::string& dst)
-        : dst_(dst) {
+      public:
+        StlStringStream(::std::string& dst)
+          : dst_(dst) {
         }
 
-    public:
-	    void Put(char c) { dst_.append(1, c); }
+      public:
+        void Put(char c) {
+          dst_.append(1, c);
+        }
 
-    private:
-      ::std::string& dst_;
+      private:
+        ::std::string& dst_;
     };
 
     typedef ::rapidjson::Writer< StlStringStream > StlStringWriter;

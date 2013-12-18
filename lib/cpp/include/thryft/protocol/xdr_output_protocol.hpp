@@ -118,35 +118,35 @@ class XdrOutputProtocol : public AbstractOutputProtocol {
     }
 
   private:
-static inline uint32_t my_htonl(uint32_t x) {
+    static inline uint32_t my_htonl(uint32_t x) {
 #ifdef __BIG_ENDIAN__
-  return x;
+      return x;
 #else
-  return (x >> 24) |
-         ((x << 8) & 0x00FF0000) |
-         ((x >> 8) & 0x0000FF00) |
-         (x << 24);
+      return (x >> 24) |
+             ((x << 8) & 0x00FF0000) |
+             ((x >> 8) & 0x0000FF00) |
+             (x << 24);
 #endif
-}
+    }
 
-static inline uint64_t my_htonll(uint64_t x) {
+    static inline uint64_t my_htonll(uint64_t x) {
 #ifdef __BIG_ENDIAN__
-  return x;
+      return x;
 #else
-  return (x >> 56) |
-         ((x << 40) & 0x00FF000000000000ULL) |
-         ((x << 24) & 0x0000FF0000000000ULL) |
-         ((x << 8)  & 0x000000FF00000000ULL) |
-         ((x >> 8)  & 0x00000000FF000000ULL) |
-         ((x >> 24) & 0x0000000000FF0000ULL) |
-         ((x >> 40) & 0x000000000000FF00ULL) |
-         (x << 56);
+      return (x >> 56) |
+             ((x << 40) & 0x00FF000000000000ULL) |
+             ((x << 24) & 0x0000FF0000000000ULL) |
+             ((x << 8)  & 0x000000FF00000000ULL) |
+             ((x >> 8)  & 0x00000000FF000000ULL) |
+             ((x >> 24) & 0x0000000000FF0000ULL) |
+             ((x >> 40) & 0x000000000000FF00ULL) |
+             (x << 56);
 #endif
-}
-  
-  void do_write(const void* value, size_t value_len) {
-    to_string_.append(static_cast<const char*>(value), value_len);
-  }
+    }
+
+    void do_write(const void* value, size_t value_len) {
+      to_string_.append(static_cast<const char*>(value), value_len);
+    }
 
   private:
     ::std::string to_string_;

@@ -18,34 +18,42 @@ class JsonInputProtocol : public StackedInputProtocol {
 
   private:
     class IovecStream {
-    public:
-      IovecStream(const char* src, size_t src_len)
-        : src_(src), src_p_(src), src_len_(src_len_) {
-      }
+      public:
+        IovecStream(const char* src, size_t src_len)
+          : src_(src), src_p_(src), src_len_(src_len_) {
+        }
 
-    public:
-      char Peek() const {
-        RAPIDJSON_ASSERT(src_p_ - src_ < src_len_);
-        return *src_p_;
-      }
+      public:
+        char Peek() const {
+          RAPIDJSON_ASSERT(src_p_ - src_ < src_len_);
+          return *src_p_;
+        }
 
-	    char* PutBegin() { RAPIDJSON_ASSERT(false); return 0; }
-	    void Put(char) { RAPIDJSON_ASSERT(false); }
-	    size_t PutEnd(char*) { RAPIDJSON_ASSERT(false); return 0; }
+        char* PutBegin() {
+          RAPIDJSON_ASSERT(false);
+          return 0;
+        }
+        void Put(char) {
+          RAPIDJSON_ASSERT(false);
+        }
+        size_t PutEnd(char*) {
+          RAPIDJSON_ASSERT(false);
+          return 0;
+        }
 
-      char Take() {
-        RAPIDJSON_ASSERT(src_p_ - src_ < src_len_);
-        return *src_p_++;
-      }
+        char Take() {
+          RAPIDJSON_ASSERT(src_p_ - src_ < src_len_);
+          return *src_p_++;
+        }
 
-      size_t Tell() const {
-        RAPIDJSON_ASSERT(src_p_ - src_ < src_len_);
-        return src_p_ - src_;
-      }
+        size_t Tell() const {
+          RAPIDJSON_ASSERT(src_p_ - src_ < src_len_);
+          return src_p_ - src_;
+        }
 
-    private:
-      const char *src_, *src_p_;
-      size_t src_len_;
+      private:
+        const char* src_, *src_p_;
+        size_t src_len_;
     };
 
   protected:
@@ -90,8 +98,9 @@ class JsonInputProtocol : public StackedInputProtocol {
                i != child_node.MemberEnd(); ++i) {
             out_size++;
           }
-          protocol_stack_.push(reader_protocol_factory_.create_json_map_object_input_protocol(
-                                 child_node, protocol_stack_));
+          protocol_stack_.push(
+            reader_protocol_factory_.create_json_map_object_input_protocol(
+              child_node, protocol_stack_));
         }
 
         void read_string(std::string& out_value) {
@@ -129,8 +138,8 @@ class JsonInputProtocol : public StackedInputProtocol {
 
       protected:
         JsonValueInputProtocol(const ::rapidjson::Value& node,
-                       ::std::stack< InputProtocol* >& protocol_stack,
-                       const JsonValueInputProtocolFactory& reader_protocol_factory)
+                               ::std::stack< InputProtocol* >& protocol_stack,
+                               const JsonValueInputProtocolFactory& reader_protocol_factory)
           : node_(node), protocol_stack_(protocol_stack),
             reader_protocol_factory_(reader_protocol_factory) {
         }
@@ -151,13 +160,15 @@ class JsonInputProtocol : public StackedInputProtocol {
 
     class JsonValueInputProtocolFactory {
       public:
-        virtual JsonValueInputProtocol* create_json_array_input_protocol(const ::rapidjson::Value&
-            node, ::std::stack< InputProtocol* >& protocol_stack) const = 0;
+        virtual JsonValueInputProtocol* create_json_array_input_protocol(
+          const ::rapidjson::Value&
+          node, ::std::stack< InputProtocol* >& protocol_stack) const = 0;
         virtual JsonValueInputProtocol* create_json_map_object_input_protocol(
           const ::rapidjson::Value& node,
           ::std::stack< InputProtocol* >& protocol_stack) const = 0;
-        virtual JsonValueInputProtocol* create_json_root_input_protocol(const ::rapidjson::Document&
-            node, ::std::stack< InputProtocol* >& protocol_stack) const = 0;
+        virtual JsonValueInputProtocol* create_json_root_input_protocol(
+          const ::rapidjson::Document&
+          node, ::std::stack< InputProtocol* >& protocol_stack) const = 0;
         virtual JsonValueInputProtocol* create_json_struct_object_input_protocol(
           const ::rapidjson::Value& node,
           ::std::stack< InputProtocol* >& protocol_stack) const = 0;
@@ -166,8 +177,8 @@ class JsonInputProtocol : public StackedInputProtocol {
     class JsonArrayInputProtocol : public JsonValueInputProtocol {
       public:
         JsonArrayInputProtocol(const ::rapidjson::Value& node,
-                            ::std::stack< InputProtocol* >& protocol_stack,
-                            const JsonValueInputProtocolFactory& reader_protocol_factory)
+                               ::std::stack< InputProtocol* >& protocol_stack,
+                               const JsonValueInputProtocolFactory& reader_protocol_factory)
           : JsonValueInputProtocol(node, protocol_stack, reader_protocol_factory) {
           next_child_node_index = 0;
         }
@@ -184,8 +195,8 @@ class JsonInputProtocol : public StackedInputProtocol {
     class JsonMapObjectInputProtocol : public JsonValueInputProtocol {
       public:
         JsonMapObjectInputProtocol(const ::rapidjson::Value& node,
-                                ::std::stack< InputProtocol* >& protocol_stack,
-                                const JsonValueInputProtocolFactory& reader_protocol_factory)
+                                   ::std::stack< InputProtocol* >& protocol_stack,
+                                   const JsonValueInputProtocolFactory& reader_protocol_factory)
           : JsonValueInputProtocol(node, protocol_stack, reader_protocol_factory) {
           next_child_node_i = node.MemberBegin();
           next_read_is_key_ = true;
@@ -212,8 +223,8 @@ class JsonInputProtocol : public StackedInputProtocol {
     class JsonRootInputProtocol : public JsonValueInputProtocol {
       public:
         JsonRootInputProtocol(const ::rapidjson::Document& node,
-                           ::std::stack< InputProtocol* >& protocol_stack,
-                           const JsonValueInputProtocolFactory& reader_protocol_factory)
+                              ::std::stack< InputProtocol* >& protocol_stack,
+                              const JsonValueInputProtocolFactory& reader_protocol_factory)
           : JsonValueInputProtocol(node, protocol_stack, reader_protocol_factory) {
         }
 
@@ -226,8 +237,8 @@ class JsonInputProtocol : public StackedInputProtocol {
     class JsonStructObjectReaderProtocol : public JsonValueInputProtocol {
       public:
         JsonStructObjectReaderProtocol(const ::rapidjson::Value& node,
-                                   ::std::stack< InputProtocol* >& protocol_stack,
-                                   const JsonValueInputProtocolFactory& reader_protocol_factory)
+                                       ::std::stack< InputProtocol* >& protocol_stack,
+                                       const JsonValueInputProtocolFactory& reader_protocol_factory)
           : JsonValueInputProtocol(node, protocol_stack, reader_protocol_factory) {
           next_child_node_i = node.MemberBegin();
         }
@@ -263,8 +274,9 @@ class JsonInputProtocol : public StackedInputProtocol {
 
     class DefaultReaderProtocolFactory : public JsonValueInputProtocolFactory {
       public:
-        virtual JsonValueInputProtocol* create_json_array_input_protocol(const ::rapidjson::Value&
-            node, ::std::stack< InputProtocol* >& protocol_stack) const {
+        virtual JsonValueInputProtocol* create_json_array_input_protocol(
+          const ::rapidjson::Value&
+          node, ::std::stack< InputProtocol* >& protocol_stack) const {
           return new JsonArrayInputProtocol(node, protocol_stack, *this);
         }
 
@@ -274,8 +286,9 @@ class JsonInputProtocol : public StackedInputProtocol {
           return new JsonMapObjectInputProtocol(node, protocol_stack, *this);
         }
 
-        virtual JsonValueInputProtocol* create_json_root_input_protocol(const ::rapidjson::Document&
-            node, ::std::stack< InputProtocol* >& protocol_stack) const {
+        virtual JsonValueInputProtocol* create_json_root_input_protocol(
+          const ::rapidjson::Document&
+          node, ::std::stack< InputProtocol* >& protocol_stack) const {
           return new JsonRootInputProtocol(node, protocol_stack, *this);
         }
 
