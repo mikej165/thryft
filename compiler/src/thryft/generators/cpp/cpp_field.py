@@ -105,11 +105,20 @@ const %(type_name)s& %(name)s() const {
         parent_name = self.parent.cpp_name()
         setter_name = self.cpp_setter_name()
         type_name = self._cpp_type_qname()
-        return """\
+        setter = """\
 %(parent_name)s& %(setter_name)s(%(parameter)s) {
   this->%(member_name)s = %(name)s;
   return *this;
 }""" % locals()
+        if not self.required:
+            type_qname = self.type.cpp_qname()
+            # Setter above is for an optional parameter
+            setter += """
+
+%(parent_name)s& %(setter_name)s(const %(type_qname)s& %(name)s) {
+  return %(setter_name)s(::thryft::Optional< %(type_qname)s >(%(name)s));
+}""" % locals()
+        return setter
 
     def cpp_setter_name(self):
         return 'set_' + self.cpp_name()
