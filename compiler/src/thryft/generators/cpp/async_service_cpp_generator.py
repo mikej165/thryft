@@ -83,14 +83,14 @@ class AsyncServiceCppGenerator(cpp_generator.CppGenerator):
                 return 'class ' + self.cpp_name() + ';'
 
             def _cpp_method_accept(self):
-                return {'accept': """\
+                return """\
 void accept(RequestHandler& handler) const {
   handler.handle(*this);
-}"""}
+}"""
 
             def _cpp_methods(self):
                 methods = CppStructType._cpp_methods(self)
-                methods.update(self._cpp_method_accept())
+                methods.append(self._cpp_method_accept())
                 return methods
 
             def cpp_read_if(self):
@@ -110,7 +110,17 @@ if (strcmp(function_name, "%s") == 0) {
                     parent=parent_function.parent
                 )
                 if parent_function.return_field is not None:
-                    self.fields.append(parent_function.return_field)
+                    return_field = parent_function.return_field
+                    self.fields.append(
+                        CppField(
+                            annotations=return_field.annotations,
+                            doc=return_field.doc,
+                            name=return_field.name,
+                            type=return_field.type,
+                            parent=self,
+                            required=return_field.required,
+                        )
+                    )
 
             def _cpp_extends(self):
                 return 'Response'
@@ -169,7 +179,7 @@ class Response : public Message {
 
 %(message_types)s
 
-static Request* read_request(const char* function_name, ::thryft::protocol::Protocol& iprot, ::thryft::protocol::Type::Enum as_type) {
+static Request* read_request(const char* function_name, ::thryft::protocol::InputProtocol& iprot, ::thryft::protocol::Type::Enum as_type) {
   if (function_name == NULL) {
     return NULL;
   }
