@@ -1,11 +1,22 @@
 #include "gtest/gtest.h"
 
+#include <string>
+
 #include "./protocol_test_enum.hpp"
 #include "./protocol_test_struct.hpp"
+#include "thryft/list.hpp"
+#include "thryft/protocol/type.hpp"
 
 namespace thryft_test {
 namespace protocol {
 namespace test {
+using ::std::make_pair;
+using ::std::string;
+using ::thryft::List;
+using ::thryft::Map;
+using ::thryft::Set;
+using ::thryft::protocol::Type;
+
 template <class TypeParam>
 class ProtocolTest : public ::testing::Test {
 protected:
@@ -23,111 +34,73 @@ TYPED_TEST_P(ProtocolTest, bool_) {
   test(ProtocolTestStruct().set_bool_field(true));
 }
 
-//@Test
-//public void testBool() throws Exception {
-//    _test(new ProtocolTestStruct.Builder().setBoolField(true));
-//}
+TYPED_TEST_P(ProtocolTest, byte) {
+  test(ProtocolTestStruct().set_byte_field(1));
+}
 
-//@Test
-//public void testByte() throws Exception {
-//    _test(new ProtocolTestStruct.Builder().setByteField((byte) 1));
-//}
+TYPED_TEST_P(ProtocolTest, i16) {
+  test(ProtocolTestStruct().set_i16_field(1));
+}
 
-//@Test
-//public void testDateTime() throws Exception {
-//    _test(new ProtocolTestStruct.Builder().setDateTimeField(DateTime.now()));
-//}
+TYPED_TEST_P(ProtocolTest, i32) {
+  test(ProtocolTestStruct().set_i32_field(1));
+}
 
-//@Test
-//public void testDecimal() throws Exception {
-//    _test(new ProtocolTestStruct.Builder().setDecimalField(new BigDecimal(
-//            100)));
-//}
+TYPED_TEST_P(ProtocolTest, i64) {
+  test(ProtocolTestStruct().set_i64_field(1));
+}
 
-//@Test
-//public void testEmailAddress() throws Exception {
-//    _test(new ProtocolTestStruct.Builder()
-//            .setEmailAddressField(new EmailAddress("test@example.com")));
-//}
+TYPED_TEST_P(ProtocolTest, list_string) {
+  List< ::std::string, Type::STRING > list_string;
+  list_string.push_back("test");
+  test(ProtocolTestStruct().set_list_string_field(list_string));
+}
 
-//@Test
-//public void testEnum() throws Exception {
-//    _test(new ProtocolTestStruct.Builder()
-//            .setEnumField(ProtocolTestEnum.ENUMERATOR2));
-//}
+TYPED_TEST_P(ProtocolTest, list_string_empty) {
+  test(ProtocolTestStruct().set_list_string_field(List<::std::string, Type::STRING>()));
+}
 
-//@Test
-//public void testI16() throws Exception {
-//    _test(new ProtocolTestStruct.Builder().setI16Field((short) 1));
-//}
+TYPED_TEST_P(ProtocolTest, map_string_string) {
+  Map<::std::string, Type::STRING, ::std::string, Type::STRING> map_string_string;
+  map_string_string.insert(make_pair("test", "test"));
+  test(ProtocolTestStruct().set_map_string_string_field(map_string_string));
+}
 
-//@Test
-//public void testI32() throws Exception {
-//    _test(new ProtocolTestStruct.Builder().setI32Field(1));
-//}
+TYPED_TEST_P(ProtocolTest, map_string_string_empty) {
+  test(ProtocolTestStruct().set_map_string_string_field(Map<::std::string, Type::STRING, ::std::string, Type::STRING>()));
+}
 
-//@Test
-//public void testI64() throws Exception {
-//    _test(new ProtocolTestStruct.Builder().setI64Field(1));
-//}
+TYPED_TEST_P(ProtocolTest, set_string) {
+  Set<::std::string, Type::STRING> set_string;
+  set_string.insert("test");
+  test(ProtocolTestStruct().set_set_string_field(set_string));
+}
 
-//@Test
-//public void testListString() throws Exception {
-//    _test(new ProtocolTestStruct.Builder().setListStringField(ImmutableList
-//            .of("test")));
+TYPED_TEST_P(ProtocolTest, set_string_empty) {
+  test(ProtocolTestStruct().set_set_string_field(Set<::std::string, Type::STRING>()));
+}
 
-//    // Empty list
-//    _test(new ProtocolTestStruct.Builder().setListStringField(ImmutableList
-//            .<String> of()));
-//}
+TYPED_TEST_P(ProtocolTest, string) {
+  test(ProtocolTestStruct().set_string_field(::std::string("test")));
+}
 
-//@Test
-//public void testMapStringString() throws Exception {
-//    _test(new ProtocolTestStruct.Builder()
-//            .setMapStringStringField(ImmutableMap
-//                    .of("testkey", "testvalue")));
+TYPED_TEST_P(ProtocolTest, struct_) {
+  test(ProtocolTestStruct().set_struct_field(NestedProtocolTestStruct().set_string_field("test")));
+}
 
-//    // Empty map
-//    _test(new ProtocolTestStruct.Builder()
-//            .setMapStringStringField(ImmutableMap.<String, String> of()));
-//}
+TYPED_TEST_P(ProtocolTest, struct_empty) {
+  test(ProtocolTestStruct().set_struct_field(NestedProtocolTestStruct()));
+}
 
-//@Test
-//public void testSetString() throws Exception {
-//    _test(new ProtocolTestStruct.Builder().setSetStringField(ImmutableSet
-//            .of("test")));
-
-//    // Empty set
-//    _test(new ProtocolTestStruct.Builder().setSetStringField(ImmutableSet
-//            .<String> of()));
-//}
-
-//@Test
-//public void testString() throws Exception {
-//    _test(new ProtocolTestStruct.Builder().setStringField("test"));
-//}
-
-//@Test
-//public void testStruct() throws Exception {
-//    _test(new ProtocolTestStruct.Builder()
-//            .setStructField(new ProtocolTestStruct.Builder().setI32Field(1)
-//                    .setRequiredI32Field(1).setRequiredStringField("test")
-//                    .build()));
-
-//    // Empty struct
-//    _test(new ProtocolTestStruct.Builder()
-//            .setStructField(new ProtocolTestStruct.Builder()
-//                    .setRequiredI32Field(1).setRequiredStringField("test")
-//                    .build()));
-//}
-
-//@Test
-//public void testUrl() throws Exception {
-//    _test(new ProtocolTestStruct.Builder().setUrlField(Url
-//            .parse("http://example.com/test")));
-//}
-
-REGISTER_TYPED_TEST_CASE_P(ProtocolTest, bool_);
+REGISTER_TYPED_TEST_CASE_P(
+  ProtocolTest,
+  bool_, byte, i16, i32, i64,
+  list_string, list_string_empty,
+  map_string_string, map_string_string_empty,
+  set_string, set_string_empty,
+  string,
+  struct_, struct_empty
+);
 }
 }
 }

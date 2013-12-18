@@ -109,9 +109,17 @@ public:
     return *this;
   }
 
+  NestedProtocolTestStruct& set_binary_field(const ::std::string& binary_field) {
+    return set_binary_field(::thryft::Optional< ::std::string >(binary_field));
+  }
+
   NestedProtocolTestStruct& set_bool_field(const ::thryft::Optional< bool >& bool_field) {
     this->bool_field_ = bool_field;
     return *this;
+  }
+
+  NestedProtocolTestStruct& set_bool_field(const bool& bool_field) {
+    return set_bool_field(::thryft::Optional< bool >(bool_field));
   }
 
   NestedProtocolTestStruct& set_byte_field(const ::thryft::Optional< int8_t >& byte_field) {
@@ -119,9 +127,17 @@ public:
     return *this;
   }
 
+  NestedProtocolTestStruct& set_byte_field(const int8_t& byte_field) {
+    return set_byte_field(::thryft::Optional< int8_t >(byte_field));
+  }
+
   NestedProtocolTestStruct& set_date_time_field(const ::thryft::Optional< int64_t >& date_time_field) {
     this->date_time_field_ = date_time_field;
     return *this;
+  }
+
+  NestedProtocolTestStruct& set_date_time_field(const int64_t& date_time_field) {
+    return set_date_time_field(::thryft::Optional< int64_t >(date_time_field));
   }
 
   NestedProtocolTestStruct& set_decimal_field(const ::thryft::Optional< ::std::string >& decimal_field) {
@@ -129,9 +145,17 @@ public:
     return *this;
   }
 
+  NestedProtocolTestStruct& set_decimal_field(const ::std::string& decimal_field) {
+    return set_decimal_field(::thryft::Optional< ::std::string >(decimal_field));
+  }
+
   NestedProtocolTestStruct& set_email_address_field(const ::thryft::Optional< ::std::string >& email_address_field) {
     this->email_address_field_ = email_address_field;
     return *this;
+  }
+
+  NestedProtocolTestStruct& set_email_address_field(const ::std::string& email_address_field) {
+    return set_email_address_field(::thryft::Optional< ::std::string >(email_address_field));
   }
 
   NestedProtocolTestStruct& set_enum_field(const ::thryft::Optional< ::thryft_test::protocol::test::ProtocolTestEnum::Enum >& enum_field) {
@@ -139,9 +163,17 @@ public:
     return *this;
   }
 
+  NestedProtocolTestStruct& set_enum_field(const ::thryft_test::protocol::test::ProtocolTestEnum::Enum& enum_field) {
+    return set_enum_field(::thryft::Optional< ::thryft_test::protocol::test::ProtocolTestEnum::Enum >(enum_field));
+  }
+
   NestedProtocolTestStruct& set_i16_field(const ::thryft::Optional< int16_t >& i16_field) {
     this->i16_field_ = i16_field;
     return *this;
+  }
+
+  NestedProtocolTestStruct& set_i16_field(const int16_t& i16_field) {
+    return set_i16_field(::thryft::Optional< int16_t >(i16_field));
   }
 
   NestedProtocolTestStruct& set_i32_field(const ::thryft::Optional< int32_t >& i32_field) {
@@ -149,9 +181,17 @@ public:
     return *this;
   }
 
+  NestedProtocolTestStruct& set_i32_field(const int32_t& i32_field) {
+    return set_i32_field(::thryft::Optional< int32_t >(i32_field));
+  }
+
   NestedProtocolTestStruct& set_i64_field(const ::thryft::Optional< int64_t >& i64_field) {
     this->i64_field_ = i64_field;
     return *this;
+  }
+
+  NestedProtocolTestStruct& set_i64_field(const int64_t& i64_field) {
+    return set_i64_field(::thryft::Optional< int64_t >(i64_field));
   }
 
   NestedProtocolTestStruct& set_list_string_field(const ::thryft::Optional< ::thryft::List< ::std::string, ::thryft::protocol::Type::STRING > >& list_string_field) {
@@ -159,9 +199,17 @@ public:
     return *this;
   }
 
+  NestedProtocolTestStruct& set_list_string_field(const ::thryft::List< ::std::string, ::thryft::protocol::Type::STRING >& list_string_field) {
+    return set_list_string_field(::thryft::Optional< ::thryft::List< ::std::string, ::thryft::protocol::Type::STRING > >(list_string_field));
+  }
+
   NestedProtocolTestStruct& set_map_string_string_field(const ::thryft::Optional< ::thryft::Map< ::std::string, ::thryft::protocol::Type::STRING, ::std::string, ::thryft::protocol::Type::STRING > >& map_string_string_field) {
     this->map_string_string_field_ = map_string_string_field;
     return *this;
+  }
+
+  NestedProtocolTestStruct& set_map_string_string_field(const ::thryft::Map< ::std::string, ::thryft::protocol::Type::STRING, ::std::string, ::thryft::protocol::Type::STRING >& map_string_string_field) {
+    return set_map_string_string_field(::thryft::Optional< ::thryft::Map< ::std::string, ::thryft::protocol::Type::STRING, ::std::string, ::thryft::protocol::Type::STRING > >(map_string_string_field));
   }
 
   NestedProtocolTestStruct& set_required_i32_field(const int32_t& required_i32_field) {
@@ -179,14 +227,26 @@ public:
     return *this;
   }
 
+  NestedProtocolTestStruct& set_set_string_field(const ::thryft::Set< ::std::string, ::thryft::protocol::Type::STRING >& set_string_field) {
+    return set_set_string_field(::thryft::Optional< ::thryft::Set< ::std::string, ::thryft::protocol::Type::STRING > >(set_string_field));
+  }
+
   NestedProtocolTestStruct& set_string_field(const ::thryft::Optional< ::std::string >& string_field) {
     this->string_field_ = string_field;
     return *this;
   }
 
+  NestedProtocolTestStruct& set_string_field(const ::std::string& string_field) {
+    return set_string_field(::thryft::Optional< ::std::string >(string_field));
+  }
+
   NestedProtocolTestStruct& set_url_field(const ::thryft::Optional< ::std::string >& url_field) {
     this->url_field_ = url_field;
     return *this;
+  }
+
+  NestedProtocolTestStruct& set_url_field(const ::std::string& url_field) {
+    return set_url_field(::thryft::Optional< ::std::string >(url_field));
   }
 
   bool operator==(const NestedProtocolTestStruct& other) const {
