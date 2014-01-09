@@ -11,6 +11,8 @@ import org.thryft.native_.Url;
 import org.thryft.native_.UrlParser;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.primitives.UnsignedInteger;
+import com.google.common.primitives.UnsignedLong;
 
 public final class Faker {
     public final static class Address {
@@ -161,6 +163,32 @@ public final class Faker {
 
     public static long randomI64() {
         return random.nextLong();
+    }
+
+    public static UnsignedInteger randomU32() {
+        return randomU32(UnsignedInteger.MAX_VALUE);
+    }
+
+    public static UnsignedInteger randomU32(final UnsignedInteger max) {
+        while (true) {
+            final long l = random.nextLong();
+            if (l >= 0 && l <= max.longValue()) {
+                return UnsignedInteger.valueOf(l);
+            }
+        }
+    }
+
+    public static UnsignedLong randomU64() {
+        return randomU64(UnsignedLong.MAX_VALUE);
+    }
+
+    public static UnsignedLong randomU64(final UnsignedLong max) {
+        while (true) {
+            final long l = random.nextLong();
+            if (l >= 0 && l <= max.longValue()) {
+                return UnsignedLong.valueOf(l);
+            }
+        }
     }
 
     private Faker() {

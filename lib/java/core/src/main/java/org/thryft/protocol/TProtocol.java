@@ -40,6 +40,9 @@ import org.thryft.native_.EmailAddress;
 import org.thryft.native_.Uri;
 import org.thryft.native_.Url;
 
+import com.google.common.primitives.UnsignedInteger;
+import com.google.common.primitives.UnsignedLong;
+
 public interface TProtocol {
     public byte[] readBinary() throws IOException;
 
@@ -89,6 +92,10 @@ public interface TProtocol {
     public TStruct readStructBegin() throws IOException;
 
     public void readStructEnd() throws IOException;
+
+    public UnsignedInteger readU32() throws IOException;
+
+    public UnsignedLong readU64() throws IOException;
 
     public Uri readUri() throws IOException;
 
@@ -144,6 +151,10 @@ public interface TProtocol {
     public void writeStructBegin(final TStruct struct) throws IOException;
 
     public void writeStructEnd() throws IOException;
+
+    public void writeU32(final UnsignedInteger u32) throws IOException;
+
+    public void writeU64(final UnsignedLong u64) throws IOException;
 
     public void writeUri(final Uri uri) throws IOException;
 

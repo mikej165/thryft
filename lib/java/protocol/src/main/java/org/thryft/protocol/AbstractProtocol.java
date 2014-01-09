@@ -47,6 +47,8 @@ import org.thryft.native_.Url;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.primitives.UnsignedInteger;
+import com.google.common.primitives.UnsignedLong;
 
 public abstract class AbstractProtocol implements TProtocol {
     public void flush() throws IOException {
@@ -207,6 +209,16 @@ public abstract class AbstractProtocol implements TProtocol {
     @Override
     public void readStructEnd() throws IOException {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public UnsignedInteger readU32() throws IOException {
+        return UnsignedInteger.valueOf(readI32());
+    }
+
+    @Override
+    public UnsignedLong readU64() throws IOException {
+        return UnsignedLong.valueOf(readI64());
     }
 
     @Override
@@ -398,6 +410,16 @@ public abstract class AbstractProtocol implements TProtocol {
     @Override
     public void writeStructEnd() throws IOException {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void writeU32(final UnsignedInteger u32) throws IOException {
+        writeI32(u32.intValue());
+    }
+
+    @Override
+    public void writeU64(final UnsignedLong u64) throws IOException {
+        writeI64(u64.longValue());
     }
 
     @Override

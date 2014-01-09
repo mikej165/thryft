@@ -42,6 +42,8 @@ import org.thryft.native_.Url;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.primitives.UnsignedInteger;
+import com.google.common.primitives.UnsignedLong;
 
 public abstract class ProtocolTest {
     @Test
@@ -140,6 +142,20 @@ public abstract class ProtocolTest {
                 .setStructField(new NestedProtocolTestStruct.Builder()
                         .setRequiredI32Field(1).setRequiredStringField("test")
                         .build()));
+    }
+
+    @Test
+    public void testU32() throws Exception {
+        _test(new ProtocolTestStruct.Builder().setRequiredI32Field(1)
+                .setRequiredStringField("test")
+                .setU32Field(UnsignedInteger.valueOf(1)).build());
+    }
+
+    @Test
+    public void testU64() throws Exception {
+        _test(new ProtocolTestStruct.Builder().setRequiredI32Field(1)
+                .setRequiredStringField("test")
+                .setU64Field(UnsignedLong.valueOf(1)).build());
     }
 
     @Test
