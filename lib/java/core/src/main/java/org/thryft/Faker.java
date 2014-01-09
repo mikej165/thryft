@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.util.Random;
 
 import org.thryft.native_.EmailAddress;
+import org.thryft.native_.Uri;
 import org.thryft.native_.Url;
 import org.thryft.native_.UrlParser;
 
@@ -37,6 +38,10 @@ public final class Faker {
     public final static class Internet {
         public static EmailAddress email() {
             return new EmailAddress("fake@example.com");
+        }
+
+        public static Uri uri() {
+            return url();
         }
 
         public static Url url() {
