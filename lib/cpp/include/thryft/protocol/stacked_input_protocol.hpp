@@ -112,6 +112,14 @@ class StackedInputProtocol : public AbstractInputProtocol {
       protocol_stack_.pop();
     }
 
+    virtual uint32_t read_u32() {
+      return protocol_stack_.top()->read_u32();
+    }
+
+    virtual uint64_t read_u64() {
+      return protocol_stack_.top()->read_u64();
+    }
+
   protected:
     ::std::stack< InputProtocol* >& protocol_stack() {
       return protocol_stack_;

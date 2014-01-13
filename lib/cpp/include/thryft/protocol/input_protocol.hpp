@@ -51,6 +51,8 @@ class InputProtocol {
     virtual void read_string(char*& out_value, size_t& out_value_len) = 0;
     virtual void read_struct_begin() = 0;
     virtual void read_struct_end() = 0;
+    virtual uint32_t read_u32() = 0;
+    virtual uint64_t read_u64() = 0;
 };
 }
 }

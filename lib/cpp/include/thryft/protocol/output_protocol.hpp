@@ -55,6 +55,12 @@ class OutputProtocol {
     // String
     virtual void write(const char* value, size_t value_len) = 0;
 
+    // U32
+    virtual void write(uint32_t value) = 0;
+
+    // U64
+    virtual void write(uint64_t value) = 0;
+
     virtual void write_list_begin(Type::Enum element_type, uint32_t size) = 0;
     virtual void write_list_end() = 0;
 

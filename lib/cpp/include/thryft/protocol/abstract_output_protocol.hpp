@@ -40,6 +40,13 @@ class AbstractOutputProtocol : public OutputProtocol {
     virtual void write(int64_t value) {
     }
 
+    virtual void write(uint32_t value) {
+      write(static_cast<uint64_t>(value));
+    }
+
+    virtual void write(uint64_t value) {
+    }
+
     virtual void write(const ::thryft::Base& value) {
       value.write(*this);
     }

@@ -134,6 +134,14 @@ class AbstractInputProtocol : public InputProtocol {
 
     virtual void read_struct_end() {
     }
+
+    virtual uint32_t read_u32() {
+      return static_cast<uint32_t>(read_u64());
+    }
+
+    virtual uint64_t read_u64() {
+      return static_cast<uint64_t>(0);
+    }
 };
 }
 }

@@ -86,6 +86,14 @@ class StackedOutputProtocol : public AbstractOutputProtocol {
       protocol_stack_.top()->write(value, value_len);
     }
 
+    virtual void write(uint32_t value) {
+      protocol_stack_.top()->write(value);
+    }
+
+    virtual void write(uint64_t value) {
+      protocol_stack_.top()->write(value);
+    }
+
     virtual void write_list_begin(Type::Enum element_type, uint32_t size) {
       protocol_stack_.top()->write_list_begin(element_type, size);
     }
