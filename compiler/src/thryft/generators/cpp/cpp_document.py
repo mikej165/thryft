@@ -69,7 +69,7 @@ class CppDocument(Document, _CppNamedConstruct):
             elif include.endswith('>'):
                 std_includes.append(include)
             else:
-                raise NotImplementError
+                raise NotImplementedError
         includes = std_includes
         if len(lib_includes) > 0:
             if len(includes) > 0:

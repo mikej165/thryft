@@ -55,3 +55,4 @@ class CppGenerator(Generator):
     from thryft.generators.cpp.cpp_set_type import CppSetType as SetType  # @UnusedImport
     from thryft.generators.cpp.cpp_string_type import CppStringType as StringType  # @UnusedImport
     from thryft.generators.cpp.cpp_struct_type import CppStructType as StructType  # @UnusedImport
+    from thryft.generators.cpp.cpp_typedef import CppTypedef as Typedef  # @UnusedImport
