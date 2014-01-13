@@ -59,8 +59,8 @@ class CppU64(_U64, CppNativeType):
     def cpp_qname(self):
         return 'uint64_t'
 
-    def cpp_read_protocol(self, *args, **kwds):
-        return "static_cast<uint64_t>(%s)" % self.__cpp_i64_type.cpp_read_protocol(*args, **kwds)
+    def cpp_read_protocol(self, value, optional=False):
+        return "%(value)s = iprot.read_u64();" % locals()
 
 
 class JavaU64(_U64, JavaNativeType):

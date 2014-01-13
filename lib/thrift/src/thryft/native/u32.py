@@ -53,17 +53,23 @@ class CppU32(_U32, CppNativeType):
     def cpp_default_value(self):
         return 'static_cast<uint32_t>(0)'
 
+    def cpp_includes_definition(self):
+        return self.__cpp_i32_type.cpp_includes_definition()
+
     def cpp_includes_use(self):
         return self.__cpp_i32_type.cpp_includes_use()
 
     def cpp_qname(self):
         return 'uint32_t'
 
-    def cpp_read_protocol(self, *args, **kwds):
-        return "static_cast<uint32_t>(%s)" % self.__cpp_i32_type.cpp_read_protocol(*args, **kwds)
+    def cpp_read_protocol(self, value, optional=False):
+        return "%(value)s = iprot.read_u32();" % locals()
 
 
 class JavaU32(_U32, JavaNativeType):
+    def java_default_value(self):
+        return 'com.google.common.primitives.UnsignedInteger.ZERO'
+
     def java_qname(self, boxed=False):
         return 'com.google.common.primitives.UnsignedInteger'
 
