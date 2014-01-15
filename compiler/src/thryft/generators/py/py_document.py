@@ -49,11 +49,13 @@ class PyDocument(Document, _PyNamedConstruct):
         definitions = \
             "\n\n".join(repr(definition)
                          for definition in self.definitions)
-        return rpad(imports, "\n\n\n") + definitions + "\n"
+        return rpad(imports, "\n\n\n") + rpad(definitions, "\n")
 
     def save(self, out_path):
         out_file_path = Document.save(self, out_path)
-        if not os.path.isdir(out_path):
+        if out_file_path is None:
+            return None
+        elif not os.path.isdir(out_path):
             return out_file_path
 
         root_out_dir_path = out_path
