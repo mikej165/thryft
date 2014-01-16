@@ -38,6 +38,78 @@ from yutil import lower_camelize, lpad, indent, upper_camelize
 
 
 class CppFunction(Function, _CppNamedConstruct):
+    class _CppRequestType(CppStructType):
+        def __init__(self, parent_function, cpp_suppress_warnings=None, parameters=None):
+            CppStructType.__init__(
+                self,
+                name=upper_camelize(parent_function.name) + 'Request',
+                parent=parent_function.parent
+            )
+            self.__parent_function_name = parent_function.name
+
+            if parameters is None:
+                parameters = parent_function.parameters
+            for parameter in parameters:
+                self.fields.append(
+                    CppField(
+                        annotations=parameter.annotations,
+                        doc=parameter.doc,
+                        name=parameter.name,
+                        type=parameter.type,
+                        parent=self,
+                        required=parameter.required,
+                    )
+                )
+
+        def _cpp_extends(self):
+            return 'Request'
+
+        def cpp_forward_declaration(self):
+            return 'class ' + self.cpp_name() + ';'
+
+        def _cpp_method_accept(self):
+            return """\
+void accept(RequestHandler& handler) const {
+  handler.handle(*this);
+}"""
+
+        def _cpp_methods(self):
+            methods = CppStructType._cpp_methods(self)
+            methods.append(self._cpp_method_accept())
+            return methods
+
+        def cpp_read_if(self):
+            return """\
+if (strcmp(function_name, "%s") == 0) {
+  return new %s(iprot, as_type);
+}""" % (self.__parent_function_name, self.cpp_name())
+
+        def cpp_handle_declaration(self):
+            return "virtual void handle(const %s&) = 0;" % self.cpp_name()
+
+    class _CppResponseType(CppStructType):
+        def __init__(self, parent_function, cpp_suppress_warnings=None):
+            CppStructType.__init__(
+                self,
+                name=upper_camelize(parent_function.name) + 'Response',
+                parent=parent_function.parent
+            )
+            if parent_function.return_field is not None:
+                return_field = parent_function.return_field
+                self.fields.append(
+                    CppField(
+                        annotations=return_field.annotations,
+                        doc=return_field.doc,
+                        name=return_field.name,
+                        type=return_field.type,
+                        parent=self,
+                        required=return_field.required,
+                    )
+                )
+
+        def _cpp_extends(self):
+            return 'Response'
+
     def _cpp_declaration(self):
         name = self.cpp_name()
 
@@ -65,6 +137,12 @@ class CppFunction(Function, _CppNamedConstruct):
 
     def cpp_pure_virtual_declaration(self):
         return 'virtual ' + self._cpp_declaration() + ' = 0;'
+
+    def cpp_request_type(self, **kwds):
+        return self._CppRequestType(parent_function=self, **kwds)
+
+    def cpp_response_type(self, **kwds):
+        return self._CppResponseType(parent_function=self, **kwds)
 
     def __repr__(self):
         return self.cpp_declaration()

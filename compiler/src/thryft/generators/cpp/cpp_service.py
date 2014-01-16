@@ -62,6 +62,59 @@ class CppService(Service, _CppNamedConstruct):
 
         sections = []
 
+        if len(self.functions) > 0:
+            message_types = []
+            read_requests = []
+            handle_request_declarations = []
+            request_forward_declarations = []
+            for function in self.functions:
+                request_type = function.cpp_request_type()
+                read_requests.append(request_type.cpp_read_if())
+                request_forward_declarations.append(request_type.cpp_forward_declaration())
+                handle_request_declarations.append(request_type.cpp_handle_declaration())
+                message_types.append(repr(request_type))
+
+                response_type = function.cpp_response_type()
+                message_types.append(repr(response_type))
+            message_types = "\n\n".join(message_types)
+            read_requests = indent(' ' * 2, ' else '.join(read_requests))
+            request_forward_declarations = "\n".join(request_forward_declarations)
+            handle_request_declarations = indent(' ' * 2, "\n".join(handle_request_declarations))
+
+            sections.append("public:\n" + indent(' ' * 2, """\
+class RequestHandler;
+
+class Message : public ::thryft::Struct {
+};
+
+class Request : public Message {
+public:
+  virtual void accept(RequestHandler& visitor) const = 0;
+};
+
+%(request_forward_declarations)s
+
+class RequestHandler {
+public:
+%(handle_request_declarations)s
+};
+
+class Response : public Message {
+};
+
+%(message_types)s
+
+static Request* read_request(const char* function_name, ::thryft::protocol::InputProtocol& iprot, ::thryft::protocol::Type::Enum as_type) {
+  if (function_name == NULL) {
+    return NULL;
+  }
+
+%(read_requests)s
+
+  return NULL;
+}
+""" % locals()))
+
         sections.append(
                 indent(' ' * 2,
                     "\n\n".join(function.cpp_pure_virtual_declaration()
