@@ -82,7 +82,7 @@ class CppService(Service, _CppNamedConstruct):
             handle_request_declarations = indent(' ' * 2, "\n".join(handle_request_declarations))
 
             sections.append("public:\n" + indent(' ' * 2, """\
-template <class MessageT> class RequestHandler;
+template <class RequestT> class RequestHandler;
 
 class Message : public ::thryft::Struct {
 };
@@ -90,12 +90,12 @@ class Message : public ::thryft::Struct {
 template <class MessageT = Message>
 class Request : public MessageT {
 public:
-  virtual void accept(RequestHandler<MessageT>& visitor) const = 0;
+  virtual void accept(RequestHandler< Request<MessageT> >& handler) const = 0;
 };
 
 %(request_forward_declarations)s
 
-template <class MessageT = Message>
+template < class RequestT = Request<Message> >
 class RequestHandler {
 public:
 %(handle_request_declarations)s
@@ -107,8 +107,8 @@ class Response : public MessageT {
 
 %(message_types)s
 
-template <class MessageT = Message>
-static Request<MessageT>* read_request(const char* function_name, ::thryft::protocol::InputProtocol& iprot, ::thryft::protocol::Type::Enum as_type) {
+template < class RequestT = Request<Message> >
+static RequestT* read_request(const char* function_name, ::thryft::protocol::InputProtocol& iprot, ::thryft::protocol::Type::Enum as_type) {
   if (function_name == NULL) {
     return NULL;
   }

@@ -39,8 +39,7 @@ from yutil import lower_camelize, lpad, indent, upper_camelize
 
 class CppFunction(Function, _CppNamedConstruct):
     class _CppMessageType(CppStructType):
-        def _cpp_template_parameters(self):
-            return "template <class MessageT = Message>"
+        pass
 
     class _CppRequestType(_CppMessageType):
         def __init__(self, parent_function, cpp_suppress_warnings=None, parameters=None):
@@ -66,14 +65,17 @@ class CppFunction(Function, _CppNamedConstruct):
                 )
 
         def _cpp_extends(self):
-            return 'Request<MessageT>'
+            return 'RequestT'
 
         def cpp_forward_declaration(self):
-            return 'template <class MessageT> class ' + self.cpp_name() + ';'
+            return 'template <class RequestT> class ' + self.cpp_name() + ';'
+
+        def cpp_handle_declaration(self):
+            return "virtual void handle(const %s<RequestT>&) = 0;" % self.cpp_name()
 
         def _cpp_method_accept(self):
             return """\
-void accept(RequestHandler<MessageT>& handler) const {
+void accept(typename RequestHandler<RequestT>& handler) const {
   handler.handle(*this);
 }"""
 
@@ -85,11 +87,11 @@ void accept(RequestHandler<MessageT>& handler) const {
         def cpp_read_if(self):
             return """\
 if (strcmp(function_name, "%s") == 0) {
-  return new %s<MessageT>(iprot, as_type);
+  return new %s<RequestT>(iprot, as_type);
 }""" % (self.__parent_function_name, self.cpp_name())
 
-        def cpp_handle_declaration(self):
-            return "virtual void handle(const %s<MessageT>&) = 0;" % self.cpp_name()
+        def _cpp_template_parameters(self):
+            return "template < class RequestT = Request<Message> >"
 
     class _CppResponseType(_CppMessageType):
         def __init__(self, parent_function, cpp_suppress_warnings=None):
@@ -112,7 +114,10 @@ if (strcmp(function_name, "%s") == 0) {
                 )
 
         def _cpp_extends(self):
-            return 'Response<MessageT>'
+            return 'ResponseT'
+
+        def _cpp_template_parameters(self):
+            return "template < class ResponseT = Response<Message> >"
 
     def _cpp_declaration(self):
         name = self.cpp_name()
