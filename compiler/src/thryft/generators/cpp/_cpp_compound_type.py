@@ -313,9 +313,13 @@ bool operator==(const %(name)s& other) const {%(field_comparisons)s
     def cpp_qname(self, boxed=False):
         return _CppNamedConstruct.cpp_qname(self, name=self.name)
 
+    def _cpp_template_parameters(self):
+        return ''
+
     def __repr__(self):
         name = self.cpp_name()
         extends = lpad(' : public ', self._cpp_extends())
+        template_parameters = rpad(self._cpp_template_parameters(), "\n")
         methods = self._cpp_methods()
         sections = []
         # sections.append(indent(' ' * 4, repr(self._CppBuilder(self))))
@@ -325,5 +329,5 @@ bool operator==(const %(name)s& other) const {%(field_comparisons)s
         sections.append(lpad("private:\n", "\n".join(indent(' ' * 2, self._cpp_member_declarations()))))
         sections = lpad("\n", "\n\n".join(section for section in sections if len(section) > 0))
         return """\
-class %(name)s%(extends)s {%(sections)s
+%(template_parameters)sclass %(name)s%(extends)s {%(sections)s
 };""" % locals()

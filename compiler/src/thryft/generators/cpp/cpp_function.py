@@ -38,7 +38,11 @@ from yutil import lower_camelize, lpad, indent, upper_camelize
 
 
 class CppFunction(Function, _CppNamedConstruct):
-    class _CppRequestType(CppStructType):
+    class _CppMessageType(CppStructType):
+        def _cpp_template_parameters(self):
+            return "template <class MessageT = Message>"
+
+    class _CppRequestType(_CppMessageType):
         def __init__(self, parent_function, cpp_suppress_warnings=None, parameters=None):
             CppStructType.__init__(
                 self,
@@ -62,14 +66,14 @@ class CppFunction(Function, _CppNamedConstruct):
                 )
 
         def _cpp_extends(self):
-            return 'Request'
+            return 'Request<MessageT>'
 
         def cpp_forward_declaration(self):
-            return 'class ' + self.cpp_name() + ';'
+            return 'template <class MessageT> class ' + self.cpp_name() + ';'
 
         def _cpp_method_accept(self):
             return """\
-void accept(RequestHandler& handler) const {
+void accept(RequestHandler<MessageT>& handler) const {
   handler.handle(*this);
 }"""
 
@@ -81,13 +85,13 @@ void accept(RequestHandler& handler) const {
         def cpp_read_if(self):
             return """\
 if (strcmp(function_name, "%s") == 0) {
-  return new %s(iprot, as_type);
+  return new %s<MessageT>(iprot, as_type);
 }""" % (self.__parent_function_name, self.cpp_name())
 
         def cpp_handle_declaration(self):
-            return "virtual void handle(const %s&) = 0;" % self.cpp_name()
+            return "virtual void handle(const %s<MessageT>&) = 0;" % self.cpp_name()
 
-    class _CppResponseType(CppStructType):
+    class _CppResponseType(_CppMessageType):
         def __init__(self, parent_function, cpp_suppress_warnings=None):
             CppStructType.__init__(
                 self,
@@ -108,7 +112,7 @@ if (strcmp(function_name, "%s") == 0) {
                 )
 
         def _cpp_extends(self):
-            return 'Response'
+            return 'Response<MessageT>'
 
     def _cpp_declaration(self):
         name = self.cpp_name()
