@@ -48,7 +48,7 @@ class CppFunction(Function, _CppNamedConstruct):
                 name=upper_camelize(parent_function.name) + 'Request',
                 parent=parent_function.parent
             )
-            self.__parent_function_name = parent_function.name
+            self.__parent_function = parent_function
 
             if parameters is None:
                 parameters = parent_function.parameters
@@ -88,7 +88,26 @@ void accept(typename RequestHandler<RequestT>& handler) const {
             return """\
 if (strcmp(function_name, "%s") == 0) {
   return new %s<RequestT>(iprot, as_type);
-}""" % (self.__parent_function_name, self.cpp_name())
+}""" % (self.__parent_function.name, self.cpp_name())
+
+        def cpp_sync_handler(self):
+            name = self.cpp_name()
+            response_name = upper_camelize(self.__parent_function.cpp_name()) + 'Response'
+            if self.__parent_function.return_field is not None:
+                call_prefix = "request.respond(*new %(response_name)s<ResponseT>(" % locals()
+                call_suffix = "))"
+            else:
+                call_prefix = ''
+                call_suffix = """;
+  request.respond(*new %(response_name)s<ResponseT>())""" % locals()
+            call_parameters = \
+                ', '.join("request.%s()" % parameter.cpp_getter_name()
+                           for parameter in self.fields)
+            call_method_name = self.__parent_function.name
+            return """\
+virtual void handle(const %(name)s<RequestT>& request) {
+  %(call_prefix)simpl_.%(call_method_name)s(%(call_parameters)s)%(call_suffix)s;
+}""" % locals()
 
         def _cpp_template_parameters(self):
             return "template < class RequestT = Request<Message> >"

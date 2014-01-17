@@ -67,19 +67,21 @@ class CppService(Service, _CppNamedConstruct):
             read_requests = []
             handle_request_declarations = []
             request_forward_declarations = []
+            sync_request_handlers = []
             for function in self.functions:
                 request_type = function.cpp_request_type()
                 read_requests.append(request_type.cpp_read_if())
                 request_forward_declarations.append(request_type.cpp_forward_declaration())
                 handle_request_declarations.append(request_type.cpp_handle_declaration())
                 message_types.append(repr(request_type))
-
                 response_type = function.cpp_response_type()
                 message_types.append(repr(response_type))
+                sync_request_handlers.append(request_type.cpp_sync_handler())
             message_types = "\n\n".join(message_types)
             read_requests = indent(' ' * 2, ' else '.join(read_requests))
             request_forward_declarations = "\n".join(request_forward_declarations)
             handle_request_declarations = indent(' ' * 2, "\n".join(handle_request_declarations))
+            sync_request_handlers = indent(' ' * 2, "\n\n".join(sync_request_handlers))
 
             sections.append("public:\n" + indent(' ' * 2, """\
 template <class RequestT> class RequestHandler;
@@ -117,7 +119,21 @@ static RequestT* read_request(const char* function_name, ::thryft::protocol::Inp
 
   return NULL;
 }
-""" % locals()))
+
+template < class RequestT = Request<Message>, class ResponseT = Response<Message> >
+class SyncRequestHandler : public RequestHandler<RequestT> {
+public:
+  SyncRequestHandler(%(name)s& impl)
+    : impl_(impl) {
+  }
+
+public:
+  // RequestHandler
+%(sync_request_handlers)s
+
+private:
+  %(name)s& impl_;
+};""" % locals()))
 
         sections.append(
                 indent(' ' * 2,
