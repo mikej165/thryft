@@ -64,6 +64,9 @@ class CppUri(_Uri, CppNativeType):
 
 
 class JavaUri(_Uri, JavaNativeType):
+    def java_default_value(self):
+        return 'null'
+
     def java_qname(self, boxed=False):
         return 'org.thryft.native_.Uri'
 
