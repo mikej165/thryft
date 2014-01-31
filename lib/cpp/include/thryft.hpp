@@ -6,6 +6,7 @@
 #include "thryft/list.hpp"
 #include "thryft/map.hpp"
 #include "thryft/optional.hpp"
+#include "thryft/service.hpp"
 #include "thryft/set.hpp"
 #include "thryft/struct.hpp"
 #include "thryft/protocol/abstract_input_protocol.hpp"

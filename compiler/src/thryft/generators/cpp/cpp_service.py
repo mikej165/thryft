@@ -86,7 +86,7 @@ class CppService(Service, _CppNamedConstruct):
             sections.append("public:\n" + indent(' ' * 2, """\
 template <class RequestT> class RequestHandler;
 
-class Message : public ::thryft::Struct {
+class Message : public ::thryft::Service::Message {
 };
 
 template <class MessageT = Message>
@@ -98,7 +98,7 @@ public:
 %(request_forward_declarations)s
 
 template < class RequestT = Request<Message> >
-class RequestHandler {
+class RequestHandler : public ::thryft::Service::RequestHandler {
 public:
 %(handle_request_declarations)s
 };
@@ -143,7 +143,7 @@ private:
         sections = lpad("\n\n", "\n\n".join(sections))
 
         return """\
-class %(name)s%(extends)s {
+class %(name)s%(extends)s : public ::thryft::Service {
 public:
   virtual ~%(name)s() {
   }%(sections)s
