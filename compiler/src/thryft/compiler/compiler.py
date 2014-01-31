@@ -293,7 +293,7 @@ class Compiler(object):
                         if isinstance(definition, _Type):
                             self.__type_cache[definition.thrift_qname()] = definition
                         elif isinstance(definition, Typedef):
-                            self.__type_cache[definition.thrift_qname()] = definition.type
+                            self.__type_cache[definition.thrift_qname()] = definition  # .type
                     return include
             raise CompileException("include path not found: %s" % include_file_relpath, ast_node=include_node)
 

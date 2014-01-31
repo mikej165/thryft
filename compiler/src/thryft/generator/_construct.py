@@ -67,6 +67,17 @@ class _Construct(object):
     def parent(self):
         return self.__parent
 
+    def _parent_document(self):
+        from thryft.generator.document import Document
+        if isinstance(self, Document):
+            return self
+        else:
+            parent = self.parent
+            while not isinstance(parent, Document):
+                parent = parent.parent
+                assert parent is not None
+            return parent
+
     def __repr__(self):
         raise NotImplementedError('.'.join((
                   self.__class__.__module__,

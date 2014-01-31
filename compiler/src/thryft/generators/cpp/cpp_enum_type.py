@@ -47,10 +47,7 @@ class CppEnumType(EnumType, _CppType):
         return ('<thryft.hpp>',)
 
     def cpp_includes_use(self):
-        parent = self.parent
-        while not isinstance(parent, Document):
-            parent = parent.parent
-        return parent.cpp_includes_use()
+        return self._parent_document().cpp_includes_use()
 
     def cpp_qname(self):
         return _CppType.cpp_qname(self) + '::Enum'

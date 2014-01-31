@@ -407,10 +407,10 @@ public:
           struct_field_.set(::thryft_test::protocol::test::NestedProtocolTestStruct())->read(iprot);
         }
         if (list_size > 17) {
-          static_cast<uint32_t>(u32_field_ = iprot.read_i32();)
+          u32_field_ = iprot.read_u32();
         }
         if (list_size > 18) {
-          static_cast<uint64_t>(u64_field_ = iprot.read_i64();)
+          u64_field_ = iprot.read_u64();
         }
         if (list_size > 19) {
           url_field_ = iprot.read_string();
@@ -464,9 +464,9 @@ public:
           } else if (ifield_name == "struct_field") {
             struct_field_.set(::thryft_test::protocol::test::NestedProtocolTestStruct())->read(iprot);
           } else if (ifield_name == "u32_field") {
-            static_cast<uint32_t>(u32_field_ = iprot.read_i32();)
+            u32_field_ = iprot.read_u32();
           } else if (ifield_name == "u64_field") {
-            static_cast<uint64_t>(u64_field_ = iprot.read_i64();)
+            u64_field_ = iprot.read_u64();
           } else if (ifield_name == "url_field") {
             url_field_ = iprot.read_string();
           }

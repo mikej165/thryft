@@ -138,10 +138,7 @@ virtual ~%(name)s() {
         return includes
 
     def cpp_includes_use(self):
-        parent = self.parent
-        while not isinstance(parent, Document):
-            parent = parent.parent
-        return parent.cpp_includes_use()
+        return self._parent_document().cpp_includes_use()
 
     def _cpp_member_declarations(self):
         return [field.cpp_member_declaration()

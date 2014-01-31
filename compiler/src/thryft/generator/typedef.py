@@ -38,6 +38,9 @@ class Typedef(_NamedConstruct):
         _NamedConstruct.__init__(self, **kwds)
         self.__type = type
 
+    def __getattr__(self, attr):
+        return getattr(self.__type, attr)
+
     def __repr__(self):
         return ''
 

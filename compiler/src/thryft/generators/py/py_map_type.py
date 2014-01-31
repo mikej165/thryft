@@ -53,6 +53,9 @@ class PyMapType(MapType, _PyContainerType):
     def py_literal(self, value):
         return "{%s}" % ', '.join(self.key_type.py_literal(key) + ':' + self.value_type.py_literal(value_) for key, value_ in value.iteritems())
 
+    def py_name(self):
+        return 'dict'
+
     def py_read_protocol(self):
         key_read_protocol = self.key_type.py_read_protocol()
         value_read_protocol = self.value_type.py_read_protocol()
