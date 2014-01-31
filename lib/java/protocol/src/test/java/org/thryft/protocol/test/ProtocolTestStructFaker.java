@@ -5,7 +5,6 @@ public final class ProtocolTestStructFaker {
         final org.thryft.protocol.test.ProtocolTestStruct.Builder builder = new org.thryft.protocol.test.ProtocolTestStruct.Builder();
         builder.setBinaryField(org.thryft.Faker.randomBinary());
         builder.setBoolField(org.thryft.Faker.randomBool());
-        builder.setByteField(org.thryft.Faker.randomByte());
         builder.setDateTimeField(org.joda.time.DateTime.now());
         builder.setDecimalField(org.thryft.Faker.randomDecimal());
         builder.setEmailAddressField(org.thryft.Faker.Internet.email());
@@ -13,6 +12,7 @@ public final class ProtocolTestStructFaker {
                 .randomEnum(com.google.common.collect.ImmutableList.of(
                         org.thryft.protocol.test.ProtocolTestEnum.ENUMERATOR1,
                         org.thryft.protocol.test.ProtocolTestEnum.ENUMERATOR2)));
+        builder.setI8Field(org.thryft.Faker.randomI8());
         builder.setI16Field(org.thryft.Faker.randomI16());
         builder.setI32Field(org.thryft.Faker.randomI32());
         builder.setI64Field(org.thryft.Faker.randomI64());

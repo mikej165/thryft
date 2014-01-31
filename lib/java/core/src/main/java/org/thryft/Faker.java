@@ -165,6 +165,10 @@ public final class Faker {
         return random.nextLong();
     }
 
+    public static byte randomI8() {
+        return randomByte();
+    }
+
     public static UnsignedInteger randomU32() {
         return randomU32(UnsignedInteger.MAX_VALUE);
     }

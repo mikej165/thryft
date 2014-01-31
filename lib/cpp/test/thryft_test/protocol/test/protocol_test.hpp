@@ -34,8 +34,8 @@ TYPED_TEST_P(ProtocolTest, bool_) {
   test(ProtocolTestStruct().set_bool_field(true));
 }
 
-TYPED_TEST_P(ProtocolTest, byte) {
-  test(ProtocolTestStruct().set_byte_field(1));
+TYPED_TEST_P(ProtocolTest, i8) {
+  test(ProtocolTestStruct().set_i8_field(1));
 }
 
 TYPED_TEST_P(ProtocolTest, i16) {
@@ -98,7 +98,7 @@ TYPED_TEST_P(ProtocolTest, struct_empty) {
 
 REGISTER_TYPED_TEST_CASE_P(
   ProtocolTest,
-  bool_, byte, i16, i32, i64,
+  bool_, i8, i16, i32, i64,
   list_string, list_string_empty,
   map_string_string, map_string_string_empty,
   set_string, set_string_empty,

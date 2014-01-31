@@ -13,11 +13,11 @@ class ProtocolTestStruct(object):
             self,
             binary_field=None,
             bool_field=None,
-            byte_field=None,
             date_time_field=None,
             decimal_field=None,
             email_address_field=None,
             enum_field=None,
+            i8_field=None,
             i16_field=None,
             i32_field=None,
             i64_field=None,
@@ -34,11 +34,11 @@ class ProtocolTestStruct(object):
         ):
             self.__binary_field = binary_field
             self.__bool_field = bool_field
-            self.__byte_field = byte_field
             self.__date_time_field = date_time_field
             self.__decimal_field = decimal_field
             self.__email_address_field = email_address_field
             self.__enum_field = enum_field
+            self.__i8_field = i8_field
             self.__i16_field = i16_field
             self.__i32_field = i32_field
             self.__i64_field = i64_field
@@ -54,7 +54,7 @@ class ProtocolTestStruct(object):
             self.__url_field = url_field
 
         def build(self):
-            return ProtocolTestStruct(binary_field=self.__binary_field, bool_field=self.__bool_field, byte_field=self.__byte_field, date_time_field=self.__date_time_field, decimal_field=self.__decimal_field, email_address_field=self.__email_address_field, enum_field=self.__enum_field, i16_field=self.__i16_field, i32_field=self.__i32_field, i64_field=self.__i64_field, list_string_field=self.__list_string_field, map_string_string_field=self.__map_string_string_field, required_i32_field=self.__required_i32_field, required_string_field=self.__required_string_field, set_string_field=self.__set_string_field, string_field=self.__string_field, struct_field=self.__struct_field, u32_field=self.__u32_field, u64_field=self.__u64_field, url_field=self.__url_field)
+            return ProtocolTestStruct(binary_field=self.__binary_field, bool_field=self.__bool_field, date_time_field=self.__date_time_field, decimal_field=self.__decimal_field, email_address_field=self.__email_address_field, enum_field=self.__enum_field, i8_field=self.__i8_field, i16_field=self.__i16_field, i32_field=self.__i32_field, i64_field=self.__i64_field, list_string_field=self.__list_string_field, map_string_string_field=self.__map_string_string_field, required_i32_field=self.__required_i32_field, required_string_field=self.__required_string_field, set_string_field=self.__set_string_field, string_field=self.__string_field, struct_field=self.__struct_field, u32_field=self.__u32_field, u64_field=self.__u64_field, url_field=self.__url_field)
 
         def set_binary_field(self, binary_field):
             self.__binary_field = binary_field
@@ -62,10 +62,6 @@ class ProtocolTestStruct(object):
 
         def set_bool_field(self, bool_field):
             self.__bool_field = bool_field
-            return self
-
-        def set_byte_field(self, byte_field):
-            self.__byte_field = byte_field
             return self
 
         def set_date_time_field(self, date_time_field):
@@ -94,6 +90,10 @@ class ProtocolTestStruct(object):
 
         def set_i64_field(self, i64_field):
             self.__i64_field = i64_field
+            return self
+
+        def set_i8_field(self, i8_field):
+            self.__i8_field = i8_field
             return self
 
         def set_list_string_field(self, list_string_field):
@@ -140,11 +140,11 @@ class ProtocolTestStruct(object):
             if isinstance(protocol_test_struct, ProtocolTestStruct):
                 self.set_binary_field(protocol_test_struct.binary_field)
                 self.set_bool_field(protocol_test_struct.bool_field)
-                self.set_byte_field(protocol_test_struct.byte_field)
                 self.set_date_time_field(protocol_test_struct.date_time_field)
                 self.set_decimal_field(protocol_test_struct.decimal_field)
                 self.set_email_address_field(protocol_test_struct.email_address_field)
                 self.set_enum_field(protocol_test_struct.enum_field)
+                self.set_i8_field(protocol_test_struct.i8_field)
                 self.set_i16_field(protocol_test_struct.i16_field)
                 self.set_i32_field(protocol_test_struct.i32_field)
                 self.set_i64_field(protocol_test_struct.i64_field)
@@ -171,11 +171,11 @@ class ProtocolTestStruct(object):
         required_string_field,
         binary_field=None,
         bool_field=None,
-        byte_field=None,
         date_time_field=None,
         decimal_field=None,
         email_address_field=None,
         enum_field=None,
+        i8_field=None,
         i16_field=None,
         i32_field=None,
         i64_field=None,
@@ -198,11 +198,6 @@ class ProtocolTestStruct(object):
                 raise TypeError(getattr(__builtin__, 'type')(bool_field))
         self.__bool_field = bool_field
 
-        if byte_field is not None:
-            if not isinstance(byte_field, int):
-                raise TypeError(getattr(__builtin__, 'type')(byte_field))
-        self.__byte_field = byte_field
-
         if date_time_field is not None:
             if not isinstance(date_time_field, datetime):
                 raise TypeError(getattr(__builtin__, 'type')(date_time_field))
@@ -222,6 +217,11 @@ class ProtocolTestStruct(object):
             if not isinstance(enum_field, thryft_test.protocol.test.protocol_test_enum.ProtocolTestEnum):
                 raise TypeError(getattr(__builtin__, 'type')(enum_field))
         self.__enum_field = enum_field
+
+        if i8_field is not None:
+            if not isinstance(i8_field, int):
+                raise TypeError(getattr(__builtin__, 'type')(i8_field))
+        self.__i8_field = i8_field
 
         if i16_field is not None:
             if not isinstance(i16_field, int):
@@ -295,8 +295,6 @@ class ProtocolTestStruct(object):
             return False
         if self.bool_field != other.bool_field:
             return False
-        if self.byte_field != other.byte_field:
-            return False
         if self.date_time_field != other.date_time_field:
             return False
         if self.decimal_field != other.decimal_field:
@@ -304,6 +302,8 @@ class ProtocolTestStruct(object):
         if self.email_address_field != other.email_address_field:
             return False
         if self.enum_field != other.enum_field:
+            return False
+        if self.i8_field != other.i8_field:
             return False
         if self.i16_field != other.i16_field:
             return False
@@ -334,7 +334,7 @@ class ProtocolTestStruct(object):
         return True
 
     def __hash__(self):
-        return hash((self.binary_field,self.bool_field,self.byte_field,self.date_time_field,self.decimal_field,self.email_address_field,self.enum_field,self.i16_field,self.i32_field,self.i64_field,self.list_string_field,self.map_string_string_field,self.required_i32_field,self.required_string_field,self.set_string_field,self.string_field,self.struct_field,self.u32_field,self.u64_field,self.url_field,))
+        return hash((self.binary_field,self.bool_field,self.date_time_field,self.decimal_field,self.email_address_field,self.enum_field,self.i8_field,self.i16_field,self.i32_field,self.i64_field,self.list_string_field,self.map_string_string_field,self.required_i32_field,self.required_string_field,self.set_string_field,self.string_field,self.struct_field,self.u32_field,self.u64_field,self.url_field,))
 
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -345,8 +345,6 @@ class ProtocolTestStruct(object):
             field_reprs.append('binary_field=' + "'" + self.binary_field.encode('ascii', 'replace') + "'")
         if self.bool_field is not None:
             field_reprs.append('bool_field=' + repr(self.bool_field))
-        if self.byte_field is not None:
-            field_reprs.append('byte_field=' + repr(self.byte_field))
         if self.date_time_field is not None:
             field_reprs.append('date_time_field=' + repr(self.date_time_field))
         if self.decimal_field is not None:
@@ -355,6 +353,8 @@ class ProtocolTestStruct(object):
             field_reprs.append('email_address_field=' + repr(self.email_address_field))
         if self.enum_field is not None:
             field_reprs.append('enum_field=' + repr(self.enum_field))
+        if self.i8_field is not None:
+            field_reprs.append('i8_field=' + repr(self.i8_field))
         if self.i16_field is not None:
             field_reprs.append('i16_field=' + repr(self.i16_field))
         if self.i32_field is not None:
@@ -387,8 +387,6 @@ class ProtocolTestStruct(object):
             field_reprs.append('binary_field=' + "'" + self.binary_field.encode('ascii', 'replace') + "'")
         if self.bool_field is not None:
             field_reprs.append('bool_field=' + repr(self.bool_field))
-        if self.byte_field is not None:
-            field_reprs.append('byte_field=' + repr(self.byte_field))
         if self.date_time_field is not None:
             field_reprs.append('date_time_field=' + repr(self.date_time_field))
         if self.decimal_field is not None:
@@ -397,6 +395,8 @@ class ProtocolTestStruct(object):
             field_reprs.append('email_address_field=' + repr(self.email_address_field))
         if self.enum_field is not None:
             field_reprs.append('enum_field=' + repr(self.enum_field))
+        if self.i8_field is not None:
+            field_reprs.append('i8_field=' + repr(self.i8_field))
         if self.i16_field is not None:
             field_reprs.append('i16_field=' + repr(self.i16_field))
         if self.i32_field is not None:
@@ -424,7 +424,7 @@ class ProtocolTestStruct(object):
         return 'ProtocolTestStruct(' + ', '.join(field_reprs) + ')'
 
     def as_dict(self):
-        return {'binary_field': self.binary_field, 'bool_field': self.bool_field, 'byte_field': self.byte_field, 'date_time_field': self.date_time_field, 'decimal_field': self.decimal_field, 'email_address_field': self.email_address_field, 'enum_field': self.enum_field, 'i16_field': self.i16_field, 'i32_field': self.i32_field, 'i64_field': self.i64_field, 'list_string_field': self.list_string_field, 'map_string_string_field': self.map_string_string_field, 'required_i32_field': self.required_i32_field, 'required_string_field': self.required_string_field, 'set_string_field': self.set_string_field, 'string_field': self.string_field, 'struct_field': self.struct_field, 'u32_field': self.u32_field, 'u64_field': self.u64_field, 'url_field': self.url_field}
+        return {'binary_field': self.binary_field, 'bool_field': self.bool_field, 'date_time_field': self.date_time_field, 'decimal_field': self.decimal_field, 'email_address_field': self.email_address_field, 'enum_field': self.enum_field, 'i8_field': self.i8_field, 'i16_field': self.i16_field, 'i32_field': self.i32_field, 'i64_field': self.i64_field, 'list_string_field': self.list_string_field, 'map_string_string_field': self.map_string_string_field, 'required_i32_field': self.required_i32_field, 'required_string_field': self.required_string_field, 'set_string_field': self.set_string_field, 'string_field': self.string_field, 'struct_field': self.struct_field, 'u32_field': self.u32_field, 'u64_field': self.u64_field, 'url_field': self.url_field}
 
     @property
     def binary_field(self):
@@ -433,10 +433,6 @@ class ProtocolTestStruct(object):
     @property
     def bool_field(self):
         return self.__bool_field
-
-    @property
-    def byte_field(self):
-        return self.__byte_field
 
     @property
     def date_time_field(self):
@@ -467,6 +463,10 @@ class ProtocolTestStruct(object):
         return self.__i64_field
 
     @property
+    def i8_field(self):
+        return self.__i8_field
+
+    @property
     def list_string_field(self):
         return self.__list_string_field
 
@@ -493,11 +493,6 @@ class ProtocolTestStruct(object):
                     init_kwds['bool_field'] = iprot.readBool()
                 except (TypeError, ValueError,):
                     pass
-            elif ifield_name == 'byte_field':
-                try:
-                    init_kwds['byte_field'] = iprot.readByte()
-                except (TypeError, ValueError,):
-                    pass
             elif ifield_name == 'date_time_field':
                 try:
                     init_kwds['date_time_field'] = iprot.readDateTime()
@@ -514,6 +509,11 @@ class ProtocolTestStruct(object):
                 try:
                     init_kwds['enum_field'] = thryft_test.protocol.test.protocol_test_enum.ProtocolTestEnum.value_of(iprot.readString().strip().upper())
                 except (TypeError,):
+                    pass
+            elif ifield_name == 'i8_field':
+                try:
+                    init_kwds['i8_field'] = iprot.readByte()
+                except (TypeError, ValueError,):
                     pass
             elif ifield_name == 'i16_field':
                 try:
@@ -564,13 +564,11 @@ class ProtocolTestStruct(object):
 
         return cls(**init_kwds)
 
-    def replace(self, binary_field=None, bool_field=None, byte_field=None, date_time_field=None, decimal_field=None, email_address_field=None, enum_field=None, i16_field=None, i32_field=None, i64_field=None, list_string_field=None, map_string_string_field=None, required_i32_field=None, required_string_field=None, set_string_field=None, string_field=None, struct_field=None, u32_field=None, u64_field=None, url_field=None):
+    def replace(self, binary_field=None, bool_field=None, date_time_field=None, decimal_field=None, email_address_field=None, enum_field=None, i8_field=None, i16_field=None, i32_field=None, i64_field=None, list_string_field=None, map_string_string_field=None, required_i32_field=None, required_string_field=None, set_string_field=None, string_field=None, struct_field=None, u32_field=None, u64_field=None, url_field=None):
         if binary_field is None:
             binary_field = self.binary_field
         if bool_field is None:
             bool_field = self.bool_field
-        if byte_field is None:
-            byte_field = self.byte_field
         if date_time_field is None:
             date_time_field = self.date_time_field
         if decimal_field is None:
@@ -579,6 +577,8 @@ class ProtocolTestStruct(object):
             email_address_field = self.email_address_field
         if enum_field is None:
             enum_field = self.enum_field
+        if i8_field is None:
+            i8_field = self.i8_field
         if i16_field is None:
             i16_field = self.i16_field
         if i32_field is None:
@@ -605,7 +605,7 @@ class ProtocolTestStruct(object):
             u64_field = self.u64_field
         if url_field is None:
             url_field = self.url_field
-        return self.__class__(binary_field=binary_field, bool_field=bool_field, byte_field=byte_field, date_time_field=date_time_field, decimal_field=decimal_field, email_address_field=email_address_field, enum_field=enum_field, i16_field=i16_field, i32_field=i32_field, i64_field=i64_field, list_string_field=list_string_field, map_string_string_field=map_string_string_field, required_i32_field=required_i32_field, required_string_field=required_string_field, set_string_field=set_string_field, string_field=string_field, struct_field=struct_field, u32_field=u32_field, u64_field=u64_field, url_field=url_field)
+        return self.__class__(binary_field=binary_field, bool_field=bool_field, date_time_field=date_time_field, decimal_field=decimal_field, email_address_field=email_address_field, enum_field=enum_field, i8_field=i8_field, i16_field=i16_field, i32_field=i32_field, i64_field=i64_field, list_string_field=list_string_field, map_string_string_field=map_string_string_field, required_i32_field=required_i32_field, required_string_field=required_string_field, set_string_field=set_string_field, string_field=string_field, struct_field=struct_field, u32_field=u32_field, u64_field=u64_field, url_field=url_field)
 
     @property
     def required_i32_field(self):
@@ -652,11 +652,6 @@ class ProtocolTestStruct(object):
             oprot.writeBool(self.bool_field)
             oprot.writeFieldEnd()
 
-        if self.byte_field is not None:
-            oprot.writeFieldBegin('byte_field', 3, -1)
-            oprot.writeByte(self.byte_field)
-            oprot.writeFieldEnd()
-
         if self.date_time_field is not None:
             oprot.writeFieldBegin('date_time_field', 10, -1)
             oprot.writeDateTime(self.date_time_field)
@@ -675,6 +670,11 @@ class ProtocolTestStruct(object):
         if self.enum_field is not None:
             oprot.writeFieldBegin('enum_field', 11, -1)
             oprot.writeString([attr for attr in dir(thryft_test.protocol.test.protocol_test_enum.ProtocolTestEnum) if getattr(thryft_test.protocol.test.protocol_test_enum.ProtocolTestEnum, attr) == self.enum_field][0])
+            oprot.writeFieldEnd()
+
+        if self.i8_field is not None:
+            oprot.writeFieldBegin('i8_field', 3, -1)
+            oprot.writeByte(self.i8_field)
             oprot.writeFieldEnd()
 
         if self.i16_field is not None:

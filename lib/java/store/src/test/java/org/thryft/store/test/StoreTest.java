@@ -68,10 +68,10 @@ public abstract class StoreTest {
             // value limit of 1024
             final ProtocolTestStruct model = new ProtocolTestStruct.Builder()
                     .setBoolField(true)
-                    .setByteField((byte) modelI)
                     .setDateTimeField(DateTime.now())
                     .setDecimalField(new BigDecimal(modelI))
                     .setEnumField(ProtocolTestEnum.ENUMERATOR1)
+                    .setI8Field((byte) modelI)
                     .setI16Field((short) modelI)
                     .setI32Field(modelI)
                     .setI64Field(modelI)

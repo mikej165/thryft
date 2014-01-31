@@ -5,6 +5,7 @@ include "nested_protocol_test_struct.thrift"
 include "protocol_test_enum.thrift"
 include "thryft/native/date_time.thrift"
 include "thryft/native/decimal.thrift"
+include "thryft/native/i8.thrift"
 include "thryft/native/email_address.thrift"
 include "thryft/native/u32.thrift"
 include "thryft/native/u64.thrift"
@@ -13,11 +14,11 @@ include "thryft/native/url.thrift"
 struct ProtocolTestStruct {
     optional binary binary_field;
     optional bool bool_field;
-    optional byte byte_field
     optional date_time.DateTime date_time_field;
     optional decimal.Decimal decimal_field;
     optional email_address.EmailAddress email_address_field;
     optional protocol_test_enum.ProtocolTestEnum enum_field;
+    optional i8.i8 i8_field;
     optional i16 i16_field;
     optional i32 i32_field;
     optional i64 i64_field;

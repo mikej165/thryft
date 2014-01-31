@@ -52,11 +52,6 @@ public abstract class ProtocolTest {
     }
 
     @Test
-    public void testByte() throws Exception {
-        _test(new ProtocolTestStruct.Builder().setByteField((byte) 1));
-    }
-
-    @Test
     public void testDateTime() throws Exception {
         _test(new ProtocolTestStruct.Builder().setDateTimeField(DateTime.now()));
     }
@@ -92,6 +87,11 @@ public abstract class ProtocolTest {
     @Test
     public void testI64() throws Exception {
         _test(new ProtocolTestStruct.Builder().setI64Field(1));
+    }
+
+    @Test
+    public void testI8() throws Exception {
+        _test(new ProtocolTestStruct.Builder().setI8Field((byte) 1));
     }
 
     @Test
