@@ -43,7 +43,8 @@ import java.util.Properties;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.thryft.Base;
-import org.thryft.protocol.JsonProtocol;
+import org.thryft.protocol.JsonInputProtocol;
+import org.thryft.protocol.JsonOutputProtocol;
 
 import com.google.common.base.CaseFormat;
 import com.google.common.collect.ImmutableMap;
@@ -248,7 +249,7 @@ public final class FsStore<ModelT extends Base<?>> extends
         try {
             final FileReader fileReader = new FileReader(modelFilePath);
             try {
-                return _getModel(new JsonProtocol(fileReader));
+                return _getModel(new JsonInputProtocol(fileReader));
             } finally {
                 fileReader.close();
             }
@@ -295,7 +296,8 @@ public final class FsStore<ModelT extends Base<?>> extends
         try {
             final FileWriter fileWriter = new FileWriter(modelTempFilePath);
             try {
-                final JsonProtocol oprot = new JsonProtocol(fileWriter);
+                final JsonOutputProtocol oprot = new JsonOutputProtocol(
+                        fileWriter);
                 model.write(oprot);
                 oprot.flush();
             } finally {

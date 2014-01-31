@@ -3,8 +3,8 @@ package org.thryft;
 import java.io.IOException;
 import java.io.Serializable;
 
-import org.thryft.protocol.Protocol;
+import org.thryft.protocol.OutputProtocol;
 
 public interface Base<T extends Base<?>> extends Comparable<T>, Serializable {
-    public void write(Protocol oprot) throws IOException;
+    public void write(OutputProtocol oprot) throws IOException;
 }

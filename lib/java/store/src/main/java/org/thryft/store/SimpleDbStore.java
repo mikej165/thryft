@@ -43,7 +43,8 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.thryft.Base;
-import org.thryft.protocol.StringMapProtocol;
+import org.thryft.protocol.StringMapInputProtocol;
+import org.thryft.protocol.StringMapOutputProtocol;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.services.simpledb.AmazonSimpleDBClient;
@@ -297,7 +298,7 @@ public final class SimpleDbStore<ModelT extends Base<?>> extends
 
     private ImmutableList<ReplaceableAttribute> __getModelAttributes(
             final ModelT model) {
-        final StringMapProtocol oprot = new StringMapProtocol();
+        final StringMapOutputProtocol oprot = new StringMapOutputProtocol();
         try {
             model.write(oprot);
         } catch (final IOException e) {
@@ -454,7 +455,7 @@ public final class SimpleDbStore<ModelT extends Base<?>> extends
             }
         }
 
-        return _getModel(new StringMapProtocol(attributeMap));
+        return _getModel(new StringMapInputProtocol(attributeMap));
     }
 
     private ImmutableList<Item> __selectItems(final String selectExpression) {

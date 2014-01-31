@@ -217,25 +217,25 @@ if (__list.size > %(field_i)u) {
         field_protocol_positional_initializers = \
             lpad("\n", indent(' ' * 12, "\n".join(field_protocol_positional_initializers)))
         name = self.java_name()
-        read_list = need_read_list_return and "final org.thryft.protocol.TList __list = " or ''
+        read_list = need_read_list_return and "final org.thryft.protocol.ListBegin __list = " or ''
         return """\
-public %(name)s(final org.thryft.protocol.TProtocol iprot) throws java.io.IOException {
-    this(iprot, org.thryft.protocol.TType.STRUCT);
+public %(name)s(final org.thryft.protocol.InputProtocol iprot) throws java.io.IOException {
+    this(iprot, org.thryft.protocol.Type.STRUCT);
 }
 
-public %(name)s(final org.thryft.protocol.TProtocol iprot, final byte readAsTType) throws java.io.IOException {%(field_declarations)s
+public %(name)s(final org.thryft.protocol.InputProtocol iprot, final byte readAsTType) throws java.io.IOException {%(field_declarations)s
     switch (readAsTType) {
-        case org.thryft.protocol.TType.LIST:
+        case org.thryft.protocol.Type.LIST:
             %(read_list)siprot.readListBegin();%(field_protocol_positional_initializers)s
             iprot.readListEnd();
             break;
 
-        case org.thryft.protocol.TType.STRUCT:
+        case org.thryft.protocol.Type.STRUCT:
         default:
             iprot.readStructBegin();
             while (true) {
-                final org.thryft.protocol.TField ifield = iprot.readFieldBegin();
-                if (ifield.type == org.thryft.protocol.TType.STOP) {
+                final org.thryft.protocol.FieldBegin ifield = iprot.readFieldBegin();
+                if (ifield.type == org.thryft.protocol.Type.STOP) {
                     break;
                 }%(field_protocol_named_initializers)s
                 iprot.readFieldEnd();
@@ -337,7 +337,7 @@ public %(name)s(%(parameters)s) {
 
     def _java_implements(self):
         name = self.java_name()
-        return ["org.thryft.TBase<%(name)s>" % locals()]
+        return ["org.thryft.Base<%(name)s>" % locals()]
 
     def _java_member_declarations(self):
         return [field.java_member_declaration(final=True)
@@ -508,7 +508,7 @@ public String toString() {
 }""" % locals()}
 
     def _java_method_write(self):
-        case_ttype_void = 'case org.thryft.protocol.TType.VOID:'
+        case_ttype_void = 'case org.thryft.protocol.Type.VOID:'
         if len(self.fields) == 1:
             field = self.fields[0]
             from thryft.generators.java._java_container_type import _JavaContainerType
@@ -541,21 +541,21 @@ public String toString() {
         name = self.java_name()
         return {'write': """\
 @Override
-public void write(final org.thryft.protocol.TProtocol oprot) throws java.io.IOException {
-    write(oprot, org.thryft.protocol.TType.STRUCT);
+public void write(final org.thryft.protocol.OutputProtocol oprot) throws java.io.IOException {
+    write(oprot, org.thryft.protocol.Type.STRUCT);
 }
 
-public void write(final org.thryft.protocol.TProtocol oprot, final byte writeAsTType) throws java.io.IOException {
+public void write(final org.thryft.protocol.OutputProtocol oprot, final byte writeAsTType) throws java.io.IOException {
     switch (writeAsTType) {
         %(case_ttype_void)s
-        case org.thryft.protocol.TType.LIST:
-            oprot.writeListBegin(new org.thryft.protocol.TList(org.thryft.protocol.TType.VOID, %(field_count)u));%(field_value_write_protocols)s
+        case org.thryft.protocol.Type.LIST:
+            oprot.writeListBegin(new org.thryft.protocol.ListBegin(org.thryft.protocol.Type.VOID, %(field_count)u));%(field_value_write_protocols)s
             oprot.writeListEnd();
             break;
 
-        case org.thryft.protocol.TType.STRUCT:
+        case org.thryft.protocol.Type.STRUCT:
         default:
-            oprot.writeStructBegin(new org.thryft.protocol.TStruct(\"%(name)s\"));%(field_write_protocols)s
+            oprot.writeStructBegin(new org.thryft.protocol.StructBegin(\"%(name)s\"));%(field_write_protocols)s
 
             oprot.writeFieldStop();
 

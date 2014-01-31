@@ -61,11 +61,11 @@ class JavaMapType(MapType, _JavaContainerType):
         value_read_protocol = self.value_type.java_read_protocol()
         value_type_name = self.value_type.java_declaration_name(boxed=True)
         return """\
-(new com.google.common.base.Function<org.thryft.protocol.TProtocol, com.google.common.collect.ImmutableMap<%(key_type_name)s, %(value_type_name)s>>() {
+(new com.google.common.base.Function<org.thryft.protocol.InputProtocol, com.google.common.collect.ImmutableMap<%(key_type_name)s, %(value_type_name)s>>() {
     @Override
-    public com.google.common.collect.ImmutableMap<%(key_type_name)s, %(value_type_name)s> apply(org.thryft.protocol.TProtocol iprot) {
+    public com.google.common.collect.ImmutableMap<%(key_type_name)s, %(value_type_name)s> apply(org.thryft.protocol.InputProtocol iprot) {
         try {
-            final org.thryft.protocol.TMap mapBegin = iprot.readMapBegin();
+            final org.thryft.protocol.MapBegin mapBegin = iprot.readMapBegin();
             final com.google.common.collect.ImmutableMap.Builder<%(key_type_name)s, %(value_type_name)s> map = com.google.common.collect.ImmutableMap.builder();
             for (int entryI = 0; entryI < mapBegin.size; entryI++) {
                 map.put(%(key_read_protocol)s, %(value_read_protocol)s);
@@ -98,7 +98,7 @@ class JavaMapType(MapType, _JavaContainerType):
                 )
             )
         return """\
-oprot.writeMapBegin(new org.thryft.protocol.TMap(org.thryft.protocol.TType.%(key_ttype)s, org.thryft.protocol.TType.%(value_ttype)s, %(value)s.size()));
+oprot.writeMapBegin(new org.thryft.protocol.MapBegin(org.thryft.protocol.Type.%(key_ttype)s, org.thryft.protocol.Type.%(value_ttype)s, %(value)s.size()));
 for (com.google.common.collect.ImmutableMap.Entry<%(key_type_name)s, %(value_type_name)s> _iter%(depth)u : %(value)s.entrySet()) {
 %(key_write_protocol)s
 %(value_write_protocol)s

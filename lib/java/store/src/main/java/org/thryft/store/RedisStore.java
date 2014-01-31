@@ -42,7 +42,8 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.thryft.Base;
-import org.thryft.protocol.StringMapProtocol;
+import org.thryft.protocol.StringMapInputProtocol;
+import org.thryft.protocol.StringMapOutputProtocol;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -160,7 +161,8 @@ public final class RedisStore<ModelT extends Base<?>> extends
                 if (hash.isEmpty()) {
                     throw new NoSuchModelException(modelKey.getModelId());
                 }
-                final StringMapProtocol iprot = new StringMapProtocol(hash);
+                final StringMapInputProtocol iprot = new StringMapInputProtocol(
+                        hash);
                 return _getModel(iprot);
             } finally {
                 jedisPool.returnResource(jedis);
@@ -245,7 +247,7 @@ public final class RedisStore<ModelT extends Base<?>> extends
         try {
             final Jedis jedis = jedisPool.getResource();
             try {
-                final StringMapProtocol oprot = new StringMapProtocol();
+                final StringMapOutputProtocol oprot = new StringMapOutputProtocol();
                 try {
                     model.write(oprot);
                 } catch (final IOException e) {

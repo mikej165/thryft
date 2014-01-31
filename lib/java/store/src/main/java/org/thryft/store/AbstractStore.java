@@ -39,7 +39,7 @@ import java.lang.reflect.InvocationTargetException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.thryft.Base;
-import org.thryft.protocol.Protocol;
+import org.thryft.protocol.InputProtocol;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -155,9 +155,9 @@ public abstract class AbstractStore<ModelT extends Base<?>> implements
     protected abstract void _deleteModels(final String userId)
             throws ModelIoException;
 
-    protected ModelT _getModel(final Protocol iprot) throws ModelIoException {
+    protected ModelT _getModel(final InputProtocol iprot) throws ModelIoException {
         try {
-            return modelClass.getConstructor(Protocol.class)
+            return modelClass.getConstructor(InputProtocol.class)
                     .newInstance(iprot);
         } catch (InstantiationException | IllegalAccessException
                 | IllegalArgumentException | InvocationTargetException

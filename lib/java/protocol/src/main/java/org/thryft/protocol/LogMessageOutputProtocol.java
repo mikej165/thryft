@@ -38,9 +38,9 @@ import java.io.Writer;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 
-public class LogMessageProtocol extends JsonProtocol {
-    private final class ArrayWriterProtocol extends
-            JsonProtocol.ArrayWriterProtocol {
+public class LogMessageOutputProtocol extends JsonOutputProtocol {
+    private final class ArrayOutputProtocol extends
+            JsonOutputProtocol.ArrayOutputProtocol {
         @Override
         public void writeBool(final boolean b) throws IOException {
             if (size < SIZE_MAX) {
@@ -101,7 +101,7 @@ public class LogMessageProtocol extends JsonProtocol {
             if (size < SIZE_MAX) {
                 super.writeListBegin(list);
             } else {
-                _getProtocolStack().push(new NopWriterProtocol());
+                _getProtocolStack().push(new NopOutputProtocol());
             }
         }
 
@@ -118,7 +118,7 @@ public class LogMessageProtocol extends JsonProtocol {
             if (size < SIZE_MAX) {
                 super.writeMapBegin(map);
             } else {
-                _getProtocolStack().push(new NopWriterProtocol());
+                _getProtocolStack().push(new NopOutputProtocol());
             }
         }
 
@@ -139,11 +139,12 @@ public class LogMessageProtocol extends JsonProtocol {
         }
 
         @Override
-        public void writeStructBegin(final StructBegin struct) throws IOException {
+        public void writeStructBegin(final StructBegin struct)
+                throws IOException {
             if (size < SIZE_MAX) {
                 super.writeStructBegin(struct);
             } else {
-                _getProtocolStack().push(new NopWriterProtocol());
+                _getProtocolStack().push(new NopOutputProtocol());
             }
         }
 
@@ -160,8 +161,8 @@ public class LogMessageProtocol extends JsonProtocol {
         private int size = 0;
     }
 
-    private final class MapObjectWriterProtocol extends
-            JsonProtocol.MapObjectWriterProtocol {
+    private final class MapObjectOutputProtocol extends
+            JsonOutputProtocol.MapObjectOutputProtocol {
         @Override
         public void writeBool(final boolean b) throws IOException {
             if (size < SIZE_MAX) {
@@ -222,7 +223,7 @@ public class LogMessageProtocol extends JsonProtocol {
             if (size < SIZE_MAX) {
                 super.writeListBegin(list);
             } else {
-                _getProtocolStack().push(new NopWriterProtocol());
+                _getProtocolStack().push(new NopOutputProtocol());
             }
         }
 
@@ -239,7 +240,7 @@ public class LogMessageProtocol extends JsonProtocol {
             if (size < SIZE_MAX) {
                 super.writeMapBegin(map);
             } else {
-                _getProtocolStack().push(new NopWriterProtocol());
+                _getProtocolStack().push(new NopOutputProtocol());
             }
         }
 
@@ -260,11 +261,12 @@ public class LogMessageProtocol extends JsonProtocol {
         }
 
         @Override
-        public void writeStructBegin(final StructBegin struct) throws IOException {
+        public void writeStructBegin(final StructBegin struct)
+                throws IOException {
             if (size < SIZE_MAX) {
                 super.writeStructBegin(struct);
             } else {
-                _getProtocolStack().push(new NopWriterProtocol());
+                _getProtocolStack().push(new NopOutputProtocol());
             }
         }
 
@@ -281,7 +283,7 @@ public class LogMessageProtocol extends JsonProtocol {
         private int size = 0;
     }
 
-    private final class NopWriterProtocol extends AbstractProtocol {
+    private final class NopOutputProtocol extends AbstractOutputProtocol {
         @Override
         public void writeBool(final boolean b) throws IOException {
         }
@@ -320,7 +322,7 @@ public class LogMessageProtocol extends JsonProtocol {
 
         @Override
         public void writeListBegin(final ListBegin list) throws IOException {
-            _getProtocolStack().push(new NopWriterProtocol());
+            _getProtocolStack().push(new NopOutputProtocol());
         }
 
         @Override
@@ -329,7 +331,7 @@ public class LogMessageProtocol extends JsonProtocol {
 
         @Override
         public void writeMapBegin(final MapBegin map) throws IOException {
-            _getProtocolStack().push(new NopWriterProtocol());
+            _getProtocolStack().push(new NopOutputProtocol());
         }
 
         @Override
@@ -341,8 +343,9 @@ public class LogMessageProtocol extends JsonProtocol {
         }
 
         @Override
-        public void writeStructBegin(final StructBegin struct) throws IOException {
-            _getProtocolStack().push(new NopWriterProtocol());
+        public void writeStructBegin(final StructBegin struct)
+                throws IOException {
+            _getProtocolStack().push(new NopOutputProtocol());
         }
 
         @Override
@@ -350,8 +353,8 @@ public class LogMessageProtocol extends JsonProtocol {
         }
     }
 
-    private final class StructObjectWriterProtocol extends
-            JsonProtocol.StructObjectWriterProtocol {
+    private final class StructObjectOutputProtocol extends
+            JsonOutputProtocol.StructObjectOutputProtocol {
         @Override
         public void writeString(final String str) throws IOException {
             super.writeString(__cropString(str));
@@ -367,32 +370,32 @@ public class LogMessageProtocol extends JsonProtocol {
         }
     }
 
-    public LogMessageProtocol(final JsonGenerator generator) {
+    public LogMessageOutputProtocol(final JsonGenerator generator) {
         super(generator);
     }
 
-    public LogMessageProtocol(final OutputStream outputStream)
+    public LogMessageOutputProtocol(final OutputStream outputStream)
             throws IOException {
         super(outputStream);
     }
 
-    public LogMessageProtocol(final Writer writer) throws IOException {
+    public LogMessageOutputProtocol(final Writer writer) throws IOException {
         super(writer);
     }
 
     @Override
-    protected AbstractProtocol _createArrayWriterProtocol() {
-        return new ArrayWriterProtocol();
+    protected OutputProtocol _createArrayOutputProtocol() {
+        return new ArrayOutputProtocol();
     }
 
     @Override
-    protected AbstractProtocol _createMapObjectWriterProtocol() {
-        return new MapObjectWriterProtocol();
+    protected OutputProtocol _createMapObjectOutputProtocol() {
+        return new MapObjectOutputProtocol();
     }
 
     @Override
-    protected AbstractProtocol _createStructObjectWriterProtocol() {
-        return new StructObjectWriterProtocol();
+    protected OutputProtocol _createStructObjectOutputProtocol() {
+        return new StructObjectOutputProtocol();
     }
 
     public final static int STRING_LENGTH_MAX = 16;

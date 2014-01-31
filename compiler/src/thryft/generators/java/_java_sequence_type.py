@@ -82,11 +82,11 @@ try {
         interface_simple_name = self._java_interface_simple_name()
 
         return """\
-(new com.google.common.base.Function<org.thryft.protocol.TProtocol, com.google.common.collect.Immutable%(interface_simple_name)s<%(element_type_name)s>>() {
+(new com.google.common.base.Function<org.thryft.protocol.InputProtocol, com.google.common.collect.Immutable%(interface_simple_name)s<%(element_type_name)s>>() {
     @Override
-    public com.google.common.collect.Immutable%(interface_simple_name)s<%(element_type_name)s> apply(final org.thryft.protocol.TProtocol iprot) {
+    public com.google.common.collect.Immutable%(interface_simple_name)s<%(element_type_name)s> apply(final org.thryft.protocol.InputProtocol iprot) {
         try {
-            final org.thryft.protocol.T%(interface_simple_name)s sequenceBegin = iprot.read%(interface_simple_name)sBegin();
+            final org.thryft.protocol.%(interface_simple_name)sBegin sequenceBegin = iprot.read%(interface_simple_name)sBegin();
             final com.google.common.collect.Immutable%(interface_simple_name)s.Builder<%(element_type_name)s> sequence = com.google.common.collect.Immutable%(interface_simple_name)s.builder();
             for (int elementI = 0; elementI < sequenceBegin.size; elementI++) {
 %(add_element)s
@@ -111,7 +111,7 @@ try {
             )
         interface_simple_name = self._java_interface_simple_name()
         return """\
-oprot.write%(interface_simple_name)sBegin(new org.thryft.protocol.T%(interface_simple_name)s(org.thryft.protocol.TType.%(element_ttype)s, %(value)s.size()));
+oprot.write%(interface_simple_name)sBegin(new org.thryft.protocol.%(interface_simple_name)sBegin(org.thryft.protocol.Type.%(element_ttype)s, %(value)s.size()));
 for (final %(element_type_name)s _iter%(depth)u : %(value)s) {
 %(element_write_protocol)s
 }

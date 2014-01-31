@@ -277,7 +277,7 @@ public %(return_type_name)s %(setter_name)s(final %(type_name)s %(name)s) {
             self.type.java_write_protocol(value, depth=depth)
         if write_field:
             write_protocol = """\
-oprot.writeFieldBegin(new org.thryft.protocol.TField("%(name)s", org.thryft.protocol.TType.%(ttype)s, (short)%(id_)d));
+oprot.writeFieldBegin(new org.thryft.protocol.FieldBegin("%(name)s", org.thryft.protocol.Type.%(ttype)s, (short)%(id_)d));
 %(write_protocol)s
 oprot.writeFieldEnd();
 """ % locals()

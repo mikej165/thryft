@@ -32,8 +32,7 @@
 
 package org.thryft.protocol.test;
 
-
-public class CsvProtocolTest extends ProtocolTest {
+public final class CsvProtocolTest extends ProtocolTest {
     @Override
     protected void _test(final ProtocolTestStruct expected) throws Exception {
         // final StringWriter writer = new StringWriter();

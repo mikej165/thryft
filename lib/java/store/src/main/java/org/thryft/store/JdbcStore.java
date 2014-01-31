@@ -49,7 +49,8 @@ import java.util.Set;
 
 import org.h2.jdbcx.JdbcConnectionPool;
 import org.thryft.Base;
-import org.thryft.protocol.JsonProtocol;
+import org.thryft.protocol.JsonInputProtocol;
+import org.thryft.protocol.JsonOutputProtocol;
 
 import com.google.common.base.CaseFormat;
 import com.google.common.collect.ImmutableMap;
@@ -426,7 +427,7 @@ public final class JdbcStore<ModelT extends Base<?>> extends
     private ModelT __getModel(final ResultSet resultSet)
             throws ModelIoException {
         try {
-            return _getModel(new JsonProtocol(new StringReader(
+            return _getModel(new JsonInputProtocol(new StringReader(
                     resultSet.getString(tableName + "_json"))));
         } catch (final IOException | SQLException e) {
             throw new ModelIoException(e.getMessage());
@@ -455,7 +456,8 @@ public final class JdbcStore<ModelT extends Base<?>> extends
         try {
             __deleteModelById(connection, modelId, userId);
             final StringWriter stringWriter = new StringWriter();
-            final JsonProtocol oprot = new JsonProtocol(stringWriter);
+            final JsonOutputProtocol oprot = new JsonOutputProtocol(
+                    stringWriter);
             model.write(oprot);
             oprot.flush();
             final String json = stringWriter.toString();

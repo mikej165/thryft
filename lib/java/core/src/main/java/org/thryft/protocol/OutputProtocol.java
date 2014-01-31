@@ -43,63 +43,8 @@ import org.thryft.native_.Url;
 import com.google.common.primitives.UnsignedInteger;
 import com.google.common.primitives.UnsignedLong;
 
-public interface Protocol {
-    public byte[] readBinary() throws IOException;
-
-    public boolean readBool() throws IOException;
-
-    public byte readByte() throws IOException;
-
-    public DateTime readDate() throws IOException;
-
-    public DateTime readDateTime() throws IOException;
-
-    public BigDecimal readDecimal() throws IOException;
-
-    public double readDouble() throws IOException;
-
-    public EmailAddress readEmailAddress() throws IOException;
-
-    public <E extends Enum<E>> E readEnum(final Class<E> enumClass)
-            throws IOException;
-
-    public FieldBegin readFieldBegin() throws IOException;
-
-    public void readFieldEnd() throws IOException;
-
-    public short readI16() throws IOException;
-
-    public int readI32() throws IOException;
-
-    public long readI64() throws IOException;
-
-    public ListBegin readListBegin() throws IOException;
-
-    public void readListEnd() throws IOException;
-
-    public MapBegin readMapBegin() throws IOException;
-
-    public void readMapEnd() throws IOException;
-
-    public Object readMixed() throws IOException;
-
-    public SetBegin readSetBegin() throws IOException;
-
-    public void readSetEnd() throws IOException;
-
-    public String readString() throws IOException;
-
-    public StructBegin readStructBegin() throws IOException;
-
-    public void readStructEnd() throws IOException;
-
-    public UnsignedInteger readU32() throws IOException;
-
-    public UnsignedLong readU64() throws IOException;
-
-    public Uri readUri() throws IOException;
-
-    public Url readUrl() throws IOException;
+public interface OutputProtocol {
+    public void flush() throws IOException;
 
     public void writeBinary(final byte[] buf) throws IOException;
 

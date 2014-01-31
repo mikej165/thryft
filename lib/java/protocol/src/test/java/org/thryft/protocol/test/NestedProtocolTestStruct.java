@@ -217,11 +217,11 @@ public class NestedProtocolTestStruct implements org.thryft.Base<NestedProtocolT
         this(other.getBinaryField(), other.getBoolField(), other.getByteField(), other.getDateTimeField(), other.getDecimalField(), other.getEmailAddressField(), other.getEnumField(), other.getI16Field(), other.getI32Field(), other.getI64Field(), other.getListStringField(), other.getMapStringStringField(), other.getRequiredI32Field(), other.getRequiredStringField(), other.getSetStringField(), other.getStringField(), other.getUrlField());
     }
 
-    public NestedProtocolTestStruct(final org.thryft.protocol.Protocol iprot) throws java.io.IOException {
+    public NestedProtocolTestStruct(final org.thryft.protocol.InputProtocol iprot) throws java.io.IOException {
         this(iprot, org.thryft.protocol.Type.STRUCT);
     }
 
-    public NestedProtocolTestStruct(final org.thryft.protocol.Protocol iprot, final byte readAsTType) throws java.io.IOException {
+    public NestedProtocolTestStruct(final org.thryft.protocol.InputProtocol iprot, final byte readAsTType) throws java.io.IOException {
         com.google.common.base.Optional<byte[]> binaryField = com.google.common.base.Optional.absent();
         com.google.common.base.Optional<Boolean> boolField = com.google.common.base.Optional.absent();
         com.google.common.base.Optional<Byte> byteField = com.google.common.base.Optional.absent();
@@ -274,9 +274,9 @@ public class NestedProtocolTestStruct implements org.thryft.Base<NestedProtocolT
                     i64Field = com.google.common.base.Optional.of(iprot.readI64());
                 } catch (NumberFormatException e) {
                 }
-                listStringField = com.google.common.base.Optional.of((new com.google.common.base.Function<org.thryft.protocol.Protocol, com.google.common.collect.ImmutableList<String>>() {
+                listStringField = com.google.common.base.Optional.of((new com.google.common.base.Function<org.thryft.protocol.InputProtocol, com.google.common.collect.ImmutableList<String>>() {
                     @Override
-                    public com.google.common.collect.ImmutableList<String> apply(final org.thryft.protocol.Protocol iprot) {
+                    public com.google.common.collect.ImmutableList<String> apply(final org.thryft.protocol.InputProtocol iprot) {
                         try {
                             final org.thryft.protocol.ListBegin sequenceBegin = iprot.readListBegin();
                             final com.google.common.collect.ImmutableList.Builder<String> sequence = com.google.common.collect.ImmutableList.builder();
@@ -290,9 +290,9 @@ public class NestedProtocolTestStruct implements org.thryft.Base<NestedProtocolT
                         }
                     }
                 }).apply(iprot));
-                mapStringStringField = com.google.common.base.Optional.of((new com.google.common.base.Function<org.thryft.protocol.Protocol, com.google.common.collect.ImmutableMap<String, String>>() {
+                mapStringStringField = com.google.common.base.Optional.of((new com.google.common.base.Function<org.thryft.protocol.InputProtocol, com.google.common.collect.ImmutableMap<String, String>>() {
                     @Override
-                    public com.google.common.collect.ImmutableMap<String, String> apply(org.thryft.protocol.Protocol iprot) {
+                    public com.google.common.collect.ImmutableMap<String, String> apply(org.thryft.protocol.InputProtocol iprot) {
                         try {
                             final org.thryft.protocol.MapBegin mapBegin = iprot.readMapBegin();
                             final com.google.common.collect.ImmutableMap.Builder<String, String> map = com.google.common.collect.ImmutableMap.builder();
@@ -309,9 +309,9 @@ public class NestedProtocolTestStruct implements org.thryft.Base<NestedProtocolT
                 requiredI32Field = iprot.readI32();
                 requiredStringField = iprot.readString();
                 if (__list.size > 14) {
-                    setStringField = com.google.common.base.Optional.of((new com.google.common.base.Function<org.thryft.protocol.Protocol, com.google.common.collect.ImmutableSet<String>>() {
+                    setStringField = com.google.common.base.Optional.of((new com.google.common.base.Function<org.thryft.protocol.InputProtocol, com.google.common.collect.ImmutableSet<String>>() {
                         @Override
-                        public com.google.common.collect.ImmutableSet<String> apply(final org.thryft.protocol.Protocol iprot) {
+                        public com.google.common.collect.ImmutableSet<String> apply(final org.thryft.protocol.InputProtocol iprot) {
                             try {
                                 final org.thryft.protocol.SetBegin sequenceBegin = iprot.readSetBegin();
                                 final com.google.common.collect.ImmutableSet.Builder<String> sequence = com.google.common.collect.ImmutableSet.builder();
@@ -387,9 +387,9 @@ public class NestedProtocolTestStruct implements org.thryft.Base<NestedProtocolT
                         } catch (NumberFormatException e) {
                         }
                     } else if (ifield.name.equals("list_string_field")) {
-                        listStringField = com.google.common.base.Optional.of((new com.google.common.base.Function<org.thryft.protocol.Protocol, com.google.common.collect.ImmutableList<String>>() {
+                        listStringField = com.google.common.base.Optional.of((new com.google.common.base.Function<org.thryft.protocol.InputProtocol, com.google.common.collect.ImmutableList<String>>() {
                             @Override
-                            public com.google.common.collect.ImmutableList<String> apply(final org.thryft.protocol.Protocol iprot) {
+                            public com.google.common.collect.ImmutableList<String> apply(final org.thryft.protocol.InputProtocol iprot) {
                                 try {
                                     final org.thryft.protocol.ListBegin sequenceBegin = iprot.readListBegin();
                                     final com.google.common.collect.ImmutableList.Builder<String> sequence = com.google.common.collect.ImmutableList.builder();
@@ -404,9 +404,9 @@ public class NestedProtocolTestStruct implements org.thryft.Base<NestedProtocolT
                             }
                         }).apply(iprot));
                     } else if (ifield.name.equals("map_string_string_field")) {
-                        mapStringStringField = com.google.common.base.Optional.of((new com.google.common.base.Function<org.thryft.protocol.Protocol, com.google.common.collect.ImmutableMap<String, String>>() {
+                        mapStringStringField = com.google.common.base.Optional.of((new com.google.common.base.Function<org.thryft.protocol.InputProtocol, com.google.common.collect.ImmutableMap<String, String>>() {
                             @Override
-                            public com.google.common.collect.ImmutableMap<String, String> apply(org.thryft.protocol.Protocol iprot) {
+                            public com.google.common.collect.ImmutableMap<String, String> apply(org.thryft.protocol.InputProtocol iprot) {
                                 try {
                                     final org.thryft.protocol.MapBegin mapBegin = iprot.readMapBegin();
                                     final com.google.common.collect.ImmutableMap.Builder<String, String> map = com.google.common.collect.ImmutableMap.builder();
@@ -425,9 +425,9 @@ public class NestedProtocolTestStruct implements org.thryft.Base<NestedProtocolT
                     } else if (ifield.name.equals("required_string_field")) {
                         requiredStringField = iprot.readString();
                     } else if (ifield.name.equals("set_string_field")) {
-                        setStringField = com.google.common.base.Optional.of((new com.google.common.base.Function<org.thryft.protocol.Protocol, com.google.common.collect.ImmutableSet<String>>() {
+                        setStringField = com.google.common.base.Optional.of((new com.google.common.base.Function<org.thryft.protocol.InputProtocol, com.google.common.collect.ImmutableSet<String>>() {
                             @Override
-                            public com.google.common.collect.ImmutableSet<String> apply(final org.thryft.protocol.Protocol iprot) {
+                            public com.google.common.collect.ImmutableSet<String> apply(final org.thryft.protocol.InputProtocol iprot) {
                                 try {
                                     final org.thryft.protocol.SetBegin sequenceBegin = iprot.readSetBegin();
                                     final com.google.common.collect.ImmutableSet.Builder<String> sequence = com.google.common.collect.ImmutableSet.builder();
@@ -1150,11 +1150,11 @@ public class NestedProtocolTestStruct implements org.thryft.Base<NestedProtocolT
     }
 
     @Override
-    public void write(final org.thryft.protocol.Protocol oprot) throws java.io.IOException {
+    public void write(final org.thryft.protocol.OutputProtocol oprot) throws java.io.IOException {
         write(oprot, org.thryft.protocol.Type.STRUCT);
     }
 
-    public void write(final org.thryft.protocol.Protocol oprot, final byte writeAsTType) throws java.io.IOException {
+    public void write(final org.thryft.protocol.OutputProtocol oprot, final byte writeAsTType) throws java.io.IOException {
         switch (writeAsTType) {
             case org.thryft.protocol.Type.VOID:
             case org.thryft.protocol.Type.LIST:

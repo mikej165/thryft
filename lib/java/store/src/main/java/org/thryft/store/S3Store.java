@@ -46,7 +46,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.IOUtils;
 import org.thryft.Base;
-import org.thryft.protocol.JsonProtocol;
+import org.thryft.protocol.JsonInputProtocol;
+import org.thryft.protocol.JsonOutputProtocol;
 import org.thryft.protocol.MapBegin;
 import org.thryft.protocol.Type;
 
@@ -349,7 +350,8 @@ public final class S3Store<ModelT extends Base<?>> extends
 
             final StringReader istringReader = new StringReader(istring);
             try {
-                final JsonProtocol iprot = new JsonProtocol(istringReader);
+                final JsonInputProtocol iprot = new JsonInputProtocol(
+                        istringReader);
                 final MapBegin map = iprot.readMapBegin();
                 final ImmutableMap.Builder<String, ModelT> modelsBuilder = ImmutableMap
                         .builder();
@@ -386,7 +388,8 @@ public final class S3Store<ModelT extends Base<?>> extends
         final String ostring;
         try {
             final StringWriter ostringWriter = new StringWriter();
-            final JsonProtocol oprot = new JsonProtocol(ostringWriter);
+            final JsonOutputProtocol oprot = new JsonOutputProtocol(
+                    ostringWriter);
             oprot.writeMapBegin(new MapBegin(Type.STRING, Type.STRUCT, models
                     .size()));
             for (final ImmutableMap.Entry<String, ModelT> model : models

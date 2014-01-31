@@ -47,11 +47,50 @@ import au.com.bytecode.opencsv.CSVReader;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 
-public class CsvProtocol extends StackedProtocol {
-    protected class FileReaderProtocol extends ReaderProtocol {
-        protected class RowReaderProtocol extends ReaderProtocol {
-            protected class SequenceColumnReaderProtocol extends ReaderProtocol {
-                public SequenceColumnReaderProtocol(final String[] elements) {
+public class CsvInputProtocol extends StackedInputProtocol {
+    protected abstract class AbstractInputProtocol extends
+            org.thryft.protocol.AbstractInputProtocol {
+        @Override
+        public boolean readBool() throws IOException {
+            return readString().equals("1");
+        }
+
+        @Override
+        public byte readByte() throws IOException {
+            return Byte.parseByte(readString());
+        }
+
+        @Override
+        public double readDouble() throws IOException {
+            return Double.parseDouble(readString());
+        }
+
+        @Override
+        public short readI16() throws IOException {
+            return Short.parseShort(readString());
+        }
+
+        @Override
+        public int readI32() throws IOException {
+            return Integer.parseInt(readString());
+        }
+
+        @Override
+        public long readI64() throws IOException {
+            final String value = readString();
+            try {
+                return Long.parseLong(value);
+            } catch (final NumberFormatException e) {
+                return dateTimeFormatter.parseMillis(value);
+            }
+        }
+    }
+
+    protected class FileInputProtocol extends AbstractInputProtocol {
+        protected class RowInputProtocol extends AbstractInputProtocol {
+            protected class SequenceColumnInputProtocol extends
+                    AbstractInputProtocol {
+                public SequenceColumnInputProtocol(final String[] elements) {
                     this.elements = elements;
                     currentElementI = 0;
                 }
@@ -70,7 +109,7 @@ public class CsvProtocol extends StackedProtocol {
                 private final String[] elements;
             }
 
-            public RowReaderProtocol(final String[] columnNames,
+            public RowInputProtocol(final String[] columnNames,
                     final String[] columnValues) {
                 this.columnNames = columnNames;
                 this.columnValues = columnValues;
@@ -108,8 +147,9 @@ public class CsvProtocol extends StackedProtocol {
                 return new StructBegin();
             }
 
-            protected Protocol _createSequenceColumn(final String[] elements) {
-                return new SequenceColumnReaderProtocol(elements);
+            protected InputProtocol _createSequenceColumn(
+                    final String[] elements) {
+                return new SequenceColumnInputProtocol(elements);
             }
 
             protected String _getCurrentColumnName() {
@@ -159,12 +199,12 @@ public class CsvProtocol extends StackedProtocol {
             private final String[] columnValues;
         }
 
-        public FileReaderProtocol(final List<String[]> rows) {
-            this.rows = new Stack<Protocol>();
+        public FileInputProtocol(final List<String[]> rows) {
+            this.rows = new Stack<InputProtocol>();
             Collections.reverse(rows);
             final String[] columnNames = rows.remove(rows.size() - 1);
             for (final String[] row : rows) {
-                this.rows.push(_createRowReaderProtocol(columnNames, row));
+                this.rows.push(_createRowInputProtocol(columnNames, row));
             }
         }
 
@@ -184,52 +224,15 @@ public class CsvProtocol extends StackedProtocol {
             return new StructBegin();
         }
 
-        protected Protocol _createRowReaderProtocol(
+        protected InputProtocol _createRowInputProtocol(
                 final String[] columnNames, final String[] columnValues) {
-            return new RowReaderProtocol(columnNames, columnValues);
+            return new RowInputProtocol(columnNames, columnValues);
         }
 
-        private final Stack<Protocol> rows;
+        private final Stack<InputProtocol> rows;
     }
 
-    protected class ReaderProtocol extends AbstractProtocol {
-        @Override
-        public boolean readBool() throws IOException {
-            return readString().equals("1");
-        }
-
-        @Override
-        public byte readByte() throws IOException {
-            return Byte.parseByte(readString());
-        }
-
-        @Override
-        public double readDouble() throws IOException {
-            return Double.parseDouble(readString());
-        }
-
-        @Override
-        public short readI16() throws IOException {
-            return Short.parseShort(readString());
-        }
-
-        @Override
-        public int readI32() throws IOException {
-            return Integer.parseInt(readString());
-        }
-
-        @Override
-        public long readI64() throws IOException {
-            final String value = readString();
-            try {
-                return Long.parseLong(value);
-            } catch (final NumberFormatException e) {
-                return dateTimeFormatter.parseMillis(value);
-            }
-        }
-    }
-
-    public CsvProtocol(final Reader reader) {
+    public CsvInputProtocol(final Reader reader) {
         final CSVReader csvReader = new CSVReader(reader);
         List<String[]> rows;
         try {
@@ -245,11 +248,11 @@ public class CsvProtocol extends StackedProtocol {
             }
         }
 
-        _getProtocolStack().add(_createFileReaderProtocol(rows));
+        _getProtocolStack().add(_createFileInputProtocol(rows));
     }
 
-    protected Protocol _createFileReaderProtocol(final List<String[]> rows) {
-        return new FileReaderProtocol(rows);
+    protected InputProtocol _createFileInputProtocol(final List<String[]> rows) {
+        return new FileInputProtocol(rows);
     }
 
     private final static DateTimeFormatter dateTimeFormatter = DateTimeFormat
