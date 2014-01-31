@@ -36,12 +36,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.Properties;
 
-import org.thryft.TBase;
+import org.thryft.Base;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;
 
-public abstract class AwsKeyValueStore<ModelT extends TBase<?>> extends
+public abstract class AwsKeyValueStore<ModelT extends Base<?>> extends
         KeyValueStore<ModelT> {
     protected static class Configuration {
         protected Configuration(final AWSCredentials credentials) {

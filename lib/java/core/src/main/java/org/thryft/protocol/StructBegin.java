@@ -20,19 +20,17 @@
 package org.thryft.protocol;
 
 /**
- * Helper class that encapsulates list metadata.
+ * Helper class that encapsulates struct metadata.
  * 
  */
-public final class TList {
-    public TList() {
-        this(TType.STOP, 0);
+public final class StructBegin {
+    public StructBegin() {
+        this("");
     }
 
-    public TList(final byte t, final int s) {
-        elemType = t;
-        size = s;
+    public StructBegin(final String n) {
+        name = n;
     }
 
-    public final byte elemType;
-    public final int size;
+    public final String name;
 }

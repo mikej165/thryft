@@ -20,23 +20,33 @@
 package org.thryft.protocol;
 
 /**
- * Helper class that encapsulates set metadata.
+ * Helper class that encapsulates field metadata.
  * 
  */
-public final class TSet {
-    public TSet() {
-        this(TType.STOP, 0);
+public class FieldBegin {
+    public FieldBegin() {
+        this("", Type.STOP, (short) 0);
     }
 
-    public TSet(final byte t, final int s) {
-        elemType = t;
-        size = s;
+    public FieldBegin(final String n, final byte t, final short i) {
+        name = n;
+        type = t;
+        id = i;
     }
 
-    public TSet(final TList list) {
-        this(list.elemType, list.size);
+    public boolean equals(final FieldBegin otherField) {
+        return type == otherField.type && id == otherField.id;
     }
 
-    public final byte elemType;
-    public final int size;
+    @Override
+    public String toString() {
+        return "<TField name:'" + name + "' type:" + type + " field-id:" + id
+                + ">";
+    }
+
+    public final String name;
+
+    public final byte type;
+
+    public final short id;
 }

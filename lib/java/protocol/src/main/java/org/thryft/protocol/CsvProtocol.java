@@ -57,7 +57,7 @@ public class CsvProtocol extends StackedProtocol {
                 }
 
                 @Override
-                public TList readListBegin() throws IOException {
+                public ListBegin readListBegin() throws IOException {
                     throw new IllegalStateException();
                 }
 
@@ -78,11 +78,11 @@ public class CsvProtocol extends StackedProtocol {
             }
 
             @Override
-            public TField readFieldBegin() throws IOException {
+            public FieldBegin readFieldBegin() throws IOException {
                 if (currentColumnI < columnValues.length) {
                     return _readFieldBegin();
                 } else {
-                    return new TField();
+                    return new FieldBegin();
                 }
             }
 
@@ -92,7 +92,7 @@ public class CsvProtocol extends StackedProtocol {
             }
 
             @Override
-            public TList readListBegin() throws IOException {
+            public ListBegin readListBegin() throws IOException {
                 return _readListBegin(readString());
             }
 
@@ -102,13 +102,13 @@ public class CsvProtocol extends StackedProtocol {
             }
 
             @Override
-            public TStruct readStructBegin() {
+            public StructBegin readStructBegin() {
                 // Assume a struct will read inline
                 _getProtocolStack().push(this);
-                return new TStruct();
+                return new StructBegin();
             }
 
-            protected TProtocol _createSequenceColumn(final String[] elements) {
+            protected Protocol _createSequenceColumn(final String[] elements) {
                 return new SequenceColumnReaderProtocol(elements);
             }
 
@@ -120,12 +120,12 @@ public class CsvProtocol extends StackedProtocol {
                 return columnValues[currentColumnI];
             }
 
-            protected TField _readFieldBegin() throws IOException {
-                return new TField(_getCurrentColumnName(), TType.STRING,
+            protected FieldBegin _readFieldBegin() throws IOException {
+                return new FieldBegin(_getCurrentColumnName(), Type.STRING,
                         (short) 0);
             }
 
-            protected TList _readListBegin(final String list)
+            protected ListBegin _readListBegin(final String list)
                     throws IOException {
                 final CSVReader listReader = new CSVReader(new StringReader(
                         list));
@@ -141,7 +141,7 @@ public class CsvProtocol extends StackedProtocol {
                     listReader.close();
                 }
                 _getProtocolStack().push(_createSequenceColumn(listElements));
-                return new TList(TType.STRING, 0);
+                return new ListBegin(Type.STRING, 0);
             }
 
             protected Optional<String> _readString(final String columnName) {
@@ -160,7 +160,7 @@ public class CsvProtocol extends StackedProtocol {
         }
 
         public FileReaderProtocol(final List<String[]> rows) {
-            this.rows = new Stack<TProtocol>();
+            this.rows = new Stack<Protocol>();
             Collections.reverse(rows);
             final String[] columnNames = rows.remove(rows.size() - 1);
             for (final String[] row : rows) {
@@ -169,8 +169,8 @@ public class CsvProtocol extends StackedProtocol {
         }
 
         @Override
-        public TList readListBegin() throws IOException {
-            return new TList(TType.STRUCT, rows.size());
+        public ListBegin readListBegin() throws IOException {
+            return new ListBegin(Type.STRUCT, rows.size());
         }
 
         @Override
@@ -179,17 +179,17 @@ public class CsvProtocol extends StackedProtocol {
         }
 
         @Override
-        public TStruct readStructBegin() throws IOException {
+        public StructBegin readStructBegin() throws IOException {
             _getProtocolStack().push(rows.pop());
-            return new TStruct();
+            return new StructBegin();
         }
 
-        protected TProtocol _createRowReaderProtocol(
+        protected Protocol _createRowReaderProtocol(
                 final String[] columnNames, final String[] columnValues) {
             return new RowReaderProtocol(columnNames, columnValues);
         }
 
-        private final Stack<TProtocol> rows;
+        private final Stack<Protocol> rows;
     }
 
     protected class ReaderProtocol extends AbstractProtocol {
@@ -248,7 +248,7 @@ public class CsvProtocol extends StackedProtocol {
         _getProtocolStack().add(_createFileReaderProtocol(rows));
     }
 
-    protected TProtocol _createFileReaderProtocol(final List<String[]> rows) {
+    protected Protocol _createFileReaderProtocol(final List<String[]> rows) {
         return new FileReaderProtocol(rows);
     }
 

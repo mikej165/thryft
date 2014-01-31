@@ -20,21 +20,19 @@
 package org.thryft.protocol;
 
 /**
- * Helper class that encapsulates map metadata.
+ * Helper class that encapsulates list metadata.
  * 
  */
-public final class TMap {
-    public TMap() {
-        this(TType.STOP, TType.STOP, 0);
+public final class ListBegin {
+    public ListBegin() {
+        this(Type.STOP, 0);
     }
 
-    public TMap(final byte k, final byte v, final int s) {
-        keyType = k;
-        valueType = v;
+    public ListBegin(final byte t, final int s) {
+        elemType = t;
         size = s;
     }
 
-    public final byte keyType;
-    public final byte valueType;
+    public final byte elemType;
     public final int size;
 }

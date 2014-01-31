@@ -108,20 +108,20 @@ public class StringMapProtocol extends StackedProtocol {
             return input;
         }
 
-        protected TList _readListBegin(final String childKey)
+        protected ListBegin _readListBegin(final String childKey)
                 throws IOException {
             final ListReaderProtocol listReaderProtocol = new ListReaderProtocol(
                     input, __joinKeys(myKey, childKey));
             _getProtocolStack().push(listReaderProtocol);
-            return new TList(TType.VOID, listReaderProtocol._getChildKeyStack()
+            return new ListBegin(Type.VOID, listReaderProtocol._getChildKeyStack()
                     .size());
         }
 
-        protected TMap _readMapBegin(final String childKey) throws IOException {
+        protected MapBegin _readMapBegin(final String childKey) throws IOException {
             final MapReaderProtocol mapReaderProtocol = new MapReaderProtocol(
                     input, __joinKeys(myKey, childKey));
             _getProtocolStack().push(mapReaderProtocol);
-            return new TMap(TType.VOID, TType.VOID, mapReaderProtocol
+            return new MapBegin(Type.VOID, Type.VOID, mapReaderProtocol
                     ._getChildKeyStack().size());
         }
 
@@ -129,12 +129,12 @@ public class StringMapProtocol extends StackedProtocol {
             return input.get(__joinKeys(myKey, childKey));
         }
 
-        protected TStruct _readStructBegin(final String childKey)
+        protected StructBegin _readStructBegin(final String childKey)
                 throws IOException {
             final StructReaderProtocol structReaderProtocol = new StructReaderProtocol(
                     input, __joinKeys(myKey, childKey));
             _getProtocolStack().push(structReaderProtocol);
-            return new TStruct();
+            return new StructBegin();
         }
 
         private final String myKey;
@@ -227,12 +227,12 @@ public class StringMapProtocol extends StackedProtocol {
         }
 
         @Override
-        public TList readListBegin() throws IOException {
+        public ListBegin readListBegin() throws IOException {
             return _readListBegin(_getChildKeyStack().pop());
         }
 
         @Override
-        public TMap readMapBegin() throws IOException {
+        public MapBegin readMapBegin() throws IOException {
             return _readMapBegin(_getChildKeyStack().pop());
         }
 
@@ -242,7 +242,7 @@ public class StringMapProtocol extends StackedProtocol {
         }
 
         @Override
-        public TStruct readStructBegin() throws IOException {
+        public StructBegin readStructBegin() throws IOException {
             return _readStructBegin(_getChildKeyStack().pop());
         }
     }
@@ -253,12 +253,12 @@ public class StringMapProtocol extends StackedProtocol {
         }
 
         @Override
-        public void writeListBegin(final TList list) throws IOException {
+        public void writeListBegin(final ListBegin list) throws IOException {
             _writeListBegin(Integer.toString(nextChildKey++));
         }
 
         @Override
-        public void writeMapBegin(final TMap map) throws IOException {
+        public void writeMapBegin(final MapBegin map) throws IOException {
             _writeMapBegin(Integer.toString(nextChildKey++));
         }
 
@@ -268,7 +268,7 @@ public class StringMapProtocol extends StackedProtocol {
         }
 
         @Override
-        public void writeStructBegin(final TStruct struct) throws IOException {
+        public void writeStructBegin(final StructBegin struct) throws IOException {
             _writeStructBegin(Integer.toString(nextChildKey++));
         }
 
@@ -282,14 +282,14 @@ public class StringMapProtocol extends StackedProtocol {
         }
 
         @Override
-        public TList readListBegin() throws IOException {
+        public ListBegin readListBegin() throws IOException {
             checkState(!nextReadIsKey);
             nextReadIsKey = true;
             return _readListBegin(_getChildKeyStack().pop());
         }
 
         @Override
-        public TMap readMapBegin() throws IOException {
+        public MapBegin readMapBegin() throws IOException {
             checkState(!nextReadIsKey);
             nextReadIsKey = true;
             return _readMapBegin(_getChildKeyStack().pop());
@@ -307,7 +307,7 @@ public class StringMapProtocol extends StackedProtocol {
         }
 
         @Override
-        public TStruct readStructBegin() throws IOException {
+        public StructBegin readStructBegin() throws IOException {
             checkState(!nextReadIsKey);
             nextReadIsKey = true;
             return _readStructBegin(_getChildKeyStack().pop());
@@ -322,13 +322,13 @@ public class StringMapProtocol extends StackedProtocol {
         }
 
         @Override
-        public void writeListBegin(final TList list) throws IOException {
+        public void writeListBegin(final ListBegin list) throws IOException {
             checkState(nextChildKey != null);
             _writeListBegin(nextChildKey);
         }
 
         @Override
-        public void writeMapBegin(final TMap map) throws IOException {
+        public void writeMapBegin(final MapBegin map) throws IOException {
             checkState(nextChildKey != null);
             _writeMapBegin(nextChildKey);
         }
@@ -344,7 +344,7 @@ public class StringMapProtocol extends StackedProtocol {
         }
 
         @Override
-        public void writeStructBegin(final TStruct struct) throws IOException {
+        public void writeStructBegin(final StructBegin struct) throws IOException {
             checkState(nextChildKey != null);
             _writeStructBegin(nextChildKey);
         }
@@ -358,20 +358,20 @@ public class StringMapProtocol extends StackedProtocol {
         }
 
         @Override
-        public TList readListBegin() throws IOException {
+        public ListBegin readListBegin() throws IOException {
             final ListReaderProtocol listReaderProtocol = new ListReaderProtocol(
                     _getInput(), "");
             _getProtocolStack().push(listReaderProtocol);
-            return new TList(TType.VOID, listReaderProtocol._getChildKeyStack()
+            return new ListBegin(Type.VOID, listReaderProtocol._getChildKeyStack()
                     .size());
         }
 
         @Override
-        public TMap readMapBegin() throws IOException {
+        public MapBegin readMapBegin() throws IOException {
             final MapReaderProtocol mapReaderProtocol = new MapReaderProtocol(
                     _getInput(), "");
             _getProtocolStack().push(mapReaderProtocol);
-            return new TMap(TType.VOID, TType.VOID, mapReaderProtocol
+            return new MapBegin(Type.VOID, Type.VOID, mapReaderProtocol
                     ._getChildKeyStack().size());
         }
 
@@ -381,9 +381,9 @@ public class StringMapProtocol extends StackedProtocol {
         }
 
         @Override
-        public TStruct readStructBegin() throws IOException {
+        public StructBegin readStructBegin() throws IOException {
             _getProtocolStack().push(new StructReaderProtocol(_getInput(), ""));
-            return new TStruct();
+            return new StructBegin();
         }
     }
 
@@ -393,12 +393,12 @@ public class StringMapProtocol extends StackedProtocol {
         }
 
         @Override
-        public void writeListBegin(final TList list) throws IOException {
+        public void writeListBegin(final ListBegin list) throws IOException {
             _getProtocolStack().push(new ListWriterProtocol(""));
         }
 
         @Override
-        public void writeMapBegin(final TMap map) throws IOException {
+        public void writeMapBegin(final MapBegin map) throws IOException {
             _getProtocolStack().push(new MapWriterProtocol(""));
         }
 
@@ -408,7 +408,7 @@ public class StringMapProtocol extends StackedProtocol {
         }
 
         @Override
-        public void writeStructBegin(final TStruct struct) throws IOException {
+        public void writeStructBegin(final StructBegin struct) throws IOException {
             _getProtocolStack().push(new StructWriterProtocol(""));
         }
     }
@@ -420,12 +420,12 @@ public class StringMapProtocol extends StackedProtocol {
         }
 
         @Override
-        public TField readFieldBegin() throws IOException {
+        public FieldBegin readFieldBegin() throws IOException {
             if (!_getChildKeyStack().empty()) {
-                return new TField(_getChildKeyStack().peek(), TType.VOID,
+                return new FieldBegin(_getChildKeyStack().peek(), Type.VOID,
                         (short) -1);
             } else {
-                return new TField();
+                return new FieldBegin();
             }
         }
 
@@ -435,12 +435,12 @@ public class StringMapProtocol extends StackedProtocol {
         }
 
         @Override
-        public TList readListBegin() throws IOException {
+        public ListBegin readListBegin() throws IOException {
             return _readListBegin(_getChildKeyStack().peek());
         }
 
         @Override
-        public TMap readMapBegin() throws IOException {
+        public MapBegin readMapBegin() throws IOException {
             return _readMapBegin(_getChildKeyStack().peek());
         }
 
@@ -450,7 +450,7 @@ public class StringMapProtocol extends StackedProtocol {
         }
 
         @Override
-        public TStruct readStructBegin() throws IOException {
+        public StructBegin readStructBegin() throws IOException {
             return _readStructBegin(_getChildKeyStack().peek());
         }
     }
@@ -461,7 +461,7 @@ public class StringMapProtocol extends StackedProtocol {
         }
 
         @Override
-        public void writeFieldBegin(final TField field) throws IOException {
+        public void writeFieldBegin(final FieldBegin field) throws IOException {
             nextChildKey = field.name;
         }
 
@@ -474,13 +474,13 @@ public class StringMapProtocol extends StackedProtocol {
         }
 
         @Override
-        public void writeListBegin(final TList list) throws IOException {
+        public void writeListBegin(final ListBegin list) throws IOException {
             checkState(nextChildKey != null);
             _writeListBegin(nextChildKey);
         }
 
         @Override
-        public void writeMapBegin(final TMap map) throws IOException {
+        public void writeMapBegin(final MapBegin map) throws IOException {
             checkState(nextChildKey != null);
             _writeMapBegin(nextChildKey);
         }
@@ -492,7 +492,7 @@ public class StringMapProtocol extends StackedProtocol {
         }
 
         @Override
-        public void writeStructBegin(final TStruct struct) throws IOException {
+        public void writeStructBegin(final StructBegin struct) throws IOException {
             checkState(nextChildKey != null);
             _writeStructBegin(nextChildKey);
         }

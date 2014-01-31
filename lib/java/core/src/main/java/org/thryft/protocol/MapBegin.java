@@ -20,33 +20,21 @@
 package org.thryft.protocol;
 
 /**
- * Helper class that encapsulates field metadata.
+ * Helper class that encapsulates map metadata.
  * 
  */
-public class TField {
-    public TField() {
-        this("", TType.STOP, (short) 0);
+public final class MapBegin {
+    public MapBegin() {
+        this(Type.STOP, Type.STOP, 0);
     }
 
-    public TField(final String n, final byte t, final short i) {
-        name = n;
-        type = t;
-        id = i;
+    public MapBegin(final byte k, final byte v, final int s) {
+        keyType = k;
+        valueType = v;
+        size = s;
     }
 
-    public boolean equals(final TField otherField) {
-        return type == otherField.type && id == otherField.id;
-    }
-
-    @Override
-    public String toString() {
-        return "<TField name:'" + name + "' type:" + type + " field-id:" + id
-                + ">";
-    }
-
-    public final String name;
-
-    public final byte type;
-
-    public final short id;
+    public final byte keyType;
+    public final byte valueType;
+    public final int size;
 }

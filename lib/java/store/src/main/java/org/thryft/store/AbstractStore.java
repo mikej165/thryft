@@ -38,13 +38,13 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.thryft.TBase;
-import org.thryft.protocol.TProtocol;
+import org.thryft.Base;
+import org.thryft.protocol.Protocol;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
-public abstract class AbstractStore<ModelT extends TBase<?>> implements
+public abstract class AbstractStore<ModelT extends Base<?>> implements
         Store<ModelT> {
     protected AbstractStore(final Class<ModelT> modelClass) {
         logger = LoggerFactory.getLogger(getClass());
@@ -155,9 +155,9 @@ public abstract class AbstractStore<ModelT extends TBase<?>> implements
     protected abstract void _deleteModels(final String userId)
             throws ModelIoException;
 
-    protected ModelT _getModel(final TProtocol iprot) throws ModelIoException {
+    protected ModelT _getModel(final Protocol iprot) throws ModelIoException {
         try {
-            return modelClass.getConstructor(TProtocol.class)
+            return modelClass.getConstructor(Protocol.class)
                     .newInstance(iprot);
         } catch (InstantiationException | IllegalAccessException
                 | IllegalArgumentException | InvocationTargetException

@@ -42,7 +42,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.thryft.TBase;
+import org.thryft.Base;
 import org.thryft.protocol.StringMapProtocol;
 
 import com.amazonaws.auth.AWSCredentials;
@@ -73,7 +73,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.hash.Hashing;
 
-public final class SimpleDbStore<ModelT extends TBase<?>> extends
+public final class SimpleDbStore<ModelT extends Base<?>> extends
         AwsKeyValueStore<ModelT> {
     public final static class Configuration extends
             AwsKeyValueStore.Configuration {

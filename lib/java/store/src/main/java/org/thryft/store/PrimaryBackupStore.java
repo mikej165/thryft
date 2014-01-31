@@ -34,12 +34,12 @@ package org.thryft.store;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import org.thryft.TBase;
+import org.thryft.Base;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
-public class PrimaryBackupStore<ModelT extends TBase<?>> extends
+public class PrimaryBackupStore<ModelT extends Base<?>> extends
         AbstractStore<ModelT> {
     public PrimaryBackupStore(final AbstractStore<ModelT> primaryStore,
             final AbstractStore<ModelT> backupStore) {

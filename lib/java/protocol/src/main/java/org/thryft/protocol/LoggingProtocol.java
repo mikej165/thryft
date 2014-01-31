@@ -96,10 +96,10 @@ public class LoggingProtocol extends AbstractProtocol {
     }
 
     @Override
-    public TField readFieldBegin() throws IOException {
+    public FieldBegin readFieldBegin() throws IOException {
         final String message = "readFieldBegin() -> ";
         try {
-            final TField field = wrappedProtocol.readFieldBegin();
+            final FieldBegin field = wrappedProtocol.readFieldBegin();
             logger.info(message + field.toString());
             return field;
         } catch (final IOException e) {
@@ -160,10 +160,10 @@ public class LoggingProtocol extends AbstractProtocol {
     }
 
     @Override
-    public TList readListBegin() throws IOException {
+    public ListBegin readListBegin() throws IOException {
         final String message = "readListBegin() ->";
         try {
-            final TList list = wrappedProtocol.readListBegin();
+            final ListBegin list = wrappedProtocol.readListBegin();
             logger.info(message + __toString(list));
             return list;
         } catch (final IOException e) {
@@ -185,10 +185,10 @@ public class LoggingProtocol extends AbstractProtocol {
     }
 
     @Override
-    public TMap readMapBegin() throws IOException {
+    public MapBegin readMapBegin() throws IOException {
         final String message = "readMapBegin() -> ";
         try {
-            final TMap map = wrappedProtocol.readMapBegin();
+            final MapBegin map = wrappedProtocol.readMapBegin();
             logger.info(message + __toString(map));
             return map;
         } catch (final IOException e) {
@@ -210,10 +210,10 @@ public class LoggingProtocol extends AbstractProtocol {
     }
 
     @Override
-    public TSet readSetBegin() throws IOException {
+    public SetBegin readSetBegin() throws IOException {
         final String message = "readSetBegin() -> ";
         try {
-            final TSet set = wrappedProtocol.readSetBegin();
+            final SetBegin set = wrappedProtocol.readSetBegin();
             logger.info(message + "(" + __toString(set) + ")");
             return set;
         } catch (final IOException e) {
@@ -248,10 +248,10 @@ public class LoggingProtocol extends AbstractProtocol {
     }
 
     @Override
-    public TStruct readStructBegin() throws IOException {
+    public StructBegin readStructBegin() throws IOException {
         final String message = "readStructBegin() -> ";
         try {
-            final TStruct struct = wrappedProtocol.readStructBegin();
+            final StructBegin struct = wrappedProtocol.readStructBegin();
             logger.info(message + "TStruct(" + __toString(struct) + ")");
             return struct;
         } catch (final IOException e) {
@@ -318,7 +318,7 @@ public class LoggingProtocol extends AbstractProtocol {
     }
 
     @Override
-    public void writeFieldBegin(final TField field) throws IOException {
+    public void writeFieldBegin(final FieldBegin field) throws IOException {
         final String message = "writeFieldBegin(" + field.toString() + ")";
         try {
             wrappedProtocol.writeFieldBegin(field);
@@ -384,7 +384,7 @@ public class LoggingProtocol extends AbstractProtocol {
     }
 
     @Override
-    public void writeListBegin(final TList list) throws IOException {
+    public void writeListBegin(final ListBegin list) throws IOException {
         final String message = "writeListBegin(" + __toString(list) + ")";
         try {
             wrappedProtocol.writeListBegin(list);
@@ -407,7 +407,7 @@ public class LoggingProtocol extends AbstractProtocol {
     }
 
     @Override
-    public void writeMapBegin(final TMap map) throws IOException {
+    public void writeMapBegin(final MapBegin map) throws IOException {
         final String message = "writeMapBegin(" + __toString(map) + ")";
         try {
             wrappedProtocol.writeMapBegin(map);
@@ -429,7 +429,7 @@ public class LoggingProtocol extends AbstractProtocol {
     }
 
     @Override
-    public void writeSetBegin(final TSet set) throws IOException {
+    public void writeSetBegin(final SetBegin set) throws IOException {
         final String message = "writeSetBegin(" + __toString(set) + ")";
         try {
             wrappedProtocol.writeSetBegin(set);
@@ -463,7 +463,7 @@ public class LoggingProtocol extends AbstractProtocol {
     }
 
     @Override
-    public void writeStructBegin(final TStruct struct) throws IOException {
+    public void writeStructBegin(final StructBegin struct) throws IOException {
         final String message = "writeStructBegin(" + __toString(struct) + ")";
         try {
             wrappedProtocol.writeStructBegin(struct);
@@ -492,23 +492,23 @@ public class LoggingProtocol extends AbstractProtocol {
         return "exception: " + e.getMessage();
     }
 
-    private final String __toString(final TList list) {
+    private final String __toString(final ListBegin list) {
         return "TList(" + Byte.toString(list.elemType) + ", "
                 + Integer.toString(list.size) + ")";
     }
 
-    private final String __toString(final TMap map) {
+    private final String __toString(final MapBegin map) {
         return "TMap(" + Byte.toString(map.keyType) + ", "
                 + Byte.toString(map.valueType) + ", "
                 + Integer.toString(map.size) + ")";
     }
 
-    private final String __toString(final TSet set) {
+    private final String __toString(final SetBegin set) {
         return "TSet(" + Byte.toString(set.elemType) + ", "
                 + Integer.toString(set.size) + ")";
     }
 
-    private final String __toString(final TStruct struct) {
+    private final String __toString(final StructBegin struct) {
         return "TStruct(" + struct.name + ")";
     }
 

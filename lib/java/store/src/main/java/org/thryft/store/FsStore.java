@@ -42,14 +42,14 @@ import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.thryft.TBase;
+import org.thryft.Base;
 import org.thryft.protocol.JsonProtocol;
 
 import com.google.common.base.CaseFormat;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
-public final class FsStore<ModelT extends TBase<?>> extends
+public final class FsStore<ModelT extends Base<?>> extends
         AbstractStore<ModelT> {
     public final static class Configuration {
         public Configuration() {

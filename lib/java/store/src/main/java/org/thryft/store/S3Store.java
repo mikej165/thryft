@@ -45,10 +45,10 @@ import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.IOUtils;
-import org.thryft.TBase;
+import org.thryft.Base;
 import org.thryft.protocol.JsonProtocol;
-import org.thryft.protocol.TMap;
-import org.thryft.protocol.TType;
+import org.thryft.protocol.MapBegin;
+import org.thryft.protocol.Type;
 
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.auth.AWSCredentials;
@@ -66,7 +66,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 
-public final class S3Store<ModelT extends TBase<?>> extends
+public final class S3Store<ModelT extends Base<?>> extends
         AwsKeyValueStore<ModelT> {
     public final static class Configuration extends
             AwsKeyValueStore.Configuration {
@@ -350,7 +350,7 @@ public final class S3Store<ModelT extends TBase<?>> extends
             final StringReader istringReader = new StringReader(istring);
             try {
                 final JsonProtocol iprot = new JsonProtocol(istringReader);
-                final TMap map = iprot.readMapBegin();
+                final MapBegin map = iprot.readMapBegin();
                 final ImmutableMap.Builder<String, ModelT> modelsBuilder = ImmutableMap
                         .builder();
                 for (int i = 0; i < map.size; i++) {
@@ -387,7 +387,7 @@ public final class S3Store<ModelT extends TBase<?>> extends
         try {
             final StringWriter ostringWriter = new StringWriter();
             final JsonProtocol oprot = new JsonProtocol(ostringWriter);
-            oprot.writeMapBegin(new TMap(TType.STRING, TType.STRUCT, models
+            oprot.writeMapBegin(new MapBegin(Type.STRING, Type.STRUCT, models
                     .size()));
             for (final ImmutableMap.Entry<String, ModelT> model : models
                     .entrySet()) {

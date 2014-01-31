@@ -43,7 +43,7 @@ import org.thryft.native_.Url;
 import com.google.common.primitives.UnsignedInteger;
 import com.google.common.primitives.UnsignedLong;
 
-public interface TProtocol {
+public interface Protocol {
     public byte[] readBinary() throws IOException;
 
     public boolean readBool() throws IOException;
@@ -63,7 +63,7 @@ public interface TProtocol {
     public <E extends Enum<E>> E readEnum(final Class<E> enumClass)
             throws IOException;
 
-    public TField readFieldBegin() throws IOException;
+    public FieldBegin readFieldBegin() throws IOException;
 
     public void readFieldEnd() throws IOException;
 
@@ -73,23 +73,23 @@ public interface TProtocol {
 
     public long readI64() throws IOException;
 
-    public TList readListBegin() throws IOException;
+    public ListBegin readListBegin() throws IOException;
 
     public void readListEnd() throws IOException;
 
-    public TMap readMapBegin() throws IOException;
+    public MapBegin readMapBegin() throws IOException;
 
     public void readMapEnd() throws IOException;
 
     public Object readMixed() throws IOException;
 
-    public TSet readSetBegin() throws IOException;
+    public SetBegin readSetBegin() throws IOException;
 
     public void readSetEnd() throws IOException;
 
     public String readString() throws IOException;
 
-    public TStruct readStructBegin() throws IOException;
+    public StructBegin readStructBegin() throws IOException;
 
     public void readStructEnd() throws IOException;
 
@@ -118,7 +118,7 @@ public interface TProtocol {
 
     public void writeEnum(final Enum<?> enum_) throws IOException;
 
-    public void writeFieldBegin(final TField field) throws IOException;
+    public void writeFieldBegin(final FieldBegin field) throws IOException;
 
     public void writeFieldEnd() throws IOException;
 
@@ -130,11 +130,11 @@ public interface TProtocol {
 
     public void writeI64(final long i64) throws IOException;
 
-    public void writeListBegin(final TList list) throws IOException;
+    public void writeListBegin(final ListBegin list) throws IOException;
 
     public void writeListEnd() throws IOException;
 
-    public void writeMapBegin(final TMap map) throws IOException;
+    public void writeMapBegin(final MapBegin map) throws IOException;
 
     public void writeMapEnd() throws IOException;
 
@@ -142,13 +142,13 @@ public interface TProtocol {
 
     public void writeNull() throws IOException;
 
-    public void writeSetBegin(final TSet set) throws IOException;
+    public void writeSetBegin(final SetBegin set) throws IOException;
 
     public void writeSetEnd() throws IOException;
 
     public void writeString(final String str) throws IOException;
 
-    public void writeStructBegin(final TStruct struct) throws IOException;
+    public void writeStructBegin(final StructBegin struct) throws IOException;
 
     public void writeStructEnd() throws IOException;
 

@@ -39,7 +39,7 @@ import java.math.BigDecimal;
 
 import org.apache.commons.codec.binary.Base64;
 import org.joda.time.DateTime;
-import org.thryft.TBase;
+import org.thryft.Base;
 import org.thryft.native_.EmailAddress;
 import org.thryft.native_.Uri;
 import org.thryft.native_.Url;
@@ -50,7 +50,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.primitives.UnsignedInteger;
 import com.google.common.primitives.UnsignedLong;
 
-public abstract class AbstractProtocol implements TProtocol {
+public abstract class AbstractProtocol implements Protocol {
     public void flush() throws IOException {
     }
 
@@ -136,7 +136,7 @@ public abstract class AbstractProtocol implements TProtocol {
     }
 
     @Override
-    public TField readFieldBegin() throws IOException {
+    public FieldBegin readFieldBegin() throws IOException {
         throw new UnsupportedOperationException();
     }
 
@@ -161,7 +161,7 @@ public abstract class AbstractProtocol implements TProtocol {
     }
 
     @Override
-    public TList readListBegin() throws IOException {
+    public ListBegin readListBegin() throws IOException {
         throw new UnsupportedOperationException();
     }
 
@@ -171,7 +171,7 @@ public abstract class AbstractProtocol implements TProtocol {
     }
 
     @Override
-    public TMap readMapBegin() throws IOException {
+    public MapBegin readMapBegin() throws IOException {
         throw new UnsupportedOperationException();
     }
 
@@ -186,9 +186,9 @@ public abstract class AbstractProtocol implements TProtocol {
     }
 
     @Override
-    public TSet readSetBegin() throws IOException {
-        final TList list = readListBegin();
-        return new TSet(list.elemType, list.size);
+    public SetBegin readSetBegin() throws IOException {
+        final ListBegin list = readListBegin();
+        return new SetBegin(list.elemType, list.size);
     }
 
     @Override
@@ -202,7 +202,7 @@ public abstract class AbstractProtocol implements TProtocol {
     }
 
     @Override
-    public TStruct readStructBegin() throws IOException {
+    public StructBegin readStructBegin() throws IOException {
         throw new UnsupportedOperationException();
     }
 
@@ -273,7 +273,7 @@ public abstract class AbstractProtocol implements TProtocol {
     }
 
     @Override
-    public void writeFieldBegin(final TField field) throws IOException {
+    public void writeFieldBegin(final FieldBegin field) throws IOException {
         throw new UnsupportedOperationException();
     }
 
@@ -303,7 +303,7 @@ public abstract class AbstractProtocol implements TProtocol {
     }
 
     @Override
-    public void writeListBegin(final TList list) throws IOException {
+    public void writeListBegin(final ListBegin list) throws IOException {
         throw new UnsupportedOperationException();
     }
 
@@ -313,7 +313,7 @@ public abstract class AbstractProtocol implements TProtocol {
     }
 
     @Override
-    public void writeMapBegin(final TMap map) throws IOException {
+    public void writeMapBegin(final MapBegin map) throws IOException {
         throw new UnsupportedOperationException();
     }
 
@@ -339,7 +339,7 @@ public abstract class AbstractProtocol implements TProtocol {
         } else if (value instanceof ImmutableList) {
             @SuppressWarnings("unchecked")
             final ImmutableList<Object> set = (ImmutableList<Object>) value;
-            writeListBegin(new TList(TType.VOID, set.size()));
+            writeListBegin(new ListBegin(Type.VOID, set.size()));
             for (final Object element : set) {
                 writeMixed(element);
             }
@@ -347,7 +347,7 @@ public abstract class AbstractProtocol implements TProtocol {
         } else if (value instanceof ImmutableMap) {
             @SuppressWarnings("unchecked")
             final ImmutableMap<Object, Object> map = (ImmutableMap<Object, Object>) value;
-            writeMapBegin(new TMap(TType.VOID, TType.VOID, map.size()));
+            writeMapBegin(new MapBegin(Type.VOID, Type.VOID, map.size()));
             for (final ImmutableMap.Entry<Object, Object> entry : map
                     .entrySet()) {
                 writeMixed(entry.getKey());
@@ -357,7 +357,7 @@ public abstract class AbstractProtocol implements TProtocol {
         } else if (value instanceof ImmutableSet) {
             @SuppressWarnings("unchecked")
             final ImmutableSet<Object> set = (ImmutableSet<Object>) value;
-            writeSetBegin(new TSet(TType.VOID, set.size()));
+            writeSetBegin(new SetBegin(Type.VOID, set.size()));
             for (final Object element : set) {
                 writeMixed(element);
             }
@@ -374,8 +374,8 @@ public abstract class AbstractProtocol implements TProtocol {
             writeString((String) value);
         } else if (value instanceof Url) {
             writeUrl((Url) value);
-        } else if (value instanceof TBase<?>) {
-            ((TBase<?>) value).write(this);
+        } else if (value instanceof Base<?>) {
+            ((Base<?>) value).write(this);
         } else {
             throw new UnsupportedOperationException(value.getClass()
                     .getCanonicalName());
@@ -388,8 +388,8 @@ public abstract class AbstractProtocol implements TProtocol {
     }
 
     @Override
-    public void writeSetBegin(final TSet set) throws IOException {
-        writeListBegin(new TList(set.elemType, set.size));
+    public void writeSetBegin(final SetBegin set) throws IOException {
+        writeListBegin(new ListBegin(set.elemType, set.size));
     }
 
     @Override
@@ -403,7 +403,7 @@ public abstract class AbstractProtocol implements TProtocol {
     }
 
     @Override
-    public void writeStructBegin(final TStruct struct) throws IOException {
+    public void writeStructBegin(final StructBegin struct) throws IOException {
         throw new UnsupportedOperationException();
     }
 

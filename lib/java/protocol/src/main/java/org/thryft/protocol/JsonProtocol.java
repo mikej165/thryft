@@ -153,7 +153,7 @@ public class JsonProtocol extends StackedProtocol {
         }
 
         @Override
-        public void writeListBegin(final TList list) throws IOException {
+        public void writeListBegin(final ListBegin list) throws IOException {
             if (nextWriteIsKey) {
                 throw new UnsupportedOperationException();
             } else {
@@ -163,7 +163,7 @@ public class JsonProtocol extends StackedProtocol {
         }
 
         @Override
-        public void writeMapBegin(final TMap map) throws IOException {
+        public void writeMapBegin(final MapBegin map) throws IOException {
             if (nextWriteIsKey) {
                 throw new UnsupportedOperationException();
             } else {
@@ -198,7 +198,7 @@ public class JsonProtocol extends StackedProtocol {
         }
 
         @Override
-        public void writeStructBegin(final TStruct struct) throws IOException {
+        public void writeStructBegin(final StructBegin struct) throws IOException {
             if (nextWriteIsKey) {
                 throw new UnsupportedOperationException();
             } else {
@@ -246,23 +246,23 @@ public class JsonProtocol extends StackedProtocol {
         }
 
         @Override
-        public TList readListBegin() throws IOException {
+        public ListBegin readListBegin() throws IOException {
             final JsonNode node = _readChildNode();
             if (!node.isArray()) {
                 throw new IOException("expected JSON array");
             }
             _getProtocolStack().push(_createArrayReaderProtocol(node));
-            return new TList(TType.VOID, node.size());
+            return new ListBegin(Type.VOID, node.size());
         }
 
         @Override
-        public TMap readMapBegin() throws IOException {
+        public MapBegin readMapBegin() throws IOException {
             final JsonNode node = _readChildNode();
             if (!node.isObject()) {
                 throw new IOException("expected JSON object");
             }
             _getProtocolStack().push(_createMapObjectReaderProtocol(node));
-            return new TMap(TType.VOID, TType.VOID, node.size());
+            return new MapBegin(Type.VOID, Type.VOID, node.size());
         }
 
         @Override
@@ -271,13 +271,13 @@ public class JsonProtocol extends StackedProtocol {
         }
 
         @Override
-        public TStruct readStructBegin() throws IOException {
+        public StructBegin readStructBegin() throws IOException {
             final JsonNode node = _readChildNode();
             if (!node.isObject()) {
                 throw new IOException("expected JSON object");
             }
             _getProtocolStack().push(_createStructObjectReaderProtocol(node));
-            return new TStruct();
+            return new StructBegin();
         }
 
         protected JsonNode _getMyNode() {
@@ -320,11 +320,11 @@ public class JsonProtocol extends StackedProtocol {
         }
 
         @Override
-        public TField readFieldBegin() throws IOException {
+        public FieldBegin readFieldBegin() throws IOException {
             if (!fieldNameStack.isEmpty()) {
-                return new TField(fieldNameStack.peek(), TType.VOID, (short) -1);
+                return new FieldBegin(fieldNameStack.peek(), Type.VOID, (short) -1);
             } else {
-                return new TField();
+                return new FieldBegin();
             }
         }
 
@@ -347,7 +347,7 @@ public class JsonProtocol extends StackedProtocol {
 
     protected class StructObjectWriterProtocol extends WriterProtocol {
         @Override
-        public void writeFieldBegin(final TField field) throws IOException {
+        public void writeFieldBegin(final FieldBegin field) throws IOException {
             try {
                 generator.writeFieldName(field.name);
             } catch (final IOException e) {
@@ -420,7 +420,7 @@ public class JsonProtocol extends StackedProtocol {
         }
 
         @Override
-        public void writeListBegin(final TList list) throws IOException {
+        public void writeListBegin(final ListBegin list) throws IOException {
             try {
                 generator.writeStartArray();
                 _getProtocolStack().push(_createArrayWriterProtocol());
@@ -439,7 +439,7 @@ public class JsonProtocol extends StackedProtocol {
         }
 
         @Override
-        public void writeMapBegin(final TMap map) throws IOException {
+        public void writeMapBegin(final MapBegin map) throws IOException {
             try {
                 generator.writeStartObject();
                 _getProtocolStack().push(_createMapObjectWriterProtocol());
@@ -476,7 +476,7 @@ public class JsonProtocol extends StackedProtocol {
         }
 
         @Override
-        public void writeStructBegin(final TStruct struct) throws IOException {
+        public void writeStructBegin(final StructBegin struct) throws IOException {
             try {
                 generator.writeStartObject();
                 _getProtocolStack().push(_createStructObjectWriterProtocol());
@@ -531,35 +531,35 @@ public class JsonProtocol extends StackedProtocol {
         generator.flush();
     }
 
-    protected TProtocol _createArrayReaderProtocol(final JsonNode node) {
+    protected Protocol _createArrayReaderProtocol(final JsonNode node) {
         return new ArrayReaderProtocol(node);
     }
 
-    protected TProtocol _createArrayWriterProtocol() {
+    protected Protocol _createArrayWriterProtocol() {
         return new ArrayWriterProtocol();
     }
 
-    protected TProtocol _createMapObjectReaderProtocol(final JsonNode node) {
+    protected Protocol _createMapObjectReaderProtocol(final JsonNode node) {
         return new MapObjectReaderProtocol(node);
     }
 
-    protected TProtocol _createMapObjectWriterProtocol() {
+    protected Protocol _createMapObjectWriterProtocol() {
         return new MapObjectWriterProtocol();
     }
 
-    protected TProtocol _createRootReaderProtocol(final JsonNode parsedTree) {
+    protected Protocol _createRootReaderProtocol(final JsonNode parsedTree) {
         return new RootReaderProtocol(parsedTree);
     }
 
-    protected TProtocol _createRootWriterProtocol() {
+    protected Protocol _createRootWriterProtocol() {
         return new RootWriterProtocol();
     }
 
-    protected TProtocol _createStructObjectReaderProtocol(final JsonNode node) {
+    protected Protocol _createStructObjectReaderProtocol(final JsonNode node) {
         return new StructObjectReaderProtocol(node);
     }
 
-    protected TProtocol _createStructObjectWriterProtocol() {
+    protected Protocol _createStructObjectWriterProtocol() {
         return new StructObjectWriterProtocol();
     }
 

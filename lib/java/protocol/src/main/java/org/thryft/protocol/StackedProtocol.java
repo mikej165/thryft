@@ -78,7 +78,7 @@ public class StackedProtocol extends AbstractProtocol {
     }
 
     @Override
-    public TField readFieldBegin() throws IOException {
+    public FieldBegin readFieldBegin() throws IOException {
         return protocolStack.peek().readFieldBegin();
     }
 
@@ -103,7 +103,7 @@ public class StackedProtocol extends AbstractProtocol {
     }
 
     @Override
-    public TList readListBegin() throws IOException {
+    public ListBegin readListBegin() throws IOException {
         return protocolStack.peek().readListBegin();
     }
 
@@ -113,7 +113,7 @@ public class StackedProtocol extends AbstractProtocol {
     }
 
     @Override
-    public TMap readMapBegin() throws IOException {
+    public MapBegin readMapBegin() throws IOException {
         return protocolStack.peek().readMapBegin();
     }
 
@@ -128,7 +128,7 @@ public class StackedProtocol extends AbstractProtocol {
     }
 
     @Override
-    public TSet readSetBegin() throws IOException {
+    public SetBegin readSetBegin() throws IOException {
         return protocolStack.peek().readSetBegin();
     }
 
@@ -143,7 +143,7 @@ public class StackedProtocol extends AbstractProtocol {
     }
 
     @Override
-    public TStruct readStructBegin() throws IOException {
+    public StructBegin readStructBegin() throws IOException {
         return protocolStack.peek().readStructBegin();
     }
 
@@ -190,7 +190,7 @@ public class StackedProtocol extends AbstractProtocol {
     }
 
     @Override
-    public void writeFieldBegin(final TField field) throws IOException {
+    public void writeFieldBegin(final FieldBegin field) throws IOException {
         protocolStack.peek().writeFieldBegin(field);
     }
 
@@ -220,7 +220,7 @@ public class StackedProtocol extends AbstractProtocol {
     }
 
     @Override
-    public void writeListBegin(final TList list) throws IOException {
+    public void writeListBegin(final ListBegin list) throws IOException {
         final int protocolStackSize = protocolStack.size();
         protocolStack.peek().writeListBegin(list);
         if (protocolStack.size() != protocolStackSize + 1) {
@@ -236,7 +236,7 @@ public class StackedProtocol extends AbstractProtocol {
     }
 
     @Override
-    public void writeMapBegin(final TMap map) throws IOException {
+    public void writeMapBegin(final MapBegin map) throws IOException {
         final int protocolStackSize = protocolStack.size();
         protocolStack.peek().writeMapBegin(map);
         if (protocolStack.size() != protocolStackSize + 1) {
@@ -262,7 +262,7 @@ public class StackedProtocol extends AbstractProtocol {
     }
 
     @Override
-    public void writeSetBegin(final TSet set) throws IOException {
+    public void writeSetBegin(final SetBegin set) throws IOException {
         protocolStack.peek().writeSetBegin(set);
     }
 
@@ -278,7 +278,7 @@ public class StackedProtocol extends AbstractProtocol {
     }
 
     @Override
-    public void writeStructBegin(final TStruct struct) throws IOException {
+    public void writeStructBegin(final StructBegin struct) throws IOException {
         final int protocolStackSize = protocolStack.size();
         protocolStack.peek().writeStructBegin(struct);
         if (protocolStack.size() != protocolStackSize + 1) {
@@ -293,9 +293,9 @@ public class StackedProtocol extends AbstractProtocol {
         protocolStack.peek().writeStructEnd();
     }
 
-    protected final Stack<TProtocol> _getProtocolStack() {
+    protected final Stack<Protocol> _getProtocolStack() {
         return protocolStack;
     }
 
-    private final Stack<TProtocol> protocolStack = new Stack<TProtocol>();
+    private final Stack<Protocol> protocolStack = new Stack<Protocol>();
 }

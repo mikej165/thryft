@@ -34,12 +34,12 @@ package org.thryft.store;
 
 import static org.thryft.Preconditions.checkNotEmpty;
 
-import org.thryft.TBase;
+import org.thryft.Base;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
-public interface Store<ModelT extends TBase<?>> {
+public interface Store<ModelT extends Base<?>> {
     @SuppressWarnings("serial")
     public final static class ModelIoException extends Exception {
         public ModelIoException(final String message) {

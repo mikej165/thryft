@@ -41,7 +41,7 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.thryft.TBase;
+import org.thryft.Base;
 import org.thryft.protocol.StringMapProtocol;
 
 import redis.clients.jedis.Jedis;
@@ -52,7 +52,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
-public final class RedisStore<ModelT extends TBase<?>> extends
+public final class RedisStore<ModelT extends Base<?>> extends
         KeyValueStore<ModelT> {
     public final static class Configuration {
         public Configuration(final Properties properties) {

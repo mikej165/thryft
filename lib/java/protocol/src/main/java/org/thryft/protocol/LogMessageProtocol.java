@@ -66,7 +66,7 @@ public class LogMessageProtocol extends JsonProtocol {
         }
 
         @Override
-        public void writeFieldBegin(final TField field) throws IOException {
+        public void writeFieldBegin(final FieldBegin field) throws IOException {
             if (size < SIZE_MAX) {
                 super.writeFieldBegin(field);
             }
@@ -97,7 +97,7 @@ public class LogMessageProtocol extends JsonProtocol {
         }
 
         @Override
-        public void writeListBegin(final TList list) throws IOException {
+        public void writeListBegin(final ListBegin list) throws IOException {
             if (size < SIZE_MAX) {
                 super.writeListBegin(list);
             } else {
@@ -114,7 +114,7 @@ public class LogMessageProtocol extends JsonProtocol {
         }
 
         @Override
-        public void writeMapBegin(final TMap map) throws IOException {
+        public void writeMapBegin(final MapBegin map) throws IOException {
             if (size < SIZE_MAX) {
                 super.writeMapBegin(map);
             } else {
@@ -139,7 +139,7 @@ public class LogMessageProtocol extends JsonProtocol {
         }
 
         @Override
-        public void writeStructBegin(final TStruct struct) throws IOException {
+        public void writeStructBegin(final StructBegin struct) throws IOException {
             if (size < SIZE_MAX) {
                 super.writeStructBegin(struct);
             } else {
@@ -187,7 +187,7 @@ public class LogMessageProtocol extends JsonProtocol {
         }
 
         @Override
-        public void writeFieldBegin(final TField field) throws IOException {
+        public void writeFieldBegin(final FieldBegin field) throws IOException {
             if (size < SIZE_MAX) {
                 super.writeFieldBegin(field);
             }
@@ -218,7 +218,7 @@ public class LogMessageProtocol extends JsonProtocol {
         }
 
         @Override
-        public void writeListBegin(final TList list) throws IOException {
+        public void writeListBegin(final ListBegin list) throws IOException {
             if (size < SIZE_MAX) {
                 super.writeListBegin(list);
             } else {
@@ -235,7 +235,7 @@ public class LogMessageProtocol extends JsonProtocol {
         }
 
         @Override
-        public void writeMapBegin(final TMap map) throws IOException {
+        public void writeMapBegin(final MapBegin map) throws IOException {
             if (size < SIZE_MAX) {
                 super.writeMapBegin(map);
             } else {
@@ -260,7 +260,7 @@ public class LogMessageProtocol extends JsonProtocol {
         }
 
         @Override
-        public void writeStructBegin(final TStruct struct) throws IOException {
+        public void writeStructBegin(final StructBegin struct) throws IOException {
             if (size < SIZE_MAX) {
                 super.writeStructBegin(struct);
             } else {
@@ -295,7 +295,7 @@ public class LogMessageProtocol extends JsonProtocol {
         }
 
         @Override
-        public void writeFieldBegin(final TField field) throws IOException {
+        public void writeFieldBegin(final FieldBegin field) throws IOException {
         }
 
         @Override
@@ -319,7 +319,7 @@ public class LogMessageProtocol extends JsonProtocol {
         }
 
         @Override
-        public void writeListBegin(final TList list) throws IOException {
+        public void writeListBegin(final ListBegin list) throws IOException {
             _getProtocolStack().push(new NopWriterProtocol());
         }
 
@@ -328,7 +328,7 @@ public class LogMessageProtocol extends JsonProtocol {
         }
 
         @Override
-        public void writeMapBegin(final TMap map) throws IOException {
+        public void writeMapBegin(final MapBegin map) throws IOException {
             _getProtocolStack().push(new NopWriterProtocol());
         }
 
@@ -341,7 +341,7 @@ public class LogMessageProtocol extends JsonProtocol {
         }
 
         @Override
-        public void writeStructBegin(final TStruct struct) throws IOException {
+        public void writeStructBegin(final StructBegin struct) throws IOException {
             _getProtocolStack().push(new NopWriterProtocol());
         }
 
