@@ -9,5 +9,8 @@ class CppTypedef(Typedef, _CppNamedConstruct):
     def cpp_includes_use(self):
         return self._parent_document().cpp_includes_use()
 
+    def cpp_name(self):
+        return self.name
+
     def __repr__(self):
         return "typedef %s %s;" % (self.type.cpp_qname(), self.cpp_name())

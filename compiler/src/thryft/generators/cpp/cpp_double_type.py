@@ -35,5 +35,5 @@ from thryft.generators.cpp._cpp_numeric_type import _CppNumericType
 
 
 class CppDoubleType(DoubleType, _CppNumericType):
-    def cpp_name(self):
+    def cpp_qname(self):
         return 'double'

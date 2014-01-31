@@ -38,6 +38,9 @@ class _CppContainerType(_CppType):
     def cpp_default_value(self):
         return None
 
+    def cpp_name(self):
+        return self.cpp_qname()
+
     def cpp_read_protocol(self, value, optional=False):
         if optional:
             name = self.cpp_qname()

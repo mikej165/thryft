@@ -40,9 +40,6 @@ class _CppSequenceType(_CppContainerType):
         includes.extend(self.element_type.cpp_includes_use())
         return includes
 
-    def cpp_name(self):
-        return self.cpp_qname()
-
     def cpp_qname(self):
         return \
             "::thryft::%s< %s, ::thryft::protocol::Type::%s >" % (

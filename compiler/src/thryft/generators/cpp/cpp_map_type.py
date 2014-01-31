@@ -42,9 +42,6 @@ class CppMapType(MapType, _CppContainerType):
         includes.extend(self.value_type.cpp_includes_use())
         return includes
 
-    def cpp_name(self):
-        return self.cpp_qname()
-
     def cpp_qname(self):
         return \
             "::thryft::Map< %s, ::thryft::protocol::Type::%s, %s, ::thryft::protocol::Type::%s >" % (

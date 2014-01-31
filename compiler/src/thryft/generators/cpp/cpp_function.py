@@ -145,7 +145,7 @@ virtual void handle(const %(name)s<RequestT>& request) {
             ', '.join(parameter.cpp_parameter() for parameter in self.parameters)
 
         if self.return_field is not None:
-            return_type_name = self.return_field.type.cpp_name()
+            return_type_name = self.return_field.type.cpp_qname()
         else:
             return_type_name = 'void'
 
@@ -160,11 +160,11 @@ virtual void handle(const %(name)s<RequestT>& request) {
             includes.extend(self.return_field.cpp_includes_use())
         return includes
 
-    def cpp_name(self):
-        return self.name
-
     def cpp_pure_virtual_declaration(self):
         return 'virtual ' + self._cpp_declaration() + ' = 0;'
+
+    def cpp_qname(self):
+        return self.name
 
     def cpp_request_type(self, **kwds):
         return self._CppRequestType(parent_function=self, **kwds)

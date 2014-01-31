@@ -35,7 +35,7 @@ from thryft.generators.cpp._cpp_construct import _CppConstruct
 
 class _CppNamedConstruct(_CppConstruct):
     def cpp_name(self):
-        return getattr(self, 'name')
+        return self.name
 
     def cpp_qname(self, name=None, **kwds):
         if name is None:

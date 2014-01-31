@@ -39,3 +39,6 @@ class _CppNumericType(_CppBaseType):
 
     def cpp_literal(self, value):
         return "static_cast<%s>(%s)" % (self.cpp_name(), value)
+
+    def cpp_name(self):
+        return self.cpp_qname()

@@ -42,4 +42,7 @@ class CppBoolType(BoolType, _CppBaseType):
         return value and 'true' or 'false'
 
     def cpp_name(self):
+        return self.cpp_qname()
+
+    def cpp_qname(self):
         return 'bool'

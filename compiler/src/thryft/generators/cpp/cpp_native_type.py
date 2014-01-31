@@ -4,8 +4,5 @@ from yutil import class_qname
 
 
 class CppNativeType(NativeType, _CppType):
-    def cpp_name(self):
-        return self.cpp_qname()
-
     def cpp_qname(self, name=None, **kwds):
         raise NotImplementedError(class_qname(self) + '.cpp_qname')

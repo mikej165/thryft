@@ -38,5 +38,5 @@ class CppI32Type(I32Type, _CppNumericType):
     def cpp_includes_use(self):
         return ('<cstdint>',)
 
-    def cpp_name(self):
+    def cpp_qname(self):
         return 'int32_t'

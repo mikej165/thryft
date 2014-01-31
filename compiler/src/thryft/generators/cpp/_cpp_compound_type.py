@@ -307,9 +307,6 @@ bool operator==(const %(name)s& other) const {%(field_comparisons)s
         else:
             return "%(value)s.read(iprot);" % locals()
 
-    def cpp_qname(self, boxed=False):
-        return _CppNamedConstruct.cpp_qname(self, name=self.name)
-
     def _cpp_template_parameters(self):
         return ''
 

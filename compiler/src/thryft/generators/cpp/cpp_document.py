@@ -81,6 +81,9 @@ class CppDocument(Document, _CppNamedConstruct):
             includes.extend(other_includes)
         return includes
 
+    def cpp_name(self):
+        return self.name
+
     def cpp_namespace(self):
         namespaces_by_scope = self.namespaces_by_scope
         for scope in ('cpp', '*'):
