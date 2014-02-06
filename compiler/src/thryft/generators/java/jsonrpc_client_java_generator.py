@@ -30,8 +30,10 @@
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
 
-from yutil import indent, upper_camelize
+import os.path
+
 from thryft.generators.java import java_generator
+from yutil import indent, upper_camelize
 
 
 class JsonrpcClientJavaGenerator(java_generator.JavaGenerator):
@@ -42,9 +44,18 @@ class JsonrpcClientJavaGenerator(java_generator.JavaGenerator):
             except KeyError:
                 return java_generator.JavaGenerator.Document.java_package(self)
 
+        def _save_to_dir(self, out_dir_path):
+            try:
+                out_dir_path = os.path.join(out_dir_path, self.namespace_by_scope(('jsonrpc_client_java', 'java')).name.replace('.', os.path.sep))
+            except KeyError:
+                pass
+            return self._save_to_file(os.path.join(out_dir_path, self.definitions[0].java_name() + self._java_file_ext()))
+
+
     class Function(java_generator.JavaGenerator.Function):
         def __repr__(self):
-            name = self.java_name()
+            name = self.name
+            java_name = self.java_name()
             parameters = ', '.join(parameter.java_parameter(final=True) for parameter in self.parameters)
             parameter_names = ', '.join(parameter.java_name() for parameter in self.parameters)
             request_type_name = self.java_request_type().java_name()
@@ -67,7 +78,7 @@ if (__serviceResponse != null) {
                 return_type_qname = 'void'
 
             return """\
-public final %(return_type_qname)s %(name)s(%(parameters)s) {
+public final %(return_type_qname)s %(java_name)s(%(parameters)s) {
     final %(service_qname)s.Messages.%(request_type_name)s __serviceRequest = new %(service_qname)s.Messages.%(request_type_name)s(%(parameter_names)s);
     final int __id = System.identityHashCode(__serviceRequest);
 
@@ -75,17 +86,21 @@ public final %(return_type_qname)s %(name)s(%(parameters)s) {
         final java.io.StringWriter __oStringWriter = new java.io.StringWriter();
         final org.thryft.protocol.JsonOutputProtocol __oprot = new org.thryft.protocol.JsonOutputProtocol(__oStringWriter);
         __oprot.writeStructBegin(new org.thryft.protocol.StructBegin("JSON-RPC"));
+        __oprot.writeFieldBegin(new org.thryft.protocol.FieldBegin("id", org.thryft.protocol.Type.I32, (short)-1));
+        __oprot.writeI32(__id);
+        __oprot.writeFieldEnd();
         __oprot.writeFieldBegin(new org.thryft.protocol.FieldBegin("jsonrpc", org.thryft.protocol.Type.STRING, (short)-1));
         __oprot.writeString("2.0");
         __oprot.writeFieldEnd();
-        __oprot.writeFieldBegin(new org.thryft.protocol.FieldBegin("id", org.thryft.protocol.Type.I32, (short)-1));
-        __oprot.writeI32(__id);
+        __oprot.writeFieldBegin(new org.thryft.protocol.FieldBegin("method", org.thryft.protocol.Type.STRING, (short)-1));
+        __oprot.writeString("%(name)s");
         __oprot.writeFieldEnd();
         __oprot.writeFieldBegin(new org.thryft.protocol.FieldBegin("params", org.thryft.protocol.Type.STRUCT, (short)-1));
         __serviceRequest.write(__oprot);
         __oprot.writeFieldEnd();
         __oprot.writeFieldStop();
         __oprot.writeStructEnd();
+        __oprot.flush();
         final String __oString = __oStringWriter.toString();
 
         final java.net.HttpURLConnection __connection = (java.net.HttpURLConnection)jsonRpcUrl.openConnection();
