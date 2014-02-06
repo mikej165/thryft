@@ -44,13 +44,10 @@ class JavaDocument(Document, _JavaNamedConstruct):
         return []
 
     def java_package(self):
-        namespaces_by_scope = self.namespaces_by_scope
-        for scope in ('java', '*'):
-            try:
-                return namespaces_by_scope[scope].name
-            except KeyError:
-                pass
-        return None
+        try:
+            return self.namespace_by_scope('java').name
+        except KeyError:
+            return None
 
     def java_package_declaration(self):
         package = self.java_package()
@@ -75,19 +72,17 @@ class JavaDocument(Document, _JavaNamedConstruct):
 
         return "\n\n".join(sections) + "\n"
 
-    def save(self, out_path, file_ext='.java', language='java'):
-        return Document.save(self, out_path=out_path, file_ext=file_ext, language=language)
-
-    def _save(self, out_file_path):
+    def save(self, *args, **kwds):
         if len(self.definitions) == 0:
             return
         assert len(self.definitions) == 1, len(self.definitions)
-        if not isinstance(self.definitions[0], Typedef):
-            return \
-                Document._save(
-                    self,
-                    os.path.join(
-                        os.path.dirname(out_file_path),
-                        self.definitions[0].java_name() + self._java_file_ext()
-                    )
-                )
+        if isinstance(self.definitions[0], Typedef):
+            return
+        return Document.save(self, *args, **kwds)
+
+    def _save_to_dir(self, out_dir_path):
+        try:
+            out_dir_path = os.path.join(out_dir_path, self.namespace_by_scope('java').name.replace('.', os.path.sep))
+        except KeyError:
+            pass
+        return self._save_to_file(os.path.join(out_dir_path, self.definitions[0].java_name() + self._java_file_ext()))

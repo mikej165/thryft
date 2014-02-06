@@ -52,13 +52,11 @@ class _NamedConstruct(_Construct):
             parent_document = parent_document.parent
         if parent_document is None:
             return getattr(self, scope + '_name')(**kwds)
-        parent_document_namespaces_by_scope = parent_document.namespaces_by_scope
         qname = []
-        for namespace_scope in (scope, '*'):
-            namespace = parent_document_namespaces_by_scope.get(namespace_scope)
-            if namespace is not None:
-                qname.append(namespace.name)
-                break
+        try:
+            qname.append(parent_document.namespace_by_scope(scope).name)
+        except KeyError:
+            pass
         if include_parent_document_name:
             qname.append(parent_document.name)
         qname.append(getattr(self, scope + '_name')(**kwds))

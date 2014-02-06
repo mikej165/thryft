@@ -46,9 +46,8 @@ class _CppNamedConstruct(_CppConstruct):
             parent_document = parent_document.parent
         if parent_document is None:
             return name
-        namespaces_by_scope = parent_document.namespaces_by_scope
-        for scope in ('cpp', '*'):
-            namespace = namespaces_by_scope.get(scope)
-            if namespace is not None:
-                return '::' + namespace.name.replace('.', '::') + '::' + name
-        return name
+        try:
+            namespace = parent_document.namespace_by_scope('cpp')
+            return '::' + namespace.name.replace('.', '::') + '::' + name
+        except KeyError:
+            return name

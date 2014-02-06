@@ -40,15 +40,17 @@ from yutil import indent, lpad
 class GwtServletJavaGenerator(JavaGenerator):
     class Document(JavaDocument):
         def java_package(self):
-            for scope in ('gwt_server_java', 'java', '*'):
-                try:
-                    return self.namespaces_by_scope[scope].name
-                except KeyError:
-                    pass
-            return None
+            try:
+                return self.namespace_by_scope(('gwt_server_java', 'java'))
+            except KeyError:
+                return None
 
-        def save(self, out_path):
-            return JavaDocument.save(self, file_ext='.java', language='gwt_server_java', out_path=out_path)
+        def _save_to_dir(self, out_dir_path):
+            try:
+                out_dir_path = os.path.join(out_dir_path, self.namespaces_by_scope(('gwt_server_java', 'java')).name.replace('.', os.path.sep))
+            except KeyError:
+                pass
+            return self._save_to_file(os.path.join(out_dir_path, self.definitions[0].java_name() + self._java_file_ext()))
 
     class Function(JavaFunction):
         def __repr__(self):
@@ -84,12 +86,10 @@ public %(return_type_name)s %(name)s(%(parameters)s)%(throws)s {
 
         def __repr__(self):
             client_service_package = ''
-            for scope in ('gwt_client_java', 'java', '*'):
-                try:
-                    client_service_package = self.parent.namespaces_by_scope[scope].name + '.'
-                    break
-                except KeyError:
-                    pass
+            try:
+                client_service_package = self.namespace_by_scope(('gwt_client_java', 'java')).name + '.'
+            except KeyError:
+                pass
             client_service_qname = client_service_package + JavaService.java_name(self) + 'GwtClient'
             functions = \
                 lpad("\n", "\n\n".join(indent(' ' * 4,

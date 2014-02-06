@@ -46,9 +46,8 @@ class _JavaNamedConstruct(_JavaConstruct):
             parent_document = parent_document.parent
         if parent_document is None:
             return name
-        namespaces_by_scope = parent_document.namespaces_by_scope
-        for scope in ('java', '*'):
-            namespace = namespaces_by_scope.get(scope)
-            if namespace is not None:
-                return namespace.name + '.' + name
-        return name
+        try:
+            namespace = parent_document.namespace_by_scope('java')
+            return namespace.name + '.' + name
+        except KeyError:
+            return name

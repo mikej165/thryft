@@ -45,12 +45,10 @@ class PyInclude(Include, _PyConstruct):
         else:
             py_module_qname = py_module_name = py_module_qname_split[0]
         self.__py_class_name = upper_camelize(py_module_name)
-        for scope in ('py', '*'):
-            try:
-                py_module_qname = self.document.namespaces_by_scope[scope].name + '.' + py_module_name
-                break
-            except KeyError:
-                pass
+        try:
+            py_module_qname = self.document.namespace_by_scope('py').name + '.' + py_module_name
+        except KeyError:
+            pass
         self.__py_module_qname = py_module_qname
 
     def py_class_name(self):

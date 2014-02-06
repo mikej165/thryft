@@ -34,7 +34,7 @@ from collections import OrderedDict
 from thryft.generator.include import Include
 from thryft.generator._named_construct import _NamedConstruct
 from thryft.generator.namespace import Namespace
-from yutil import decamelize
+from yutil import class_qname, decamelize
 import os.path
 
 
@@ -63,14 +63,22 @@ class Document(_NamedConstruct):
         return [header for header in self.headers
                 if isinstance(header, Include)]
 
-    def namespace_by_scope(self, scope):
+    def namespace_by_scope(self, scopes):
+        if isinstance(scopes, str):
+            scopes = (scopes,)
+        if not isinstance(scopes, (list, tuple)):
+            raise TypeError(type(scopes))
+
         for namespace in self.namespaces:
-            if namespace.scope == scope:
-                return namespace
-        for namespace in self.namespaces:
-            if namespace.scope == '*':
-                return namespace
-        raise KeyError, scope
+            for scope in scopes:
+                if namespace.scope == scope:
+                    return namespace
+        if not '*' in scopes:
+            for namespace in self.namespaces:
+                if namespace.scope == '*':
+                    return namespace
+
+        raise KeyError(scopes)
 
     @property
     def namespaces(self):
@@ -86,38 +94,16 @@ class Document(_NamedConstruct):
     def path(self):
         return self.__path
 
-    def save(self, out_path, file_ext=None, language=None):
+    def save(self, out_path):
         if os.path.isdir(out_path):
-            out_dir_path = out_path
-
-            if language is None:
-                assert self.__class__.__name__.endswith('Document')
-                class_name_decamelized = decamelize(self.__class__.__name__)
-                class_name_split = class_name_decamelized.split('_')
-                if len(class_name_split) > 1:
-                    language = class_name_split[-2]
-                else:
-                    raise ValueError('unknown language: ' + self.__class__.__name__)
-
-            if file_ext is None:
-                file_ext = '.' + language
-
-            namespaces_by_scope = self.namespaces_by_scope
-            for scope in (language, '*'):
-                scope_namespace = namespaces_by_scope.get(scope)
-                if scope_namespace is not None:
-                    out_dir_path = \
-                        os.path.join(
-                            out_dir_path,
-                            scope_namespace.name.replace('.', os.path.sep)
-                        )
-                    break
-
-            return self._save(os.path.join(out_dir_path, self.name + file_ext))
+            return self._save_to_dir(out_path)
         else:
-            return self._save(out_path)
+            return self._save_to_file(out_path)
 
-    def _save(self, out_file_path):
+    def _save_to_dir(self, out_dir_path):
+        raise NotImplementedError(class_qname(self))
+
+    def _save_to_file(self, out_file_path):
         out_dir_path = os.path.split(out_file_path)[0]
         if not os.path.isdir(out_dir_path):
             os.makedirs(out_dir_path)
@@ -131,3 +117,31 @@ class Document(_NamedConstruct):
             self._logger.info('wrote ' + out_file_path)
 
         return out_file_path
+
+#         if language is None:
+#             assert self.__class__.__name__.endswith('Document')
+#             class_name_decamelized = decamelize(self.__class__.__name__)
+#             class_name_split = class_name_decamelized.split('_')
+#             if len(class_name_split) > 1:
+#                 language = class_name_split[-2]
+#             else:
+#                 raise ValueError('unknown language: ' + self.__class__.__name__)
+#
+#         if file_ext is None:
+#             file_ext = '.' + language
+#
+#         if namespace_scope is None:
+#             namespace_scope = language
+#
+#         namespaces_by_scope = self.namespaces_by_scope
+#         for scope in (namespace_scope, '*'):
+#             namespace = namespaces_by_scope.get(scope)
+#             if namespace is not None:
+#                 out_dir_path = \
+#                     os.path.join(
+#                         out_dir_path,
+#                         namespace.name.replace('.', os.path.sep)
+#                     )
+#                 break
+#
+#         return self._save(os.path.join(out_dir_path, self.name + file_ext))

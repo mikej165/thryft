@@ -85,12 +85,7 @@ class CppDocument(Document, _CppNamedConstruct):
         return self.name
 
     def cpp_namespace(self):
-        namespaces_by_scope = self.namespaces_by_scope
-        for scope in ('cpp', '*'):
-            try:
-                return namespaces_by_scope[scope].name
-            except KeyError:
-                pass
+        return self.namespace_by_scope('cpp').name
 
     def __repr__(self):
         sections = []
@@ -131,5 +126,9 @@ class CppDocument(Document, _CppNamedConstruct):
 
         return repr_
 
-    def save(self, out_path):
-        return Document.save(self, out_path, file_ext='.hpp')
+    def _save_to_dir(self, out_dir_path):
+        try:
+            out_dir_path = os.path.join(out_dir_path, self.namespace_by_scope('cpp').name.replace('.', os.path.sep))
+        except KeyError:
+            pass
+        return self._save_to_file(os.path.join(out_dir_path, self.name + '.hpp'))

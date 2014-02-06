@@ -39,15 +39,17 @@ from yutil import indent
 class GwtClientJavaGenerator(JavaGenerator):
     class Document(JavaDocument):
         def java_package(self):
-            for scope in ('gwt_client_java', 'java', '*'):
-                try:
-                    return self.namespaces_by_scope[scope].name
-                except KeyError:
-                    pass
-            return None
+            try:
+                return self.namespace_by_scope(('gwt_client_java', 'java'))
+            except KeyError:
+                return None
 
-        def save(self, out_path):
-            return JavaDocument.save(self, file_ext='.java', language='gwt_client_java', out_path=out_path)
+        def _save_to_dir(self, out_dir_path):
+            try:
+                out_dir_path = os.path.join(out_dir_path, self.namespaces_by_scope(('gwt_client_java', 'java')).name.replace('.', os.path.sep))
+            except KeyError:
+                pass
+            return self._save_to_file(os.path.join(out_dir_path, self.definitions[0].java_name() + self._java_file_ext()))
 
     class Service(JavaService):
         def java_name(self):
