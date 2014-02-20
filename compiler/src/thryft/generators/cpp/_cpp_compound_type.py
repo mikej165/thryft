@@ -145,7 +145,8 @@ virtual ~%(name)s() {
                 for field in self.fields]
 
     def _cpp_method_getters(self):
-        return [field.cpp_getter() for field in self.fields]
+        return [field.cpp_getters()
+                for field in self.fields]
 
     def _cpp_method_read(self):
         field_read_protocol_named = \

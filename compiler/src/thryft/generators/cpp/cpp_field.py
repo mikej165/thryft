@@ -49,11 +49,15 @@ class CppField(Field, _CppNamedConstruct):
                 return None
         return "%s_(%s)" % (self.cpp_name(), value)
 
-    def cpp_getter(self):
+    def cpp_getters(self):
         member_name = self.cpp_member_name()
         name = self.cpp_name()
         type_name = self._cpp_type_qname()
         return """\
+%(type_name)s& %(name)s() {
+  return %(member_name)s;
+}
+
 const %(type_name)s& %(name)s() const {
   return %(member_name)s;
 }""" % locals()
