@@ -77,62 +77,48 @@ class CppService(Service, _CppNamedConstruct):
                 response_type = function.cpp_response_type()
                 message_types.append(repr(response_type))
                 sync_request_handlers.append(request_type.cpp_sync_handler())
-            message_types = "\n\n".join(message_types)
-            read_requests = indent(' ' * 2, ' else '.join(read_requests))
-            request_forward_declarations = "\n".join(request_forward_declarations)
-            handle_request_declarations = indent(' ' * 2, "\n".join(handle_request_declarations))
-            sync_request_handlers = indent(' ' * 2, "\n\n".join(sync_request_handlers))
+            message_types = indent(' ' * 2, "\n\n".join(message_types))
+            read_requests = indent(' ' * 4, ' else '.join(read_requests))
+            request_forward_declarations = indent(' ' * 2, "\n".join(request_forward_declarations))
+            handle_request_declarations = indent(' ' * 4, "\n".join(handle_request_declarations))
+            sync_request_handlers = indent(' ' * 4, "\n\n".join(sync_request_handlers))
 
             sections.append("public:\n" + indent(' ' * 2, """\
-template <class RequestT> class RequestHandler;
-
-class Message : public ::thryft::Service::Message {
-};
-
-template <class MessageT = Message>
-class Request : public MessageT {
+template <class ExceptionT, class RequestT, class ResponseT>
+class Messages {
 public:
-  virtual void accept(RequestHandler< Request<MessageT> >& handler) const = 0;
-};
-
 %(request_forward_declarations)s
 
-template < class RequestT = Request<Message> >
-class RequestHandler : public ::thryft::Service::RequestHandler {
-public:
+  class RequestHandler {
+  public:
 %(handle_request_declarations)s
-};
-
-template <class MessageT = Message>
-class Response : public MessageT {
-};
+  };
 
 %(message_types)s
 
-template < class RequestT = Request<Message> >
-static RequestT* read_request(const char* function_name, ::thryft::protocol::InputProtocol& iprot, ::thryft::protocol::Type::Enum as_type) {
-  if (function_name == NULL) {
-    return NULL;
-  }
+  static RequestT* read_request(const char* function_name, ::thryft::protocol::InputProtocol& iprot, ::thryft::protocol::Type::Enum as_type) {
+    if (function_name == NULL) {
+      return NULL;
+    }
 
 %(read_requests)s
 
-  return NULL;
-}
-
-template < class RequestT = Request<Message>, class ResponseT = Response<Message> >
-class SyncRequestHandler : public RequestHandler<RequestT> {
-public:
-  SyncRequestHandler(%(name)s& impl)
-    : impl_(impl) {
+    return NULL;
   }
 
-public:
-  // RequestHandler
+  class SyncRequestHandler : public RequestHandler {
+  public:
+    SyncRequestHandler(%(name)s& impl)
+      : impl_(impl) {
+    }
+
+  public:
+    // RequestHandler
 %(sync_request_handlers)s
 
-private:
-  %(name)s& impl_;
+  private:
+    %(name)s& impl_;
+  };
 };""" % locals()))
 
         sections.append(

@@ -144,9 +144,18 @@ virtual ~%(name)s() {
         return [field.cpp_member_declaration()
                 for field in self.fields]
 
+    def _cpp_method_clone(self):
+        member_names = ', '.join(field.cpp_member_name()
+                                 for field in self.fields)
+        name = self.cpp_name()
+        return {'clone': """\
+%(name)s& clone() const {
+  return *new %(name)s(%(member_names)s);
+}""" % locals()}
+
     def _cpp_method_getters(self):
-        return [field.cpp_getters()
-                for field in self.fields]
+        return dict((field.cpp_getter_name(), field.cpp_getters())
+                    for field in self.fields)
 
     def _cpp_method_read(self):
         field_read_protocol_named = \
@@ -181,7 +190,7 @@ if (list_size > %(field_i)u) {
         field_read_protocol_positional = \
             lpad("\n", indent(' ' * 6, "\n".join(field_read_protocol_positional)))
         name = self.cpp_name()
-        return """\
+        return {'read': """\
 void read(::thryft::protocol::InputProtocol& iprot) {
   read(iprot, ::thryft::protocol::Type::STRUCT);
 }
@@ -213,10 +222,11 @@ void read(::thryft::protocol::InputProtocol& iprot, ::thryft::protocol::Type::En
       break;
     }
   }
-}""" % locals()
+}""" % locals()}
 
     def _cpp_method_setters(self):
-        return [field.cpp_setter() for field in self.fields]
+        return dict((field.cpp_setter_name(), field.cpp_setter())
+                     for field in self.fields)
 
     def _cpp_method_write(self):
         case_ttype_void = 'case ::thryft::protocol::Type::VOID:'
@@ -249,7 +259,7 @@ void read(::thryft::protocol::InputProtocol& iprot, ::thryft::protocol::Type::En
 
         name = self.cpp_name()
 
-        return """\
+        return {'write': """\
 void write(::thryft::protocol::OutputProtocol& oprot) const {
   write(oprot, ::thryft::protocol::Type::STRUCT);
 }
@@ -272,15 +282,20 @@ void write(::thryft::protocol::OutputProtocol& oprot, ::thryft::protocol::Type::
     break;
   }
 }
-""" % locals()
+""" % locals()}
 
-    def _cpp_methods(self):
-        methods = []
-        methods.extend(self._cpp_method_getters())
-        methods.extend(self._cpp_method_setters())
-        methods.extend(self._cpp_operators())
-        methods.append(self._cpp_method_read())
-        methods.append(self._cpp_method_write())
+    def _cpp_methods_list(self):
+        methods_map = self._cpp_methods_map()
+        return [methods_map[key] for key in sorted(methods_map.iterkeys())]
+
+    def _cpp_methods_map(self):
+        methods = {}
+        methods.update(self._cpp_method_clone())
+        methods.update(self._cpp_method_getters())
+        methods.update(self._cpp_method_setters())
+        methods.update(self._cpp_operators())
+        methods.update(self._cpp_method_read())
+        methods.update(self._cpp_method_write())
         return methods
 
     def _cpp_operator_equality(self):
@@ -291,14 +306,14 @@ if (!(%s() == other.%s())) {
 }""")) % (field.cpp_getter_name(), field.cpp_getter_name())
          for field in self.fields), "\n")
         name = self.cpp_name()
-        return """\
+        return {'operator==': """\
 bool operator==(const %(name)s& other) const {%(field_comparisons)s
   return true;
-}""" % locals()
+}""" % locals()}
 
     def _cpp_operators(self):
-        operators = []
-        operators.append(self._cpp_operator_equality())
+        operators = {}
+        operators.update(self._cpp_operator_equality())
         return operators
 
     def cpp_read_protocol(self, value, optional=False):
@@ -315,11 +330,10 @@ bool operator==(const %(name)s& other) const {%(field_comparisons)s
         name = self.cpp_name()
         extends = lpad(' : public ', self._cpp_extends())
         template_parameters = rpad(self._cpp_template_parameters(), "\n")
-        methods = self._cpp_methods()
         sections = []
         # sections.append(indent(' ' * 4, repr(self._CppBuilder(self))))
         sections.append(lpad("public:\n", "\n\n".join(indent(' ' * 2,
-            self._cpp_constructors() + [self._cpp_destructor()] + self._cpp_methods()
+            self._cpp_constructors() + [self._cpp_destructor()] + self._cpp_methods_list()
             ))))
         sections.append(lpad("private:\n", "\n".join(indent(' ' * 2, self._cpp_member_declarations()))))
         sections = lpad("\n", "\n\n".join(section for section in sections if len(section) > 0))

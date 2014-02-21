@@ -52,7 +52,7 @@ class JavaFunction(Function, _JavaNamedConstruct):
                 parameters = parent_function.parameters
             for parameter in parameters:
                 self.fields.append(
-                    JavaField(
+                    parameter.__class__(
                         annotations=parameter.annotations,
                         doc=parameter.doc,
                         name=parameter.name,

@@ -6,13 +6,6 @@
 namespace thryft {
 class Service {
 public:
-  class Message : public ::thryft::Struct {
-  };
-
-  class RequestHandler {
-  };
-
-public:
   virtual ~Service() {
   }
 };

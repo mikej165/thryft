@@ -37,7 +37,13 @@ from thryft.generators.cpp._cpp_compound_type import _CppCompoundType
 class CppExceptionType(ExceptionType, _CppCompoundType):
     def __init__(self, **kwds):
         ExceptionType.__init__(self, **kwds)
-        _CppCompoundType.__init__(self, **kwds)
+        _CppCompoundType.__init__(self)
 
     def _cpp_extends(self):
-        return '::thryft::Exception'
+        return 'ExceptionT'
+
+    def _cpp_template_parameters(self):
+        return 'template <class ExceptionT = ::thryft::Exception>'
+
+    def __repr__(self):
+        return _CppCompoundType.__repr__(self)

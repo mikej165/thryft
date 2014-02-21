@@ -54,7 +54,7 @@ class CppFunction(Function, _CppNamedConstruct):
                 parameters = parent_function.parameters
             for parameter in parameters:
                 self.fields.append(
-                    CppField(
+                    parameter.__class__(
                         annotations=parameter.annotations,
                         doc=parameter.doc,
                         name=parameter.name,
@@ -68,49 +68,66 @@ class CppFunction(Function, _CppNamedConstruct):
             return 'RequestT'
 
         def cpp_forward_declaration(self):
-            return 'template <class RequestT> class ' + self.cpp_name() + ';'
+            return 'class ' + self.cpp_name() + ';'
 
         def cpp_handle_declaration(self):
-            return "virtual void handle(const %s<RequestT>&) = 0;" % self.cpp_name()
+            return "virtual void handle(const %s&) = 0;" % self.cpp_name()
 
         def _cpp_method_accept(self):
-            return """\
-void accept(typename RequestHandler<RequestT>& handler) const {
+            return {'accept': """\
+void accept(RequestHandler& handler) const {
   handler.handle(*this);
-}"""
+}"""}
 
-        def _cpp_methods(self):
-            methods = CppStructType._cpp_methods(self)
-            methods.append(self._cpp_method_accept())
+        def _cpp_methods_map(self):
+            methods = CppStructType._cpp_methods_map(self)
+            methods.update(self._cpp_method_accept())
             return methods
 
         def cpp_read_if(self):
             return """\
 if (strcmp(function_name, "%s") == 0) {
-  return new %s<RequestT>(iprot, as_type);
+  return new %s(iprot, as_type);
 }""" % (self.__parent_function.name, self.cpp_name())
 
         def cpp_sync_handler(self):
             name = self.cpp_name()
             response_name = upper_camelize(self.__parent_function.cpp_name()) + 'Response'
             if self.__parent_function.return_field is not None:
-                call_prefix = "request.respond(*new %(response_name)s<ResponseT>(" % locals()
+                call_prefix = "request.respond(%(response_name)s(" % locals()
                 call_suffix = "))"
             else:
                 call_prefix = ''
                 call_suffix = """;
-  request.respond(*new %(response_name)s<ResponseT>())""" % locals()
+request.respond(*new %(response_name)s())""" % locals()
             call_parameters = \
                 ', '.join("request.%s()" % parameter.cpp_getter_name()
                            for parameter in self.fields)
             call_method_name = self.__parent_function.name
+            call = "%(call_prefix)simpl_.%(call_method_name)s(%(call_parameters)s)%(call_suffix)s;" % locals()
+            if len(self.__parent_function.throws) > 0:
+                catches = []
+                for exception in self.__parent_function.throws:
+                    exception_name = exception.cpp_name()
+                    exception_type_qname = exception.type.cpp_qname()
+                    catches.append("""\
+} catch (const %(exception_type_qname)s<ExceptionT>& %(exception_name)s) {
+  request.respond(%(exception_name)s);
+}""" % locals())
+                catches = "\n".join(catches)
+                call = indent(' ' * 2, call)
+                call = """\
+try {
+%(call)s
+%(catches)s""" % locals()
+            call = indent(' ' * 2, call)
             return """\
-virtual void handle(const %(name)s<RequestT>& request) {
-  %(call_prefix)simpl_.%(call_method_name)s(%(call_parameters)s)%(call_suffix)s;
+virtual void handle(const %(name)s& request) {
+%(call)s
 }""" % locals()
 
         def _cpp_template_parameters(self):
-            return "template < class RequestT = Request<Message> >"
+            return None
 
     class _CppResponseType(_CppMessageType):
         def __init__(self, parent_function, cpp_suppress_warnings=None):
@@ -122,13 +139,13 @@ virtual void handle(const %(name)s<RequestT>& request) {
             if parent_function.return_field is not None:
                 return_field = parent_function.return_field
                 self.fields.append(
-                    CppField(
+                    return_field.__class__(
                         annotations=return_field.annotations,
                         doc=return_field.doc,
                         name=return_field.name,
                         type=return_field.type,
                         parent=self,
-                        required=return_field.required,
+                        required=True
                     )
                 )
 
@@ -136,7 +153,7 @@ virtual void handle(const %(name)s<RequestT>& request) {
             return 'ResponseT'
 
         def _cpp_template_parameters(self):
-            return "template < class ResponseT = Response<Message> >"
+            return None
 
     def _cpp_declaration(self):
         name = self.cpp_name()
@@ -154,6 +171,8 @@ virtual void handle(const %(name)s<RequestT>& request) {
 
     def cpp_includes_definition(self):
         includes = []
+        for exception in self.throws:
+            includes.extend(exception.cpp_includes_use())
         for parameter in self.parameters:
             includes.extend(parameter.cpp_includes_use())
         if self.return_field is not None:
