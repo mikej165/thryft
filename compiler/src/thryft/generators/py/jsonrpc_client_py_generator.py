@@ -47,7 +47,7 @@ class JsonrpcClientPyGenerator(py_generator.PyGenerator):
                 else:
                     call_prefix = 'return_value = '
                     call_suffix = """
-    iprot = thryft.protocol.json_protocol.JsonProtocol(return_value)
+    iprot = thryft.protocol.json_input_protocol.JsonInputProtocol(return_value)
     return %s""" % self.return_field.type.py_read_protocol()
             else:
                 call_prefix = call_suffix = ''
@@ -60,8 +60,9 @@ def _%(name)s(self, **kwds):
     class Service(PyService):
         def py_imports_definition(self):
             return ['import ' + PyService.py_qname(self).rsplit('.', 1)[0],
-                    'import thryft.protocol.builtins_protocol',
-                    'import thryft.protocol.json_protocol',
+                    'import thryft.protocol.builtins_input_protocol',
+                    'import thryft.protocol.builtins_output_protocol',
+                    'import thryft.protocol.json_input_protocol',
                     'from urlparse import urlparse',
                     'import base64',
                     'import json',
@@ -166,7 +167,7 @@ def __request(self, method, headers=None, **kwds):
     request = {'jsonrpc': '2.0', 'method': method}
     request['id'] = id(request)
     params = {}
-    params_oprot = thryft.protocol.builtins_protocol.BuiltinsProtocol(params)
+    params_oprot = thryft.protocol.builtins_output_protocol.BuiltinsOutputProtocol(params)
     for key, value in kwds.iteritems():
         if value is None:
             continue
@@ -216,7 +217,7 @@ def __request(self, method, headers=None, **kwds):
                 raise RuntimeError("JSON-RPC: error: code=%%(code)u, message='%%(message)s'" %% locals())
             data = error.get('data')
             if isinstance(data, dict):
-                data_iprot = thryft.protocol.builtins_protocol.BuiltinsProtocol([data])
+                data_iprot = thryft.protocol.builtins_input_protocol.BuiltinsInputProtocol([data])
                 exception_ = exception_class.read(data_iprot)
                 raise exception_
             else:
