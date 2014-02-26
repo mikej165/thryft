@@ -29,30 +29,9 @@
 # OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
-from decimal import Decimal
-from time import mktime
-from datetime import datetime
 
 
-class _Protocol(object):
-    def readByte(self):
-        return self.readI16()
-
-    def readDateTime(self):
-        return datetime.fromtimestamp(self.readI64() / 1000.0)
-
-    def readDecimal(self):
-        return Decimal(self.readString())
-
-    def readEmailAddress(self):
-        return self.readString()
-
-    def readI16(self):
-        return self.readI32()
-
-    def readUrl(self):
-        return self.readString()
-
+class _OutputProtocol(object):
     def writeByte(self, byte):
         self.writeI16(byte)
         return self

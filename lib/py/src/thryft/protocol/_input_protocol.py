@@ -29,17 +29,25 @@
 # OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
-
-from thryft.protocol.builtins_input_protocol import BuiltinsInputProtocol
-from thryft.protocol.builtins_output_protocol import BuiltinsOutputProtocol
-from thryft_test.protocol.test._protocol_test import _ProtocolTest
+from decimal import Decimal
+from datetime import datetime
 
 
-class BuiltinsProtocolTest(_ProtocolTest):
-    def _test(self, in_object):
-        obuiltin = []
-        oprot = BuiltinsOutputProtocol(obuiltin)
-        in_object.write(oprot)
-        iprot = BuiltinsInputProtocol(obuiltin)
-        out_object = in_object.read(iprot)
-        self.assertEquals(in_object, out_object)
+class _InputProtocol(object):
+    def readByte(self):
+        return self.readI16()
+
+    def readDateTime(self):
+        return datetime.fromtimestamp(self.readI64() / 1000.0)
+
+    def readDecimal(self):
+        return Decimal(self.readString())
+
+    def readEmailAddress(self):
+        return self.readString()
+
+    def readI16(self):
+        return self.readI32()
+
+    def readUrl(self):
+        return self.readString()

@@ -30,28 +30,33 @@
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
 
-from decimal import Decimal
-try:
-    import json
-except ImportError:
-    import simplejson as json  # @UnusedImport
-from thryft.protocol.builtins_protocol import BuiltinsProtocol
+from thryft.protocol.builtins_output_protocol import BuiltinsOutputProtocol
+from urllib import urlencode
 
 
-class JsonProtocol(BuiltinsProtocol):
-    def __init__(self, json=None):
-        if json is not None:
-            if isinstance(json, str):
-                builtin_object = globals()['json'].loads(json, parse_float=Decimal, strict=False)  # @UndefinedVariable
-            else:
-                builtin_object = json
-            builtin_object = [builtin_object]
+class StringMapOutputProtocol(BuiltinsOutputProtocol):
+    def to_string_map(self):
+        if len(self._scope_stack) > 0:
+            return self.__to_string_map(self._scope_stack[0].builtin_object)
         else:
-            builtin_object = None
-        BuiltinsProtocol.__init__(self, builtin_object)
+            return {}
+
+    def __to_string_map(self, in_value, in_key=None, out_string_map=None):
+        if in_key is not None:
+            child_key_prefix = in_key + '.'
+        else:
+            child_key_prefix = ''
+        if out_string_map is None:
+            out_string_map = {}
+        if isinstance(in_value, dict):
+            for child_key, child_value in in_value.iteritems():
+                self.__to_string_map(child_value, child_key_prefix + child_key, out_string_map)
+        elif isinstance(in_value, (list, tuple)):
+            for child_key, child_value in enumerate(in_value):
+                self.__to_string_map(child_value, child_key_prefix + str(child_key), out_string_map)
+        else:
+            out_string_map[in_key] = str(in_value)
+        return out_string_map
 
     def __str__(self):
-        if len(self._scope_stack) > 0:
-            return json.dumps(self._scope_stack[0].builtin_object)  # @UndefinedVariable
-        else:
-            return ''
+        return urlencode(self.to_string_map(), True)

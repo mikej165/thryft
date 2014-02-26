@@ -30,15 +30,16 @@
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
 
-from thryft.protocol.json_protocol import JsonProtocol
+from thryft.protocol.json_input_protocol import JsonInputProtocol
+from thryft.protocol.json_output_protocol import JsonOutputProtocol
 from thryft_test.protocol.test._protocol_test import _ProtocolTest
 
 
 class JsonProtocolTest(_ProtocolTest):
     def _test(self, in_object):
-        oprot = JsonProtocol()
+        oprot = JsonOutputProtocol()
         in_object.write(oprot)
         ojson = str(oprot)
-        iprot = JsonProtocol(ojson)
+        iprot = JsonInputProtocol(ojson)
         out_object = in_object.read(iprot)
         self.assertEquals(in_object, out_object)

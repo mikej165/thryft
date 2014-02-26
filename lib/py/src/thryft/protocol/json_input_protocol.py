@@ -30,16 +30,21 @@
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
 
+from decimal import Decimal
+try:
+    import json
+except ImportError:
+    import simplejson as json  # @UnusedImport
 from thryft.protocol.builtins_input_protocol import BuiltinsInputProtocol
-from thryft.protocol.builtins_output_protocol import BuiltinsOutputProtocol
-from thryft_test.protocol.test._protocol_test import _ProtocolTest
 
 
-class BuiltinsProtocolTest(_ProtocolTest):
-    def _test(self, in_object):
-        obuiltin = []
-        oprot = BuiltinsOutputProtocol(obuiltin)
-        in_object.write(oprot)
-        iprot = BuiltinsInputProtocol(obuiltin)
-        out_object = in_object.read(iprot)
-        self.assertEquals(in_object, out_object)
+class JsonInputProtocol(BuiltinsInputProtocol):
+    def __init__(self, json):
+        if isinstance(json, str):
+            builtin_object = globals()['json'].loads(json, parse_float=Decimal, strict=False)  # @UndefinedVariable
+        elif json is not None:
+            builtin_object = json
+        else:
+            raise TypeError(type(json))
+        builtin_object = [builtin_object]
+        BuiltinsInputProtocol.__init__(self, builtin_object)
