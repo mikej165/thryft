@@ -64,9 +64,10 @@ class JsonrpcClientJavaGenerator(java_generator.JavaGenerator):
             if self.return_field is not None:
                 service_response_assignment = "__serviceResponse = " % locals()
                 service_response_declaration = "%(service_qname)s.Messages.%(response_type_name)s __serviceResponse = null;\n        " % locals()
+                service_response_return_value_getter_name = self.return_field.java_getter_name()
                 return_statement = indent(' ' * 8, """
 if (__serviceResponse != null) {
-    return __serviceResponse.getReturnValue();
+    return __serviceResponse.%(service_response_return_value_getter_name)s();
 } else {
     throw new RuntimeException("no JSON-RPC results field received from the server");
 }""" % locals())
