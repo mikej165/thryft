@@ -97,6 +97,10 @@ protected %(name)s _build(%(field_parameters)s) {
     return new %(name)s(%(all_field_names)s);
 }""" % locals()}
 
+        def _java_method_getters(self):
+            return dict((field.java_getter_name(), field.java_getter())
+                        for field in self.fields)
+
         def _java_method_setters(self):
             setters = {}
             for field in self.fields:
@@ -108,6 +112,7 @@ protected %(name)s _build(%(field_parameters)s) {
             methods = {}
             methods.update(self._java_method_build())
             methods.update(self._java_method__build())
+            methods.update(self._java_method_getters())
             methods.update(self._java_method_setters())
             return methods
 
@@ -344,10 +349,15 @@ public %(name)s(%(parameters)s) {
                 for field in self.fields]
 
     def _java_method_builder(self):
+        name = self.java_name()
         return {'builder': """\
 public static Builder builder() {
     return new Builder();
-}"""}
+}
+
+public static Builder builder(final %(name)s other) {
+    return new Builder(other);
+}""" % locals()}
 
     def _java_method_compare_to(self):
         field_compare_tos = \
