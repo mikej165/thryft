@@ -30,6 +30,7 @@
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
 
+import os.path
 from thryft.generator.document import Document
 from thryft.generators.js._js_named_construct import _JsNamedConstruct
 
@@ -58,3 +59,10 @@ if (typeof %(js_namespace_prefix)s === "undefined") {
         )
 
         return "\n\n".join(sections)
+
+    def _save_to_dir(self, out_dir_path):
+        try:
+            out_dir_path = os.path.join(out_dir_path, self.namespace_by_scope('js').name.replace('.', os.path.sep))
+        except KeyError:
+            pass
+        return self._save_to_file(os.path.join(out_dir_path, self.name + '.js'))
