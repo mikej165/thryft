@@ -46,9 +46,11 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.IOUtils;
 import org.thryft.Base;
+import org.thryft.protocol.InputProtocolException;
 import org.thryft.protocol.JsonInputProtocol;
 import org.thryft.protocol.JsonOutputProtocol;
 import org.thryft.protocol.MapBegin;
+import org.thryft.protocol.OutputProtocolException;
 import org.thryft.protocol.Type;
 
 import com.amazonaws.AmazonServiceException;
@@ -368,7 +370,7 @@ public final class S3Store<ModelT extends Base<?>> extends
             } finally {
                 istringReader.close();
             }
-        } catch (final IOException e) {
+        } catch (final IOException | InputProtocolException e) {
             logger.error("IOException on __getModels: ", e);
             throw new ModelIoException(e.getMessage());
         }
@@ -400,7 +402,7 @@ public final class S3Store<ModelT extends Base<?>> extends
             oprot.writeMapEnd();
             oprot.flush();
             ostring = ostringWriter.toString();
-        } catch (final IOException e) {
+        } catch (final IOException | OutputProtocolException e) {
             throw new ModelIoException(e);
         }
 

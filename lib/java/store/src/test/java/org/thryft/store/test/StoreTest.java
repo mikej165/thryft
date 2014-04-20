@@ -40,10 +40,10 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Test;
 import org.thryft.protocol.test.NestedProtocolTestStruct;
@@ -68,7 +68,7 @@ public abstract class StoreTest {
             // value limit of 1024
             final ProtocolTestStruct model = new ProtocolTestStruct.Builder()
                     .setBoolField(true)
-                    .setDateTimeField(DateTime.now())
+                    .setDateTimeField(new Date())
                     .setDecimalField(new BigDecimal(modelI))
                     .setEnumField(ProtocolTestEnum.ENUMERATOR1)
                     .setI8Field((byte) modelI)

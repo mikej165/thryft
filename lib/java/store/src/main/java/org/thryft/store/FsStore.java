@@ -45,6 +45,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.thryft.Base;
 import org.thryft.protocol.JsonInputProtocol;
 import org.thryft.protocol.JsonOutputProtocol;
+import org.thryft.protocol.OutputProtocolException;
 
 import com.google.common.base.CaseFormat;
 import com.google.common.collect.ImmutableMap;
@@ -318,8 +319,7 @@ public final class FsStore<ModelT extends Base<?>> extends
                     logger.error("error writing model to disk: cannot delete and copy");
                 }
             }
-
-        } catch (final IOException e) {
+        } catch (final IOException | OutputProtocolException e) {
             logger.error("error writing model to disk: ", e);
             throw new ModelIoException(e, modelId);
         }

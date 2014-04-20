@@ -51,6 +51,7 @@ import org.h2.jdbcx.JdbcConnectionPool;
 import org.thryft.Base;
 import org.thryft.protocol.JsonInputProtocol;
 import org.thryft.protocol.JsonOutputProtocol;
+import org.thryft.protocol.OutputProtocolException;
 
 import com.google.common.base.CaseFormat;
 import com.google.common.collect.ImmutableMap;
@@ -465,7 +466,7 @@ public final class JdbcStore<ModelT extends Base<?>> extends
             statement.setString(2, json);
             statement.setString(3, userId);
             statement.execute();
-        } catch (final IOException | SQLException e) {
+        } catch (final IOException | OutputProtocolException | SQLException e) {
             throw new ModelIoException(e, modelId);
         }
     }

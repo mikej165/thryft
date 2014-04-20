@@ -34,7 +34,6 @@ package org.thryft.store;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Collection;
@@ -43,6 +42,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.thryft.Base;
+import org.thryft.protocol.OutputProtocolException;
 import org.thryft.protocol.StringMapInputProtocol;
 import org.thryft.protocol.StringMapOutputProtocol;
 
@@ -63,6 +63,7 @@ import com.amazonaws.services.simpledb.model.ReplaceableItem;
 import com.amazonaws.services.simpledb.model.SelectRequest;
 import com.amazonaws.services.simpledb.model.SelectResult;
 import com.google.common.base.CaseFormat;
+import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
@@ -301,7 +302,7 @@ public final class SimpleDbStore<ModelT extends Base<?>> extends
         final StringMapOutputProtocol oprot = new StringMapOutputProtocol();
         try {
             model.write(oprot);
-        } catch (final IOException e) {
+        } catch (final OutputProtocolException e) {
             return ImmutableList.of();
         }
         final ImmutableMap<String, String> stringMap = oprot.toStringMap();
@@ -324,7 +325,7 @@ public final class SimpleDbStore<ModelT extends Base<?>> extends
                         attributeValue, false));
             } else {
                 final String attributeValueHash = Hashing.md5()
-                        .hashString(attributeValue).toString();
+                        .hashString(attributeValue, Charsets.UTF_8).toString();
                 // 32 character hash
                 // 5 characters for the 0-padded order marker (store a uint16)
                 // Worst-case string encoding: URL-encoded UTF-8, max 3 bytes

@@ -34,7 +34,6 @@ package org.thryft.store;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -42,6 +41,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.thryft.Base;
+import org.thryft.protocol.OutputProtocolException;
 import org.thryft.protocol.StringMapInputProtocol;
 import org.thryft.protocol.StringMapOutputProtocol;
 
@@ -250,7 +250,7 @@ public final class RedisStore<ModelT extends Base<?>> extends
                 final StringMapOutputProtocol oprot = new StringMapOutputProtocol();
                 try {
                     model.write(oprot);
-                } catch (final IOException e) {
+                } catch (final OutputProtocolException e) {
                     throw new ModelIoException(e, modelKey.getModelId());
                 }
                 final ImmutableMap<String, String> hash = oprot.toStringMap();
