@@ -37,6 +37,86 @@ public class ProtocolTestStruct implements org.thryft.Base<ProtocolTestStruct> {
             return _build(binaryField, boolField, dateTimeField, decimalField, emailAddressField, enumField, i8Field, i16Field, i32Field, i64Field, listStringField, mapStringStringField, requiredI32Field, requiredStringField, setStringField, stringField, structField, u32Field, u64Field, urlField);
         }
 
+        public final com.google.common.base.Optional<byte[]> getBinaryField() {
+            return binaryField;
+        }
+
+        public final com.google.common.base.Optional<Boolean> getBoolField() {
+            return boolField;
+        }
+
+        public final com.google.common.base.Optional<org.joda.time.DateTime> getDateTimeField() {
+            return dateTimeField;
+        }
+
+        public final com.google.common.base.Optional<java.math.BigDecimal> getDecimalField() {
+            return decimalField;
+        }
+
+        public final com.google.common.base.Optional<org.thryft.native_.EmailAddress> getEmailAddressField() {
+            return emailAddressField;
+        }
+
+        public final com.google.common.base.Optional<org.thryft.protocol.test.ProtocolTestEnum> getEnumField() {
+            return enumField;
+        }
+
+        public final com.google.common.base.Optional<Short> getI16Field() {
+            return i16Field;
+        }
+
+        public final com.google.common.base.Optional<Integer> getI32Field() {
+            return i32Field;
+        }
+
+        public final com.google.common.base.Optional<Long> getI64Field() {
+            return i64Field;
+        }
+
+        public final com.google.common.base.Optional<Byte> getI8Field() {
+            return i8Field;
+        }
+
+        public final com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> getListStringField() {
+            return listStringField;
+        }
+
+        public final com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> getMapStringStringField() {
+            return mapStringStringField;
+        }
+
+        public final int getRequiredI32Field() {
+            return requiredI32Field;
+        }
+
+        public final String getRequiredStringField() {
+            return requiredStringField;
+        }
+
+        public final com.google.common.base.Optional<com.google.common.collect.ImmutableSet<String>> getSetStringField() {
+            return setStringField;
+        }
+
+        public final com.google.common.base.Optional<String> getStringField() {
+            return stringField;
+        }
+
+        public final com.google.common.base.Optional<org.thryft.protocol.test.NestedProtocolTestStruct> getStructField() {
+            return structField;
+        }
+
+        public final com.google.common.base.Optional<com.google.common.primitives.UnsignedInteger> getU32Field() {
+            return u32Field;
+        }
+
+        public final com.google.common.base.Optional<com.google.common.primitives.UnsignedLong> getU64Field() {
+            return u64Field;
+        }
+
+        public final com.google.common.base.Optional<org.thryft.native_.Url> getUrlField() {
+            return urlField;
+        }
+
         public Builder setBinaryField(final com.google.common.base.Optional<byte[]> binaryField) {
             this.binaryField = binaryField;
             return this;
@@ -253,11 +333,11 @@ public class ProtocolTestStruct implements org.thryft.Base<ProtocolTestStruct> {
         this(other.getBinaryField(), other.getBoolField(), other.getDateTimeField(), other.getDecimalField(), other.getEmailAddressField(), other.getEnumField(), other.getI8Field(), other.getI16Field(), other.getI32Field(), other.getI64Field(), other.getListStringField(), other.getMapStringStringField(), other.getRequiredI32Field(), other.getRequiredStringField(), other.getSetStringField(), other.getStringField(), other.getStructField(), other.getU32Field(), other.getU64Field(), other.getUrlField());
     }
 
-    public ProtocolTestStruct(final org.thryft.protocol.InputProtocol iprot) throws java.io.IOException {
+    public ProtocolTestStruct(final org.thryft.protocol.InputProtocol iprot) throws org.thryft.protocol.InputProtocolException {
         this(iprot, org.thryft.protocol.Type.STRUCT);
     }
 
-    public ProtocolTestStruct(final org.thryft.protocol.InputProtocol iprot, final byte readAsTType) throws java.io.IOException {
+    public ProtocolTestStruct(final org.thryft.protocol.InputProtocol iprot, final byte readAsTType) throws org.thryft.protocol.InputProtocolException {
         com.google.common.base.Optional<byte[]> binaryField = com.google.common.base.Optional.absent();
         com.google.common.base.Optional<Boolean> boolField = com.google.common.base.Optional.absent();
         com.google.common.base.Optional<org.joda.time.DateTime> dateTimeField = com.google.common.base.Optional.absent();
@@ -324,7 +404,7 @@ public class ProtocolTestStruct implements org.thryft.Base<ProtocolTestStruct> {
                             }
                             iprot.readListEnd();
                             return sequence.build();
-                        } catch (final java.io.IOException e) {
+                        } catch (final org.thryft.protocol.InputProtocolException e) {
                             return com.google.common.collect.ImmutableList.of();
                         }
                     }
@@ -340,7 +420,7 @@ public class ProtocolTestStruct implements org.thryft.Base<ProtocolTestStruct> {
                             }
                             iprot.readMapEnd();
                             return map.build();
-                        } catch (final java.io.IOException e) {
+                        } catch (final org.thryft.protocol.InputProtocolException e) {
                             return com.google.common.collect.ImmutableMap.of();
                         }
                     }
@@ -359,7 +439,7 @@ public class ProtocolTestStruct implements org.thryft.Base<ProtocolTestStruct> {
                                 }
                                 iprot.readSetEnd();
                                 return sequence.build();
-                            } catch (final java.io.IOException e) {
+                            } catch (final org.thryft.protocol.InputProtocolException e) {
                                 return com.google.common.collect.ImmutableSet.of();
                             }
                         }
@@ -384,10 +464,7 @@ public class ProtocolTestStruct implements org.thryft.Base<ProtocolTestStruct> {
                     }
                 }
                 if (__list.size > 19) {
-                    try {
-                        urlField = com.google.common.base.Optional.of(iprot.readUrl());
-                    } catch (java.net.MalformedURLException e) {
-                    }
+                    urlField = com.google.common.base.Optional.of(iprot.readUrl());
                 }
                 iprot.readListEnd();
                 break;
@@ -452,7 +529,7 @@ public class ProtocolTestStruct implements org.thryft.Base<ProtocolTestStruct> {
                                     }
                                     iprot.readListEnd();
                                     return sequence.build();
-                                } catch (final java.io.IOException e) {
+                                } catch (final org.thryft.protocol.InputProtocolException e) {
                                     return com.google.common.collect.ImmutableList.of();
                                 }
                             }
@@ -469,7 +546,7 @@ public class ProtocolTestStruct implements org.thryft.Base<ProtocolTestStruct> {
                                     }
                                     iprot.readMapEnd();
                                     return map.build();
-                                } catch (final java.io.IOException e) {
+                                } catch (final org.thryft.protocol.InputProtocolException e) {
                                     return com.google.common.collect.ImmutableMap.of();
                                 }
                             }
@@ -490,7 +567,7 @@ public class ProtocolTestStruct implements org.thryft.Base<ProtocolTestStruct> {
                                     }
                                     iprot.readSetEnd();
                                     return sequence.build();
-                                } catch (final java.io.IOException e) {
+                                } catch (final org.thryft.protocol.InputProtocolException e) {
                                     return com.google.common.collect.ImmutableSet.of();
                                 }
                             }
@@ -510,10 +587,7 @@ public class ProtocolTestStruct implements org.thryft.Base<ProtocolTestStruct> {
                         } catch (NumberFormatException e) {
                         }
                     } else if (ifield.name.equals("url_field")) {
-                        try {
-                            urlField = com.google.common.base.Optional.of(iprot.readUrl());
-                        } catch (java.net.MalformedURLException e) {
-                        }
+                        urlField = com.google.common.base.Optional.of(iprot.readUrl());
                     }
                     iprot.readFieldEnd();
                 }
@@ -614,6 +688,10 @@ public class ProtocolTestStruct implements org.thryft.Base<ProtocolTestStruct> {
 
     public static Builder builder() {
         return new Builder();
+    }
+
+    public static Builder builder(final ProtocolTestStruct other) {
+        return new Builder(other);
     }
 
     @Override
@@ -1333,11 +1411,11 @@ public class ProtocolTestStruct implements org.thryft.Base<ProtocolTestStruct> {
     }
 
     @Override
-    public void write(final org.thryft.protocol.OutputProtocol oprot) throws java.io.IOException {
+    public void write(final org.thryft.protocol.OutputProtocol oprot) throws org.thryft.protocol.OutputProtocolException {
         write(oprot, org.thryft.protocol.Type.STRUCT);
     }
 
-    public void write(final org.thryft.protocol.OutputProtocol oprot, final byte writeAsTType) throws java.io.IOException {
+    public void write(final org.thryft.protocol.OutputProtocol oprot, final byte writeAsTType) throws org.thryft.protocol.OutputProtocolException {
         switch (writeAsTType) {
             case org.thryft.protocol.Type.VOID:
             case org.thryft.protocol.Type.LIST:

@@ -79,9 +79,6 @@ class JavaUri(_Uri, JavaNativeType):
     def java_read_protocol(self):
         return 'iprot.readUri()'
 
-    def java_read_protocol_throws_checked(self):
-        return ['java.net.MalformedURLException']
-
     def java_write_protocol(self, value, depth=0):
         return "oprot.writeUri(%(value)s);" % locals()
 

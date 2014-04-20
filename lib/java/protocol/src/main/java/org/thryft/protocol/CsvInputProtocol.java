@@ -51,32 +51,32 @@ public class CsvInputProtocol extends StackedInputProtocol {
     protected abstract class AbstractInputProtocol extends
             org.thryft.protocol.AbstractInputProtocol {
         @Override
-        public boolean readBool() throws IOException {
+        public boolean readBool() throws InputProtocolException {
             return readString().equals("1");
         }
 
         @Override
-        public byte readByte() throws IOException {
+        public byte readByte() throws InputProtocolException {
             return Byte.parseByte(readString());
         }
 
         @Override
-        public double readDouble() throws IOException {
+        public double readDouble() throws InputProtocolException {
             return Double.parseDouble(readString());
         }
 
         @Override
-        public short readI16() throws IOException {
+        public short readI16() throws InputProtocolException {
             return Short.parseShort(readString());
         }
 
         @Override
-        public int readI32() throws IOException {
+        public int readI32() throws InputProtocolException {
             return Integer.parseInt(readString());
         }
 
         @Override
-        public long readI64() throws IOException {
+        public long readI64() throws InputProtocolException {
             final String value = readString();
             try {
                 return Long.parseLong(value);
@@ -96,12 +96,12 @@ public class CsvInputProtocol extends StackedInputProtocol {
                 }
 
                 @Override
-                public ListBegin readListBegin() throws IOException {
+                public ListBegin readListBegin() throws InputProtocolException {
                     throw new IllegalStateException();
                 }
 
                 @Override
-                public String readString() throws IOException {
+                public String readString() throws InputProtocolException {
                     return elements[currentElementI++];
                 }
 
@@ -117,7 +117,7 @@ public class CsvInputProtocol extends StackedInputProtocol {
             }
 
             @Override
-            public FieldBegin readFieldBegin() throws IOException {
+            public FieldBegin readFieldBegin() throws InputProtocolException {
                 if (currentColumnI < columnValues.length) {
                     return _readFieldBegin();
                 } else {
@@ -131,7 +131,7 @@ public class CsvInputProtocol extends StackedInputProtocol {
             }
 
             @Override
-            public ListBegin readListBegin() throws IOException {
+            public ListBegin readListBegin() throws InputProtocolException {
                 return _readListBegin(readString());
             }
 
@@ -160,13 +160,14 @@ public class CsvInputProtocol extends StackedInputProtocol {
                 return columnValues[currentColumnI];
             }
 
-            protected FieldBegin _readFieldBegin() throws IOException {
+            protected FieldBegin _readFieldBegin()
+                    throws InputProtocolException {
                 return new FieldBegin(_getCurrentColumnName(), Type.STRING,
                         (short) 0);
             }
 
             protected ListBegin _readListBegin(final String list)
-                    throws IOException {
+                    throws InputProtocolException {
                 final CSVReader listReader = new CSVReader(new StringReader(
                         list));
                 String[] listElements;
@@ -178,7 +179,10 @@ public class CsvInputProtocol extends StackedInputProtocol {
                 } catch (final IOException e) {
                     listElements = new String[0];
                 } finally {
-                    listReader.close();
+                    try {
+                        listReader.close();
+                    } catch (final IOException e) {
+                    }
                 }
                 _getProtocolStack().push(_createSequenceColumn(listElements));
                 return new ListBegin(Type.STRING, 0);
@@ -209,17 +213,17 @@ public class CsvInputProtocol extends StackedInputProtocol {
         }
 
         @Override
-        public ListBegin readListBegin() throws IOException {
+        public ListBegin readListBegin() throws InputProtocolException {
             return new ListBegin(Type.STRUCT, rows.size());
         }
 
         @Override
-        public String readString() throws IOException {
+        public String readString() throws InputProtocolException {
             throw new IllegalStateException();
         }
 
         @Override
-        public StructBegin readStructBegin() throws IOException {
+        public StructBegin readStructBegin() throws InputProtocolException {
             _getProtocolStack().push(rows.pop());
             return new StructBegin();
         }

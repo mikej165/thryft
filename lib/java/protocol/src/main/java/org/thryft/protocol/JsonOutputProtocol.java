@@ -44,132 +44,136 @@ public class JsonOutputProtocol extends StackedOutputProtocol {
     protected abstract class AbstractOutputProtocol extends
             org.thryft.protocol.AbstractOutputProtocol {
         @Override
-        public void writeBool(final boolean b) throws IOException {
+        public void writeBool(final boolean b) throws OutputProtocolException {
             try {
                 generator.writeBoolean(b);
             } catch (final IOException e) {
-                throw new IOException(e);
+                throw new OutputProtocolException(e);
             }
         }
 
         @Override
-        public void writeByte(final byte b) throws IOException {
+        public void writeByte(final byte b) throws OutputProtocolException {
             try {
                 generator.writeNumber(b);
             } catch (final IOException e) {
-                throw new IOException(e);
+                throw new OutputProtocolException(e);
             }
         }
 
         @Override
-        public void writeDouble(final double dub) throws IOException {
+        public void writeDouble(final double dub)
+                throws OutputProtocolException {
             try {
                 generator.writeNumber(dub);
             } catch (final IOException e) {
-                throw new IOException(e);
+                throw new OutputProtocolException(e);
             }
         }
 
         @Override
-        public void writeI16(final short i16) throws IOException {
+        public void writeI16(final short i16) throws OutputProtocolException {
             try {
                 generator.writeNumber(i16);
             } catch (final IOException e) {
-                throw new IOException(e);
+                throw new OutputProtocolException(e);
             }
         }
 
         @Override
-        public void writeI32(final int i32) throws IOException {
+        public void writeI32(final int i32) throws OutputProtocolException {
             try {
                 generator.writeNumber(i32);
             } catch (final IOException e) {
-                throw new IOException(e);
+                throw new OutputProtocolException(e);
             }
         }
 
         @Override
-        public void writeI64(final long i64) throws IOException {
+        public void writeI64(final long i64) throws OutputProtocolException {
             try {
                 generator.writeNumber(i64);
             } catch (final IOException e) {
-                throw new IOException(e);
+                throw new OutputProtocolException(e);
             }
         }
 
         @Override
-        public void writeListBegin(final ListBegin list) throws IOException {
+        public void writeListBegin(final ListBegin list)
+                throws OutputProtocolException {
             try {
                 generator.writeStartArray();
                 _getProtocolStack().push(_createArrayOutputProtocol());
             } catch (final IOException e) {
-                throw new IOException(e);
+                throw new OutputProtocolException(e);
             }
         }
 
         @Override
-        public void writeListEnd() throws IOException {
+        public void writeListEnd() throws OutputProtocolException {
             try {
                 generator.writeEndArray();
             } catch (final IOException e) {
-                throw new IOException(e);
+                throw new OutputProtocolException(e);
             }
         }
 
         @Override
-        public void writeMapBegin(final MapBegin map) throws IOException {
+        public void writeMapBegin(final MapBegin map)
+                throws OutputProtocolException {
             try {
                 generator.writeStartObject();
                 _getProtocolStack().push(_createMapObjectOutputProtocol());
             } catch (final IOException e) {
-                throw new IOException(e);
+                throw new OutputProtocolException(e);
             }
         }
 
         @Override
-        public void writeMapEnd() throws IOException {
+        public void writeMapEnd() throws OutputProtocolException {
             try {
                 generator.writeEndObject();
             } catch (final IOException e) {
-                throw new IOException(e);
+                throw new OutputProtocolException(e);
             }
         }
 
         @Override
-        public void writeNull() throws IOException {
+        public void writeNull() throws OutputProtocolException {
             try {
                 generator.writeNull();
             } catch (final IOException e) {
-                throw new IOException(e);
+                throw new OutputProtocolException(e);
             }
         }
 
         @Override
-        public void writeString(final String str) throws IOException {
+        public void writeString(final String str)
+                throws OutputProtocolException {
             try {
                 generator.writeString(str);
             } catch (final IOException e) {
-                throw new IOException(e);
+                throw new OutputProtocolException(e);
             }
         }
 
         @Override
         public void writeStructBegin(final StructBegin struct)
-                throws IOException {
+                throws OutputProtocolException {
             try {
                 generator.writeStartObject();
                 _getProtocolStack().push(_createStructObjectOutputProtocol());
             } catch (final IOException e) {
-                throw new IOException(e);
+                throw new OutputProtocolException(e);
             }
         }
 
         @Override
-        public void writeStructEnd() throws IOException {
+        public void writeStructEnd() throws OutputProtocolException {
             try {
                 generator.writeEndObject();
             } catch (final IOException e) {
-                throw new IOException(e);
+                throw new OutputProtocolException(e);
             }
         }
     }
@@ -179,7 +183,7 @@ public class JsonOutputProtocol extends StackedOutputProtocol {
 
     protected class MapObjectOutputProtocol extends AbstractOutputProtocol {
         @Override
-        public void writeBool(final boolean b) throws IOException {
+        public void writeBool(final boolean b) throws OutputProtocolException {
             if (nextWriteIsKey) {
                 writeString(Boolean.toString(b));
             } else {
@@ -189,7 +193,7 @@ public class JsonOutputProtocol extends StackedOutputProtocol {
         }
 
         @Override
-        public void writeByte(final byte b) throws IOException {
+        public void writeByte(final byte b) throws OutputProtocolException {
             if (nextWriteIsKey) {
                 writeString(Byte.toString(b));
             } else {
@@ -199,7 +203,8 @@ public class JsonOutputProtocol extends StackedOutputProtocol {
         }
 
         @Override
-        public void writeDouble(final double dub) throws IOException {
+        public void writeDouble(final double dub)
+                throws OutputProtocolException {
             if (nextWriteIsKey) {
                 writeString(Double.toString(dub));
             } else {
@@ -209,7 +214,7 @@ public class JsonOutputProtocol extends StackedOutputProtocol {
         }
 
         @Override
-        public void writeI16(final short i16) throws IOException {
+        public void writeI16(final short i16) throws OutputProtocolException {
             if (nextWriteIsKey) {
                 writeString(Short.toString(i16));
             } else {
@@ -219,7 +224,7 @@ public class JsonOutputProtocol extends StackedOutputProtocol {
         }
 
         @Override
-        public void writeI32(final int i32) throws IOException {
+        public void writeI32(final int i32) throws OutputProtocolException {
             if (nextWriteIsKey) {
                 writeString(Integer.toString(i32));
             } else {
@@ -229,7 +234,7 @@ public class JsonOutputProtocol extends StackedOutputProtocol {
         }
 
         @Override
-        public void writeI64(final long i64) throws IOException {
+        public void writeI64(final long i64) throws OutputProtocolException {
             if (nextWriteIsKey) {
                 writeString(Long.toString(i64));
             } else {
@@ -239,7 +244,8 @@ public class JsonOutputProtocol extends StackedOutputProtocol {
         }
 
         @Override
-        public void writeListBegin(final ListBegin list) throws IOException {
+        public void writeListBegin(final ListBegin list)
+                throws OutputProtocolException {
             if (nextWriteIsKey) {
                 throw new UnsupportedOperationException();
             } else {
@@ -249,7 +255,8 @@ public class JsonOutputProtocol extends StackedOutputProtocol {
         }
 
         @Override
-        public void writeMapBegin(final MapBegin map) throws IOException {
+        public void writeMapBegin(final MapBegin map)
+                throws OutputProtocolException {
             if (nextWriteIsKey) {
                 throw new UnsupportedOperationException();
             } else {
@@ -259,7 +266,7 @@ public class JsonOutputProtocol extends StackedOutputProtocol {
         }
 
         @Override
-        public void writeNull() throws IOException {
+        public void writeNull() throws OutputProtocolException {
             if (nextWriteIsKey) {
                 throw new UnsupportedOperationException();
             } else {
@@ -269,13 +276,14 @@ public class JsonOutputProtocol extends StackedOutputProtocol {
         }
 
         @Override
-        public void writeString(final String str) throws IOException {
+        public void writeString(final String str)
+                throws OutputProtocolException {
             if (nextWriteIsKey) {
                 nextWriteIsKey = false;
                 try {
                     generator.writeFieldName(str);
                 } catch (final IOException e) {
-                    throw new IOException(e);
+                    throw new OutputProtocolException(e);
                 }
             } else {
                 nextWriteIsKey = true;
@@ -285,7 +293,7 @@ public class JsonOutputProtocol extends StackedOutputProtocol {
 
         @Override
         public void writeStructBegin(final StructBegin struct)
-                throws IOException {
+                throws OutputProtocolException {
             if (nextWriteIsKey) {
                 throw new UnsupportedOperationException();
             } else {
@@ -299,30 +307,31 @@ public class JsonOutputProtocol extends StackedOutputProtocol {
 
     protected class RootOutputProtocol extends AbstractOutputProtocol {
         @Override
-        public void writeFieldEnd() throws IOException {
+        public void writeFieldEnd() throws OutputProtocolException {
         }
 
         @Override
-        public void writeFieldStop() throws IOException {
+        public void writeFieldStop() throws OutputProtocolException {
         }
     }
 
     protected class StructObjectOutputProtocol extends AbstractOutputProtocol {
         @Override
-        public void writeFieldBegin(final FieldBegin field) throws IOException {
+        public void writeFieldBegin(final FieldBegin field)
+                throws OutputProtocolException {
             try {
                 generator.writeFieldName(field.name);
             } catch (final IOException e) {
-                throw new IOException(e);
+                throw new OutputProtocolException(e);
             }
         }
 
         @Override
-        public void writeFieldEnd() throws IOException {
+        public void writeFieldEnd() throws OutputProtocolException {
         }
 
         @Override
-        public void writeFieldStop() throws IOException {
+        public void writeFieldStop() throws OutputProtocolException {
         }
     }
 
@@ -341,8 +350,12 @@ public class JsonOutputProtocol extends StackedOutputProtocol {
     }
 
     @Override
-    public void flush() throws IOException {
-        generator.flush();
+    public void flush() throws OutputProtocolException {
+        try {
+            generator.flush();
+        } catch (final IOException e) {
+            throw new OutputProtocolException(e);
+        }
     }
 
     protected OutputProtocol _createArrayOutputProtocol() {

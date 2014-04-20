@@ -32,7 +32,6 @@
 
 package org.thryft.protocol;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 
 import org.joda.time.DateTime;
@@ -43,61 +42,61 @@ import org.thryft.native_.Url;
 import com.google.common.primitives.UnsignedInteger;
 import com.google.common.primitives.UnsignedLong;
 
-public interface InputProtocol {
-    public byte[] readBinary() throws IOException;
+public interface InputProtocol extends Protocol {
+    public byte[] readBinary() throws InputProtocolException;
 
-    public boolean readBool() throws IOException;
+    public boolean readBool() throws InputProtocolException;
 
-    public byte readByte() throws IOException;
+    public byte readByte() throws InputProtocolException;
 
-    public DateTime readDate() throws IOException;
+    public DateTime readDate() throws InputProtocolException;
 
-    public DateTime readDateTime() throws IOException;
+    public DateTime readDateTime() throws InputProtocolException;
 
-    public BigDecimal readDecimal() throws IOException;
+    public BigDecimal readDecimal() throws InputProtocolException;
 
-    public double readDouble() throws IOException;
+    public double readDouble() throws InputProtocolException;
 
-    public EmailAddress readEmailAddress() throws IOException;
+    public EmailAddress readEmailAddress() throws InputProtocolException;
 
     public <E extends Enum<E>> E readEnum(final Class<E> enumClass)
-            throws IOException;
+            throws InputProtocolException;
 
-    public FieldBegin readFieldBegin() throws IOException;
+    public FieldBegin readFieldBegin() throws InputProtocolException;
 
-    public void readFieldEnd() throws IOException;
+    public void readFieldEnd() throws InputProtocolException;
 
-    public short readI16() throws IOException;
+    public short readI16() throws InputProtocolException;
 
-    public int readI32() throws IOException;
+    public int readI32() throws InputProtocolException;
 
-    public long readI64() throws IOException;
+    public long readI64() throws InputProtocolException;
 
-    public ListBegin readListBegin() throws IOException;
+    public ListBegin readListBegin() throws InputProtocolException;
 
-    public void readListEnd() throws IOException;
+    public void readListEnd() throws InputProtocolException;
 
-    public MapBegin readMapBegin() throws IOException;
+    public MapBegin readMapBegin() throws InputProtocolException;
 
-    public void readMapEnd() throws IOException;
+    public void readMapEnd() throws InputProtocolException;
 
-    public Object readMixed() throws IOException;
+    public Object readMixed() throws InputProtocolException;
 
-    public SetBegin readSetBegin() throws IOException;
+    public SetBegin readSetBegin() throws InputProtocolException;
 
-    public void readSetEnd() throws IOException;
+    public void readSetEnd() throws InputProtocolException;
 
-    public String readString() throws IOException;
+    public String readString() throws InputProtocolException;
 
-    public StructBegin readStructBegin() throws IOException;
+    public StructBegin readStructBegin() throws InputProtocolException;
 
-    public void readStructEnd() throws IOException;
+    public void readStructEnd() throws InputProtocolException;
 
-    public UnsignedInteger readU32() throws IOException;
+    public UnsignedInteger readU32() throws InputProtocolException;
 
-    public UnsignedLong readU64() throws IOException;
+    public UnsignedLong readU64() throws InputProtocolException;
 
-    public Uri readUri() throws IOException;
+    public Uri readUri() throws InputProtocolException;
 
-    public Url readUrl() throws IOException;
+    public Url readUrl() throws InputProtocolException;
 }

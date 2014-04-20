@@ -32,7 +32,6 @@
 
 package org.thryft.protocol;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 
 import org.joda.time.DateTime;
@@ -43,65 +42,73 @@ import org.thryft.native_.Url;
 import com.google.common.primitives.UnsignedInteger;
 import com.google.common.primitives.UnsignedLong;
 
-public interface OutputProtocol {
-    public void flush() throws IOException;
+public interface OutputProtocol extends Protocol {
+    public void flush() throws OutputProtocolException;
 
-    public void writeBinary(final byte[] buf) throws IOException;
+    public void writeBinary(final byte[] buf) throws OutputProtocolException;
 
-    public void writeBool(final boolean b) throws IOException;
+    public void writeBool(final boolean b) throws OutputProtocolException;
 
-    public void writeByte(final byte b) throws IOException;
+    public void writeByte(final byte b) throws OutputProtocolException;
 
-    public void writeDateTime(final DateTime dateTime) throws IOException;
+    public void writeDateTime(final DateTime dateTime)
+            throws OutputProtocolException;
 
-    public void writeDecimal(final BigDecimal decimal) throws IOException;
+    public void writeDecimal(final BigDecimal decimal)
+            throws OutputProtocolException;
 
-    public void writeDouble(final double dub) throws IOException;
+    public void writeDouble(final double dub) throws OutputProtocolException;
 
     public void writeEmailAddress(final EmailAddress emailAddress)
-            throws IOException;
+            throws OutputProtocolException;
 
-    public void writeEnum(final Enum<?> enum_) throws IOException;
+    public void writeEnum(final Enum<?> enum_) throws OutputProtocolException;
 
-    public void writeFieldBegin(final FieldBegin field) throws IOException;
+    public void writeFieldBegin(final FieldBegin field)
+            throws OutputProtocolException;
 
-    public void writeFieldEnd() throws IOException;
+    public void writeFieldEnd() throws OutputProtocolException;
 
-    public void writeFieldStop() throws IOException;
+    public void writeFieldStop() throws OutputProtocolException;
 
-    public void writeI16(final short i16) throws IOException;
+    public void writeI16(final short i16) throws OutputProtocolException;
 
-    public void writeI32(final int i32) throws IOException;
+    public void writeI32(final int i32) throws OutputProtocolException;
 
-    public void writeI64(final long i64) throws IOException;
+    public void writeI64(final long i64) throws OutputProtocolException;
 
-    public void writeListBegin(final ListBegin list) throws IOException;
+    public void writeListBegin(final ListBegin list)
+            throws OutputProtocolException;
 
-    public void writeListEnd() throws IOException;
+    public void writeListEnd() throws OutputProtocolException;
 
-    public void writeMapBegin(final MapBegin map) throws IOException;
+    public void writeMapBegin(final MapBegin map)
+            throws OutputProtocolException;
 
-    public void writeMapEnd() throws IOException;
+    public void writeMapEnd() throws OutputProtocolException;
 
-    public void writeMixed(final Object value) throws IOException;
+    public void writeMixed(final Object value) throws OutputProtocolException;
 
-    public void writeNull() throws IOException;
+    public void writeNull() throws OutputProtocolException;
 
-    public void writeSetBegin(final SetBegin set) throws IOException;
+    public void writeSetBegin(final SetBegin set)
+            throws OutputProtocolException;
 
-    public void writeSetEnd() throws IOException;
+    public void writeSetEnd() throws OutputProtocolException;
 
-    public void writeString(final String str) throws IOException;
+    public void writeString(final String str) throws OutputProtocolException;
 
-    public void writeStructBegin(final StructBegin struct) throws IOException;
+    public void writeStructBegin(final StructBegin struct)
+            throws OutputProtocolException;
 
-    public void writeStructEnd() throws IOException;
+    public void writeStructEnd() throws OutputProtocolException;
 
-    public void writeU32(final UnsignedInteger u32) throws IOException;
+    public void writeU32(final UnsignedInteger u32)
+            throws OutputProtocolException;
 
-    public void writeU64(final UnsignedLong u64) throws IOException;
+    public void writeU64(final UnsignedLong u64) throws OutputProtocolException;
 
-    public void writeUri(final Uri uri) throws IOException;
+    public void writeUri(final Uri uri) throws OutputProtocolException;
 
-    public void writeUrl(final Url url) throws IOException;
+    public void writeUrl(final Url url) throws OutputProtocolException;
 }

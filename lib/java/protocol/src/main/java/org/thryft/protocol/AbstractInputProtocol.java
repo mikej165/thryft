@@ -32,7 +32,6 @@
 
 package org.thryft.protocol;
 
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
@@ -48,50 +47,50 @@ import com.google.common.primitives.UnsignedLong;
 
 public abstract class AbstractInputProtocol implements InputProtocol {
     @Override
-    public byte[] readBinary() throws IOException {
+    public byte[] readBinary() throws InputProtocolException {
         final String base64String = readString();
         return Base64.decodeBase64(base64String);
     }
 
     @Override
-    public boolean readBool() throws IOException {
+    public boolean readBool() throws InputProtocolException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public byte readByte() throws IOException {
+    public byte readByte() throws InputProtocolException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public DateTime readDate() throws IOException {
+    public DateTime readDate() throws InputProtocolException {
         return new DateTime(readI64());
     }
 
     @Override
-    public DateTime readDateTime() throws IOException {
+    public DateTime readDateTime() throws InputProtocolException {
         return new DateTime(readI64());
     }
 
     @Override
-    public BigDecimal readDecimal() throws IOException {
+    public BigDecimal readDecimal() throws InputProtocolException {
         return new BigDecimal(readString());
     }
 
     @Override
-    public double readDouble() throws IOException {
+    public double readDouble() throws InputProtocolException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public EmailAddress readEmailAddress() throws IOException {
+    public EmailAddress readEmailAddress() throws InputProtocolException {
         return new EmailAddress(readString());
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <E extends Enum<E>> E readEnum(final Class<E> enumClass)
-            throws IOException {
+            throws InputProtocolException {
         final String enumStringValue = readString().trim().toUpperCase();
         if (enumStringValue.isEmpty()) {
             throw new IllegalArgumentException("empty string");
@@ -129,98 +128,98 @@ public abstract class AbstractInputProtocol implements InputProtocol {
     }
 
     @Override
-    public FieldBegin readFieldBegin() throws IOException {
+    public FieldBegin readFieldBegin() throws InputProtocolException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void readFieldEnd() throws IOException {
+    public void readFieldEnd() throws InputProtocolException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public short readI16() throws IOException {
+    public short readI16() throws InputProtocolException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public int readI32() throws IOException {
+    public int readI32() throws InputProtocolException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public long readI64() throws IOException {
+    public long readI64() throws InputProtocolException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public ListBegin readListBegin() throws IOException {
+    public ListBegin readListBegin() throws InputProtocolException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void readListEnd() throws IOException {
+    public void readListEnd() throws InputProtocolException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public MapBegin readMapBegin() throws IOException {
+    public MapBegin readMapBegin() throws InputProtocolException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void readMapEnd() throws IOException {
+    public void readMapEnd() throws InputProtocolException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public Object readMixed() throws IOException {
+    public Object readMixed() throws InputProtocolException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public SetBegin readSetBegin() throws IOException {
+    public SetBegin readSetBegin() throws InputProtocolException {
         final ListBegin list = readListBegin();
         return new SetBegin(list.elemType, list.size);
     }
 
     @Override
-    public void readSetEnd() throws IOException {
+    public void readSetEnd() throws InputProtocolException {
         readListEnd();
     }
 
     @Override
-    public String readString() throws IOException {
+    public String readString() throws InputProtocolException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public StructBegin readStructBegin() throws IOException {
+    public StructBegin readStructBegin() throws InputProtocolException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void readStructEnd() throws IOException {
+    public void readStructEnd() throws InputProtocolException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public UnsignedInteger readU32() throws IOException {
+    public UnsignedInteger readU32() throws InputProtocolException {
         return UnsignedInteger.valueOf(readI32());
     }
 
     @Override
-    public UnsignedLong readU64() throws IOException {
+    public UnsignedLong readU64() throws InputProtocolException {
         return UnsignedLong.valueOf(readI64());
     }
 
     @Override
-    public Uri readUri() throws IOException {
+    public Uri readUri() throws InputProtocolException {
         return Uri.parse(readString());
     }
 
     @Override
-    public Url readUrl() throws IOException {
+    public Url readUrl() throws InputProtocolException {
         return Url.parse(readString());
     }
 }

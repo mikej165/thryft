@@ -32,7 +32,6 @@
 
 package org.thryft.protocol;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 
 import org.apache.commons.codec.binary.Base64;
@@ -49,102 +48,108 @@ import com.google.common.primitives.UnsignedInteger;
 import com.google.common.primitives.UnsignedLong;
 
 public abstract class AbstractOutputProtocol implements OutputProtocol {
-    public void flush() throws IOException {
+    @Override
+    public void flush() throws OutputProtocolException {
     }
 
     @Override
-    public void writeBinary(final byte[] buf) throws IOException {
+    public void writeBinary(final byte[] buf) throws OutputProtocolException {
         writeString(Base64.encodeBase64String(buf));
     }
 
     @Override
-    public void writeBool(final boolean b) throws IOException {
+    public void writeBool(final boolean b) throws OutputProtocolException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void writeByte(final byte b) throws IOException {
+    public void writeByte(final byte b) throws OutputProtocolException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void writeDateTime(final DateTime dateTime) throws IOException {
+    public void writeDateTime(final DateTime dateTime)
+            throws OutputProtocolException {
         writeI64(dateTime.getMillis());
     }
 
     @Override
-    public void writeDecimal(final BigDecimal decimal) throws IOException {
+    public void writeDecimal(final BigDecimal decimal)
+            throws OutputProtocolException {
         writeString(decimal.toString());
     }
 
     @Override
-    public void writeDouble(final double dub) throws IOException {
+    public void writeDouble(final double dub) throws OutputProtocolException {
         throw new UnsupportedOperationException();
     }
 
     @Override
     public void writeEmailAddress(final EmailAddress emailAddress)
-            throws IOException {
+            throws OutputProtocolException {
         writeString(emailAddress.toString());
     }
 
     @Override
-    public void writeEnum(final Enum<?> enum_) throws IOException {
+    public void writeEnum(final Enum<?> enum_) throws OutputProtocolException {
         writeString(enum_.toString().toUpperCase());
     }
 
     @Override
-    public void writeFieldBegin(final FieldBegin field) throws IOException {
+    public void writeFieldBegin(final FieldBegin field)
+            throws OutputProtocolException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void writeFieldEnd() throws IOException {
+    public void writeFieldEnd() throws OutputProtocolException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void writeFieldStop() throws IOException {
+    public void writeFieldStop() throws OutputProtocolException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void writeI16(final short i16) throws IOException {
+    public void writeI16(final short i16) throws OutputProtocolException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void writeI32(final int i32) throws IOException {
+    public void writeI32(final int i32) throws OutputProtocolException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void writeI64(final long i64) throws IOException {
+    public void writeI64(final long i64) throws OutputProtocolException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void writeListBegin(final ListBegin list) throws IOException {
+    public void writeListBegin(final ListBegin list)
+            throws OutputProtocolException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void writeListEnd() throws IOException {
+    public void writeListEnd() throws OutputProtocolException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void writeMapBegin(final MapBegin map) throws IOException {
+    public void writeMapBegin(final MapBegin map)
+            throws OutputProtocolException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void writeMapEnd() throws IOException {
+    public void writeMapEnd() throws OutputProtocolException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void writeMixed(final Object value) throws IOException {
+    public void writeMixed(final Object value) throws OutputProtocolException {
         if (value == null) {
             writeNull();
         } else if (value instanceof Boolean) {
@@ -204,52 +209,55 @@ public abstract class AbstractOutputProtocol implements OutputProtocol {
     }
 
     @Override
-    public void writeNull() throws IOException {
+    public void writeNull() throws OutputProtocolException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void writeSetBegin(final SetBegin set) throws IOException {
+    public void writeSetBegin(final SetBegin set)
+            throws OutputProtocolException {
         writeListBegin(new ListBegin(set.elemType, set.size));
     }
 
     @Override
-    public void writeSetEnd() throws IOException {
+    public void writeSetEnd() throws OutputProtocolException {
         writeListEnd();
     }
 
     @Override
-    public void writeString(final String str) throws IOException {
+    public void writeString(final String str) throws OutputProtocolException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void writeStructBegin(final StructBegin struct) throws IOException {
+    public void writeStructBegin(final StructBegin struct)
+            throws OutputProtocolException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void writeStructEnd() throws IOException {
+    public void writeStructEnd() throws OutputProtocolException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void writeU32(final UnsignedInteger u32) throws IOException {
+    public void writeU32(final UnsignedInteger u32)
+            throws OutputProtocolException {
         writeI32(u32.intValue());
     }
 
     @Override
-    public void writeU64(final UnsignedLong u64) throws IOException {
+    public void writeU64(final UnsignedLong u64) throws OutputProtocolException {
         writeI64(u64.longValue());
     }
 
     @Override
-    public void writeUri(final Uri uri) throws IOException {
+    public void writeUri(final Uri uri) throws OutputProtocolException {
         writeString(uri.toString());
     }
 
     @Override
-    public void writeUrl(final Url url) throws IOException {
+    public void writeUrl(final Url url) throws OutputProtocolException {
         writeString(url.toString());
     }
 }

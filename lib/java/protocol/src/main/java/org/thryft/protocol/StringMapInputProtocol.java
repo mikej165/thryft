@@ -35,7 +35,6 @@ package org.thryft.protocol;
 import static com.google.common.base.Preconditions.checkState;
 import static org.thryft.Preconditions.checkNotEmpty;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
@@ -70,32 +69,32 @@ public class StringMapInputProtocol extends StackedInputProtocol {
         }
 
         @Override
-        public final boolean readBool() throws IOException {
+        public final boolean readBool() throws InputProtocolException {
             return Boolean.parseBoolean(readString());
         }
 
         @Override
-        public final byte readByte() throws IOException {
+        public final byte readByte() throws InputProtocolException {
             return Byte.parseByte(readString());
         }
 
         @Override
-        public final double readDouble() throws IOException {
+        public final double readDouble() throws InputProtocolException {
             return Double.parseDouble(readString());
         }
 
         @Override
-        public final short readI16() throws IOException {
+        public final short readI16() throws InputProtocolException {
             return Short.parseShort(readString());
         }
 
         @Override
-        public final int readI32() throws IOException {
+        public final int readI32() throws InputProtocolException {
             return Integer.parseInt(readString());
         }
 
         @Override
-        public final long readI64() throws IOException {
+        public final long readI64() throws InputProtocolException {
             return Long.parseLong(readString());
         }
 
@@ -108,7 +107,7 @@ public class StringMapInputProtocol extends StackedInputProtocol {
         }
 
         protected ListBegin _readListBegin(final String childKey)
-                throws IOException {
+                throws InputProtocolException {
             final ListInputProtocol listInputProtocol = new ListInputProtocol(
                     input, __joinKeys(myKey, childKey));
             _getProtocolStack().push(listInputProtocol);
@@ -117,7 +116,7 @@ public class StringMapInputProtocol extends StackedInputProtocol {
         }
 
         protected MapBegin _readMapBegin(final String childKey)
-                throws IOException {
+                throws InputProtocolException {
             final MapInputProtocol mapInputProtocol = new MapInputProtocol(
                     input, __joinKeys(myKey, childKey));
             _getProtocolStack().push(mapInputProtocol);
@@ -130,7 +129,7 @@ public class StringMapInputProtocol extends StackedInputProtocol {
         }
 
         protected StructBegin _readStructBegin(final String childKey)
-                throws IOException {
+                throws InputProtocolException {
             final StructInputProtocol structInputProtocol = new StructInputProtocol(
                     input, __joinKeys(myKey, childKey));
             _getProtocolStack().push(structInputProtocol);
@@ -151,22 +150,22 @@ public class StringMapInputProtocol extends StackedInputProtocol {
         }
 
         @Override
-        public ListBegin readListBegin() throws IOException {
+        public ListBegin readListBegin() throws InputProtocolException {
             return _readListBegin(_getChildKeyStack().pop());
         }
 
         @Override
-        public MapBegin readMapBegin() throws IOException {
+        public MapBegin readMapBegin() throws InputProtocolException {
             return _readMapBegin(_getChildKeyStack().pop());
         }
 
         @Override
-        public String readString() throws IOException {
+        public String readString() throws InputProtocolException {
             return _readString(_getChildKeyStack().pop());
         }
 
         @Override
-        public StructBegin readStructBegin() throws IOException {
+        public StructBegin readStructBegin() throws InputProtocolException {
             return _readStructBegin(_getChildKeyStack().pop());
         }
     }
@@ -178,21 +177,21 @@ public class StringMapInputProtocol extends StackedInputProtocol {
         }
 
         @Override
-        public ListBegin readListBegin() throws IOException {
+        public ListBegin readListBegin() throws InputProtocolException {
             checkState(!nextReadIsKey);
             nextReadIsKey = true;
             return _readListBegin(_getChildKeyStack().pop());
         }
 
         @Override
-        public MapBegin readMapBegin() throws IOException {
+        public MapBegin readMapBegin() throws InputProtocolException {
             checkState(!nextReadIsKey);
             nextReadIsKey = true;
             return _readMapBegin(_getChildKeyStack().pop());
         }
 
         @Override
-        public String readString() throws IOException {
+        public String readString() throws InputProtocolException {
             if (nextReadIsKey) {
                 nextReadIsKey = false;
                 return _getChildKeyStack().peek();
@@ -203,7 +202,7 @@ public class StringMapInputProtocol extends StackedInputProtocol {
         }
 
         @Override
-        public StructBegin readStructBegin() throws IOException {
+        public StructBegin readStructBegin() throws InputProtocolException {
             checkState(!nextReadIsKey);
             nextReadIsKey = true;
             return _readStructBegin(_getChildKeyStack().pop());
@@ -218,7 +217,7 @@ public class StringMapInputProtocol extends StackedInputProtocol {
         }
 
         @Override
-        public ListBegin readListBegin() throws IOException {
+        public ListBegin readListBegin() throws InputProtocolException {
             final ListInputProtocol listInputProtocol = new ListInputProtocol(
                     _getInput(), "");
             _getProtocolStack().push(listInputProtocol);
@@ -227,7 +226,7 @@ public class StringMapInputProtocol extends StackedInputProtocol {
         }
 
         @Override
-        public MapBegin readMapBegin() throws IOException {
+        public MapBegin readMapBegin() throws InputProtocolException {
             final MapInputProtocol mapInputProtocol = new MapInputProtocol(
                     _getInput(), "");
             _getProtocolStack().push(mapInputProtocol);
@@ -236,12 +235,12 @@ public class StringMapInputProtocol extends StackedInputProtocol {
         }
 
         @Override
-        public String readString() throws IOException {
+        public String readString() throws InputProtocolException {
             throw new IllegalStateException();
         }
 
         @Override
-        public StructBegin readStructBegin() throws IOException {
+        public StructBegin readStructBegin() throws InputProtocolException {
             _getProtocolStack().push(new StructInputProtocol(_getInput(), ""));
             return new StructBegin();
         }
@@ -254,7 +253,7 @@ public class StringMapInputProtocol extends StackedInputProtocol {
         }
 
         @Override
-        public FieldBegin readFieldBegin() throws IOException {
+        public FieldBegin readFieldBegin() throws InputProtocolException {
             if (!_getChildKeyStack().empty()) {
                 return new FieldBegin(_getChildKeyStack().peek(), Type.VOID,
                         (short) -1);
@@ -264,27 +263,27 @@ public class StringMapInputProtocol extends StackedInputProtocol {
         }
 
         @Override
-        public void readFieldEnd() throws IOException {
+        public void readFieldEnd() throws InputProtocolException {
             _getChildKeyStack().pop();
         }
 
         @Override
-        public ListBegin readListBegin() throws IOException {
+        public ListBegin readListBegin() throws InputProtocolException {
             return _readListBegin(_getChildKeyStack().peek());
         }
 
         @Override
-        public MapBegin readMapBegin() throws IOException {
+        public MapBegin readMapBegin() throws InputProtocolException {
             return _readMapBegin(_getChildKeyStack().peek());
         }
 
         @Override
-        public String readString() throws IOException {
+        public String readString() throws InputProtocolException {
             return _readString(_getChildKeyStack().peek());
         }
 
         @Override
-        public StructBegin readStructBegin() throws IOException {
+        public StructBegin readStructBegin() throws InputProtocolException {
             return _readStructBegin(_getChildKeyStack().peek());
         }
     }

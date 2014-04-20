@@ -93,7 +93,7 @@ try {
             }
             iprot.read%(interface_simple_name)sEnd();
             return sequence.build();
-        } catch (final java.io.IOException e) {
+        } catch (final org.thryft.protocol.InputProtocolException e) {
             return com.google.common.collect.Immutable%(interface_simple_name)s.of();
         }
     }

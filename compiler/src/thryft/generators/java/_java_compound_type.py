@@ -224,11 +224,11 @@ if (__list.size > %(field_i)u) {
         name = self.java_name()
         read_list = need_read_list_return and "final org.thryft.protocol.ListBegin __list = " or ''
         return """\
-public %(name)s(final org.thryft.protocol.InputProtocol iprot) throws java.io.IOException {
+public %(name)s(final org.thryft.protocol.InputProtocol iprot) throws org.thryft.protocol.InputProtocolException {
     this(iprot, org.thryft.protocol.Type.STRUCT);
 }
 
-public %(name)s(final org.thryft.protocol.InputProtocol iprot, final byte readAsTType) throws java.io.IOException {%(field_declarations)s
+public %(name)s(final org.thryft.protocol.InputProtocol iprot, final byte readAsTType) throws org.thryft.protocol.InputProtocolException {%(field_declarations)s
     switch (readAsTType) {
         case org.thryft.protocol.Type.LIST:
             %(read_list)siprot.readListBegin();%(field_protocol_positional_initializers)s
@@ -551,11 +551,11 @@ public String toString() {
         name = self.java_name()
         return {'write': """\
 @Override
-public void write(final org.thryft.protocol.OutputProtocol oprot) throws java.io.IOException {
+public void write(final org.thryft.protocol.OutputProtocol oprot) throws org.thryft.protocol.OutputProtocolException {
     write(oprot, org.thryft.protocol.Type.STRUCT);
 }
 
-public void write(final org.thryft.protocol.OutputProtocol oprot, final byte writeAsTType) throws java.io.IOException {
+public void write(final org.thryft.protocol.OutputProtocol oprot, final byte writeAsTType) throws org.thryft.protocol.OutputProtocolException {
     switch (writeAsTType) {
         %(case_ttype_void)s
         case org.thryft.protocol.Type.LIST:

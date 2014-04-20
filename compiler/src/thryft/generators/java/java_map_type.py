@@ -72,7 +72,7 @@ class JavaMapType(MapType, _JavaContainerType):
             }
             iprot.readMapEnd();
             return map.build();
-        } catch (final java.io.IOException e) {
+        } catch (final org.thryft.protocol.InputProtocolException e) {
             return com.google.common.collect.ImmutableMap.of();
         }
     }

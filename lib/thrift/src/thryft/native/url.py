@@ -49,9 +49,6 @@ class JavaUrl(_JavaUri):
     def java_read_protocol(self):
         return 'iprot.readUrl()'
 
-    def java_read_protocol_throws_checked(self):
-        return ['java.net.MalformedURLException']
-
     def java_write_protocol(self, value, depth=0):
         return "oprot.writeUrl(%(value)s);" % locals()
 

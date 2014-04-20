@@ -32,123 +32,122 @@
 
 package org.thryft.protocol;
 
-import java.io.IOException;
 import java.util.Stack;
 
 public class StackedInputProtocol extends AbstractInputProtocol {
     @Override
-    public byte[] readBinary() throws IOException {
+    public byte[] readBinary() throws InputProtocolException {
         return protocolStack.peek().readBinary();
     }
 
     @Override
-    public boolean readBool() throws IOException {
+    public boolean readBool() throws InputProtocolException {
         return protocolStack.peek().readBool();
     }
 
     @Override
-    public byte readByte() throws IOException {
+    public byte readByte() throws InputProtocolException {
         return protocolStack.peek().readByte();
     }
 
     @Override
-    public org.joda.time.DateTime readDate() throws IOException {
+    public org.joda.time.DateTime readDate() throws InputProtocolException {
         return protocolStack.peek().readDate();
     }
 
     @Override
-    public org.joda.time.DateTime readDateTime() throws IOException {
+    public org.joda.time.DateTime readDateTime() throws InputProtocolException {
         return protocolStack.peek().readDateTime();
     }
 
     @Override
-    public java.math.BigDecimal readDecimal() throws IOException {
+    public java.math.BigDecimal readDecimal() throws InputProtocolException {
         return protocolStack.peek().readDecimal();
     }
 
     @Override
-    public double readDouble() throws IOException {
+    public double readDouble() throws InputProtocolException {
         return protocolStack.peek().readDouble();
     }
 
     @Override
     public <E extends Enum<E>> E readEnum(final Class<E> enumClass)
-            throws IOException {
+            throws InputProtocolException {
         return protocolStack.peek().readEnum(enumClass);
     }
 
     @Override
-    public FieldBegin readFieldBegin() throws IOException {
+    public FieldBegin readFieldBegin() throws InputProtocolException {
         return protocolStack.peek().readFieldBegin();
     }
 
     @Override
-    public void readFieldEnd() throws IOException {
+    public void readFieldEnd() throws InputProtocolException {
         protocolStack.peek().readFieldEnd();
     }
 
     @Override
-    public short readI16() throws IOException {
+    public short readI16() throws InputProtocolException {
         return protocolStack.peek().readI16();
     }
 
     @Override
-    public int readI32() throws IOException {
+    public int readI32() throws InputProtocolException {
         return protocolStack.peek().readI32();
     }
 
     @Override
-    public long readI64() throws IOException {
+    public long readI64() throws InputProtocolException {
         return protocolStack.peek().readI64();
     }
 
     @Override
-    public ListBegin readListBegin() throws IOException {
+    public ListBegin readListBegin() throws InputProtocolException {
         return protocolStack.peek().readListBegin();
     }
 
     @Override
-    public void readListEnd() throws IOException {
+    public void readListEnd() throws InputProtocolException {
         protocolStack.pop();
     }
 
     @Override
-    public MapBegin readMapBegin() throws IOException {
+    public MapBegin readMapBegin() throws InputProtocolException {
         return protocolStack.peek().readMapBegin();
     }
 
     @Override
-    public void readMapEnd() throws IOException {
+    public void readMapEnd() throws InputProtocolException {
         protocolStack.pop();
     }
 
     @Override
-    public Object readMixed() throws IOException {
+    public Object readMixed() throws InputProtocolException {
         return protocolStack.peek().readMixed();
     }
 
     @Override
-    public SetBegin readSetBegin() throws IOException {
+    public SetBegin readSetBegin() throws InputProtocolException {
         return protocolStack.peek().readSetBegin();
     }
 
     @Override
-    public void readSetEnd() throws IOException {
+    public void readSetEnd() throws InputProtocolException {
         protocolStack.pop();
     }
 
     @Override
-    public String readString() throws IOException {
+    public String readString() throws InputProtocolException {
         return protocolStack.peek().readString();
     }
 
     @Override
-    public StructBegin readStructBegin() throws IOException {
+    public StructBegin readStructBegin() throws InputProtocolException {
         return protocolStack.peek().readStructBegin();
     }
 
     @Override
-    public void readStructEnd() throws IOException {
+    public void readStructEnd() throws InputProtocolException {
         protocolStack.pop();
     }
 

@@ -32,8 +32,6 @@
 
 package org.thryft.protocol;
 
-import java.io.IOException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,213 +42,218 @@ public class LoggingOutputProtocol extends AbstractOutputProtocol {
     }
 
     @Override
-    public void writeBinary(final byte[] buf) throws IOException {
+    public void writeBinary(final byte[] buf) throws OutputProtocolException {
         final String message = "writeBinary(" + __toString(buf) + " bytes)";
         try {
             wrappedProtocol.writeBinary(buf);
             logger.info(message);
-        } catch (final IOException e) {
+        } catch (final OutputProtocolException e) {
             logger.info(message + " -> " + __toString(e));
             throw e;
         }
     }
 
     @Override
-    public void writeBool(final boolean b) throws IOException {
+    public void writeBool(final boolean b) throws OutputProtocolException {
         final String message = "writeBool(" + b + ")";
         try {
             wrappedProtocol.writeBool(b);
             logger.info(message);
-        } catch (final IOException e) {
+        } catch (final OutputProtocolException e) {
             logger.info(message + " -> " + __toString(e));
         }
     }
 
     @Override
-    public void writeByte(final byte b) throws IOException {
+    public void writeByte(final byte b) throws OutputProtocolException {
         final String message = "writeByte(" + b + ")";
         try {
             wrappedProtocol.writeByte(b);
             logger.info(message);
-        } catch (final IOException e) {
+        } catch (final OutputProtocolException e) {
             logger.info(message + " -> " + __toString(e));
         }
     }
 
     @Override
-    public void writeDouble(final double dub) throws IOException {
+    public void writeDouble(final double dub) throws OutputProtocolException {
         final String message = "writeDouble(" + dub + ")";
         try {
             wrappedProtocol.writeDouble(dub);
             logger.info(message);
-        } catch (final IOException e) {
+        } catch (final OutputProtocolException e) {
             logger.info(message + " -> " + __toString(e));
         }
     }
 
     @Override
-    public void writeFieldBegin(final FieldBegin field) throws IOException {
+    public void writeFieldBegin(final FieldBegin field)
+            throws OutputProtocolException {
         final String message = "writeFieldBegin(" + field.toString() + ")";
         try {
             wrappedProtocol.writeFieldBegin(field);
             logger.info(message);
-        } catch (final IOException e) {
+        } catch (final OutputProtocolException e) {
             logger.info(message + " -> " + __toString(e));
         }
     }
 
     @Override
-    public void writeFieldEnd() throws IOException {
+    public void writeFieldEnd() throws OutputProtocolException {
         final String message = "writeFieldEnd()";
         try {
             wrappedProtocol.writeFieldEnd();
             logger.info(message);
-        } catch (final IOException e) {
+        } catch (final OutputProtocolException e) {
             logger.info(message + " -> " + __toString(e));
         }
     }
 
     @Override
-    public void writeFieldStop() throws IOException {
+    public void writeFieldStop() throws OutputProtocolException {
         final String message = "writeFieldStop()";
         try {
             wrappedProtocol.writeFieldStop();
             logger.info(message);
-        } catch (final IOException e) {
+        } catch (final OutputProtocolException e) {
             logger.info(message + " -> " + __toString(e));
         }
     }
 
     @Override
-    public void writeI16(final short i16) throws IOException {
+    public void writeI16(final short i16) throws OutputProtocolException {
         final String message = "writeI16(" + i16 + ")";
         try {
             wrappedProtocol.writeI16(i16);
             logger.info(message);
-        } catch (final IOException e) {
+        } catch (final OutputProtocolException e) {
             logger.info(message + " -> " + __toString(e));
         }
     }
 
     @Override
-    public void writeI32(final int i32) throws IOException {
+    public void writeI32(final int i32) throws OutputProtocolException {
         final String message = "writeI32(" + i32 + ")";
         try {
             wrappedProtocol.writeI32(i32);
             logger.info(message);
-        } catch (final IOException e) {
+        } catch (final OutputProtocolException e) {
             logger.info(message + " -> " + __toString(e));
         }
     }
 
     @Override
-    public void writeI64(final long i64) throws IOException {
+    public void writeI64(final long i64) throws OutputProtocolException {
         final String message = "writeI64(" + i64 + ")";
         try {
             wrappedProtocol.writeI64(i64);
             logger.info(message);
-        } catch (final IOException e) {
+        } catch (final OutputProtocolException e) {
             logger.info(message + " -> " + __toString(e));
         }
     }
 
     @Override
-    public void writeListBegin(final ListBegin list) throws IOException {
+    public void writeListBegin(final ListBegin list)
+            throws OutputProtocolException {
         final String message = "writeListBegin(" + __toString(list) + ")";
         try {
             wrappedProtocol.writeListBegin(list);
             logger.info(message);
-        } catch (final IOException e) {
+        } catch (final OutputProtocolException e) {
             logger.info(message + " -> " + __toString(e));
             throw e;
         }
     }
 
     @Override
-    public void writeListEnd() throws IOException {
+    public void writeListEnd() throws OutputProtocolException {
         final String message = "writeListEnd()";
         try {
             wrappedProtocol.writeListEnd();
             logger.info(message);
-        } catch (final IOException e) {
+        } catch (final OutputProtocolException e) {
             logger.info(message + " -> " + __toString(e));
         }
     }
 
     @Override
-    public void writeMapBegin(final MapBegin map) throws IOException {
+    public void writeMapBegin(final MapBegin map)
+            throws OutputProtocolException {
         final String message = "writeMapBegin(" + __toString(map) + ")";
         try {
             wrappedProtocol.writeMapBegin(map);
             logger.info(message);
-        } catch (final IOException e) {
+        } catch (final OutputProtocolException e) {
             logger.info(message + " -> " + __toString(e));
         }
     }
 
     @Override
-    public void writeMapEnd() throws IOException {
+    public void writeMapEnd() throws OutputProtocolException {
         final String message = "writeMapEnd()";
         try {
             wrappedProtocol.writeMapEnd();
             logger.info(message);
-        } catch (final IOException e) {
+        } catch (final OutputProtocolException e) {
             logger.info(message + " -> " + __toString(e));
         }
     }
 
     @Override
-    public void writeSetBegin(final SetBegin set) throws IOException {
+    public void writeSetBegin(final SetBegin set)
+            throws OutputProtocolException {
         final String message = "writeSetBegin(" + __toString(set) + ")";
         try {
             wrappedProtocol.writeSetBegin(set);
             logger.info(message);
-        } catch (final IOException e) {
+        } catch (final OutputProtocolException e) {
             logger.info(message + " -> " + __toString(e));
             throw e;
         }
     }
 
     @Override
-    public void writeSetEnd() throws IOException {
+    public void writeSetEnd() throws OutputProtocolException {
         final String message = "writeSetEnd()";
         try {
             wrappedProtocol.writeSetEnd();
             logger.info(message);
-        } catch (final IOException e) {
+        } catch (final OutputProtocolException e) {
             logger.info(message + " -> " + __toString(e));
         }
     }
 
     @Override
-    public void writeString(final String str) throws IOException {
+    public void writeString(final String str) throws OutputProtocolException {
         final String message = "writeString(" + str + ")";
         try {
             wrappedProtocol.writeString(str);
             logger.info(message);
-        } catch (final IOException e) {
+        } catch (final OutputProtocolException e) {
             logger.info(message + " -> " + __toString(e));
         }
     }
 
     @Override
-    public void writeStructBegin(final StructBegin struct) throws IOException {
+    public void writeStructBegin(final StructBegin struct)
+            throws OutputProtocolException {
         final String message = "writeStructBegin(" + __toString(struct) + ")";
         try {
             wrappedProtocol.writeStructBegin(struct);
             logger.info(message);
-        } catch (final IOException e) {
+        } catch (final OutputProtocolException e) {
             logger.info(message + " -> " + __toString(e));
         }
     }
 
     @Override
-    public void writeStructEnd() throws IOException {
+    public void writeStructEnd() throws OutputProtocolException {
         final String message = "writeStructEnd()";
         try {
             wrappedProtocol.writeStructEnd();
             logger.info(message);
-        } catch (final IOException e) {
+        } catch (final OutputProtocolException e) {
             logger.info(message + " -> " + __toString(e));
         }
     }

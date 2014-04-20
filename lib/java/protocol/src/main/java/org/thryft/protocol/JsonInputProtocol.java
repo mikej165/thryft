@@ -53,65 +53,65 @@ public class JsonInputProtocol extends StackedInputProtocol {
         }
 
         @Override
-        public boolean readBool() throws IOException {
+        public boolean readBool() throws InputProtocolException {
             return _readChildNode().asBoolean();
         }
 
         @Override
-        public byte readByte() throws IOException {
+        public byte readByte() throws InputProtocolException {
             return (byte) _readChildNode().asInt();
         }
 
         @Override
-        public double readDouble() throws IOException {
+        public double readDouble() throws InputProtocolException {
             return _readChildNode().asDouble();
         }
 
         @Override
-        public short readI16() throws IOException {
+        public short readI16() throws InputProtocolException {
             return (short) _readChildNode().asInt();
         }
 
         @Override
-        public int readI32() throws IOException {
+        public int readI32() throws InputProtocolException {
             return _readChildNode().asInt();
         }
 
         @Override
-        public long readI64() throws IOException {
+        public long readI64() throws InputProtocolException {
             return _readChildNode().asLong();
         }
 
         @Override
-        public ListBegin readListBegin() throws IOException {
+        public ListBegin readListBegin() throws InputProtocolException {
             final JsonNode node = _readChildNode();
             if (!node.isArray()) {
-                throw new IOException("expected JSON array");
+                throw new InputProtocolException("expected JSON array");
             }
             _getProtocolStack().push(_createArrayInputProtocol(node));
             return new ListBegin(Type.VOID, node.size());
         }
 
         @Override
-        public MapBegin readMapBegin() throws IOException {
+        public MapBegin readMapBegin() throws InputProtocolException {
             final JsonNode node = _readChildNode();
             if (!node.isObject()) {
-                throw new IOException("expected JSON object");
+                throw new InputProtocolException("expected JSON object");
             }
             _getProtocolStack().push(_createMapObjectInputProtocol(node));
             return new MapBegin(Type.VOID, Type.VOID, node.size());
         }
 
         @Override
-        public String readString() throws IOException {
+        public String readString() throws InputProtocolException {
             return _readChildNode().asText();
         }
 
         @Override
-        public StructBegin readStructBegin() throws IOException {
+        public StructBegin readStructBegin() throws InputProtocolException {
             final JsonNode node = _readChildNode();
             if (!node.isObject()) {
-                throw new IOException("expected JSON object");
+                throw new InputProtocolException("expected JSON object");
             }
             _getProtocolStack().push(_createStructObjectInputProtocol(node));
             return new StructBegin();
@@ -184,7 +184,7 @@ public class JsonInputProtocol extends StackedInputProtocol {
         }
 
         @Override
-        public FieldBegin readFieldBegin() throws IOException {
+        public FieldBegin readFieldBegin() throws InputProtocolException {
             if (!fieldNameStack.isEmpty()) {
                 return new FieldBegin(fieldNameStack.peek(), Type.VOID,
                         (short) -1);
@@ -194,7 +194,7 @@ public class JsonInputProtocol extends StackedInputProtocol {
         }
 
         @Override
-        public void readFieldEnd() throws IOException {
+        public void readFieldEnd() throws InputProtocolException {
             fieldNameStack.pop();
         }
 
