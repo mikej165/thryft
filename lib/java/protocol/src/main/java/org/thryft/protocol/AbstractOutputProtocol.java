@@ -33,9 +33,9 @@
 package org.thryft.protocol;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 import org.apache.commons.codec.binary.Base64;
-import org.joda.time.DateTime;
 import org.thryft.Base;
 import org.thryft.native_.EmailAddress;
 import org.thryft.native_.Uri;
@@ -68,9 +68,9 @@ public abstract class AbstractOutputProtocol implements OutputProtocol {
     }
 
     @Override
-    public void writeDateTime(final DateTime dateTime)
+    public void writeDateTime(final Date dateTime)
             throws OutputProtocolException {
-        writeI64(dateTime.getMillis());
+        writeI64(dateTime.getTime());
     }
 
     @Override
@@ -156,8 +156,8 @@ public abstract class AbstractOutputProtocol implements OutputProtocol {
             writeBool((Boolean) value);
         } else if (value instanceof Byte) {
             writeByte((Byte) value);
-        } else if (value instanceof DateTime) {
-            writeDateTime((DateTime) value);
+        } else if (value instanceof Date) {
+            writeDateTime((Date) value);
         } else if (value instanceof BigDecimal) {
             writeDecimal((BigDecimal) value);
         } else if (value instanceof Double) {

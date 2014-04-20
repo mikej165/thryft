@@ -35,9 +35,9 @@ package org.thryft.protocol;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.util.Date;
 
 import org.apache.commons.codec.binary.Base64;
-import org.joda.time.DateTime;
 import org.thryft.native_.EmailAddress;
 import org.thryft.native_.Uri;
 import org.thryft.native_.Url;
@@ -63,13 +63,8 @@ public abstract class AbstractInputProtocol implements InputProtocol {
     }
 
     @Override
-    public DateTime readDate() throws InputProtocolException {
-        return new DateTime(readI64());
-    }
-
-    @Override
-    public DateTime readDateTime() throws InputProtocolException {
-        return new DateTime(readI64());
+    public Date readDateTime() throws InputProtocolException {
+        return new Date(readI64());
     }
 
     @Override

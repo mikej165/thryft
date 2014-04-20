@@ -33,8 +33,8 @@
 package org.thryft.protocol.test;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
-import org.joda.time.DateTime;
 import org.junit.Test;
 import org.thryft.native_.EmailAddress;
 import org.thryft.native_.Url;
@@ -53,7 +53,7 @@ public abstract class ProtocolTest {
 
     @Test
     public void testDateTime() throws Exception {
-        _test(new ProtocolTestStruct.Builder().setDateTimeField(DateTime.now()));
+        _test(new ProtocolTestStruct.Builder().setDateTimeField(new Date()));
     }
 
     @Test

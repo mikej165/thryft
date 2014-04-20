@@ -33,8 +33,8 @@
 package org.thryft.protocol;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
-import org.joda.time.DateTime;
 import org.thryft.native_.EmailAddress;
 import org.thryft.native_.Uri;
 import org.thryft.native_.Url;
@@ -51,7 +51,7 @@ public interface OutputProtocol extends Protocol {
 
     public void writeByte(final byte b) throws OutputProtocolException;
 
-    public void writeDateTime(final DateTime dateTime)
+    public void writeDateTime(final Date dateTime)
             throws OutputProtocolException;
 
     public void writeDecimal(final BigDecimal decimal)

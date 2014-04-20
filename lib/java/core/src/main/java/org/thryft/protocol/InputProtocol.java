@@ -33,8 +33,8 @@
 package org.thryft.protocol;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
-import org.joda.time.DateTime;
 import org.thryft.native_.EmailAddress;
 import org.thryft.native_.Uri;
 import org.thryft.native_.Url;
@@ -49,9 +49,7 @@ public interface InputProtocol extends Protocol {
 
     public byte readByte() throws InputProtocolException;
 
-    public DateTime readDate() throws InputProtocolException;
-
-    public DateTime readDateTime() throws InputProtocolException;
+    public Date readDateTime() throws InputProtocolException;
 
     public BigDecimal readDecimal() throws InputProtocolException;
 

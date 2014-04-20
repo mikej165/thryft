@@ -32,6 +32,7 @@
 
 package org.thryft.protocol;
 
+import java.util.Date;
 import java.util.Stack;
 
 public class StackedInputProtocol extends AbstractInputProtocol {
@@ -51,12 +52,7 @@ public class StackedInputProtocol extends AbstractInputProtocol {
     }
 
     @Override
-    public org.joda.time.DateTime readDate() throws InputProtocolException {
-        return protocolStack.peek().readDate();
-    }
-
-    @Override
-    public org.joda.time.DateTime readDateTime() throws InputProtocolException {
+    public Date readDateTime() throws InputProtocolException {
         return protocolStack.peek().readDateTime();
     }
 

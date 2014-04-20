@@ -32,6 +32,7 @@
 
 package org.thryft.protocol;
 
+import java.util.Date;
 import java.util.Stack;
 
 public class StackedOutputProtocol extends AbstractOutputProtocol {
@@ -51,7 +52,7 @@ public class StackedOutputProtocol extends AbstractOutputProtocol {
     }
 
     @Override
-    public void writeDateTime(final org.joda.time.DateTime dateTime)
+    public void writeDateTime(final Date dateTime)
             throws OutputProtocolException {
         protocolStack.peek().writeDateTime(dateTime);
     }

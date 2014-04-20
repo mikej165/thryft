@@ -62,10 +62,10 @@ class CppDateTime(_DateTime, CppNativeType):
 
 class JavaDateTime(_DateTime, JavaNativeType):
     def java_qname(self, boxed=True):
-        return 'org.joda.time.DateTime'
+        return 'java.util.Date'
 
     def java_faker(self, **kwds):
-        return 'org.joda.time.DateTime.now()'
+        return 'new java.util.Date()'
 
     def java_is_reference(self):
         return True

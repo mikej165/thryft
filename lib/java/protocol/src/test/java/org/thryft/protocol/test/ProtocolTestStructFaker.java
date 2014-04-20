@@ -1,11 +1,13 @@
 package org.thryft.protocol.test;
 
+import java.util.Date;
+
 public final class ProtocolTestStructFaker {
     public static org.thryft.protocol.test.ProtocolTestStruct fake() {
         final org.thryft.protocol.test.ProtocolTestStruct.Builder builder = new org.thryft.protocol.test.ProtocolTestStruct.Builder();
         builder.setBinaryField(org.thryft.Faker.randomBinary());
         builder.setBoolField(org.thryft.Faker.randomBool());
-        builder.setDateTimeField(org.joda.time.DateTime.now());
+        builder.setDateTimeField(new Date());
         builder.setDecimalField(org.thryft.Faker.randomDecimal());
         builder.setEmailAddressField(org.thryft.Faker.Internet.email());
         builder.setEnumField(org.thryft.Faker

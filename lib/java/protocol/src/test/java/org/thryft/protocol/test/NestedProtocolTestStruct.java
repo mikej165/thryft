@@ -26,7 +26,7 @@ public class NestedProtocolTestStruct implements org.thryft.Base<NestedProtocolT
             this.urlField = other.getUrlField();
         }
 
-        protected NestedProtocolTestStruct _build(final com.google.common.base.Optional<byte[]> binaryField, final com.google.common.base.Optional<Boolean> boolField, final com.google.common.base.Optional<Byte> byteField, final com.google.common.base.Optional<org.joda.time.DateTime> dateTimeField, final com.google.common.base.Optional<java.math.BigDecimal> decimalField, final com.google.common.base.Optional<org.thryft.native_.EmailAddress> emailAddressField, final com.google.common.base.Optional<org.thryft.protocol.test.ProtocolTestEnum> enumField, final com.google.common.base.Optional<Short> i16Field, final com.google.common.base.Optional<Integer> i32Field, final com.google.common.base.Optional<Long> i64Field, final com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> listStringField, final com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> mapStringStringField, final int requiredI32Field, final String requiredStringField, final com.google.common.base.Optional<com.google.common.collect.ImmutableSet<String>> setStringField, final com.google.common.base.Optional<String> stringField, final com.google.common.base.Optional<org.thryft.native_.Url> urlField) {
+        protected NestedProtocolTestStruct _build(final com.google.common.base.Optional<byte[]> binaryField, final com.google.common.base.Optional<Boolean> boolField, final com.google.common.base.Optional<Byte> byteField, final com.google.common.base.Optional<java.util.Date> dateTimeField, final com.google.common.base.Optional<java.math.BigDecimal> decimalField, final com.google.common.base.Optional<org.thryft.native_.EmailAddress> emailAddressField, final com.google.common.base.Optional<org.thryft.protocol.test.ProtocolTestEnum> enumField, final com.google.common.base.Optional<Short> i16Field, final com.google.common.base.Optional<Integer> i32Field, final com.google.common.base.Optional<Long> i64Field, final com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> listStringField, final com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> mapStringStringField, final int requiredI32Field, final String requiredStringField, final com.google.common.base.Optional<com.google.common.collect.ImmutableSet<String>> setStringField, final com.google.common.base.Optional<String> stringField, final com.google.common.base.Optional<org.thryft.native_.Url> urlField) {
             return new NestedProtocolTestStruct(binaryField, boolField, byteField, dateTimeField, decimalField, emailAddressField, enumField, i16Field, i32Field, i64Field, listStringField, mapStringStringField, requiredI32Field, requiredStringField, setStringField, stringField, urlField);
         }
 
@@ -46,7 +46,7 @@ public class NestedProtocolTestStruct implements org.thryft.Base<NestedProtocolT
             return byteField;
         }
 
-        public final com.google.common.base.Optional<org.joda.time.DateTime> getDateTimeField() {
+        public final com.google.common.base.Optional<java.util.Date> getDateTimeField() {
             return dateTimeField;
         }
 
@@ -132,12 +132,12 @@ public class NestedProtocolTestStruct implements org.thryft.Base<NestedProtocolT
             return this;
         }
 
-        public Builder setDateTimeField(final com.google.common.base.Optional<org.joda.time.DateTime> dateTimeField) {
+        public Builder setDateTimeField(final com.google.common.base.Optional<java.util.Date> dateTimeField) {
             this.dateTimeField = dateTimeField;
             return this;
         }
 
-        public Builder setDateTimeField(final org.joda.time.DateTime dateTimeField) {
+        public Builder setDateTimeField(final java.util.Date dateTimeField) {
             this.dateTimeField = com.google.common.base.Optional.fromNullable(dateTimeField);
             return this;
         }
@@ -265,7 +265,7 @@ public class NestedProtocolTestStruct implements org.thryft.Base<NestedProtocolT
         private com.google.common.base.Optional<byte[]> binaryField = com.google.common.base.Optional.absent();
         private com.google.common.base.Optional<Boolean> boolField = com.google.common.base.Optional.absent();
         private com.google.common.base.Optional<Byte> byteField = com.google.common.base.Optional.absent();
-        private com.google.common.base.Optional<org.joda.time.DateTime> dateTimeField = com.google.common.base.Optional.absent();
+        private com.google.common.base.Optional<java.util.Date> dateTimeField = com.google.common.base.Optional.absent();
         private com.google.common.base.Optional<java.math.BigDecimal> decimalField = com.google.common.base.Optional.absent();
         private com.google.common.base.Optional<org.thryft.native_.EmailAddress> emailAddressField = com.google.common.base.Optional.absent();
         private com.google.common.base.Optional<org.thryft.protocol.test.ProtocolTestEnum> enumField = com.google.common.base.Optional.absent();
@@ -293,7 +293,7 @@ public class NestedProtocolTestStruct implements org.thryft.Base<NestedProtocolT
         com.google.common.base.Optional<byte[]> binaryField = com.google.common.base.Optional.absent();
         com.google.common.base.Optional<Boolean> boolField = com.google.common.base.Optional.absent();
         com.google.common.base.Optional<Byte> byteField = com.google.common.base.Optional.absent();
-        com.google.common.base.Optional<org.joda.time.DateTime> dateTimeField = com.google.common.base.Optional.absent();
+        com.google.common.base.Optional<java.util.Date> dateTimeField = com.google.common.base.Optional.absent();
         com.google.common.base.Optional<java.math.BigDecimal> decimalField = com.google.common.base.Optional.absent();
         com.google.common.base.Optional<org.thryft.native_.EmailAddress> emailAddressField = com.google.common.base.Optional.absent();
         com.google.common.base.Optional<org.thryft.protocol.test.ProtocolTestEnum> enumField = com.google.common.base.Optional.absent();
@@ -556,7 +556,7 @@ public class NestedProtocolTestStruct implements org.thryft.Base<NestedProtocolT
         this.urlField = com.google.common.base.Optional.absent();
     }
 
-    public NestedProtocolTestStruct(final com.google.common.base.Optional<byte[]> binaryField, final com.google.common.base.Optional<Boolean> boolField, final com.google.common.base.Optional<Byte> byteField, final com.google.common.base.Optional<org.joda.time.DateTime> dateTimeField, final com.google.common.base.Optional<java.math.BigDecimal> decimalField, final com.google.common.base.Optional<org.thryft.native_.EmailAddress> emailAddressField, final com.google.common.base.Optional<org.thryft.protocol.test.ProtocolTestEnum> enumField, final com.google.common.base.Optional<Short> i16Field, final com.google.common.base.Optional<Integer> i32Field, final com.google.common.base.Optional<Long> i64Field, final com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> listStringField, final com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> mapStringStringField, final int requiredI32Field, final String requiredStringField, final com.google.common.base.Optional<com.google.common.collect.ImmutableSet<String>> setStringField, final com.google.common.base.Optional<String> stringField, final com.google.common.base.Optional<org.thryft.native_.Url> urlField) {
+    public NestedProtocolTestStruct(final com.google.common.base.Optional<byte[]> binaryField, final com.google.common.base.Optional<Boolean> boolField, final com.google.common.base.Optional<Byte> byteField, final com.google.common.base.Optional<java.util.Date> dateTimeField, final com.google.common.base.Optional<java.math.BigDecimal> decimalField, final com.google.common.base.Optional<org.thryft.native_.EmailAddress> emailAddressField, final com.google.common.base.Optional<org.thryft.protocol.test.ProtocolTestEnum> enumField, final com.google.common.base.Optional<Short> i16Field, final com.google.common.base.Optional<Integer> i32Field, final com.google.common.base.Optional<Long> i64Field, final com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> listStringField, final com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> mapStringStringField, final int requiredI32Field, final String requiredStringField, final com.google.common.base.Optional<com.google.common.collect.ImmutableSet<String>> setStringField, final com.google.common.base.Optional<String> stringField, final com.google.common.base.Optional<org.thryft.native_.Url> urlField) {
         this.binaryField = com.google.common.base.Preconditions.checkNotNull(binaryField, "org.thryft.protocol.test.NestedProtocolTestStruct: missing binaryField");
         this.boolField = boolField;
         this.byteField = byteField;
@@ -576,7 +576,7 @@ public class NestedProtocolTestStruct implements org.thryft.Base<NestedProtocolT
         this.urlField = com.google.common.base.Preconditions.checkNotNull(urlField, "org.thryft.protocol.test.NestedProtocolTestStruct: missing urlField");
     }
 
-    public NestedProtocolTestStruct(final com.google.common.base.Optional<byte[]> binaryField, final com.google.common.base.Optional<Boolean> boolField, final com.google.common.base.Optional<Byte> byteField, final com.google.common.base.Optional<org.joda.time.DateTime> dateTimeField, final com.google.common.base.Optional<java.math.BigDecimal> decimalField, final com.google.common.base.Optional<org.thryft.native_.EmailAddress> emailAddressField, final com.google.common.base.Optional<org.thryft.protocol.test.ProtocolTestEnum> enumField, final com.google.common.base.Optional<Short> i16Field, final com.google.common.base.Optional<Integer> i32Field, final com.google.common.base.Optional<Long> i64Field, final com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> listStringField, final com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> mapStringStringField, final Integer requiredI32Field, final String requiredStringField, final com.google.common.base.Optional<com.google.common.collect.ImmutableSet<String>> setStringField, final com.google.common.base.Optional<String> stringField, final com.google.common.base.Optional<org.thryft.native_.Url> urlField) {
+    public NestedProtocolTestStruct(final com.google.common.base.Optional<byte[]> binaryField, final com.google.common.base.Optional<Boolean> boolField, final com.google.common.base.Optional<Byte> byteField, final com.google.common.base.Optional<java.util.Date> dateTimeField, final com.google.common.base.Optional<java.math.BigDecimal> decimalField, final com.google.common.base.Optional<org.thryft.native_.EmailAddress> emailAddressField, final com.google.common.base.Optional<org.thryft.protocol.test.ProtocolTestEnum> enumField, final com.google.common.base.Optional<Short> i16Field, final com.google.common.base.Optional<Integer> i32Field, final com.google.common.base.Optional<Long> i64Field, final com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> listStringField, final com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> mapStringStringField, final Integer requiredI32Field, final String requiredStringField, final com.google.common.base.Optional<com.google.common.collect.ImmutableSet<String>> setStringField, final com.google.common.base.Optional<String> stringField, final com.google.common.base.Optional<org.thryft.native_.Url> urlField) {
         this.binaryField = com.google.common.base.Preconditions.checkNotNull(binaryField, "org.thryft.protocol.test.NestedProtocolTestStruct: missing binaryField");
         this.boolField = boolField;
         this.byteField = byteField;
@@ -857,7 +857,7 @@ public class NestedProtocolTestStruct implements org.thryft.Base<NestedProtocolT
         builder.setBinaryField(org.thryft.Faker.randomBinary());
         builder.setBoolField(org.thryft.Faker.randomBool());
         builder.setByteField(org.thryft.Faker.randomByte());
-        builder.setDateTimeField(org.joda.time.DateTime.now());
+        builder.setDateTimeField(new java.util.Date());
         builder.setDecimalField(org.thryft.Faker.randomDecimal());
         builder.setEmailAddressField(org.thryft.Faker.Internet.email());
         builder.setEnumField(org.thryft.Faker.randomEnum(com.google.common.collect.ImmutableList.of(org.thryft.protocol.test.ProtocolTestEnum.ENUMERATOR1, org.thryft.protocol.test.ProtocolTestEnum.ENUMERATOR2)));
@@ -925,7 +925,7 @@ public class NestedProtocolTestStruct implements org.thryft.Base<NestedProtocolT
         return byteField;
     }
 
-    public final com.google.common.base.Optional<org.joda.time.DateTime> getDateTimeField() {
+    public final com.google.common.base.Optional<java.util.Date> getDateTimeField() {
         return dateTimeField;
     }
 
@@ -1058,11 +1058,11 @@ public class NestedProtocolTestStruct implements org.thryft.Base<NestedProtocolT
         return replaceByteField(com.google.common.base.Optional.fromNullable(byteField));
     }
 
-    public NestedProtocolTestStruct replaceDateTimeField(final com.google.common.base.Optional<org.joda.time.DateTime> dateTimeField) {
+    public NestedProtocolTestStruct replaceDateTimeField(final com.google.common.base.Optional<java.util.Date> dateTimeField) {
         return new NestedProtocolTestStruct(this.binaryField, this.boolField, this.byteField, dateTimeField, this.decimalField, this.emailAddressField, this.enumField, this.i16Field, this.i32Field, this.i64Field, this.listStringField, this.mapStringStringField, this.requiredI32Field, this.requiredStringField, this.setStringField, this.stringField, this.urlField);
     }
 
-    public NestedProtocolTestStruct replaceDateTimeField(final org.joda.time.DateTime dateTimeField) {
+    public NestedProtocolTestStruct replaceDateTimeField(final java.util.Date dateTimeField) {
         return replaceDateTimeField(com.google.common.base.Optional.fromNullable(dateTimeField));
     }
 
@@ -1464,7 +1464,7 @@ public class NestedProtocolTestStruct implements org.thryft.Base<NestedProtocolT
 
     private final com.google.common.base.Optional<Byte> byteField;
 
-    private final com.google.common.base.Optional<org.joda.time.DateTime> dateTimeField;
+    private final com.google.common.base.Optional<java.util.Date> dateTimeField;
 
     private final com.google.common.base.Optional<java.math.BigDecimal> decimalField;
 

@@ -35,12 +35,12 @@ package org.thryft.protocol;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
-
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
 import au.com.bytecode.opencsv.CSVReader;
 
@@ -81,7 +81,11 @@ public class CsvInputProtocol extends StackedInputProtocol {
             try {
                 return Long.parseLong(value);
             } catch (final NumberFormatException e) {
-                return dateTimeFormatter.parseMillis(value);
+                try {
+                    return dateTimeFormat.parse(value).getTime();
+                } catch (final ParseException e1) {
+                    throw new InputProtocolException(e1);
+                }
             }
         }
     }
@@ -259,6 +263,6 @@ public class CsvInputProtocol extends StackedInputProtocol {
         return new FileInputProtocol(rows);
     }
 
-    private final static DateTimeFormatter dateTimeFormatter = DateTimeFormat
-            .forPattern("yyyy-MM-dd HH:mm:ss");
+    private final static DateFormat dateTimeFormat = new SimpleDateFormat(
+            "yyyy-MM-dd HH:mm:ss");
 }
