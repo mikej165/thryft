@@ -30,6 +30,7 @@
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
 
+import os.path
 from thryft.generators.java.java_document import JavaDocument
 from thryft.generators.java.java_generator import JavaGenerator
 from thryft.generators.java.java_service import JavaService
@@ -40,13 +41,13 @@ class GwtClientJavaGenerator(JavaGenerator):
     class Document(JavaDocument):
         def java_package(self):
             try:
-                return self.namespace_by_scope(('gwt_client_java', 'java'))
+                return self.namespace_by_scope(('gwt_client_java', 'java')).name
             except KeyError:
                 return None
 
         def _save_to_dir(self, out_dir_path):
             try:
-                out_dir_path = os.path.join(out_dir_path, self.namespaces_by_scope(('gwt_client_java', 'java')).name.replace('.', os.path.sep))
+                out_dir_path = os.path.join(out_dir_path, self.namespace_by_scope(('gwt_client_java', 'java')).name.replace('.', os.path.sep))
             except KeyError:
                 pass
             return self._save_to_file(os.path.join(out_dir_path, self.definitions[0].java_name() + self._java_file_ext()))

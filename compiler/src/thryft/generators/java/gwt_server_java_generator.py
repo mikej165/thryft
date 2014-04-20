@@ -30,6 +30,7 @@
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
 
+import os.path
 from thryft.generators.java.java_document import JavaDocument
 from thryft.generators.java.java_function import JavaFunction
 from thryft.generators.java.java_generator import JavaGenerator
@@ -37,17 +38,17 @@ from thryft.generators.java.java_service import JavaService
 from yutil import indent, lpad
 
 
-class GwtServletJavaGenerator(JavaGenerator):
+class GwtServerJavaGenerator(JavaGenerator):
     class Document(JavaDocument):
         def java_package(self):
             try:
-                return self.namespace_by_scope(('gwt_server_java', 'java'))
+                return self.namespace_by_scope(('gwt_server_java', 'java')).name
             except KeyError:
                 return None
 
         def _save_to_dir(self, out_dir_path):
             try:
-                out_dir_path = os.path.join(out_dir_path, self.namespaces_by_scope(('gwt_server_java', 'java')).name.replace('.', os.path.sep))
+                out_dir_path = os.path.join(out_dir_path, self.namespace_by_scope(('gwt_server_java', 'java')).name.replace('.', os.path.sep))
             except KeyError:
                 pass
             return self._save_to_file(os.path.join(out_dir_path, self.definitions[0].java_name() + self._java_file_ext()))
@@ -87,7 +88,7 @@ public %(return_type_name)s %(name)s(%(parameters)s)%(throws)s {
         def __repr__(self):
             client_service_package = ''
             try:
-                client_service_package = self.namespace_by_scope(('gwt_client_java', 'java')).name + '.'
+                client_service_package = self._parent_document().namespace_by_scope(('gwt_client_java', 'java')).name + '.'
             except KeyError:
                 pass
             client_service_qname = client_service_package + JavaService.java_name(self) + 'GwtClient'
