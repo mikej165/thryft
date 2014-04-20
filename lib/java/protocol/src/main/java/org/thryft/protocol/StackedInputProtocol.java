@@ -35,7 +35,14 @@ package org.thryft.protocol;
 import java.util.Date;
 import java.util.Stack;
 
-public class StackedInputProtocol extends AbstractInputProtocol {
+import org.thryft.native_.EmailAddress;
+import org.thryft.native_.Uri;
+import org.thryft.native_.Url;
+
+import com.google.common.primitives.UnsignedInteger;
+import com.google.common.primitives.UnsignedLong;
+
+public class StackedInputProtocol implements InputProtocol {
     @Override
     public byte[] readBinary() throws InputProtocolException {
         return protocolStack.peek().readBinary();
@@ -64,6 +71,11 @@ public class StackedInputProtocol extends AbstractInputProtocol {
     @Override
     public double readDouble() throws InputProtocolException {
         return protocolStack.peek().readDouble();
+    }
+
+    @Override
+    public EmailAddress readEmailAddress() throws InputProtocolException {
+        return protocolStack.peek().readEmailAddress();
     }
 
     @Override
@@ -145,6 +157,26 @@ public class StackedInputProtocol extends AbstractInputProtocol {
     @Override
     public void readStructEnd() throws InputProtocolException {
         protocolStack.pop();
+    }
+
+    @Override
+    public UnsignedInteger readU32() throws InputProtocolException {
+        return protocolStack.peek().readU32();
+    }
+
+    @Override
+    public UnsignedLong readU64() throws InputProtocolException {
+        return protocolStack.peek().readU64();
+    }
+
+    @Override
+    public Uri readUri() throws InputProtocolException {
+        return protocolStack.peek().readUri();
+    }
+
+    @Override
+    public Url readUrl() throws InputProtocolException {
+        return protocolStack.peek().readUrl();
     }
 
     protected final Stack<InputProtocol> _getProtocolStack() {

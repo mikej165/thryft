@@ -35,7 +35,20 @@ package org.thryft.protocol;
 import java.util.Date;
 import java.util.Stack;
 
-public class StackedOutputProtocol extends AbstractOutputProtocol {
+import org.thryft.native_.EmailAddress;
+import org.thryft.native_.Uri;
+import org.thryft.native_.Url;
+
+import com.google.common.primitives.UnsignedInteger;
+import com.google.common.primitives.UnsignedLong;
+
+public class StackedOutputProtocol implements OutputProtocol {
+    @Override
+    public void flush() throws OutputProtocolException {
+        // TODO Auto-generated method stub
+
+    }
+
     @Override
     public void writeBinary(final byte[] buf) throws OutputProtocolException {
         protocolStack.peek().writeBinary(buf);
@@ -66,6 +79,13 @@ public class StackedOutputProtocol extends AbstractOutputProtocol {
     @Override
     public void writeDouble(final double dub) throws OutputProtocolException {
         protocolStack.peek().writeDouble(dub);
+    }
+
+    @Override
+    public void writeEmailAddress(final EmailAddress emailAddress)
+            throws OutputProtocolException {
+        // TODO Auto-generated method stub
+
     }
 
     @Override
@@ -140,7 +160,7 @@ public class StackedOutputProtocol extends AbstractOutputProtocol {
 
     @Override
     public void writeMixed(final Object value) throws OutputProtocolException {
-        super.writeMixed(value);
+        protocolStack.peek().writeMixed(value);
     }
 
     @Override
@@ -180,6 +200,27 @@ public class StackedOutputProtocol extends AbstractOutputProtocol {
     public void writeStructEnd() throws OutputProtocolException {
         protocolStack.pop();
         protocolStack.peek().writeStructEnd();
+    }
+
+    @Override
+    public void writeU32(final UnsignedInteger u32)
+            throws OutputProtocolException {
+        protocolStack.peek().writeU32(u32);
+    }
+
+    @Override
+    public void writeU64(final UnsignedLong u64) throws OutputProtocolException {
+        protocolStack.peek().writeU64(u64);
+    }
+
+    @Override
+    public void writeUri(final Uri uri) throws OutputProtocolException {
+        protocolStack.peek().writeUri(uri);
+    }
+
+    @Override
+    public void writeUrl(final Url url) throws OutputProtocolException {
+        protocolStack.peek().writeUrl(url);
     }
 
     protected final Stack<OutputProtocol> _getProtocolStack() {

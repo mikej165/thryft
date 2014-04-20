@@ -37,7 +37,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.StringReader;
 import java.io.StringWriter;
 
-import org.thryft.protocol.AbstractInputProtocol;
+import org.thryft.protocol.InputProtocol;
 import org.thryft.protocol.JsonInputProtocol;
 import org.thryft.protocol.JsonOutputProtocol;
 import org.thryft.protocol.OutputProtocol;
@@ -53,7 +53,7 @@ public final class JsonProtocolTest extends ProtocolTest {
         final String ostring = writer.toString();
 
         final StringReader reader = new StringReader(ostring);
-        final AbstractInputProtocol iprot = new JsonInputProtocol(reader);
+        final InputProtocol iprot = new JsonInputProtocol(reader);
         final ProtocolTestStruct actual = new ProtocolTestStruct(iprot);
         assertEquals(expected, actual);
     }
