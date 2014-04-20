@@ -98,6 +98,11 @@ public class StringMapInputProtocol extends StackedInputProtocol {
             return Long.parseLong(readString());
         }
 
+        @Override
+        public Object readMixed() throws InputProtocolException {
+            throw new UnsupportedOperationException();
+        }
+
         protected final Stack<String> _getChildKeyStack() {
             return childKeyStack;
         }

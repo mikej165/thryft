@@ -103,6 +103,11 @@ public class JsonInputProtocol extends StackedInputProtocol {
         }
 
         @Override
+        public Object readMixed() throws InputProtocolException {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
         public String readString() throws InputProtocolException {
             return _readChildNode().asText();
         }

@@ -93,6 +93,11 @@ public class StringMapOutputProtocol extends StackedOutputProtocol {
         }
 
         @Override
+        public void writeNull() throws OutputProtocolException {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
         public void writeStructEnd() throws OutputProtocolException {
         }
 

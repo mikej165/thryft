@@ -58,16 +58,6 @@ public abstract class AbstractOutputProtocol implements OutputProtocol {
     }
 
     @Override
-    public void writeBool(final boolean b) throws OutputProtocolException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void writeByte(final byte b) throws OutputProtocolException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public void writeDateTime(final Date dateTime)
             throws OutputProtocolException {
         writeI64(dateTime.getTime());
@@ -77,11 +67,6 @@ public abstract class AbstractOutputProtocol implements OutputProtocol {
     public void writeDecimal(final BigDecimal decimal)
             throws OutputProtocolException {
         writeString(decimal.toString());
-    }
-
-    @Override
-    public void writeDouble(final double dub) throws OutputProtocolException {
-        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -108,43 +93,6 @@ public abstract class AbstractOutputProtocol implements OutputProtocol {
 
     @Override
     public void writeFieldStop() throws OutputProtocolException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void writeI16(final short i16) throws OutputProtocolException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void writeI32(final int i32) throws OutputProtocolException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void writeI64(final long i64) throws OutputProtocolException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void writeListBegin(final ListBegin list)
-            throws OutputProtocolException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void writeListEnd() throws OutputProtocolException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void writeMapBegin(final MapBegin map)
-            throws OutputProtocolException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void writeMapEnd() throws OutputProtocolException {
         throw new UnsupportedOperationException();
     }
 
@@ -209,11 +157,6 @@ public abstract class AbstractOutputProtocol implements OutputProtocol {
     }
 
     @Override
-    public void writeNull() throws OutputProtocolException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public void writeSetBegin(final SetBegin set)
             throws OutputProtocolException {
         writeListBegin(new ListBegin(set.elemType, set.size));
@@ -222,22 +165,6 @@ public abstract class AbstractOutputProtocol implements OutputProtocol {
     @Override
     public void writeSetEnd() throws OutputProtocolException {
         writeListEnd();
-    }
-
-    @Override
-    public void writeString(final String str) throws OutputProtocolException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void writeStructBegin(final StructBegin struct)
-            throws OutputProtocolException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void writeStructEnd() throws OutputProtocolException {
-        throw new UnsupportedOperationException();
     }
 
     @Override

@@ -32,13 +32,27 @@
 
 package org.thryft.protocol;
 
+import java.math.BigDecimal;
+import java.util.Date;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.thryft.native_.EmailAddress;
+import org.thryft.native_.Uri;
+import org.thryft.native_.Url;
 
-public class LoggingOutputProtocol extends AbstractOutputProtocol {
+import com.google.common.primitives.UnsignedInteger;
+import com.google.common.primitives.UnsignedLong;
+
+public class LoggingOutputProtocol implements OutputProtocol {
     public LoggingOutputProtocol(final OutputProtocol wrappedProtocol) {
         logger = LoggerFactory.getLogger(wrappedProtocol.getClass());
         this.wrappedProtocol = wrappedProtocol;
+    }
+
+    @Override
+    public void flush() throws OutputProtocolException {
+        wrappedProtocol.flush();
     }
 
     @Override
@@ -76,10 +90,57 @@ public class LoggingOutputProtocol extends AbstractOutputProtocol {
     }
 
     @Override
+    public void writeDateTime(final Date dateTime)
+            throws OutputProtocolException {
+        final String message = "writeDateTime(" + dateTime + ")";
+        try {
+            wrappedProtocol.writeDateTime(dateTime);
+            logger.info(message);
+        } catch (final OutputProtocolException e) {
+            logger.info(message + " -> " + __toString(e));
+        }
+    }
+
+    @Override
+    public void writeDecimal(final BigDecimal decimal)
+            throws OutputProtocolException {
+        final String message = "writeDecimal(" + decimal + ")";
+        try {
+            wrappedProtocol.writeDecimal(decimal);
+            logger.info(message);
+        } catch (final OutputProtocolException e) {
+            logger.info(message + " -> " + __toString(e));
+        }
+    }
+
+    @Override
     public void writeDouble(final double dub) throws OutputProtocolException {
         final String message = "writeDouble(" + dub + ")";
         try {
             wrappedProtocol.writeDouble(dub);
+            logger.info(message);
+        } catch (final OutputProtocolException e) {
+            logger.info(message + " -> " + __toString(e));
+        }
+    }
+
+    @Override
+    public void writeEmailAddress(final EmailAddress emailAddress)
+            throws OutputProtocolException {
+        final String message = "writeEmailAddress(" + emailAddress + ")";
+        try {
+            wrappedProtocol.writeEmailAddress(emailAddress);
+            logger.info(message);
+        } catch (final OutputProtocolException e) {
+            logger.info(message + " -> " + __toString(e));
+        }
+    }
+
+    @Override
+    public void writeEnum(final Enum<?> enum_) throws OutputProtocolException {
+        final String message = "writeEnum(" + enum_ + ")";
+        try {
+            wrappedProtocol.writeEnum(enum_);
             logger.info(message);
         } catch (final OutputProtocolException e) {
             logger.info(message + " -> " + __toString(e));
@@ -201,6 +262,28 @@ public class LoggingOutputProtocol extends AbstractOutputProtocol {
     }
 
     @Override
+    public void writeMixed(final Object value) throws OutputProtocolException {
+        final String message = "writeMixed(" + value + ")";
+        try {
+            wrappedProtocol.writeMixed(value);
+            logger.info(message);
+        } catch (final OutputProtocolException e) {
+            logger.info(message + " -> " + __toString(e));
+        }
+    }
+
+    @Override
+    public void writeNull() throws OutputProtocolException {
+        final String message = "writeNull()";
+        try {
+            wrappedProtocol.writeNull();
+            logger.info(message);
+        } catch (final OutputProtocolException e) {
+            logger.info(message + " -> " + __toString(e));
+        }
+    }
+
+    @Override
     public void writeSetBegin(final SetBegin set)
             throws OutputProtocolException {
         final String message = "writeSetBegin(" + __toString(set) + ")";
@@ -258,6 +341,51 @@ public class LoggingOutputProtocol extends AbstractOutputProtocol {
         }
     }
 
+    @Override
+    public void writeU32(final UnsignedInteger u32)
+            throws OutputProtocolException {
+        final String message = "writeU32(" + u32 + ")";
+        try {
+            wrappedProtocol.writeU32(u32);
+            logger.info(message);
+        } catch (final OutputProtocolException e) {
+            logger.info(message + " -> " + __toString(e));
+        }
+    }
+
+    @Override
+    public void writeU64(final UnsignedLong u64) throws OutputProtocolException {
+        final String message = "writeU64(" + u64 + ")";
+        try {
+            wrappedProtocol.writeU64(u64);
+            logger.info(message);
+        } catch (final OutputProtocolException e) {
+            logger.info(message + " -> " + __toString(e));
+        }
+    }
+
+    @Override
+    public void writeUri(final Uri uri) throws OutputProtocolException {
+        final String message = "writeUri(" + uri + ")";
+        try {
+            wrappedProtocol.writeUri(uri);
+            logger.info(message);
+        } catch (final OutputProtocolException e) {
+            logger.info(message + " -> " + __toString(e));
+        }
+    }
+
+    @Override
+    public void writeUrl(final Url url) throws OutputProtocolException {
+        final String message = "writeUrl(" + url + ")";
+        try {
+            wrappedProtocol.writeUrl(url);
+            logger.info(message);
+        } catch (final OutputProtocolException e) {
+            logger.info(message + " -> " + __toString(e));
+        }
+    }
+
     private final String __toString(final byte[] bytes) {
         return "bytes[length=" + Integer.toString(bytes.length) + "]";
     }
@@ -267,18 +395,18 @@ public class LoggingOutputProtocol extends AbstractOutputProtocol {
     }
 
     private final String __toString(final ListBegin list) {
-        return "TList(" + Byte.toString(list.elemType) + ", "
+        return "List(" + Byte.toString(list.elemType) + ", "
                 + Integer.toString(list.size) + ")";
     }
 
     private final String __toString(final MapBegin map) {
-        return "TMap(" + Byte.toString(map.keyType) + ", "
+        return "Map(" + Byte.toString(map.keyType) + ", "
                 + Byte.toString(map.valueType) + ", "
                 + Integer.toString(map.size) + ")";
     }
 
     private final String __toString(final SetBegin set) {
-        return "TSet(" + Byte.toString(set.elemType) + ", "
+        return "Set(" + Byte.toString(set.elemType) + ", "
                 + Integer.toString(set.size) + ")";
     }
 
@@ -287,5 +415,6 @@ public class LoggingOutputProtocol extends AbstractOutputProtocol {
     }
 
     private final Logger logger;
+
     private final OutputProtocol wrappedProtocol;
 }

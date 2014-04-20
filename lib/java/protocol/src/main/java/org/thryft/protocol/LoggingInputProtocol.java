@@ -32,10 +32,19 @@
 
 package org.thryft.protocol;
 
+import java.math.BigDecimal;
+import java.util.Date;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.thryft.native_.EmailAddress;
+import org.thryft.native_.Uri;
+import org.thryft.native_.Url;
 
-public class LoggingInputProtocol extends AbstractInputProtocol {
+import com.google.common.primitives.UnsignedInteger;
+import com.google.common.primitives.UnsignedLong;
+
+public class LoggingInputProtocol implements InputProtocol {
     public LoggingInputProtocol(final InputProtocol wrappedProtocol) {
         logger = LoggerFactory.getLogger(wrappedProtocol.getClass());
         this.wrappedProtocol = wrappedProtocol;
@@ -81,12 +90,67 @@ public class LoggingInputProtocol extends AbstractInputProtocol {
     }
 
     @Override
+    public Date readDateTime() throws InputProtocolException {
+        final String message = "readDateTime() -> ";
+        try {
+            final Date dateTime = wrappedProtocol.readDateTime();
+            logger.info(message + dateTime);
+            return dateTime;
+        } catch (final InputProtocolException e) {
+            logger.info(message + __toString(e));
+            throw e;
+        }
+    }
+
+    @Override
+    public BigDecimal readDecimal() throws InputProtocolException {
+        final String message = "readDecimal() -> ";
+        try {
+            final BigDecimal decimal = wrappedProtocol.readDecimal();
+            logger.info(message + decimal);
+            return decimal;
+        } catch (final InputProtocolException e) {
+            logger.info(message + __toString(e));
+            throw e;
+        }
+    }
+
+    @Override
     public double readDouble() throws InputProtocolException {
         final String message = "readDouble() -> ";
         try {
             final double double_ = wrappedProtocol.readDouble();
             logger.info(message + Double.toString(double_));
             return double_;
+        } catch (final InputProtocolException e) {
+            logger.info(message + __toString(e));
+            throw e;
+        }
+    }
+
+    @Override
+    public EmailAddress readEmailAddress() throws InputProtocolException {
+        final String message = "readEmailAddress() -> ";
+        try {
+            final EmailAddress emailAddress = wrappedProtocol
+                    .readEmailAddress();
+            logger.info(message + emailAddress);
+            return emailAddress;
+        } catch (final InputProtocolException e) {
+            logger.info(message + __toString(e));
+            throw e;
+        }
+    }
+
+    @Override
+    public <E extends Enum<E>> E readEnum(final Class<E> enumClass)
+            throws InputProtocolException {
+        final String message = "readEnum(" + enumClass.getCanonicalName()
+                + ") -> ";
+        try {
+            final E enum_ = wrappedProtocol.readEnum(enumClass);
+            logger.info(message + enum_);
+            return enum_;
         } catch (final InputProtocolException e) {
             logger.info(message + __toString(e));
             throw e;
@@ -208,6 +272,19 @@ public class LoggingInputProtocol extends AbstractInputProtocol {
     }
 
     @Override
+    public Object readMixed() throws InputProtocolException {
+        final String message = "readMixed() -> ";
+        try {
+            final Object mixed = wrappedProtocol.readMixed();
+            logger.info(message + mixed);
+            return mixed;
+        } catch (final InputProtocolException e) {
+            logger.info(message + __toString(e));
+            throw e;
+        }
+    }
+
+    @Override
     public SetBegin readSetBegin() throws InputProtocolException {
         final String message = "readSetBegin() -> ";
         try {
@@ -250,7 +327,7 @@ public class LoggingInputProtocol extends AbstractInputProtocol {
         final String message = "readStructBegin() -> ";
         try {
             final StructBegin struct = wrappedProtocol.readStructBegin();
-            logger.info(message + "TStruct(" + __toString(struct) + ")");
+            logger.info(message + __toString(struct) + ")");
             return struct;
         } catch (final InputProtocolException e) {
             logger.info(message + __toString(e));
@@ -270,6 +347,58 @@ public class LoggingInputProtocol extends AbstractInputProtocol {
         }
     }
 
+    @Override
+    public UnsignedInteger readU32() throws InputProtocolException {
+        final String message = "readU32() -> ";
+        try {
+            final UnsignedInteger u32 = wrappedProtocol.readU32();
+            logger.info(message + u32);
+            return u32;
+        } catch (final InputProtocolException e) {
+            logger.info(message + __toString(e));
+            throw e;
+        }
+    }
+
+    @Override
+    public UnsignedLong readU64() throws InputProtocolException {
+        final String message = "readU64() -> ";
+        try {
+            final UnsignedLong u64 = wrappedProtocol.readU64();
+            logger.info(message + u64);
+            return u64;
+        } catch (final InputProtocolException e) {
+            logger.info(message + __toString(e));
+            throw e;
+        }
+    }
+
+    @Override
+    public Uri readUri() throws InputProtocolException {
+        final String message = "readUri() -> ";
+        try {
+            final Uri uri = wrappedProtocol.readUri();
+            logger.info(message + uri);
+            return uri;
+        } catch (final InputProtocolException e) {
+            logger.info(message + __toString(e));
+            throw e;
+        }
+    }
+
+    @Override
+    public Url readUrl() throws InputProtocolException {
+        final String message = "readUrl() -> ";
+        try {
+            final Url url = wrappedProtocol.readUrl();
+            logger.info(message + url);
+            return url;
+        } catch (final InputProtocolException e) {
+            logger.info(message + __toString(e));
+            throw e;
+        }
+    }
+
     private final String __toString(final byte[] bytes) {
         return "bytes[length=" + Integer.toString(bytes.length) + "]";
     }
@@ -279,25 +408,26 @@ public class LoggingInputProtocol extends AbstractInputProtocol {
     }
 
     private final String __toString(final ListBegin list) {
-        return "TList(" + Byte.toString(list.elemType) + ", "
+        return "List(" + Byte.toString(list.elemType) + ", "
                 + Integer.toString(list.size) + ")";
     }
 
     private final String __toString(final MapBegin map) {
-        return "TMap(" + Byte.toString(map.keyType) + ", "
+        return "Map(" + Byte.toString(map.keyType) + ", "
                 + Byte.toString(map.valueType) + ", "
                 + Integer.toString(map.size) + ")";
     }
 
     private final String __toString(final SetBegin set) {
-        return "TSet(" + Byte.toString(set.elemType) + ", "
+        return "Set(" + Byte.toString(set.elemType) + ", "
                 + Integer.toString(set.size) + ")";
     }
 
     private final String __toString(final StructBegin struct) {
-        return "TStruct(" + struct.name + ")";
+        return "Struct(" + struct.name + ")";
     }
 
     private final Logger logger;
+
     private final InputProtocol wrappedProtocol;
 }

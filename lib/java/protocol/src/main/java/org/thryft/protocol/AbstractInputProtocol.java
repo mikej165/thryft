@@ -53,16 +53,6 @@ public abstract class AbstractInputProtocol implements InputProtocol {
     }
 
     @Override
-    public boolean readBool() throws InputProtocolException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public byte readByte() throws InputProtocolException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public Date readDateTime() throws InputProtocolException {
         return new Date(readI64());
     }
@@ -70,11 +60,6 @@ public abstract class AbstractInputProtocol implements InputProtocol {
     @Override
     public BigDecimal readDecimal() throws InputProtocolException {
         return new BigDecimal(readString());
-    }
-
-    @Override
-    public double readDouble() throws InputProtocolException {
-        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -133,43 +118,11 @@ public abstract class AbstractInputProtocol implements InputProtocol {
     }
 
     @Override
-    public short readI16() throws InputProtocolException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public int readI32() throws InputProtocolException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public long readI64() throws InputProtocolException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ListBegin readListBegin() throws InputProtocolException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public void readListEnd() throws InputProtocolException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public MapBegin readMapBegin() throws InputProtocolException {
-        throw new UnsupportedOperationException();
     }
 
     @Override
     public void readMapEnd() throws InputProtocolException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Object readMixed() throws InputProtocolException {
-        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -184,18 +137,7 @@ public abstract class AbstractInputProtocol implements InputProtocol {
     }
 
     @Override
-    public String readString() throws InputProtocolException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public StructBegin readStructBegin() throws InputProtocolException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public void readStructEnd() throws InputProtocolException {
-        throw new UnsupportedOperationException();
     }
 
     @Override
