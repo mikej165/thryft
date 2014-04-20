@@ -133,12 +133,12 @@ public final %(return_type_qname)s %(java_name)s(%(parameters)s) {
             } else if (__iFieldBegin.name.equalsIgnoreCase("jsonrpc")) {
                 final String __jsonrpc = __iprot.readString();
                 if (!__jsonrpc.equals("2.0")) {
-                    throw new java.io.IOException("expected jsonrpc in response to be 2.0, got " + __jsonrpc);
+                    throw new org.thryft.protocol.OutputProtocolException("expected jsonrpc in response to be 2.0, got " + __jsonrpc);
                 }
             } else if (__iFieldBegin.name.equalsIgnoreCase("id")) {
                 final int __actualId = __iprot.readI32();
                 if (__actualId != __id) {
-                    throw new java.io.IOException("expected id in response to be " + __id + ", got " + __actualId);
+                    throw new org.thryft.protocol.OutputProtocolException("expected id in response to be " + __id + ", got " + __actualId);
                 }
             } else if (__iFieldBegin.name.equalsIgnoreCase("error")) {
                 int __errorCode = 0;
@@ -164,6 +164,8 @@ public final %(return_type_qname)s %(java_name)s(%(parameters)s) {
         }
         __iprot.readStructEnd();%(return_statement)s
     } catch (final java.io.IOException e) {
+        throw new RuntimeException(e);
+    } catch (final org.thryft.protocol.ProtocolException e) {
         throw new RuntimeException(e);
     }
 }

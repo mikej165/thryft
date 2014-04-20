@@ -69,8 +69,8 @@ class Document(_NamedConstruct):
         if not isinstance(scopes, (list, tuple)):
             raise TypeError(type(scopes))
 
-        for namespace in self.namespaces:
-            for scope in scopes:
+        for scope in scopes:
+            for namespace in self.namespaces:
                 if namespace.scope == scope:
                     return namespace
         if not '*' in scopes:
