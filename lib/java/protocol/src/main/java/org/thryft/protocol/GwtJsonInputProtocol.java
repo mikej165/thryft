@@ -33,61 +33,55 @@
 package org.thryft.protocol;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringReader;
-import java.util.Iterator;
 import java.util.Stack;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.TextNode;
-import com.google.common.annotations.GwtIncompatible;
+import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONString;
+import com.google.gwt.json.client.JSONValue;
 
-@GwtIncompatible("")
-public class JsonInputProtocol extends StackedInputProtocol {
+public class GwtJsonInputProtocol extends StackedInputProtocol {
     protected abstract class AbstractInputProtocol extends
             org.thryft.protocol.AbstractInputProtocol {
-        protected AbstractInputProtocol(final JsonNode node) {
+        protected AbstractInputProtocol(final JSONValue node) {
             myNode = node;
         }
 
         @Override
         public boolean readBool() throws InputProtocolException {
-            return _readChildNode().asBoolean();
+            return _readChildNode().isBoolean().booleanValue();
         }
 
         @Override
         public byte readByte() throws InputProtocolException {
-            return (byte) _readChildNode().asInt();
+            return (byte) _readChildNode().isNumber().doubleValue();
         }
 
         @Override
         public double readDouble() throws InputProtocolException {
-            return _readChildNode().asDouble();
+            return _readChildNode().isNumber().doubleValue();
         }
 
         @Override
         public short readI16() throws InputProtocolException {
-            return (short) _readChildNode().asInt();
+            return (short) _readChildNode().isNumber().doubleValue();
         }
 
         @Override
         public int readI32() throws InputProtocolException {
-            return _readChildNode().asInt();
+            return (int) _readChildNode().isNumber().doubleValue();
         }
 
         @Override
         public long readI64() throws InputProtocolException {
-            return _readChildNode().asLong();
+            return (long) _readChildNode().isNumber().doubleValue();
         }
 
         @Override
         public ListBegin readListBegin() throws InputProtocolException {
-            final JsonNode node = _readChildNode();
-            if (!node.isArray()) {
+            final JSONArray node = _readChildNode().isArray();
+            if (node == null) {
                 throw new InputProtocolException("expected JSON array");
             }
             _getProtocolStack().push(_createArrayInputProtocol(node));
@@ -96,8 +90,8 @@ public class JsonInputProtocol extends StackedInputProtocol {
 
         @Override
         public MapBegin readMapBegin() throws InputProtocolException {
-            final JsonNode node = _readChildNode();
-            if (!node.isObject()) {
+            final JSONObject node = _readChildNode().isObject();
+            if (node == null) {
                 throw new InputProtocolException("expected JSON object");
             }
             _getProtocolStack().push(_createMapObjectInputProtocol(node));
@@ -111,35 +105,40 @@ public class JsonInputProtocol extends StackedInputProtocol {
 
         @Override
         public String readString() throws InputProtocolException {
-            return _readChildNode().asText();
+            return _readChildNode().isString().stringValue();
         }
 
         @Override
         public StructBegin readStructBegin() throws InputProtocolException {
-            final JsonNode node = _readChildNode();
-            if (!node.isObject()) {
+            final JSONObject node = _readChildNode().isObject();
+            if (node == null) {
                 throw new InputProtocolException("expected JSON object");
             }
             _getProtocolStack().push(_createStructObjectInputProtocol(node));
             return new StructBegin();
         }
 
-        protected JsonNode _getMyNode() {
+        protected JSONValue _getMyNode() {
             return myNode;
         }
 
-        protected abstract JsonNode _readChildNode();
+        protected abstract JSONValue _readChildNode();
 
-        private final JsonNode myNode;
+        private final JSONValue myNode;
     }
 
     protected class ArrayInputProtocol extends AbstractInputProtocol {
-        public ArrayInputProtocol(final JsonNode node) {
+        public ArrayInputProtocol(final JSONArray node) {
             super(node);
         }
 
         @Override
-        protected JsonNode _readChildNode() {
+        protected JSONArray _getMyNode() {
+            return (JSONArray) super._getMyNode();
+        }
+
+        @Override
+        protected JSONValue _readChildNode() {
             return _getMyNode().get(nextValueIndex++);
         }
 
@@ -147,19 +146,21 @@ public class JsonInputProtocol extends StackedInputProtocol {
     }
 
     protected class MapObjectInputProtocol extends AbstractInputProtocol {
-        public MapObjectInputProtocol(final JsonNode node) {
+        public MapObjectInputProtocol(final JSONObject node) {
             super(node);
-            for (final Iterator<String> fieldName = node.fieldNames(); fieldName
-                    .hasNext();) {
-                fieldNameStack.add(fieldName.next());
-            }
+            fieldNameStack.addAll(node.keySet());
         }
 
         @Override
-        protected JsonNode _readChildNode() {
+        protected JSONObject _getMyNode() {
+            return (JSONObject) super._getMyNode();
+        }
+
+        @Override
+        protected JSONValue _readChildNode() {
             if (nextReadIsKey) {
                 nextReadIsKey = false;
-                return new TextNode(fieldNameStack.peek());
+                return new JSONString(fieldNameStack.peek());
             } else {
                 nextReadIsKey = true;
                 return _getMyNode().get(fieldNameStack.pop());
@@ -171,23 +172,20 @@ public class JsonInputProtocol extends StackedInputProtocol {
     }
 
     protected class RootInputProtocol extends AbstractInputProtocol {
-        protected RootInputProtocol(final JsonNode node) {
+        protected RootInputProtocol(final JSONValue node) {
             super(node);
         }
 
         @Override
-        protected JsonNode _readChildNode() {
+        protected JSONValue _readChildNode() {
             return _getMyNode();
         }
     }
 
     protected class StructObjectInputProtocol extends AbstractInputProtocol {
-        public StructObjectInputProtocol(final JsonNode node) {
+        public StructObjectInputProtocol(final JSONObject node) {
             super(node);
-            for (final Iterator<String> fieldName = node.fieldNames(); fieldName
-                    .hasNext();) {
-                fieldNameStack.add(fieldName.next());
-            }
+            fieldNameStack.addAll(node.keySet());
         }
 
         @Override
@@ -210,43 +208,40 @@ public class JsonInputProtocol extends StackedInputProtocol {
         }
 
         @Override
-        protected JsonNode _readChildNode() {
+        protected JSONObject _getMyNode() {
+            return (JSONObject) super._getMyNode();
+        }
+
+        @Override
+        protected JSONValue _readChildNode() {
             return _getMyNode().get(fieldNameStack.peek());
         }
 
         private final Stack<String> fieldNameStack = new Stack<String>();
     }
 
-    public JsonInputProtocol(final InputStream inputStream) throws IOException {
-        this(new InputStreamReader(inputStream));
+    public GwtJsonInputProtocol(final JSONValue node) {
+        _getProtocolStack().push(_createRootInputProtocol(node));
     }
 
-    public JsonInputProtocol(final JsonNode parsedTree) {
-        _getProtocolStack().push(_createRootInputProtocol(parsedTree));
+    public GwtJsonInputProtocol(final String json) throws IOException {
+        this(JSONParser.parseStrict(json));
     }
 
-    public JsonInputProtocol(final Reader reader) throws IOException,
-            JsonParseException {
-        this(new ObjectMapper().readTree(reader));
-    }
-
-    public JsonInputProtocol(final String json) throws IOException {
-        this(new StringReader(json));
-    }
-
-    protected InputProtocol _createArrayInputProtocol(final JsonNode node) {
+    protected InputProtocol _createArrayInputProtocol(final JSONArray node) {
         return new ArrayInputProtocol(node);
     }
 
-    protected InputProtocol _createMapObjectInputProtocol(final JsonNode node) {
+    protected InputProtocol _createMapObjectInputProtocol(final JSONObject node) {
         return new MapObjectInputProtocol(node);
     }
 
-    protected InputProtocol _createRootInputProtocol(final JsonNode parsedTree) {
+    protected InputProtocol _createRootInputProtocol(final JSONValue parsedTree) {
         return new RootInputProtocol(parsedTree);
     }
 
-    protected InputProtocol _createStructObjectInputProtocol(final JsonNode node) {
+    protected InputProtocol _createStructObjectInputProtocol(
+            final JSONObject node) {
         return new StructObjectInputProtocol(node);
     }
 }

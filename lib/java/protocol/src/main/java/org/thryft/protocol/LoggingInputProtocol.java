@@ -41,9 +41,11 @@ import org.thryft.native_.EmailAddress;
 import org.thryft.native_.Uri;
 import org.thryft.native_.Url;
 
+import com.google.common.annotations.GwtIncompatible;
 import com.google.common.primitives.UnsignedInteger;
 import com.google.common.primitives.UnsignedLong;
 
+@GwtIncompatible("")
 public class LoggingInputProtocol implements InputProtocol {
     public LoggingInputProtocol(final InputProtocol wrappedProtocol) {
         logger = LoggerFactory.getLogger(wrappedProtocol.getClass());

@@ -45,8 +45,9 @@ import com.google.common.primitives.UnsignedLong;
 public class StackedOutputProtocol implements OutputProtocol {
     @Override
     public void flush() throws OutputProtocolException {
-        // TODO Auto-generated method stub
-
+        if (!protocolStack.isEmpty()) {
+            protocolStack.peek().flush();
+        }
     }
 
     @Override

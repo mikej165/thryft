@@ -42,6 +42,7 @@ import org.thryft.native_.EmailAddress;
 import org.thryft.native_.Uri;
 import org.thryft.native_.Url;
 
+import com.google.common.annotations.GwtIncompatible;
 import com.google.common.primitives.UnsignedInteger;
 import com.google.common.primitives.UnsignedLong;
 
@@ -67,6 +68,7 @@ public abstract class AbstractInputProtocol implements InputProtocol {
         return new EmailAddress(readString());
     }
 
+    @GwtIncompatible("")
     @Override
     @SuppressWarnings("unchecked")
     public <E extends Enum<E>> E readEnum(final Class<E> enumClass)

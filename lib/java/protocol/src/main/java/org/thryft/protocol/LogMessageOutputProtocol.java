@@ -37,7 +37,9 @@ import java.io.OutputStream;
 import java.io.Writer;
 
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.google.common.annotations.GwtIncompatible;
 
+@GwtIncompatible("")
 public class LogMessageOutputProtocol extends JsonOutputProtocol {
     private final class ArrayOutputProtocol extends
             JsonOutputProtocol.ArrayOutputProtocol {
