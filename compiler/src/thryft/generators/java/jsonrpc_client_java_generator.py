@@ -86,17 +86,17 @@ public final %(return_type_qname)s %(java_name)s(%(parameters)s) {
     try {
         final java.io.StringWriter __oStringWriter = new java.io.StringWriter();
         final org.thryft.protocol.JsonOutputProtocol __oprot = new org.thryft.protocol.JsonOutputProtocol(__oStringWriter);
-        __oprot.writeStructBegin(new org.thryft.protocol.StructBegin("JSON-RPC"));
-        __oprot.writeFieldBegin(new org.thryft.protocol.FieldBegin("id", org.thryft.protocol.Type.I32, (short)-1));
+        __oprot.writeStructBegin("JSON-RPC");
+        __oprot.writeFieldBegin("id", org.thryft.protocol.Type.I32, (short)-1);
         __oprot.writeI32(__id);
         __oprot.writeFieldEnd();
-        __oprot.writeFieldBegin(new org.thryft.protocol.FieldBegin("jsonrpc", org.thryft.protocol.Type.STRING, (short)-1));
+        __oprot.writeFieldBegin("jsonrpc", org.thryft.protocol.Type.STRING, (short)-1);
         __oprot.writeString("2.0");
         __oprot.writeFieldEnd();
-        __oprot.writeFieldBegin(new org.thryft.protocol.FieldBegin("method", org.thryft.protocol.Type.STRING, (short)-1));
+        __oprot.writeFieldBegin("method", org.thryft.protocol.Type.STRING, (short)-1);
         __oprot.writeString("%(name)s");
         __oprot.writeFieldEnd();
-        __oprot.writeFieldBegin(new org.thryft.protocol.FieldBegin("params", org.thryft.protocol.Type.STRUCT, (short)-1));
+        __oprot.writeFieldBegin("params", org.thryft.protocol.Type.STRUCT, (short)-1);
         __serviceRequest.write(__oprot);
         __oprot.writeFieldEnd();
         __oprot.writeFieldStop();
