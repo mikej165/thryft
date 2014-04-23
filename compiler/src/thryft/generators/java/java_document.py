@@ -81,8 +81,10 @@ class JavaDocument(Document, _JavaNamedConstruct):
         return Document.save(self, *args, **kwds)
 
     def _save_to_dir(self, out_dir_path):
-        try:
-            out_dir_path = os.path.join(out_dir_path, self.namespace_by_scope('java').name.replace('.', os.path.sep))
-        except KeyError:
-            pass
+        java_package = self.java_package()
+        if java_package is not None:
+            try:
+                out_dir_path = os.path.join(out_dir_path, java_package.replace('.', os.path.sep))
+            except KeyError:
+                pass
         return self._save_to_file(os.path.join(out_dir_path, self.definitions[0].java_name() + self._java_file_ext()))

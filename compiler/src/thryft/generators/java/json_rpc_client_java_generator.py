@@ -40,17 +40,9 @@ class JsonRpcClientJavaGenerator(java_generator.JavaGenerator):
     class Document(java_generator.JavaGenerator.Document):
         def java_package(self):
             try:
-                return self.namespaces_by_scope['jsonrpc_client_java'].name
+                return self.namespace_by_scope(('json_rpc_client_java', 'java')).name
             except KeyError:
-                return java_generator.JavaGenerator.Document.java_package(self)
-
-        def _save_to_dir(self, out_dir_path):
-            try:
-                out_dir_path = os.path.join(out_dir_path, self.namespace_by_scope(('jsonrpc_client_java', 'java')).name.replace('.', os.path.sep))
-            except KeyError:
-                pass
-            return self._save_to_file(os.path.join(out_dir_path, self.definitions[0].java_name() + self._java_file_ext()))
-
+                return None
 
     class Function(java_generator.JavaGenerator.Function):
         def __repr__(self):

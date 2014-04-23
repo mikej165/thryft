@@ -37,7 +37,7 @@ from thryft.generators.java import _servlet_java_generator
 class JsonRpcServletJavaGenerator(_servlet_java_generator._ServletJavaGenerator):
     class Document(_servlet_java_generator._ServletJavaGenerator._Document):
         def __init__(self, **kwds):
-            _servlet_java_generator._ServletJavaGenerator._Document.__init__(self, servlet_type='jsonrpc', **kwds)
+            _servlet_java_generator._ServletJavaGenerator._Document.__init__(self, servlet_type='json_rpc', **kwds)
 
     class Function(_servlet_java_generator._ServletJavaGenerator._Function):
         def __repr__(self):

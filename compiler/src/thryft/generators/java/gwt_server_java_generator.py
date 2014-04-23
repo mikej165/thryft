@@ -46,13 +46,6 @@ class GwtServerJavaGenerator(JavaGenerator):
             except KeyError:
                 return None
 
-        def _save_to_dir(self, out_dir_path):
-            try:
-                out_dir_path = os.path.join(out_dir_path, self.namespace_by_scope(('gwt_server_java', 'java')).name.replace('.', os.path.sep))
-            except KeyError:
-                pass
-            return self._save_to_file(os.path.join(out_dir_path, self.definitions[0].java_name() + self._java_file_ext()))
-
     class Function(JavaFunction):
         def __repr__(self):
             name = self.java_name()
