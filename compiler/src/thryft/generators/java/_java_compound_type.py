@@ -191,7 +191,7 @@ public %(name)s(final %(name)s other) {%(this_call)s
         field_protocol_named_initializers = \
             lpad(' else ', indent(' ' * 16, ' else '.join(
                 """\
-if (ifield.name.equals("%s")) {
+if (ifield.getName().equals("%s")) {
 %s
 }""" % (field.name, indent(' ' * 4, field.java_protocol_initializer()))
                  for field in self.fields
@@ -240,7 +240,7 @@ public %(name)s(final org.thryft.protocol.InputProtocol iprot, final org.thryft.
             iprot.readStructBegin();
             while (true) {
                 final org.thryft.protocol.FieldBegin ifield = iprot.readFieldBegin();
-                if (ifield.type == org.thryft.protocol.Type.STOP) {
+                if (ifield.getType() == org.thryft.protocol.Type.STOP) {
                     break;
                 }%(field_protocol_named_initializers)s
                 iprot.readFieldEnd();

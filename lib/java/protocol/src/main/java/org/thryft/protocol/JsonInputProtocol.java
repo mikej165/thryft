@@ -106,7 +106,20 @@ public class JsonInputProtocol extends StackedInputProtocol {
 
         @Override
         public Object readMixed() throws InputProtocolException {
-            throw new UnsupportedOperationException();
+            final JsonNode value = _readChildNode();
+            if (value.isBoolean()) {
+                return value.asBoolean();
+            } else if (value.isDouble()) {
+                return value.asDouble();
+            } else if (value.isInt()) {
+                return value.asInt();
+            } else if (value.isLong()) {
+                return value.asLong();
+            } else if (value.isTextual()) {
+                return value.asText();
+            } else {
+                throw new UnsupportedOperationException();
+            }
         }
 
         @Override
@@ -193,8 +206,26 @@ public class JsonInputProtocol extends StackedInputProtocol {
         @Override
         public FieldBegin readFieldBegin() throws InputProtocolException {
             if (!fieldNameStack.isEmpty()) {
-                return new FieldBegin(fieldNameStack.peek(), Type.VOID,
-                        (short) -1);
+                final JsonNode value = _getMyNode().get(fieldNameStack.peek());
+                Type type;
+                if (value.isArray()) {
+                    type = Type.LIST;
+                } else if (value.isBoolean()) {
+                    type = Type.BOOL;
+                } else if (value.isDouble()) {
+                    type = Type.DOUBLE;
+                } else if (value.isInt()) {
+                    type = Type.I32;
+                } else if (value.isLong()) {
+                    type = Type.I64;
+                } else if (value.isObject()) {
+                    type = Type.STRUCT;
+                } else if (value.isTextual()) {
+                    type = Type.STRING;
+                } else {
+                    type = Type.VOID;
+                }
+                return new FieldBegin(fieldNameStack.peek(), type, (short) -1);
             } else {
                 return new FieldBegin();
             }

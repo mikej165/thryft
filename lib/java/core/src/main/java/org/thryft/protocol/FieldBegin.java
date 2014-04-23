@@ -15,13 +15,25 @@ public class FieldBegin {
         this.type = checkNotNull(type);
     }
 
+    public short getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
     @Override
     public String toString() {
         return Objects.toStringHelper(this).add("id", id).add("name", name)
                 .add("type", type).toString();
     }
 
-    public final short id;
-    public final String name;
-    public final Type type;
+    private final short id;
+    private final String name;
+    private final Type type;
 }

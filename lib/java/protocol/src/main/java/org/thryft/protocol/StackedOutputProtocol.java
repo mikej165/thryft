@@ -78,9 +78,9 @@ public abstract class StackedOutputProtocol extends ForwardingOutputProtocol {
 
     @Override
     public void writeMessageBegin(final String name, final MessageType type,
-            final int sequenceId) throws OutputProtocolException {
+            final Object id) throws OutputProtocolException {
         final int protocolStackSize = protocolStack.size();
-        protocolStack.peek().writeMessageBegin(name, type, sequenceId);
+        protocolStack.peek().writeMessageBegin(name, type, id);
         if (protocolStack.size() != protocolStackSize + 1) {
             throw new OutputProtocolException(
                     "writeMessageBegin must add one protocol to the top of the stack");

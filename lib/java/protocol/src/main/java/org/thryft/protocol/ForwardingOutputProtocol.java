@@ -112,8 +112,8 @@ public abstract class ForwardingOutputProtocol implements OutputProtocol {
 
     @Override
     public void writeMessageBegin(final String name, final MessageType type,
-            final int sequenceId) throws OutputProtocolException {
-        _delegate().writeMessageBegin(name, type, sequenceId);
+            final Object id) throws OutputProtocolException {
+        _delegate().writeMessageBegin(name, type, id);
     }
 
     @Override

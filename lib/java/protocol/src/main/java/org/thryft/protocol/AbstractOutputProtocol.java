@@ -97,7 +97,7 @@ public abstract class AbstractOutputProtocol implements OutputProtocol {
 
     @Override
     public void writeMessageBegin(final String name, final MessageType type,
-            final int sequenceId) throws OutputProtocolException {
+            final Object id) throws OutputProtocolException {
         writeStructBegin(name);
     }
 

@@ -262,12 +262,12 @@ public class LoggingOutputProtocol implements OutputProtocol {
 
     @Override
     public void writeMessageBegin(final String name, final MessageType type,
-            final int sequenceId) throws OutputProtocolException {
+            final Object id) throws OutputProtocolException {
         try {
-            wrappedProtocol.writeMessageBegin(name, type, sequenceId);
-            logger.info(WRITE_MESSAGE_BEGIN_MESSAGE, name, type, sequenceId);
+            wrappedProtocol.writeMessageBegin(name, type, id);
+            logger.info(WRITE_MESSAGE_BEGIN_MESSAGE, name, type, id);
         } catch (final OutputProtocolException e) {
-            logger.info(WRITE_MESSAGE_BEGIN_MESSAGE, name, type, sequenceId, e);
+            logger.info(WRITE_MESSAGE_BEGIN_MESSAGE, name, type, id, e);
             throw e;
         }
     }

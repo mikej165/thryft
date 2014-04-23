@@ -87,7 +87,7 @@ public interface OutputProtocol extends Protocol {
     public void writeMapEnd() throws OutputProtocolException;
 
     public void writeMessageBegin(final String name, final MessageType type,
-            final int sequenceId) throws OutputProtocolException;
+            final Object id) throws OutputProtocolException;
 
     public void writeMessageEnd() throws OutputProtocolException;
 

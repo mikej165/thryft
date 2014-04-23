@@ -138,7 +138,7 @@ public final %(return_type_qname)s %(java_name)s(%(parameters)s) {
             } else if (__iFieldBegin.name.equalsIgnoreCase("id")) {
                 final int __actualId = __iprot.readI32();
                 if (__actualId != __id) {
-                    throw new org.thryft.protocol.InputProtocolException(String.format("expected id in response to be %s, got %s", __id, __actualId));
+                    throw new org.thryft.protocol.InputProtocolException(String.format("expected id in response to be %%s, got %%s", __id, __actualId));
                 }
             } else if (__iFieldBegin.name.equalsIgnoreCase("error")) {
                 int __errorCode = 0;
@@ -156,7 +156,7 @@ public final %(return_type_qname)s %(java_name)s(%(parameters)s) {
                     __iprot.readFieldEnd();
                 }
                 __iprot.readStructEnd();
-                throw new RuntimeException(String.format("error from server: code=%d, message='%s'", __errorCode, __errorMessage));
+                throw new RuntimeException(String.format("error from server: code=%%d, message='%%s'", __errorCode, __errorMessage));
             } else if (__iFieldBegin.name.equalsIgnoreCase("results")) {
                 %(service_response_assignment)snew %(service_qname)s.Messages.%(response_type_name)s(__iprot);
             }
