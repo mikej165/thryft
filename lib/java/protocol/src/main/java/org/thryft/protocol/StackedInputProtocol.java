@@ -32,96 +32,12 @@
 
 package org.thryft.protocol;
 
-import java.util.Date;
 import java.util.Stack;
 
-import org.thryft.native_.EmailAddress;
-import org.thryft.native_.Uri;
-import org.thryft.native_.Url;
-
-import com.google.common.primitives.UnsignedInteger;
-import com.google.common.primitives.UnsignedLong;
-
-public class StackedInputProtocol implements InputProtocol {
-    @Override
-    public byte[] readBinary() throws InputProtocolException {
-        return protocolStack.peek().readBinary();
-    }
-
-    @Override
-    public boolean readBool() throws InputProtocolException {
-        return protocolStack.peek().readBool();
-    }
-
-    @Override
-    public byte readByte() throws InputProtocolException {
-        return protocolStack.peek().readByte();
-    }
-
-    @Override
-    public Date readDateTime() throws InputProtocolException {
-        return protocolStack.peek().readDateTime();
-    }
-
-    @Override
-    public java.math.BigDecimal readDecimal() throws InputProtocolException {
-        return protocolStack.peek().readDecimal();
-    }
-
-    @Override
-    public double readDouble() throws InputProtocolException {
-        return protocolStack.peek().readDouble();
-    }
-
-    @Override
-    public EmailAddress readEmailAddress() throws InputProtocolException {
-        return protocolStack.peek().readEmailAddress();
-    }
-
-    @Override
-    public <E extends Enum<E>> E readEnum(final Class<E> enumClass)
-            throws InputProtocolException {
-        return protocolStack.peek().readEnum(enumClass);
-    }
-
-    @Override
-    public FieldBegin readFieldBegin() throws InputProtocolException {
-        return protocolStack.peek().readFieldBegin();
-    }
-
-    @Override
-    public void readFieldEnd() throws InputProtocolException {
-        protocolStack.peek().readFieldEnd();
-    }
-
-    @Override
-    public short readI16() throws InputProtocolException {
-        return protocolStack.peek().readI16();
-    }
-
-    @Override
-    public int readI32() throws InputProtocolException {
-        return protocolStack.peek().readI32();
-    }
-
-    @Override
-    public long readI64() throws InputProtocolException {
-        return protocolStack.peek().readI64();
-    }
-
-    @Override
-    public ListBegin readListBegin() throws InputProtocolException {
-        return protocolStack.peek().readListBegin();
-    }
-
+public abstract class StackedInputProtocol extends ForwardingInputProtocol {
     @Override
     public void readListEnd() throws InputProtocolException {
         protocolStack.pop();
-    }
-
-    @Override
-    public MapBegin readMapBegin() throws InputProtocolException {
-        return protocolStack.peek().readMapBegin();
     }
 
     @Override
@@ -130,23 +46,8 @@ public class StackedInputProtocol implements InputProtocol {
     }
 
     @Override
-    public MessageBegin readMessageBegin() throws InputProtocolException {
-        return protocolStack.peek().readMessageBegin();
-    }
-
-    @Override
     public void readMessageEnd() {
         protocolStack.pop();
-    }
-
-    @Override
-    public Object readMixed() throws InputProtocolException {
-        return protocolStack.peek().readMixed();
-    }
-
-    @Override
-    public SetBegin readSetBegin() throws InputProtocolException {
-        return protocolStack.peek().readSetBegin();
     }
 
     @Override
@@ -155,38 +56,13 @@ public class StackedInputProtocol implements InputProtocol {
     }
 
     @Override
-    public String readString() throws InputProtocolException {
-        return protocolStack.peek().readString();
-    }
-
-    @Override
-    public String readStructBegin() throws InputProtocolException {
-        return protocolStack.peek().readStructBegin();
-    }
-
-    @Override
     public void readStructEnd() throws InputProtocolException {
         protocolStack.pop();
     }
 
     @Override
-    public UnsignedInteger readU32() throws InputProtocolException {
-        return protocolStack.peek().readU32();
-    }
-
-    @Override
-    public UnsignedLong readU64() throws InputProtocolException {
-        return protocolStack.peek().readU64();
-    }
-
-    @Override
-    public Uri readUri() throws InputProtocolException {
-        return protocolStack.peek().readUri();
-    }
-
-    @Override
-    public Url readUrl() throws InputProtocolException {
-        return protocolStack.peek().readUrl();
+    protected InputProtocol _delegate() {
+        return protocolStack.peek();
     }
 
     protected final Stack<InputProtocol> _getProtocolStack() {

@@ -32,95 +32,14 @@
 
 package org.thryft.protocol;
 
-import java.util.Date;
 import java.util.Stack;
 
-import org.thryft.native_.EmailAddress;
-import org.thryft.native_.Uri;
-import org.thryft.native_.Url;
-
-import com.google.common.primitives.UnsignedInteger;
-import com.google.common.primitives.UnsignedLong;
-
-public class StackedOutputProtocol implements OutputProtocol {
+public abstract class StackedOutputProtocol extends ForwardingOutputProtocol {
     @Override
     public void flush() throws OutputProtocolException {
         if (!protocolStack.isEmpty()) {
             protocolStack.peek().flush();
         }
-    }
-
-    @Override
-    public void writeBinary(final byte[] value) throws OutputProtocolException {
-        protocolStack.peek().writeBinary(value);
-    }
-
-    @Override
-    public void writeBool(final boolean value) throws OutputProtocolException {
-        protocolStack.peek().writeBool(value);
-    }
-
-    @Override
-    public void writeByte(final byte value) throws OutputProtocolException {
-        protocolStack.peek().writeByte(value);
-    }
-
-    @Override
-    public void writeDateTime(final Date value) throws OutputProtocolException {
-        protocolStack.peek().writeDateTime(value);
-    }
-
-    @Override
-    public void writeDecimal(final java.math.BigDecimal value)
-            throws OutputProtocolException {
-        protocolStack.peek().writeDecimal(value);
-    }
-
-    @Override
-    public void writeDouble(final double value) throws OutputProtocolException {
-        protocolStack.peek().writeDouble(value);
-    }
-
-    @Override
-    public void writeEmailAddress(final EmailAddress value)
-            throws OutputProtocolException {
-        protocolStack.peek().writeEmailAddress(value);
-    }
-
-    @Override
-    public void writeEnum(final Enum<?> value) throws OutputProtocolException {
-        protocolStack.peek().writeEnum(value);
-    }
-
-    @Override
-    public void writeFieldBegin(final String name, final Type type,
-            final short id) throws OutputProtocolException {
-        protocolStack.peek().writeFieldBegin(name, type, id);
-    }
-
-    @Override
-    public void writeFieldEnd() throws OutputProtocolException {
-        protocolStack.peek().writeFieldEnd();
-    }
-
-    @Override
-    public void writeFieldStop() throws OutputProtocolException {
-        protocolStack.peek().writeFieldStop();
-    }
-
-    @Override
-    public void writeI16(final short value) throws OutputProtocolException {
-        protocolStack.peek().writeI16(value);
-    }
-
-    @Override
-    public void writeI32(final int value) throws OutputProtocolException {
-        protocolStack.peek().writeI32(value);
-    }
-
-    @Override
-    public void writeI64(final long value) throws OutputProtocolException {
-        protocolStack.peek().writeI64(value);
     }
 
     @Override
@@ -175,16 +94,6 @@ public class StackedOutputProtocol implements OutputProtocol {
     }
 
     @Override
-    public void writeMixed(final Object value) throws OutputProtocolException {
-        protocolStack.peek().writeMixed(value);
-    }
-
-    @Override
-    public void writeNull() throws OutputProtocolException {
-        protocolStack.peek().writeNull();
-    }
-
-    @Override
     public void writeSetBegin(final Type elementType, final int size)
             throws OutputProtocolException {
         protocolStack.peek().writeSetBegin(elementType, size);
@@ -194,11 +103,6 @@ public class StackedOutputProtocol implements OutputProtocol {
     public void writeSetEnd() throws OutputProtocolException {
         protocolStack.pop();
         protocolStack.peek().writeSetEnd();
-    }
-
-    @Override
-    public void writeString(final String value) throws OutputProtocolException {
-        protocolStack.peek().writeString(value);
     }
 
     @Override
@@ -219,25 +123,8 @@ public class StackedOutputProtocol implements OutputProtocol {
     }
 
     @Override
-    public void writeU32(final UnsignedInteger value)
-            throws OutputProtocolException {
-        protocolStack.peek().writeU32(value);
-    }
-
-    @Override
-    public void writeU64(final UnsignedLong value)
-            throws OutputProtocolException {
-        protocolStack.peek().writeU64(value);
-    }
-
-    @Override
-    public void writeUri(final Uri value) throws OutputProtocolException {
-        protocolStack.peek().writeUri(value);
-    }
-
-    @Override
-    public void writeUrl(final Url value) throws OutputProtocolException {
-        protocolStack.peek().writeUrl(value);
+    protected OutputProtocol _delegate() {
+        return protocolStack.peek();
     }
 
     protected final Stack<OutputProtocol> _getProtocolStack() {
