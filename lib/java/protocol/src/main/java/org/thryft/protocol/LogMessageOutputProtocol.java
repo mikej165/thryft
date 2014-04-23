@@ -44,67 +44,68 @@ public class LogMessageOutputProtocol extends JsonOutputProtocol {
     private final class ArrayOutputProtocol extends
             JsonOutputProtocol.ArrayOutputProtocol {
         @Override
-        public void writeBool(final boolean b) throws OutputProtocolException {
-            if (size < SIZE_MAX) {
-                super.writeBool(b);
-                size++;
-            }
-        }
-
-        @Override
-        public void writeByte(final byte b) throws OutputProtocolException {
-            if (size < SIZE_MAX) {
-                super.writeByte(b);
-                size++;
-            }
-        }
-
-        @Override
-        public void writeDouble(final double dub)
+        public void writeBool(final boolean value)
                 throws OutputProtocolException {
             if (size < SIZE_MAX) {
-                super.writeDouble(dub);
+                super.writeBool(value);
                 size++;
             }
         }
 
         @Override
-        public void writeFieldBegin(final FieldBegin field)
+        public void writeByte(final byte value) throws OutputProtocolException {
+            if (size < SIZE_MAX) {
+                super.writeByte(value);
+                size++;
+            }
+        }
+
+        @Override
+        public void writeDouble(final double value)
                 throws OutputProtocolException {
             if (size < SIZE_MAX) {
-                super.writeFieldBegin(field);
-            }
-        }
-
-        @Override
-        public void writeI16(final short i16) throws OutputProtocolException {
-            if (size < SIZE_MAX) {
-                super.writeI16(i16);
+                super.writeDouble(value);
                 size++;
             }
         }
 
         @Override
-        public void writeI32(final int i32) throws OutputProtocolException {
+        public void writeFieldBegin(final String name, final Type type,
+                final short id) throws OutputProtocolException {
             if (size < SIZE_MAX) {
-                super.writeI32(i32);
+                super.writeFieldBegin(name, type, id);
+            }
+        }
+
+        @Override
+        public void writeI16(final short value) throws OutputProtocolException {
+            if (size < SIZE_MAX) {
+                super.writeI16(value);
                 size++;
             }
         }
 
         @Override
-        public void writeI64(final long i64) throws OutputProtocolException {
+        public void writeI32(final int value) throws OutputProtocolException {
             if (size < SIZE_MAX) {
-                super.writeI64(i64);
+                super.writeI32(value);
                 size++;
             }
         }
 
         @Override
-        public void writeListBegin(final ListBegin list)
+        public void writeI64(final long value) throws OutputProtocolException {
+            if (size < SIZE_MAX) {
+                super.writeI64(value);
+                size++;
+            }
+        }
+
+        @Override
+        public void writeListBegin(final Type elementType, final int size)
                 throws OutputProtocolException {
             if (size < SIZE_MAX) {
-                super.writeListBegin(list);
+                super.writeListBegin(elementType, size);
             } else {
                 _getProtocolStack().push(new NopOutputProtocol());
             }
@@ -119,10 +120,10 @@ public class LogMessageOutputProtocol extends JsonOutputProtocol {
         }
 
         @Override
-        public void writeMapBegin(final MapBegin map)
-                throws OutputProtocolException {
+        public void writeMapBegin(final Type keyType, final Type valueType,
+                final int size) throws OutputProtocolException {
             if (size < SIZE_MAX) {
-                super.writeMapBegin(map);
+                super.writeMapBegin(keyType, valueType, size);
             } else {
                 _getProtocolStack().push(new NopOutputProtocol());
             }
@@ -137,19 +138,19 @@ public class LogMessageOutputProtocol extends JsonOutputProtocol {
         }
 
         @Override
-        public void writeString(final String str)
+        public void writeString(final String value)
                 throws OutputProtocolException {
             if (size < SIZE_MAX) {
-                super.writeString(__cropString(str));
+                super.writeString(__cropString(value));
                 size++;
             }
         }
 
         @Override
-        public void writeStructBegin(final StructBegin struct)
+        public void writeStructBegin(final String name)
                 throws OutputProtocolException {
             if (size < SIZE_MAX) {
-                super.writeStructBegin(struct);
+                super.writeStructBegin(name);
             } else {
                 _getProtocolStack().push(new NopOutputProtocol());
             }
@@ -171,67 +172,68 @@ public class LogMessageOutputProtocol extends JsonOutputProtocol {
     private final class MapObjectOutputProtocol extends
             JsonOutputProtocol.MapObjectOutputProtocol {
         @Override
-        public void writeBool(final boolean b) throws OutputProtocolException {
-            if (size < SIZE_MAX) {
-                super.writeBool(b);
-                size++;
-            }
-        }
-
-        @Override
-        public void writeByte(final byte b) throws OutputProtocolException {
-            if (size < SIZE_MAX) {
-                super.writeByte(b);
-                size++;
-            }
-        }
-
-        @Override
-        public void writeDouble(final double dub)
+        public void writeBool(final boolean value)
                 throws OutputProtocolException {
             if (size < SIZE_MAX) {
-                super.writeDouble(dub);
+                super.writeBool(value);
                 size++;
             }
         }
 
         @Override
-        public void writeFieldBegin(final FieldBegin field)
+        public void writeByte(final byte value) throws OutputProtocolException {
+            if (size < SIZE_MAX) {
+                super.writeByte(value);
+                size++;
+            }
+        }
+
+        @Override
+        public void writeDouble(final double value)
                 throws OutputProtocolException {
             if (size < SIZE_MAX) {
-                super.writeFieldBegin(field);
-            }
-        }
-
-        @Override
-        public void writeI16(final short i16) throws OutputProtocolException {
-            if (size < SIZE_MAX) {
-                super.writeI16(i16);
+                super.writeDouble(value);
                 size++;
             }
         }
 
         @Override
-        public void writeI32(final int i32) throws OutputProtocolException {
+        public void writeFieldBegin(final String name, final Type type,
+                final short id) throws OutputProtocolException {
             if (size < SIZE_MAX) {
-                super.writeI32(i32);
+                super.writeFieldBegin(name, type, id);
+            }
+        }
+
+        @Override
+        public void writeI16(final short value) throws OutputProtocolException {
+            if (size < SIZE_MAX) {
+                super.writeI16(value);
                 size++;
             }
         }
 
         @Override
-        public void writeI64(final long i64) throws OutputProtocolException {
+        public void writeI32(final int value) throws OutputProtocolException {
             if (size < SIZE_MAX) {
-                super.writeI64(i64);
+                super.writeI32(value);
                 size++;
             }
         }
 
         @Override
-        public void writeListBegin(final ListBegin list)
+        public void writeI64(final long value) throws OutputProtocolException {
+            if (size < SIZE_MAX) {
+                super.writeI64(value);
+                size++;
+            }
+        }
+
+        @Override
+        public void writeListBegin(final Type elementType, final int size)
                 throws OutputProtocolException {
             if (size < SIZE_MAX) {
-                super.writeListBegin(list);
+                super.writeListBegin(elementType, size);
             } else {
                 _getProtocolStack().push(new NopOutputProtocol());
             }
@@ -246,10 +248,10 @@ public class LogMessageOutputProtocol extends JsonOutputProtocol {
         }
 
         @Override
-        public void writeMapBegin(final MapBegin map)
-                throws OutputProtocolException {
+        public void writeMapBegin(final Type keyType, final Type valueType,
+                final int size) throws OutputProtocolException {
             if (size < SIZE_MAX) {
-                super.writeMapBegin(map);
+                super.writeMapBegin(keyType, valueType, size);
             } else {
                 _getProtocolStack().push(new NopOutputProtocol());
             }
@@ -264,19 +266,19 @@ public class LogMessageOutputProtocol extends JsonOutputProtocol {
         }
 
         @Override
-        public void writeString(final String str)
+        public void writeString(final String value)
                 throws OutputProtocolException {
             if (size < SIZE_MAX) {
-                super.writeString(__cropString(str));
+                super.writeString(__cropString(value));
                 size++;
             }
         }
 
         @Override
-        public void writeStructBegin(final StructBegin struct)
+        public void writeStructBegin(final String name)
                 throws OutputProtocolException {
             if (size < SIZE_MAX) {
-                super.writeStructBegin(struct);
+                super.writeStructBegin(name);
             } else {
                 _getProtocolStack().push(new NopOutputProtocol());
             }
@@ -297,21 +299,22 @@ public class LogMessageOutputProtocol extends JsonOutputProtocol {
 
     private final class NopOutputProtocol extends AbstractOutputProtocol {
         @Override
-        public void writeBool(final boolean b) throws OutputProtocolException {
-        }
-
-        @Override
-        public void writeByte(final byte b) throws OutputProtocolException {
-        }
-
-        @Override
-        public void writeDouble(final double dub)
+        public void writeBool(final boolean value)
                 throws OutputProtocolException {
         }
 
         @Override
-        public void writeFieldBegin(final FieldBegin field)
+        public void writeByte(final byte value) throws OutputProtocolException {
+        }
+
+        @Override
+        public void writeDouble(final double value)
                 throws OutputProtocolException {
+        }
+
+        @Override
+        public void writeFieldBegin(final String name, final Type type,
+                final short id) throws OutputProtocolException {
         }
 
         @Override
@@ -323,19 +326,19 @@ public class LogMessageOutputProtocol extends JsonOutputProtocol {
         }
 
         @Override
-        public void writeI16(final short i16) throws OutputProtocolException {
+        public void writeI16(final short value) throws OutputProtocolException {
         }
 
         @Override
-        public void writeI32(final int i32) throws OutputProtocolException {
+        public void writeI32(final int value) throws OutputProtocolException {
         }
 
         @Override
-        public void writeI64(final long i64) throws OutputProtocolException {
+        public void writeI64(final long value) throws OutputProtocolException {
         }
 
         @Override
-        public void writeListBegin(final ListBegin list)
+        public void writeListBegin(final Type elementType, final int size)
                 throws OutputProtocolException {
             _getProtocolStack().push(new NopOutputProtocol());
         }
@@ -345,8 +348,8 @@ public class LogMessageOutputProtocol extends JsonOutputProtocol {
         }
 
         @Override
-        public void writeMapBegin(final MapBegin map)
-                throws OutputProtocolException {
+        public void writeMapBegin(final Type keyType, final Type valueType,
+                final int size) throws OutputProtocolException {
             _getProtocolStack().push(new NopOutputProtocol());
         }
 
@@ -355,12 +358,12 @@ public class LogMessageOutputProtocol extends JsonOutputProtocol {
         }
 
         @Override
-        public void writeString(final String str)
+        public void writeString(final String value)
                 throws OutputProtocolException {
         }
 
         @Override
-        public void writeStructBegin(final StructBegin struct)
+        public void writeStructBegin(final String name)
                 throws OutputProtocolException {
             _getProtocolStack().push(new NopOutputProtocol());
         }
@@ -373,18 +376,18 @@ public class LogMessageOutputProtocol extends JsonOutputProtocol {
     private final class StructObjectOutputProtocol extends
             JsonOutputProtocol.StructObjectOutputProtocol {
         @Override
-        public void writeString(final String str)
+        public void writeString(final String value)
                 throws OutputProtocolException {
-            super.writeString(__cropString(str));
+            super.writeString(__cropString(value));
         }
     }
 
-    private final static String __cropString(final String str) {
-        if (str.length() <= STRING_LENGTH_MAX) {
-            return str;
+    private final static String __cropString(final String value) {
+        if (value.length() <= STRING_LENGTH_MAX) {
+            return value;
         } else {
-            return str.substring(0, STRING_LENGTH_MAX - 6) + "..."
-                    + str.substring(str.length() - 3);
+            return value.substring(0, STRING_LENGTH_MAX - 6) + "..."
+                    + value.substring(value.length() - 3);
         }
     }
 

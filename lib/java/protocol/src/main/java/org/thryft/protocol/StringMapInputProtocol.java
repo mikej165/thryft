@@ -133,12 +133,12 @@ public class StringMapInputProtocol extends StackedInputProtocol {
             return input.get(__joinKeys(myKey, childKey));
         }
 
-        protected StructBegin _readStructBegin(final String childKey)
+        protected String _readStructBegin(final String childKey)
                 throws InputProtocolException {
             final StructInputProtocol structInputProtocol = new StructInputProtocol(
                     input, __joinKeys(myKey, childKey));
             _getProtocolStack().push(structInputProtocol);
-            return new StructBegin();
+            return "";
         }
 
         private final String myKey;
@@ -170,7 +170,7 @@ public class StringMapInputProtocol extends StackedInputProtocol {
         }
 
         @Override
-        public StructBegin readStructBegin() throws InputProtocolException {
+        public String readStructBegin() throws InputProtocolException {
             return _readStructBegin(_getChildKeyStack().pop());
         }
     }
@@ -207,7 +207,7 @@ public class StringMapInputProtocol extends StackedInputProtocol {
         }
 
         @Override
-        public StructBegin readStructBegin() throws InputProtocolException {
+        public String readStructBegin() throws InputProtocolException {
             checkState(!nextReadIsKey);
             nextReadIsKey = true;
             return _readStructBegin(_getChildKeyStack().pop());
@@ -245,9 +245,9 @@ public class StringMapInputProtocol extends StackedInputProtocol {
         }
 
         @Override
-        public StructBegin readStructBegin() throws InputProtocolException {
+        public String readStructBegin() throws InputProtocolException {
             _getProtocolStack().push(new StructInputProtocol(_getInput(), ""));
-            return new StructBegin();
+            return "";
         }
     }
 
@@ -288,7 +288,7 @@ public class StringMapInputProtocol extends StackedInputProtocol {
         }
 
         @Override
-        public StructBegin readStructBegin() throws InputProtocolException {
+        public String readStructBegin() throws InputProtocolException {
             return _readStructBegin(_getChildKeyStack().peek());
         }
     }

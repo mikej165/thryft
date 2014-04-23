@@ -53,36 +53,36 @@ public abstract class AbstractOutputProtocol implements OutputProtocol {
     }
 
     @Override
-    public void writeBinary(final byte[] buf) throws OutputProtocolException {
-        writeString(Base64.encodeBase64String(buf));
+    public void writeBinary(final byte[] value) throws OutputProtocolException {
+        writeString(Base64.encodeBase64String(value));
     }
 
     @Override
-    public void writeDateTime(final Date dateTime)
+    public void writeDateTime(final Date value)
             throws OutputProtocolException {
-        writeI64(dateTime.getTime());
+        writeI64(value.getTime());
     }
 
     @Override
-    public void writeDecimal(final BigDecimal decimal)
+    public void writeDecimal(final BigDecimal value)
             throws OutputProtocolException {
-        writeString(decimal.toString());
+        writeString(value.toString());
     }
 
     @Override
-    public void writeEmailAddress(final EmailAddress emailAddress)
+    public void writeEmailAddress(final EmailAddress value)
             throws OutputProtocolException {
-        writeString(emailAddress.toString());
+        writeString(value.toString());
     }
 
     @Override
-    public void writeEnum(final Enum<?> enum_) throws OutputProtocolException {
-        writeString(enum_.toString().toUpperCase());
+    public void writeEnum(final Enum<?> value) throws OutputProtocolException {
+        writeString(value.toString().toUpperCase());
     }
 
     @Override
-    public void writeFieldBegin(final FieldBegin field)
-            throws OutputProtocolException {
+    public void writeFieldBegin(final String name, final Type type,
+            final short id) throws OutputProtocolException {
         throw new UnsupportedOperationException();
     }
 
@@ -113,7 +113,7 @@ public abstract class AbstractOutputProtocol implements OutputProtocol {
         } else if (value instanceof ImmutableList) {
             @SuppressWarnings("unchecked")
             final ImmutableList<Object> set = (ImmutableList<Object>) value;
-            writeListBegin(new ListBegin(Type.VOID, set.size()));
+            writeListBegin(Type.VOID, set.size());
             for (final Object element : set) {
                 writeMixed(element);
             }
@@ -121,7 +121,7 @@ public abstract class AbstractOutputProtocol implements OutputProtocol {
         } else if (value instanceof ImmutableMap) {
             @SuppressWarnings("unchecked")
             final ImmutableMap<Object, Object> map = (ImmutableMap<Object, Object>) value;
-            writeMapBegin(new MapBegin(Type.VOID, Type.VOID, map.size()));
+            writeMapBegin(Type.VOID, Type.VOID, map.size());
             for (final ImmutableMap.Entry<Object, Object> entry : map
                     .entrySet()) {
                 writeMixed(entry.getKey());
@@ -131,7 +131,7 @@ public abstract class AbstractOutputProtocol implements OutputProtocol {
         } else if (value instanceof ImmutableSet) {
             @SuppressWarnings("unchecked")
             final ImmutableSet<Object> set = (ImmutableSet<Object>) value;
-            writeSetBegin(new SetBegin(Type.VOID, set.size()));
+            writeSetBegin(Type.VOID, set.size());
             for (final Object element : set) {
                 writeMixed(element);
             }
@@ -157,9 +157,9 @@ public abstract class AbstractOutputProtocol implements OutputProtocol {
     }
 
     @Override
-    public void writeSetBegin(final SetBegin set)
+    public void writeSetBegin(final Type elementType, final int size)
             throws OutputProtocolException {
-        writeListBegin(new ListBegin(set.elemType, set.size));
+        writeListBegin(elementType, size);
     }
 
     @Override
@@ -168,23 +168,23 @@ public abstract class AbstractOutputProtocol implements OutputProtocol {
     }
 
     @Override
-    public void writeU32(final UnsignedInteger u32)
+    public void writeU32(final UnsignedInteger value)
             throws OutputProtocolException {
-        writeI32(u32.intValue());
+        writeI32(value.intValue());
     }
 
     @Override
-    public void writeU64(final UnsignedLong u64) throws OutputProtocolException {
-        writeI64(u64.longValue());
+    public void writeU64(final UnsignedLong value) throws OutputProtocolException {
+        writeI64(value.longValue());
     }
 
     @Override
-    public void writeUri(final Uri uri) throws OutputProtocolException {
-        writeString(uri.toString());
+    public void writeUri(final Uri value) throws OutputProtocolException {
+        writeString(value.toString());
     }
 
     @Override
-    public void writeUrl(final Url url) throws OutputProtocolException {
-        writeString(url.toString());
+    public void writeUrl(final Url value) throws OutputProtocolException {
+        writeString(value.toString());
     }
 }

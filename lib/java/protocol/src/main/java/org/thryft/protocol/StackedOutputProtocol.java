@@ -51,53 +51,51 @@ public class StackedOutputProtocol implements OutputProtocol {
     }
 
     @Override
-    public void writeBinary(final byte[] buf) throws OutputProtocolException {
-        protocolStack.peek().writeBinary(buf);
+    public void writeBinary(final byte[] value) throws OutputProtocolException {
+        protocolStack.peek().writeBinary(value);
     }
 
     @Override
-    public void writeBool(final boolean b) throws OutputProtocolException {
-        protocolStack.peek().writeBool(b);
+    public void writeBool(final boolean value) throws OutputProtocolException {
+        protocolStack.peek().writeBool(value);
     }
 
     @Override
-    public void writeByte(final byte b) throws OutputProtocolException {
-        protocolStack.peek().writeByte(b);
+    public void writeByte(final byte value) throws OutputProtocolException {
+        protocolStack.peek().writeByte(value);
     }
 
     @Override
-    public void writeDateTime(final Date dateTime)
+    public void writeDateTime(final Date value) throws OutputProtocolException {
+        protocolStack.peek().writeDateTime(value);
+    }
+
+    @Override
+    public void writeDecimal(final java.math.BigDecimal value)
             throws OutputProtocolException {
-        protocolStack.peek().writeDateTime(dateTime);
+        protocolStack.peek().writeDecimal(value);
     }
 
     @Override
-    public void writeDecimal(final java.math.BigDecimal decimal)
+    public void writeDouble(final double value) throws OutputProtocolException {
+        protocolStack.peek().writeDouble(value);
+    }
+
+    @Override
+    public void writeEmailAddress(final EmailAddress value)
             throws OutputProtocolException {
-        protocolStack.peek().writeDecimal(decimal);
+        protocolStack.peek().writeEmailAddress(value);
     }
 
     @Override
-    public void writeDouble(final double dub) throws OutputProtocolException {
-        protocolStack.peek().writeDouble(dub);
+    public void writeEnum(final Enum<?> value) throws OutputProtocolException {
+        protocolStack.peek().writeEnum(value);
     }
 
     @Override
-    public void writeEmailAddress(final EmailAddress emailAddress)
-            throws OutputProtocolException {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void writeEnum(final Enum<?> enum_) throws OutputProtocolException {
-        protocolStack.peek().writeEnum(enum_);
-    }
-
-    @Override
-    public void writeFieldBegin(final FieldBegin field)
-            throws OutputProtocolException {
-        protocolStack.peek().writeFieldBegin(field);
+    public void writeFieldBegin(final String name, final Type type,
+            final short id) throws OutputProtocolException {
+        protocolStack.peek().writeFieldBegin(name, type, id);
     }
 
     @Override
@@ -111,25 +109,25 @@ public class StackedOutputProtocol implements OutputProtocol {
     }
 
     @Override
-    public void writeI16(final short i16) throws OutputProtocolException {
-        protocolStack.peek().writeI16(i16);
+    public void writeI16(final short value) throws OutputProtocolException {
+        protocolStack.peek().writeI16(value);
     }
 
     @Override
-    public void writeI32(final int i32) throws OutputProtocolException {
-        protocolStack.peek().writeI32(i32);
+    public void writeI32(final int value) throws OutputProtocolException {
+        protocolStack.peek().writeI32(value);
     }
 
     @Override
-    public void writeI64(final long i64) throws OutputProtocolException {
-        protocolStack.peek().writeI64(i64);
+    public void writeI64(final long value) throws OutputProtocolException {
+        protocolStack.peek().writeI64(value);
     }
 
     @Override
-    public void writeListBegin(final ListBegin list)
+    public void writeListBegin(final Type elementType, final int size)
             throws OutputProtocolException {
         final int protocolStackSize = protocolStack.size();
-        protocolStack.peek().writeListBegin(list);
+        protocolStack.peek().writeListBegin(elementType, size);
         if (protocolStack.size() != protocolStackSize + 1) {
             throw new OutputProtocolException(
                     "writeListBegin must add one protocol to the top of the stack");
@@ -143,10 +141,10 @@ public class StackedOutputProtocol implements OutputProtocol {
     }
 
     @Override
-    public void writeMapBegin(final MapBegin map)
-            throws OutputProtocolException {
+    public void writeMapBegin(final Type keyType, final Type valueType,
+            final int size) throws OutputProtocolException {
         final int protocolStackSize = protocolStack.size();
-        protocolStack.peek().writeMapBegin(map);
+        protocolStack.peek().writeMapBegin(keyType, valueType, size);
         if (protocolStack.size() != protocolStackSize + 1) {
             throw new OutputProtocolException(
                     "writeMapBegin must add one protocol to the top of the stack");
@@ -170,9 +168,9 @@ public class StackedOutputProtocol implements OutputProtocol {
     }
 
     @Override
-    public void writeSetBegin(final SetBegin set)
+    public void writeSetBegin(final Type elementType, final int size)
             throws OutputProtocolException {
-        protocolStack.peek().writeSetBegin(set);
+        protocolStack.peek().writeSetBegin(elementType, size);
     }
 
     @Override
@@ -182,15 +180,15 @@ public class StackedOutputProtocol implements OutputProtocol {
     }
 
     @Override
-    public void writeString(final String str) throws OutputProtocolException {
-        protocolStack.peek().writeString(str);
+    public void writeString(final String value) throws OutputProtocolException {
+        protocolStack.peek().writeString(value);
     }
 
     @Override
-    public void writeStructBegin(final StructBegin struct)
+    public void writeStructBegin(final String name)
             throws OutputProtocolException {
         final int protocolStackSize = protocolStack.size();
-        protocolStack.peek().writeStructBegin(struct);
+        protocolStack.peek().writeStructBegin(name);
         if (protocolStack.size() != protocolStackSize + 1) {
             throw new OutputProtocolException(
                     "writeStructBegin must add one protocol to the top of the stack");
@@ -204,24 +202,25 @@ public class StackedOutputProtocol implements OutputProtocol {
     }
 
     @Override
-    public void writeU32(final UnsignedInteger u32)
+    public void writeU32(final UnsignedInteger value)
             throws OutputProtocolException {
-        protocolStack.peek().writeU32(u32);
+        protocolStack.peek().writeU32(value);
     }
 
     @Override
-    public void writeU64(final UnsignedLong u64) throws OutputProtocolException {
-        protocolStack.peek().writeU64(u64);
+    public void writeU64(final UnsignedLong value)
+            throws OutputProtocolException {
+        protocolStack.peek().writeU64(value);
     }
 
     @Override
-    public void writeUri(final Uri uri) throws OutputProtocolException {
-        protocolStack.peek().writeUri(uri);
+    public void writeUri(final Uri value) throws OutputProtocolException {
+        protocolStack.peek().writeUri(value);
     }
 
     @Override
-    public void writeUrl(final Url url) throws OutputProtocolException {
-        protocolStack.peek().writeUrl(url);
+    public void writeUrl(final Url value) throws OutputProtocolException {
+        protocolStack.peek().writeUrl(value);
     }
 
     protected final Stack<OutputProtocol> _getProtocolStack() {

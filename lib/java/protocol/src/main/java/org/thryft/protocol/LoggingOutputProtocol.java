@@ -58,363 +58,362 @@ public class LoggingOutputProtocol implements OutputProtocol {
     }
 
     @Override
-    public void writeBinary(final byte[] buf) throws OutputProtocolException {
-        final String message = "writeBinary(" + __toString(buf) + " bytes)";
+    public void writeBinary(final byte[] value) throws OutputProtocolException {
         try {
-            wrappedProtocol.writeBinary(buf);
-            logger.info(message);
+            wrappedProtocol.writeBinary(value);
+            logger.info(WRITE_BINARY_MESSAGE, value.length);
         } catch (final OutputProtocolException e) {
-            logger.info(message + " -> " + __toString(e));
+            logger.info(WRITE_BINARY_MESSAGE, value.length, e);
             throw e;
         }
     }
 
     @Override
-    public void writeBool(final boolean b) throws OutputProtocolException {
-        final String message = "writeBool(" + b + ")";
+    public void writeBool(final boolean value) throws OutputProtocolException {
         try {
-            wrappedProtocol.writeBool(b);
-            logger.info(message);
+            wrappedProtocol.writeBool(value);
+            logger.info(WRITE_BOOL_MESSAGE, value);
         } catch (final OutputProtocolException e) {
-            logger.info(message + " -> " + __toString(e));
+            logger.info(WRITE_BOOL_MESSAGE, value, e);
+            throw e;
         }
     }
 
     @Override
-    public void writeByte(final byte b) throws OutputProtocolException {
-        final String message = "writeByte(" + b + ")";
+    public void writeByte(final byte value) throws OutputProtocolException {
         try {
-            wrappedProtocol.writeByte(b);
-            logger.info(message);
+            wrappedProtocol.writeByte(value);
+            logger.info(WRITE_BYTE_MESSAGE, value);
         } catch (final OutputProtocolException e) {
-            logger.info(message + " -> " + __toString(e));
+            logger.info(WRITE_BYTE_MESSAGE, value, e);
+            throw e;
         }
     }
 
     @Override
-    public void writeDateTime(final Date dateTime)
+    public void writeDateTime(final Date value) throws OutputProtocolException {
+        try {
+            wrappedProtocol.writeDateTime(value);
+            logger.info(WRITE_DATE_TIME_MESSAGE, value);
+        } catch (final OutputProtocolException e) {
+            logger.info(WRITE_DATE_TIME_MESSAGE, value, e);
+            throw e;
+        }
+    }
+
+    @Override
+    public void writeDecimal(final BigDecimal value)
             throws OutputProtocolException {
-        final String message = "writeDateTime(" + dateTime + ")";
         try {
-            wrappedProtocol.writeDateTime(dateTime);
-            logger.info(message);
+            wrappedProtocol.writeDecimal(value);
+            logger.info(WRITE_DECIMAL_MESSAGE, value);
         } catch (final OutputProtocolException e) {
-            logger.info(message + " -> " + __toString(e));
+            logger.info(WRITE_DECIMAL_MESSAGE, value, e);
+            throw e;
         }
     }
 
     @Override
-    public void writeDecimal(final BigDecimal decimal)
+    public void writeDouble(final double value) throws OutputProtocolException {
+        try {
+            wrappedProtocol.writeDouble(value);
+            logger.info(WRITE_DOUBLE_MESSAGE, value);
+        } catch (final OutputProtocolException e) {
+            logger.info(WRITE_DOUBLE_MESSAGE, value, e);
+            throw e;
+        }
+    }
+
+    @Override
+    public void writeEmailAddress(final EmailAddress value)
             throws OutputProtocolException {
-        final String message = "writeDecimal(" + decimal + ")";
         try {
-            wrappedProtocol.writeDecimal(decimal);
-            logger.info(message);
+            wrappedProtocol.writeEmailAddress(value);
+            logger.info(WRITE_EMAIL_ADDRESS_MESSAGE, value);
         } catch (final OutputProtocolException e) {
-            logger.info(message + " -> " + __toString(e));
+            logger.info(WRITE_EMAIL_ADDRESS_MESSAGE, value, e);
+            throw e;
         }
     }
 
     @Override
-    public void writeDouble(final double dub) throws OutputProtocolException {
-        final String message = "writeDouble(" + dub + ")";
+    public void writeEnum(final Enum<?> value) throws OutputProtocolException {
         try {
-            wrappedProtocol.writeDouble(dub);
-            logger.info(message);
+            wrappedProtocol.writeEnum(value);
+            logger.info(WRITE_ENUM_MESSAGE, value);
         } catch (final OutputProtocolException e) {
-            logger.info(message + " -> " + __toString(e));
+            logger.info(WRITE_ENUM_MESSAGE, value, e);
+            throw e;
         }
     }
 
     @Override
-    public void writeEmailAddress(final EmailAddress emailAddress)
-            throws OutputProtocolException {
-        final String message = "writeEmailAddress(" + emailAddress + ")";
+    public void writeFieldBegin(final String name, final Type type,
+            final short id) throws OutputProtocolException {
         try {
-            wrappedProtocol.writeEmailAddress(emailAddress);
-            logger.info(message);
+            wrappedProtocol.writeFieldBegin(name, type, id);
+            logger.info(WRITE_FIELD_BEGIN_MESSAGE, name, type, id);
         } catch (final OutputProtocolException e) {
-            logger.info(message + " -> " + __toString(e));
-        }
-    }
-
-    @Override
-    public void writeEnum(final Enum<?> enum_) throws OutputProtocolException {
-        final String message = "writeEnum(" + enum_ + ")";
-        try {
-            wrappedProtocol.writeEnum(enum_);
-            logger.info(message);
-        } catch (final OutputProtocolException e) {
-            logger.info(message + " -> " + __toString(e));
-        }
-    }
-
-    @Override
-    public void writeFieldBegin(final FieldBegin field)
-            throws OutputProtocolException {
-        final String message = "writeFieldBegin(" + field.toString() + ")";
-        try {
-            wrappedProtocol.writeFieldBegin(field);
-            logger.info(message);
-        } catch (final OutputProtocolException e) {
-            logger.info(message + " -> " + __toString(e));
+            logger.info(WRITE_FIELD_BEGIN_MESSAGE, name, type, id, e);
+            throw e;
         }
     }
 
     @Override
     public void writeFieldEnd() throws OutputProtocolException {
-        final String message = "writeFieldEnd()";
         try {
             wrappedProtocol.writeFieldEnd();
-            logger.info(message);
+            logger.info(WRITE_FIELD_END_MESSAGE);
         } catch (final OutputProtocolException e) {
-            logger.info(message + " -> " + __toString(e));
+            logger.info(WRITE_FIELD_END_MESSAGE, e);
+            throw e;
         }
     }
 
     @Override
     public void writeFieldStop() throws OutputProtocolException {
-        final String message = "writeFieldStop()";
         try {
             wrappedProtocol.writeFieldStop();
-            logger.info(message);
+            logger.info(WRITE_FIELD_STOP_MESSAGE);
         } catch (final OutputProtocolException e) {
-            logger.info(message + " -> " + __toString(e));
+            logger.info(WRITE_FIELD_STOP_MESSAGE, e);
+            throw e;
         }
     }
 
     @Override
-    public void writeI16(final short i16) throws OutputProtocolException {
-        final String message = "writeI16(" + i16 + ")";
+    public void writeI16(final short value) throws OutputProtocolException {
         try {
-            wrappedProtocol.writeI16(i16);
-            logger.info(message);
+            wrappedProtocol.writeI16(value);
+            logger.info(WRITE_I16_MESSAGE, value);
         } catch (final OutputProtocolException e) {
-            logger.info(message + " -> " + __toString(e));
+            logger.info(WRITE_I16_MESSAGE, value, e);
+            throw e;
         }
     }
 
     @Override
-    public void writeI32(final int i32) throws OutputProtocolException {
-        final String message = "writeI32(" + i32 + ")";
+    public void writeI32(final int value) throws OutputProtocolException {
         try {
-            wrappedProtocol.writeI32(i32);
-            logger.info(message);
+            wrappedProtocol.writeI32(value);
+            logger.info(WRITE_I32_MESSAGE, value);
         } catch (final OutputProtocolException e) {
-            logger.info(message + " -> " + __toString(e));
+            logger.info(WRITE_I32_MESSAGE, value, e);
+            throw e;
         }
     }
 
     @Override
-    public void writeI64(final long i64) throws OutputProtocolException {
-        final String message = "writeI64(" + i64 + ")";
+    public void writeI64(final long value) throws OutputProtocolException {
         try {
-            wrappedProtocol.writeI64(i64);
-            logger.info(message);
+            wrappedProtocol.writeI64(value);
+            logger.info(WRITE_I64_MESSAGE, value);
         } catch (final OutputProtocolException e) {
-            logger.info(message + " -> " + __toString(e));
+            logger.info(WRITE_I64_MESSAGE, value, e);
+            throw e;
         }
     }
 
     @Override
-    public void writeListBegin(final ListBegin list)
+    public void writeListBegin(final Type elementType, final int size)
             throws OutputProtocolException {
-        final String message = "writeListBegin(" + __toString(list) + ")";
         try {
-            wrappedProtocol.writeListBegin(list);
-            logger.info(message);
+            wrappedProtocol.writeListBegin(elementType, size);
+            logger.info(WRITE_LIST_BEGIN_MESSAGE, elementType, size);
         } catch (final OutputProtocolException e) {
-            logger.info(message + " -> " + __toString(e));
+            logger.info(WRITE_I16_MESSAGE, elementType, size, e);
             throw e;
         }
     }
 
     @Override
     public void writeListEnd() throws OutputProtocolException {
-        final String message = "writeListEnd()";
         try {
             wrappedProtocol.writeListEnd();
-            logger.info(message);
+            logger.info(WRITE_LIST_END_MESSAGE);
         } catch (final OutputProtocolException e) {
-            logger.info(message + " -> " + __toString(e));
+            logger.info(WRITE_LIST_END_MESSAGE, e);
+            throw e;
         }
     }
 
     @Override
-    public void writeMapBegin(final MapBegin map)
-            throws OutputProtocolException {
-        final String message = "writeMapBegin(" + __toString(map) + ")";
+    public void writeMapBegin(final Type keyType, final Type valueType,
+            final int size) throws OutputProtocolException {
         try {
-            wrappedProtocol.writeMapBegin(map);
-            logger.info(message);
+            wrappedProtocol.writeMapBegin(keyType, valueType, size);
+            logger.info(WRITE_MAP_BEGIN_MESSAGE, keyType, valueType, size);
         } catch (final OutputProtocolException e) {
-            logger.info(message + " -> " + __toString(e));
+            logger.info(WRITE_MAP_BEGIN_MESSAGE, keyType, valueType, e);
+            throw e;
         }
     }
 
     @Override
     public void writeMapEnd() throws OutputProtocolException {
-        final String message = "writeMapEnd()";
         try {
             wrappedProtocol.writeMapEnd();
-            logger.info(message);
+            logger.info(WRITE_MAP_END_MESSAGE);
         } catch (final OutputProtocolException e) {
-            logger.info(message + " -> " + __toString(e));
+            logger.info(WRITE_MAP_END_MESSAGE, e);
+            throw e;
         }
     }
 
     @Override
     public void writeMixed(final Object value) throws OutputProtocolException {
-        final String message = "writeMixed(" + value + ")";
         try {
             wrappedProtocol.writeMixed(value);
-            logger.info(message);
+            logger.info(WRITE_MIXED_MESSAGE, value);
         } catch (final OutputProtocolException e) {
-            logger.info(message + " -> " + __toString(e));
+            logger.info(WRITE_MIXED_MESSAGE, value, e);
+            throw e;
         }
     }
 
     @Override
     public void writeNull() throws OutputProtocolException {
-        final String message = "writeNull()";
         try {
             wrappedProtocol.writeNull();
-            logger.info(message);
+            logger.info(WRITE_NULL_MESSAGE);
         } catch (final OutputProtocolException e) {
-            logger.info(message + " -> " + __toString(e));
+            logger.info(WRITE_NULL_MESSAGE, e);
+            throw e;
         }
     }
 
     @Override
-    public void writeSetBegin(final SetBegin set)
+    public void writeSetBegin(final Type elementType, final int size)
             throws OutputProtocolException {
-        final String message = "writeSetBegin(" + __toString(set) + ")";
         try {
-            wrappedProtocol.writeSetBegin(set);
-            logger.info(message);
+            wrappedProtocol.writeSetBegin(elementType, size);
+            logger.info(WRITE_SET_BEGIN_MESSAGE, elementType, size);
         } catch (final OutputProtocolException e) {
-            logger.info(message + " -> " + __toString(e));
+            logger.info(WRITE_SET_BEGIN_MESSAGE, elementType, size, e);
             throw e;
         }
     }
 
     @Override
     public void writeSetEnd() throws OutputProtocolException {
-        final String message = "writeSetEnd()";
         try {
             wrappedProtocol.writeSetEnd();
-            logger.info(message);
+            logger.info(WRITE_SET_END_MESSAGE);
         } catch (final OutputProtocolException e) {
-            logger.info(message + " -> " + __toString(e));
+            logger.info(WRITE_SET_END_MESSAGE, e);
+            throw e;
         }
     }
 
     @Override
-    public void writeString(final String str) throws OutputProtocolException {
-        final String message = "writeString(" + str + ")";
+    public void writeString(final String value) throws OutputProtocolException {
         try {
-            wrappedProtocol.writeString(str);
-            logger.info(message);
+            wrappedProtocol.writeString(value);
+            logger.info(WRITE_STRING_MESSAGE, value);
         } catch (final OutputProtocolException e) {
-            logger.info(message + " -> " + __toString(e));
+            logger.info(WRITE_STRING_MESSAGE, value, e);
+            throw e;
         }
     }
 
     @Override
-    public void writeStructBegin(final StructBegin struct)
+    public void writeStructBegin(final String name)
             throws OutputProtocolException {
-        final String message = "writeStructBegin(" + __toString(struct) + ")";
         try {
-            wrappedProtocol.writeStructBegin(struct);
-            logger.info(message);
+            wrappedProtocol.writeStructBegin(name);
+            logger.info(WRITE_STRUCT_BEGIN_MESSAGE, name);
         } catch (final OutputProtocolException e) {
-            logger.info(message + " -> " + __toString(e));
+            logger.info(WRITE_STRUCT_BEGIN_MESSAGE, name, e);
+            throw e;
         }
     }
 
     @Override
     public void writeStructEnd() throws OutputProtocolException {
-        final String message = "writeStructEnd()";
         try {
             wrappedProtocol.writeStructEnd();
-            logger.info(message);
+            logger.info(WRITE_STRUCT_END_MESSAGE);
         } catch (final OutputProtocolException e) {
-            logger.info(message + " -> " + __toString(e));
+            logger.info(WRITE_STRUCT_END_MESSAGE, e);
+            throw e;
         }
     }
 
     @Override
-    public void writeU32(final UnsignedInteger u32)
+    public void writeU32(final UnsignedInteger value)
             throws OutputProtocolException {
-        final String message = "writeU32(" + u32 + ")";
         try {
-            wrappedProtocol.writeU32(u32);
-            logger.info(message);
+            wrappedProtocol.writeU32(value);
+            logger.info(WRITE_U32_MESSAGE, value);
         } catch (final OutputProtocolException e) {
-            logger.info(message + " -> " + __toString(e));
+            logger.info(WRITE_U32_MESSAGE, value, e);
+            throw e;
         }
     }
 
     @Override
-    public void writeU64(final UnsignedLong u64) throws OutputProtocolException {
-        final String message = "writeU64(" + u64 + ")";
+    public void writeU64(final UnsignedLong value)
+            throws OutputProtocolException {
         try {
-            wrappedProtocol.writeU64(u64);
-            logger.info(message);
+            wrappedProtocol.writeU64(value);
+            logger.info(WRITE_U64_MESSAGE, value);
         } catch (final OutputProtocolException e) {
-            logger.info(message + " -> " + __toString(e));
+            logger.info(WRITE_U64_MESSAGE, value, e);
+            throw e;
         }
     }
 
     @Override
-    public void writeUri(final Uri uri) throws OutputProtocolException {
-        final String message = "writeUri(" + uri + ")";
+    public void writeUri(final Uri value) throws OutputProtocolException {
         try {
-            wrappedProtocol.writeUri(uri);
-            logger.info(message);
+            wrappedProtocol.writeUri(value);
+            logger.info(WRITE_URI_MESSAGE, value);
         } catch (final OutputProtocolException e) {
-            logger.info(message + " -> " + __toString(e));
+            logger.info(WRITE_URI_MESSAGE, value, e);
+            throw e;
         }
     }
 
     @Override
-    public void writeUrl(final Url url) throws OutputProtocolException {
-        final String message = "writeUrl(" + url + ")";
+    public void writeUrl(final Url value) throws OutputProtocolException {
         try {
-            wrappedProtocol.writeUrl(url);
-            logger.info(message);
+            wrappedProtocol.writeUrl(value);
+            logger.info(WRITE_URL_MESSAGE, value);
         } catch (final OutputProtocolException e) {
-            logger.info(message + " -> " + __toString(e));
+            logger.info(WRITE_URL_MESSAGE, value, e);
+            throw e;
         }
     }
 
-    private final String __toString(final byte[] bytes) {
-        return "bytes[length=" + Integer.toString(bytes.length) + "]";
-    }
-
-    private final String __toString(final Exception e) {
-        return "exception: " + e.getMessage();
-    }
-
-    private final String __toString(final ListBegin list) {
-        return "List(" + Byte.toString(list.elemType) + ", "
-                + Integer.toString(list.size) + ")";
-    }
-
-    private final String __toString(final MapBegin map) {
-        return "Map(" + Byte.toString(map.keyType) + ", "
-                + Byte.toString(map.valueType) + ", "
-                + Integer.toString(map.size) + ")";
-    }
-
-    private final String __toString(final SetBegin set) {
-        return "Set(" + Byte.toString(set.elemType) + ", "
-                + Integer.toString(set.size) + ")";
-    }
-
-    private final String __toString(final StructBegin struct) {
-        return "TStruct(" + struct.name + ")";
-    }
+    private final static String WRITE_BOOL_MESSAGE = "writeBool({})";
+    private final static String WRITE_BINARY_MESSAGE = "writeBinary({} bytes)";
+    private final static String WRITE_BYTE_MESSAGE = "writeByte({})";
+    private final static String WRITE_DATE_TIME_MESSAGE = "writeDateTime({})";
+    private final static String WRITE_DECIMAL_MESSAGE = "writeDecimal({})";
+    private final static String WRITE_DOUBLE_MESSAGE = "writeDouble({})";
+    private final static String WRITE_EMAIL_ADDRESS_MESSAGE = "writeEmailAddress({})";
+    private final static String WRITE_ENUM_MESSAGE = "writeEnum({})";
+    private final static String WRITE_FIELD_BEGIN_MESSAGE = "writeFieldBegin({}, {}, {})";
+    private final static String WRITE_FIELD_END_MESSAGE = "writeFieldEnd()";
+    private final static String WRITE_FIELD_STOP_MESSAGE = "writeFieldStop()";
+    private final static String WRITE_I16_MESSAGE = "writeI16({})";
+    private final static String WRITE_I32_MESSAGE = "writeI32({})";
+    private final static String WRITE_I64_MESSAGE = "writeI64({})";
+    private final static String WRITE_LIST_BEGIN_MESSAGE = "writeListBegin({}, {})";
+    private final static String WRITE_LIST_END_MESSAGE = "writeListEnd()";
+    private final static String WRITE_MAP_BEGIN_MESSAGE = "writeMapBegin({}, {}, {})";
+    private final static String WRITE_MAP_END_MESSAGE = "writeMapEnd()";
+    private final static String WRITE_MIXED_MESSAGE = "writeMixed({})";
+    private final static String WRITE_NULL_MESSAGE = "writeNull()";
+    private final static String WRITE_SET_BEGIN_MESSAGE = "writeSetBegin({}, {})";
+    private final static String WRITE_SET_END_MESSAGE = "writeSetEnd()";
+    private final static String WRITE_STRING_MESSAGE = "writeString({})";
+    private final static String WRITE_STRUCT_BEGIN_MESSAGE = "writeStructBegin({})";
+    private final static String WRITE_STRUCT_END_MESSAGE = "writeStructEnd()";
+    private final static String WRITE_U32_MESSAGE = "writeU32({})";
+    private final static String WRITE_U64_MESSAGE = "writeU64({})";
+    private final static String WRITE_URI_MESSAGE = "writeUri({})";
+    private final static String WRITE_URL_MESSAGE = "writeUrl({})";
 
     private final Logger logger;
 

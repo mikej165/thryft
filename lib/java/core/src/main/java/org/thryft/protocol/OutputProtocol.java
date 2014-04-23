@@ -45,45 +45,45 @@ import com.google.common.primitives.UnsignedLong;
 public interface OutputProtocol extends Protocol {
     public void flush() throws OutputProtocolException;
 
-    public void writeBinary(final byte[] buf) throws OutputProtocolException;
+    public void writeBinary(final byte[] value) throws OutputProtocolException;
 
-    public void writeBool(final boolean b) throws OutputProtocolException;
+    public void writeBool(final boolean value) throws OutputProtocolException;
 
-    public void writeByte(final byte b) throws OutputProtocolException;
+    public void writeByte(final byte value) throws OutputProtocolException;
 
-    public void writeDateTime(final Date dateTime)
+    public void writeDateTime(final Date value)
             throws OutputProtocolException;
 
-    public void writeDecimal(final BigDecimal decimal)
+    public void writeDecimal(final BigDecimal value)
             throws OutputProtocolException;
 
-    public void writeDouble(final double dub) throws OutputProtocolException;
+    public void writeDouble(final double value) throws OutputProtocolException;
 
-    public void writeEmailAddress(final EmailAddress emailAddress)
+    public void writeEmailAddress(final EmailAddress value)
             throws OutputProtocolException;
 
-    public void writeEnum(final Enum<?> enum_) throws OutputProtocolException;
+    public void writeEnum(final Enum<?> value) throws OutputProtocolException;
 
-    public void writeFieldBegin(final FieldBegin field)
-            throws OutputProtocolException;
+    public void writeFieldBegin(final String name, final Type type,
+            final short id) throws OutputProtocolException;
 
     public void writeFieldEnd() throws OutputProtocolException;
 
     public void writeFieldStop() throws OutputProtocolException;
 
-    public void writeI16(final short i16) throws OutputProtocolException;
+    public void writeI16(final short value) throws OutputProtocolException;
 
-    public void writeI32(final int i32) throws OutputProtocolException;
+    public void writeI32(final int value) throws OutputProtocolException;
 
-    public void writeI64(final long i64) throws OutputProtocolException;
+    public void writeI64(final long value) throws OutputProtocolException;
 
-    public void writeListBegin(final ListBegin list)
+    public void writeListBegin(final Type elementType, final int size)
             throws OutputProtocolException;
 
     public void writeListEnd() throws OutputProtocolException;
 
-    public void writeMapBegin(final MapBegin map)
-            throws OutputProtocolException;
+    public void writeMapBegin(final Type keyType, final Type valueType,
+            final int size) throws OutputProtocolException;
 
     public void writeMapEnd() throws OutputProtocolException;
 
@@ -91,24 +91,24 @@ public interface OutputProtocol extends Protocol {
 
     public void writeNull() throws OutputProtocolException;
 
-    public void writeSetBegin(final SetBegin set)
+    public void writeSetBegin(final Type elementType, final int size)
             throws OutputProtocolException;
 
     public void writeSetEnd() throws OutputProtocolException;
 
-    public void writeString(final String str) throws OutputProtocolException;
+    public void writeString(final String value) throws OutputProtocolException;
 
-    public void writeStructBegin(final StructBegin struct)
+    public void writeStructBegin(final String name)
             throws OutputProtocolException;
 
     public void writeStructEnd() throws OutputProtocolException;
 
-    public void writeU32(final UnsignedInteger u32)
+    public void writeU32(final UnsignedInteger value)
             throws OutputProtocolException;
 
-    public void writeU64(final UnsignedLong u64) throws OutputProtocolException;
+    public void writeU64(final UnsignedLong value) throws OutputProtocolException;
 
-    public void writeUri(final Uri uri) throws OutputProtocolException;
+    public void writeUri(final Uri value) throws OutputProtocolException;
 
-    public void writeUrl(final Url url) throws OutputProtocolException;
+    public void writeUrl(final Url value) throws OutputProtocolException;
 }

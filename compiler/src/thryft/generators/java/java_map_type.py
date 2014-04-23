@@ -67,7 +67,7 @@ class JavaMapType(MapType, _JavaContainerType):
         try {
             final org.thryft.protocol.MapBegin mapBegin = iprot.readMapBegin();
             final com.google.common.collect.ImmutableMap.Builder<%(key_type_name)s, %(value_type_name)s> map = com.google.common.collect.ImmutableMap.builder();
-            for (int entryI = 0; entryI < mapBegin.size; entryI++) {
+            for (int entryI = 0; entryI < mapBegin.getSize(); entryI++) {
                 map.put(%(key_read_protocol)s, %(value_read_protocol)s);
             }
             iprot.readMapEnd();
@@ -98,7 +98,7 @@ class JavaMapType(MapType, _JavaContainerType):
                 )
             )
         return """\
-oprot.writeMapBegin(new org.thryft.protocol.MapBegin(org.thryft.protocol.Type.%(key_ttype)s, org.thryft.protocol.Type.%(value_ttype)s, %(value)s.size()));
+oprot.writeMapBegin(org.thryft.protocol.Type.%(key_ttype)s, org.thryft.protocol.Type.%(value_ttype)s, %(value)s.size());
 for (com.google.common.collect.ImmutableMap.Entry<%(key_type_name)s, %(value_type_name)s> _iter%(depth)u : %(value)s.entrySet()) {
 %(key_write_protocol)s
 %(value_write_protocol)s

@@ -357,7 +357,7 @@ public final class S3Store<ModelT extends Base<?>> extends
                 final MapBegin map = iprot.readMapBegin();
                 final ImmutableMap.Builder<String, ModelT> modelsBuilder = ImmutableMap
                         .builder();
-                for (int i = 0; i < map.size; i++) {
+                for (int i = 0; i < map.getSize(); i++) {
                     final String modelId = iprot.readString();
                     modelsBuilder.put(modelId, _getModel(iprot));
                 }
@@ -392,8 +392,7 @@ public final class S3Store<ModelT extends Base<?>> extends
             final StringWriter ostringWriter = new StringWriter();
             final JsonOutputProtocol oprot = new JsonOutputProtocol(
                     ostringWriter);
-            oprot.writeMapBegin(new MapBegin(Type.STRING, Type.STRUCT, models
-                    .size()));
+            oprot.writeMapBegin(Type.STRING, Type.STRUCT, models.size());
             for (final ImmutableMap.Entry<String, ModelT> model : models
                     .entrySet()) {
                 oprot.writeString(model.getKey());

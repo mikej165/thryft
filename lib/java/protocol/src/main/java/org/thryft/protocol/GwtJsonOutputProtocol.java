@@ -47,38 +47,39 @@ public class GwtJsonOutputProtocol extends StackedOutputProtocol {
     protected abstract class AbstractOutputProtocol extends
             org.thryft.protocol.AbstractOutputProtocol {
         @Override
-        public void writeBool(final boolean b) throws OutputProtocolException {
-            _write(JSONBoolean.getInstance(b));
-        }
-
-        @Override
-        public void writeByte(final byte b) throws OutputProtocolException {
-            _write(new JSONNumber(b));
-        }
-
-        @Override
-        public void writeDouble(final double dub)
+        public void writeBool(final boolean value)
                 throws OutputProtocolException {
-            _write(new JSONNumber(dub));
+            _write(JSONBoolean.getInstance(value));
         }
 
         @Override
-        public void writeI16(final short i16) throws OutputProtocolException {
-            _write(new JSONNumber(i16));
+        public void writeByte(final byte value) throws OutputProtocolException {
+            _write(new JSONNumber(value));
         }
 
         @Override
-        public void writeI32(final int i32) throws OutputProtocolException {
-            _write(new JSONNumber(i32));
+        public void writeDouble(final double value)
+                throws OutputProtocolException {
+            _write(new JSONNumber(value));
         }
 
         @Override
-        public void writeI64(final long i64) throws OutputProtocolException {
-            _write(new JSONNumber(i64));
+        public void writeI16(final short value) throws OutputProtocolException {
+            _write(new JSONNumber(value));
         }
 
         @Override
-        public void writeListBegin(final ListBegin list)
+        public void writeI32(final int value) throws OutputProtocolException {
+            _write(new JSONNumber(value));
+        }
+
+        @Override
+        public void writeI64(final long value) throws OutputProtocolException {
+            _write(new JSONNumber(value));
+        }
+
+        @Override
+        public void writeListBegin(final Type elementType, final int size)
                 throws OutputProtocolException {
             final JSONArray array = new JSONArray();
             _write(array);
@@ -90,8 +91,8 @@ public class GwtJsonOutputProtocol extends StackedOutputProtocol {
         }
 
         @Override
-        public void writeMapBegin(final MapBegin map)
-                throws OutputProtocolException {
+        public void writeMapBegin(final Type keyType, final Type valueType,
+                final int size) throws OutputProtocolException {
             final JSONObject object = new JSONObject();
             _write(object);
             _getProtocolStack().push(_createMapObjectOutputProtocol(object));
@@ -107,13 +108,13 @@ public class GwtJsonOutputProtocol extends StackedOutputProtocol {
         }
 
         @Override
-        public void writeString(final String str)
+        public void writeString(final String value)
                 throws OutputProtocolException {
-            _write(new JSONString(str));
+            _write(new JSONString(value));
         }
 
         @Override
-        public void writeStructBegin(final StructBegin struct)
+        public void writeStructBegin(final String name)
                 throws OutputProtocolException {
             final JSONObject object = new JSONObject();
             _write(object);
@@ -146,77 +147,78 @@ public class GwtJsonOutputProtocol extends StackedOutputProtocol {
         }
 
         @Override
-        public void writeBool(final boolean b) throws OutputProtocolException {
-            if (nextKey == null) {
-                writeString(Boolean.toString(b));
-            } else {
-                super.writeBool(b);
-            }
-        }
-
-        @Override
-        public void writeByte(final byte b) throws OutputProtocolException {
-            if (nextKey == null) {
-                writeString(Byte.toString(b));
-            } else {
-                super.writeByte(b);
-            }
-        }
-
-        @Override
-        public void writeDouble(final double dub)
+        public void writeBool(final boolean value)
                 throws OutputProtocolException {
             if (nextKey == null) {
-                writeString(Double.toString(dub));
+                writeString(Boolean.toString(value));
             } else {
-                super.writeDouble(dub);
+                super.writeBool(value);
             }
         }
 
         @Override
-        public void writeI16(final short i16) throws OutputProtocolException {
+        public void writeByte(final byte value) throws OutputProtocolException {
             if (nextKey == null) {
-                writeString(Short.toString(i16));
+                writeString(Byte.toString(value));
             } else {
-                super.writeI16(i16);
+                super.writeByte(value);
             }
         }
 
         @Override
-        public void writeI32(final int i32) throws OutputProtocolException {
-            if (nextKey == null) {
-                writeString(Integer.toString(i32));
-            } else {
-                super.writeI32(i32);
-            }
-        }
-
-        @Override
-        public void writeI64(final long i64) throws OutputProtocolException {
-            if (nextKey == null) {
-                writeString(Long.toString(i64));
-            } else {
-                super.writeI64(i64);
-            }
-        }
-
-        @Override
-        public void writeListBegin(final ListBegin list)
+        public void writeDouble(final double value)
                 throws OutputProtocolException {
             if (nextKey == null) {
-                throw new UnsupportedOperationException();
+                writeString(Double.toString(value));
             } else {
-                super.writeListBegin(list);
+                super.writeDouble(value);
             }
         }
 
         @Override
-        public void writeMapBegin(final MapBegin map)
+        public void writeI16(final short value) throws OutputProtocolException {
+            if (nextKey == null) {
+                writeString(Short.toString(value));
+            } else {
+                super.writeI16(value);
+            }
+        }
+
+        @Override
+        public void writeI32(final int value) throws OutputProtocolException {
+            if (nextKey == null) {
+                writeString(Integer.toString(value));
+            } else {
+                super.writeI32(value);
+            }
+        }
+
+        @Override
+        public void writeI64(final long value) throws OutputProtocolException {
+            if (nextKey == null) {
+                writeString(Long.toString(value));
+            } else {
+                super.writeI64(value);
+            }
+        }
+
+        @Override
+        public void writeListBegin(final Type elementType, final int size)
                 throws OutputProtocolException {
             if (nextKey == null) {
                 throw new UnsupportedOperationException();
             } else {
-                super.writeMapBegin(map);
+                super.writeListBegin(elementType, size);
+            }
+        }
+
+        @Override
+        public void writeMapBegin(final Type keyType, final Type valueType,
+                final int size) throws OutputProtocolException {
+            if (nextKey == null) {
+                throw new UnsupportedOperationException();
+            } else {
+                super.writeMapBegin(keyType, valueType, size);
             }
         }
 
@@ -230,22 +232,22 @@ public class GwtJsonOutputProtocol extends StackedOutputProtocol {
         }
 
         @Override
-        public void writeString(final String str)
+        public void writeString(final String value)
                 throws OutputProtocolException {
             if (nextKey == null) {
-                nextKey = str;
+                nextKey = value;
             } else {
-                super.writeString(str);
+                super.writeString(value);
             }
         }
 
         @Override
-        public void writeStructBegin(final StructBegin struct)
+        public void writeStructBegin(final String name)
                 throws OutputProtocolException {
             if (nextKey == null) {
                 throw new UnsupportedOperationException();
             } else {
-                super.writeStructBegin(struct);
+                super.writeStructBegin(name);
             }
         }
 
@@ -283,9 +285,9 @@ public class GwtJsonOutputProtocol extends StackedOutputProtocol {
         }
 
         @Override
-        public void writeFieldBegin(final FieldBegin field)
-                throws OutputProtocolException {
-            nextFieldName = field.name;
+        public void writeFieldBegin(final String name, final Type type,
+                final short id) throws OutputProtocolException {
+            nextFieldName = name;
         }
 
         @Override

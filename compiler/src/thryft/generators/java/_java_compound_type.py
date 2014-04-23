@@ -214,7 +214,7 @@ if (ifield.name.equals("%s")) {
             if not field_required:
                 field_protocol_initializer = indent(' ' * 4, field_protocol_initializer)
                 field_protocol_initializer = """\
-if (__list.size > %(field_i)u) {
+if (__list.getSize() > %(field_i)u) {
 %(field_protocol_initializer)s
 }""" % locals()
                 need_read_list_return = True
@@ -228,14 +228,14 @@ public %(name)s(final org.thryft.protocol.InputProtocol iprot) throws org.thryft
     this(iprot, org.thryft.protocol.Type.STRUCT);
 }
 
-public %(name)s(final org.thryft.protocol.InputProtocol iprot, final byte readAsTType) throws org.thryft.protocol.InputProtocolException {%(field_declarations)s
-    switch (readAsTType) {
-        case org.thryft.protocol.Type.LIST:
+public %(name)s(final org.thryft.protocol.InputProtocol iprot, final org.thryft.protocol.Type readAsType) throws org.thryft.protocol.InputProtocolException {%(field_declarations)s
+    switch (readAsType) {
+        case LIST:
             %(read_list)siprot.readListBegin();%(field_protocol_positional_initializers)s
             iprot.readListEnd();
             break;
 
-        case org.thryft.protocol.Type.STRUCT:
+        case STRUCT:
         default:
             iprot.readStructBegin();
             while (true) {
@@ -518,7 +518,7 @@ public String toString() {
 }""" % locals()}
 
     def _java_method_write(self):
-        case_ttype_void = 'case org.thryft.protocol.Type.VOID:'
+        case_ttype_void = 'case VOID:'
         if len(self.fields) == 1:
             field = self.fields[0]
             from thryft.generators.java._java_container_type import _JavaContainerType
@@ -555,17 +555,17 @@ public void write(final org.thryft.protocol.OutputProtocol oprot) throws org.thr
     write(oprot, org.thryft.protocol.Type.STRUCT);
 }
 
-public void write(final org.thryft.protocol.OutputProtocol oprot, final byte writeAsTType) throws org.thryft.protocol.OutputProtocolException {
-    switch (writeAsTType) {
+public void write(final org.thryft.protocol.OutputProtocol oprot, final org.thryft.protocol.Type writeAsType) throws org.thryft.protocol.OutputProtocolException {
+    switch (writeAsType) {
         %(case_ttype_void)s
-        case org.thryft.protocol.Type.LIST:
-            oprot.writeListBegin(new org.thryft.protocol.ListBegin(org.thryft.protocol.Type.VOID, %(field_count)u));%(field_value_write_protocols)s
+        case LIST:
+            oprot.writeListBegin(org.thryft.protocol.Type.VOID, %(field_count)u);%(field_value_write_protocols)s
             oprot.writeListEnd();
             break;
 
-        case org.thryft.protocol.Type.STRUCT:
+        case STRUCT:
         default:
-            oprot.writeStructBegin(new org.thryft.protocol.StructBegin(\"%(name)s\"));%(field_write_protocols)s
+            oprot.writeStructBegin(\"%(name)s\");%(field_write_protocols)s
 
             oprot.writeFieldStop();
 

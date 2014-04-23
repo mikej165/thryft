@@ -86,7 +86,7 @@ public interface InputProtocol extends Protocol {
 
     public String readString() throws InputProtocolException;
 
-    public StructBegin readStructBegin() throws InputProtocolException;
+    public String readStructBegin() throws InputProtocolException;
 
     public void readStructEnd() throws InputProtocolException;
 

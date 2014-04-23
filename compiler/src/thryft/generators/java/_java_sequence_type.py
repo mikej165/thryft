@@ -88,7 +88,7 @@ try {
         try {
             final org.thryft.protocol.%(interface_simple_name)sBegin sequenceBegin = iprot.read%(interface_simple_name)sBegin();
             final com.google.common.collect.Immutable%(interface_simple_name)s.Builder<%(element_type_name)s> sequence = com.google.common.collect.Immutable%(interface_simple_name)s.builder();
-            for (int elementI = 0; elementI < sequenceBegin.size; elementI++) {
+            for (int elementI = 0; elementI < sequenceBegin.getSize(); elementI++) {
 %(add_element)s
             }
             iprot.read%(interface_simple_name)sEnd();
@@ -111,7 +111,7 @@ try {
             )
         interface_simple_name = self._java_interface_simple_name()
         return """\
-oprot.write%(interface_simple_name)sBegin(new org.thryft.protocol.%(interface_simple_name)sBegin(org.thryft.protocol.Type.%(element_ttype)s, %(value)s.size()));
+oprot.write%(interface_simple_name)sBegin(org.thryft.protocol.Type.%(element_ttype)s, %(value)s.size());
 for (final %(element_type_name)s _iter%(depth)u : %(value)s) {
 %(element_write_protocol)s
 }

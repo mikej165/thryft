@@ -109,13 +109,13 @@ public class GwtJsonInputProtocol extends StackedInputProtocol {
         }
 
         @Override
-        public StructBegin readStructBegin() throws InputProtocolException {
+        public String readStructBegin() throws InputProtocolException {
             final JSONObject node = _readChildNode().isObject();
             if (node == null) {
                 throw new InputProtocolException("expected JSON object");
             }
             _getProtocolStack().push(_createStructObjectInputProtocol(node));
-            return new StructBegin();
+            return "";
         }
 
         protected JSONValue _getMyNode() {

@@ -130,7 +130,7 @@ public abstract class AbstractInputProtocol implements InputProtocol {
     @Override
     public SetBegin readSetBegin() throws InputProtocolException {
         final ListBegin list = readListBegin();
-        return new SetBegin(list.elemType, list.size);
+        return new SetBegin(list.getElementType(), list.getSize());
     }
 
     @Override

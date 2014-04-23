@@ -49,39 +49,39 @@ public class StringMapOutputProtocol extends StackedOutputProtocol {
         }
 
         @Override
-        public final void writeBool(final boolean b)
+        public final void writeBool(final boolean value)
                 throws OutputProtocolException {
-            writeString(Boolean.toString(b));
+            writeString(Boolean.toString(value));
         }
 
         @Override
-        public final void writeByte(final byte b)
+        public final void writeByte(final byte value)
                 throws OutputProtocolException {
-            writeString(Byte.toString(b));
+            writeString(Byte.toString(value));
         }
 
         @Override
-        public final void writeDouble(final double dub)
+        public final void writeDouble(final double value)
                 throws OutputProtocolException {
-            writeString(Double.toString(dub));
+            writeString(Double.toString(value));
         }
 
         @Override
-        public final void writeI16(final short i16)
+        public final void writeI16(final short value)
                 throws OutputProtocolException {
-            writeString(Short.toString(i16));
+            writeString(Short.toString(value));
         }
 
         @Override
-        public final void writeI32(final int i32)
+        public final void writeI32(final int value)
                 throws OutputProtocolException {
-            writeString(Integer.toString(i32));
+            writeString(Integer.toString(value));
         }
 
         @Override
-        public final void writeI64(final long i64)
+        public final void writeI64(final long value)
                 throws OutputProtocolException {
-            writeString(Long.toString(i64));
+            writeString(Long.toString(value));
         }
 
         @Override
@@ -137,14 +137,14 @@ public class StringMapOutputProtocol extends StackedOutputProtocol {
         }
 
         @Override
-        public void writeListBegin(final ListBegin list)
+        public void writeListBegin(final Type elementType, final int size)
                 throws OutputProtocolException {
             _writeListBegin(Integer.toString(nextChildKey++));
         }
 
         @Override
-        public void writeMapBegin(final MapBegin map)
-                throws OutputProtocolException {
+        public void writeMapBegin(final Type keyType, final Type valueType,
+                final int size) throws OutputProtocolException {
             _writeMapBegin(Integer.toString(nextChildKey++));
         }
 
@@ -155,7 +155,7 @@ public class StringMapOutputProtocol extends StackedOutputProtocol {
         }
 
         @Override
-        public void writeStructBegin(final StructBegin struct)
+        public void writeStructBegin(final String name)
                 throws OutputProtocolException {
             _writeStructBegin(Integer.toString(nextChildKey++));
         }
@@ -169,15 +169,15 @@ public class StringMapOutputProtocol extends StackedOutputProtocol {
         }
 
         @Override
-        public void writeListBegin(final ListBegin list)
+        public void writeListBegin(final Type elementType, final int size)
                 throws OutputProtocolException {
             checkState(nextChildKey != null);
             _writeListBegin(nextChildKey);
         }
 
         @Override
-        public void writeMapBegin(final MapBegin map)
-                throws OutputProtocolException {
+        public void writeMapBegin(final Type keyType, final Type valueType,
+                final int size) throws OutputProtocolException {
             checkState(nextChildKey != null);
             _writeMapBegin(nextChildKey);
         }
@@ -194,7 +194,7 @@ public class StringMapOutputProtocol extends StackedOutputProtocol {
         }
 
         @Override
-        public void writeStructBegin(final StructBegin struct)
+        public void writeStructBegin(final String name)
                 throws OutputProtocolException {
             checkState(nextChildKey != null);
             _writeStructBegin(nextChildKey);
@@ -209,14 +209,14 @@ public class StringMapOutputProtocol extends StackedOutputProtocol {
         }
 
         @Override
-        public void writeListBegin(final ListBegin list)
+        public void writeListBegin(final Type elementType, final int size)
                 throws OutputProtocolException {
             _getProtocolStack().push(new ListOutputProtocol(""));
         }
 
         @Override
-        public void writeMapBegin(final MapBegin map)
-                throws OutputProtocolException {
+        public void writeMapBegin(final Type keyType, final Type valueType,
+                final int size) throws OutputProtocolException {
             _getProtocolStack().push(new MapOutputProtocol(""));
         }
 
@@ -227,7 +227,7 @@ public class StringMapOutputProtocol extends StackedOutputProtocol {
         }
 
         @Override
-        public void writeStructBegin(final StructBegin struct)
+        public void writeStructBegin(final String name)
                 throws OutputProtocolException {
             _getProtocolStack().push(new StructOutputProtocol(""));
         }
@@ -239,9 +239,9 @@ public class StringMapOutputProtocol extends StackedOutputProtocol {
         }
 
         @Override
-        public void writeFieldBegin(final FieldBegin field)
-                throws OutputProtocolException {
-            nextChildKey = field.name;
+        public void writeFieldBegin(final String name, final Type type,
+                final short id) throws OutputProtocolException {
+            nextChildKey = name;
         }
 
         @Override
@@ -253,15 +253,15 @@ public class StringMapOutputProtocol extends StackedOutputProtocol {
         }
 
         @Override
-        public void writeListBegin(final ListBegin list)
+        public void writeListBegin(final Type elementType, final int size)
                 throws OutputProtocolException {
             checkState(nextChildKey != null);
             _writeListBegin(nextChildKey);
         }
 
         @Override
-        public void writeMapBegin(final MapBegin map)
-                throws OutputProtocolException {
+        public void writeMapBegin(final Type keyType, final Type valueType,
+                final int size) throws OutputProtocolException {
             checkState(nextChildKey != null);
             _writeMapBegin(nextChildKey);
         }
@@ -274,7 +274,7 @@ public class StringMapOutputProtocol extends StackedOutputProtocol {
         }
 
         @Override
-        public void writeStructBegin(final StructBegin struct)
+        public void writeStructBegin(final String name)
                 throws OutputProtocolException {
             checkState(nextChildKey != null);
             _writeStructBegin(nextChildKey);

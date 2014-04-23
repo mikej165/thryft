@@ -115,13 +115,13 @@ public class JsonInputProtocol extends StackedInputProtocol {
         }
 
         @Override
-        public StructBegin readStructBegin() throws InputProtocolException {
+        public String readStructBegin() throws InputProtocolException {
             final JsonNode node = _readChildNode();
             if (!node.isObject()) {
                 throw new InputProtocolException("expected JSON object");
             }
             _getProtocolStack().push(_createStructObjectInputProtocol(node));
-            return new StructBegin();
+            return "";
         }
 
         protected JsonNode _getMyNode() {

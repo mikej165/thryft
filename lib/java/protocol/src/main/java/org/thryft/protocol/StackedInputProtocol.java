@@ -150,7 +150,7 @@ public class StackedInputProtocol implements InputProtocol {
     }
 
     @Override
-    public StructBegin readStructBegin() throws InputProtocolException {
+    public String readStructBegin() throws InputProtocolException {
         return protocolStack.peek().readStructBegin();
     }
 

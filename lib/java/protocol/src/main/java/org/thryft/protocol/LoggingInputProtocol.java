@@ -54,92 +54,84 @@ public class LoggingInputProtocol implements InputProtocol {
 
     @Override
     public byte[] readBinary() throws InputProtocolException {
-        final String message = "readBinary() -> ";
         try {
-            final byte[] binary = wrappedProtocol.readBinary();
-            logger.info(message + __toString(binary));
-            return binary;
+            final byte[] value = wrappedProtocol.readBinary();
+            logger.info(READ_BINARY_MESSAGE, value.length);
+            return value;
         } catch (final InputProtocolException e) {
-            logger.info(message + __toString(e));
+            logger.info(READ_BINARY_MESSAGE, 0, e);
             throw e;
         }
     }
 
     @Override
     public boolean readBool() throws InputProtocolException {
-        final String message = "readBool() -> ";
         try {
-            final boolean bool = wrappedProtocol.readBool();
-            logger.info(message + Boolean.toString(bool));
-            return bool;
+            final boolean value = wrappedProtocol.readBool();
+            logger.info(READ_BOOL_MESSAGE, value);
+            return value;
         } catch (final InputProtocolException e) {
-            logger.info(message + __toString(e));
+            logger.info(READ_BOOL_MESSAGE, "", e);
             throw e;
         }
     }
 
     @Override
     public byte readByte() throws InputProtocolException {
-        final String message = "readByte() -> ";
         try {
-            final byte byte_ = wrappedProtocol.readByte();
-            logger.info(message + Byte.toString(byte_));
-            return byte_;
+            final byte value = wrappedProtocol.readByte();
+            logger.info(READ_BYTE_MESSAGE, value);
+            return value;
         } catch (final InputProtocolException e) {
-            logger.info(message + __toString(e));
+            logger.info(READ_BYTE_MESSAGE, "", e);
             throw e;
         }
     }
 
     @Override
     public Date readDateTime() throws InputProtocolException {
-        final String message = "readDateTime() -> ";
         try {
-            final Date dateTime = wrappedProtocol.readDateTime();
-            logger.info(message + dateTime);
-            return dateTime;
+            final Date value = wrappedProtocol.readDateTime();
+            logger.info(READ_DATE_TIME_MESSAGE, value);
+            return value;
         } catch (final InputProtocolException e) {
-            logger.info(message + __toString(e));
+            logger.info(READ_DATE_TIME_MESSAGE, "", e);
             throw e;
         }
     }
 
     @Override
     public BigDecimal readDecimal() throws InputProtocolException {
-        final String message = "readDecimal() -> ";
         try {
-            final BigDecimal decimal = wrappedProtocol.readDecimal();
-            logger.info(message + decimal);
-            return decimal;
+            final BigDecimal value = wrappedProtocol.readDecimal();
+            logger.info(READ_DECIMAL_MESSAGE, value);
+            return value;
         } catch (final InputProtocolException e) {
-            logger.info(message + __toString(e));
+            logger.info(READ_DECIMAL_MESSAGE, "", e);
             throw e;
         }
     }
 
     @Override
     public double readDouble() throws InputProtocolException {
-        final String message = "readDouble() -> ";
         try {
-            final double double_ = wrappedProtocol.readDouble();
-            logger.info(message + Double.toString(double_));
-            return double_;
+            final double value = wrappedProtocol.readDouble();
+            logger.info(READ_DOUBLE_MESSAGE, value);
+            return value;
         } catch (final InputProtocolException e) {
-            logger.info(message + __toString(e));
+            logger.info(READ_DOUBLE_MESSAGE, "", e);
             throw e;
         }
     }
 
     @Override
     public EmailAddress readEmailAddress() throws InputProtocolException {
-        final String message = "readEmailAddress() -> ";
         try {
-            final EmailAddress emailAddress = wrappedProtocol
-                    .readEmailAddress();
-            logger.info(message + emailAddress);
-            return emailAddress;
+            final EmailAddress value = wrappedProtocol.readEmailAddress();
+            logger.info(READ_EMAIL_ADDRESS_MESSAGE, value);
+            return value;
         } catch (final InputProtocolException e) {
-            logger.info(message + __toString(e));
+            logger.info(READ_EMAIL_ADDRESS_MESSAGE, "", e);
             throw e;
         }
     }
@@ -147,287 +139,266 @@ public class LoggingInputProtocol implements InputProtocol {
     @Override
     public <E extends Enum<E>> E readEnum(final Class<E> enumClass)
             throws InputProtocolException {
-        final String message = "readEnum(" + enumClass.getCanonicalName()
-                + ") -> ";
         try {
-            final E enum_ = wrappedProtocol.readEnum(enumClass);
-            logger.info(message + enum_);
-            return enum_;
+            final E value = wrappedProtocol.readEnum(enumClass);
+            logger.info(READ_ENUM_MESSAGE, enumClass, value);
+            return value;
         } catch (final InputProtocolException e) {
-            logger.info(message + __toString(e));
+            logger.info(READ_ENUM_MESSAGE, enumClass, "", e);
             throw e;
         }
     }
 
     @Override
     public FieldBegin readFieldBegin() throws InputProtocolException {
-        final String message = "readFieldBegin() -> ";
         try {
-            final FieldBegin field = wrappedProtocol.readFieldBegin();
-            logger.info(message + field.toString());
-            return field;
+            final FieldBegin value = wrappedProtocol.readFieldBegin();
+            logger.info(READ_FIELD_BEGIN_MESSAGE, value);
+            return value;
         } catch (final InputProtocolException e) {
-            logger.info(message + __toString(e));
+            logger.info(READ_FIELD_BEGIN_MESSAGE, "", e);
             throw e;
         }
     }
 
     @Override
     public void readFieldEnd() throws InputProtocolException {
-        final String message = "readFieldEnd()";
         try {
             wrappedProtocol.readFieldEnd();
-            logger.info(message);
+            logger.info(READ_FIELD_END_MESSAGE);
         } catch (final InputProtocolException e) {
-            logger.info(message + " -> " + __toString(e));
+            logger.info(READ_FIELD_END_MESSAGE, e);
             throw e;
         }
     }
 
     @Override
     public short readI16() throws InputProtocolException {
-        final String message = "readI16() -> ";
         try {
-            final short i16 = wrappedProtocol.readI16();
-            logger.info(message + Short.toString(i16));
-            return i16;
+            final short value = wrappedProtocol.readI16();
+            logger.info(READ_I16_MESSAGE, value);
+            return value;
         } catch (final InputProtocolException e) {
-            logger.info(message + __toString(e));
+            logger.info(READ_I16_MESSAGE, "", e);
             throw e;
         }
     }
 
     @Override
     public int readI32() throws InputProtocolException {
-        final String message = "readI32() -> ";
         try {
-            final int i32 = wrappedProtocol.readI32();
-            logger.info(message + Integer.toString(i32));
-            return i32;
+            final int value = wrappedProtocol.readI32();
+            logger.info(READ_I32_MESSAGE, value);
+            return value;
         } catch (final InputProtocolException e) {
-            logger.info(message + __toString(e));
+            logger.info(READ_I32_MESSAGE, "", e);
             throw e;
         }
     }
 
     @Override
     public long readI64() throws InputProtocolException {
-        final String message = "readI64() -> ";
         try {
-            final long i64 = wrappedProtocol.readI64();
-            logger.info(message + Long.toString(i64));
-            return i64;
+            final long value = wrappedProtocol.readI64();
+            logger.info(READ_I64_MESSAGE, value);
+            return value;
         } catch (final InputProtocolException e) {
-            logger.info(message + __toString(e));
+            logger.info(READ_I64_MESSAGE, "", e);
             throw e;
         }
     }
 
     @Override
     public ListBegin readListBegin() throws InputProtocolException {
-        final String message = "readListBegin() ->";
         try {
-            final ListBegin list = wrappedProtocol.readListBegin();
-            logger.info(message + __toString(list));
-            return list;
+            final ListBegin value = wrappedProtocol.readListBegin();
+            logger.info(READ_LIST_BEGIN_MESSAGE, value);
+            return value;
         } catch (final InputProtocolException e) {
-            logger.info(message + __toString(e));
+            logger.info(READ_LIST_BEGIN_MESSAGE, "", e);
             throw e;
         }
     }
 
     @Override
     public void readListEnd() throws InputProtocolException {
-        final String message = "readListEnd()";
         try {
             wrappedProtocol.readListEnd();
-            logger.info(message);
+            logger.info(READ_LIST_END_MESSAGE);
         } catch (final InputProtocolException e) {
-            logger.info(message + " -> " + __toString(e));
+            logger.info(READ_LIST_END_MESSAGE, e);
             throw e;
         }
     }
 
     @Override
     public MapBegin readMapBegin() throws InputProtocolException {
-        final String message = "readMapBegin() -> ";
         try {
-            final MapBegin map = wrappedProtocol.readMapBegin();
-            logger.info(message + __toString(map));
-            return map;
+            final MapBegin value = wrappedProtocol.readMapBegin();
+            logger.info(READ_MAP_BEGIN_MESSAGE, value);
+            return value;
         } catch (final InputProtocolException e) {
-            logger.info(message + __toString(e));
+            logger.info(READ_MAP_BEGIN_MESSAGE, "", e);
             throw e;
         }
     }
 
     @Override
     public void readMapEnd() throws InputProtocolException {
-        final String message = "readMapEnd()";
         try {
             wrappedProtocol.readMapEnd();
-            logger.info(message);
+            logger.info(READ_MAP_END_MESSAGE);
         } catch (final InputProtocolException e) {
-            logger.info(message + " -> " + __toString(e));
+            logger.info(READ_MAP_END_MESSAGE, e);
             throw e;
         }
     }
 
     @Override
     public Object readMixed() throws InputProtocolException {
-        final String message = "readMixed() -> ";
         try {
-            final Object mixed = wrappedProtocol.readMixed();
-            logger.info(message + mixed);
-            return mixed;
+            final Object value = wrappedProtocol.readMixed();
+            logger.info(READ_MIXED_MESSAGE, value);
+            return value;
         } catch (final InputProtocolException e) {
-            logger.info(message + __toString(e));
+            logger.info(READ_MIXED_MESSAGE, "", e);
             throw e;
         }
     }
 
     @Override
     public SetBegin readSetBegin() throws InputProtocolException {
-        final String message = "readSetBegin() -> ";
         try {
-            final SetBegin set = wrappedProtocol.readSetBegin();
-            logger.info(message + "(" + __toString(set) + ")");
-            return set;
+            final SetBegin value = wrappedProtocol.readSetBegin();
+            logger.info(READ_SET_BEGIN_MESSAGE, value);
+            return value;
         } catch (final InputProtocolException e) {
-            logger.info(message + __toString(e));
+            logger.info(READ_SET_BEGIN_MESSAGE, "", e);
             throw e;
         }
     }
 
     @Override
     public void readSetEnd() throws InputProtocolException {
-        final String message = "readSetEnd()";
         try {
             wrappedProtocol.readSetEnd();
-            logger.info(message);
+            logger.info(READ_SET_END_MESSAGE);
         } catch (final InputProtocolException e) {
-            logger.info(message + " -> " + __toString(e));
+            logger.info(READ_SET_END_MESSAGE, e);
             throw e;
         }
     }
 
     @Override
     public String readString() throws InputProtocolException {
-        final String message = "readString() -> ";
         try {
-            final String string = wrappedProtocol.readString();
-            logger.info(message + string);
-            return string;
+            final String value = wrappedProtocol.readString();
+            logger.info(READ_STRING_MESSAGE, value);
+            return value;
         } catch (final InputProtocolException e) {
-            logger.info(message + __toString(e));
+            logger.info(READ_STRING_MESSAGE, "", e);
             throw e;
         }
     }
 
     @Override
-    public StructBegin readStructBegin() throws InputProtocolException {
-        final String message = "readStructBegin() -> ";
+    public String readStructBegin() throws InputProtocolException {
         try {
-            final StructBegin struct = wrappedProtocol.readStructBegin();
-            logger.info(message + __toString(struct) + ")");
-            return struct;
+            final String value = wrappedProtocol.readStructBegin();
+            logger.info(READ_STRUCT_BEGIN_MESSAGE, value);
+            return value;
         } catch (final InputProtocolException e) {
-            logger.info(message + __toString(e));
+            logger.info(READ_STRUCT_BEGIN_MESSAGE, "", e);
             throw e;
         }
     }
 
     @Override
     public void readStructEnd() throws InputProtocolException {
-        final String message = "readStructEnd()";
         try {
             wrappedProtocol.readStructEnd();
-            logger.info(message);
+            logger.info(READ_STRUCT_END_MESSAGE);
         } catch (final InputProtocolException e) {
-            logger.info(message + " -> " + __toString(e));
+            logger.info(READ_STRUCT_END_MESSAGE, e);
             throw e;
         }
     }
 
     @Override
     public UnsignedInteger readU32() throws InputProtocolException {
-        final String message = "readU32() -> ";
         try {
-            final UnsignedInteger u32 = wrappedProtocol.readU32();
-            logger.info(message + u32);
-            return u32;
+            final UnsignedInteger value = wrappedProtocol.readU32();
+            logger.info(READ_U32_MESSAGE, value);
+            return value;
         } catch (final InputProtocolException e) {
-            logger.info(message + __toString(e));
+            logger.info(READ_U32_MESSAGE, "", e);
             throw e;
         }
     }
 
     @Override
     public UnsignedLong readU64() throws InputProtocolException {
-        final String message = "readU64() -> ";
         try {
-            final UnsignedLong u64 = wrappedProtocol.readU64();
-            logger.info(message + u64);
-            return u64;
+            final UnsignedLong value = wrappedProtocol.readU64();
+            logger.info(READ_U64_MESSAGE, value);
+            return value;
         } catch (final InputProtocolException e) {
-            logger.info(message + __toString(e));
+            logger.info(READ_U64_MESSAGE, "", e);
             throw e;
         }
     }
 
     @Override
     public Uri readUri() throws InputProtocolException {
-        final String message = "readUri() -> ";
         try {
-            final Uri uri = wrappedProtocol.readUri();
-            logger.info(message + uri);
-            return uri;
+            final Uri value = wrappedProtocol.readUri();
+            logger.info(READ_URI_MESSAGE, value);
+            return value;
         } catch (final InputProtocolException e) {
-            logger.info(message + __toString(e));
+            logger.info(READ_URI_MESSAGE, "", e);
             throw e;
         }
     }
 
     @Override
     public Url readUrl() throws InputProtocolException {
-        final String message = "readUrl() -> ";
         try {
-            final Url url = wrappedProtocol.readUrl();
-            logger.info(message + url);
-            return url;
+            final Url value = wrappedProtocol.readUrl();
+            logger.info(READ_URL_MESSAGE, value);
+            return value;
         } catch (final InputProtocolException e) {
-            logger.info(message + __toString(e));
+            logger.info(READ_URL_MESSAGE, "", e);
             throw e;
         }
     }
 
-    private final String __toString(final byte[] bytes) {
-        return "bytes[length=" + Integer.toString(bytes.length) + "]";
-    }
-
-    private final String __toString(final Exception e) {
-        return "exception: " + e.getMessage();
-    }
-
-    private final String __toString(final ListBegin list) {
-        return "List(" + Byte.toString(list.elemType) + ", "
-                + Integer.toString(list.size) + ")";
-    }
-
-    private final String __toString(final MapBegin map) {
-        return "Map(" + Byte.toString(map.keyType) + ", "
-                + Byte.toString(map.valueType) + ", "
-                + Integer.toString(map.size) + ")";
-    }
-
-    private final String __toString(final SetBegin set) {
-        return "Set(" + Byte.toString(set.elemType) + ", "
-                + Integer.toString(set.size) + ")";
-    }
-
-    private final String __toString(final StructBegin struct) {
-        return "Struct(" + struct.name + ")";
-    }
+    private final static String READ_BOOL_MESSAGE = "readBool() -> {}";
+    private final static String READ_BINARY_MESSAGE = "readBinary({} bytes)";
+    private final static String READ_BYTE_MESSAGE = "readByte() -> {}";
+    private final static String READ_DATE_TIME_MESSAGE = "readDateTime() -> {}";
+    private final static String READ_DECIMAL_MESSAGE = "readDecimal() -> {}";
+    private final static String READ_DOUBLE_MESSAGE = "readDouble() -> {}";
+    private final static String READ_EMAIL_ADDRESS_MESSAGE = "readEmailAddress() -> {}";
+    private final static String READ_ENUM_MESSAGE = "readEnum({}) -> {}";
+    private final static String READ_FIELD_BEGIN_MESSAGE = "readFieldBegin() -> {}";
+    private final static String READ_FIELD_END_MESSAGE = "readFieldEnd()";
+    private final static String READ_I16_MESSAGE = "readI16() -> {}";
+    private final static String READ_I32_MESSAGE = "readI32() -> {}";
+    private final static String READ_I64_MESSAGE = "readI64() -> {}";
+    private final static String READ_LIST_BEGIN_MESSAGE = "readListBegin() -> {}";
+    private final static String READ_LIST_END_MESSAGE = "readListEnd()";
+    private final static String READ_MAP_BEGIN_MESSAGE = "readMapBegin() -> {}";
+    private final static String READ_MAP_END_MESSAGE = "readMapEnd()";
+    private final static String READ_MIXED_MESSAGE = "readMixed() -> {}";
+    private final static String READ_SET_BEGIN_MESSAGE = "readSetBegin() -> {}";
+    private final static String READ_SET_END_MESSAGE = "readSetEnd()";
+    private final static String READ_STRING_MESSAGE = "readString() -> {}";
+    private final static String READ_STRUCT_BEGIN_MESSAGE = "readStructBegin() -> {}";
+    private final static String READ_STRUCT_END_MESSAGE = "readStructEnd()";
+    private final static String READ_U32_MESSAGE = "readU32() -> {}";
+    private final static String READ_U64_MESSAGE = "readU64() -> {}";
+    private final static String READ_URI_MESSAGE = "readUri() -> {}";
+    private final static String READ_URL_MESSAGE = "readUrl() -> {}";
 
     private final Logger logger;
 
