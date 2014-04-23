@@ -255,6 +255,29 @@ public class LoggingInputProtocol implements InputProtocol {
     }
 
     @Override
+    public MessageBegin readMessageBegin() throws InputProtocolException {
+        try {
+            final MessageBegin value = wrappedProtocol.readMessageBegin();
+            logger.info(READ_MESSAGE_BEGIN_MESSAGE, value);
+            return value;
+        } catch (final InputProtocolException e) {
+            logger.info(READ_MESSAGE_BEGIN_MESSAGE, "", e);
+            throw e;
+        }
+    }
+
+    @Override
+    public void readMessageEnd() throws InputProtocolException {
+        try {
+            wrappedProtocol.readMessageEnd();
+            logger.info(READ_MESSAGE_END_MESSAGE);
+        } catch (final InputProtocolException e) {
+            logger.info(READ_MESSAGE_END_MESSAGE, e);
+            throw e;
+        }
+    }
+
+    @Override
     public Object readMixed() throws InputProtocolException {
         try {
             final Object value = wrappedProtocol.readMixed();
@@ -389,6 +412,8 @@ public class LoggingInputProtocol implements InputProtocol {
     private final static String READ_LIST_END_MESSAGE = "readListEnd()";
     private final static String READ_MAP_BEGIN_MESSAGE = "readMapBegin() -> {}";
     private final static String READ_MAP_END_MESSAGE = "readMapEnd()";
+    private final static String READ_MESSAGE_BEGIN_MESSAGE = "readMessageBegin() -> {}";
+    private final static String READ_MESSAGE_END_MESSAGE = "readMessageEnd()";
     private final static String READ_MIXED_MESSAGE = "readMixed() -> {}";
     private final static String READ_SET_BEGIN_MESSAGE = "readSetBegin() -> {}";
     private final static String READ_SET_END_MESSAGE = "readSetEnd()";

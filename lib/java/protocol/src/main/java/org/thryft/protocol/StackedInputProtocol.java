@@ -130,6 +130,16 @@ public class StackedInputProtocol implements InputProtocol {
     }
 
     @Override
+    public MessageBegin readMessageBegin() throws InputProtocolException {
+        return protocolStack.peek().readMessageBegin();
+    }
+
+    @Override
+    public void readMessageEnd() {
+        protocolStack.pop();
+    }
+
+    @Override
     public Object readMixed() throws InputProtocolException {
         return protocolStack.peek().readMixed();
     }

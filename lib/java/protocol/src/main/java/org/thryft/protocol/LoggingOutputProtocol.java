@@ -244,7 +244,7 @@ public class LoggingOutputProtocol implements OutputProtocol {
             wrappedProtocol.writeMapBegin(keyType, valueType, size);
             logger.info(WRITE_MAP_BEGIN_MESSAGE, keyType, valueType, size);
         } catch (final OutputProtocolException e) {
-            logger.info(WRITE_MAP_BEGIN_MESSAGE, keyType, valueType, e);
+            logger.info(WRITE_MAP_BEGIN_MESSAGE, keyType, valueType, size, e);
             throw e;
         }
     }
@@ -256,6 +256,29 @@ public class LoggingOutputProtocol implements OutputProtocol {
             logger.info(WRITE_MAP_END_MESSAGE);
         } catch (final OutputProtocolException e) {
             logger.info(WRITE_MAP_END_MESSAGE, e);
+            throw e;
+        }
+    }
+
+    @Override
+    public void writeMessageBegin(final String name, final MessageType type,
+            final int sequenceId) throws OutputProtocolException {
+        try {
+            wrappedProtocol.writeMessageBegin(name, type, sequenceId);
+            logger.info(WRITE_MESSAGE_BEGIN_MESSAGE, name, type, sequenceId);
+        } catch (final OutputProtocolException e) {
+            logger.info(WRITE_MESSAGE_BEGIN_MESSAGE, name, type, sequenceId, e);
+            throw e;
+        }
+    }
+
+    @Override
+    public void writeMessageEnd() throws OutputProtocolException {
+        try {
+            wrappedProtocol.writeMessageEnd();
+            logger.info(WRITE_MESSAGE_END_MESSAGE);
+        } catch (final OutputProtocolException e) {
+            logger.info(WRITE_MESSAGE_END_MESSAGE, e);
             throw e;
         }
     }
@@ -403,6 +426,8 @@ public class LoggingOutputProtocol implements OutputProtocol {
     private final static String WRITE_LIST_END_MESSAGE = "writeListEnd()";
     private final static String WRITE_MAP_BEGIN_MESSAGE = "writeMapBegin({}, {}, {})";
     private final static String WRITE_MAP_END_MESSAGE = "writeMapEnd()";
+    private final static String WRITE_MESSAGE_BEGIN_MESSAGE = "writeMessageBegin({}, {}, {})";
+    private final static String WRITE_MESSAGE_END_MESSAGE = "writeMessageEnd()";
     private final static String WRITE_MIXED_MESSAGE = "writeMixed({})";
     private final static String WRITE_NULL_MESSAGE = "writeNull()";
     private final static String WRITE_SET_BEGIN_MESSAGE = "writeSetBegin({}, {})";

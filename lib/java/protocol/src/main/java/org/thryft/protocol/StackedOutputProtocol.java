@@ -158,6 +158,23 @@ public class StackedOutputProtocol implements OutputProtocol {
     }
 
     @Override
+    public void writeMessageBegin(final String name, final MessageType type,
+            final int sequenceId) throws OutputProtocolException {
+        final int protocolStackSize = protocolStack.size();
+        protocolStack.peek().writeMessageBegin(name, type, sequenceId);
+        if (protocolStack.size() != protocolStackSize + 1) {
+            throw new OutputProtocolException(
+                    "writeMessageBegin must add one protocol to the top of the stack");
+        }
+    }
+
+    @Override
+    public void writeMessageEnd() throws OutputProtocolException {
+        protocolStack.pop();
+        protocolStack.peek().writeMessageEnd();
+    }
+
+    @Override
     public void writeMixed(final Object value) throws OutputProtocolException {
         protocolStack.peek().writeMixed(value);
     }

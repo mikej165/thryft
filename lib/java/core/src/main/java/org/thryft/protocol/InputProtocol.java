@@ -78,6 +78,10 @@ public interface InputProtocol extends Protocol {
 
     public void readMapEnd() throws InputProtocolException;
 
+    public MessageBegin readMessageBegin() throws InputProtocolException;
+
+    public void readMessageEnd() throws InputProtocolException;
+
     public Object readMixed() throws InputProtocolException;
 
     public SetBegin readSetBegin() throws InputProtocolException;

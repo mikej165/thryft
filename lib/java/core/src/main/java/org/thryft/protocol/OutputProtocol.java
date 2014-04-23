@@ -51,8 +51,7 @@ public interface OutputProtocol extends Protocol {
 
     public void writeByte(final byte value) throws OutputProtocolException;
 
-    public void writeDateTime(final Date value)
-            throws OutputProtocolException;
+    public void writeDateTime(final Date value) throws OutputProtocolException;
 
     public void writeDecimal(final BigDecimal value)
             throws OutputProtocolException;
@@ -87,6 +86,11 @@ public interface OutputProtocol extends Protocol {
 
     public void writeMapEnd() throws OutputProtocolException;
 
+    public void writeMessageBegin(final String name, final MessageType type,
+            final int sequenceId) throws OutputProtocolException;
+
+    public void writeMessageEnd() throws OutputProtocolException;
+
     public void writeMixed(final Object value) throws OutputProtocolException;
 
     public void writeNull() throws OutputProtocolException;
@@ -106,7 +110,8 @@ public interface OutputProtocol extends Protocol {
     public void writeU32(final UnsignedInteger value)
             throws OutputProtocolException;
 
-    public void writeU64(final UnsignedLong value) throws OutputProtocolException;
+    public void writeU64(final UnsignedLong value)
+            throws OutputProtocolException;
 
     public void writeUri(final Uri value) throws OutputProtocolException;
 

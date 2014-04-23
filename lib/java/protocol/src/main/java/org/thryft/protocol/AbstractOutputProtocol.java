@@ -58,8 +58,7 @@ public abstract class AbstractOutputProtocol implements OutputProtocol {
     }
 
     @Override
-    public void writeDateTime(final Date value)
-            throws OutputProtocolException {
+    public void writeDateTime(final Date value) throws OutputProtocolException {
         writeI64(value.getTime());
     }
 
@@ -94,6 +93,17 @@ public abstract class AbstractOutputProtocol implements OutputProtocol {
     @Override
     public void writeFieldStop() throws OutputProtocolException {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void writeMessageBegin(final String name, final MessageType type,
+            final int sequenceId) throws OutputProtocolException {
+        writeStructBegin(name);
+    }
+
+    @Override
+    public void writeMessageEnd() throws OutputProtocolException {
+        writeStructEnd();
     }
 
     @Override
@@ -174,7 +184,8 @@ public abstract class AbstractOutputProtocol implements OutputProtocol {
     }
 
     @Override
-    public void writeU64(final UnsignedLong value) throws OutputProtocolException {
+    public void writeU64(final UnsignedLong value)
+            throws OutputProtocolException {
         writeI64(value.longValue());
     }
 
