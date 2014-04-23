@@ -37,7 +37,7 @@ from thryft.generators.py.py_service import PyService
 from yutil import indent, decamelize
 
 
-class JsonrpcClientPyGenerator(py_generator.PyGenerator):
+class JsonRpcClientPyGenerator(py_generator.PyGenerator):
     class Function(PyFunction):
         def __repr__(self):
             if self.return_field is not None:
@@ -228,7 +228,7 @@ def __request(self, method, headers=None, **kwds):
 """ % locals()}
 
         def _py_name(self):
-            return 'JsonrpcClient' + PyService.py_name(self)
+            return 'JsonRpcClient' + PyService.py_name(self)
 
         def __repr__(self):
             methods = indent(' ' * 4, "\n".join(self.__py_methods()))

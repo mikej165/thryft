@@ -36,7 +36,7 @@ from thryft.generators.java import java_generator
 from yutil import indent, upper_camelize
 
 
-class JsonrpcClientJavaGenerator(java_generator.JavaGenerator):
+class JsonRpcClientJavaGenerator(java_generator.JavaGenerator):
     class Document(java_generator.JavaGenerator.Document):
         def java_package(self):
             try:
@@ -62,19 +62,14 @@ class JsonrpcClientJavaGenerator(java_generator.JavaGenerator):
             response_type_name = self.java_response_type().java_name()
             service_qname = self.parent.java_qname()
             if self.return_field is not None:
-                service_response_assignment = "__serviceResponse = " % locals()
-                service_response_declaration = "%(service_qname)s.Messages.%(response_type_name)s __serviceResponse = null;\n        " % locals()
+                service_response_assignment = "%(service_qname)s.Messages.%(response_type_name)s __serviceResponse = " % locals()
                 service_response_return_value_getter_name = self.return_field.java_getter_name()
                 return_statement = indent(' ' * 8, """
-if (__serviceResponse != null) {
-    return __serviceResponse.%(service_response_return_value_getter_name)s();
-} else {
-    throw new RuntimeException("no JSON-RPC results field received from the server");
-}""" % locals())
+return __serviceResponse.%(service_response_return_value_getter_name)s();
+""" % locals())
                 return_type_qname = self.return_field.type.java_qname()
             else:
                 service_response_assignment = ''
-                service_response_declaration = ''
                 return_statement = ''
                 return_type_qname = 'void'
 
@@ -85,22 +80,10 @@ public final %(return_type_qname)s %(java_name)s(%(parameters)s) {
 
     try {
         final java.io.StringWriter __oStringWriter = new java.io.StringWriter();
-        final org.thryft.protocol.JsonOutputProtocol __oprot = new org.thryft.protocol.JsonOutputProtocol(__oStringWriter);
-        __oprot.writeStructBegin("JSON-RPC");
-        __oprot.writeFieldBegin("id", org.thryft.protocol.Type.I32, (short)-1);
-        __oprot.writeI32(__id);
-        __oprot.writeFieldEnd();
-        __oprot.writeFieldBegin("jsonrpc", org.thryft.protocol.Type.STRING, (short)-1);
-        __oprot.writeString("2.0");
-        __oprot.writeFieldEnd();
-        __oprot.writeFieldBegin("method", org.thryft.protocol.Type.STRING, (short)-1);
-        __oprot.writeString("%(name)s");
-        __oprot.writeFieldEnd();
-        __oprot.writeFieldBegin("params", org.thryft.protocol.Type.STRUCT, (short)-1);
+        final org.thryft.protocol.JsonRpcOutputProtocol __oprot = new org.thryft.protocol.JsonRpcOutputProtocol(new org.thryft.protocol.JacksonJsonOutputProtocol(__oStringWriter));
+        __oprot.writeMessageBegin("%(name)s", org.thryft.protocol.MessageType.CALL, __id);
         __serviceRequest.write(__oprot);
-        __oprot.writeFieldEnd();
-        __oprot.writeFieldStop();
-        __oprot.writeStructEnd();
+        __oprot.writeMessageEnd();
         __oprot.flush();
         final String __oString = __oStringWriter.toString();
 
@@ -110,7 +93,6 @@ public final %(return_type_qname)s %(java_name)s(%(parameters)s) {
         __connection.setUseCaches(false);
         __connection.setDoInput(true);
         __connection.setDoOutput(true);
-
         try (final java.io.OutputStream __connectionOutputStream = __connection.getOutputStream()) {
             __connectionOutputStream.write(__oString.getBytes("UTF-8"));
             __connectionOutputStream.flush();
@@ -122,47 +104,15 @@ public final %(return_type_qname)s %(java_name)s(%(parameters)s) {
                 __iString = __connectionInputScanner.hasNext() ? __connectionInputScanner.next() : "";
             }
         }
-
-        %(service_response_declaration)sfinal java.io.StringReader __iStringReader = new java.io.StringReader(__iString);
-        final org.thryft.protocol.JsonInputProtocol __iprot = new org.thryft.protocol.JsonInputProtocol(__iStringReader);
-        __iprot.readStructBegin();
-        while (true) {
-            final org.thryft.protocol.FieldBegin __iFieldBegin = __iprot.readFieldBegin();
-            if (__iFieldBegin.type == org.thryft.protocol.Type.STOP) {
-                break;
-            } else if (__iFieldBegin.name.equalsIgnoreCase("jsonrpc")) {
-                final String __jsonrpc = __iprot.readString();
-                if (!__jsonrpc.equals("2.0")) {
-                    throw new org.thryft.protocol.InputProtocolException("expected jsonrpc in response to be 2.0, got " + __jsonrpc);
-                }
-            } else if (__iFieldBegin.name.equalsIgnoreCase("id")) {
-                final int __actualId = __iprot.readI32();
-                if (__actualId != __id) {
-                    throw new org.thryft.protocol.InputProtocolException(String.format("expected id in response to be %%s, got %%s", __id, __actualId));
-                }
-            } else if (__iFieldBegin.name.equalsIgnoreCase("error")) {
-                int __errorCode = 0;
-                String __errorMessage = "";
-                __iprot.readStructBegin();
-                while (true) {
-                    final org.thryft.protocol.FieldBegin __errorFieldBegin = __iprot.readFieldBegin();
-                    if (__errorFieldBegin.type == org.thryft.protocol.Type.STOP) {
-                        break;
-                    } else if (__errorFieldBegin.name.equalsIgnoreCase("code")) {
-                        __errorCode = __iprot.readI32();
-                    } else if (__errorFieldBegin.name.equalsIgnoreCase("name")) {
-                        __errorMessage = __iprot.readString();
-                    }
-                    __iprot.readFieldEnd();
-                }
-                __iprot.readStructEnd();
-                throw new RuntimeException(String.format("error from server: code=%%d, message='%%s'", __errorCode, __errorMessage));
-            } else if (__iFieldBegin.name.equalsIgnoreCase("results")) {
-                %(service_response_assignment)snew %(service_qname)s.Messages.%(response_type_name)s(__iprot);
-            }
-            __iprot.readFieldEnd();
+        final org.thryft.protocol.JsonRpcInputProtocol __iprot = new org.thryft.protocol.JsonRpcInputProtocol(new org.thryft.protocol.JacksonJsonInputProtocol(new java.io.StringReader(__iString)));
+        final org.thryft.protocol.MessageBegin __messageBegin = __iprot.readMessageBegin();
+        if (!__messageBegin.getId().equals(__id)) {
+            throw new org.thryft.protocol.InputProtocolException(String.format("expected id in response to be %%s, got %%s", __id, __messageBegin.getId()));
+        } else if (__messageBegin.getType() != org.thryft.protocol.MessageType.REPLY) {
+            throw new org.thryft.protocol.InputProtocolException("expected response message");
         }
-        __iprot.readStructEnd();%(return_statement)s
+        %(service_response_assignment)snew %(service_qname)s.Messages.%(response_type_name)s(__iprot);
+        __iprot.readMessageEnd();%(return_statement)s
     } catch (final java.io.IOException e) {
         throw new RuntimeException(e);
     } catch (final org.thryft.protocol.ProtocolException e) {

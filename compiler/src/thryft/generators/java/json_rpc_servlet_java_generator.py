@@ -34,7 +34,7 @@ from yutil import indent, upper_camelize
 from thryft.generators.java import _servlet_java_generator
 
 
-class JsonrpcServletJavaGenerator(_servlet_java_generator._ServletJavaGenerator):
+class JsonRpcServletJavaGenerator(_servlet_java_generator._ServletJavaGenerator):
     class Document(_servlet_java_generator._ServletJavaGenerator._Document):
         def __init__(self, **kwds):
             _servlet_java_generator._ServletJavaGenerator._Document.__init__(self, servlet_type='jsonrpc', **kwds)
@@ -96,7 +96,7 @@ private void __doPost%(upper_camelized_name)s(final javax.servlet.http.HttpServl
 
     class Service(_servlet_java_generator._ServletJavaGenerator._Service):
         def java_name(self, boxed=False):
-            return _servlet_java_generator._ServletJavaGenerator._Service.java_name(self) + 'JsonrpcServlet'
+            return _servlet_java_generator._ServletJavaGenerator._Service.java_name(self) + 'JsonRpcServlet'
 
         def _java_constructor(self):
             name = self.java_name()
@@ -142,6 +142,7 @@ if (jsonrpcRequestMethod.equals("%s")) {
 protected void doPost(final javax.servlet.http.HttpServletRequest httpServletRequest, final javax.servlet.http.HttpServletResponse httpServletResponse) throws java.io.IOException, javax.servlet.ServletException {
 %(read_http_servlet_request_body)s
 
+    final org.thryft.protocol.JsonRpcInputProtocol iprot = new org.thryft.protocol.JsonRpcInputProtocol(new org.thryft.protocol.JacksonJsonInputProtocol(httpServletRequestBody));
     final com.fasterxml.jackson.databind.JsonNode jsonrpcRequestNode;
     try {
         jsonrpcRequestNode = new com.fasterxml.jackson.databind.ObjectMapper().readTree(httpServletRequestBody);
