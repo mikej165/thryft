@@ -42,7 +42,7 @@ import org.thryft.protocol.JacksonJsonInputProtocol;
 import org.thryft.protocol.JacksonJsonOutputProtocol;
 import org.thryft.protocol.OutputProtocol;
 
-public final class JsonProtocolTest extends ProtocolTest {
+public final class JacksonJsonProtocolTest extends ProtocolTest {
     @Override
     protected void _test(final ProtocolTestStruct expected) throws Exception {
         final StringWriter writer = new StringWriter();
