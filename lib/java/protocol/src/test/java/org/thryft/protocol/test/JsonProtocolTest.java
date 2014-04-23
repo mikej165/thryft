@@ -38,22 +38,22 @@ import java.io.StringReader;
 import java.io.StringWriter;
 
 import org.thryft.protocol.InputProtocol;
-import org.thryft.protocol.JsonInputProtocol;
-import org.thryft.protocol.JsonOutputProtocol;
+import org.thryft.protocol.JacksonJsonInputProtocol;
+import org.thryft.protocol.JacksonJsonOutputProtocol;
 import org.thryft.protocol.OutputProtocol;
 
 public final class JsonProtocolTest extends ProtocolTest {
     @Override
     protected void _test(final ProtocolTestStruct expected) throws Exception {
         final StringWriter writer = new StringWriter();
-        final OutputProtocol oprot = new JsonOutputProtocol(writer);
+        final OutputProtocol oprot = new JacksonJsonOutputProtocol(writer);
         expected.write(oprot);
         oprot.flush();
 
         final String ostring = writer.toString();
 
         final StringReader reader = new StringReader(ostring);
-        final InputProtocol iprot = new JsonInputProtocol(reader);
+        final InputProtocol iprot = new JacksonJsonInputProtocol(reader);
         final ProtocolTestStruct actual = new ProtocolTestStruct(iprot);
         assertEquals(expected, actual);
     }

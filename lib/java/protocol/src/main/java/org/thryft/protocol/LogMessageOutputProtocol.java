@@ -40,9 +40,9 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.google.common.annotations.GwtIncompatible;
 
 @GwtIncompatible("")
-public class LogMessageOutputProtocol extends JsonOutputProtocol {
+public class LogMessageOutputProtocol extends JacksonJsonOutputProtocol {
     private final class ArrayOutputProtocol extends
-            JsonOutputProtocol.ArrayOutputProtocol {
+            JacksonJsonOutputProtocol.ArrayOutputProtocol {
         @Override
         public void writeBool(final boolean value)
                 throws OutputProtocolException {
@@ -170,7 +170,7 @@ public class LogMessageOutputProtocol extends JsonOutputProtocol {
     }
 
     private final class MapObjectOutputProtocol extends
-            JsonOutputProtocol.MapObjectOutputProtocol {
+            JacksonJsonOutputProtocol.MapObjectOutputProtocol {
         @Override
         public void writeBool(final boolean value)
                 throws OutputProtocolException {
@@ -374,7 +374,7 @@ public class LogMessageOutputProtocol extends JsonOutputProtocol {
     }
 
     private final class StructObjectOutputProtocol extends
-            JsonOutputProtocol.StructObjectOutputProtocol {
+            JacksonJsonOutputProtocol.StructObjectOutputProtocol {
         @Override
         public void writeString(final String value)
                 throws OutputProtocolException {

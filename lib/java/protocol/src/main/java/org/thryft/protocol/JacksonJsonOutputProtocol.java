@@ -42,7 +42,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.google.common.annotations.GwtIncompatible;
 
 @GwtIncompatible("")
-public class JsonOutputProtocol extends StackedOutputProtocol {
+public class JacksonJsonOutputProtocol extends StackedOutputProtocol {
     protected abstract class AbstractOutputProtocol extends
             org.thryft.protocol.AbstractOutputProtocol {
         @Override
@@ -339,17 +339,17 @@ public class JsonOutputProtocol extends StackedOutputProtocol {
         }
     }
 
-    public JsonOutputProtocol(final JsonGenerator generator) {
+    public JacksonJsonOutputProtocol(final JsonGenerator generator) {
         this.generator = generator;
         _getProtocolStack().push(_createRootOutputProtocol());
     }
 
-    public JsonOutputProtocol(final OutputStream outputStream)
+    public JacksonJsonOutputProtocol(final OutputStream outputStream)
             throws IOException {
         this(new OutputStreamWriter(outputStream));
     }
 
-    public JsonOutputProtocol(final Writer writer) throws IOException {
+    public JacksonJsonOutputProtocol(final Writer writer) throws IOException {
         this(new JsonFactory().createJsonGenerator(writer));
     }
 
