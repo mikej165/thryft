@@ -38,11 +38,11 @@ from thryft.generators.java.java_service import JavaService
 from yutil import indent, lpad
 
 
-class GwtServerJavaGenerator(JavaGenerator):
+class GwtRpcServerJavaGenerator(JavaGenerator):
     class Document(JavaDocument):
         def java_package(self):
             try:
-                return self.namespace_by_scope(('gwt_server_java', 'java')).name
+                return self.namespace_by_scope(('gwt_rpc_server_java', 'java')).name
             except KeyError:
                 return None
 

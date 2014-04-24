@@ -184,7 +184,12 @@ private void __doPostResponse(final javax.servlet.http.HttpServletRequest httpSe
 
     try {
         oprot.writeMessageBegin("", org.thryft.protocol.MessageType.REPLY, jsonRpcRequestId);
-        oprot.writeMixed(jsonRpcResult);
+        if (jsonRpcResult != null) {
+            oprot.writeMixed(jsonRpcResult);
+        } else {
+            oprot.writeStructBegin("response");
+            oprot.writeStructEnd();
+        }
         oprot.writeMessageEnd();
         oprot.flush();
     } catch (final org.thryft.protocol.OutputProtocolException e) {
