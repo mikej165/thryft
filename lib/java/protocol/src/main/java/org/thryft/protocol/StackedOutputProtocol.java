@@ -34,20 +34,21 @@ package org.thryft.protocol;
 
 import java.util.Stack;
 
-public abstract class StackedOutputProtocol extends ForwardingOutputProtocol {
+public abstract class StackedOutputProtocol<OutputProtocolT extends OutputProtocol>
+        extends ForwardingOutputProtocol {
     @Override
     public void flush() throws OutputProtocolException {
-        if (!protocolStack.isEmpty()) {
-            protocolStack.peek().flush();
+        if (!outputProtocolStack.isEmpty()) {
+            outputProtocolStack.peek().flush();
         }
     }
 
     @Override
     public void writeListBegin(final Type elementType, final int size)
             throws OutputProtocolException {
-        final int protocolStackSize = protocolStack.size();
-        protocolStack.peek().writeListBegin(elementType, size);
-        if (protocolStack.size() != protocolStackSize + 1) {
+        final int protocolStackSize = outputProtocolStack.size();
+        outputProtocolStack.peek().writeListBegin(elementType, size);
+        if (outputProtocolStack.size() != protocolStackSize + 1) {
             throw new OutputProtocolException(
                     "writeListBegin must add one protocol to the top of the stack");
         }
@@ -55,16 +56,16 @@ public abstract class StackedOutputProtocol extends ForwardingOutputProtocol {
 
     @Override
     public void writeListEnd() throws OutputProtocolException {
-        protocolStack.pop();
-        protocolStack.peek().writeListEnd();
+        outputProtocolStack.pop();
+        outputProtocolStack.peek().writeListEnd();
     }
 
     @Override
     public void writeMapBegin(final Type keyType, final Type valueType,
             final int size) throws OutputProtocolException {
-        final int protocolStackSize = protocolStack.size();
-        protocolStack.peek().writeMapBegin(keyType, valueType, size);
-        if (protocolStack.size() != protocolStackSize + 1) {
+        final int protocolStackSize = outputProtocolStack.size();
+        outputProtocolStack.peek().writeMapBegin(keyType, valueType, size);
+        if (outputProtocolStack.size() != protocolStackSize + 1) {
             throw new OutputProtocolException(
                     "writeMapBegin must add one protocol to the top of the stack");
         }
@@ -72,16 +73,16 @@ public abstract class StackedOutputProtocol extends ForwardingOutputProtocol {
 
     @Override
     public void writeMapEnd() throws OutputProtocolException {
-        protocolStack.pop();
-        protocolStack.peek().writeMapEnd();
+        outputProtocolStack.pop();
+        outputProtocolStack.peek().writeMapEnd();
     }
 
     @Override
     public void writeMessageBegin(final String name, final MessageType type,
             final Object id) throws OutputProtocolException {
-        final int protocolStackSize = protocolStack.size();
-        protocolStack.peek().writeMessageBegin(name, type, id);
-        if (protocolStack.size() != protocolStackSize + 1) {
+        final int protocolStackSize = outputProtocolStack.size();
+        outputProtocolStack.peek().writeMessageBegin(name, type, id);
+        if (outputProtocolStack.size() != protocolStackSize + 1) {
             throw new OutputProtocolException(
                     "writeMessageBegin must add one protocol to the top of the stack");
         }
@@ -89,28 +90,28 @@ public abstract class StackedOutputProtocol extends ForwardingOutputProtocol {
 
     @Override
     public void writeMessageEnd() throws OutputProtocolException {
-        protocolStack.pop();
-        protocolStack.peek().writeMessageEnd();
+        outputProtocolStack.pop();
+        outputProtocolStack.peek().writeMessageEnd();
     }
 
     @Override
     public void writeSetBegin(final Type elementType, final int size)
             throws OutputProtocolException {
-        protocolStack.peek().writeSetBegin(elementType, size);
+        outputProtocolStack.peek().writeSetBegin(elementType, size);
     }
 
     @Override
     public void writeSetEnd() throws OutputProtocolException {
-        protocolStack.pop();
-        protocolStack.peek().writeSetEnd();
+        outputProtocolStack.pop();
+        outputProtocolStack.peek().writeSetEnd();
     }
 
     @Override
     public void writeStructBegin(final String name)
             throws OutputProtocolException {
-        final int protocolStackSize = protocolStack.size();
-        protocolStack.peek().writeStructBegin(name);
-        if (protocolStack.size() != protocolStackSize + 1) {
+        final int protocolStackSize = outputProtocolStack.size();
+        outputProtocolStack.peek().writeStructBegin(name);
+        if (outputProtocolStack.size() != protocolStackSize + 1) {
             throw new OutputProtocolException(
                     "writeStructBegin must add one protocol to the top of the stack");
         }
@@ -118,18 +119,18 @@ public abstract class StackedOutputProtocol extends ForwardingOutputProtocol {
 
     @Override
     public void writeStructEnd() throws OutputProtocolException {
-        protocolStack.pop();
-        protocolStack.peek().writeStructEnd();
+        outputProtocolStack.pop();
+        outputProtocolStack.peek().writeStructEnd();
     }
 
     @Override
     protected OutputProtocol _delegate() {
-        return protocolStack.peek();
+        return outputProtocolStack.peek();
     }
 
-    protected final Stack<OutputProtocol> _getProtocolStack() {
-        return protocolStack;
+    protected final Stack<OutputProtocolT> _getOutputProtocolStack() {
+        return outputProtocolStack;
     }
 
-    private final Stack<OutputProtocol> protocolStack = new Stack<OutputProtocol>();
+    private final Stack<OutputProtocolT> outputProtocolStack = new Stack<OutputProtocolT>();
 }

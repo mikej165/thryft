@@ -39,13 +39,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
+import org.thryft.protocol.StringMapInputProtocol.NestedInputProtocol;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
 
-public class StringMapInputProtocol extends StackedInputProtocol {
-    protected abstract class AbstractInputProtocol extends
-            org.thryft.protocol.AbstractInputProtocol {
-        protected AbstractInputProtocol(
+public class StringMapInputProtocol extends
+        StackedInputProtocol<NestedInputProtocol> {
+    protected abstract class NestedInputProtocol extends
+            AbstractInputProtocol {
+        protected NestedInputProtocol(
                 final ImmutableMap<String, String> input, final String myKey) {
             this.input = input;
             this.myKey = myKey;
@@ -115,7 +118,7 @@ public class StringMapInputProtocol extends StackedInputProtocol {
                 throws InputProtocolException {
             final ListInputProtocol listInputProtocol = new ListInputProtocol(
                     input, __joinKeys(myKey, childKey));
-            _getProtocolStack().push(listInputProtocol);
+            _getInputProtocolStack().push(listInputProtocol);
             return new ListBegin(Type.VOID, listInputProtocol
                     ._getChildKeyStack().size());
         }
@@ -124,7 +127,7 @@ public class StringMapInputProtocol extends StackedInputProtocol {
                 throws InputProtocolException {
             final MapInputProtocol mapInputProtocol = new MapInputProtocol(
                     input, __joinKeys(myKey, childKey));
-            _getProtocolStack().push(mapInputProtocol);
+            _getInputProtocolStack().push(mapInputProtocol);
             return new MapBegin(Type.VOID, Type.VOID, mapInputProtocol
                     ._getChildKeyStack().size());
         }
@@ -137,7 +140,7 @@ public class StringMapInputProtocol extends StackedInputProtocol {
                 throws InputProtocolException {
             final StructInputProtocol structInputProtocol = new StructInputProtocol(
                     input, __joinKeys(myKey, childKey));
-            _getProtocolStack().push(structInputProtocol);
+            _getInputProtocolStack().push(structInputProtocol);
             return "";
         }
 
@@ -148,7 +151,7 @@ public class StringMapInputProtocol extends StackedInputProtocol {
         private final Stack<String> childKeyStack = new Stack<String>();
     }
 
-    private final class ListInputProtocol extends AbstractInputProtocol {
+    private final class ListInputProtocol extends NestedInputProtocol {
         public ListInputProtocol(final ImmutableMap<String, String> input,
                 final String myKey) {
             super(input, myKey);
@@ -175,7 +178,7 @@ public class StringMapInputProtocol extends StackedInputProtocol {
         }
     }
 
-    private final class MapInputProtocol extends AbstractInputProtocol {
+    private final class MapInputProtocol extends NestedInputProtocol {
         public MapInputProtocol(final ImmutableMap<String, String> input,
                 final String myKey) {
             super(input, myKey);
@@ -216,7 +219,7 @@ public class StringMapInputProtocol extends StackedInputProtocol {
         private boolean nextReadIsKey = true;
     }
 
-    private final class RootInputProtocol extends AbstractInputProtocol {
+    private final class RootInputProtocol extends NestedInputProtocol {
         public RootInputProtocol(final ImmutableMap<String, String> input) {
             super(input, "");
         }
@@ -225,7 +228,7 @@ public class StringMapInputProtocol extends StackedInputProtocol {
         public ListBegin readListBegin() throws InputProtocolException {
             final ListInputProtocol listInputProtocol = new ListInputProtocol(
                     _getInput(), "");
-            _getProtocolStack().push(listInputProtocol);
+            _getInputProtocolStack().push(listInputProtocol);
             return new ListBegin(Type.VOID, listInputProtocol
                     ._getChildKeyStack().size());
         }
@@ -234,7 +237,7 @@ public class StringMapInputProtocol extends StackedInputProtocol {
         public MapBegin readMapBegin() throws InputProtocolException {
             final MapInputProtocol mapInputProtocol = new MapInputProtocol(
                     _getInput(), "");
-            _getProtocolStack().push(mapInputProtocol);
+            _getInputProtocolStack().push(mapInputProtocol);
             return new MapBegin(Type.VOID, Type.VOID, mapInputProtocol
                     ._getChildKeyStack().size());
         }
@@ -246,12 +249,14 @@ public class StringMapInputProtocol extends StackedInputProtocol {
 
         @Override
         public String readStructBegin() throws InputProtocolException {
-            _getProtocolStack().push(new StructInputProtocol(_getInput(), ""));
+            _getInputProtocolStack().push(
+                    new StructInputProtocol(_getInput(), ""));
             return "";
         }
     }
 
-    private final class StructInputProtocol extends AbstractInputProtocol {
+    private final class StructInputProtocol extends
+            NestedInputProtocol {
         public StructInputProtocol(final ImmutableMap<String, String> input,
                 final String myKey) {
             super(input, myKey);
@@ -304,7 +309,7 @@ public class StringMapInputProtocol extends StackedInputProtocol {
     }
 
     public StringMapInputProtocol(final ImmutableMap<String, String> input) {
-        _getProtocolStack().push(new RootInputProtocol(input));
+        _getInputProtocolStack().push(new RootInputProtocol(input));
     }
 
     public StringMapInputProtocol(final Map<String, String> input) {

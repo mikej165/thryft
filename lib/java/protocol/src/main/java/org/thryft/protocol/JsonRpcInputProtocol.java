@@ -3,87 +3,119 @@ package org.thryft.protocol;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public final class JsonRpcInputProtocol extends ForwardingInputProtocol {
-    public JsonRpcInputProtocol(final JsonInputProtocol jsonInputProtocol) {
+    public JsonRpcInputProtocol(final JsonInputProtocol<?> jsonInputProtocol) {
         this.jsonInputProtocol = checkNotNull(jsonInputProtocol);
+    }
+
+    public Type getCurrentFieldType() {
+        return jsonInputProtocol.getCurrentFieldType();
     }
 
     @Override
     public MessageBegin readMessageBegin() throws InputProtocolException {
         Object id = null;
         String jsonrpc = null;
-
-        // Two passes: one to get "id" and "jsonrpc", the other to get the
-        // message type-specific fields
-        readStructBegin();
-        while (true) {
-            final org.thryft.protocol.FieldBegin fieldBegin = readFieldBegin();
-            if (fieldBegin.getType() == org.thryft.protocol.Type.STOP) {
-                break;
-            } else if (fieldBegin.getName().equalsIgnoreCase("id")) {
-                id = readMixed();
-            } else if (fieldBegin.getName().equalsIgnoreCase("jsonrpc")) {
-                jsonrpc = readString();
-            }
-            readFieldEnd();
-        }
-        if (id == null) {
-            throw new InputProtocolException("missing id field");
-        }
-        if (jsonrpc == null) {
-            throw new InputProtocolException("missing jsonrpc field");
-        } else if (!jsonrpc.equals("2.0")) {
-            throw new org.thryft.protocol.InputProtocolException(
-                    "expected jsonrpc in response to be 2.0, got " + jsonrpc);
-        }
-
-        jsonInputProtocol.reset();
-
-        String name = "";
+        String method = "";
         MessageType type = null;
+        boolean haveParams = false;
 
+        // Two passes:
+        // 1. Read "id", "jsonrpc", and infer the message type
+        // 2. Read type-specific fields
         readStructBegin();
         while (true) {
             final org.thryft.protocol.FieldBegin fieldBegin = readFieldBegin();
             if (fieldBegin.getType() == org.thryft.protocol.Type.STOP) {
                 break;
-            } else if (fieldBegin.getName().equalsIgnoreCase("error")) {
-                int errorCode = 0;
-                String errorMessage = "";
-                readStructBegin();
-                while (true) {
-                    final org.thryft.protocol.FieldBegin errorFieldBegin = readFieldBegin();
-                    if (errorFieldBegin.getType() == org.thryft.protocol.Type.STOP) {
-                        break;
-                    } else if (errorFieldBegin.getName().equalsIgnoreCase(
-                            "code")) {
-                        errorCode = readI32();
-                    } else if (errorFieldBegin.getName().equalsIgnoreCase(
-                            "name")) {
-                        errorMessage = readString();
-                    }
-                    readFieldEnd();
+            }
+            switch (fieldBegin.getName().toLowerCase()) {
+            case "id":
+                id = readMixed();
+                break;
+            case "jsonrpc":
+                jsonrpc = readString();
+                break;
+            case "method":
+                if (type != null) {
+                    throw new JsonRpcInputProtocolException(-32700,
+                            "unable to determine message type");
                 }
-                readStructEnd(); // error struct
-                readFieldEnd(); // error field
-                readStructEnd(); // message struct
-                throw new JsonRpcErrorResponseException(errorCode, errorMessage);
-            } else if (fieldBegin.getName().equalsIgnoreCase("method")) {
-                name = readString();
+                method = readString();
                 type = MessageType.CALL;
                 break;
-            } else if (fieldBegin.getName().equalsIgnoreCase("results")) {
+            case "params":
+                haveParams = true;
+                break;
+            case "error":
+                if (type != null) {
+                    throw new JsonRpcInputProtocolException(-32700,
+                            "unable to determine message type");
+                }
+                type = MessageType.EXCEPTION;
+                break;
+            case "results":
+                if (type != null) {
+                    throw new JsonRpcInputProtocolException(-32700,
+                            "unable to determine message type");
+                }
                 type = MessageType.REPLY;
                 break;
             }
             readFieldEnd();
         }
         if (type == null) {
-            throw new InputProtocolException("unable to determine message type");
-        } else if ((type == MessageType.CALL || type == MessageType.ONEWAY)
-                && name.isEmpty()) {
-            throw new InputProtocolException("missing method field");
+            throw new JsonRpcInputProtocolException(-32700,
+                    "unable to determine message type");
         }
-        return new MessageBegin(name, type, id);
+        if (id == null) {
+            throw new JsonRpcInputProtocolException(-32700, "missing id field");
+        }
+        if (jsonrpc == null) {
+            throw new JsonRpcInputProtocolException(-32700,
+                    "missing jsonrpc field");
+        } else if (!jsonrpc.equals("2.0")) {
+            throw new JsonRpcInputProtocolException(-32700,
+                    "expected \"jsonrpc\" to be 2.0, got " + jsonrpc);
+        }
+        if (type == MessageType.CALL) {
+            if (method.isEmpty()) {
+                throw new JsonRpcInputProtocolException(-32601,
+                        "missing method field");
+            }
+            if (!haveParams) {
+                throw new JsonRpcInputProtocolException(-32601,
+                        "missing params field");
+            }
+        }
+
+        jsonInputProtocol.reset();
+
+        readStructBegin();
+        while (true) {
+            final org.thryft.protocol.FieldBegin fieldBegin = readFieldBegin();
+            if (fieldBegin.getType() == org.thryft.protocol.Type.STOP) {
+                break;
+            } else if (type == MessageType.CALL
+                    && fieldBegin.getName().equalsIgnoreCase("params")) {
+                readFieldEnd();
+                break;
+            } else if (type == MessageType.EXCEPTION
+                    && fieldBegin.getName().equalsIgnoreCase("error")) {
+                final JsonRpcErrorResponse error = JsonRpcErrorResponse
+                        .read(this);
+                readFieldEnd(); // error field
+                readStructEnd(); // message struct
+                throw error;
+            } else if (type == MessageType.REPLY
+                    && fieldBegin.getName().equalsIgnoreCase("results")) {
+                readFieldEnd();
+                break;
+            } else {
+                readFieldEnd();
+            }
+        }
+        readStructEnd();
+        return new MessageBegin(method, type, id);
     }
 
     @Override
@@ -97,5 +129,5 @@ public final class JsonRpcInputProtocol extends ForwardingInputProtocol {
         return jsonInputProtocol;
     }
 
-    private final JsonInputProtocol jsonInputProtocol;
+    private final JsonInputProtocol<?> jsonInputProtocol;
 }

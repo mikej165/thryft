@@ -107,7 +107,7 @@ public class LogMessageOutputProtocol extends JacksonJsonOutputProtocol {
             if (size < SIZE_MAX) {
                 super.writeListBegin(elementType, size);
             } else {
-                _getProtocolStack().push(new NopOutputProtocol());
+                _getOutputProtocolStack().push(new NopOutputProtocol());
             }
         }
 
@@ -125,7 +125,7 @@ public class LogMessageOutputProtocol extends JacksonJsonOutputProtocol {
             if (size < SIZE_MAX) {
                 super.writeMapBegin(keyType, valueType, size);
             } else {
-                _getProtocolStack().push(new NopOutputProtocol());
+                _getOutputProtocolStack().push(new NopOutputProtocol());
             }
         }
 
@@ -152,7 +152,7 @@ public class LogMessageOutputProtocol extends JacksonJsonOutputProtocol {
             if (size < SIZE_MAX) {
                 super.writeStructBegin(name);
             } else {
-                _getProtocolStack().push(new NopOutputProtocol());
+                _getOutputProtocolStack().push(new NopOutputProtocol());
             }
         }
 
@@ -235,7 +235,7 @@ public class LogMessageOutputProtocol extends JacksonJsonOutputProtocol {
             if (size < SIZE_MAX) {
                 super.writeListBegin(elementType, size);
             } else {
-                _getProtocolStack().push(new NopOutputProtocol());
+                _getOutputProtocolStack().push(new NopOutputProtocol());
             }
         }
 
@@ -253,7 +253,7 @@ public class LogMessageOutputProtocol extends JacksonJsonOutputProtocol {
             if (size < SIZE_MAX) {
                 super.writeMapBegin(keyType, valueType, size);
             } else {
-                _getProtocolStack().push(new NopOutputProtocol());
+                _getOutputProtocolStack().push(new NopOutputProtocol());
             }
         }
 
@@ -280,7 +280,7 @@ public class LogMessageOutputProtocol extends JacksonJsonOutputProtocol {
             if (size < SIZE_MAX) {
                 super.writeStructBegin(name);
             } else {
-                _getProtocolStack().push(new NopOutputProtocol());
+                _getOutputProtocolStack().push(new NopOutputProtocol());
             }
         }
 
@@ -297,7 +297,7 @@ public class LogMessageOutputProtocol extends JacksonJsonOutputProtocol {
         private int size = 0;
     }
 
-    private final class NopOutputProtocol extends AbstractOutputProtocol {
+    private final class NopOutputProtocol extends NestedOutputProtocol {
         @Override
         public void writeBool(final boolean value)
                 throws OutputProtocolException {
@@ -340,7 +340,7 @@ public class LogMessageOutputProtocol extends JacksonJsonOutputProtocol {
         @Override
         public void writeListBegin(final Type elementType, final int size)
                 throws OutputProtocolException {
-            _getProtocolStack().push(new NopOutputProtocol());
+            _getOutputProtocolStack().push(new NopOutputProtocol());
         }
 
         @Override
@@ -350,7 +350,7 @@ public class LogMessageOutputProtocol extends JacksonJsonOutputProtocol {
         @Override
         public void writeMapBegin(final Type keyType, final Type valueType,
                 final int size) throws OutputProtocolException {
-            _getProtocolStack().push(new NopOutputProtocol());
+            _getOutputProtocolStack().push(new NopOutputProtocol());
         }
 
         @Override
@@ -365,7 +365,7 @@ public class LogMessageOutputProtocol extends JacksonJsonOutputProtocol {
         @Override
         public void writeStructBegin(final String name)
                 throws OutputProtocolException {
-            _getProtocolStack().push(new NopOutputProtocol());
+            _getOutputProtocolStack().push(new NopOutputProtocol());
         }
 
         @Override
@@ -405,17 +405,17 @@ public class LogMessageOutputProtocol extends JacksonJsonOutputProtocol {
     }
 
     @Override
-    protected OutputProtocol _createArrayOutputProtocol() {
+    protected ArrayOutputProtocol _createArrayOutputProtocol() {
         return new ArrayOutputProtocol();
     }
 
     @Override
-    protected OutputProtocol _createMapObjectOutputProtocol() {
+    protected MapObjectOutputProtocol _createMapObjectOutputProtocol() {
         return new MapObjectOutputProtocol();
     }
 
     @Override
-    protected OutputProtocol _createStructObjectOutputProtocol() {
+    protected StructObjectOutputProtocol _createStructObjectOutputProtocol() {
         return new StructObjectOutputProtocol();
     }
 

@@ -50,18 +50,10 @@ class JsonRpcServletJavaGenerator(_servlet_java_generator._ServletJavaGenerator)
                 read_request = """
     final %(service_qname)s.Messages.%(request_type_name)s serviceRequest;
     try {
-        serviceRequest = new %(service_qname)s.Messages.%(request_type_name)s(new org.thryft.protocol.JsonProtocol(jsonrpcRequestParams), jsonrpcRequestParams.isObject() ? org.thryft.protocol.TType.STRUCT : org.thryft.protocol.TType.LIST);
-    } catch (final IllegalArgumentException e) {
+        serviceRequest = new %(service_qname)s.Messages.%(request_type_name)s(iprot, iprot.getCurrentFieldType());
+    } catch (final IllegalArgumentException | org.thryft.protocol.InputProtocolException | NullPointerException e) {
         logger.debug("error deserializing service request: ", e);
-        __doPostError(httpServletRequest, httpServletResponse, null, -32602, "invalid JSON-RPC request method parameters: " + String.valueOf(e.getMessage()), jsonrpcRequestId);
-        return;
-    } catch (final NullPointerException e) {
-        logger.debug("error deserializing service request: ", e);
-        __doPostError(httpServletRequest, httpServletResponse, null, -32602, "invalid JSON-RPC request method parameters: " + String.valueOf(e.getMessage()), jsonrpcRequestId);
-        return;
-    } catch (final java.io.IOException e) {
-        logger.debug("error deserializing service request: ", e);
-        __doPostError(httpServletRequest, httpServletResponse, null, -32602, "invalid JSON-RPC request method parameters: " + String.valueOf(e.getMessage()), jsonrpcRequestId);
+        __doPostError(httpServletRequest, httpServletResponse, new org.thryft.protocol.JsonRpcErrorResponse(e, -32602, "invalid JSON-RPC request method parameters: " + String.valueOf(e.getMessage())), jsonRpcRequestId);
         return;
     }
 """ % locals()
@@ -75,7 +67,7 @@ class JsonRpcServletJavaGenerator(_servlet_java_generator._ServletJavaGenerator)
             if len(self.throws) > 0:
                 catches = ' '.join(["""\
 catch (final %s e) {
-    __doPostError(httpServletRequest, httpServletResponse, e, 1, e.getClass().getCanonicalName() + ": " + String.valueOf(e.getMessage()), jsonrpcRequestId);
+    __doPostError(httpServletRequest, httpServletResponse, new org.thryft.protocol.JsonRpcErrorResponse(e, 1, e.getClass().getCanonicalName() + ": " + String.valueOf(e.getMessage())), jsonRpcRequestId);
     return;
 }""" % throw.type.java_qname() for throw in self.throws])
                 service_call = """\
@@ -86,11 +78,11 @@ try {
             service_call = indent(' ' * 4, service_call)
 
             return """\
-private void __doPost%(upper_camelized_name)s(final javax.servlet.http.HttpServletRequest httpServletRequest, final javax.servlet.http.HttpServletResponse httpServletResponse, final com.fasterxml.jackson.databind.JsonNode jsonrpcRequestParams, final Object jsonrpcRequestId) throws java.io.IOException {%(read_request)s
+private void __doPost%(upper_camelized_name)s(final javax.servlet.http.HttpServletRequest httpServletRequest, final javax.servlet.http.HttpServletResponse httpServletResponse, final org.thryft.protocol.JsonRpcInputProtocol iprot, final Object jsonRpcRequestId) throws java.io.IOException {%(read_request)s
     Object result = null;
 %(service_call)s
 
-    __doPostResponse(httpServletRequest, httpServletResponse, jsonrpcRequestId, result);
+    __doPostResponse(httpServletRequest, httpServletResponse, jsonRpcRequestId, result);
 }
 """ % locals()
 
@@ -121,20 +113,20 @@ public %(name)s(final %(service_qname)s service) {
             function_dispatches = []
             if len(self.functions) == 0:
                 function_dispatches = """\
-__doPostError(httpServletRequest, httpServletResponse, null, -32601, "The jsonrpcRequestMethod does not exist / is not available: " + jsonrpcRequestMethod);
+__doPostError(httpServletRequest, httpServletResponse, new org.thryft.protocol.JsonRpcErrorResponse(-32601, String.format("the method '%s' does not exist / is not available", messageBegin.getName())), messageBegin.getId());
 return;
 """
             else:
                 function_dispatches = \
-                    indent(' ' * 4, ' else '.join(
+                    indent(' ' * 8, ' else '.join(
                         ["""\
-if (jsonrpcRequestMethod.equals("%s")) {
-    __doPost%s(httpServletRequest, httpServletResponse, jsonrpcRequestParams, jsonrpcRequestId);
+if (messageBegin.getName().equals("%s")) {
+    __doPost%s(httpServletRequest, httpServletResponse, iprot, messageBegin);
 }""" % (function.name, upper_camelize(function.name))
                                    for function in self.functions
                         ] + ['''\
 {
-    __doPostError(httpServletRequest, httpServletResponse, null, -32601, "The jsonrpcRequestMethod does not exist / is not available: " + jsonrpcRequestMethod, jsonrpcRequestId);
+    __doPostError(httpServletRequest, httpServletResponse, new org.thryft.protocol.JsonRpcErrorResponse(-32601, String.format("the method '%s' does not exist / is not available", messageBegin.getName())), messageBegin.getId());
     return;
 }''']
                     ))
@@ -142,146 +134,68 @@ if (jsonrpcRequestMethod.equals("%s")) {
 protected void doPost(final javax.servlet.http.HttpServletRequest httpServletRequest, final javax.servlet.http.HttpServletResponse httpServletResponse) throws java.io.IOException, javax.servlet.ServletException {
 %(read_http_servlet_request_body)s
 
-    final org.thryft.protocol.JsonRpcInputProtocol iprot = new org.thryft.protocol.JsonRpcInputProtocol(new org.thryft.protocol.JacksonJsonInputProtocol(httpServletRequestBody));
-    final com.fasterxml.jackson.databind.JsonNode jsonrpcRequestNode;
+    org.thryft.protocol.MessageBegin messageBegin = null;
     try {
-        jsonrpcRequestNode = new com.fasterxml.jackson.databind.ObjectMapper().readTree(httpServletRequestBody);
-    } catch (final com.fasterxml.jackson.core.JsonParseException e ){
-        logger.error("error deserializing service request: ", e);
-        __doPostError(httpServletRequest, httpServletResponse, null, -32700, String.valueOf(e.getMessage()), null);
-        return;
-    }
-
-    final com.fasterxml.jackson.databind.JsonNode jsonrpcRequestIdNode = jsonrpcRequestNode.get("id");
-    if (jsonrpcRequestIdNode == null) {
-        __doPostError(httpServletRequest, httpServletResponse, null, -32600, "missing id field", null);
-        return;
-    }
-    final Object jsonrpcRequestId;
-    if (jsonrpcRequestIdNode.isTextual()) {
-        jsonrpcRequestId = jsonrpcRequestIdNode.asText();
-    } else if (jsonrpcRequestIdNode.isNumber()) {
-        jsonrpcRequestId = jsonrpcRequestIdNode.decimalValue();
-    } else if (jsonrpcRequestIdNode.isNull()) {
-        jsonrpcRequestId = null;
-    } else {
-        __doPostError(httpServletRequest, httpServletResponse, null, -32600, "invalid id field type", null);
-        return;
-    }
-
-    final com.fasterxml.jackson.databind.JsonNode jsonrpcRequestVersionNode = jsonrpcRequestNode.get("jsonrpc");
-    if (jsonrpcRequestVersionNode == null || !jsonrpcRequestVersionNode.asText().equals("2.0")) {
-        __doPostError(httpServletRequest, httpServletResponse, null, -32600, "invalid jsonrpc field, expected \\"2.0\\"", jsonrpcRequestId);
-        return;
-    }
-
-    com.fasterxml.jackson.databind.JsonNode jsonrpcRequestMethodNode = jsonrpcRequestNode.get("method");
-    if (jsonrpcRequestMethodNode == null) {
-        __doPostError(httpServletRequest, httpServletResponse, null, -32600, "missing jsonrpcRequestMethod field", jsonrpcRequestId);
-        return;
-    }
-    final String jsonrpcRequestMethod = jsonrpcRequestMethodNode.asText();
-
-    final com.fasterxml.jackson.databind.JsonNode jsonrpcRequestParams = jsonrpcRequestNode.get("params");
-    if (jsonrpcRequestParams == null) {
-        __doPostError(httpServletRequest, httpServletResponse, null, -32600, "missing params field", jsonrpcRequestId);
-        return;
-    } else if (!jsonrpcRequestParams.isObject() && !jsonrpcRequestParams.isArray()) {
-        __doPostError(httpServletRequest, httpServletResponse, null, -32600, "expected params object or array", jsonrpcRequestId);
-    }
-
+        final org.thryft.protocol.JsonRpcInputProtocol iprot = new org.thryft.protocol.JsonRpcInputProtocol(new org.thryft.protocol.JacksonJsonInputProtocol(httpServletRequestBody));
+        try {
+            messageBegin = iprot.readMessageBegin();
+        } catch (final org.thryft.protocol.JsonRpcInputProtocolException e) {
+            throw e;
+        } catch (final org.thryft.protocol.InputProtocolException e) {
+            throw new org.thryft.protocol.JsonRpcInputProtocolException(e, -32600);
+        }
+        if (messageBegin.getType() != org.thryft.protocol.MessageType.CALL) {
+            throw new org.thryft.protocol.JsonRpcInputProtocolException(-32600, "expected request");
+        }
 %(function_dispatches)s
+    } catch (final org.thryft.protocol.JsonRpcInputProtocolException e) {
+        __doPostError(httpServletRequest, httpServletResponse, new org.thryft.protocol.JsonRpcErrorResponse(e), messageBegin != null ? messageBegin.getId() : null);
+        return;
+    }
+
 }
 """ % locals()
 
         def _java_method_do_post_error(self):
             write_http_servlet_response_body = indent(' ' * 4, self._java_write_http_servlet_response_body())
             return """\
-private void __doPostError(final javax.servlet.http.HttpServletRequest httpServletRequest, final javax.servlet.http.HttpServletResponse httpServletResponse, final Throwable jsonrpcErrorData, final int jsonrpcErrorCode, final String jsonrpcErrorMessage, final Object jsonrpcRequestId) throws java.io.IOException {
+private void __doPostError(final javax.servlet.http.HttpServletRequest httpServletRequest, final javax.servlet.http.HttpServletResponse httpServletResponse, final org.thryft.protocol.JsonRpcErrorResponse jsonRpcErrorResponse, final Object jsonRpcRequestId) throws java.io.IOException {
     final java.io.StringWriter httpServletResponseBodyWriter = new java.io.StringWriter();
-    final org.thryft.protocol.JsonProtocol oprot = new org.thryft.protocol.JsonProtocol(httpServletResponseBodyWriter);
-
+    final org.thryft.protocol.JsonRpcOutputProtocol oprot = new org.thryft.protocol.JsonRpcOutputProtocol(new org.thryft.protocol.JacksonJsonOutputProtocol(httpServletResponseBodyWriter));
     try {
-        oprot.writeStructBegin(new org.thryft.protocol.TStruct("response"));
-
-        oprot.writeFieldBegin(new org.thryft.protocol.TField("jsonrpc", org.thryft.protocol.TType.STRING, (short)-1));
-        oprot.writeString("2.0");
-        oprot.writeFieldEnd();
-
-        oprot.writeFieldBegin(new org.thryft.protocol.TField("id", org.thryft.protocol.TType.STRING, (short)-1));
-        oprot.writeMixed(jsonrpcRequestId);
-        oprot.writeFieldEnd();
-
-        oprot.writeFieldBegin(new org.thryft.protocol.TField("error", org.thryft.protocol.TType.STRUCT, (short)-1));
-        oprot.writeStructBegin(new org.thryft.protocol.TStruct("error"));
-
-        oprot.writeFieldBegin(new org.thryft.protocol.TField("code", org.thryft.protocol.TType.I32, (short)-1));
-        oprot.writeI32(jsonrpcErrorCode);
-        oprot.writeFieldEnd();
-
-        if (jsonrpcErrorData != null && jsonrpcErrorData instanceof org.thryft.TBase<?>) {
-            oprot.writeFieldBegin(new org.thryft.protocol.TField("@class", org.thryft.protocol.TType.STRING, (short)-1));
-            oprot.writeString(jsonrpcErrorData.getClass().getName());
-            oprot.writeFieldEnd();
-            oprot.writeFieldBegin(new org.thryft.protocol.TField("data", org.thryft.protocol.TType.STRUCT, (short)-1));
-            ((org.thryft.TBase<?>)jsonrpcErrorData).write(oprot);
-            oprot.writeFieldEnd();
-        }
-
-        oprot.writeFieldBegin(new org.thryft.protocol.TField("message", org.thryft.protocol.TType.STRING, (short)-1));
-        oprot.writeString(jsonrpcErrorMessage);
-        oprot.writeFieldEnd();
-
-        oprot.writeFieldStop(); // error
-        oprot.writeStructEnd(); // error
-        oprot.writeFieldEnd(); // error
-
-        oprot.writeFieldStop(); // httpServletResponse
-        oprot.writeStructEnd(); // httpServletResponse
-    } catch (final java.io.IOException e) {
+        oprot.writeMessageBegin("", org.thryft.protocol.MessageType.EXCEPTION, jsonRpcRequestId);
+        jsonRpcErrorResponse.write(oprot);
+        oprot.writeMessageEnd();
+        oprot.flush();
+    } catch (final org.thryft.protocol.OutputProtocolException e) {
         logger.error("error serializing service error response: ", e);
         throw new IllegalStateException(e);
     }
-
-    oprot.flush();
-    String httpServletResponseBody = httpServletResponseBodyWriter.toString();
-
-%(write_http_servlet_response_body)s
+    __doPostResponse(httpServletRequest, httpServletResponse, httpServletResponseBodyWriter.toString());
 }
 """ % locals()
 
         def _java_method_do_post_response(self):
             write_http_servlet_response_body = indent(' ' * 4, self._java_write_http_servlet_response_body())
             return """\
-private void __doPostResponse(final javax.servlet.http.HttpServletRequest httpServletRequest, final javax.servlet.http.HttpServletResponse httpServletResponse, final Object jsonrpcRequestId, final Object jsonrpcResult) throws java.io.IOException {
+private void __doPostResponse(final javax.servlet.http.HttpServletRequest httpServletRequest, final javax.servlet.http.HttpServletResponse httpServletResponse, final Object jsonRpcRequestId, final Object jsonRpcResult) throws java.io.IOException {
     final java.io.StringWriter httpServletResponseBodyWriter = new java.io.StringWriter();
-    final org.thryft.protocol.JsonProtocol oprot = new org.thryft.protocol.JsonProtocol(httpServletResponseBodyWriter);
+    final org.thryft.protocol.JsonRpcOutputProtocol oprot = new org.thryft.protocol.JsonRpcOutputProtocol(new org.thryft.protocol.JacksonJsonOutputProtocol(httpServletResponseBodyWriter));
 
     try {
-        oprot.writeStructBegin(new org.thryft.protocol.TStruct("response"));
-
-        oprot.writeFieldBegin(new org.thryft.protocol.TField("jsonrpc", org.thryft.protocol.TType.STRING, (short)-1));
-        oprot.writeString("2.0");
-        oprot.writeFieldEnd();
-
-        oprot.writeFieldBegin(new org.thryft.protocol.TField("id", org.thryft.protocol.TType.STRING, (short)-1));
-        oprot.writeMixed(jsonrpcRequestId);
-        oprot.writeFieldEnd();
-
-        oprot.writeFieldBegin(new org.thryft.protocol.TField("result", org.thryft.protocol.TType.STRING, (short)-1));
-        oprot.writeMixed(jsonrpcResult);
-        oprot.writeFieldEnd();
-
-        oprot.writeFieldStop(); // httpServletResponse
-        oprot.writeStructEnd(); // httpServletResponse
-    } catch (final java.io.IOException e) {
-        logger.error("error serializing service response: ", e);
+        oprot.writeMessageBegin("", org.thryft.protocol.MessageType.REPLY, jsonRpcRequestId);
+        oprot.writeMixed(jsonRpcResult);
+        oprot.writeMessageEnd();
+        oprot.flush();
+    } catch (final org.thryft.protocol.OutputProtocolException e) {
+        logger.error("error serializing service error response: ", e);
         throw new IllegalStateException(e);
     }
 
-    oprot.flush();
-    String httpServletResponseBody = httpServletResponseBodyWriter.toString();
+    __doPostResponse(httpServletRequest, httpServletResponse, httpServletResponseBodyWriter.toString());
+}
 
+private void __doPostResponse(final javax.servlet.http.HttpServletRequest httpServletRequest, final javax.servlet.http.HttpServletResponse httpServletResponse, final String httpServletResponseBody) throws java.io.IOException {
 %(write_http_servlet_response_body)s
 }
 """ % locals()

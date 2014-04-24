@@ -34,40 +34,41 @@ package org.thryft.protocol;
 
 import java.util.Stack;
 
-public abstract class StackedInputProtocol extends ForwardingInputProtocol {
+public abstract class StackedInputProtocol<InputProtocolT extends InputProtocol>
+        extends ForwardingInputProtocol {
     @Override
     public void readListEnd() throws InputProtocolException {
-        protocolStack.pop();
+        inputProtocolStack.pop();
     }
 
     @Override
     public void readMapEnd() throws InputProtocolException {
-        protocolStack.pop();
+        inputProtocolStack.pop();
     }
 
     @Override
     public void readMessageEnd() {
-        protocolStack.pop();
+        inputProtocolStack.pop();
     }
 
     @Override
     public void readSetEnd() throws InputProtocolException {
-        protocolStack.pop();
+        inputProtocolStack.pop();
     }
 
     @Override
     public void readStructEnd() throws InputProtocolException {
-        protocolStack.pop();
+        inputProtocolStack.pop();
     }
 
     @Override
     protected InputProtocol _delegate() {
-        return protocolStack.peek();
+        return inputProtocolStack.peek();
     }
 
-    protected final Stack<InputProtocol> _getProtocolStack() {
-        return protocolStack;
+    protected final Stack<InputProtocolT> _getInputProtocolStack() {
+        return inputProtocolStack;
     }
 
-    private final Stack<InputProtocol> protocolStack = new Stack<InputProtocol>();
+    private final Stack<InputProtocolT> inputProtocolStack = new Stack<InputProtocolT>();
 }

@@ -38,13 +38,16 @@ import static org.thryft.Preconditions.checkNotEmpty;
 
 import java.util.Map;
 
+import org.thryft.protocol.StringMapOutputProtocol.NestedOutputProtocol;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 
-public class StringMapOutputProtocol extends StackedOutputProtocol {
-    protected abstract class AbstractOutputProtocol extends
-            org.thryft.protocol.AbstractOutputProtocol {
-        protected AbstractOutputProtocol(final String myKey) {
+public class StringMapOutputProtocol extends
+        StackedOutputProtocol<NestedOutputProtocol> {
+    protected abstract class NestedOutputProtocol extends
+            AbstractOutputProtocol {
+        protected NestedOutputProtocol(final String myKey) {
             this.myKey = myKey;
         }
 
@@ -104,14 +107,14 @@ public class StringMapOutputProtocol extends StackedOutputProtocol {
         protected void _writeListBegin(final String childKey)
                 throws OutputProtocolException {
             output.put(__joinKeys(myKey, childKey), "");
-            _getProtocolStack().push(
+            _getOutputProtocolStack().push(
                     new ListOutputProtocol(__joinKeys(myKey, childKey)));
         }
 
         protected void _writeMapBegin(final String childKey)
                 throws OutputProtocolException {
             output.put(__joinKeys(myKey, childKey), "");
-            _getProtocolStack().push(
+            _getOutputProtocolStack().push(
                     new MapOutputProtocol(__joinKeys(myKey, childKey)));
         }
 
@@ -124,14 +127,14 @@ public class StringMapOutputProtocol extends StackedOutputProtocol {
         protected void _writeStructBegin(final String childKey)
                 throws OutputProtocolException {
             output.put(__joinKeys(myKey, childKey), "");
-            _getProtocolStack().push(
+            _getOutputProtocolStack().push(
                     new StructOutputProtocol(__joinKeys(myKey, childKey)));
         }
 
         private final String myKey;
     }
 
-    private final class ListOutputProtocol extends AbstractOutputProtocol {
+    private final class ListOutputProtocol extends NestedOutputProtocol {
         public ListOutputProtocol(final String myKey) {
             super(myKey);
         }
@@ -163,7 +166,7 @@ public class StringMapOutputProtocol extends StackedOutputProtocol {
         private int nextChildKey;
     }
 
-    private final class MapOutputProtocol extends AbstractOutputProtocol {
+    private final class MapOutputProtocol extends NestedOutputProtocol {
         public MapOutputProtocol(final String myKey) {
             super(myKey);
         }
@@ -203,7 +206,7 @@ public class StringMapOutputProtocol extends StackedOutputProtocol {
         private String nextChildKey = null;
     }
 
-    private final class RootOutputProtocol extends AbstractOutputProtocol {
+    private final class RootOutputProtocol extends NestedOutputProtocol {
         public RootOutputProtocol() {
             super("");
         }
@@ -211,13 +214,13 @@ public class StringMapOutputProtocol extends StackedOutputProtocol {
         @Override
         public void writeListBegin(final Type elementType, final int size)
                 throws OutputProtocolException {
-            _getProtocolStack().push(new ListOutputProtocol(""));
+            _getOutputProtocolStack().push(new ListOutputProtocol(""));
         }
 
         @Override
         public void writeMapBegin(final Type keyType, final Type valueType,
                 final int size) throws OutputProtocolException {
-            _getProtocolStack().push(new MapOutputProtocol(""));
+            _getOutputProtocolStack().push(new MapOutputProtocol(""));
         }
 
         @Override
@@ -229,11 +232,11 @@ public class StringMapOutputProtocol extends StackedOutputProtocol {
         @Override
         public void writeStructBegin(final String name)
                 throws OutputProtocolException {
-            _getProtocolStack().push(new StructOutputProtocol(""));
+            _getOutputProtocolStack().push(new StructOutputProtocol(""));
         }
     }
 
-    private final class StructOutputProtocol extends AbstractOutputProtocol {
+    private final class StructOutputProtocol extends NestedOutputProtocol {
         public StructOutputProtocol(final String myKey) {
             super(myKey);
         }
@@ -294,7 +297,7 @@ public class StringMapOutputProtocol extends StackedOutputProtocol {
     }
 
     public StringMapOutputProtocol() {
-        _getProtocolStack().push(new RootOutputProtocol());
+        _getOutputProtocolStack().push(new RootOutputProtocol());
     }
 
     public final ImmutableMap<String, String> toStringMap() {

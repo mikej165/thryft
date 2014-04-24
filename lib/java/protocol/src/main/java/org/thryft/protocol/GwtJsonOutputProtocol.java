@@ -35,6 +35,8 @@ package org.thryft.protocol;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
+import org.thryft.protocol.GwtJsonOutputProtocol.NestedOutputProtocol;
+
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONBoolean;
 import com.google.gwt.json.client.JSONNull;
@@ -43,9 +45,10 @@ import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
 
-public class GwtJsonOutputProtocol extends StackedOutputProtocol {
-    protected abstract class AbstractOutputProtocol extends
-            org.thryft.protocol.AbstractOutputProtocol {
+public class GwtJsonOutputProtocol extends
+        StackedOutputProtocol<NestedOutputProtocol> {
+    protected abstract class NestedOutputProtocol extends
+            AbstractOutputProtocol {
         @Override
         public void writeBool(final boolean value)
                 throws OutputProtocolException {
@@ -83,7 +86,7 @@ public class GwtJsonOutputProtocol extends StackedOutputProtocol {
                 throws OutputProtocolException {
             final JSONArray array = new JSONArray();
             _write(array);
-            _getProtocolStack().push(_createArrayOutputProtocol(array));
+            _getOutputProtocolStack().push(__createArrayOutputProtocol(array));
         }
 
         @Override
@@ -95,7 +98,8 @@ public class GwtJsonOutputProtocol extends StackedOutputProtocol {
                 final int size) throws OutputProtocolException {
             final JSONObject object = new JSONObject();
             _write(object);
-            _getProtocolStack().push(_createMapObjectOutputProtocol(object));
+            _getOutputProtocolStack().push(
+                    __createMapObjectOutputProtocol(object));
         }
 
         @Override
@@ -118,7 +122,8 @@ public class GwtJsonOutputProtocol extends StackedOutputProtocol {
                 throws OutputProtocolException {
             final JSONObject object = new JSONObject();
             _write(object);
-            _getProtocolStack().push(_createStructObjectOutputProtocol(object));
+            _getOutputProtocolStack().push(
+                    __createStructObjectOutputProtocol(object));
         }
 
         @Override
@@ -128,7 +133,7 @@ public class GwtJsonOutputProtocol extends StackedOutputProtocol {
         protected abstract void _write(final JSONValue value);
     }
 
-    protected class ArrayOutputProtocol extends AbstractOutputProtocol {
+    private class ArrayOutputProtocol extends NestedOutputProtocol {
         public ArrayOutputProtocol(final JSONArray array) {
             this.array = checkNotNull(array);
         }
@@ -141,7 +146,7 @@ public class GwtJsonOutputProtocol extends StackedOutputProtocol {
         private final JSONArray array;
     }
 
-    protected class MapObjectOutputProtocol extends AbstractOutputProtocol {
+    private class MapObjectOutputProtocol extends NestedOutputProtocol {
         public MapObjectOutputProtocol(final JSONObject object) {
             this.object = checkNotNull(object);
         }
@@ -262,7 +267,7 @@ public class GwtJsonOutputProtocol extends StackedOutputProtocol {
         private String nextKey = null;
     }
 
-    protected class RootOutputProtocol extends AbstractOutputProtocol {
+    private class RootOutputProtocol extends NestedOutputProtocol {
         @Override
         public void writeFieldEnd() throws OutputProtocolException {
         }
@@ -279,7 +284,7 @@ public class GwtJsonOutputProtocol extends StackedOutputProtocol {
         }
     }
 
-    protected class StructObjectOutputProtocol extends AbstractOutputProtocol {
+    private class StructObjectOutputProtocol extends NestedOutputProtocol {
         public StructObjectOutputProtocol(final JSONObject object) {
             this.object = checkNotNull(object);
         }
@@ -310,27 +315,28 @@ public class GwtJsonOutputProtocol extends StackedOutputProtocol {
     }
 
     public GwtJsonOutputProtocol() {
-        _getProtocolStack().push(_createRootOutputProtocol());
+        _getOutputProtocolStack().push(__createRootOutputProtocol());
     }
 
     @Override
     public void flush() throws OutputProtocolException {
     }
 
-    protected OutputProtocol _createArrayOutputProtocol(final JSONArray array) {
+    private ArrayOutputProtocol __createArrayOutputProtocol(
+            final JSONArray array) {
         return new ArrayOutputProtocol(array);
     }
 
-    protected OutputProtocol _createMapObjectOutputProtocol(
+    private MapObjectOutputProtocol __createMapObjectOutputProtocol(
             final JSONObject object) {
         return new MapObjectOutputProtocol(object);
     }
 
-    protected OutputProtocol _createRootOutputProtocol() {
+    private RootOutputProtocol __createRootOutputProtocol() {
         return new RootOutputProtocol();
     }
 
-    protected OutputProtocol _createStructObjectOutputProtocol(
+    private StructObjectOutputProtocol __createStructObjectOutputProtocol(
             final JSONObject object) {
         return new StructObjectOutputProtocol(object);
     }
