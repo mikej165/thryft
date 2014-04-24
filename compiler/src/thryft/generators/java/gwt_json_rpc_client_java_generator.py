@@ -53,85 +53,68 @@ class GwtJsonRpcClientJavaGenerator(java_generator.JavaGenerator):
                 return_type_name = self.return_field.type.java_declaration_name(boxed=True)
             else:
                 return_type_name = 'Void'
-            parameters.append("com.google.gwt.user.client.rpc.AsyncCallback<%s> callback" % return_type_name)
+            parameters.append("final com.google.gwt.user.client.rpc.AsyncCallback<%s> callback" % return_type_name)
             parameters = ', '.join(parameters)
             parameter_names = ', '.join(parameter.java_name() for parameter in self.parameters)
             request_type_name = self.java_request_type().java_name()
             response_type_name = self.java_response_type().java_name()
             service_qname = self.parent.java_qname()
             if self.return_field is not None:
-                service_response_assignment = "%(service_qname)s.Messages.%(response_type_name)s __serviceResponse = " % locals()
+                service_response_declaration = "final %(service_qname)s.Messages.%(response_type_name)s __serviceResponse;\n" % locals() + ' ' * 16
+                service_response_assignment = "__serviceResponse = "
                 service_response_return_value_getter_name = self.return_field.java_getter_name()
-                return_statement = indent(' ' * 8, """
-return __serviceResponse.%(service_response_return_value_getter_name)s();
+                callback = indent(' ' * 16, """
+callback.onSuccess(__serviceResponse.%(service_response_return_value_getter_name)s());
 """ % locals())
-                return_type_qname = self.return_field.type.java_qname()
             else:
-                service_response_assignment = ''
-                return_statement = ''
-                return_type_qname = 'void'
+                service_response_declaration = service_response_assignment = ''
+                callback = ''
 
             return """\
-public final %(return_type_qname)s %(java_name)s(%(parameters)s) {
+public final void %(java_name)s(%(parameters)s) {
     final %(service_qname)s.Messages.%(request_type_name)s __serviceRequest = new %(service_qname)s.Messages.%(request_type_name)s(%(parameter_names)s);
     final int __id = System.identityHashCode(__serviceRequest);
 
+    final String __jsonRpcOutput;
     try {
-        final java.io.StringWriter __oStringWriter = new java.io.StringWriter();
-        final org.thryft.protocol.JsonRpcOutputProtocol __oprot = new org.thryft.protocol.JsonRpcOutputProtocol(new org.thryft.protocol.GwtJsonOutputProtocol(__oStringWriter));
-        __oprot.writeMessageBegin("%(name)s", org.thryft.protocol.MessageType.CALL, __id);
-        __serviceRequest.write(__oprot);
-        __oprot.writeMessageEnd();
-        __oprot.flush();
-        final String __oString = __oStringWriter.toString();
-
-        final com.google.gwt.http.client.RequestBuilder __requestBuilder = new RequestBuilder(RequestBuilder.POST, url);
-
-    try {
-      builder.setHeader("Content-Type", "application/x-www-form-urlencoded");
-      Request response = builder.sendRequest(postData, new RequestCallback() {
-
-        public void onError(Request request, Throwable exception) {
-          // code omitted for clarity
-        }
-
-        public void onResponseReceived(Request request, Response response) {
-          // code omitted for clarity
-        }
-      });
-    } catch (RequestException e) {
-      Window.alert("Failed to send the request: " + e.getMessage());
+        final org.thryft.protocol.GwtJsonOutputProtocol __jsonOutputProtocol = new org.thryft.protocol.GwtJsonOutputProtocol();
+        final org.thryft.protocol.JsonRpcOutputProtocol __jsonRpcOutputProtocol = new org.thryft.protocol.JsonRpcOutputProtocol(__jsonOutputProtocol);
+        __jsonRpcOutputProtocol.writeMessageBegin("%(name)s", org.thryft.protocol.MessageType.CALL, __id);
+        __serviceRequest.write(__jsonRpcOutputProtocol);
+        __jsonRpcOutputProtocol.writeMessageEnd();
+        __jsonRpcOutput = __jsonOutputProtocol.toJsonValue().toString();
+    } catch (final org.thryft.protocol.OutputProtocolException e) {
+        callback.onFailure(e);
+        return;
     }
-        final java.net.HttpURLConnection __connection = (java.net.HttpURLConnection)jsonRpcUrl.openConnection();
-        __connection.setRequestMethod("POST");
-        __connection.setRequestProperty("Content-Type", "application/json");
-        __connection.setUseCaches(false);
-        __connection.setDoInput(true);
-        __connection.setDoOutput(true);
-        try (final java.io.OutputStream __connectionOutputStream = __connection.getOutputStream()) {
-            __connectionOutputStream.write(__oString.getBytes("UTF-8"));
-            __connectionOutputStream.flush();
-        }
 
-        final String __iString;
-        try (final java.io.InputStream __connectionInputStream = __connection.getInputStream()) {
-            try (final java.util.Scanner __connectionInputScanner = new java.util.Scanner(__connectionInputStream).useDelimiter("\\\\A")) {
-                __iString = __connectionInputScanner.hasNext() ? __connectionInputScanner.next() : "";
+    final com.google.gwt.http.client.RequestBuilder __requestBuilder = new com.google.gwt.http.client.RequestBuilder(com.google.gwt.http.client.RequestBuilder.POST, jsonRpcUrl);
+    __requestBuilder.setHeader("Content-Type", "application/json");
+    try {
+        __requestBuilder.sendRequest(__jsonRpcOutput, new com.google.gwt.http.client.RequestCallback() {
+            public void onError(final com.google.gwt.http.client.Request request, final Throwable exception) {
+                callback.onFailure(exception);
             }
-        }
-        final org.thryft.protocol.JsonRpcInputProtocol __iprot = new org.thryft.protocol.JsonRpcInputProtocol(new org.thryft.protocol.JacksonJsonInputProtocol(new java.io.StringReader(__iString)));
-        final org.thryft.protocol.MessageBegin __messageBegin = __iprot.readMessageBegin();
-        if (!__messageBegin.getId().equals(__id)) {
-            throw new org.thryft.protocol.InputProtocolException(String.format("expected id in response to be %%s, got %%s", __id, __messageBegin.getId()));
-        } else if (__messageBegin.getType() != org.thryft.protocol.MessageType.REPLY) {
-            throw new org.thryft.protocol.InputProtocolException("expected response message");
-        }
-        %(service_response_assignment)snew %(service_qname)s.Messages.%(response_type_name)s(__iprot);
-        __iprot.readMessageEnd();%(return_statement)s
-    } catch (final java.io.IOException e) {
-        throw new RuntimeException(e);
-    } catch (final org.thryft.protocol.ProtocolException e) {
-        throw new RuntimeException(e);
+
+            public void onResponseReceived(final com.google.gwt.http.client.Request request, final com.google.gwt.http.client.Response response) {
+                %(service_response_declaration)stry {
+                    final org.thryft.protocol.JsonRpcInputProtocol __iprot = new org.thryft.protocol.JsonRpcInputProtocol(new org.thryft.protocol.GwtJsonInputProtocol(response.getText()));
+                    final org.thryft.protocol.MessageBegin __messageBegin = __iprot.readMessageBegin();
+                    if (!__messageBegin.getId().equals(__id)) {
+                        throw new org.thryft.protocol.InputProtocolException(String.format("expected id in response to be %%s, got %%s", __id, __messageBegin.getId()));
+                    } else if (__messageBegin.getType() != org.thryft.protocol.MessageType.REPLY) {
+                        throw new org.thryft.protocol.InputProtocolException("expected response message");
+                    }
+                    %(service_response_assignment)snew %(service_qname)s.Messages.%(response_type_name)s(__iprot);
+                    __iprot.readMessageEnd();
+                } catch (final Exception e) {
+                    callback.onFailure(e);
+                    return;
+                }%(callback)s
+            }
+        });
+    } catch (final com.google.gwt.http.client.RequestException e) {
+        callback.onFailure(e);
     }
 }
 """ % locals()
@@ -143,7 +126,7 @@ public final %(return_type_qname)s %(java_name)s(%(parameters)s) {
         def _java_constructor(self):
             name = self.java_name()
             return """\
-public %(name)s(final java.net.URL jsonRpcUrl) {
+public %(name)s(final String jsonRpcUrl) {
     this.jsonRpcUrl = com.google.common.base.Preconditions.checkNotNull(jsonRpcUrl);
 }
 """ % locals()

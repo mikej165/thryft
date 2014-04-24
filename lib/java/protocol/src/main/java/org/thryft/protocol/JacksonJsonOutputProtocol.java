@@ -45,7 +45,7 @@ import com.google.common.annotations.GwtIncompatible;
 
 @GwtIncompatible("")
 public class JacksonJsonOutputProtocol extends
-        StackedOutputProtocol<NestedOutputProtocol> {
+        JsonOutputProtocol<NestedOutputProtocol> {
     protected class ArrayOutputProtocol extends NestedOutputProtocol {
     }
 

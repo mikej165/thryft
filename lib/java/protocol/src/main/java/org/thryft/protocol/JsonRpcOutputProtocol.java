@@ -3,7 +3,7 @@ package org.thryft.protocol;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public final class JsonRpcOutputProtocol extends ForwardingOutputProtocol {
-    public JsonRpcOutputProtocol(final JacksonJsonOutputProtocol jsonOutputProtocol) {
+    public JsonRpcOutputProtocol(final JsonOutputProtocol<?> jsonOutputProtocol) {
         this.jsonOutputProtocol = checkNotNull(jsonOutputProtocol);
     }
 
@@ -68,5 +68,5 @@ public final class JsonRpcOutputProtocol extends ForwardingOutputProtocol {
         return jsonOutputProtocol;
     }
 
-    private final JacksonJsonOutputProtocol jsonOutputProtocol;
+    private final JsonOutputProtocol<?> jsonOutputProtocol;
 }

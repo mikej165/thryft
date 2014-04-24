@@ -46,9 +46,11 @@ import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
 
 public class GwtJsonOutputProtocol extends
-        StackedOutputProtocol<NestedOutputProtocol> {
+        JsonOutputProtocol<NestedOutputProtocol> {
     protected abstract class NestedOutputProtocol extends
             AbstractOutputProtocol {
+        public abstract JSONValue getJsonValue();
+
         @Override
         public void writeBool(final boolean value)
                 throws OutputProtocolException {
@@ -139,6 +141,11 @@ public class GwtJsonOutputProtocol extends
         }
 
         @Override
+        public JSONValue getJsonValue() {
+            return array;
+        }
+
+        @Override
         protected void _write(final JSONValue value) {
             array.set(array.size(), value);
         }
@@ -149,6 +156,11 @@ public class GwtJsonOutputProtocol extends
     private class MapObjectOutputProtocol extends NestedOutputProtocol {
         public MapObjectOutputProtocol(final JSONObject object) {
             this.object = checkNotNull(object);
+        }
+
+        @Override
+        public JSONValue getJsonValue() {
+            return object;
         }
 
         @Override
@@ -269,6 +281,11 @@ public class GwtJsonOutputProtocol extends
 
     private class RootOutputProtocol extends NestedOutputProtocol {
         @Override
+        public JSONValue getJsonValue() {
+            return value != null ? value : JSONNull.getInstance();
+        }
+
+        @Override
         public void writeFieldEnd() throws OutputProtocolException {
         }
 
@@ -280,13 +297,20 @@ public class GwtJsonOutputProtocol extends
         protected void _write(final JSONValue value) {
             checkState(value instanceof JSONArray
                     || value instanceof JSONObject);
-
+            this.value = value;
         }
+
+        private JSONValue value = null;
     }
 
     private class StructObjectOutputProtocol extends NestedOutputProtocol {
         public StructObjectOutputProtocol(final JSONObject object) {
             this.object = checkNotNull(object);
+        }
+
+        @Override
+        public JSONValue getJsonValue() {
+            return object;
         }
 
         @Override
@@ -320,6 +344,14 @@ public class GwtJsonOutputProtocol extends
 
     @Override
     public void flush() throws OutputProtocolException {
+    }
+
+    public JSONValue toJsonValue() {
+        if (!_getOutputProtocolStack().isEmpty()) {
+            return _getOutputProtocolStack().get(0).getJsonValue();
+        } else {
+            return JSONNull.getInstance();
+        }
     }
 
     private ArrayOutputProtocol __createArrayOutputProtocol(
