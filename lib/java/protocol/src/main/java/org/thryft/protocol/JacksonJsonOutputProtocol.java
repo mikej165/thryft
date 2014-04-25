@@ -37,6 +37,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 
+import org.apache.commons.codec.binary.Base64;
 import org.thryft.protocol.JacksonJsonOutputProtocol.NestedOutputProtocol;
 
 import com.fasterxml.jackson.core.JsonFactory;
@@ -176,6 +177,12 @@ public class JacksonJsonOutputProtocol extends
 
     protected abstract class NestedOutputProtocol extends
             AbstractOutputProtocol {
+        @Override
+        public void writeBinary(final byte[] value)
+                throws OutputProtocolException {
+            writeString(Base64.encodeBase64String(value));
+        }
+
         @Override
         public void writeBool(final boolean value)
                 throws OutputProtocolException {

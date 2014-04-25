@@ -42,6 +42,8 @@ import java.io.StringReader;
 import java.util.Iterator;
 import java.util.Stack;
 
+import org.apache.commons.codec.binary.Base64;
+
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -49,16 +51,19 @@ import com.fasterxml.jackson.databind.node.TextNode;
 import com.google.common.annotations.GwtIncompatible;
 
 @GwtIncompatible("")
-public final class JacksonJsonInputProtocol
-        extends
-        JsonInputProtocol<JacksonJsonInputProtocol.JacksonJsonValueInputProtocol> {
-    public abstract class JacksonJsonValueInputProtocol extends
-            org.thryft.protocol.AbstractInputProtocol {
-        private JacksonJsonValueInputProtocol(final JsonNode node) {
+public final class JacksonJsonInputProtocol extends
+        JsonInputProtocol<JacksonJsonInputProtocol.NestedInputProtocol> {
+    public abstract class NestedInputProtocol extends AbstractInputProtocol {
+        private NestedInputProtocol(final JsonNode node) {
             myNode = node;
         }
 
         public abstract Type getType();
+
+        @Override
+        public byte[] readBinary() throws InputProtocolException {
+            return Base64.decodeBase64(readString());
+        }
 
         @Override
         public boolean readBool() throws InputProtocolException {
@@ -153,9 +158,8 @@ public final class JacksonJsonInputProtocol
         private final JsonNode myNode;
     }
 
-    private final class JacksonJsonArrayInputProtocol extends
-            JacksonJsonValueInputProtocol {
-        public JacksonJsonArrayInputProtocol(final JsonNode node) {
+    private final class ArrayInputProtocol extends NestedInputProtocol {
+        public ArrayInputProtocol(final JsonNode node) {
             super(node);
         }
 
@@ -172,9 +176,8 @@ public final class JacksonJsonInputProtocol
         private int nextValueIndex = 0;
     }
 
-    private final class JacksonJsonMapObjectInputProtocol extends
-            JacksonJsonValueInputProtocol {
-        public JacksonJsonMapObjectInputProtocol(final JsonNode node) {
+    private final class MapObjectInputProtocol extends NestedInputProtocol {
+        public MapObjectInputProtocol(final JsonNode node) {
             super(node);
             for (final Iterator<String> fieldName = node.fieldNames(); fieldName
                     .hasNext();) {
@@ -202,9 +205,8 @@ public final class JacksonJsonInputProtocol
         private boolean nextReadIsKey = true;
     }
 
-    private final class JacksonJsonRootInputProtocol extends
-            JacksonJsonValueInputProtocol {
-        private JacksonJsonRootInputProtocol(final JsonNode node) {
+    private final class RootInputProtocol extends NestedInputProtocol {
+        private RootInputProtocol(final JsonNode node) {
             super(node);
         }
 
@@ -219,9 +221,8 @@ public final class JacksonJsonInputProtocol
         }
     }
 
-    private final class JacksonJsonStructObjectInputProtocol extends
-            JacksonJsonValueInputProtocol {
-        public JacksonJsonStructObjectInputProtocol(final JsonNode node) {
+    private final class StructObjectInputProtocol extends NestedInputProtocol {
+        public StructObjectInputProtocol(final JsonNode node) {
             super(node);
             for (final Iterator<String> fieldName = node.fieldNames(); fieldName
                     .hasNext();) {
@@ -305,24 +306,22 @@ public final class JacksonJsonInputProtocol
         _getInputProtocolStack().push(__createRootInputProtocol(rootNode));
     }
 
-    private JacksonJsonArrayInputProtocol __createArrayInputProtocol(
-            final JsonNode node) {
-        return new JacksonJsonArrayInputProtocol(node);
+    private ArrayInputProtocol __createArrayInputProtocol(final JsonNode node) {
+        return new ArrayInputProtocol(node);
     }
 
-    private JacksonJsonMapObjectInputProtocol __createMapObjectInputProtocol(
+    private MapObjectInputProtocol __createMapObjectInputProtocol(
             final JsonNode node) {
-        return new JacksonJsonMapObjectInputProtocol(node);
+        return new MapObjectInputProtocol(node);
     }
 
-    private JacksonJsonRootInputProtocol __createRootInputProtocol(
-            final JsonNode rootNode) {
-        return new JacksonJsonRootInputProtocol(rootNode);
+    private RootInputProtocol __createRootInputProtocol(final JsonNode rootNode) {
+        return new RootInputProtocol(rootNode);
     }
 
-    private JacksonJsonStructObjectInputProtocol __createStructObjectInputProtocol(
+    private StructObjectInputProtocol __createStructObjectInputProtocol(
             final JsonNode node) {
-        return new JacksonJsonStructObjectInputProtocol(node);
+        return new StructObjectInputProtocol(node);
     }
 
     private final JsonNode rootNode;

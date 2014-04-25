@@ -37,7 +37,6 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import org.apache.commons.codec.binary.Base64;
 import org.thryft.native_.EmailAddress;
 import org.thryft.native_.Uri;
 import org.thryft.native_.Url;
@@ -47,12 +46,6 @@ import com.google.common.primitives.UnsignedInteger;
 import com.google.common.primitives.UnsignedLong;
 
 public abstract class AbstractInputProtocol implements InputProtocol {
-    @Override
-    public byte[] readBinary() throws InputProtocolException {
-        final String base64String = readString();
-        return Base64.decodeBase64(base64String);
-    }
-
     @Override
     public Date readDateTime() throws InputProtocolException {
         return new Date(readI64());

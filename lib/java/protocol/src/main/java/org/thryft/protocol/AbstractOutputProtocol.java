@@ -35,7 +35,6 @@ package org.thryft.protocol;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import org.apache.commons.codec.binary.Base64;
 import org.thryft.Base;
 import org.thryft.native_.EmailAddress;
 import org.thryft.native_.Uri;
@@ -50,11 +49,6 @@ import com.google.common.primitives.UnsignedLong;
 public abstract class AbstractOutputProtocol implements OutputProtocol {
     @Override
     public void flush() throws OutputProtocolException {
-    }
-
-    @Override
-    public void writeBinary(final byte[] value) throws OutputProtocolException {
-        writeString(Base64.encodeBase64String(value));
     }
 
     @Override
@@ -161,8 +155,7 @@ public abstract class AbstractOutputProtocol implements OutputProtocol {
         } else if (value instanceof Base<?>) {
             ((Base<?>) value).write(this);
         } else {
-            throw new UnsupportedOperationException(value.getClass()
-                    .getCanonicalName());
+            throw new UnsupportedOperationException(value.toString());
         }
     }
 

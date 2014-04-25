@@ -2,6 +2,7 @@
 <!DOCTYPE module SYSTEM "http://google-web-toolkit.googlecode.com/svn/releases/2.4/distro-source/core/src/gwt-module.dtd">
 <module>
 	<inherits name="com.google.common.collect.Collect" />
+	<inherits name="com.googlecode.gwt.crypto.Crypto" />
 
 	<source path='thryft' />
 </module>

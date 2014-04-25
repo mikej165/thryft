@@ -6,6 +6,7 @@ import java.util.Collection;
 
 import javax.annotation.Nullable;
 
+import com.google.common.annotations.GwtIncompatible;
 import com.google.common.base.Optional;
 
 public final class Preconditions {
@@ -39,6 +40,7 @@ public final class Preconditions {
         return collection;
     }
 
+    @GwtIncompatible("")
     @SuppressWarnings("unchecked")
     public static <T> Optional<T> checkMinLength(final Optional<T> object,
             final Class<T> objectClass, final int minLength) {
@@ -55,6 +57,7 @@ public final class Preconditions {
         return object;
     }
 
+    @GwtIncompatible("")
     @SuppressWarnings("unchecked")
     public static <T> Optional<T> checkMinLength(final Optional<T> object,
             final Class<T> objectClass, final int minLength,
@@ -118,6 +121,7 @@ public final class Preconditions {
         return string;
     }
 
+    @GwtIncompatible("")
     @SuppressWarnings("unchecked")
     public static <T> Optional<T> checkNotEmpty(final Optional<T> object,
             final Class<T> objectClass) {
@@ -134,6 +138,7 @@ public final class Preconditions {
         return object;
     }
 
+    @GwtIncompatible("")
     @SuppressWarnings("unchecked")
     public static <T> Optional<T> checkNotEmpty(final Optional<T> object,
             final Class<T> objectClass, @Nullable final Object errorMessage) {

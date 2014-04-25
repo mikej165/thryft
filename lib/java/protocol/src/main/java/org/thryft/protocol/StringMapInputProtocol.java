@@ -39,17 +39,18 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
-import org.thryft.protocol.StringMapInputProtocol.NestedInputProtocol;
+import org.apache.commons.codec.binary.Base64;
 
+import com.google.common.annotations.GwtIncompatible;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
 
+@GwtIncompatible("")
 public class StringMapInputProtocol extends
-        StackedInputProtocol<NestedInputProtocol> {
-    protected abstract class NestedInputProtocol extends
-            AbstractInputProtocol {
-        protected NestedInputProtocol(
-                final ImmutableMap<String, String> input, final String myKey) {
+        StackedInputProtocol<StringMapInputProtocol.NestedInputProtocol> {
+    abstract class NestedInputProtocol extends AbstractInputProtocol {
+        protected NestedInputProtocol(final ImmutableMap<String, String> input,
+                final String myKey) {
             this.input = input;
             this.myKey = myKey;
 
@@ -69,6 +70,11 @@ public class StringMapInputProtocol extends
                 }
             }
             this.childKeyStack.addAll(childKeyStack);
+        }
+
+        @Override
+        public byte[] readBinary() throws InputProtocolException {
+            return Base64.decodeBase64(readString());
         }
 
         @Override
@@ -255,8 +261,7 @@ public class StringMapInputProtocol extends
         }
     }
 
-    private final class StructInputProtocol extends
-            NestedInputProtocol {
+    private final class StructInputProtocol extends NestedInputProtocol {
         public StructInputProtocol(final ImmutableMap<String, String> input,
                 final String myKey) {
             super(input, myKey);

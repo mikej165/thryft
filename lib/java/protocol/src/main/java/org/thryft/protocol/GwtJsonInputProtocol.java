@@ -44,6 +44,7 @@ import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
+import com.googlecode.gwt.crypto.bouncycastle.util.encoders.Base64;
 
 public class GwtJsonInputProtocol extends
         JsonInputProtocol<NestedInputProtocol> {
@@ -53,6 +54,11 @@ public class GwtJsonInputProtocol extends
         }
 
         public abstract Type getType();
+
+        @Override
+        public byte[] readBinary() throws InputProtocolException {
+            return Base64.decode(readString());
+        }
 
         @Override
         public boolean readBool() throws InputProtocolException {
@@ -67,6 +73,12 @@ public class GwtJsonInputProtocol extends
         @Override
         public double readDouble() throws InputProtocolException {
             return _readChildNode().isNumber().doubleValue();
+        }
+
+        @Override
+        public <E extends Enum<E>> E readEnum(final Class<E> enumClass)
+                throws InputProtocolException {
+            throw new UnsupportedOperationException();
         }
 
         @Override

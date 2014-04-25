@@ -38,17 +38,22 @@ import static org.thryft.Preconditions.checkNotEmpty;
 
 import java.util.Map;
 
-import org.thryft.protocol.StringMapOutputProtocol.NestedOutputProtocol;
+import org.apache.commons.codec.binary.Base64;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 
 public class StringMapOutputProtocol extends
-        StackedOutputProtocol<NestedOutputProtocol> {
-    protected abstract class NestedOutputProtocol extends
-            AbstractOutputProtocol {
+        StackedOutputProtocol<StringMapOutputProtocol.NestedOutputProtocol> {
+    abstract class NestedOutputProtocol extends AbstractOutputProtocol {
         protected NestedOutputProtocol(final String myKey) {
             this.myKey = myKey;
+        }
+
+        @Override
+        public void writeBinary(final byte[] value)
+                throws OutputProtocolException {
+            writeString(Base64.encodeBase64String(value));
         }
 
         @Override

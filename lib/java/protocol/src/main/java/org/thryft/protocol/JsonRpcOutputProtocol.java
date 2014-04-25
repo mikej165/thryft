@@ -29,7 +29,7 @@ public final class JsonRpcOutputProtocol extends ForwardingOutputProtocol {
             writeString((String) id);
             writeFieldEnd();
         } else {
-            throw new IllegalArgumentException(id.getClass().getCanonicalName());
+            throw new IllegalArgumentException(id.toString());
         }
 
         switch (type) {

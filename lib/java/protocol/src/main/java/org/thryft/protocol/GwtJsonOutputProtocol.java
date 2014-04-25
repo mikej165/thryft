@@ -44,12 +44,19 @@ import com.google.gwt.json.client.JSONNumber;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
+import com.googlecode.gwt.crypto.bouncycastle.util.encoders.Base64;
 
 public class GwtJsonOutputProtocol extends
         JsonOutputProtocol<NestedOutputProtocol> {
     protected abstract class NestedOutputProtocol extends
             AbstractOutputProtocol {
         public abstract JSONValue getJsonValue();
+
+        @Override
+        public void writeBinary(final byte[] value)
+                throws OutputProtocolException {
+            writeString(new String(Base64.encode(value)));
+        }
 
         @Override
         public void writeBool(final boolean value)
