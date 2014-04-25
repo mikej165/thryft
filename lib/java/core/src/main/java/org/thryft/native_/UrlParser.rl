@@ -1,7 +1,9 @@
 package org.thryft.native_;
 
+import com.google.common.base.Optional;
+
 public final class UrlParser {
-    public static URL parseUrl(final String url) {
+    public static Url parseUrl(final String url) {
         if (url == null) {
             throw new NullPointerException();
         }
@@ -17,13 +19,13 @@ public final class UrlParser {
         int authorityMark = 0;
         int mark = 0;
         String authority = null;
-        String fragment = null;
+        Optional<String> fragment = Optional.absent();
         String host = null;
-        String path = null;
-        int port = -1;
-        String query = null;
+        Optional<String> path = Optional.absent();
+        Optional<Integer> port = Optional.absent();
+        Optional<String> query = Optional.absent();
         String scheme = null;
-        String userInfo = null;
+        Optional<String> userInfo = Optional.absent();
 
 %%{
     machine UrlParser;
@@ -33,11 +35,11 @@ public final class UrlParser {
     write exec;
 }%%
 
-        if (scheme == null) {
+        if (authority == null || host == null || scheme == null) {
             throw new IllegalArgumentException(url);
         }
 
-        return new URL(scheme, authority, userInfo, host, port, path, query, fragment, url);
+        return new Url(scheme, authority, userInfo, host, port, path, query, fragment, url);
     }
 
 %% write data;

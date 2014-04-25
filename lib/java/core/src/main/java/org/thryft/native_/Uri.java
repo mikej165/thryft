@@ -2,9 +2,7 @@ package org.thryft.native_;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import java.io.Serializable;
-
-public abstract class Uri implements Comparable<Uri>, Serializable {
+public abstract class Uri implements Comparable<Uri> {
     public static Uri parse(final String uri) {
         checkNotNull(uri);
 
@@ -62,8 +60,6 @@ public abstract class Uri implements Comparable<Uri>, Serializable {
     public final String toString() {
         return uri.toString();
     }
-
-    private static final long serialVersionUID = 1L;
 
     private String scheme;
     private String uri;

@@ -39,7 +39,7 @@
 
   userinfo      = (unreserved | pct_encoded | sub_delims | ":")*
                   >{ mark = fpc; }
-                  %{ userInfo = new String(data, mark, fpc - mark); };
+                  %{ userInfo = Optional.of(new String(data, mark, fpc - mark)); };
 
   reg_name      = (unreserved | pct_encoded | sub_delims)*;
   host          = (ip_literal | IPv4address | reg_name)
@@ -48,14 +48,14 @@
 
   port          = digit*
                   >{ mark = fpc; }
-                  %{ port = Integer.parseInt(new String(data, mark, fpc - mark)); };
+                  %{ port = Optional.of(Integer.parseInt(new String(data, mark, fpc - mark))); };
 
   authority     = ((userinfo "@")? host (":" port)?)
                   >{ authorityMark = fpc; }
                   %{ authority = new String(data, authorityMark, fpc - authorityMark); };
 
   action path_enter { mark = fpc; }
-  action path_leave { path = new String(data, mark, fpc - mark); }
+  action path_leave { path = Optional.of(new String(data, mark, fpc - mark)); }
 
   segment       = pchar*;
   segment_nz    = pchar+;
@@ -74,10 +74,10 @@
 
   query         = (pchar | "/" | "?")*
                   >{ mark = fpc; }
-                  %{ query = new String(data, mark, fpc - mark); };
+                  %{ query = Optional.of(new String(data, mark, fpc - mark)); };
   fragment      = (pchar | "/" | "?")*
                   >{ mark = fpc; }
-                  %{ fragment = new String(data, mark, fpc - mark); };
+                  %{ fragment = Optional.of(new String(data, mark, fpc - mark)); };
 
 
   relative_part = ("//" authority path_abempty) |

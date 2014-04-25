@@ -88,7 +88,7 @@ public final void %(java_name)s(%(parameters)s) {
         return;
     }
 
-    final com.google.gwt.http.client.RequestBuilder __requestBuilder = new com.google.gwt.http.client.RequestBuilder(com.google.gwt.http.client.RequestBuilder.POST, jsonRpcUrl);
+    final com.google.gwt.http.client.RequestBuilder __requestBuilder = new com.google.gwt.http.client.RequestBuilder(com.google.gwt.http.client.RequestBuilder.POST, jsonRpcUrl.toString());
     __requestBuilder.setHeader("Content-Type", "application/json");
     try {
         __requestBuilder.sendRequest(__jsonRpcOutput, new com.google.gwt.http.client.RequestCallback() {
@@ -126,16 +126,22 @@ public final void %(java_name)s(%(parameters)s) {
         def _java_constructor(self):
             name = self.java_name()
             return """\
-public %(name)s(final String jsonRpcUrl) {
-    this.jsonRpcUrl = com.google.common.base.Preconditions.checkNotNull(jsonRpcUrl);
+public %(name)s(final String jsonRpcUrlPath) {
+    final org.thryft.native_.Url.Builder jsonRpcUrlBuilder = org.thryft.native_.Url.builder();
+    jsonRpcUrlBuilder.setScheme(com.google.gwt.user.client.Window.Location.getProtocol());
+    jsonRpcUrlBuilder.setHost(com.google.gwt.user.client.Window.Location.getHost());
+    if (!com.google.gwt.user.client.Window.Location.getPort().isEmpty()) {
+        jsonRpcUrlBuilder.setPort(Integer.parseInt(com.google.gwt.user.client.Window.Location.getPort()));
+    }
+    jsonRpcUrlBuilder.setPath(jsonRpcUrlPath);
+    this.jsonRpcUrl = jsonRpcUrlBuilder.build();
 }
 """ % locals()
 
         def _java_member_declarations(self):
             name = self.java_name()
             return [
-                "private final String jsonRpcUrl;",
-                # "private final static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(%(name)s.class);" % locals(),
+                "private final org.thryft.native_.Url jsonRpcUrl;",
             ]
 
 
