@@ -97,7 +97,6 @@ public final class JsonRpcInputProtocol extends ForwardingInputProtocol {
                 break;
             } else if (type == MessageType.CALL
                     && fieldBegin.getName().equalsIgnoreCase("params")) {
-                readFieldEnd();
                 break;
             } else if (type == MessageType.EXCEPTION
                     && fieldBegin.getName().equalsIgnoreCase("error")) {
@@ -108,13 +107,11 @@ public final class JsonRpcInputProtocol extends ForwardingInputProtocol {
                 throw error;
             } else if (type == MessageType.REPLY
                     && fieldBegin.getName().equalsIgnoreCase("results")) {
-                readFieldEnd();
                 break;
             } else {
                 readFieldEnd();
             }
         }
-        readStructEnd();
         return new MessageBegin(method, type, id);
     }
 

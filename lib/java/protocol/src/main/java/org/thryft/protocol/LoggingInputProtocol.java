@@ -42,6 +42,7 @@ import org.thryft.native_.Uri;
 import org.thryft.native_.Url;
 
 import com.google.common.annotations.GwtIncompatible;
+import com.google.common.base.Objects;
 import com.google.common.primitives.UnsignedInteger;
 import com.google.common.primitives.UnsignedLong;
 
@@ -49,13 +50,13 @@ import com.google.common.primitives.UnsignedLong;
 public class LoggingInputProtocol implements InputProtocol {
     public LoggingInputProtocol(final InputProtocol wrappedProtocol) {
         logger = LoggerFactory.getLogger(wrappedProtocol.getClass());
-        this.wrappedProtocol = wrappedProtocol;
+        wrappedInputProtocol = wrappedProtocol;
     }
 
     @Override
     public byte[] readBinary() throws InputProtocolException {
         try {
-            final byte[] value = wrappedProtocol.readBinary();
+            final byte[] value = wrappedInputProtocol.readBinary();
             logger.info(READ_BINARY_MESSAGE, value.length);
             return value;
         } catch (final InputProtocolException e) {
@@ -67,7 +68,7 @@ public class LoggingInputProtocol implements InputProtocol {
     @Override
     public boolean readBool() throws InputProtocolException {
         try {
-            final boolean value = wrappedProtocol.readBool();
+            final boolean value = wrappedInputProtocol.readBool();
             logger.info(READ_BOOL_MESSAGE, value);
             return value;
         } catch (final InputProtocolException e) {
@@ -79,7 +80,7 @@ public class LoggingInputProtocol implements InputProtocol {
     @Override
     public byte readByte() throws InputProtocolException {
         try {
-            final byte value = wrappedProtocol.readByte();
+            final byte value = wrappedInputProtocol.readByte();
             logger.info(READ_BYTE_MESSAGE, value);
             return value;
         } catch (final InputProtocolException e) {
@@ -91,7 +92,7 @@ public class LoggingInputProtocol implements InputProtocol {
     @Override
     public Date readDateTime() throws InputProtocolException {
         try {
-            final Date value = wrappedProtocol.readDateTime();
+            final Date value = wrappedInputProtocol.readDateTime();
             logger.info(READ_DATE_TIME_MESSAGE, value);
             return value;
         } catch (final InputProtocolException e) {
@@ -103,7 +104,7 @@ public class LoggingInputProtocol implements InputProtocol {
     @Override
     public BigDecimal readDecimal() throws InputProtocolException {
         try {
-            final BigDecimal value = wrappedProtocol.readDecimal();
+            final BigDecimal value = wrappedInputProtocol.readDecimal();
             logger.info(READ_DECIMAL_MESSAGE, value);
             return value;
         } catch (final InputProtocolException e) {
@@ -115,7 +116,7 @@ public class LoggingInputProtocol implements InputProtocol {
     @Override
     public double readDouble() throws InputProtocolException {
         try {
-            final double value = wrappedProtocol.readDouble();
+            final double value = wrappedInputProtocol.readDouble();
             logger.info(READ_DOUBLE_MESSAGE, value);
             return value;
         } catch (final InputProtocolException e) {
@@ -127,7 +128,7 @@ public class LoggingInputProtocol implements InputProtocol {
     @Override
     public EmailAddress readEmailAddress() throws InputProtocolException {
         try {
-            final EmailAddress value = wrappedProtocol.readEmailAddress();
+            final EmailAddress value = wrappedInputProtocol.readEmailAddress();
             logger.info(READ_EMAIL_ADDRESS_MESSAGE, value);
             return value;
         } catch (final InputProtocolException e) {
@@ -140,7 +141,7 @@ public class LoggingInputProtocol implements InputProtocol {
     public <E extends Enum<E>> E readEnum(final Class<E> enumClass)
             throws InputProtocolException {
         try {
-            final E value = wrappedProtocol.readEnum(enumClass);
+            final E value = wrappedInputProtocol.readEnum(enumClass);
             logger.info(READ_ENUM_MESSAGE, enumClass, value);
             return value;
         } catch (final InputProtocolException e) {
@@ -152,7 +153,7 @@ public class LoggingInputProtocol implements InputProtocol {
     @Override
     public FieldBegin readFieldBegin() throws InputProtocolException {
         try {
-            final FieldBegin value = wrappedProtocol.readFieldBegin();
+            final FieldBegin value = wrappedInputProtocol.readFieldBegin();
             logger.info(READ_FIELD_BEGIN_MESSAGE, value);
             return value;
         } catch (final InputProtocolException e) {
@@ -164,7 +165,7 @@ public class LoggingInputProtocol implements InputProtocol {
     @Override
     public void readFieldEnd() throws InputProtocolException {
         try {
-            wrappedProtocol.readFieldEnd();
+            wrappedInputProtocol.readFieldEnd();
             logger.info(READ_FIELD_END_MESSAGE);
         } catch (final InputProtocolException e) {
             logger.info(READ_FIELD_END_MESSAGE, e);
@@ -175,7 +176,7 @@ public class LoggingInputProtocol implements InputProtocol {
     @Override
     public short readI16() throws InputProtocolException {
         try {
-            final short value = wrappedProtocol.readI16();
+            final short value = wrappedInputProtocol.readI16();
             logger.info(READ_I16_MESSAGE, value);
             return value;
         } catch (final InputProtocolException e) {
@@ -187,7 +188,7 @@ public class LoggingInputProtocol implements InputProtocol {
     @Override
     public int readI32() throws InputProtocolException {
         try {
-            final int value = wrappedProtocol.readI32();
+            final int value = wrappedInputProtocol.readI32();
             logger.info(READ_I32_MESSAGE, value);
             return value;
         } catch (final InputProtocolException e) {
@@ -199,7 +200,7 @@ public class LoggingInputProtocol implements InputProtocol {
     @Override
     public long readI64() throws InputProtocolException {
         try {
-            final long value = wrappedProtocol.readI64();
+            final long value = wrappedInputProtocol.readI64();
             logger.info(READ_I64_MESSAGE, value);
             return value;
         } catch (final InputProtocolException e) {
@@ -211,7 +212,7 @@ public class LoggingInputProtocol implements InputProtocol {
     @Override
     public ListBegin readListBegin() throws InputProtocolException {
         try {
-            final ListBegin value = wrappedProtocol.readListBegin();
+            final ListBegin value = wrappedInputProtocol.readListBegin();
             logger.info(READ_LIST_BEGIN_MESSAGE, value);
             return value;
         } catch (final InputProtocolException e) {
@@ -223,7 +224,7 @@ public class LoggingInputProtocol implements InputProtocol {
     @Override
     public void readListEnd() throws InputProtocolException {
         try {
-            wrappedProtocol.readListEnd();
+            wrappedInputProtocol.readListEnd();
             logger.info(READ_LIST_END_MESSAGE);
         } catch (final InputProtocolException e) {
             logger.info(READ_LIST_END_MESSAGE, e);
@@ -234,7 +235,7 @@ public class LoggingInputProtocol implements InputProtocol {
     @Override
     public MapBegin readMapBegin() throws InputProtocolException {
         try {
-            final MapBegin value = wrappedProtocol.readMapBegin();
+            final MapBegin value = wrappedInputProtocol.readMapBegin();
             logger.info(READ_MAP_BEGIN_MESSAGE, value);
             return value;
         } catch (final InputProtocolException e) {
@@ -246,7 +247,7 @@ public class LoggingInputProtocol implements InputProtocol {
     @Override
     public void readMapEnd() throws InputProtocolException {
         try {
-            wrappedProtocol.readMapEnd();
+            wrappedInputProtocol.readMapEnd();
             logger.info(READ_MAP_END_MESSAGE);
         } catch (final InputProtocolException e) {
             logger.info(READ_MAP_END_MESSAGE, e);
@@ -257,7 +258,7 @@ public class LoggingInputProtocol implements InputProtocol {
     @Override
     public MessageBegin readMessageBegin() throws InputProtocolException {
         try {
-            final MessageBegin value = wrappedProtocol.readMessageBegin();
+            final MessageBegin value = wrappedInputProtocol.readMessageBegin();
             logger.info(READ_MESSAGE_BEGIN_MESSAGE, value);
             return value;
         } catch (final InputProtocolException e) {
@@ -269,7 +270,7 @@ public class LoggingInputProtocol implements InputProtocol {
     @Override
     public void readMessageEnd() throws InputProtocolException {
         try {
-            wrappedProtocol.readMessageEnd();
+            wrappedInputProtocol.readMessageEnd();
             logger.info(READ_MESSAGE_END_MESSAGE);
         } catch (final InputProtocolException e) {
             logger.info(READ_MESSAGE_END_MESSAGE, e);
@@ -280,7 +281,7 @@ public class LoggingInputProtocol implements InputProtocol {
     @Override
     public Object readMixed() throws InputProtocolException {
         try {
-            final Object value = wrappedProtocol.readMixed();
+            final Object value = wrappedInputProtocol.readMixed();
             logger.info(READ_MIXED_MESSAGE, value);
             return value;
         } catch (final InputProtocolException e) {
@@ -292,7 +293,7 @@ public class LoggingInputProtocol implements InputProtocol {
     @Override
     public SetBegin readSetBegin() throws InputProtocolException {
         try {
-            final SetBegin value = wrappedProtocol.readSetBegin();
+            final SetBegin value = wrappedInputProtocol.readSetBegin();
             logger.info(READ_SET_BEGIN_MESSAGE, value);
             return value;
         } catch (final InputProtocolException e) {
@@ -304,7 +305,7 @@ public class LoggingInputProtocol implements InputProtocol {
     @Override
     public void readSetEnd() throws InputProtocolException {
         try {
-            wrappedProtocol.readSetEnd();
+            wrappedInputProtocol.readSetEnd();
             logger.info(READ_SET_END_MESSAGE);
         } catch (final InputProtocolException e) {
             logger.info(READ_SET_END_MESSAGE, e);
@@ -315,7 +316,7 @@ public class LoggingInputProtocol implements InputProtocol {
     @Override
     public String readString() throws InputProtocolException {
         try {
-            final String value = wrappedProtocol.readString();
+            final String value = wrappedInputProtocol.readString();
             logger.info(READ_STRING_MESSAGE, value);
             return value;
         } catch (final InputProtocolException e) {
@@ -327,7 +328,7 @@ public class LoggingInputProtocol implements InputProtocol {
     @Override
     public String readStructBegin() throws InputProtocolException {
         try {
-            final String value = wrappedProtocol.readStructBegin();
+            final String value = wrappedInputProtocol.readStructBegin();
             logger.info(READ_STRUCT_BEGIN_MESSAGE, value);
             return value;
         } catch (final InputProtocolException e) {
@@ -339,7 +340,7 @@ public class LoggingInputProtocol implements InputProtocol {
     @Override
     public void readStructEnd() throws InputProtocolException {
         try {
-            wrappedProtocol.readStructEnd();
+            wrappedInputProtocol.readStructEnd();
             logger.info(READ_STRUCT_END_MESSAGE);
         } catch (final InputProtocolException e) {
             logger.info(READ_STRUCT_END_MESSAGE, e);
@@ -350,7 +351,7 @@ public class LoggingInputProtocol implements InputProtocol {
     @Override
     public UnsignedInteger readU32() throws InputProtocolException {
         try {
-            final UnsignedInteger value = wrappedProtocol.readU32();
+            final UnsignedInteger value = wrappedInputProtocol.readU32();
             logger.info(READ_U32_MESSAGE, value);
             return value;
         } catch (final InputProtocolException e) {
@@ -362,7 +363,7 @@ public class LoggingInputProtocol implements InputProtocol {
     @Override
     public UnsignedLong readU64() throws InputProtocolException {
         try {
-            final UnsignedLong value = wrappedProtocol.readU64();
+            final UnsignedLong value = wrappedInputProtocol.readU64();
             logger.info(READ_U64_MESSAGE, value);
             return value;
         } catch (final InputProtocolException e) {
@@ -374,7 +375,7 @@ public class LoggingInputProtocol implements InputProtocol {
     @Override
     public Uri readUri() throws InputProtocolException {
         try {
-            final Uri value = wrappedProtocol.readUri();
+            final Uri value = wrappedInputProtocol.readUri();
             logger.info(READ_URI_MESSAGE, value);
             return value;
         } catch (final InputProtocolException e) {
@@ -386,13 +387,19 @@ public class LoggingInputProtocol implements InputProtocol {
     @Override
     public Url readUrl() throws InputProtocolException {
         try {
-            final Url value = wrappedProtocol.readUrl();
+            final Url value = wrappedInputProtocol.readUrl();
             logger.info(READ_URL_MESSAGE, value);
             return value;
         } catch (final InputProtocolException e) {
             logger.info(READ_URL_MESSAGE, "", e);
             throw e;
         }
+    }
+
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this).add("logger", logger)
+                .add("wrappedInputProtocol", wrappedInputProtocol).toString();
     }
 
     private final static String READ_BOOL_MESSAGE = "readBool() -> {}";
@@ -427,5 +434,5 @@ public class LoggingInputProtocol implements InputProtocol {
 
     private final Logger logger;
 
-    private final InputProtocol wrappedProtocol;
+    private final InputProtocol wrappedInputProtocol;
 }

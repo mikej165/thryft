@@ -47,6 +47,65 @@ import com.google.common.primitives.UnsignedInteger;
 import com.google.common.primitives.UnsignedLong;
 
 public abstract class AbstractOutputProtocol implements OutputProtocol {
+    public static void writeMixed(final OutputProtocol oprot, final Object value)
+            throws OutputProtocolException {
+        if (value == null) {
+            oprot.writeNull();
+        } else if (value instanceof Boolean) {
+            oprot.writeBool((Boolean) value);
+        } else if (value instanceof Byte) {
+            oprot.writeByte((Byte) value);
+        } else if (value instanceof Date) {
+            oprot.writeDateTime((Date) value);
+        } else if (value instanceof BigDecimal) {
+            oprot.writeDecimal((BigDecimal) value);
+        } else if (value instanceof Double) {
+            oprot.writeDouble((Double) value);
+        } else if (value instanceof ImmutableList) {
+            @SuppressWarnings("unchecked")
+            final ImmutableList<Object> set = (ImmutableList<Object>) value;
+            oprot.writeListBegin(Type.VOID, set.size());
+            for (final Object element : set) {
+                oprot.writeMixed(element);
+            }
+            oprot.writeListEnd();
+        } else if (value instanceof ImmutableMap) {
+            @SuppressWarnings("unchecked")
+            final ImmutableMap<Object, Object> map = (ImmutableMap<Object, Object>) value;
+            oprot.writeMapBegin(Type.VOID, Type.VOID, map.size());
+            for (final ImmutableMap.Entry<Object, Object> entry : map
+                    .entrySet()) {
+                oprot.writeMixed(entry.getKey());
+                oprot.writeMixed(entry.getValue());
+            }
+            oprot.writeMapEnd();
+        } else if (value instanceof ImmutableSet) {
+            @SuppressWarnings("unchecked")
+            final ImmutableSet<Object> set = (ImmutableSet<Object>) value;
+            oprot.writeSetBegin(Type.VOID, set.size());
+            for (final Object element : set) {
+                oprot.writeMixed(element);
+            }
+            oprot.writeSetEnd();
+        } else if (value instanceof EmailAddress) {
+            oprot.writeEmailAddress((EmailAddress) value);
+        } else if (value instanceof Short) {
+            oprot.writeI16((Short) value);
+        } else if (value instanceof Integer) {
+            oprot.writeI32((Integer) value);
+        } else if (value instanceof Long) {
+            oprot.writeI64((Long) value);
+        } else if (value instanceof String) {
+            oprot.writeString((String) value);
+        } else if (value instanceof Url) {
+            oprot.writeUrl((Url) value);
+        } else if (value instanceof Base<?>) {
+            ((Base<?>) value).write(oprot);
+        } else {
+            throw new UnsupportedOperationException(value.toString());
+        }
+    }
+
     @Override
     public void flush() throws OutputProtocolException {
     }
@@ -92,71 +151,16 @@ public abstract class AbstractOutputProtocol implements OutputProtocol {
     @Override
     public void writeMessageBegin(final String name, final MessageType type,
             final Object id) throws OutputProtocolException {
-        writeStructBegin(name);
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void writeMessageEnd() throws OutputProtocolException {
-        writeStructEnd();
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void writeMixed(final Object value) throws OutputProtocolException {
-        if (value == null) {
-            writeNull();
-        } else if (value instanceof Boolean) {
-            writeBool((Boolean) value);
-        } else if (value instanceof Byte) {
-            writeByte((Byte) value);
-        } else if (value instanceof Date) {
-            writeDateTime((Date) value);
-        } else if (value instanceof BigDecimal) {
-            writeDecimal((BigDecimal) value);
-        } else if (value instanceof Double) {
-            writeDouble((Double) value);
-        } else if (value instanceof ImmutableList) {
-            @SuppressWarnings("unchecked")
-            final ImmutableList<Object> set = (ImmutableList<Object>) value;
-            writeListBegin(Type.VOID, set.size());
-            for (final Object element : set) {
-                writeMixed(element);
-            }
-            writeListEnd();
-        } else if (value instanceof ImmutableMap) {
-            @SuppressWarnings("unchecked")
-            final ImmutableMap<Object, Object> map = (ImmutableMap<Object, Object>) value;
-            writeMapBegin(Type.VOID, Type.VOID, map.size());
-            for (final ImmutableMap.Entry<Object, Object> entry : map
-                    .entrySet()) {
-                writeMixed(entry.getKey());
-                writeMixed(entry.getValue());
-            }
-            writeMapEnd();
-        } else if (value instanceof ImmutableSet) {
-            @SuppressWarnings("unchecked")
-            final ImmutableSet<Object> set = (ImmutableSet<Object>) value;
-            writeSetBegin(Type.VOID, set.size());
-            for (final Object element : set) {
-                writeMixed(element);
-            }
-            writeSetEnd();
-        } else if (value instanceof EmailAddress) {
-            writeEmailAddress((EmailAddress) value);
-        } else if (value instanceof Short) {
-            writeI16((Short) value);
-        } else if (value instanceof Integer) {
-            writeI32((Integer) value);
-        } else if (value instanceof Long) {
-            writeI64((Long) value);
-        } else if (value instanceof String) {
-            writeString((String) value);
-        } else if (value instanceof Url) {
-            writeUrl((Url) value);
-        } else if (value instanceof Base<?>) {
-            ((Base<?>) value).write(this);
-        } else {
-            throw new UnsupportedOperationException(value.toString());
-        }
     }
 
     @Override
