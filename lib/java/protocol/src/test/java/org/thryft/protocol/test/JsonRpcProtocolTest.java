@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.thryft.protocol.InputProtocol;
 import org.thryft.protocol.JacksonJsonInputProtocol;
 import org.thryft.protocol.JacksonJsonOutputProtocol;
+import org.thryft.protocol.JsonRpcErrorResponse;
 import org.thryft.protocol.JsonRpcInputProtocol;
 import org.thryft.protocol.JsonRpcOutputProtocol;
 import org.thryft.protocol.LoggingOutputProtocol;
@@ -41,6 +42,52 @@ public final class JsonRpcProtocolTest {
         assertEquals(MessageType.CALL, messageBegin.getType());
         final SetBegin paramsBegin = iprot.readSetBegin();
         assertEquals(paramsBegin.getSize(), 2);
+        assertEquals("test1", iprot.readString());
+        assertEquals("test2", iprot.readString());
+        iprot.readSetEnd();
+        iprot.readMessageEnd();
+    }
+
+    @Test
+    public void testException() throws ProtocolException, IOException {
+        final StringWriter writer = new StringWriter();
+        final OutputProtocol oprot = __newJsonRpcOutputProtocol(writer);
+        oprot.writeMessageBegin("exception", MessageType.EXCEPTION, ID);
+        final JsonRpcErrorResponse expectedError = new JsonRpcErrorResponse(
+                -32600, "some message");
+        expectedError.write(oprot);
+        oprot.writeMessageEnd();
+        oprot.flush();
+        final String json = writer.toString();
+
+        final InputProtocol iprot = __newJsonRpcInputProtocol(json);
+        final MessageBegin messageBegin = iprot.readMessageBegin();
+        assertEquals(ID, messageBegin.getId());
+        assertEquals(MessageType.EXCEPTION, messageBegin.getType());
+        final JsonRpcErrorResponse actualError = JsonRpcErrorResponse
+                .read(iprot);
+        iprot.readMessageEnd();
+        assertEquals(expectedError, actualError);
+    }
+
+    @Test
+    public void testReply() throws ProtocolException, IOException {
+        final StringWriter writer = new StringWriter();
+        final OutputProtocol oprot = __newJsonRpcOutputProtocol(writer);
+        oprot.writeMessageBegin("reply", MessageType.REPLY, ID);
+        final ImmutableSet<String> expectedResults = ImmutableSet.of("test1",
+                "test2");
+        oprot.writeMixed(expectedResults);
+        oprot.writeMessageEnd();
+        oprot.flush();
+        final String json = writer.toString();
+
+        final InputProtocol iprot = __newJsonRpcInputProtocol(json);
+        final MessageBegin messageBegin = iprot.readMessageBegin();
+        assertEquals(ID, messageBegin.getId());
+        assertEquals(MessageType.REPLY, messageBegin.getType());
+        final SetBegin resultsBegin = iprot.readSetBegin();
+        assertEquals(resultsBegin.getSize(), 2);
         assertEquals("test1", iprot.readString());
         assertEquals("test2", iprot.readString());
         iprot.readSetEnd();

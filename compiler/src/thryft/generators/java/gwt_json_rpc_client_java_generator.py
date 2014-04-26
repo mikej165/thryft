@@ -102,6 +102,12 @@ public final void %(java_name)s(%(parameters)s) {
                     final org.thryft.protocol.MessageBegin __messageBegin = __iprot.readMessageBegin();
                     if (!__messageBegin.getId().equals(__id)) {
                         throw new org.thryft.protocol.InputProtocolException("expected id in response to be " + __id + ", got " + __messageBegin.getId());
+                    }
+                    if (__messageBegin.getType() == org.thryft.protocol.MessageType.EXCEPTION) {
+                        final org.thryft.protocol.JsonRpcErrorResponse __error = org.thryft.protocol.JsonRpcErrorResponse.read(__iprot);
+                        __iprot.readMessageEnd();
+                        callback.onFailure(__error);
+                        return;
                     } else if (__messageBegin.getType() != org.thryft.protocol.MessageType.REPLY) {
                         throw new org.thryft.protocol.InputProtocolException("expected response message");
                     }
@@ -127,14 +133,11 @@ public final void %(java_name)s(%(parameters)s) {
             name = self.java_name()
             return """\
 public %(name)s(final String jsonRpcUrlPath) {
-    final org.thryft.native_.Url.Builder jsonRpcUrlBuilder = org.thryft.native_.Url.builder();
-    jsonRpcUrlBuilder.setScheme(com.google.gwt.user.client.Window.Location.getProtocol());
-    jsonRpcUrlBuilder.setHost(com.google.gwt.user.client.Window.Location.getHost());
-    if (!com.google.gwt.user.client.Window.Location.getPort().isEmpty()) {
-        jsonRpcUrlBuilder.setPort(Integer.parseInt(com.google.gwt.user.client.Window.Location.getPort()));
-    }
-    jsonRpcUrlBuilder.setPath(jsonRpcUrlPath);
-    this.jsonRpcUrl = jsonRpcUrlBuilder.build();
+    this.jsonRpcUrl = org.thryft.native_.Url.builder()
+        .setScheme(com.google.gwt.user.client.Window.Location.getProtocol())
+        .setHost(com.google.gwt.user.client.Window.Location.getHost())
+        .setPath(jsonRpcUrlPath)
+        .build();
 }
 """ % locals()
 

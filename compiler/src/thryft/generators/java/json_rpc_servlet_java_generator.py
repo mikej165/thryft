@@ -121,7 +121,7 @@ return;
                     indent(' ' * 8, ' else '.join(
                         ["""\
 if (messageBegin.getName().equals("%s")) {
-    __doPost%s(httpServletRequest, httpServletResponse, iprot, messageBegin);
+    __doPost%s(httpServletRequest, httpServletResponse, iprot, messageBegin.getId());
 }""" % (function.name, upper_camelize(function.name))
                                    for function in self.functions
                         ] + ['''\

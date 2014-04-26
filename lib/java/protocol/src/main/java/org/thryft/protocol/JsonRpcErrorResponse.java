@@ -48,8 +48,33 @@ public final class JsonRpcErrorResponse extends RuntimeException implements
         throw new UnsupportedOperationException();
     }
 
+    public boolean equals(final JsonRpcErrorResponse other) {
+        if (code != other.code) {
+            return false;
+        } else if (!getMessage().equals(other.getMessage())) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (obj == this) {
+            return true;
+        } else if (!(obj instanceof JsonRpcErrorResponse)) {
+            return false;
+        } else {
+            return equals((JsonRpcErrorResponse) obj);
+        }
+    }
+
     public int getCode() {
         return code;
+    }
+
+    @Override
+    public int hashCode() {
+        throw new UnsupportedOperationException();
     }
 
     @Override

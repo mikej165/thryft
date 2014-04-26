@@ -42,6 +42,7 @@ import org.thryft.native_.Uri;
 import org.thryft.native_.Url;
 
 import com.google.common.annotations.GwtIncompatible;
+import com.google.common.base.Objects;
 import com.google.common.primitives.UnsignedInteger;
 import com.google.common.primitives.UnsignedLong;
 
@@ -49,18 +50,24 @@ import com.google.common.primitives.UnsignedLong;
 public class LoggingOutputProtocol implements OutputProtocol {
     public LoggingOutputProtocol(final OutputProtocol wrappedProtocol) {
         logger = LoggerFactory.getLogger(wrappedProtocol.getClass());
-        this.wrappedProtocol = wrappedProtocol;
+        wrappedOutputProtocol = wrappedProtocol;
     }
 
     @Override
     public void flush() throws OutputProtocolException {
-        wrappedProtocol.flush();
+        wrappedOutputProtocol.flush();
+    }
+
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this).add("logger", logger)
+                .add("wrappedOutputProtocol", wrappedOutputProtocol).toString();
     }
 
     @Override
     public void writeBinary(final byte[] value) throws OutputProtocolException {
         try {
-            wrappedProtocol.writeBinary(value);
+            wrappedOutputProtocol.writeBinary(value);
             logger.info(WRITE_BINARY_MESSAGE, value.length);
         } catch (final OutputProtocolException e) {
             logger.info(WRITE_BINARY_MESSAGE, value.length, e);
@@ -71,7 +78,7 @@ public class LoggingOutputProtocol implements OutputProtocol {
     @Override
     public void writeBool(final boolean value) throws OutputProtocolException {
         try {
-            wrappedProtocol.writeBool(value);
+            wrappedOutputProtocol.writeBool(value);
             logger.info(WRITE_BOOL_MESSAGE, value);
         } catch (final OutputProtocolException e) {
             logger.info(WRITE_BOOL_MESSAGE, value, e);
@@ -82,7 +89,7 @@ public class LoggingOutputProtocol implements OutputProtocol {
     @Override
     public void writeByte(final byte value) throws OutputProtocolException {
         try {
-            wrappedProtocol.writeByte(value);
+            wrappedOutputProtocol.writeByte(value);
             logger.info(WRITE_BYTE_MESSAGE, value);
         } catch (final OutputProtocolException e) {
             logger.info(WRITE_BYTE_MESSAGE, value, e);
@@ -93,7 +100,7 @@ public class LoggingOutputProtocol implements OutputProtocol {
     @Override
     public void writeDateTime(final Date value) throws OutputProtocolException {
         try {
-            wrappedProtocol.writeDateTime(value);
+            wrappedOutputProtocol.writeDateTime(value);
             logger.info(WRITE_DATE_TIME_MESSAGE, value);
         } catch (final OutputProtocolException e) {
             logger.info(WRITE_DATE_TIME_MESSAGE, value, e);
@@ -105,7 +112,7 @@ public class LoggingOutputProtocol implements OutputProtocol {
     public void writeDecimal(final BigDecimal value)
             throws OutputProtocolException {
         try {
-            wrappedProtocol.writeDecimal(value);
+            wrappedOutputProtocol.writeDecimal(value);
             logger.info(WRITE_DECIMAL_MESSAGE, value);
         } catch (final OutputProtocolException e) {
             logger.info(WRITE_DECIMAL_MESSAGE, value, e);
@@ -116,7 +123,7 @@ public class LoggingOutputProtocol implements OutputProtocol {
     @Override
     public void writeDouble(final double value) throws OutputProtocolException {
         try {
-            wrappedProtocol.writeDouble(value);
+            wrappedOutputProtocol.writeDouble(value);
             logger.info(WRITE_DOUBLE_MESSAGE, value);
         } catch (final OutputProtocolException e) {
             logger.info(WRITE_DOUBLE_MESSAGE, value, e);
@@ -128,7 +135,7 @@ public class LoggingOutputProtocol implements OutputProtocol {
     public void writeEmailAddress(final EmailAddress value)
             throws OutputProtocolException {
         try {
-            wrappedProtocol.writeEmailAddress(value);
+            wrappedOutputProtocol.writeEmailAddress(value);
             logger.info(WRITE_EMAIL_ADDRESS_MESSAGE, value);
         } catch (final OutputProtocolException e) {
             logger.info(WRITE_EMAIL_ADDRESS_MESSAGE, value, e);
@@ -139,7 +146,7 @@ public class LoggingOutputProtocol implements OutputProtocol {
     @Override
     public void writeEnum(final Enum<?> value) throws OutputProtocolException {
         try {
-            wrappedProtocol.writeEnum(value);
+            wrappedOutputProtocol.writeEnum(value);
             logger.info(WRITE_ENUM_MESSAGE, value);
         } catch (final OutputProtocolException e) {
             logger.info(WRITE_ENUM_MESSAGE, value, e);
@@ -151,7 +158,7 @@ public class LoggingOutputProtocol implements OutputProtocol {
     public void writeFieldBegin(final String name, final Type type,
             final short id) throws OutputProtocolException {
         try {
-            wrappedProtocol.writeFieldBegin(name, type, id);
+            wrappedOutputProtocol.writeFieldBegin(name, type, id);
             logger.info(WRITE_FIELD_BEGIN_MESSAGE, name, type, id);
         } catch (final OutputProtocolException e) {
             logger.info(WRITE_FIELD_BEGIN_MESSAGE, name, type, id, e);
@@ -162,7 +169,7 @@ public class LoggingOutputProtocol implements OutputProtocol {
     @Override
     public void writeFieldEnd() throws OutputProtocolException {
         try {
-            wrappedProtocol.writeFieldEnd();
+            wrappedOutputProtocol.writeFieldEnd();
             logger.info(WRITE_FIELD_END_MESSAGE);
         } catch (final OutputProtocolException e) {
             logger.info(WRITE_FIELD_END_MESSAGE, e);
@@ -173,7 +180,7 @@ public class LoggingOutputProtocol implements OutputProtocol {
     @Override
     public void writeFieldStop() throws OutputProtocolException {
         try {
-            wrappedProtocol.writeFieldStop();
+            wrappedOutputProtocol.writeFieldStop();
             logger.info(WRITE_FIELD_STOP_MESSAGE);
         } catch (final OutputProtocolException e) {
             logger.info(WRITE_FIELD_STOP_MESSAGE, e);
@@ -184,7 +191,7 @@ public class LoggingOutputProtocol implements OutputProtocol {
     @Override
     public void writeI16(final short value) throws OutputProtocolException {
         try {
-            wrappedProtocol.writeI16(value);
+            wrappedOutputProtocol.writeI16(value);
             logger.info(WRITE_I16_MESSAGE, value);
         } catch (final OutputProtocolException e) {
             logger.info(WRITE_I16_MESSAGE, value, e);
@@ -195,7 +202,7 @@ public class LoggingOutputProtocol implements OutputProtocol {
     @Override
     public void writeI32(final int value) throws OutputProtocolException {
         try {
-            wrappedProtocol.writeI32(value);
+            wrappedOutputProtocol.writeI32(value);
             logger.info(WRITE_I32_MESSAGE, value);
         } catch (final OutputProtocolException e) {
             logger.info(WRITE_I32_MESSAGE, value, e);
@@ -206,7 +213,7 @@ public class LoggingOutputProtocol implements OutputProtocol {
     @Override
     public void writeI64(final long value) throws OutputProtocolException {
         try {
-            wrappedProtocol.writeI64(value);
+            wrappedOutputProtocol.writeI64(value);
             logger.info(WRITE_I64_MESSAGE, value);
         } catch (final OutputProtocolException e) {
             logger.info(WRITE_I64_MESSAGE, value, e);
@@ -218,7 +225,7 @@ public class LoggingOutputProtocol implements OutputProtocol {
     public void writeListBegin(final Type elementType, final int size)
             throws OutputProtocolException {
         try {
-            wrappedProtocol.writeListBegin(elementType, size);
+            wrappedOutputProtocol.writeListBegin(elementType, size);
             logger.info(WRITE_LIST_BEGIN_MESSAGE, elementType, size);
         } catch (final OutputProtocolException e) {
             logger.info(WRITE_I16_MESSAGE, elementType, size, e);
@@ -229,7 +236,7 @@ public class LoggingOutputProtocol implements OutputProtocol {
     @Override
     public void writeListEnd() throws OutputProtocolException {
         try {
-            wrappedProtocol.writeListEnd();
+            wrappedOutputProtocol.writeListEnd();
             logger.info(WRITE_LIST_END_MESSAGE);
         } catch (final OutputProtocolException e) {
             logger.info(WRITE_LIST_END_MESSAGE, e);
@@ -241,7 +248,7 @@ public class LoggingOutputProtocol implements OutputProtocol {
     public void writeMapBegin(final Type keyType, final Type valueType,
             final int size) throws OutputProtocolException {
         try {
-            wrappedProtocol.writeMapBegin(keyType, valueType, size);
+            wrappedOutputProtocol.writeMapBegin(keyType, valueType, size);
             logger.info(WRITE_MAP_BEGIN_MESSAGE, keyType, valueType, size);
         } catch (final OutputProtocolException e) {
             logger.info(WRITE_MAP_BEGIN_MESSAGE, keyType, valueType, size, e);
@@ -252,7 +259,7 @@ public class LoggingOutputProtocol implements OutputProtocol {
     @Override
     public void writeMapEnd() throws OutputProtocolException {
         try {
-            wrappedProtocol.writeMapEnd();
+            wrappedOutputProtocol.writeMapEnd();
             logger.info(WRITE_MAP_END_MESSAGE);
         } catch (final OutputProtocolException e) {
             logger.info(WRITE_MAP_END_MESSAGE, e);
@@ -264,7 +271,7 @@ public class LoggingOutputProtocol implements OutputProtocol {
     public void writeMessageBegin(final String name, final MessageType type,
             final Object id) throws OutputProtocolException {
         try {
-            wrappedProtocol.writeMessageBegin(name, type, id);
+            wrappedOutputProtocol.writeMessageBegin(name, type, id);
             logger.info(WRITE_MESSAGE_BEGIN_MESSAGE, name, type, id);
         } catch (final OutputProtocolException e) {
             logger.info(WRITE_MESSAGE_BEGIN_MESSAGE, name, type, id, e);
@@ -275,7 +282,7 @@ public class LoggingOutputProtocol implements OutputProtocol {
     @Override
     public void writeMessageEnd() throws OutputProtocolException {
         try {
-            wrappedProtocol.writeMessageEnd();
+            wrappedOutputProtocol.writeMessageEnd();
             logger.info(WRITE_MESSAGE_END_MESSAGE);
         } catch (final OutputProtocolException e) {
             logger.info(WRITE_MESSAGE_END_MESSAGE, e);
@@ -286,7 +293,7 @@ public class LoggingOutputProtocol implements OutputProtocol {
     @Override
     public void writeMixed(final Object value) throws OutputProtocolException {
         try {
-            wrappedProtocol.writeMixed(value);
+            wrappedOutputProtocol.writeMixed(value);
             logger.info(WRITE_MIXED_MESSAGE, value);
         } catch (final OutputProtocolException e) {
             logger.info(WRITE_MIXED_MESSAGE, value, e);
@@ -297,7 +304,7 @@ public class LoggingOutputProtocol implements OutputProtocol {
     @Override
     public void writeNull() throws OutputProtocolException {
         try {
-            wrappedProtocol.writeNull();
+            wrappedOutputProtocol.writeNull();
             logger.info(WRITE_NULL_MESSAGE);
         } catch (final OutputProtocolException e) {
             logger.info(WRITE_NULL_MESSAGE, e);
@@ -309,7 +316,7 @@ public class LoggingOutputProtocol implements OutputProtocol {
     public void writeSetBegin(final Type elementType, final int size)
             throws OutputProtocolException {
         try {
-            wrappedProtocol.writeSetBegin(elementType, size);
+            wrappedOutputProtocol.writeSetBegin(elementType, size);
             logger.info(WRITE_SET_BEGIN_MESSAGE, elementType, size);
         } catch (final OutputProtocolException e) {
             logger.info(WRITE_SET_BEGIN_MESSAGE, elementType, size, e);
@@ -320,7 +327,7 @@ public class LoggingOutputProtocol implements OutputProtocol {
     @Override
     public void writeSetEnd() throws OutputProtocolException {
         try {
-            wrappedProtocol.writeSetEnd();
+            wrappedOutputProtocol.writeSetEnd();
             logger.info(WRITE_SET_END_MESSAGE);
         } catch (final OutputProtocolException e) {
             logger.info(WRITE_SET_END_MESSAGE, e);
@@ -331,7 +338,7 @@ public class LoggingOutputProtocol implements OutputProtocol {
     @Override
     public void writeString(final String value) throws OutputProtocolException {
         try {
-            wrappedProtocol.writeString(value);
+            wrappedOutputProtocol.writeString(value);
             logger.info(WRITE_STRING_MESSAGE, value);
         } catch (final OutputProtocolException e) {
             logger.info(WRITE_STRING_MESSAGE, value, e);
@@ -343,7 +350,7 @@ public class LoggingOutputProtocol implements OutputProtocol {
     public void writeStructBegin(final String name)
             throws OutputProtocolException {
         try {
-            wrappedProtocol.writeStructBegin(name);
+            wrappedOutputProtocol.writeStructBegin(name);
             logger.info(WRITE_STRUCT_BEGIN_MESSAGE, name);
         } catch (final OutputProtocolException e) {
             logger.info(WRITE_STRUCT_BEGIN_MESSAGE, name, e);
@@ -354,7 +361,7 @@ public class LoggingOutputProtocol implements OutputProtocol {
     @Override
     public void writeStructEnd() throws OutputProtocolException {
         try {
-            wrappedProtocol.writeStructEnd();
+            wrappedOutputProtocol.writeStructEnd();
             logger.info(WRITE_STRUCT_END_MESSAGE);
         } catch (final OutputProtocolException e) {
             logger.info(WRITE_STRUCT_END_MESSAGE, e);
@@ -366,7 +373,7 @@ public class LoggingOutputProtocol implements OutputProtocol {
     public void writeU32(final UnsignedInteger value)
             throws OutputProtocolException {
         try {
-            wrappedProtocol.writeU32(value);
+            wrappedOutputProtocol.writeU32(value);
             logger.info(WRITE_U32_MESSAGE, value);
         } catch (final OutputProtocolException e) {
             logger.info(WRITE_U32_MESSAGE, value, e);
@@ -378,7 +385,7 @@ public class LoggingOutputProtocol implements OutputProtocol {
     public void writeU64(final UnsignedLong value)
             throws OutputProtocolException {
         try {
-            wrappedProtocol.writeU64(value);
+            wrappedOutputProtocol.writeU64(value);
             logger.info(WRITE_U64_MESSAGE, value);
         } catch (final OutputProtocolException e) {
             logger.info(WRITE_U64_MESSAGE, value, e);
@@ -389,7 +396,7 @@ public class LoggingOutputProtocol implements OutputProtocol {
     @Override
     public void writeUri(final Uri value) throws OutputProtocolException {
         try {
-            wrappedProtocol.writeUri(value);
+            wrappedOutputProtocol.writeUri(value);
             logger.info(WRITE_URI_MESSAGE, value);
         } catch (final OutputProtocolException e) {
             logger.info(WRITE_URI_MESSAGE, value, e);
@@ -400,7 +407,7 @@ public class LoggingOutputProtocol implements OutputProtocol {
     @Override
     public void writeUrl(final Url value) throws OutputProtocolException {
         try {
-            wrappedProtocol.writeUrl(value);
+            wrappedOutputProtocol.writeUrl(value);
             logger.info(WRITE_URL_MESSAGE, value);
         } catch (final OutputProtocolException e) {
             logger.info(WRITE_URL_MESSAGE, value, e);
@@ -442,5 +449,5 @@ public class LoggingOutputProtocol implements OutputProtocol {
 
     private final Logger logger;
 
-    private final OutputProtocol wrappedProtocol;
+    private final OutputProtocol wrappedOutputProtocol;
 }

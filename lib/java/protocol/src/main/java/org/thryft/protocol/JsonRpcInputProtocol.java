@@ -53,7 +53,7 @@ public final class JsonRpcInputProtocol extends ForwardingInputProtocol {
                 }
                 type = MessageType.EXCEPTION;
                 break;
-            case "results":
+            case "result":
                 if (type != null) {
                     throw new JsonRpcInputProtocolException(-32700,
                             "unable to determine message type");
@@ -100,13 +100,9 @@ public final class JsonRpcInputProtocol extends ForwardingInputProtocol {
                 break;
             } else if (type == MessageType.EXCEPTION
                     && fieldBegin.getName().equalsIgnoreCase("error")) {
-                final JsonRpcErrorResponse error = JsonRpcErrorResponse
-                        .read(this);
-                readFieldEnd(); // error field
-                readStructEnd(); // message struct
-                throw error;
+                break;
             } else if (type == MessageType.REPLY
-                    && fieldBegin.getName().equalsIgnoreCase("results")) {
+                    && fieldBegin.getName().equalsIgnoreCase("result")) {
                 break;
             } else {
                 readFieldEnd();

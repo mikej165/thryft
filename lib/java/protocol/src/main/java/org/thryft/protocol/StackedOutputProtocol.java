@@ -95,6 +95,11 @@ public abstract class StackedOutputProtocol<OutputProtocolT extends OutputProtoc
     }
 
     @Override
+    public void writeMixed(final Object value) throws OutputProtocolException {
+        AbstractOutputProtocol.writeMixed(this, value);
+    }
+
+    @Override
     public void writeSetBegin(final Type elementType, final int size)
             throws OutputProtocolException {
         outputProtocolStack.peek().writeSetBegin(elementType, size);

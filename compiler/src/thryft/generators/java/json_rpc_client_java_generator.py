@@ -100,6 +100,11 @@ public final %(return_type_qname)s %(java_name)s(%(parameters)s) {
         final org.thryft.protocol.MessageBegin __messageBegin = __iprot.readMessageBegin();
         if (!__messageBegin.getId().equals(__id)) {
             throw new org.thryft.protocol.InputProtocolException(String.format("expected id in response to be %%s, got %%s", __id, __messageBegin.getId()));
+        }
+        if (__messageBegin.getType() == org.thryft.protocol.MessageType.EXCEPTION) {
+            final org.thryft.protocol.JsonRpcErrorResponse __error = org.thryft.protocol.JsonRpcErrorResponse.read(__iprot);
+            __iprot.readMessageEnd();
+            throw __error;
         } else if (__messageBegin.getType() != org.thryft.protocol.MessageType.REPLY) {
             throw new org.thryft.protocol.InputProtocolException("expected response message");
         }
