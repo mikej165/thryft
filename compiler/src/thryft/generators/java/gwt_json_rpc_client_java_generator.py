@@ -73,7 +73,7 @@ callback.onSuccess(__serviceResponse.%(service_response_return_value_getter_name
             return """\
 public final void %(java_name)s(%(parameters)s) {
     final %(service_qname)s.Messages.%(request_type_name)s __serviceRequest = new %(service_qname)s.Messages.%(request_type_name)s(%(parameter_names)s);
-    final int __id = System.identityHashCode(__serviceRequest);
+    final String __id = Integer.toString(System.identityHashCode(__serviceRequest));
 
     final String __jsonRpcOutput;
     try {

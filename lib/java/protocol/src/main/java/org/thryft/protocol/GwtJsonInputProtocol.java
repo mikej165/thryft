@@ -40,6 +40,8 @@ import java.util.Stack;
 import org.thryft.protocol.GwtJsonInputProtocol.NestedInputProtocol;
 
 import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONBoolean;
+import com.google.gwt.json.client.JSONNumber;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONString;
@@ -118,7 +120,16 @@ public class GwtJsonInputProtocol extends
 
         @Override
         public Object readMixed() throws InputProtocolException {
-            throw new UnsupportedOperationException();
+            final JSONValue node = _readChildNode();
+            if (node.isBoolean() != null) {
+                return ((JSONBoolean) node).booleanValue();
+            } else if (node.isNumber() != null) {
+                return ((JSONNumber) node).doubleValue();
+            } else if (node.isString() != null) {
+                return ((JSONString) node).stringValue();
+            } else {
+                throw new UnsupportedOperationException();
+            }
         }
 
         @Override
