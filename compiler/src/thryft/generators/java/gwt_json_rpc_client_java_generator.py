@@ -98,7 +98,8 @@ public final void %(java_name)s(%(parameters)s) {
 
             public void onResponseReceived(final com.google.gwt.http.client.Request request, final com.google.gwt.http.client.Response response) {
                 %(service_response_declaration)stry {
-                    final org.thryft.protocol.JsonRpcInputProtocol __iprot = new org.thryft.protocol.JsonRpcInputProtocol(new org.thryft.protocol.GwtJsonInputProtocol(response.getText()));
+                    final String __responseText = response.getText();
+                    final org.thryft.protocol.JsonRpcInputProtocol __iprot = new org.thryft.protocol.JsonRpcInputProtocol(new org.thryft.protocol.GwtJsonInputProtocol(__responseText));
                     final org.thryft.protocol.MessageBegin __messageBegin = __iprot.readMessageBegin();
                     if (!__messageBegin.getId().equals(__id)) {
                         throw new org.thryft.protocol.InputProtocolException("expected id in response to be " + __id + ", got " + __messageBegin.getId());
