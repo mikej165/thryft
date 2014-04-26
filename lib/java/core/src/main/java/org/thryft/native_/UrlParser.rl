@@ -35,7 +35,11 @@ public final class UrlParser {
     write exec;
 }%%
 
-        if (authority == null || host == null || scheme == null) {
+        if (authority == null) {
+            throw new IllegalArgumentException(url);
+        } else if (host == null) {
+            throw new IllegalArgumentException(url);
+        } else if (scheme == null) {
             throw new IllegalArgumentException(url);
         }
 

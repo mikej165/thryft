@@ -14,7 +14,10 @@ public final class Url extends Uri {
         public Url build() {
             final StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append(checkNotNull(scheme));
-            stringBuilder.append("://");
+            if (scheme.charAt(scheme.length() - 1) != ':') {
+                stringBuilder.append(':');
+            }
+            stringBuilder.append("//");
             if (authority != null) {
                 stringBuilder.append(authority);
             } else if (host != null) {

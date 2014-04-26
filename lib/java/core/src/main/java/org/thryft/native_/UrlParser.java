@@ -257,7 +257,11 @@ case 5:
 // line 36 "UrlParser.rl"
 
 
-        if (authority == null || host == null || scheme == null) {
+        if (authority == null) {
+            throw new IllegalArgumentException(url);
+        } else if (host == null) {
+            throw new IllegalArgumentException(url);
+        } else if (scheme == null) {
             throw new IllegalArgumentException(url);
         }
 
@@ -265,7 +269,7 @@ case 5:
     }
 
 
-// line 264 "UrlParser.java"
+// line 268 "UrlParser.java"
 private static byte[] init__UrlParser_actions_0()
 {
 	return new byte [] {
@@ -1373,5 +1377,5 @@ static final int UrlParser_error = 0;
 static final int UrlParser_en_main = 1;
 
 
-// line 46 "UrlParser.rl"
+// line 50 "UrlParser.rl"
 }
