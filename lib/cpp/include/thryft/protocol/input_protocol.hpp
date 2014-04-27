@@ -1,7 +1,7 @@
 #ifndef _THRYFT_PROTOCOL_INPUT_PROTOCOL_HPP_
 #define _THRYFT_PROTOCOL_INPUT_PROTOCOL_HPP_
 
-#include <cstdint>
+#include <stdint.h>
 #include <string>
 
 #include "thryft/protocol/type.hpp"

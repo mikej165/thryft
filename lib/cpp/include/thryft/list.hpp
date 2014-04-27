@@ -30,7 +30,7 @@ class List : public ::thryft::Base, public ::std::vector<ElementCppT> {
         iprot.read_list_end();
         return;
       }
-      resize(size);
+      this->resize(size);
       for (size_t i = 0; i < size; i++) {
         iprot.read((*this)[i]);
       }
@@ -38,8 +38,8 @@ class List : public ::thryft::Base, public ::std::vector<ElementCppT> {
     }
 
     void write(protocol::OutputProtocol& oprot) const {
-      oprot.write_list_begin(ElementThriftT, size());
-      for (const_iterator i = begin(); i != end(); ++i) {
+      oprot.write_list_begin(ElementThriftT, this->size());
+      for (auto i = this->cbegin(); i != this->cend(); ++i) {
         oprot.write(*i);
       }
       oprot.write_list_end();

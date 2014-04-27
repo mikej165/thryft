@@ -31,7 +31,11 @@ class XdrInputProtocol : public AbstractInputProtocol {
     double read_double() {
       int64_t int64_value = read_i64();
       double value;
+#ifdef _WIN32
       memcpy_s(&value, sizeof(value), &int64_value, sizeof(int64_value));
+#else
+      memcpy(&value, &int64_value, sizeof(int64_value));
+#endif
       return value;
     }
 
@@ -45,7 +49,11 @@ class XdrInputProtocol : public AbstractInputProtocol {
     float read_float() {
       int32_t int32_value = read_i32();
       float value;
+#ifdef _WIN32
       memcpy_s(&value, sizeof(value), &int32_value, sizeof(int32_value));
+#else
+      memcpy(&value, &int32_value, sizeof(int32_value));
+#endif
       return value;
     }
 
@@ -141,7 +149,7 @@ class XdrInputProtocol : public AbstractInputProtocol {
 
     void read(void* buf, size_t len) {
       if (xdr_p_ + len <= xdr_pe_) {
-        memcpy_s(buf, len, xdr_p_, len);
+        memcpy(buf, xdr_p_, len);
         xdr_p_ += len;
       }
     }

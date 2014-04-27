@@ -8,7 +8,7 @@
 namespace thryft {
 class Exception : public ::thryft::Base, public ::std::exception {
   public:
-    virtual ~Exception() {
+    virtual ~Exception() throw() {
     }
 };
 }

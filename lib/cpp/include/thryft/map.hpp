@@ -40,14 +40,14 @@ class Map : public ::thryft::Base, public ::std::map< KeyCppT, ValueCppT > {
         iprot.read(key);
         ValueCppT value;
         iprot.read(value);
-        insert(::std::make_pair(key, value));
+        this->insert(::std::make_pair(key, value));
       }
       iprot.read_map_end();
     }
 
     void write(protocol::OutputProtocol& oprot) const {
-      oprot.write_map_begin(KeyThriftT, ValueThriftT, size());
-      for (const_iterator i = begin(); i != end(); ++i) {
+      oprot.write_map_begin(KeyThriftT, ValueThriftT, this->size());
+      for (auto i = this->cbegin(); i != this->cend(); ++i) {
         oprot.write(i->first);
         oprot.write(i->second);
       }

@@ -1,3 +1,4 @@
+
 #ifndef _THRYFT_SET_HPP_
 #define _THRYFT_SET_HPP_
 
@@ -39,8 +40,8 @@ class Set : public ::thryft::Base, public ::std::set<ElementCppT> {
     }
 
     void write(protocol::OutputProtocol& oprot) const {
-      oprot.write_set_begin(ElementThriftT, size());
-      for (const_iterator i = begin(); i != end(); ++i) {
+      oprot.write_set_begin(ElementThriftT, this->size());
+      for (auto i = this->cbegin(); i != this->cend(); ++i) {
         oprot.write(*i);
       }
       oprot.write_set_end();

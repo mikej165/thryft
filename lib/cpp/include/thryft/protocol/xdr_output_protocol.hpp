@@ -28,12 +28,20 @@ class XdrOutputProtocol : public AbstractOutputProtocol {
     virtual void write(double value) {
       int64_t int64_value;
 
+#ifdef _WIN32
       memcpy_s(
         &int64_value,
         sizeof(int64_value),
         &value,
         sizeof(value)
       );
+#else
+      memcpy(
+        &int64_value,
+        &value,
+        sizeof(value)
+     );
+#endif
 
       write(int64_value);
     }
@@ -41,13 +49,20 @@ class XdrOutputProtocol : public AbstractOutputProtocol {
     void write(float value) {
       int32_t int32_value;
 
-      memcpy_s
-      (
+#ifdef _WIN32
+      memcpy_s(
         &int32_value,
         sizeof(int32_value),
         &value,
         sizeof(value)
       );
+#else
+      memcpy(
+        &int32_value,
+        &value,
+        sizeof(value)
+     );
+#endif
 
       write(int32_value);
     }
