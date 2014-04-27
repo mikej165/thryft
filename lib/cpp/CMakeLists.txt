@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 
+set(TOP_LEVEL_PROJECT_NAME "${PROJECT_NAME}")
+
 project(thryft CXX)
 
 include_directories(
@@ -14,5 +16,7 @@ else()
 endif()
 
 add_subdirectory(include)
-add_subdirectory(share)
-add_subdirectory(test)
+if ("${TOP_LEVEL_PROJECT_NAME}" STREQUAL "")
+	add_subdirectory(share)
+	add_subdirectory(test)
+endif()
