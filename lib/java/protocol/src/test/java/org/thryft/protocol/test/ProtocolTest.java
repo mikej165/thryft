@@ -95,39 +95,39 @@ public abstract class ProtocolTest {
     }
 
     @Test
-    public void testListString() throws Exception {
-        _test(new ProtocolTestStruct.Builder().setListStringField(ImmutableList
+    public void testString() throws Exception {
+        _test(new ProtocolTestStruct.Builder().setStringField("test"));
+    }
+
+    @Test
+    public void testStringList() throws Exception {
+        _test(new ProtocolTestStruct.Builder().setStringListField(ImmutableList
                 .of("test")));
 
         // Empty list
-        _test(new ProtocolTestStruct.Builder().setListStringField(ImmutableList
+        _test(new ProtocolTestStruct.Builder().setStringListField(ImmutableList
                 .<String> of()));
     }
 
     @Test
-    public void testMapStringString() throws Exception {
+    public void testStringSet() throws Exception {
+        _test(new ProtocolTestStruct.Builder().setStringSetField(ImmutableSet
+                .of("test")));
+
+        // Empty set
+        _test(new ProtocolTestStruct.Builder().setStringSetField(ImmutableSet
+                .<String> of()));
+    }
+
+    @Test
+    public void testStringStringMap() throws Exception {
         _test(new ProtocolTestStruct.Builder()
-                .setMapStringStringField(ImmutableMap
+                .setStringStringMapField(ImmutableMap
                         .of("testkey", "testvalue")));
 
         // Empty map
         _test(new ProtocolTestStruct.Builder()
-                .setMapStringStringField(ImmutableMap.<String, String> of()));
-    }
-
-    @Test
-    public void testSetString() throws Exception {
-        _test(new ProtocolTestStruct.Builder().setSetStringField(ImmutableSet
-                .of("test")));
-
-        // Empty set
-        _test(new ProtocolTestStruct.Builder().setSetStringField(ImmutableSet
-                .<String> of()));
-    }
-
-    @Test
-    public void testString() throws Exception {
-        _test(new ProtocolTestStruct.Builder().setStringField("test"));
+                .setStringStringMapField(ImmutableMap.<String, String> of()));
     }
 
     @Test

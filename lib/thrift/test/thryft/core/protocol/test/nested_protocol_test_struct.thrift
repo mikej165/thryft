@@ -18,13 +18,13 @@ struct NestedProtocolTestStruct {
     optional i16 i16_field;
     optional i32 i32_field;
     optional i64 i64_field;
-    optional list<string> list_string_field;
-    optional map<string, string> map_string_string_field;
+    optional list<string> string_list_field;
+    optional map<string, string> string_string_map_field;
     required i32 required_i32_field;
     // @validation {"minLength": 1}
     // @faker Name.firstName()
     required string required_string_field;
-    optional set<string> set_string_field;
+    optional set<string> string_set_field;
     // @validation {"minLength": 1}
     optional string string_field;
     optional url.Url url_field;

@@ -18,14 +18,14 @@ public final class ProtocolTestStructFaker {
         builder.setI16Field(org.thryft.Faker.randomI16());
         builder.setI32Field(org.thryft.Faker.randomI32());
         builder.setI64Field(org.thryft.Faker.randomI64());
-        builder.setListStringField(com.google.common.collect.ImmutableList
+        builder.setStringListField(com.google.common.collect.ImmutableList
                 .of(org.thryft.Faker.Lorem.word()));
-        builder.setMapStringStringField(com.google.common.collect.ImmutableMap
+        builder.setStringStringMapField(com.google.common.collect.ImmutableMap
                 .of(org.thryft.Faker.Lorem.word(),
                         org.thryft.Faker.Lorem.word()));
         builder.setRequiredI32Field(org.thryft.Faker.randomI32());
         builder.setRequiredStringField(org.thryft.Faker.Name.firstName());
-        builder.setSetStringField(com.google.common.collect.ImmutableSet
+        builder.setStringSetField(com.google.common.collect.ImmutableSet
                 .of(org.thryft.Faker.Lorem.word()));
         builder.setStringField(org.thryft.Faker.Lorem.word());
         // builder.setStructField(org.thryft.protocol.test.ProtocolTestStructFaker
