@@ -63,12 +63,12 @@ class JsonOutputProtocol : public AbstractOutputProtocol {
       writer_.String(value, value_len);
     }
 
-    virtual void write_field_begin(const char* name, Type::Enum type,
+    virtual void write_field_begin(const char* name, Type type,
                                    int16_t id) {
       writer_.String(name);
     }
 
-    virtual void write_list_begin(Type::Enum element_type, uint32_t size) {
+    virtual void write_list_begin(Type element_type, uint32_t size) {
       writer_.StartArray();
     }
 
@@ -76,7 +76,7 @@ class JsonOutputProtocol : public AbstractOutputProtocol {
       writer_.EndArray();
     }
 
-    virtual void write_map_begin(Type::Enum key_type, Type::Enum value_type,
+    virtual void write_map_begin(Type key_type, Type value_type,
                                  uint32_t size) {
       writer_.StartObject();
     }

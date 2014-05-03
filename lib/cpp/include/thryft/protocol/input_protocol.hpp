@@ -30,20 +30,20 @@ class InputProtocol {
     virtual bool read_bool() = 0;
     virtual int8_t read_byte() = 0;
     virtual double read_double() = 0;
-    virtual void read_field_begin(std::string& out_name, Type::Enum& out_type,
+    virtual void read_field_begin(std::string& out_name, Type& out_type,
                                   int16_t& out_id) = 0;
     virtual void read_field_end() = 0;
     virtual float read_float() = 0;
     virtual int16_t read_i16() = 0;
     virtual int32_t read_i32() = 0;
     virtual int64_t read_i64() = 0;
-    virtual void read_list_begin(Type::Enum& out_element_type,
+    virtual void read_list_begin(Type& out_element_type,
                                  uint32_t& out_size) = 0;
     virtual void read_list_end() = 0;
-    virtual void read_map_begin(Type::Enum& out_key_type,
-                                Type::Enum& out_value_type, uint32_t& out_size) = 0;
+    virtual void read_map_begin(Type& out_key_type,
+                                Type& out_value_type, uint32_t& out_size) = 0;
     virtual void read_map_end() = 0;
-    virtual void read_set_begin(Type::Enum& out_element_type,
+    virtual void read_set_begin(Type& out_element_type,
                                 uint32_t& out_size) = 0;
     virtual void read_set_end() = 0;
     virtual ::std::string read_string() = 0;

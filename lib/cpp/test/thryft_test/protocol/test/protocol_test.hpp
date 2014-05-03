@@ -50,36 +50,36 @@ TYPED_TEST_P(ProtocolTest, i64) {
   test(ProtocolTestStruct().set_i64_field(1));
 }
 
-TYPED_TEST_P(ProtocolTest, list_string) {
-  List< ::std::string, Type::STRING > list_string;
-  list_string.push_back("test");
-  test(ProtocolTestStruct().set_list_string_field(list_string));
+TYPED_TEST_P(ProtocolTest, string_list) {
+  List< ::std::string, Type::STRING > string_list;
+  string_list.push_back("test");
+  test(ProtocolTestStruct().set_string_list_field(string_list));
 }
 
-TYPED_TEST_P(ProtocolTest, list_string_empty) {
-  test(ProtocolTestStruct().set_list_string_field(
+TYPED_TEST_P(ProtocolTest, string_list_empty) {
+  test(ProtocolTestStruct().set_string_list_field(
          List<::std::string, Type::STRING>()));
 }
 
-TYPED_TEST_P(ProtocolTest, map_string_string) {
-  Map<::std::string, Type::STRING, ::std::string, Type::STRING> map_string_string;
-  map_string_string.insert(make_pair("test", "test"));
-  test(ProtocolTestStruct().set_map_string_string_field(map_string_string));
+TYPED_TEST_P(ProtocolTest, string_string_map) {
+  Map<::std::string, Type::STRING, ::std::string, Type::STRING> string_string_map;
+  string_string_map.insert(make_pair("test", "test"));
+  test(ProtocolTestStruct().set_string_string_map_field(string_string_map));
 }
 
-TYPED_TEST_P(ProtocolTest, map_string_string_empty) {
-  test(ProtocolTestStruct().set_map_string_string_field(
+TYPED_TEST_P(ProtocolTest, string_string_map_empty) {
+  test(ProtocolTestStruct().set_string_string_map_field(
          Map<::std::string, Type::STRING, ::std::string, Type::STRING>()));
 }
 
-TYPED_TEST_P(ProtocolTest, set_string) {
-  Set<::std::string, Type::STRING> set_string;
-  set_string.insert("test");
-  test(ProtocolTestStruct().set_set_string_field(set_string));
+TYPED_TEST_P(ProtocolTest, string_set) {
+  Set<::std::string, Type::STRING> string_set;
+  string_set.insert("test");
+  test(ProtocolTestStruct().set_string_set_field(string_set));
 }
 
-TYPED_TEST_P(ProtocolTest, set_string_empty) {
-  test(ProtocolTestStruct().set_set_string_field(
+TYPED_TEST_P(ProtocolTest, string_set_empty) {
+  test(ProtocolTestStruct().set_string_set_field(
          Set<::std::string, Type::STRING>()));
 }
 
@@ -99,9 +99,9 @@ TYPED_TEST_P(ProtocolTest, struct_empty) {
 REGISTER_TYPED_TEST_CASE_P(
   ProtocolTest,
   bool_, i8, i16, i32, i64,
-  list_string, list_string_empty,
-  map_string_string, map_string_string_empty,
-  set_string, set_string_empty,
+  string_list, string_list_empty,
+  string_string_map, string_string_map_empty,
+  string_set, string_set_empty,
   string,
   struct_, struct_empty
 );

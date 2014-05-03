@@ -42,7 +42,7 @@ class StackedInputProtocol : public AbstractInputProtocol {
       return protocol_stack_.top()->read_double();
     }
 
-    virtual void read_field_begin(std::string& out_name, Type::Enum& out_type,
+    virtual void read_field_begin(std::string& out_name, Type& out_type,
                                   int16_t& out_id) {
       protocol_stack_.top()->read_field_begin(out_name, out_type, out_id);
     }
@@ -67,7 +67,7 @@ class StackedInputProtocol : public AbstractInputProtocol {
       return protocol_stack_.top()->read_i64();
     }
 
-    virtual void read_list_begin(Type::Enum& out_element_type, uint32_t& out_size) {
+    virtual void read_list_begin(Type& out_element_type, uint32_t& out_size) {
       protocol_stack_.top()->read_list_begin(out_element_type, out_size);
     }
 
@@ -76,8 +76,8 @@ class StackedInputProtocol : public AbstractInputProtocol {
       protocol_stack_.pop();
     }
 
-    virtual void read_map_begin(Type::Enum& out_key_type,
-                                Type::Enum& out_value_type, uint32_t& out_size) {
+    virtual void read_map_begin(Type& out_key_type,
+                                Type& out_value_type, uint32_t& out_size) {
       protocol_stack_.top()->read_map_begin(out_key_type, out_value_type, out_size);
     }
 
@@ -86,7 +86,7 @@ class StackedInputProtocol : public AbstractInputProtocol {
       protocol_stack_.pop();
     }
 
-    virtual void read_set_begin(Type::Enum& out_element_type, uint32_t& out_size) {
+    virtual void read_set_begin(Type& out_element_type, uint32_t& out_size) {
       protocol_stack_.top()->read_set_begin(out_element_type, out_size);
     }
 

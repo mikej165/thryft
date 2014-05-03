@@ -62,7 +62,7 @@ class _CppCompoundType(_CppType):
   read(iprot);
 }
 
-%(name)s(::thryft::protocol::InputProtocol& iprot, ::thryft::protocol::Type::Enum as_type) {
+%(name)s(::thryft::protocol::InputProtocol& iprot, ::thryft::protocol::Type as_type) {
   read(iprot, as_type);
 }""" % locals()
 
@@ -195,10 +195,10 @@ void read(::thryft::protocol::InputProtocol& iprot) {
   read(iprot, ::thryft::protocol::Type::STRUCT);
 }
 
-void read(::thryft::protocol::InputProtocol& iprot, ::thryft::protocol::Type::Enum as_type) {
+void read(::thryft::protocol::InputProtocol& iprot, ::thryft::protocol::Type as_type) {
   switch (as_type) {
     case ::thryft::protocol::Type::LIST: {
-      ::thryft::protocol::Type::Enum list_element_type;
+      ::thryft::protocol::Type list_element_type;
       uint32_t list_size;
       iprot.read_list_begin(list_element_type, list_size);%(field_read_protocol_positional)s
       iprot.read_list_end();
@@ -210,7 +210,7 @@ void read(::thryft::protocol::InputProtocol& iprot, ::thryft::protocol::Type::En
       iprot.read_struct_begin();
       int16_t ifield_id;
       ::std::string ifield_name;
-      ::thryft::protocol::Type::Enum ifield_type;
+      ::thryft::protocol::Type ifield_type;
       for (;;) {
         iprot.read_field_begin(ifield_name, ifield_type, ifield_id);
         if (ifield_type == ::thryft::protocol::Type::STOP) {
@@ -264,7 +264,7 @@ void write(::thryft::protocol::OutputProtocol& oprot) const {
   write(oprot, ::thryft::protocol::Type::STRUCT);
 }
 
-void write(::thryft::protocol::OutputProtocol& oprot, ::thryft::protocol::Type::Enum as_type) const {
+void write(::thryft::protocol::OutputProtocol& oprot, ::thryft::protocol::Type as_type) const {
   switch (as_type) {
   %(case_ttype_void)s
   case ::thryft::protocol::Type::LIST:

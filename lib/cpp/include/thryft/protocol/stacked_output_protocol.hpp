@@ -46,7 +46,7 @@ class StackedOutputProtocol : public AbstractOutputProtocol {
     }
 
     // Field
-    virtual void write_field_begin(const char* name, Type::Enum type, int16_t id) {
+    virtual void write_field_begin(const char* name, Type type, int16_t id) {
       protocol_stack_.top()->write_field_begin(name, type, id);
     }
 
@@ -94,7 +94,7 @@ class StackedOutputProtocol : public AbstractOutputProtocol {
       protocol_stack_.top()->write(value);
     }
 
-    virtual void write_list_begin(Type::Enum element_type, uint32_t size) {
+    virtual void write_list_begin(Type element_type, uint32_t size) {
       protocol_stack_.top()->write_list_begin(element_type, size);
     }
 
@@ -104,7 +104,7 @@ class StackedOutputProtocol : public AbstractOutputProtocol {
       protocol_stack_.top()->write_list_end();
     }
 
-    virtual void write_map_begin(Type::Enum key_type, Type::Enum value_type,
+    virtual void write_map_begin(Type key_type, Type value_type,
                                  uint32_t size) {
       protocol_stack_.top()->write_map_begin(key_type, value_type, size);
     }
@@ -119,7 +119,7 @@ class StackedOutputProtocol : public AbstractOutputProtocol {
       protocol_stack_.top()->write_null();
     }
 
-    virtual void write_set_begin(Type::Enum element_type, uint32_t size) {
+    virtual void write_set_begin(Type element_type, uint32_t size) {
       protocol_stack_.top()->write_set_begin(element_type, size);
     }
 

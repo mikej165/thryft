@@ -78,7 +78,7 @@ class JsonInputProtocol : public StackedInputProtocol {
           return static_cast<int64_t>(read_child_node().GetInt64());
         }
 
-        void read_list_begin(Type::Enum& out_element_type, uint32_t& out_size) {
+        void read_list_begin(Type& out_element_type, uint32_t& out_size) {
           const ::rapidjson::Value& child_node = read_child_node();
           RAPIDJSON_ASSERT(child_node.IsArray());
           out_element_type = Type::VOID;
@@ -87,7 +87,7 @@ class JsonInputProtocol : public StackedInputProtocol {
                                  child_node, protocol_stack_));
         }
 
-        void read_map_begin(Type::Enum& out_key_type, Type::Enum& out_value_type,
+        void read_map_begin(Type& out_key_type, Type& out_value_type,
                             uint32_t& out_size) {
           const ::rapidjson::Value& child_node = read_child_node();
           RAPIDJSON_ASSERT(child_node.IsObject());
@@ -245,7 +245,7 @@ class JsonInputProtocol : public StackedInputProtocol {
 
       public:
         // InputProtocol
-        void read_field_begin(std::string& out_name, Type::Enum& out_type,
+        void read_field_begin(std::string& out_name, Type& out_type,
                               int16_t& out_id) {
           if (next_child_node_i != node().MemberEnd()) {
             out_name.assign(next_child_node_i->name.GetString(),

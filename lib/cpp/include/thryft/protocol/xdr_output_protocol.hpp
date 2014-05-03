@@ -84,15 +84,11 @@ class XdrOutputProtocol : public AbstractOutputProtocol {
 
       if (value_len % 4 != 0) {
         static char zeros[] = { 0, 0, 0 };
-        write
-        (
-          static_cast<const void*>(zeros),
-          4 - (value_len % 4)
-        );
+        write(static_cast<const void*>(zeros), 4 - (value_len % 4));
       }
     }
 
-    virtual void write_field_begin(const char* name, Type::Enum type,
+    virtual void write_field_begin(const char* name, Type type,
                                    int16_t id) {
       write(name, strlen(name));
       write(static_cast<int32_t>(type));
@@ -103,7 +99,7 @@ class XdrOutputProtocol : public AbstractOutputProtocol {
       write_field_begin("", Type::STOP, -1);
     }
 
-    virtual void write_list_begin(Type::Enum element_type, uint32_t size) {
+    virtual void write_list_begin(Type element_type, uint32_t size) {
       //write(static_cast<int32_t>(element_type));
       // Stick with ONC-RPC variable-sized array rules = size + contents
       write(static_cast<int32_t>(size));
@@ -112,7 +108,7 @@ class XdrOutputProtocol : public AbstractOutputProtocol {
     virtual void write_list_end() {
     }
 
-    virtual void write_map_begin(Type::Enum key_type, Type::Enum value_type,
+    virtual void write_map_begin(Type key_type, Type value_type,
                                  uint32_t size) {
       //write(static_cast<int32_t>(key_type));
       //write(static_cast<int32_t>(value_type));

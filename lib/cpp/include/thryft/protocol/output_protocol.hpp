@@ -29,7 +29,7 @@ class OutputProtocol {
     virtual void write(double value) = 0;
 
     // Field
-    virtual void write_field_begin(const char* name, Type::Enum type,
+    virtual void write_field_begin(const char* name, Type type,
                                    int16_t id) = 0;
     virtual void write_field_end() = 0;
     virtual void write_field_stop() = 0;
@@ -61,16 +61,16 @@ class OutputProtocol {
     // U64
     virtual void write(uint64_t value) = 0;
 
-    virtual void write_list_begin(Type::Enum element_type, uint32_t size) = 0;
+    virtual void write_list_begin(Type element_type, uint32_t size) = 0;
     virtual void write_list_end() = 0;
 
-    virtual void write_map_begin(Type::Enum key_type, Type::Enum value_type,
+    virtual void write_map_begin(Type key_type, Type value_type,
                                  uint32_t size) = 0;
     virtual void write_map_end() = 0;
 
     virtual void write_null() = 0;
 
-    virtual void write_set_begin(Type::Enum element_type, uint32_t size) = 0;
+    virtual void write_set_begin(Type element_type, uint32_t size) = 0;
     virtual void write_set_end() = 0;
 
     virtual void write_struct_begin() = 0;

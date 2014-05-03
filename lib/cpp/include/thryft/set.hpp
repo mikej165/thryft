@@ -9,7 +9,7 @@
 #include "thryft/protocol/output_protocol.hpp"
 
 namespace thryft {
-template <typename ElementCppT, ::thryft::protocol::Type::Enum ElementThriftT>
+template <typename ElementCppT, ::thryft::protocol::Type ElementThriftT>
 class Set : public ::thryft::Base, public ::std::set<ElementCppT> {
   public:
     Set() {
@@ -24,7 +24,7 @@ class Set : public ::thryft::Base, public ::std::set<ElementCppT> {
 
   public:
     void read(protocol::InputProtocol& iprot) {
-      protocol::Type::Enum element_type;
+      protocol::Type element_type;
       uint32_t size = 0;
       iprot.read_set_begin(element_type, size);
       if (size == 0) {

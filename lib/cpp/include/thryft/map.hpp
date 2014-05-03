@@ -10,9 +10,9 @@
 namespace thryft {
 template <
   typename KeyCppT,
-  ::thryft::protocol::Type::Enum KeyThriftT,
+  ::thryft::protocol::Type KeyThriftT,
   typename ValueCppT,
-  ::thryft::protocol::Type::Enum ValueThriftT
+  ::thryft::protocol::Type ValueThriftT
   >
 class Map : public ::thryft::Base, public ::std::map< KeyCppT, ValueCppT > {
   public:
@@ -28,7 +28,7 @@ class Map : public ::thryft::Base, public ::std::map< KeyCppT, ValueCppT > {
 
   public:
     void read(protocol::InputProtocol& iprot) {
-      protocol::Type::Enum key_type, value_type;
+      protocol::Type key_type, value_type;
       uint32_t size = 0;
       iprot.read_map_begin(key_type, value_type, size);
       if (size == 0) {
