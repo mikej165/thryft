@@ -75,14 +75,14 @@ public abstract class StoreTest {
                     .setI16Field((short) modelI)
                     .setI32Field(modelI)
                     .setI64Field(modelI)
-                    .setListStringField(
+                    .setStringListField(
                             ImmutableList.of("Test model "
                                     + StringUtils.repeat("0", 1024)
                                     + Integer.toString(modelI)))
-                    .setMapStringStringField(
+                    .setStringStringMapField(
                             ImmutableMap.of("key", "Test model " + modelI))
                     .setRequiredI32Field(1).setRequiredStringField("test")
-                    .setSetStringField(ImmutableSet.of("Test model " + modelI))
+                    .setStringSetField(ImmutableSet.of("Test model " + modelI))
                     .setStringField("testmodel" + modelI)
                     .setStructField(new NestedProtocolTestStruct(1, "test"))
                     .build();
