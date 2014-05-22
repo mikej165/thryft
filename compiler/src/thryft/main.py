@@ -30,7 +30,6 @@
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
 
-from pyparsing import ParseException
 from thryft.compiler import Compiler
 from thryft.compiler.compile_exception import CompileException
 from thryft.compiler.scan_exception import ScanException
@@ -149,7 +148,7 @@ class Main(object):
             for i in xrange(2):
                 try:
                     documents = compiler(compile_task.thrift_file_path, generator=compile_task.generator)
-                except (ScanException, ParseException, CompileException):
+                except (ScanException, CompileException):
                     if self._debug:
                         raise
                     if i == 0:

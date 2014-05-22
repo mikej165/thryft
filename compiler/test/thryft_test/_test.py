@@ -30,7 +30,6 @@
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
 
-from pyparsing import ParseException
 import os.path
 import sys
 import unittest
@@ -71,13 +70,6 @@ class _Test(unittest.TestCase):
         # print thrift_file_name
         try:
             self._runTest(self.__thrift_file_path)
-        except ParseException, err:
-            print >> sys.stderr, "error parsing " + thrift_file_name
-            print >> sys.stderr, err.line
-            print >> sys.stderr, " "*(err.column - 1) + "^"
-            print >> sys.stderr, err
-            print >> sys.stderr
-            self.fail()
         except RuntimeError:
             if thrift_file_name != 'include.thrift':
                 raise
