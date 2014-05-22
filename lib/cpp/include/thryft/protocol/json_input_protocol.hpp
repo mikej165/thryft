@@ -5,6 +5,7 @@
 #include <stack>
 
 #include "thryft/protocol/stacked_input_protocol.hpp"
+#include "thryft/protocol/json_input_protocol_exception.hpp"
 #include "thryft/protocol/json_output_protocol.hpp"
 
 #include <rapidjson/document.h>
@@ -25,7 +26,9 @@ class JsonInputProtocol : public StackedInputProtocol {
 
       public:
         char Peek() const {
-          RAPIDJSON_ASSERT(src_p_ - src_ < src_len_);
+          if (src_p_ - src_ >= src_len_) {
+            throw JsonInputProtocolException();
+          }
           return *src_p_;
         }
 
@@ -33,21 +36,27 @@ class JsonInputProtocol : public StackedInputProtocol {
           RAPIDJSON_ASSERT(false);
           return 0;
         }
+
         void Put(char) {
           RAPIDJSON_ASSERT(false);
         }
+
         size_t PutEnd(char*) {
           RAPIDJSON_ASSERT(false);
           return 0;
         }
 
         char Take() {
-          RAPIDJSON_ASSERT(src_p_ - src_ < src_len_);
+          if (src_p_ - src_ >= src_len_) {
+            throw JsonInputProtocolException();
+          }
           return *src_p_++;
         }
 
         size_t Tell() const {
-          RAPIDJSON_ASSERT(src_p_ - src_ < src_len_);
+          if (src_p_ - src_ >= src_len_) {
+            throw JsonInputProtocolException();
+          }
           return src_p_ - src_;
         }
 
@@ -80,7 +89,9 @@ class JsonInputProtocol : public StackedInputProtocol {
 
         void read_list_begin(Type& out_element_type, uint32_t& out_size) {
           const ::rapidjson::Value& child_node = read_child_node();
-          RAPIDJSON_ASSERT(child_node.IsArray());
+          if (!child_node.IsArray()) {
+            throw JsonInputProtocolException();
+          }
           out_element_type = Type::VOID;
           out_size = child_node.Size();
           protocol_stack_.push(reader_protocol_factory_.create_json_array_input_protocol(
@@ -90,7 +101,9 @@ class JsonInputProtocol : public StackedInputProtocol {
         void read_map_begin(Type& out_key_type, Type& out_value_type,
                             uint32_t& out_size) {
           const ::rapidjson::Value& child_node = read_child_node();
-          RAPIDJSON_ASSERT(child_node.IsObject());
+          if (!child_node.IsObject()) {
+            throw JsonInputProtocolException();
+          }
           out_key_type = Type::VOID;
           out_value_type = Type::VOID;
           out_size = 0;
@@ -130,7 +143,9 @@ class JsonInputProtocol : public StackedInputProtocol {
 
         void read_struct_begin() {
           const ::rapidjson::Value& child_node = read_child_node();
-          RAPIDJSON_ASSERT(child_node.IsObject());
+          if (!child_node.IsObject()) {
+            throw JsonInputProtocolException();
+          }
           protocol_stack_.push(
             reader_protocol_factory_.create_json_struct_object_input_protocol(child_node,
                 protocol_stack_));
@@ -344,7 +359,9 @@ class JsonInputProtocol : public StackedInputProtocol {
       //IovecStream stream(json, json_len);
       document_.Parse<0>(::std::string(json, json_len).c_str());
       //document_.ParseStream<0>(stream);
-      RAPIDJSON_ASSERT(!document_.HasParseError());
+      if (document_.HasParseError()) {
+        throw JsonInputProtocolException();
+      }
       reset();
     }
 

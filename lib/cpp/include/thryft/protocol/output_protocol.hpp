@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <string>
 
+#include "thryft/protocol/output_protocol_exception.hpp"
 #include "thryft/protocol/type.hpp"
 
 namespace thryft {

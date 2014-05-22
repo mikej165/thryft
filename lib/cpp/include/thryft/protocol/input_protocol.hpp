@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <string>
 
+#include "thryft/protocol/input_protocol_exception.hpp"
 #include "thryft/protocol/type.hpp"
 
 namespace thryft {
