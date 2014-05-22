@@ -30,7 +30,6 @@
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
 
-from thryft.generator.document import Document
 from thryft.generator.enum_type import EnumType
 from thryft.generators.cpp._cpp_type import _CppType
 from yutil import indent, lpad
@@ -38,10 +37,8 @@ from yutil import indent, lpad
 
 class CppEnumType(EnumType, _CppType):
     def cpp_default_value(self):
-        if len(self.enumerators) > 0:
-            return _CppType.cpp_qname(self) + '::' + self.enumerators[0].name
-        else:
-            return 0
+        assert len(self.enumerators) > 0
+        return _CppType.cpp_qname(self) + '::' + self.enumerators[0].name
 
     def cpp_includes_definition(self):
         return ('<thryft.hpp>',)
@@ -49,23 +46,22 @@ class CppEnumType(EnumType, _CppType):
     def cpp_includes_use(self):
         return self._parent_document().cpp_includes_use()
 
-    def cpp_qname(self):
-        return _CppType.cpp_qname(self) + '::Enum'
-
     def cpp_read_protocol(self, value, optional=False):
         name = _CppType.cpp_qname(self)
         return "%(value)s = %(name)s::read(iprot);" % locals()
 
     def cpp_write_protocol(self, value, depth=0):
         name = _CppType.cpp_qname(self)
-        return "%(name)s::write(oprot, %(value)s);" % locals()
+        return "%(value)s.write(oprot);" % locals()
 
     def __repr__(self):
-        if len(self.enumerators) > 0:
-            default_value = self.enumerators[0].name
-        else:
-            default_value = 'static_cast<Enum>(0)'
-        enumerators = \
+        assert len(self.enumerators) > 0
+        default_value = self.enumerators[0].name            
+        enumerator_check_cases = \
+            lpad("\n", "\n".join(indent(' ' * 4, ("""\
+case %s: break;""" % enumerator.name
+                for enumerator in self.enumerators)))) 
+        enumerator_declarations = \
             lpad("\n", ",\n".join(indent(' ' * 4,
                 ("%s = %u" % (enumerator.name, enumerator.value)
                  for enumerator in self.enumerators)
@@ -84,20 +80,49 @@ case %s: oprot.write("%s", %u); break;
         return """\
 class %(name)s {
 public:
-  enum Enum {%(enumerators)s
+  enum Enum {%(enumerator_declarations)s
   };
+  
+public:
+  %(name)s()
+    : enum_(%(default_value)s) {
+  }
 
-  static Enum read(::thryft::protocol::InputProtocol& iprot) {
+  %(name)s(Enum enum_)
+    : enum_(enum_) {
+    switch (enum_) {%(enumerator_check_cases)s
+    default:
+      throw ::thryft::EnumValueException();
+    }
+  }
+  
+  %(name)s(const %(name)s& other)
+    : enum_(other.enum_) {
+    switch (enum_) {%(enumerator_check_cases)s
+    default:
+      throw ::thryft::EnumValueException();
+    }
+  }
+
+public:
+  operator Enum() const {
+    return enum_;
+  }
+
+  static %(name)s read(::thryft::protocol::InputProtocol& iprot) {
     ::std::string name;
     iprot.read_string(name);%(enumerator_value_ofs)s
     return %(default_value)s;
   }
 
-  static void write(::thryft::protocol::OutputProtocol& oprot, Enum value) {
-    switch (value) {%(enumerator_write_cases)s
+  void write(::thryft::protocol::OutputProtocol& oprot) const {
+    switch (enum_) {%(enumerator_write_cases)s
     default:
       oprot.write_null();
       break;
     }
   }
+  
+private:
+  Enum enum_;
 };""" % locals()
