@@ -50,3 +50,34 @@ class CppMapType(MapType, _CppContainerType):
                 self.value_type.cpp_qname(),
                 self.value_type.thrift_ttype_name()
             )
+
+    def cpp_to_string(self, depth, oss, value):
+        key_to_string = \
+            indent(' ' * 2,
+                   self.key_type.cpp_to_string(
+                       depth=depth+1,
+                       oss=oss,
+                       value="i%(depth)u->first" % locals()
+                    )
+            )
+        value_to_string = \
+            indent(' ' * 2,
+                   self.value_type.cpp_to_string(
+                       depth=depth+1,
+                       oss=oss,
+                       value="i%(depth)u->second" % locals()
+                    )
+            )            
+            
+        qname = self.cpp_qname()
+        return """\
+oss << "{";
+for (%(qname)s::const_iterator i%(depth)u = %(value)s.begin(); i%(depth)u != %(value)s.end(); ++i%(depth)u) {
+  if (i%(depth)u != %(value)s.begin()) {
+    oss << ", ";
+  }
+%(key_to_string)s
+  oss << ": ";
+%(value_to_string)s
+}
+oss << "]";""" % locals()

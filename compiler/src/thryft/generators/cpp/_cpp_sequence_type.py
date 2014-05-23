@@ -38,7 +38,7 @@ class _CppSequenceType(_CppContainerType):
     def cpp_includes_use(self):
         includes = ['<thryft.hpp>']
         includes.extend(self.element_type.cpp_includes_use())
-        return includes
+        return includes 
 
     def cpp_qname(self):
         return \
@@ -47,3 +47,23 @@ class _CppSequenceType(_CppContainerType):
                 self.element_type.cpp_qname(),
                 self.element_type.thrift_ttype_name()
             )
+
+    def cpp_to_string(self, depth, oss, value):
+        element_to_string = \
+            indent(' ' * 2,
+                   self.element_type.cpp_to_string(
+                       depth=depth+1,
+                       oss=oss,
+                       value="*i%(depth)u" % locals()
+                    )
+            )
+        qname = self.cpp_qname()
+        return """\
+oss << "[";
+for (%(qname)s::const_iterator i%(depth)u = %(value)s.begin(); i%(depth)u != %(value)s.end(); ++i%(depth)u) {
+  if (i%(depth)u != %(value)s.begin()) {
+    oss << ", ";
+  }
+%(element_to_string)s
+}
+oss << "]";""" % locals()

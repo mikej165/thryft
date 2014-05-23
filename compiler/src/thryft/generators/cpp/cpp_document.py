@@ -31,10 +31,10 @@
 #-------------------------------------------------------------------------------
 
 from thryft.generator.document import Document
-from thryft.generator.typedef import Typedef
+from thryft.generators.cpp._cpp_compound_type import _CppCompoundType
 from thryft.generators.cpp._cpp_named_construct import _CppNamedConstruct
 import os.path
-from yutil import deduplist, rpad
+from yutil import deduplist, lpad, rpad
 
 
 class CppDocument(Document, _CppNamedConstruct):
@@ -88,38 +88,39 @@ class CppDocument(Document, _CppNamedConstruct):
         return self.namespace_by_scope('cpp').name
 
     def __repr__(self):
-        sections = []
-        sections.append(
+        definitions = []
+        definitions.append(
             "\n\n".join(repr(definition)
                          for definition in self.definitions)
         )
-        repr_ = "\n\n".join(sections)
-        if len(repr_) == 0:
-            return repr_
+        definitions = "\n\n".join(definitions)
+        if len(definitions) == 0:
+            return definitions
 
         guard = []
         namespace = self.cpp_namespace()
         if namespace is not None:
             namespace_split = namespace.split('.')
             guard.extend(s.upper() for s in namespace_split)
-            repr_ = """\
-%s
-%s
-%s""" % (
-    "\n".join("namespace %s {" % s for s in namespace_split),
-    repr_,
-    "\n".join('}' for _ in namespace_split)
-)
+            namespaces_prefix = "\n".join("namespace %s {" % s for s in namespace_split) + "\n"
+            namespaces_suffix = "\n" + "\n".join('}' for _ in namespace_split)
+
+        global_operators = []
+        for definition in self.definitions:
+            if isinstance(definition, _CppCompoundType):
+                global_operators.extend(definition.cpp_global_operators())
+        global_operators = lpad("\n\n", "\n\n".join(global_operators))
+
         guard.append(self.cpp_name().upper())
         guard = '_' + '_'.join(guard) + '_HPP_'
 
-        repr_ = rpad("\n".join(self.cpp_includes_definition()), "\n\n") + repr_
+        includes = rpad("\n".join(self.cpp_includes_definition()), "\n\n")
 
         repr_ = """\
 #ifndef %(guard)s
 #define %(guard)s
 
-%(repr_)s
+%(includes)s%(namespaces_prefix)s%(definitions)s%(namespaces_suffix)s%(global_operators)s
 
 #endif  // %(guard)s
 """ % locals()

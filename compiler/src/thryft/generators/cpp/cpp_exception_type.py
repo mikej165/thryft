@@ -42,6 +42,9 @@ class CppExceptionType(ExceptionType, _CppCompoundType):
     def _cpp_extends(self):
         return 'ExceptionT'
 
+    def cpp_global_operators(self):
+        return []
+
     def _cpp_template_parameters(self):
         return 'template <class ExceptionT = ::thryft::Exception>'
 

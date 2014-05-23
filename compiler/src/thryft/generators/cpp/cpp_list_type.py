@@ -34,6 +34,6 @@ from thryft.generator.list_type import ListType
 from thryft.generators.cpp._cpp_sequence_type import _CppSequenceType
 
 
-class CppListType(ListType, _CppSequenceType):
+class CppListType(ListType, _CppSequenceType):       
     def _thrift_name(self):
         return 'List'

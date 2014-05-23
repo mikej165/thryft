@@ -30,10 +30,8 @@
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
 
-from thryft.generator.document import Document
-from thryft.generators.cpp._cpp_named_construct import _CppNamedConstruct
 from thryft.generators.cpp._cpp_type import _CppType
-from yutil import lpad, indent, pad, rpad, upper_camelize
+from yutil import lpad, indent, pad, rpad
 
 
 class _CppCompoundType(_CppType):
@@ -130,6 +128,19 @@ virtual ~%(name)s() {
 
     def _cpp_extends(self):
         return '::thryft::Struct'
+
+    def cpp_global_operators(self):
+        qname = self.cpp_qname()
+        return ["""\
+static inline
+::std::ostream&
+operator<<(
+  ::std::ostream& os,
+  const %(qname)s& value
+) {
+  os << static_cast<::std::string>(value);
+  return os;
+}""" % locals()]
 
     def cpp_includes_definition(self):
         includes = ['<thryft.hpp>']
@@ -298,6 +309,22 @@ void write(::thryft::protocol::OutputProtocol& oprot, ::thryft::protocol::Type a
         methods.update(self._cpp_method_write())
         return methods
 
+    def _cpp_operator_cast_to_string(self):
+        fields_to_string = \
+            lpad("\n", indent(' ' * 2, "\n".join(
+                "oss << \"%s%s=\";\n" % (', ' if field_i > 0 else '', field.cpp_name()) + \
+                    field.cpp_to_string(depth=0, oss='oss')
+                for field_i, field in enumerate(self.fields)
+            )))
+        name = self.cpp_name()
+        return {'operator ::std::string()': """\
+operator ::std::string() const {
+  ::std::ostringstream oss;
+  oss << "%(name)s(";%(fields_to_string)s
+  oss << ")";
+  return oss.str();
+}""" % locals()}
+
     def _cpp_operator_equality(self):
         field_comparisons = \
             pad("\n", "\n\n".join(indent(' ' * 2, ("""\
@@ -310,9 +337,10 @@ if (!(%s() == other.%s())) {
 bool operator==(const %(name)s& other) const {%(field_comparisons)s
   return true;
 }""" % locals()}
-
+        
     def _cpp_operators(self):
         operators = {}
+        operators.update(self._cpp_operator_cast_to_string())
         operators.update(self._cpp_operator_equality())
         return operators
 

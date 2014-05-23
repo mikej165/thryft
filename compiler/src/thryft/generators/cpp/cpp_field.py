@@ -30,11 +30,9 @@
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
 
-from inspect import isfunction
 from thryft.generator.field import Field
 from thryft.generators.cpp._cpp_named_construct import _CppNamedConstruct
-from thryft.generators.cpp.cpp_bool_type import CppBoolType
-from yutil import lower_camelize, upper_camelize, indent, lpad
+from yutil import indent
 
 
 class CppField(Field, _CppNamedConstruct):
@@ -123,6 +121,19 @@ const %(type_name)s& %(name)s() const {
   return %(setter_name)s(::thryft::Optional< %(type_qname)s >(%(name)s));
 }""" % locals()
         return setter
+
+    def cpp_to_string(self, depth, oss):
+        if self.required:
+            return self.type.cpp_to_string(depth=depth, oss=oss, value=self.cpp_member_name())
+        else:
+            member_name = self.cpp_member_name()
+            to_string = indent(' ' * 2, self.type.cpp_to_string(depth=depth, oss=oss, value="(*%s)" % member_name))
+            return """\
+if (%(member_name)s.present()) {
+%(to_string)s
+} else {
+  oss << "";
+}""" % locals()
 
     def cpp_setter_name(self):
         return 'set_' + self.cpp_name()
