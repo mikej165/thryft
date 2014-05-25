@@ -32,12 +32,29 @@
 
 from thryft.generator.exception_type import ExceptionType
 from thryft.generators.cpp._cpp_compound_type import _CppCompoundType
+from yutil import indent, lpad
 
 
 class CppExceptionType(ExceptionType, _CppCompoundType):
     def __init__(self, **kwds):
         ExceptionType.__init__(self, **kwds)
         _CppCompoundType.__init__(self)
+        for field in self.fields:
+            assert field.name != 'what'
+
+    def _cpp_constructor_body(self):
+        fields_to_string = \
+            lpad("\n", indent(' ' * 2, "\n".join(
+                "oss << \"%s%s=\";\n" % (', ' if field_i > 0 else '', field.cpp_name()) + \
+                    field.cpp_to_string(depth=0, oss='oss')
+                for field_i, field in enumerate(self.fields)
+            )))
+        name = self.cpp_name()
+        return """\
+::std::ostringstream oss;
+oss << "%(name)s(";%(fields_to_string)s
+oss << ")";
+what_ = oss.str();""" % locals()
 
     def _cpp_extends(self):
         return 'ExceptionT'
@@ -45,8 +62,32 @@ class CppExceptionType(ExceptionType, _CppCompoundType):
     def cpp_global_operators(self):
         return []
 
+    def _cpp_method_what(self):
+        qname = self.cpp_qname()
+        return {'what': """\
+virtual const char* what() const {
+  return what_.c_str();
+}""" % locals()}
+
+    def _cpp_member_declarations(self):
+        member_declarations = _CppCompoundType._cpp_member_declarations(self)
+        member_declarations.append('::std::string what_;')
+        return member_declarations
+
+    def _cpp_methods_map(self):
+        methods = _CppCompoundType._cpp_methods_map(self)
+        methods.update(self._cpp_method_what())
+        return methods
+        
+    def _cpp_operator_cast_to_string(self):
+        return {'operator ::std::string()': """\
+operator ::std::string() const {        
+  return what_;
+}"""}        
+        
     def _cpp_template_parameters(self):
         return 'template <class ExceptionT = ::thryft::Exception>'
 
     def __repr__(self):
         return _CppCompoundType.__repr__(self)
+

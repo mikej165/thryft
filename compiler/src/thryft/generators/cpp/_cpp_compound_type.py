@@ -35,12 +35,16 @@ from yutil import lpad, indent, pad, rpad
 
 
 class _CppCompoundType(_CppType):
+    def _cpp_constructor_body(self):
+        return ''
+    
     def _cpp_constructor_default(self):
+        body = lpad("\n", indent(' ' * 2, self._cpp_constructor_body()))
         name = self.cpp_name()
 
         if len(self.fields) == 0:
             return """\
-%(name)s() {
+%(name)s() {%(body)s
 }""" % locals()
 
         initializers = []
@@ -50,18 +54,19 @@ class _CppCompoundType(_CppType):
                 initializers.append(default_initializer)
         initializers = lpad("\n  : ", ', '.join(initializers))
         return """\
-%(name)s()%(initializers)s {
+%(name)s()%(initializers)s {%(body)s
 }""" % locals()
 
     def _cpp_constructor_protocol(self):
+        body = lpad("\n", indent(' ' * 2, self._cpp_constructor_body()))
         name = self.cpp_name()
         return """\
 %(name)s(::thryft::protocol::InputProtocol& iprot) {
-  read(iprot);
+  read(iprot);%(body)s
 }
 
 %(name)s(::thryft::protocol::InputProtocol& iprot, ::thryft::protocol::Type as_type) {
-  read(iprot, as_type);
+  read(iprot, as_type);%(body)s
 }""" % locals()
 
     def _cpp_constructor_required(self):
@@ -71,6 +76,7 @@ class _CppCompoundType(_CppType):
             # All fields are optional or all fields are required
             return None  # Will be covered by total constructor
 
+        body = lpad("\n", indent(' ' * 2, self._cpp_constructor_body()))
         initializers = []
         name = self.cpp_name()
         parameters = []
@@ -86,13 +92,14 @@ class _CppCompoundType(_CppType):
             lpad("\n  : ", ', '.join(initializers))
         parameters = ", ".join(parameters)
         return """\
-%(name)s(%(parameters)s)%(initializers)s {
+%(name)s(%(parameters)s)%(initializers)s {%(body)s
 }""" % locals()
 
     def _cpp_constructor_total(self):
         if len(self.fields) == 0:
             return None  # Will be covered by default constructor
 
+        body = lpad("\n", indent(' ' * 2, self._cpp_constructor_body()))
         initializers = \
             lpad("\n  : ", ', '.join(
                 (field.cpp_initializer()
@@ -102,7 +109,7 @@ class _CppCompoundType(_CppType):
         parameters = ', '.join(field.cpp_parameter()
                                 for field in self.fields)
         return """\
-%(name)s(%(parameters)s)%(initializers)s {
+%(name)s(%(parameters)s)%(initializers)s {%(body)s
 }""" % locals()
 
     def _cpp_constructors(self):
