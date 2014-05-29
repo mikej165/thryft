@@ -34,8 +34,6 @@ from thryft.generators.java import java_generator
 from thryft.generators.java.java_document import JavaDocument
 from thryft.generators.java.java_function import JavaFunction
 from thryft.generators.java.java_service import JavaService
-from yutil import camelize
-import os.path
 
 
 class _ServletJavaGenerator(java_generator.JavaGenerator):
@@ -146,5 +144,15 @@ if (%(variable_name_prefix)shttpServletRequestContentEncoding != null) {
     }
 }
 
-final String %(variable_name_prefix)shttpServletRequestBody = org.apache.commons.io.IOUtils.toString(%(variable_name_prefix)shttpServletRequestInputStream);
+final String %(variable_name_prefix)shttpServletRequestBody;
+{
+    final java.io.InputStreamReader %(variable_name_prefix)shttpServletRequestBodyReader = new java.io.InputStreamReader(%(variable_name_prefix)shttpServletRequestInputStream);
+    final java.io.StringWriter %(variable_name_prefix)shttpServletRequestBodyWriter = new java.io.StringWriter();
+    final char[] %(variable_name_prefix)shttpServletRequestBodyBuffer = new char[4096];
+    int %(variable_name_prefix)shttpServletRequestBodyBufferReadRet = 0;
+    while ((%(variable_name_prefix)shttpServletRequestBodyBufferReadRet = %(variable_name_prefix)shttpServletRequestBodyReader.read(%(variable_name_prefix)shttpServletRequestBodyBuffer)) != -1) {
+        %(variable_name_prefix)shttpServletRequestBodyWriter.write(%(variable_name_prefix)shttpServletRequestBodyBuffer, 0, %(variable_name_prefix)shttpServletRequestBodyBufferReadRet);
+    }
+    %(variable_name_prefix)shttpServletRequestBody = %(variable_name_prefix)shttpServletRequestBodyWriter.toString();
+}
 """ % locals()
