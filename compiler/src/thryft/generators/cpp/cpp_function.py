@@ -32,9 +32,8 @@
 
 from thryft.generator.function import Function
 from thryft.generators.cpp._cpp_named_construct import _CppNamedConstruct
-from thryft.generators.cpp.cpp_field import CppField
 from thryft.generators.cpp.cpp_struct_type import CppStructType
-from yutil import lower_camelize, lpad, indent, upper_camelize
+from yutil import indent, upper_camelize
 
 
 class CppFunction(Function, _CppNamedConstruct):
@@ -159,15 +158,29 @@ virtual void handle(const %(name)s& request) {
         name = self.cpp_name()
 
         parameters = \
-            ', '.join(parameter.cpp_parameter() for parameter in self.parameters)
+            ', '.join(parameter.cpp_parameter()
+                      for parameter in self.parameters)
 
         if self.return_field is not None:
             return_type_name = self.return_field.type.cpp_qname()
         else:
             return_type_name = 'void'
 
-        return """\
+        declaration = """\
 %(return_type_name)s %(name)s(%(parameters)s)""" % locals()
+    
+        if len(declaration) < 80:
+            return declaration
+        
+        parameters = indent(' ' * 2,
+            ',\n'.join(parameter.cpp_parameter()
+                      for parameter in self.parameters))
+            
+        return """\
+%(return_type_name)s
+%(name)s(
+%(parameters)s
+)""" % locals()
 
     def cpp_includes_definition(self):
         includes = []
