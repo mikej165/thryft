@@ -137,17 +137,7 @@ virtual ~%(name)s() {
         return '::thryft::Struct'
 
     def cpp_global_operators(self):
-        qname = self.cpp_qname()
-        return ["""\
-static inline
-::std::ostream&
-operator<<(
-  ::std::ostream& os,
-  const %(qname)s& value
-) {
-  os << static_cast<::std::string>(value);
-  return os;
-}""" % locals()]
+        return []
 
     def cpp_includes_definition(self):
         includes = ['<thryft.hpp>']
