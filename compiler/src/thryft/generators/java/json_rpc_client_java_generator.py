@@ -30,10 +30,8 @@
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
 
-import os.path
-
 from thryft.generators.java import java_generator
-from yutil import indent, upper_camelize
+from yutil import indent, lower_camelize
 
 
 class JsonRpcClientJavaGenerator(java_generator.JavaGenerator):
@@ -124,14 +122,15 @@ public final %(return_type_qname)s %(java_name)s(%(parameters)s) {
 
         def _java_constructor(self):
             name = self.java_name()
+            name_lower_camelized = lower_camelize(name)
             return """\
-public %(name)s(final java.net.URL jsonRpcUrl) {
+@com.google.inject.Inject
+public %(name)s(@com.google.inject.name.Named("%(name_lower_camelized)sUrl") final java.net.URL jsonRpcUrl) {
     this.jsonRpcUrl = com.google.common.base.Preconditions.checkNotNull(jsonRpcUrl);
 }
 """ % locals()
 
         def _java_member_declarations(self):
-            name = self.java_name()
             return [
                 "private final java.net.URL jsonRpcUrl;",
                 # "private final static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(%(name)s.class);" % locals(),
@@ -157,6 +156,6 @@ public %(name)s(final java.net.URL jsonRpcUrl) {
             sections = "\n\n".join(indent(' ' * 4, sections))
 
             return """\
-public final class %(name)s implements %(service_qname)s {
+public class %(name)s implements %(service_qname)s {
 %(sections)s
 }""" % locals()
