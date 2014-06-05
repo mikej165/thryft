@@ -5,10 +5,7 @@ namespace thryft {
 namespace protocol {
 enum class Type {
   STOP       = 0,
-#ifdef VOID
-#undef VOID
-#endif
-  VOID       = 1,
+  VOID_       = 1,
   BOOL       = 2,
   BYTE       = 3,
   I08        = 3,

@@ -37,7 +37,7 @@ from yutil import lpad, indent, pad, rpad
 class _CppCompoundType(_CppType):
     def _cpp_constructor_body(self):
         return ''
-    
+
     def _cpp_constructor_default(self):
         body = lpad("\n", indent(' ' * 2, self._cpp_constructor_body()))
         name = self.cpp_name()
@@ -237,7 +237,7 @@ void read(::thryft::protocol::InputProtocol& iprot, ::thryft::protocol::Type as_
                      for field in self.fields)
 
     def _cpp_method_write(self):
-        case_ttype_void = 'case ::thryft::protocol::Type::VOID:'
+        case_ttype_void = 'case ::thryft::protocol::Type::VOID_:'
         if len(self.fields) == 1:
             field = self.fields[0]
             from thryft.generators.cpp._cpp_container_type import _CppContainerType
@@ -276,7 +276,7 @@ void write(::thryft::protocol::OutputProtocol& oprot, ::thryft::protocol::Type a
   switch (as_type) {
   %(case_ttype_void)s
   case ::thryft::protocol::Type::LIST:
-    oprot.write_list_begin(::thryft::protocol::Type::VOID, %(field_count)u);%(field_value_write_protocols)s
+    oprot.write_list_begin(::thryft::protocol::Type::VOID_, %(field_count)u);%(field_value_write_protocols)s
     oprot.write_list_end();
     break;
 
@@ -334,7 +334,7 @@ if (!(%s() == other.%s())) {
 bool operator==(const %(name)s& other) const {%(field_comparisons)s
   return true;
 }""" % locals()}
-        
+
     def _cpp_operators(self):
         operators = {}
         operators.update(self._cpp_operator_cast_to_string())

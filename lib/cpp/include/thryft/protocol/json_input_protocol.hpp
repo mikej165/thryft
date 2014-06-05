@@ -92,7 +92,7 @@ class JsonInputProtocol : public StackedInputProtocol {
           if (!child_node.IsArray()) {
             throw JsonInputProtocolException();
           }
-          out_element_type = Type::VOID;
+          out_element_type = Type::VOID_;
           out_size = child_node.Size();
           protocol_stack_.push(reader_protocol_factory_.create_json_array_input_protocol(
                                  child_node, protocol_stack_));
@@ -104,8 +104,8 @@ class JsonInputProtocol : public StackedInputProtocol {
           if (!child_node.IsObject()) {
             throw JsonInputProtocolException();
           }
-          out_key_type = Type::VOID;
-          out_value_type = Type::VOID;
+          out_key_type = Type::VOID_;
+          out_value_type = Type::VOID_;
           out_size = 0;
           for (::rapidjson::Value::ConstMemberIterator i = child_node.MemberBegin();
                i != child_node.MemberEnd(); ++i) {
