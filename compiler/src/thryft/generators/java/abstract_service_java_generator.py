@@ -41,6 +41,7 @@ class AbstractServiceJavaGenerator(java_generator.JavaGenerator):
         java_generator.JavaGenerator.__init__(self, **kwds)
         self._include_current_user = include_current_user
 
+    class Document(java_generator.JavaGenerator.Document):
         def java_package(self):
             try:
                 return self.namespace_by_scope(('abstract_service_java', 'java')).name
