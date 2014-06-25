@@ -61,6 +61,9 @@ class CppDateTime(_DateTime, CppNativeType):
 
 
 class JavaDateTime(_DateTime, JavaNativeType):
+    def java_default_value(self):
+        return 'null'
+
     def java_qname(self, boxed=True):
         return 'java.util.Date'
 
