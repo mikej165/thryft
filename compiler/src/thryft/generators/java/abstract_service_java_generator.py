@@ -41,6 +41,12 @@ class AbstractServiceJavaGenerator(java_generator.JavaGenerator):
         java_generator.JavaGenerator.__init__(self, **kwds)
         self._include_current_user = include_current_user
 
+        def java_package(self):
+            try:
+                return self.namespace_by_scope(('abstract_service_java', 'java')).name
+            except KeyError:
+                return None
+
     class Function(JavaFunction):
         def __repr__(self):
             annotations = []
