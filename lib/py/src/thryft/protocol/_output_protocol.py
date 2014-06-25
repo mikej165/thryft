@@ -1,4 +1,4 @@
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 # Copyright (c) 2013, Minor Gordon
 # All rights reserved.
 #
@@ -28,7 +28,10 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
 # OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 # OF SUCH DAMAGE.
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
+
+
+from time import mktime
 
 
 class _OutputProtocol(object):
@@ -83,6 +86,14 @@ class _OutputProtocol(object):
             object_.write(self)
         else:
             raise TypeError(type(object_))
+        return self
+
+    def writeSetBegin(self, *args, **kwds):
+        self.writeListBegin()
+        return self
+
+    def writeSetEnd(self):
+        self.writeListEnd()
         return self
 
     def writeUrl(self, url):

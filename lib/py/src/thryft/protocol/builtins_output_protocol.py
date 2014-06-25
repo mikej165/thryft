@@ -1,4 +1,4 @@
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 # Copyright (c) 2013, Minor Gordon
 # All rights reserved.
 #
@@ -28,147 +28,132 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
 # OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 # OF SUCH DAMAGE.
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 
-from decimal import Decimal
-from thryft.protocol._output_protocol import _OutputProtocol
+import thryft.protocol._output_protocol
+from thryft.protocol._stacked_output_protocol import _StackedOutputProtocol
 
 
-class BuiltinsOutputProtocol(_OutputProtocol):
-    class _Scope(object):
-        def __init__(self, builtin_object, name_stack):
-            self._builtin_object = builtin_object
-            self._name_stack = name_stack
+class BuiltinsOutputProtocol(_StackedOutputProtocol):
+    class _OutputProtocol(thryft.protocol._output_protocol._OutputProtocol):
+        def __init__(self, output_protocol_stack):
+            thryft.protocol._output_protocol._OutputProtocol.__init__(self)
+            self.__output_protocol_stack = output_protocol_stack
 
-        @property
-        def builtin_object(self):
-            return self._builtin_object
-
-        def writeFieldBegin(self, name, *args, **kwds):
-            self._name_stack.append(name)
-            return self
-
-        def writeFieldEnd(self):
-            self._name_stack.pop(-1)
-            return self
-
-        def writeValue(self, value):
+        def writeBool(self, value):
             self._writeValue(value)
+            return self
+
+        def writeFieldStop(self):
+            return self
+
+        def writeI32(self, value):
+            self._writeValue(value)
+            return self
+
+        def writeI64(self, value):
+            self._writeValue(value)
+            return self
+
+        def writeListBegin(self, *args, **kwds):
+            list_ = []
+            self._writeValue(list_)
+            self.__output_protocol_stack.append(BuiltinsOutputProtocol._ListOutputProtocol(list_, self.__output_protocol_stack))
+            return self
+
+        def writeListEnd(self):
+            return self
+
+        def writeMapBegin(self, *args, **kwds):
+            map_ = {}
+            self._writeValue(map_)
+            self.__output_protocol_stack.append(BuiltinsOutputProtocol._MapOutputProtocol(map_, self.__output_protocol_stack))
+            return self
+
+        def writeMapEnd(self):
+            return self
+
+        def writeNull(self):
+            self._writeValue(None)
+            return self
+
+        def writeString(self, value):
+            self._writeValue(value)
+            return self
+
+        def writeStructBegin(self, *args, **kwds):
+            struct = {}
+            self._writeValue(struct)
+            self.__output_protocol_stack.append(BuiltinsOutputProtocol._StructOutputProtocol(struct, self.__output_protocol_stack))
+            return self
+
+        def writeStructEnd(self):
+            return self
 
         def _writeValue(self, value):
             raise NotImplementedError
 
-    class _ListScope(_Scope):
-        def __init__(self, list_):
+    class _ListOutputProtocol(_OutputProtocol):
+        def __init__(self, list_, output_protocol_stack):
             if not isinstance(list_, (list, tuple)):
                 raise TypeError(type(list_))
-            BuiltinsOutputProtocol._Scope.__init__(self, list_, list(reversed(xrange(len(list_)))))
+            BuiltinsOutputProtocol._OutputProtocol.__init__(self, output_protocol_stack)
+            self.__list = list_
 
         def _writeValue(self, value):
-            self.builtin_object.append(value)
+            self.__list.append(value)
 
-    class _MapScope(_Scope):
-        def __init__(self, dict_):
+    class _MapOutputProtocol(_OutputProtocol):
+        def __init__(self, dict_, output_protocol_stack):
             if not isinstance(dict_, dict):
                 raise TypeError(type(dict_))
-            BuiltinsOutputProtocol._Scope.__init__(self, dict_, list(reversed(sorted(dict_.keys()))))
-            self.__next_value_is_key = True
+            BuiltinsOutputProtocol._OutputProtocol.__init__(self, output_protocol_stack)
+            self.__dict = dict_
+            self.__next_key = None
 
         def _writeValue(self, value):
-            if self.__next_value_is_key:
-                self.__next_value_is_key = False
-                self._name_stack.append(value)
+            if self.__next_key is None:
+                self.__next_key = value
             else:
-                self.__next_value_is_key = True
-                self.builtin_object[self._name_stack.pop(-1)] = value
+                self.__dict[self.__next_key] = value
+                self.__next_key = None
+            return self
 
-    class _StructScope(_MapScope):
+    class _RootOutputProtocol(_OutputProtocol):
+        def __init__(self, *args, **kwds):
+            BuiltinsOutputProtocol._OutputProtocol.__init__(self, *args, **kwds)
+            self.__value = None
+
+        @property
+        def value(self):
+            return self.__value
+
         def _writeValue(self, value):
-            field_name = self._name_stack[-1]
-            self.builtin_object[field_name] = value
+            self.__value = value
+            return self
+
+    class _StructOutputProtocol(_MapOutputProtocol):
+        def __init__(self, dict_, output_protocol_stack):
+            if not isinstance(dict_, dict):
+                raise TypeError(type(dict_))
+            BuiltinsOutputProtocol._OutputProtocol.__init__(self, output_protocol_stack)
+            self.__dict = dict_
+            self.__next_field_name = None
+
+        def writeFieldBegin(self, name, *args, **kwds):
+            self.__next_field_name = name
+            return self
+
+        def writeFieldEnd(self):
+            self.__next_field_name = None
+            return self
+
+        def _writeValue(self, value):
+            self.__dict[self.__next_field_name] = value
+            return self
 
     def __init__(self, root_builtin_object=None):
-        _OutputProtocol.__init__(self)
-        self._scope_stack = []
+        _StackedOutputProtocol.__init__(self)
+        self._output_protocol_stack.append(BuiltinsOutputProtocol._RootOutputProtocol(self._output_protocol_stack))
         if root_builtin_object is not None:
-            if isinstance(root_builtin_object, dict):
-                self._scope_stack.append(self._StructScope(root_builtin_object))
-            elif isinstance(root_builtin_object, (list, tuple)):
-                self._scope_stack.append(self._ListScope(root_builtin_object))
-            else:
-                raise TypeError(type(root_builtin_object))
-
-    def writeBool(self, value):
-        self._scope_stack[-1].writeValue(value)
-        return self
-
-    def writeFieldBegin(self, name, *args, **kwds):
-        self._scope_stack[-1].writeFieldBegin(name, *args, **kwds)
-        return self
-
-    def writeFieldEnd(self):
-        self._scope_stack[-1].writeFieldEnd()
-        return self
-
-    def writeFieldStop(self):
-        return self
-
-    def writeI32(self, value):
-        self._scope_stack[-1].writeValue(value)
-        return self
-
-    def writeI64(self, value):
-        self._scope_stack[-1].writeValue(value)
-        return self
-
-    def writeListBegin(self, *args, **kwds):
-        list_ = []
-        if len(self._scope_stack) > 0:
-            self._scope_stack[-1].writeValue(list_)
-        self._scope_stack.append(self._ListScope(list_))
-        return self
-
-    def writeListEnd(self):
-        if len(self._scope_stack) > 1:
-            self._scope_stack.pop(-1)
-        return self
-
-    def writeMapBegin(self, *args, **kwds):
-        struct = {}
-        if len(self._scope_stack) > 0:
-            self._scope_stack[-1].writeValue(struct)
-        self._scope_stack.append(self._MapScope(struct))
-        return self
-
-    def writeMapEnd(self):
-        if len(self._scope_stack) > 1:
-            self._scope_stack.pop(-1)
-        return self
-
-    def writeNull(self):
-        self._scope_stack[-1].writeValue(None)
-        return self
-
-    def writeSetBegin(self, *args, **kwds):
-        self.writeListBegin()
-        return self
-
-    def writeSetEnd(self):
-        self.writeListEnd()
-        return self
-
-    def writeString(self, value):
-        self._scope_stack[-1].writeValue(value)
-        return self
-
-    def writeStructBegin(self, *args, **kwds):
-        struct = {}
-        if len(self._scope_stack) > 0:
-            self._scope_stack[-1].writeValue(struct)
-        self._scope_stack.append(self._StructScope(struct))
-        return self
-
-    def writeStructEnd(self):
-        if len(self._scope_stack) > 1:
-            self._scope_stack.pop(-1)
-        return self
+            self.writeMixed(root_builtin_object)
