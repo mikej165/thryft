@@ -31,10 +31,10 @@
 #-------------------------------------------------------------------------------
 
 from decimal import Decimal
-from thryft.protocol._input_protocol import _InputProtocol
+from thryft.protocol._abstract_input_protocol import _AbstractInputProtocol
 
 
-class BuiltinsInputProtocol(_InputProtocol):
+class BuiltinsInputProtocol(_AbstractInputProtocol):
     class _Scope(object):
         def __init__(self, builtin_object, name_stack):
             self._builtin_object = builtin_object
@@ -91,7 +91,7 @@ class BuiltinsInputProtocol(_InputProtocol):
             return self.builtin_object[self._name_stack[-1]]
 
     def __init__(self, root_builtin_object=None):
-        _InputProtocol.__init__(self)
+        _AbstractInputProtocol.__init__(self)
         self._scope_stack = []
         if root_builtin_object is not None:
             if isinstance(root_builtin_object, dict):

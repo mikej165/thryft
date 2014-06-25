@@ -9,6 +9,18 @@ class _StackedOutputProtocol(_OutputProtocol):
     def writeBool(self, value):
         return self._output_protocol_stack[-1].writeBool(value)
 
+    def writeByte(self, value):
+        return self._output_protocol_stack[-1].writeByte(value)
+
+    def writeDateTime(self, value):
+        return self._output_protocol_stack[-1].writeDateTime(value)
+
+    def writeDecimal(self, value):
+        return self._output_protocol_stack[-1].writeDecimal(value)
+
+    def writeEmailAddress(self, value):
+        return self._output_protocol_stack[-1].writeEmailAddress(value)
+
     def writeFieldBegin(self, name, *args, **kwds):
         return self._output_protocol_stack[-1].writeFieldBegin(name, *args, **kwds)
 
@@ -17,6 +29,9 @@ class _StackedOutputProtocol(_OutputProtocol):
 
     def writeFieldStop(self):
         return self._output_protocol_stack[-1].writeFieldStop()
+
+    def writeI16(self, value):
+        return self._output_protocol_stack[-1].writeI16(value)
 
     def writeI32(self, value):
         return self._output_protocol_stack[-1].writeI32(value)
@@ -38,6 +53,9 @@ class _StackedOutputProtocol(_OutputProtocol):
         self._output_protocol_stack.pop(-1)
         return self._output_protocol_stack[-1].writeListEnd()
 
+    def writeMixed(self, value):
+        return self._output_protocol_stack[-1].writeMixed(value)
+
     def writeNull(self):
         return self._output_protocol_stack[-1].writeNull()
 
@@ -57,3 +75,6 @@ class _StackedOutputProtocol(_OutputProtocol):
     def writeStructEnd(self):
         self._output_protocol_stack.pop(-1)
         return self._output_protocol_stack[-1].writeStructEnd()
+
+    def writeUrl(self, value):
+        return self._output_protocol_stack[-1].writeUrl(value)

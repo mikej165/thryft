@@ -30,6 +30,26 @@
 # OF SUCH DAMAGE.
 #------------------------------------------------------------------------------
 
+from decimal import Decimal
+from datetime import datetime
+from thryft.protocol._input_protocol import _InputProtocol
 
-class _InputProtocol(object):
-    pass
+
+class _AbstractInputProtocol(_InputProtocol):
+    def readByte(self):
+        return self.readI16()
+
+    def readDateTime(self):
+        return datetime.fromtimestamp(self.readI64() / 1000.0)
+
+    def readDecimal(self):
+        return Decimal(self.readString())
+
+    def readEmailAddress(self):
+        return self.readString()
+
+    def readI16(self):
+        return self.readI32()
+
+    def readUrl(self):
+        return self.readString()

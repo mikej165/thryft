@@ -30,12 +30,12 @@
 # OF SUCH DAMAGE.
 #------------------------------------------------------------------------------
 
-import thryft.protocol._output_protocol
+import thryft.protocol._abstract_output_protocol
 from thryft.protocol._stacked_output_protocol import _StackedOutputProtocol
 
 
 class BuiltinsOutputProtocol(_StackedOutputProtocol):
-    class _OutputProtocol(thryft.protocol._output_protocol._OutputProtocol):
+    class _OutputProtocol(thryft.protocol._abstract_output_protocol._AbstractOutputProtocol):
         def __init__(self, output_protocol_stack):
             thryft.protocol._output_protocol._OutputProtocol.__init__(self)
             self.__output_protocol_stack = output_protocol_stack
