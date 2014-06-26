@@ -88,7 +88,7 @@ class RestServletJavaGenerator(_servlet_java_generator._ServletJavaGenerator):
                     read_http_servlet_request_body = self._java_read_http_servlet_request_body(variable_name_prefix='__')
                     read_request.append("""\
 %(read_http_servlet_request_body)s
-final org.thryft.protocol.TProtocol __restRequestProtocol = new org.thryft.protocol.JsonProtocol(new java.io.StringReader(__httpServletRequestBody));
+final org.thryft.protocol.InputProtocol __restRequestProtocol = new org.thryft.protocol.JacksonJsonInputProtocol(new java.io.StringReader(__httpServletRequestBody));
 """ % locals())
                 else:
                     if path_parameter is not None:
@@ -111,7 +111,7 @@ java.util.Map<String, String> __restRequestParameterStringMap = new java.util.Li
 for (final java.util.Map.Entry<String, String[]> __httpServletRequestParameter : ((java.util.Map<String, String[]>)__httpServletRequest.getParameterMap()).entrySet()) {
     __restRequestParameterStringMap.put(__httpServletRequestParameter.getKey(), __httpServletRequestParameter.getValue()[0]);
 }
-final org.thryft.protocol.TProtocol __restRequestProtocol = new org.thryft.protocol.StringMapProtocol(__restRequestParameterStringMap);
+final org.thryft.protocol.InputProtocol __restRequestProtocol = new org.thryft.protocol.StringMapInputProtocol(__restRequestParameterStringMap);
 """ % locals())
                 if request_type_name is not None:
                     variable_assignments = []
@@ -132,7 +132,7 @@ try {
     logger.debug("error deserializing service request: ", e);
     __httpServletResponse.sendError(400);
     return;
-} catch (final java.io.IOException e) {
+} catch (final org.thryft.protocol.InputProtocolException e) {
     logger.debug("error deserializing service request: ", e);
     __httpServletResponse.sendError(400);
     return;
@@ -153,15 +153,15 @@ try {
                 catches = ' '.join(["""\
 catch (final %s e) {
     final java.io.StringWriter __httpServletResponseBodyWriter = new java.io.StringWriter();
-    final org.thryft.protocol.JsonProtocol __oprot = new org.thryft.protocol.JsonProtocol(__httpServletResponseBodyWriter);
+    final org.thryft.protocol.OutputProtocol __oprot = new org.thryft.protocol.JacksonJsonOutputProtocol(__httpServletResponseBodyWriter);
     try {
         e.write(__oprot);
-    } catch (final java.io.IOException e1) {
+        __oprot.flush();
+    } catch (final org.thryft.protocol.OutputProtocolException e1) {
         logger.error("error serializing service error response: ", e1);
         __httpServletResponse.sendError(500);
         return;
     }
-    __oprot.flush();
     final String __httpServletResponseBody = __httpServletResponseBodyWriter.toString();
     __httpServletResponse.getWriter().write(__httpServletResponseBody);
     __httpServletResponse.setHeader("Content-Type", "application/json");
@@ -199,15 +199,15 @@ try {
                 write_http_servlet_response_body = indent(' ' * 4, self._java_write_http_servlet_response_body(variable_name_prefix='__'))
                 write_response = """\
     final java.io.StringWriter __httpServletResponseBodyWriter = new java.io.StringWriter();
-    final org.thryft.protocol.JsonProtocol oprot = new org.thryft.protocol.JsonProtocol(__httpServletResponseBodyWriter);
+    final org.thryft.protocol.OutputProtocol oprot = new org.thryft.protocol.JacksonJsonOutputProtocol(__httpServletResponseBodyWriter);
     try {
 %(return_write)s
-    } catch (final java.io.IOException e) {
+        oprot.flush();
+    } catch (final org.thryft.protocol.OutputProtocolException e) {
         logger.error("error serializing service response: ", e);
         __httpServletResponse.sendError(500);
         return;
     }
-    oprot.flush();
     String __httpServletResponseBody = __httpServletResponseBodyWriter.toString();
 
     __httpServletResponse.setStatus(200);

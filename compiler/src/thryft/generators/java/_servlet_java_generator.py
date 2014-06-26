@@ -44,7 +44,7 @@ class _ServletJavaGenerator(java_generator.JavaGenerator):
 
         def java_package(self):
             try:
-                return self.namespace_by_scope((self.__servlet_type + '_servlet_java', 'java')).name
+                return self.namespace_by_scope((self.__servlet_type + '_servlet_java', 'servlet_java', 'java')).name
             except KeyError:
                 return None
 
