@@ -58,7 +58,9 @@ class JavaOutputProtocol(_StackedOutputProtocol):
             return self
 
         def writeString(self, value):
-            self._writeValue("\"" + value.encode('string-escape').replace('"', '\\"') + "\"")
+            ascii_value = value.encode('ascii', 'ignore')
+            escaped_value = ascii_value.encode('string-escape').replace('"', '\\"')
+            self._writeValue("\"" + escaped_value + "\"")
             return self
 
         def writeStructBegin(self, name):
