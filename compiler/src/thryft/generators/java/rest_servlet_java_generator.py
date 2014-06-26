@@ -32,6 +32,7 @@
 
 from thryft.generator._base_type import _BaseType
 from thryft.generator.enum_type import EnumType
+from thryft.generator.typedef import Typedef
 from thryft.generators.java import _servlet_java_generator
 from thryft.generators.java._java_base_type import _JavaBaseType
 from thryft.generators.java.java_bool_type import JavaBoolType
@@ -248,13 +249,15 @@ try {
                 return None
             if self.java_rest_request_method() not in ('GET', 'DELETE', 'HEAD'):
                 return None
-            if parameters[0].required and \
-               (isinstance(parameters[0].type, _BaseType) or isinstance(parameters[0].type, EnumType)) and \
-               (len(parameters) == 1 or \
-                len([parameter for parameter in parameters[1:] if not parameter.required]) == 0):
-                return parameters[0]
-            else:
-                return None
+            if parameters[0].required:
+                if len(parameters) == 1 or \
+                   len([parameter for parameter in parameters[1:] if not parameter.required]) == 0:
+                    parameter0_type = parameters[0].type
+                    if isinstance(parameter0_type, Typedef):
+                        parameter0_type = parameter0_type.type
+                    if isinstance(parameter0_type, _BaseType) or isinstance(parameter0_type, EnumType):
+                        return parameters[0]
+            return None
 
         def java_rest_request_method(self):
             request_method = self.name.split('_', 1)[0].upper()
