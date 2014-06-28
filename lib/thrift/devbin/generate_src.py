@@ -64,10 +64,13 @@ class Main(thryft.main.Main):
               (
                   os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'thrift', 'test'),
                   {
-                      'cpp': os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'cpp', 'test'),
-                      'java': os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'java', 'protocol', 'src', 'test', 'java'),
-                      'js': os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'js', 'test'),
-                      'py': os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'py', 'test'),
+                      'cpp': (os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'cpp', 'test'),),
+                      'java': (
+                          os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'java', 'protocol', 'src', 'test', 'java'),
+                          os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'java', 'store', 'src', 'test', 'java'),
+                       ),
+                      'js': (os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'js', 'test'),),
+                      'py': (os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'py', 'test'),),
                   },
              ),
         ):
@@ -94,7 +97,13 @@ class Main(thryft.main.Main):
                         gen_names = gen.keys()
                     for gen_name in gen_names:
                         for generator in generators[gen_name]:
-                            yield self._CompileTask(generator=generator, out=out_dir_paths[gen_name], **compile_task_kwds)
+                            for out_dir_path in out_dir_paths[gen_name]:
+                                yield \
+                                    self._CompileTask(
+                                        generator=generator,
+                                        out=out_dir_path,
+                                        **compile_task_kwds
+                                    )
 
 
 assert __name__ == '__main__'
