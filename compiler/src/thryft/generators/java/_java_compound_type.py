@@ -89,11 +89,17 @@ public %(name)s build() {
         def _java_method__build(self):
             all_field_names = \
                 ', '.join(field.java_name() for field in self.fields)
+            checks = \
+                lpad("\n", indent(' ' * 4, "\n".join(
+                    "com.google.common.base.Preconditions.checkNotNull(%s);" % field.java_name()
+                    for field in self.fields
+                    if field.required
+                )))
             field_parameters = \
                 ', '.join(field.java_parameter(final=True) for field in self.fields)
             name = self.java_name()
             return {'_build': """\
-protected %(name)s _build(%(field_parameters)s) {
+protected %(name)s _build(%(field_parameters)s) {%(checks)s
     return new %(name)s(%(all_field_names)s);
 }""" % locals()}
 
