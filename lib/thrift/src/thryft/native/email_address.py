@@ -64,6 +64,9 @@ class CppEmailAddress(_EmailAddress, CppNativeType):
 
 
 class JavaEmailAddress(_EmailAddress, JavaNativeType):
+    def java_default_value(self):
+        return 'null'
+
     def java_qname(self, boxed=False):
         return 'org.thryft.native_.EmailAddress'
 
