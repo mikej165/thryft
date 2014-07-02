@@ -117,31 +117,3 @@ class Document(_NamedConstruct):
             self._logger.info('wrote ' + out_file_path)
 
         return out_file_path
-
-#         if language is None:
-#             assert self.__class__.__name__.endswith('Document')
-#             class_name_decamelized = decamelize(self.__class__.__name__)
-#             class_name_split = class_name_decamelized.split('_')
-#             if len(class_name_split) > 1:
-#                 language = class_name_split[-2]
-#             else:
-#                 raise ValueError('unknown language: ' + self.__class__.__name__)
-#
-#         if file_ext is None:
-#             file_ext = '.' + language
-#
-#         if namespace_scope is None:
-#             namespace_scope = language
-#
-#         namespaces_by_scope = self.namespaces_by_scope
-#         for scope in (namespace_scope, '*'):
-#             namespace = namespaces_by_scope.get(scope)
-#             if namespace is not None:
-#                 out_dir_path = \
-#                     os.path.join(
-#                         out_dir_path,
-#                         namespace.name.replace('.', os.path.sep)
-#                     )
-#                 break
-#
-#         return self._save(os.path.join(out_dir_path, self.name + file_ext))
