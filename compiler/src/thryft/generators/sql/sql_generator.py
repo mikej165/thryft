@@ -24,4 +24,3 @@ class SqlGenerator(Generator):
     from thryft.generators.sql.sql_string_type import SqlStringType as StringType  # @UnusedImport
     from thryft.generators.sql.sql_struct_type import SqlStructType as StructType  # @UnusedImport
     from thryft.generators.sql.sql_typedef import SqlTypedef as Typedef  # @UnusedImport
-

@@ -4,4 +4,3 @@ from thryft.generators.sql._sql_numeric_type import _SqlNumericType
 
 class SqlI64Type(I64Type, _SqlNumericType):
     pass
-

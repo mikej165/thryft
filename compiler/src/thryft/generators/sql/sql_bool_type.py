@@ -4,4 +4,3 @@ from thryft.generators.sql._sql_base_type import _SqlBaseType
 
 class SqlBoolType(BoolType, _SqlBaseType):
     pass
-

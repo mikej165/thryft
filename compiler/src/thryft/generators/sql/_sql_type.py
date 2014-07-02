@@ -1,6 +1,5 @@
-from thryft.generators.sql._sql_construct import _SqlConstruct
+from thryft.generators.sql._sql_named_construct import _SqlNamedConstruct
 
 
-class _SqlType(_SqlConstruct):
+class _SqlType(_SqlNamedConstruct):
     pass
-
