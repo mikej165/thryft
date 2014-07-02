@@ -33,7 +33,6 @@ from thryft.generators.%(language)s._%(language)s_type import _%(language_upper_
 
 class _%(language_upper_camelized)sBaseType(_%(language_upper_camelized)sType):
     pass
-
 """ % locals()
 
 
@@ -43,14 +42,12 @@ from thryft.generators.%(language)s._%(language)s_type import _%(language_upper_
 
 class _%(language_upper_camelized)sCompoundType(_%(language_upper_camelized)sType):
     pass
-
 """ % locals()
 
 
 files["_%(language)s_construct.py" % locals()] = """\
 class _%(language_upper_camelized)sConstruct(object):
     pass
-
 """ % locals()
 
 
@@ -60,7 +57,6 @@ from thryft.generators.%(language)s._%(language)s_type import _%(language_upper_
 
 class _%(language_upper_camelized)sContainerType(_%(language_upper_camelized)sType):
     pass
-
 """ % locals()
 
 
@@ -70,7 +66,6 @@ from thryft.generators.%(language)s._%(language)s_construct import _%(language_u
 
 class _%(language_upper_camelized)sNamedConstruct(_%(language_upper_camelized)sConstruct):
     pass
-
 """ % locals()
 
 
@@ -80,7 +75,6 @@ from thryft.generators.%(language)s._%(language)s_base_type import _%(language_u
 
 class _%(language_upper_camelized)sNumericType(_%(language_upper_camelized)sBaseType):
     pass
-
 """ % locals()
 
 
@@ -90,17 +84,15 @@ from thryft.generators.%(language)s._%(language)s_container_type import _%(langu
 
 class _%(language_upper_camelized)sSequenceType(_%(language_upper_camelized)sContainerType):
     pass
-
 """ % locals()
 
 
 files["_%(language)s_type.py" % locals()] = """\
-from thryft.generators.%(language)s._%(language)s_construct import _%(language_upper_camelized)sConstruct
+from thryft.generators.%(language)s._%(language)s_named_construct import _%(language_upper_camelized)sNamedConstruct
 
 
-class _%(language_upper_camelized)sType(_%(language_upper_camelized)sConstruct):
+class _%(language_upper_camelized)sType(_%(language_upper_camelized)sNamedConstruct):
     pass
-
 """ % locals()
 
 
@@ -110,7 +102,6 @@ from thryft.generators.%(language)s.%(language)s_string_type import %(language_u
 
 class %(language_upper_camelized)sBinaryType(%(language_upper_camelized)sStringType):
     pass
-
 """ % locals()
 
 
@@ -121,7 +112,6 @@ from thryft.generators.%(language)s._%(language)s_base_type import _%(language_u
 
 class %(language_upper_camelized)sBoolType(BoolType, _%(language_upper_camelized)sBaseType):
     pass
-
 """ % locals()
 
 
@@ -132,7 +122,6 @@ from thryft.generators.%(language)s._%(language)s_numeric_type import _%(languag
 
 class %(language_upper_camelized)sByteType(ByteType, _%(language_upper_camelized)sNumericType):
     pass
-
 """ % locals()
 
 
@@ -143,7 +132,6 @@ from thryft.generators.%(language)s._%(language)s_named_construct import _%(lang
 
 class %(language_upper_camelized)sConst(Const, _%(language_upper_camelized)sNamedConstruct):
     pass
-
 """ % locals()
 
 
@@ -154,7 +142,6 @@ from thryft.generators.%(language)s._%(language)s_named_construct import _%(lang
 
 class %(language_upper_camelized)sDocument(Document, _%(language_upper_camelized)sNamedConstruct):
     pass
-
 """ % locals()
 
 
@@ -165,7 +152,6 @@ from thryft.generators.%(language)s._%(language)s_numeric_type import _%(languag
 
 class %(language_upper_camelized)sDoubleType(DoubleType, _%(language_upper_camelized)sNumericType):
     pass
-
 """ % locals()
 
 
@@ -176,7 +162,6 @@ from thryft.generators.%(language)s._%(language)s_type import _%(language_upper_
 
 class %(language_upper_camelized)sEnumType(EnumType, _%(language_upper_camelized)sType):
     pass
-
 """ % locals()
 
 
@@ -187,7 +172,6 @@ from thryft.generators.%(language)s._%(language)s_compound_type import _%(langua
 
 class %(language_upper_camelized)sExceptionType(ExceptionType, _%(language_upper_camelized)sCompoundType):
     pass
-
 """ % locals()
 
 
@@ -198,7 +182,6 @@ from thryft.generators.%(language)s._%(language)s_named_construct import _%(lang
 
 class %(language_upper_camelized)sField(Field, _%(language_upper_camelized)sNamedConstruct):
     pass
-
 """ % locals()
 
 
@@ -209,7 +192,6 @@ from thryft.generators.%(language)s._%(language)s_named_construct import _%(lang
 
 class %(language_upper_camelized)sFunction(Function, _%(language_upper_camelized)sNamedConstruct):
     pass
-
 """ % locals()
 
 
@@ -240,7 +222,6 @@ class %(language_upper_camelized)sGenerator(Generator):
     from thryft.generators.%(language)s.%(language)s_string_type import %(language_upper_camelized)sStringType as StringType  # @UnusedImport
     from thryft.generators.%(language)s.%(language)s_struct_type import %(language_upper_camelized)sStructType as StructType  # @UnusedImport
     from thryft.generators.%(language)s.%(language)s_typedef import %(language_upper_camelized)sTypedef as Typedef  # @UnusedImport
-
 """ % locals()
 
 
@@ -251,7 +232,6 @@ from thryft.generators.%(language)s._%(language)s_numeric_type import _%(languag
 
 class %(language_upper_camelized)sI16Type(I16Type, _%(language_upper_camelized)sNumericType):
     pass
-
 """ % locals()
 
 
@@ -262,7 +242,6 @@ from thryft.generators.%(language)s._%(language)s_numeric_type import _%(languag
 
 class %(language_upper_camelized)sI32Type(I32Type, _%(language_upper_camelized)sNumericType):
     pass
-
 """ % locals()
 
 
@@ -273,7 +252,6 @@ from thryft.generators.%(language)s._%(language)s_numeric_type import _%(languag
 
 class %(language_upper_camelized)sI64Type(I64Type, _%(language_upper_camelized)sNumericType):
     pass
-
 """ % locals()
 
 
@@ -284,7 +262,6 @@ from thryft.generators.%(language)s._%(language)s_named_construct import _%(lang
 
 class %(language_upper_camelized)sInclude(Include, _%(language_upper_camelized)sNamedConstruct):
     pass
-
 """ % locals()
 
 
@@ -295,7 +272,6 @@ from thryft.generators.%(language)s._%(language)s_sequence_type import _%(langua
 
 class %(language_upper_camelized)sListType(ListType, _%(language_upper_camelized)sSequenceType):
     pass
-
 """ % locals()
 
 
@@ -306,7 +282,6 @@ from thryft.generators.%(language)s._%(language)s_container_type import _%(langu
 
 class %(language_upper_camelized)sMapType(MapType, _%(language_upper_camelized)sContainerType):
     pass
-
 """ % locals()
 
 
@@ -316,7 +291,6 @@ from thryft.generators.%(language)s._%(language)s_type import _%(language_upper_
 
 class %(language_upper_camelized)sNativeType(_%(language_upper_camelized)sType):
     pass
-
 """ % locals()
 
 
@@ -327,7 +301,6 @@ from thryft.generators.%(language)s._%(language)s_named_construct import _%(lang
 
 class %(language_upper_camelized)sService(Service, _%(language_upper_camelized)sNamedConstruct):
     pass
-
 """ % locals()
 
 
@@ -338,17 +311,16 @@ from thryft.generators.%(language)s._%(language)s_sequence_type import _%(langua
 
 class %(language_upper_camelized)sSetType(SetType, _%(language_upper_camelized)sSequenceType):
     pass
-
 """ % locals()
 
 
 files["%(language)s_string_type.py" % locals()] = """\
+from thryft.generator.string_type import StringType
 from thryft.generators.%(language)s._%(language)s_base_type import _%(language_upper_camelized)sBaseType
 
 
-class %(language_upper_camelized)sStringType(_%(language_upper_camelized)sBaseType):
+class %(language_upper_camelized)sStringType(StringType, _%(language_upper_camelized)sBaseType):
     pass
-
 """ % locals()
 
 
@@ -359,7 +331,6 @@ from thryft.generators.%(language)s._%(language)s_compound_type import _%(langua
 
 class %(language_upper_camelized)sStructType(StructType, _%(language_upper_camelized)sCompoundType):
     pass
-
 """ % locals()
 
 
@@ -370,7 +341,6 @@ from thryft.generators.%(language)s._%(language)s_named_construct import _%(lang
 
 class %(language_upper_camelized)sTypedef(Typedef, _%(language_upper_camelized)sNamedConstruct):
     pass
-
 """ % locals()
 
 
