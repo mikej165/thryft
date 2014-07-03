@@ -64,6 +64,9 @@ class _ServletJavaGenerator(java_generator.JavaGenerator):
     class _Service(JavaService):
         def _java_write_http_servlet_response_body(self, content_type='application/json', variable_name_prefix=''):
             return """\
+%(variable_name_prefix)shttpServletResponse.setContentType("%(content_type)s");
+%(variable_name_prefix)shttpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
+
 if (%(variable_name_prefix)shttpServletResponseBody.length() >= 128) {
     final String %(variable_name_prefix)shttpServletRequestAcceptEncoding = %(variable_name_prefix)shttpServletRequest.getHeader("Accept-Encoding");
     if (%(variable_name_prefix)shttpServletRequestAcceptEncoding != null && !%(variable_name_prefix)shttpServletRequestAcceptEncoding.isEmpty()) {
@@ -129,7 +132,6 @@ if (%(variable_name_prefix)shttpServletResponseBody.length() >= 128) {
     }
 }
 
-%(variable_name_prefix)shttpServletResponse.setContentType("application/json");
 %(variable_name_prefix)shttpServletResponse.getWriter().write(%(variable_name_prefix)shttpServletResponseBody);""" % locals()
 
         def _java_read_http_servlet_request_body(self, variable_name_prefix=''):
