@@ -286,10 +286,11 @@ class %(language_upper_camelized)sMapType(MapType, _%(language_upper_camelized)s
 
 
 files["%(language)s_native_type.py" % locals()] = """\
+from thryft.generator.service import NativeType
 from thryft.generators.%(language)s._%(language)s_type import _%(language_upper_camelized)sType
 
 
-class %(language_upper_camelized)sNativeType(_%(language_upper_camelized)sType):
+class %(language_upper_camelized)sNativeType(NativeType, _%(language_upper_camelized)sType):
     pass
 """ % locals()
 

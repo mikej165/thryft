@@ -37,6 +37,7 @@ from thryft.generators.cpp.cpp_native_type import CppNativeType
 from thryft.generators.java.java_native_type import JavaNativeType
 from thryft.generators.js.js_native_type import JsNativeType
 from thryft.generators.py.py_native_type import PyNativeType
+from thryft.generators.sql.sql_native_type import SqlNativeType
 
 
 class _DateTime(object):
@@ -130,3 +131,8 @@ class PyDateTime(_DateTime, PyNativeType):
 
     def py_write_protocol(self, value, depth=0):
         return "oprot.writeDateTime(%(value)s)" % locals()
+
+
+class SqlDateTime(_DateTime, SqlNativeType):
+    def sql_name(self):
+        return 'TIMESTAMP'

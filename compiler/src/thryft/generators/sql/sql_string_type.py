@@ -3,4 +3,5 @@ from thryft.generators.sql._sql_base_type import _SqlBaseType
 
 
 class SqlStringType(StringType, _SqlBaseType):
-    pass
+    def sql_name(self):
+        return 'VARCHAR'
