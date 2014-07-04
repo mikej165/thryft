@@ -44,7 +44,6 @@ import java.util.Stack;
 
 import org.apache.commons.codec.binary.Base64;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.TextNode;
@@ -276,8 +275,17 @@ public final class JacksonJsonInputProtocol extends
         private final Stack<String> fieldNameStack = new Stack<String>();
     }
 
+    private static JsonNode __readTree(final Reader reader)
+            throws InputProtocolException {
+        try {
+            return new ObjectMapper().readTree(reader);
+        } catch (final IOException e) {
+            throw new InputProtocolException(e);
+        }
+    }
+
     public JacksonJsonInputProtocol(final InputStream inputStream)
-            throws IOException {
+            throws InputProtocolException {
         this(new InputStreamReader(inputStream));
     }
 
@@ -286,12 +294,13 @@ public final class JacksonJsonInputProtocol extends
         _getInputProtocolStack().push(__createRootInputProtocol(rootNode));
     }
 
-    public JacksonJsonInputProtocol(final Reader reader) throws IOException,
-            JsonParseException {
-        this(new ObjectMapper().readTree(reader));
+    public JacksonJsonInputProtocol(final Reader reader)
+            throws InputProtocolException {
+        this(__readTree(reader));
     }
 
-    public JacksonJsonInputProtocol(final String json) throws IOException {
+    public JacksonJsonInputProtocol(final String json)
+            throws InputProtocolException {
         this(new StringReader(json));
     }
 

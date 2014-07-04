@@ -351,18 +351,28 @@ public class JacksonJsonOutputProtocol extends
         }
     }
 
+    private static JsonGenerator __createJsonGenerator(final Writer writer)
+            throws OutputProtocolException {
+        try {
+            return new JsonFactory().createJsonGenerator(writer);
+        } catch (final IOException e) {
+            throw new OutputProtocolException(e);
+        }
+    }
+
     public JacksonJsonOutputProtocol(final JsonGenerator generator) {
         this.generator = generator;
         _getOutputProtocolStack().push(_createRootOutputProtocol());
     }
 
     public JacksonJsonOutputProtocol(final OutputStream outputStream)
-            throws IOException {
+            throws OutputProtocolException {
         this(new OutputStreamWriter(outputStream));
     }
 
-    public JacksonJsonOutputProtocol(final Writer writer) throws IOException {
-        this(new JsonFactory().createJsonGenerator(writer));
+    public JacksonJsonOutputProtocol(final Writer writer)
+            throws OutputProtocolException {
+        this(__createJsonGenerator(writer));
     }
 
     @Override

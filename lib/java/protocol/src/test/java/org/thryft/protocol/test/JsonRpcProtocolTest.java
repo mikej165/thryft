@@ -8,6 +8,7 @@ import java.io.Writer;
 
 import org.junit.Test;
 import org.thryft.protocol.InputProtocol;
+import org.thryft.protocol.InputProtocolException;
 import org.thryft.protocol.JacksonJsonInputProtocol;
 import org.thryft.protocol.JacksonJsonOutputProtocol;
 import org.thryft.protocol.JsonRpcErrorResponse;
@@ -17,6 +18,7 @@ import org.thryft.protocol.LoggingOutputProtocol;
 import org.thryft.protocol.MessageBegin;
 import org.thryft.protocol.MessageType;
 import org.thryft.protocol.OutputProtocol;
+import org.thryft.protocol.OutputProtocolException;
 import org.thryft.protocol.ProtocolException;
 import org.thryft.protocol.SetBegin;
 
@@ -95,12 +97,12 @@ public final class JsonRpcProtocolTest {
     }
 
     private InputProtocol __newJsonRpcInputProtocol(final String json)
-            throws IOException {
+            throws InputProtocolException {
         return new JsonRpcInputProtocol(new JacksonJsonInputProtocol(json));
     }
 
     private OutputProtocol __newJsonRpcOutputProtocol(final Writer writer)
-            throws IOException {
+            throws OutputProtocolException {
         return new LoggingOutputProtocol(
                 new JsonRpcOutputProtocol(new LoggingOutputProtocol(
                         new JacksonJsonOutputProtocol(writer))));

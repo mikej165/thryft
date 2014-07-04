@@ -32,7 +32,6 @@
 
 package org.thryft.protocol;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
 
@@ -42,7 +41,7 @@ import com.google.common.annotations.GwtIncompatible;
 @GwtIncompatible("")
 public class LogMessageOutputProtocol extends JacksonJsonOutputProtocol {
     private final class ArrayOutputProtocol extends
-            JacksonJsonOutputProtocol.ArrayOutputProtocol {
+    JacksonJsonOutputProtocol.ArrayOutputProtocol {
         @Override
         public void writeBool(final boolean value)
                 throws OutputProtocolException {
@@ -170,7 +169,7 @@ public class LogMessageOutputProtocol extends JacksonJsonOutputProtocol {
     }
 
     private final class MapObjectOutputProtocol extends
-            JacksonJsonOutputProtocol.MapObjectOutputProtocol {
+    JacksonJsonOutputProtocol.MapObjectOutputProtocol {
         @Override
         public void writeBool(final boolean value)
                 throws OutputProtocolException {
@@ -374,7 +373,7 @@ public class LogMessageOutputProtocol extends JacksonJsonOutputProtocol {
     }
 
     private final class StructObjectOutputProtocol extends
-            JacksonJsonOutputProtocol.StructObjectOutputProtocol {
+    JacksonJsonOutputProtocol.StructObjectOutputProtocol {
         @Override
         public void writeString(final String value)
                 throws OutputProtocolException {
@@ -396,11 +395,12 @@ public class LogMessageOutputProtocol extends JacksonJsonOutputProtocol {
     }
 
     public LogMessageOutputProtocol(final OutputStream outputStream)
-            throws IOException {
+            throws OutputProtocolException {
         super(outputStream);
     }
 
-    public LogMessageOutputProtocol(final Writer writer) throws IOException {
+    public LogMessageOutputProtocol(final Writer writer)
+            throws OutputProtocolException {
         super(writer);
     }
 

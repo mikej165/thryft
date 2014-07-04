@@ -160,8 +160,9 @@ protected void doPost(final javax.servlet.http.HttpServletRequest httpServletReq
 
     org.thryft.protocol.MessageBegin messageBegin = null;
     try {
-        final org.thryft.protocol.JsonRpcInputProtocol iprot = new org.thryft.protocol.JsonRpcInputProtocol(new org.thryft.protocol.JacksonJsonInputProtocol(httpServletRequestBody));
+        final org.thryft.protocol.JsonRpcInputProtocol iprot;
         try {
+            iprot = new org.thryft.protocol.JsonRpcInputProtocol(new org.thryft.protocol.JacksonJsonInputProtocol(httpServletRequestBody));
             messageBegin = iprot.readMessageBegin();
         } catch (final org.thryft.protocol.JsonRpcInputProtocolException e) {
             throw e;
@@ -185,8 +186,8 @@ protected void doPost(final javax.servlet.http.HttpServletRequest httpServletReq
             return """\
 private void __doPostError(final javax.servlet.http.HttpServletRequest httpServletRequest, final javax.servlet.http.HttpServletResponse httpServletResponse, final org.thryft.protocol.JsonRpcErrorResponse jsonRpcErrorResponse, final Object jsonRpcRequestId) throws java.io.IOException {
     final java.io.StringWriter httpServletResponseBodyWriter = new java.io.StringWriter();
-    final org.thryft.protocol.JsonRpcOutputProtocol oprot = new org.thryft.protocol.JsonRpcOutputProtocol(new org.thryft.protocol.JacksonJsonOutputProtocol(httpServletResponseBodyWriter));
     try {
+        final org.thryft.protocol.JsonRpcOutputProtocol oprot = new org.thryft.protocol.JsonRpcOutputProtocol(new org.thryft.protocol.JacksonJsonOutputProtocol(httpServletResponseBodyWriter));
         oprot.writeMessageBegin("", org.thryft.protocol.MessageType.EXCEPTION, jsonRpcRequestId);
         jsonRpcErrorResponse.write(oprot);
         oprot.writeMessageEnd();
@@ -204,9 +205,9 @@ private void __doPostError(final javax.servlet.http.HttpServletRequest httpServl
             return """\
 private void __doPostResponse(final javax.servlet.http.HttpServletRequest httpServletRequest, final javax.servlet.http.HttpServletResponse httpServletResponse, final Object jsonRpcRequestId, final Object jsonRpcResult) throws java.io.IOException {
     final java.io.StringWriter httpServletResponseBodyWriter = new java.io.StringWriter();
-    final org.thryft.protocol.JsonRpcOutputProtocol oprot = new org.thryft.protocol.JsonRpcOutputProtocol(new org.thryft.protocol.JacksonJsonOutputProtocol(httpServletResponseBodyWriter));
 
     try {
+        final org.thryft.protocol.JsonRpcOutputProtocol oprot = new org.thryft.protocol.JsonRpcOutputProtocol(new org.thryft.protocol.JacksonJsonOutputProtocol(httpServletResponseBodyWriter));
         oprot.writeMessageBegin("", org.thryft.protocol.MessageType.REPLY, jsonRpcRequestId);
         if (jsonRpcResult != null) {
             oprot.writeMixed(jsonRpcResult);

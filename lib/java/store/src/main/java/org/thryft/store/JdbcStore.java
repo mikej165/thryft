@@ -36,7 +36,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static org.thryft.Preconditions.checkNotEmpty;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.sql.Connection;
@@ -49,6 +48,7 @@ import java.util.Set;
 
 import org.h2.jdbcx.JdbcConnectionPool;
 import org.thryft.Base;
+import org.thryft.protocol.InputProtocolException;
 import org.thryft.protocol.JacksonJsonInputProtocol;
 import org.thryft.protocol.JacksonJsonOutputProtocol;
 import org.thryft.protocol.OutputProtocolException;
@@ -59,7 +59,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
 public final class JdbcStore<ModelT extends Base<?>> extends
-        AbstractStore<ModelT> {
+AbstractStore<ModelT> {
     public final static class Configuration {
         public Configuration() {
             this(DRIVER_CLASS_NAME_DEFAULT, PASSWORD_DEFAULT, URL_DEFAULT,
@@ -298,7 +298,7 @@ public final class JdbcStore<ModelT extends Base<?>> extends
     @Override
     protected ImmutableMap<String, ModelT> _getModelsByIds(
             final ImmutableSet<String> modelIds, final String userId)
-            throws ModelIoException, NoSuchModelException {
+                    throws ModelIoException, NoSuchModelException {
         final StringBuilder getModelsByIdsSqlBuilder = new StringBuilder();
         getModelsByIdsSqlBuilder.append("SELECT * FROM ");
         getModelsByIdsSqlBuilder.append(tableName);
@@ -430,8 +430,8 @@ public final class JdbcStore<ModelT extends Base<?>> extends
         try {
             return _getModel(new JacksonJsonInputProtocol(new StringReader(
                     resultSet.getString(tableName + "_json"))));
-        } catch (final IOException | SQLException e) {
-            throw new ModelIoException(e.getMessage());
+        } catch (final InputProtocolException | SQLException e) {
+            throw new ModelIoException(e);
         }
     }
 
@@ -466,7 +466,7 @@ public final class JdbcStore<ModelT extends Base<?>> extends
             statement.setString(2, json);
             statement.setString(3, userId);
             statement.execute();
-        } catch (final IOException | OutputProtocolException | SQLException e) {
+        } catch (final OutputProtocolException | SQLException e) {
             throw new ModelIoException(e, modelId);
         }
     }

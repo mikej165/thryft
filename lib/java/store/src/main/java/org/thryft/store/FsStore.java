@@ -43,6 +43,7 @@ import java.util.Properties;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.thryft.Base;
+import org.thryft.protocol.InputProtocolException;
 import org.thryft.protocol.JacksonJsonInputProtocol;
 import org.thryft.protocol.JacksonJsonOutputProtocol;
 import org.thryft.protocol.OutputProtocolException;
@@ -52,7 +53,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 public final class FsStore<ModelT extends Base<?>> extends
-        AbstractStore<ModelT> {
+AbstractStore<ModelT> {
     public final static class Configuration {
         public Configuration() {
             this(ROOT_DIRECTORY_PATH_DEFAULT);
@@ -180,7 +181,7 @@ public final class FsStore<ModelT extends Base<?>> extends
     @Override
     protected synchronized ImmutableMap<String, ModelT> _getModelsByIds(
             final ImmutableSet<String> modelIds, final String userId)
-            throws ModelIoException, NoSuchModelException {
+                    throws ModelIoException, NoSuchModelException {
         final ImmutableMap.Builder<String, ModelT> models = ImmutableMap
                 .builder();
         for (final String modelId : modelIds) {
@@ -214,7 +215,7 @@ public final class FsStore<ModelT extends Base<?>> extends
     @Override
     protected synchronized void _putModel(final ModelT model,
             final String modelId, final String userId)
-            throws org.thryft.store.AbstractStore.ModelIoException {
+                    throws org.thryft.store.AbstractStore.ModelIoException {
         final File modelDirectoryPath = __createModelDirectory(userId);
         __putModel(model, modelDirectoryPath, modelId);
     }
@@ -222,7 +223,7 @@ public final class FsStore<ModelT extends Base<?>> extends
     @Override
     protected synchronized void _putModels(
             final ImmutableMap<String, ModelT> models, final String userId)
-            throws ModelIoException {
+                    throws ModelIoException {
         final File modelDirectoryPath = __createModelDirectory(userId);
         for (final ImmutableMap.Entry<String, ModelT> model : models.entrySet()) {
             __putModel(model.getValue(), modelDirectoryPath, model.getKey());
@@ -247,14 +248,9 @@ public final class FsStore<ModelT extends Base<?>> extends
             throw new NoSuchModelException(__getModelId(modelFilePath));
         }
 
-        try {
-            final FileReader fileReader = new FileReader(modelFilePath);
-            try {
-                return _getModel(new JacksonJsonInputProtocol(fileReader));
-            } finally {
-                fileReader.close();
-            }
-        } catch (final IOException e) {
+        try (final FileReader fileReader = new FileReader(modelFilePath)) {
+            return _getModel(new JacksonJsonInputProtocol(fileReader));
+        } catch (final InputProtocolException | IOException e) {
             logger.error("error reading model from disk: ", e);
             throw new ModelIoException(e.getMessage());
         }

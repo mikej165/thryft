@@ -70,9 +70,9 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 
 public final class S3Store<ModelT extends Base<?>> extends
-        AwsKeyValueStore<ModelT> {
+AwsKeyValueStore<ModelT> {
     public final static class Configuration extends
-            AwsKeyValueStore.Configuration {
+    AwsKeyValueStore.Configuration {
         public Configuration(final AWSCredentials credentials) {
             super(credentials);
         }
@@ -180,7 +180,7 @@ public final class S3Store<ModelT extends Base<?>> extends
                 .expireAfterAccess(
                         configuration.getObjectCacheExpireAfterAccessDuration(),
                         configuration.getObjectCacheExpireAfterAccessTimeUnit())
-                .build();
+                        .build();
     }
 
     @Override
@@ -211,7 +211,7 @@ public final class S3Store<ModelT extends Base<?>> extends
 
     @Override
     protected ModelT _getModelById(final Key modelKey) throws ModelIoException,
-            NoSuchModelException {
+    NoSuchModelException {
         final ImmutableMap<String, ModelT> models;
         try {
             models = __getModels(modelKey.getUserId());
@@ -300,7 +300,7 @@ public final class S3Store<ModelT extends Base<?>> extends
             for (final ImmutableMap.Entry<Key, ModelT> model : models
                     .entrySet()) {
                 updatedModels
-                        .put(model.getKey().getModelId(), model.getValue());
+                .put(model.getKey().getModelId(), model.getValue());
             }
             __putModels(ImmutableMap.copyOf(updatedModels), userId);
         } catch (final AmazonServiceException e) {
@@ -401,7 +401,7 @@ public final class S3Store<ModelT extends Base<?>> extends
             oprot.writeMapEnd();
             oprot.flush();
             ostring = ostringWriter.toString();
-        } catch (final IOException | OutputProtocolException e) {
+        } catch (final OutputProtocolException e) {
             throw new ModelIoException(e);
         }
 
