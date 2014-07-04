@@ -35,6 +35,8 @@ package org.thryft.protocol;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import javax.annotation.Nullable;
+
 import org.thryft.Base;
 import org.thryft.native_.EmailAddress;
 import org.thryft.native_.Uri;
@@ -150,7 +152,7 @@ public abstract class AbstractOutputProtocol implements OutputProtocol {
 
     @Override
     public void writeMessageBegin(final String name, final MessageType type,
-            final Object id) throws OutputProtocolException {
+            @Nullable final Object id) throws OutputProtocolException {
         throw new UnsupportedOperationException();
     }
 

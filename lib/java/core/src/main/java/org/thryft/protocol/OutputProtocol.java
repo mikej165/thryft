@@ -35,6 +35,8 @@ package org.thryft.protocol;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import javax.annotation.Nullable;
+
 import org.thryft.native_.EmailAddress;
 import org.thryft.native_.Uri;
 import org.thryft.native_.Url;
@@ -87,7 +89,7 @@ public interface OutputProtocol extends Protocol {
     public void writeMapEnd() throws OutputProtocolException;
 
     public void writeMessageBegin(final String name, final MessageType type,
-            final Object id) throws OutputProtocolException;
+            @Nullable final Object id) throws OutputProtocolException;
 
     public void writeMessageEnd() throws OutputProtocolException;
 

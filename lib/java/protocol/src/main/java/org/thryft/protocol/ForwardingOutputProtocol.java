@@ -2,6 +2,8 @@ package org.thryft.protocol;
 
 import java.util.Date;
 
+import javax.annotation.Nullable;
+
 import org.thryft.native_.EmailAddress;
 import org.thryft.native_.Uri;
 import org.thryft.native_.Url;
@@ -112,7 +114,7 @@ public abstract class ForwardingOutputProtocol implements OutputProtocol {
 
     @Override
     public void writeMessageBegin(final String name, final MessageType type,
-            final Object id) throws OutputProtocolException {
+            @Nullable final Object id) throws OutputProtocolException {
         _delegate().writeMessageBegin(name, type, id);
     }
 

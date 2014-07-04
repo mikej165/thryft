@@ -2,6 +2,8 @@ package org.thryft.protocol;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import javax.annotation.Nullable;
+
 public final class JsonRpcOutputProtocol extends ForwardingOutputProtocol {
     public JsonRpcOutputProtocol(final OutputProtocol jsonOutputProtocol) {
         this.jsonOutputProtocol = checkNotNull(jsonOutputProtocol);
@@ -9,14 +11,18 @@ public final class JsonRpcOutputProtocol extends ForwardingOutputProtocol {
 
     @Override
     public void writeMessageBegin(final String name, final MessageType type,
-            final Object id) throws OutputProtocolException {
+            @Nullable final Object id) throws OutputProtocolException {
         writeStructBegin("JSON-RPC");
 
         writeFieldBegin("jsonrpc", org.thryft.protocol.Type.STRING, (short) -1);
         writeString("2.0");
         writeFieldEnd();
 
-        if (id instanceof Integer) {
+        if (id == null) {
+            writeFieldBegin("id", org.thryft.protocol.Type.VOID, (short) -1);
+            writeNull();
+            writeFieldEnd();
+        } else if (id instanceof Integer) {
             writeFieldBegin("id", org.thryft.protocol.Type.I32, (short) -1);
             writeI32((Integer) id);
             writeFieldEnd();
