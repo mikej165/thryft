@@ -39,5 +39,10 @@ def __parse_sql_foreign_key_annotation(ast_node, name, value, **kwds):
     annotation = Ast.AnnotationNode(name=name, value=(table_name, column_name), **kwds)
 
     ast_node.annotations.append(annotation)
-
 Parser.register_annotation(Ast.FieldNode, 'sql_foreign_key', __parse_sql_foreign_key_annotation)
+
+def __parse_sql_unique_annotation(ast_node, name, value, **kwds):
+    if value is not None:
+        raise ValueError("@%(name)s does not take a value" % locals())
+    ast_node.annotations.append(Ast.AnnotationNode(name=name, **kwds))
+Parser.register_annotation(Ast.FieldNode, 'sql_unique', __parse_sql_unique_annotation)

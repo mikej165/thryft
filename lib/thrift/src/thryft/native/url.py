@@ -32,7 +32,7 @@
 
 import os.path
 import sys; sys.path.append(os.path.dirname(__file__))
-from uri import CppUri as _CppUri, JavaUri as _JavaUri, JsUri as _JsUri, PyUri as _PyUri
+from uri import CppUri as _CppUri, JavaUri as _JavaUri, JsUri as _JsUri, PyUri as _PyUri, SqlUri as _SqlUri
 
 
 class CppUrl(_CppUri):
@@ -65,3 +65,7 @@ class PyUrl(_PyUri):
     def py_write_protocol(self, value, depth=0):
         qname = self.py_qname()
         return "oprot.writeUrl(%(value)s)" % locals()
+
+
+class SqlUrl(_SqlUri):
+    pass

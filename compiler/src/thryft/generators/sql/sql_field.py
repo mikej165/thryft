@@ -17,6 +17,8 @@ class SqlField(Field, _SqlNamedConstruct):
         ret = name + ' ' + type_name
         if self.required:
             ret += ' NOT NULL'
+        if self.sql_is_unique():
+            ret += ' UNIQUE'
         return ret
 
     def sql_is_foreign_key(self):
@@ -24,6 +26,9 @@ class SqlField(Field, _SqlNamedConstruct):
             return self.annotations['sql_foreign_key']
         except KeyError:
             pass
+
+    def sql_is_unique(self):
+        return self.annotations.has_key('sql_unique')
 
     def sql_name(self):
         return self.name
