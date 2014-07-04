@@ -513,7 +513,7 @@ public %(compound_type_name)s %(method_name)s(%(field_parameter)s) {
             add_statements.append(
                 """.add(\"%s\", %s)""" % (field.name, field_value)
             )
-        add_statements = '.'.join(add_statements)
+        add_statements = ''.join(add_statements)
         return {'toString': """\
 @Override
 public String toString() {
