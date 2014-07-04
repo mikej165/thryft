@@ -184,7 +184,7 @@ protected void doPost(final javax.servlet.http.HttpServletRequest httpServletReq
         def _java_method_do_post_error(self):
             write_http_servlet_response_body = indent(' ' * 4, self._java_write_http_servlet_response_body(headers=JsonRpcServletJavaGenerator._RESPONSE_HEADERS))
             return """\
-private void __doPostError(final javax.servlet.http.HttpServletRequest httpServletRequest, final javax.servlet.http.HttpServletResponse httpServletResponse, final org.thryft.protocol.JsonRpcErrorResponse jsonRpcErrorResponse, final Object jsonRpcRequestId) throws java.io.IOException {
+private void __doPostError(final javax.servlet.http.HttpServletRequest httpServletRequest, final javax.servlet.http.HttpServletResponse httpServletResponse, final org.thryft.protocol.JsonRpcErrorResponse jsonRpcErrorResponse, @javax.annotation.Nullable final Object jsonRpcRequestId) throws java.io.IOException {
     final java.io.StringWriter httpServletResponseBodyWriter = new java.io.StringWriter();
     try {
         final org.thryft.protocol.JsonRpcOutputProtocol oprot = new org.thryft.protocol.JsonRpcOutputProtocol(new org.thryft.protocol.JacksonJsonOutputProtocol(httpServletResponseBodyWriter));
