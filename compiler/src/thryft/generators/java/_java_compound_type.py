@@ -507,20 +507,17 @@ public %(compound_type_name)s %(method_name)s(%(field_parameter)s) {
     def _java_method_to_string(self):
         add_statements = []
         for field in self.fields:
-            add_statement = \
-                """helper.add(\"%s\", %s());""" % (field.name, field.java_getter_name())
+            field_value = field.java_getter_name() + '()'
             if not field.required:
-                add_statement = """\
-if (%s().isPresent()) {
-    %s
-}""" % (field.java_getter_name(), add_statement)
-            add_statements.append(add_statement)
-        add_statements = lpad("\n", "\n".join(indent(' ' * 4, add_statements)))
+                field_value += '.orNull()'
+            add_statements.append(
+                """.add(\"%s\", %s)""" % (field.name, field_value)
+            )
+        add_statements = '.'.join(add_statements)
         return {'toString': """\
 @Override
 public String toString() {
-    final com.google.common.base.Objects.ToStringHelper helper = com.google.common.base.Objects.toStringHelper(this);%(add_statements)s
-    return helper.toString();
+    return com.google.common.base.Objects.toStringHelper(this).omitNullValues()%(add_statements)s.toString();
 }""" % locals()}
 
     def _java_method_write(self):
