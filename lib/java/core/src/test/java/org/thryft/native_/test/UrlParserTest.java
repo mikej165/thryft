@@ -1,6 +1,7 @@
 package org.thryft.native_.test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
@@ -33,10 +34,10 @@ public class UrlParserTest {
 
     @Test
     public void testParseSchemeHost2() {
-        final Url url = UrlParser.parseUrl("http://localhost/");
+        final Url url = UrlParser.parseUrl("http://localhost");
         assertThat(url.getScheme(), equalTo("http"));
         assertThat(url.getHost(), equalTo("localhost"));
-        assertThat(url.getPath().get(), equalTo("/"));
+        assertFalse(url.getPath().isPresent());
     }
 
     @Test
@@ -72,10 +73,10 @@ public class UrlParserTest {
 
     @Test
     public void testParseSchemeHostPort1() {
-        final Url url = UrlParser.parseUrl("http://*:80/");
+        final Url url = UrlParser.parseUrl("http://*:80");
         assertThat(url.getScheme(), equalTo("http"));
         assertThat(url.getHost(), equalTo("*"));
-        assertThat(url.getPath().get(), equalTo("/"));
+        assertFalse(url.getPath().isPresent());
     }
 
     @Test
@@ -88,10 +89,19 @@ public class UrlParserTest {
 
     @Test
     public void testParseSchemeHostPort3() {
-        final Url url = UrlParser.parseUrl("http://localhost:1/");
+        final Url url = UrlParser.parseUrl("http://localhost:1");
         assertThat(url.getScheme(), equalTo("http"));
         assertThat(url.getHost(), equalTo("localhost"));
         assertThat(url.getPort().get(), equalTo(1));
-        assertThat(url.getPath().get(), equalTo("/"));
+        assertFalse(url.getPath().isPresent());
+    }
+
+    @Test
+    public void testParseSchemeHostPort4() {
+        final Url url = UrlParser.parseUrl("http://localhost:8080");
+        assertThat(url.getScheme(), equalTo("http"));
+        assertThat(url.getHost(), equalTo("localhost"));
+        assertThat(url.getPort().get(), equalTo(8080));
+        assertFalse(url.getPath().isPresent());
     }
 }

@@ -45,16 +45,18 @@ public final class Url extends Uri {
         }
 
         public Builder setPath(final Optional<String> path) {
-            if (path.isPresent()) {
-                this.path = checkNotEmpty(path.get());
-            } else {
-                this.path = null;
+            checkNotNull(path);
+            if (path.isPresent() && !path.get().isEmpty()) {
+                this.path = path.get();
             }
             return this;
         }
 
         public Builder setPath(final String path) {
-            this.path = checkNotEmpty(path);
+            checkNotNull(path);
+            if (!path.isEmpty()) {
+                this.path = path;
+            }
             return this;
         }
 
@@ -101,24 +103,39 @@ public final class Url extends Uri {
             final Optional<String> rawQuery,
             final Optional<String> rawFragment, final String url) {
         super(scheme, url);
-        this.rawAuthority = checkNotNull(rawAuthority);
-        this.rawUserInfo = checkNotNull(rawUserInfo);
-        if (rawUserInfo.isPresent()) {
-            checkArgument(!rawUserInfo.get().isEmpty());
+
+        this.rawAuthority = checkNotEmpty(rawAuthority);
+
+        checkNotNull(rawUserInfo);
+        if (rawUserInfo.isPresent() && !rawUserInfo.get().isEmpty()) {
+            this.rawUserInfo = rawUserInfo;
+        } else {
+            this.rawUserInfo = Optional.absent();
         }
-        this.rawHost = checkNotNull(rawHost);
+
+        this.rawHost = checkNotEmpty(rawHost);
+
         this.port = checkNotNull(port);
-        this.rawPath = checkNotNull(rawPath);
-        if (rawPath.isPresent()) {
-            checkArgument(!rawPath.get().isEmpty());
+
+        checkNotNull(rawPath);
+        if (rawPath.isPresent() && !rawPath.get().isEmpty()) {
+            this.rawPath = rawPath;
+        } else {
+            this.rawPath = Optional.absent();
         }
-        this.rawQuery = checkNotNull(rawQuery);
-        if (rawQuery.isPresent()) {
-            checkArgument(!rawQuery.get().isEmpty());
+
+        checkNotNull(rawQuery);
+        if (rawQuery.isPresent() && !rawQuery.get().isEmpty()) {
+            this.rawQuery = rawQuery;
+        } else {
+            this.rawQuery = Optional.absent();
         }
-        this.rawFragment = checkNotNull(rawFragment);
-        if (rawFragment.isPresent()) {
-            checkArgument(!rawFragment.get().isEmpty());
+
+        checkNotNull(rawFragment);
+        if (rawFragment.isPresent() && !rawFragment.isPresent()) {
+            this.rawFragment = rawFragment;
+        } else {
+            this.rawFragment = Optional.absent();
         }
     }
 
