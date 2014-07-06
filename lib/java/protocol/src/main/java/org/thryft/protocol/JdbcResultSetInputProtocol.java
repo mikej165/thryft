@@ -24,11 +24,16 @@ public class JdbcResultSetInputProtocol extends AbstractInputProtocol {
         if (!resultSet.next()) {
             return false;
         }
-        checkState(fieldStack.isEmpty());
+        checkState(fieldBeginStack.isEmpty());
         final int columnCount = resultSetMetaData.getColumnCount();
         for (int columnI = 0; columnI < columnCount; columnI++) {
-            final String fieldName = resultSetMetaData
-                    .getColumnName(columnI + 1);
+            resultSet.getObject(columnI + 1);
+            if (resultSet.wasNull()) {
+                continue;
+            }
+
+            final String fieldName = resultSetMetaData.getColumnName(
+                    columnI + 1).toLowerCase(); // Some databases change case
             Type fieldType;
             final int columnType = resultSetMetaData.getColumnType(columnI + 1);
             switch (columnType) {
@@ -60,7 +65,9 @@ public class JdbcResultSetInputProtocol extends AbstractInputProtocol {
                 throw new UnsupportedOperationException(String.format("%s: %d",
                         fieldName, columnType));
             }
-            fieldStack.push(new FieldBegin(fieldName, fieldType, (short) -1));
+
+            fieldBeginStack.push(new FieldBegin(fieldName, fieldType,
+                    (short) -1));
         }
         return true;
     }
@@ -73,7 +80,7 @@ public class JdbcResultSetInputProtocol extends AbstractInputProtocol {
     @Override
     public boolean readBool() throws InputProtocolException {
         try {
-            return resultSet.getBoolean(fieldStack.peek().getName());
+            return resultSet.getBoolean(fieldBeginStack.peek().getName());
         } catch (final SQLException e) {
             throw new InputProtocolException(e);
         }
@@ -82,7 +89,7 @@ public class JdbcResultSetInputProtocol extends AbstractInputProtocol {
     @Override
     public byte readByte() throws InputProtocolException {
         try {
-            return resultSet.getByte(fieldStack.peek().getName());
+            return resultSet.getByte(fieldBeginStack.peek().getName());
         } catch (final SQLException e) {
             throw new InputProtocolException(e);
         }
@@ -91,7 +98,7 @@ public class JdbcResultSetInputProtocol extends AbstractInputProtocol {
     @Override
     public Date readDateTime() throws InputProtocolException {
         try {
-            return resultSet.getTimestamp(fieldStack.peek().getName());
+            return resultSet.getTimestamp(fieldBeginStack.peek().getName());
         } catch (final SQLException e) {
             throw new InputProtocolException(e);
         }
@@ -100,7 +107,7 @@ public class JdbcResultSetInputProtocol extends AbstractInputProtocol {
     @Override
     public double readDouble() throws InputProtocolException {
         try {
-            return resultSet.getDouble(fieldStack.peek().getName());
+            return resultSet.getDouble(fieldBeginStack.peek().getName());
         } catch (final SQLException e) {
             throw new InputProtocolException(e);
         }
@@ -108,22 +115,21 @@ public class JdbcResultSetInputProtocol extends AbstractInputProtocol {
 
     @Override
     public FieldBegin readFieldBegin() throws InputProtocolException {
-        if (!fieldStack.isEmpty()) {
-            return fieldStack.peek();
-        } else {
-            return new FieldBegin();
+        while (!fieldBeginStack.isEmpty()) {
+            return fieldBeginStack.peek();
         }
+        return new FieldBegin();
     }
 
     @Override
     public void readFieldEnd() throws InputProtocolException {
-        fieldStack.pop();
+        fieldBeginStack.pop();
     }
 
     @Override
     public short readI16() throws InputProtocolException {
         try {
-            return resultSet.getShort(fieldStack.peek().getName());
+            return resultSet.getShort(fieldBeginStack.peek().getName());
         } catch (final SQLException e) {
             throw new InputProtocolException(e);
         }
@@ -132,7 +138,7 @@ public class JdbcResultSetInputProtocol extends AbstractInputProtocol {
     @Override
     public int readI32() throws InputProtocolException {
         try {
-            return resultSet.getInt(fieldStack.peek().getName());
+            return resultSet.getInt(fieldBeginStack.peek().getName());
         } catch (final SQLException e) {
             throw new InputProtocolException(e);
         }
@@ -141,7 +147,7 @@ public class JdbcResultSetInputProtocol extends AbstractInputProtocol {
     @Override
     public long readI64() throws InputProtocolException {
         try {
-            return resultSet.getLong(fieldStack.peek().getName());
+            return resultSet.getLong(fieldBeginStack.peek().getName());
         } catch (final SQLException e) {
             throw new InputProtocolException(e);
         }
@@ -165,7 +171,7 @@ public class JdbcResultSetInputProtocol extends AbstractInputProtocol {
     @Override
     public String readString() throws InputProtocolException {
         try {
-            return resultSet.getString(fieldStack.peek().getName());
+            return resultSet.getString(fieldBeginStack.peek().getName());
         } catch (final SQLException e) {
             throw new InputProtocolException(e);
         }
@@ -176,7 +182,7 @@ public class JdbcResultSetInputProtocol extends AbstractInputProtocol {
         return "";
     }
 
-    private final Stack<FieldBegin> fieldStack = new Stack<FieldBegin>();
+    private final Stack<FieldBegin> fieldBeginStack = new Stack<FieldBegin>();
     private final ResultSet resultSet;
     private final ResultSetMetaData resultSetMetaData;
 }
