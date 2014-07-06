@@ -31,8 +31,6 @@
 #-------------------------------------------------------------------------------
 
 from thryft.generators.java import java_generator
-from thryft.generators.java.java_function import JavaFunction
-from thryft.generators.java.java_service import JavaService
 from yutil import indent, lpad
 
 
@@ -41,7 +39,14 @@ class LoggingServiceJavaGenerator(java_generator.JavaGenerator):
         java_generator.JavaGenerator.__init__(self, **kwds)
         self._include_current_user = include_current_user
 
-    class Function(JavaFunction):
+    class Document(java_generator.JavaGenerator.Document):
+        def java_package(self):
+            try:
+                return self.namespace_by_scope(('logging_service_java', 'java')).name
+            except KeyError:
+                return None
+
+    class Function(java_generator.JavaGenerator.Function):
         def __repr__(self):
             java_name = self.java_name()
             name = self.name
@@ -49,7 +54,7 @@ class LoggingServiceJavaGenerator(java_generator.JavaGenerator):
             local_declarations = []
             if len(self.parameters) > 0 or self.return_field is not None:
                 local_declarations.append('java.io.StringWriter __logMessageStringWriter;')
-                local_declarations.append('org.thryft.protocol.LogMessageProtocol __logMessageProtocol;')
+                local_declarations.append('org.thryft.protocol.LogMessageOutputProtocol __logMessageProtocol;')
             local_declarations.append('final StringBuilder __logMessageStringBuilder = new StringBuilder();')
             local_declarations = "\n".join(indent(' ' * 4, local_declarations))
 
@@ -76,11 +81,11 @@ class LoggingServiceJavaGenerator(java_generator.JavaGenerator):
                 parameters_toString = indent(' ' * 4, """
 try {
     __logMessageStringWriter = new java.io.StringWriter();
-    __logMessageProtocol = new org.thryft.protocol.LogMessageProtocol(__logMessageStringWriter);
+    __logMessageProtocol = new org.thryft.protocol.LogMessageOutputProtocol(__logMessageStringWriter);
     new Messages.%(request_type_name)s(%(parameter_names)s).write(__logMessageProtocol);
     __logMessageProtocol.flush();
     __logMessageStringBuilder.append(__logMessageStringWriter.toString());
-} catch (final java.io.IOException e) {
+} catch (final org.thryft.protocol.OutputProtocolException e) {
     __logMessageStringBuilder.append("(serialization error)");
 }
 """ % locals())
@@ -101,11 +106,11 @@ service.%(java_name)s(%(parameter_names)s);
 __logMessageStringBuilder.append(" -> ");
 try {
     __logMessageStringWriter = new java.io.StringWriter();
-    __logMessageProtocol = new org.thryft.protocol.LogMessageProtocol(__logMessageStringWriter);
-    new Messages.%(response_type_name)s(__returnValue).write(__logMessageProtocol, org.thryft.protocol.TType.VOID);
+    __logMessageProtocol = new org.thryft.protocol.LogMessageOutputProtocol(__logMessageStringWriter);
+    new Messages.%(response_type_name)s(__returnValue).write(__logMessageProtocol, org.thryft.protocol.Type.VOID);
     __logMessageProtocol.flush();
     __logMessageStringBuilder.append(__logMessageStringWriter.toString());
-} catch (final java.io.IOException e) {
+} catch (final org.thryft.protocol.OutputProtocolException e) {
     __logMessageStringBuilder.append("(serialization error)");
 }
 logger.info(__logMessageStringBuilder.toString());
@@ -146,13 +151,13 @@ public %(return_type_name)s %(java_name)s(%(parameters)s)%(throws)s {
 %(service_call)s
 }""" % locals()
 
-    class Service(JavaService):
+    class Service(java_generator.JavaGenerator.Service):
         def java_name(self, boxed=False):
-            return 'Logging' + JavaService.java_name(self)
+            return 'Logging' + java_generator.JavaGenerator.Service.java_name(self)
 
         def _java_constructor(self):
             name = self.java_name()
-            service_qname = JavaService.java_qname(self)
+            service_qname = java_generator.JavaGenerator.Service.java_qname(self)
             return """\
 @com.google.inject.Inject
 public %(name)s(@com.google.inject.name.Named("impl") final %(service_qname)s service) {
@@ -161,7 +166,7 @@ public %(name)s(@com.google.inject.name.Named("impl") final %(service_qname)s se
 
         def _java_member_declarations(self):
             name = self.java_name()
-            service_qname = JavaService.java_qname(self)
+            service_qname = java_generator.JavaGenerator.Service.java_qname(self)
             return [
                 "private final static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(%(name)s.class);" % locals(),
                 "private final %(service_qname)s service;" % locals()
@@ -178,7 +183,7 @@ public %(name)s(@com.google.inject.name.Named("impl") final %(service_qname)s se
             sections.append("\n".join(self._java_member_declarations()))
             sections = "\n\n".join(indent(' ' * 4, sections))
 
-            service_qname = JavaService.java_qname(self)
+            service_qname = java_generator.JavaGenerator.Service.java_qname(self)
 
             return """\
 @com.google.inject.Singleton
