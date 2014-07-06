@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.Date;
 import java.util.Stack;
 
 import com.google.common.annotations.GwtIncompatible;
@@ -29,7 +30,8 @@ public class JdbcResultSetInputProtocol extends AbstractInputProtocol {
             final String fieldName = resultSetMetaData
                     .getColumnName(columnI + 1);
             Type fieldType;
-            switch (resultSetMetaData.getColumnType(columnI + 1)) {
+            final int columnType = resultSetMetaData.getColumnType(columnI + 1);
+            switch (columnType) {
             case Types.BIGINT:
                 fieldType = Type.I64;
                 break;
@@ -45,6 +47,9 @@ public class JdbcResultSetInputProtocol extends AbstractInputProtocol {
             case Types.SMALLINT:
                 fieldType = Type.I16;
                 break;
+            case Types.TIMESTAMP:
+                fieldType = Type.I64;
+                break;
             case Types.TINYINT:
                 fieldType = Type.BYTE;
                 break;
@@ -52,7 +57,8 @@ public class JdbcResultSetInputProtocol extends AbstractInputProtocol {
                 fieldType = Type.STRING;
                 break;
             default:
-                throw new UnsupportedOperationException();
+                throw new UnsupportedOperationException(String.format("%s: %d",
+                        fieldName, columnType));
             }
             fieldStack.push(new FieldBegin(fieldName, fieldType, (short) -1));
         }
@@ -83,6 +89,15 @@ public class JdbcResultSetInputProtocol extends AbstractInputProtocol {
     }
 
     @Override
+    public Date readDateTime() throws InputProtocolException {
+        try {
+            return resultSet.getTimestamp(fieldStack.peek().getName());
+        } catch (final SQLException e) {
+            throw new InputProtocolException(e);
+        }
+    }
+
+    @Override
     public double readDouble() throws InputProtocolException {
         try {
             return resultSet.getDouble(fieldStack.peek().getName());
@@ -93,7 +108,11 @@ public class JdbcResultSetInputProtocol extends AbstractInputProtocol {
 
     @Override
     public FieldBegin readFieldBegin() throws InputProtocolException {
-        return fieldStack.peek();
+        if (!fieldStack.isEmpty()) {
+            return fieldStack.peek();
+        } else {
+            return new FieldBegin();
+        }
     }
 
     @Override

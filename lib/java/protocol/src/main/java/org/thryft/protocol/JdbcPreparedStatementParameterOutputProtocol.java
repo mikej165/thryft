@@ -1,6 +1,5 @@
 package org.thryft.protocol;
 
-import java.sql.Timestamp;
 import java.util.Date;
 
 import com.google.common.annotations.GwtIncompatible;
@@ -8,7 +7,7 @@ import com.google.common.collect.ImmutableMap;
 
 @GwtIncompatible("")
 public final class JdbcPreparedStatementParameterOutputProtocol extends
-        AbstractOutputProtocol {
+AbstractOutputProtocol {
     public JdbcPreparedStatementParameterOutputProtocol() {
         this(ImmutableMap.<String, Object> of());
     }
@@ -44,7 +43,7 @@ public final class JdbcPreparedStatementParameterOutputProtocol extends
     @Override
     public void writeDateTime(final Date value) throws OutputProtocolException {
         if (depth == 1) {
-            builder.put(nextFieldName, new Timestamp(value.getTime()));
+            builder.put(nextFieldName, value);
         }
     }
 
