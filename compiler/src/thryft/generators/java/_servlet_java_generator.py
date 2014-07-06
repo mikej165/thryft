@@ -67,7 +67,7 @@ class _ServletJavaGenerator(java_generator.JavaGenerator):
             if headers is not None:
                 headers = \
                     lpad("\n", "\n".join(
-                        """%shttpServletResponse.setHeader("%s", "%s");""" % (variable_name_prefix, header_name, headers[header_name])
+                        """%shttpServletResponse.setHeader("%s", %s);""" % (variable_name_prefix, header_name, headers[header_name])
                         for header_name in sorted(headers.keys())))
             else:
                 headers = ''

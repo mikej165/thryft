@@ -36,12 +36,12 @@ from thryft.generators.java import _servlet_java_generator
 
 class JsonRpcServletJavaGenerator(_servlet_java_generator._ServletJavaGenerator):
     _RESPONSE_HEADERS = {
-        "Access-Control-Allow-Origin": "http://localhost:8080",
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
-        "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept",
-        "Access-Control-Allow-Credentials": "true",
-        "Access-Control-Expose-Headers": "Access-Control-Allow-Origin, Access-Control-Allow-Methods, Access-Control-Allow-Headers, Access-Control-Allow-Credentials",
+        "Access-Control-Allow-Origin": "\"http://localhost:8080\"",
+        "Access-Control-Allow-Origin": "org.thryft.native_.Url.builder(org.thryft.native_.Url.parse(httpServletRequest.getRequestURL().toString())).unsetPath().build().toString()",
+        "Access-Control-Allow-Methods": "\"POST, GET, OPTIONS\"",
+        "Access-Control-Allow-Headers": "\"Origin, X-Requested-With, Content-Type, Accept\"",
+        "Access-Control-Allow-Credentials": "\"true\"",
+        "Access-Control-Expose-Headers": "\"Access-Control-Allow-Origin, Access-Control-Allow-Methods, Access-Control-Allow-Headers, Access-Control-Allow-Credentials\"",
     }
 
     class Document(_servlet_java_generator._ServletJavaGenerator._Document):
@@ -121,7 +121,7 @@ public %(name)s(final %(service_qname)s service) {
             headers = JsonRpcServletJavaGenerator._RESPONSE_HEADERS
             headers = \
                 "\n".join(indent(' ' * 4,
-                    ["""httpServletResponse.setHeader("%s", "%s");""" % (header_name, headers[header_name])
+                    ["""httpServletResponse.setHeader("%s", %s);""" % (header_name, headers[header_name])
                      for header_name in sorted(headers.keys())]))
             return """\
 @Override

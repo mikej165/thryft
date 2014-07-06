@@ -11,6 +11,22 @@ import com.google.common.collect.Multimap;
 
 public final class Url extends Uri {
     public final static class Builder {
+        public Builder() {
+            authority = null;
+            host = null;
+            path = null;
+            port = -1;
+            scheme = null;
+        }
+
+        public Builder(final Url template) {
+            authority = template.rawAuthority;
+            host = template.rawHost;
+            path = template.rawPath.orNull();
+            port = template.port.or(-1);
+            scheme = template.getScheme();
+        }
+
         public Url build() {
             final StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append(checkNotNull(scheme));
@@ -71,15 +87,44 @@ public final class Url extends Uri {
             return this;
         }
 
-        private String authority = null;
-        private String host = null;
-        private String path = null;
-        private int port = -1;
-        private String scheme = null;
+        public Builder unsetAuthority() {
+            authority = null;
+            return this;
+        }
+
+        public Builder unsetHost() {
+            host = null;
+            return this;
+        }
+
+        public Builder unsetPath() {
+            path = null;
+            return this;
+        }
+
+        public Builder unsetPort() {
+            port = -1;
+            return this;
+        }
+
+        public Builder unsetScheme() {
+            scheme = null;
+            return this;
+        }
+
+        private String authority;
+        private String host;
+        private String path;
+        private int port;
+        private String scheme;
     }
 
     public static Builder builder() {
         return new Builder();
+    }
+
+    public static Builder builder(final Url template) {
+        return new Builder(template);
     }
 
     public static Url parse(final String url) {
