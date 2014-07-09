@@ -30,8 +30,8 @@
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
 
-from yutil import indent, upper_camelize
 from thryft.generators.java import _servlet_java_generator
+from yutil import indent, rpad, upper_camelize
 
 
 class JsonRpcServletJavaGenerator(_servlet_java_generator._ServletJavaGenerator):
@@ -50,6 +50,7 @@ class JsonRpcServletJavaGenerator(_servlet_java_generator._ServletJavaGenerator)
 
     class Function(_servlet_java_generator._ServletJavaGenerator._Function):
         def __repr__(self):
+            annotations = rpad("\n".join(self.java_annotations()), "\n")
             name = self.java_name()
             request_type_name = self.java_request_type().java_name()
             service_qname = self.parent.java_qname()
@@ -87,7 +88,7 @@ try {
             service_call = indent(' ' * 4, service_call)
 
             return """\
-private void __doPost%(upper_camelized_name)s(final javax.servlet.http.HttpServletRequest httpServletRequest, final javax.servlet.http.HttpServletResponse httpServletResponse, final org.thryft.protocol.JsonRpcInputProtocol iprot, final Object jsonRpcRequestId) throws java.io.IOException {%(read_request)s
+%(annotations)sprivate void __doPost%(upper_camelized_name)s(final javax.servlet.http.HttpServletRequest httpServletRequest, final javax.servlet.http.HttpServletResponse httpServletResponse, final org.thryft.protocol.JsonRpcInputProtocol iprot, final Object jsonRpcRequestId) throws java.io.IOException {%(read_request)s
     Object result = null;
 %(service_call)s
 

@@ -65,7 +65,7 @@ class RestServletJavaGenerator(_servlet_java_generator._ServletJavaGenerator):
             return _servlet_java_generator._ServletJavaGenerator._Function.java_request_type(self, java_suppress_warnings=tuple(), parameters=parameters)
 
         def __repr__(self):
-            annotations = []
+            annotations = self.java_annotations()
             name = '__do' + self.java_name()[0].upper() + self.java_name()[1:]
 
             sections = []

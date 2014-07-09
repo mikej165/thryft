@@ -85,6 +85,19 @@ class JavaFunction(Function, _JavaNamedConstruct):
 public %(name)s(final org.thryft.protocol.InputProtocol iprot) throws org.thryft.protocol.InputProtocolException {%(field_initializer)s
 }""" % locals()
 
+    def java_annotations(self):
+        annotations = []
+        for requires_x in ('authentication', 'guest', 'user'):
+            if 'requires_' + requires_x in self.annotations:
+                annotations.append('@org.apache.shiro.authz.annotation.Requires' + requires_x.capitalize())
+        for requires_x in ('permissions', 'roles'):
+            if 'requires_' + requires_x in self.annotations:
+                annotations.append("@org.apache.shiro.authz.annotation.Requires%s({ %s })" % (
+                    requires_x.capitalize(),
+                    ', '.join('"%s"' % x for x in self.annotations['requires_' + requires_x])
+                ))
+        return annotations
+
     def java_declaration(self):
         javadoc = self.java_doc()
 
