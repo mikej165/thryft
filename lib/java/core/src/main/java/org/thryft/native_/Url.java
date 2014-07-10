@@ -24,6 +24,7 @@ public final class Url extends Uri {
             host = template.rawHost;
             path = template.rawPath.orNull();
             port = template.port.or(-1);
+            queryString = template.rawQueryString.orNull();
             scheme = template.getScheme();
         }
 
@@ -45,6 +46,10 @@ public final class Url extends Uri {
             }
             if (path != null) {
                 stringBuilder.append(path);
+            }
+            if (queryString != null) {
+                stringBuilder.append('?');
+                stringBuilder.append(queryString);
             }
             final String string = stringBuilder.toString();
             return Url.parse(string);
@@ -82,6 +87,14 @@ public final class Url extends Uri {
             return this;
         }
 
+        public Builder setQueryString(final String queryString) {
+            checkNotNull(queryString);
+            if (!queryString.isEmpty()) {
+                this.queryString = queryString;
+            }
+            return this;
+        }
+
         public Builder setScheme(final String scheme) {
             this.scheme = checkNotEmpty(scheme);
             return this;
@@ -107,6 +120,11 @@ public final class Url extends Uri {
             return this;
         }
 
+        public Builder unsetQueryString() {
+            queryString = null;
+            return this;
+        }
+
         public Builder unsetScheme() {
             scheme = null;
             return this;
@@ -116,6 +134,7 @@ public final class Url extends Uri {
         private String host;
         private String path;
         private int port;
+        private String queryString;
         private String scheme;
     }
 
@@ -138,7 +157,7 @@ public final class Url extends Uri {
         rawHost = url.rawHost;
         port = url.port;
         rawPath = url.rawPath;
-        rawQuery = url.rawQuery;
+        rawQueryString = url.rawQueryString;
         rawFragment = url.rawFragment;
     }
 
@@ -171,9 +190,9 @@ public final class Url extends Uri {
 
         checkNotNull(rawQuery);
         if (rawQuery.isPresent() && !rawQuery.get().isEmpty()) {
-            this.rawQuery = rawQuery;
+            rawQueryString = rawQuery;
         } else {
-            this.rawQuery = Optional.absent();
+            rawQueryString = Optional.absent();
         }
 
         checkNotNull(rawFragment);
@@ -258,7 +277,7 @@ public final class Url extends Uri {
     }
 
     public Optional<String> getRawQueryString() {
-        return rawQuery;
+        return rawQueryString;
     }
 
     public Optional<String> getRawUserInfo() {
@@ -274,6 +293,6 @@ public final class Url extends Uri {
     private String rawHost;
     private Optional<String> rawPath;
     private Optional<Integer> port;
-    private Optional<String> rawQuery;
+    private Optional<String> rawQueryString;
     private Optional<String> rawUserInfo;
 }
