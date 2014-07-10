@@ -37,6 +37,7 @@ from thryft.generators.cpp.cpp_string_type import CppStringType
 from thryft.generators.java.java_native_type import JavaNativeType
 from thryft.generators.js.js_native_type import JsNativeType
 from thryft.generators.py.py_native_type import PyNativeType
+from thryft.generators.sql.sql_native_type import SqlNativeType
 
 
 class _EmailAddress(object):
@@ -137,3 +138,8 @@ class PyEmailAddress(_EmailAddress, PyNativeType):
     def py_write_protocol(self, value, depth=0):
         qname = self.py_qname()
         return "oprot.writeEmailAddress(%(value)s)" % locals()
+
+
+class SqlEmailAddress(_EmailAddress, SqlNativeType):
+    def sql_name(self):
+        return 'VARCHAR'
