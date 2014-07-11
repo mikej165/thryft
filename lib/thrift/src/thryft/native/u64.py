@@ -132,7 +132,7 @@ class PyU64(_U64, PyNativeType):
         return 'long'
 
     def py_read_protocol(self):
-        return 'iprot.readU64()'
+        return 'iprot.read_u64()'
 
     def py_read_protocol_throws(self):
         return ['TypeError']
@@ -142,4 +142,4 @@ class PyU64(_U64, PyNativeType):
 
     def py_write_protocol(self, value, depth=0):
         qname = self.py_qname()
-        return "oprot.writeU64(%(value)s)" % locals()
+        return "oprot.write_u64(%(value)s)" % locals()

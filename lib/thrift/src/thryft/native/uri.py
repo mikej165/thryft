@@ -130,14 +130,14 @@ class PyUri(_Uri, PyNativeType):
         return 'str'
 
     def py_read_protocol(self):
-        return 'iprot.readString()'
+        return 'iprot.read_string()'
 
     def py_read_protocol_throws(self):
         return []
 
     def py_write_protocol(self, value, depth=0):
         qname = self.py_qname()
-        return "oprot.writeUri(%(value)s)" % locals()
+        return "oprot.write_uri(%(value)s)" % locals()
 
 
 class SqlUri(_Uri, SqlNativeType):

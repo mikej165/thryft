@@ -64,7 +64,7 @@ if (typeof %(value)s !== "string") {
 class PyUrl(_PyUri):
     def py_write_protocol(self, value, depth=0):
         qname = self.py_qname()
-        return "oprot.writeUrl(%(value)s)" % locals()
+        return "oprot.write_url(%(value)s)" % locals()
 
 
 class SqlUrl(_SqlUri):

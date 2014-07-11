@@ -138,7 +138,7 @@ class PyU32(_U32, PyNativeType):
         return 'int'
 
     def py_read_protocol(self):
-        return 'iprot.readU32()'
+        return 'iprot.read_u32()'
 
     def py_read_protocol_throws(self):
         return ['TypeError']
@@ -148,4 +148,4 @@ class PyU32(_U32, PyNativeType):
 
     def py_write_protocol(self, value, depth=0):
         qname = self.py_qname()
-        return "oprot.writeU32(%(value)s)" % locals()
+        return "oprot.write_u32(%(value)s)" % locals()
