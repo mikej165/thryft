@@ -130,14 +130,14 @@ class PyEmailAddress(_EmailAddress, PyNativeType):
         return 'str'
 
     def py_read_protocol(self):
-        return 'iprot.readString()'
+        return 'iprot.read_string()'
 
     def py_read_protocol_throws(self):
         return []
 
     def py_write_protocol(self, value, depth=0):
         qname = self.py_qname()
-        return "oprot.writeEmailAddress(%(value)s)" % locals()
+        return "oprot.write_email_address(%(value)s)" % locals()
 
 
 class SqlEmailAddress(_EmailAddress, SqlNativeType):

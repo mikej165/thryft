@@ -57,7 +57,7 @@ class PyMixed(PyNativeType):
         return 'True'
 
     def py_read_protocol(self):
-        return 'iprot.readMixed()'
+        return 'iprot.read_mixed()'
 
     def py_write_protocol(self, value, depth=0):
-        return "oprot.writeMixed(%(value)s)" % locals()
+        return "oprot.write_mixed(%(value)s)" % locals()

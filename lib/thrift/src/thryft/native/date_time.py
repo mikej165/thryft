@@ -124,13 +124,13 @@ class PyDateTime(_DateTime, PyNativeType):
         return ['from datetime import datetime', 'from time import mktime']
 
     def py_read_protocol(self):
-        return 'iprot.readDateTime()'
+        return 'iprot.read_date_time()'
 
     def py_read_protocol_throws(self):
         return ['TypeError']
 
     def py_write_protocol(self, value, depth=0):
-        return "oprot.writeDateTime(%(value)s)" % locals()
+        return "oprot.write_date_time(%(value)s)" % locals()
 
 
 class SqlDateTime(_DateTime, SqlNativeType):

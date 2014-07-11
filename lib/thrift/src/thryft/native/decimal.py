@@ -141,7 +141,7 @@ class PyDecimal(_Decimal, PyNativeType):
         return 'Decimal'
 
     def py_read_protocol(self):
-        return 'iprot.readDecimal()'
+        return 'iprot.read_decimal()'
 
     def py_read_protocol_throws(self):
         return ['decimal.InvalidOperation', 'TypeError']
@@ -151,4 +151,4 @@ class PyDecimal(_Decimal, PyNativeType):
 
     def py_write_protocol(self, value, depth=0):
         qname = self.py_qname()
-        return "oprot.writeDecimal(%(value)s)" % locals()
+        return "oprot.write_decimal(%(value)s)" % locals()
