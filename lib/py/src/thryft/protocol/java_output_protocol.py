@@ -14,69 +14,69 @@ class JavaOutputProtocol(_StackedOutputProtocol):
             self.__output_protocol_stack = output_protocol_stack
             self._output_str_list = output_str_list
 
-        def writeBool(self, value):
-            self._writeValue("true" if value else "false")
+        def write_bool(self, value):
+            self._write_value("true" if value else "false")
             return self
 
         def writeDateTime(self, value):
-            self._writeValue("new java.util.Date(%sl)" % (long(mktime(value.timetuple())) * 1000l))
+            self._write_value("new java.util.Date(%sl)" % (long(mktime(value.timetuple())) * 1000l))
             return self
 
-        def writeFieldStop(self):
+        def write_field_stop(self):
             return self
 
-        def writeI32(self, value):
-            self._writeValue(str(value))
+        def write_i32(self, value):
+            self._write_value(str(value))
             return self
 
-        def writeI64(self, value):
-            self._writeValue(str(value))
+        def write_i64(self, value):
+            self._write_value(str(value))
             return self
 
-        def writeListBegin(self, *args, **kwds):
+        def write_list_begin(self, *args, **kwds):
             self._output_str_list.append('com.google.common.collect.ImmutableList.of(')
             self.__output_protocol_stack.append(JavaOutputProtocol._ListOutputProtocol(self.__output_protocol_stack, self._output_str_list))
             return self
 
-        def writeListEnd(self):
+        def write_list_end(self):
             self._output_str_list.pop()
             self._output_str_list.append(')')
             return self
 
-        def writeMapBegin(self, *args, **kwds):
+        def write_map_begin(self, *args, **kwds):
             self._output_str_list.append('com.google.common.collect.ImmutableMap.of(')
             self.__output_protocol_stack.append(JavaOutputProtocol._MapOutputProtocol(self.__output_protocol_stack, self._output_str_list))
             return self
 
-        def writeMapEnd(self):
+        def write_map_end(self):
             self._output_str_list.pop()
             self._output_str_list.append(')')
             return self
 
-        def writeNull(self):
+        def write_null(self):
             raise NotImplementedError
             return self
 
-        def writeString(self, value):
+        def write_string(self, value):
             ascii_value = value.encode('ascii', 'ignore')
             escaped_value = ascii_value.encode('string-escape').replace('"', '\\"')
-            self._writeValue("\"" + escaped_value + "\"")
+            self._write_value("\"" + escaped_value + "\"")
             return self
 
-        def writeStructBegin(self, name):
+        def write_struct_begin(self, name):
             self._output_str_list.append("%(name)s.builder()." % locals())
             self.__output_protocol_stack.append(JavaOutputProtocol._StructOutputProtocol(self.__output_protocol_stack, self._output_str_list))
             return self
 
-        def writeStructEnd(self):
+        def write_struct_end(self):
             self._output_str_list.append('build()')
             return self
 
-        def _writeValue(self, value):
+        def _write_value(self, value):
             raise NotImplementedError
 
     class _ListOutputProtocol(_OutputProtocol):
-        def _writeValue(self, value):
+        def _write_value(self, value):
             self._output_str_list.append(value)
             self._output_str_list.append(', ')
 
@@ -85,7 +85,7 @@ class JavaOutputProtocol(_StackedOutputProtocol):
             JavaOutputProtocol._OutputProtocol.__init__(self, *args, **kwds)
             self.__next_key = None
 
-        def _writeValue(self, value):
+        def _write_value(self, value):
             if self.__next_key is None:
                 self.__output_str_list.append(value)
             else:
@@ -103,7 +103,7 @@ class JavaOutputProtocol(_StackedOutputProtocol):
         def value(self):
             return self.__value
 
-        def _writeValue(self, value):
+        def _write_value(self, value):
             self.__value = value
             return self
 
@@ -112,15 +112,15 @@ class JavaOutputProtocol(_StackedOutputProtocol):
             JavaOutputProtocol._OutputProtocol.__init__(self, *args, **kwds)
             self.__next_field_name = None
 
-        def writeFieldBegin(self, name, *args, **kwds):
+        def write_field_begin(self, name, *args, **kwds):
             self.__next_field_name = name
             return self
 
-        def writeFieldEnd(self):
+        def write_field_end(self):
             self.__next_field_name = None
             return self
 
-        def _writeValue(self, value):
+        def _write_value(self, value):
             self._output_str_list.append("set%s(%s)." % (_upper_camelize(self.__next_field_name), value))
             return self
 

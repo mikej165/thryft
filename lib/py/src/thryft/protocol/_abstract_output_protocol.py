@@ -41,62 +41,62 @@ class _AbstractOutputProtocol(_OutputProtocol):
         return self
 
     def writeDateTime(self, date_time):
-        self.writeI64(long(mktime(date_time.timetuple())) * 1000l)
+        self.write_i64(long(mktime(date_time.timetuple())) * 1000l)
         return self
 
     def writeDecimal(self, decimal):
-        self.writeString(str(decimal))
+        self.write_string(str(decimal))
         return self
 
     def writeEmailAddress(self, email_address):
-        self.writeString(email_address)
+        self.write_string(email_address)
         return self
 
     def writeI16(self, i16):
-        self.writeI32(i16)
+        self.write_i32(i16)
         return self
 
     def writeMixed(self, object_):
         if object_ is None:
-            self.writeNull()
+            self.write_null()
         elif isinstance(object_, dict):
-            self.writeMapBegin(len(object_))
+            self.write_map_begin(len(object_))
             for key, value in object_.iteritems():
                 self.writeMixed(key)
                 self.writeMixed(value)
-            self.writeMapEnd()
+            self.write_map_end()
         elif isinstance(object_, float):
             self.writeDouble(object_)
         elif isinstance(object_, frozenset):
-            self.writeSetBegin(len(object_))
+            self.write_set_begin(len(object_))
             for item in object_:
                 self.writeMixed(item)
-            self.writeSetEnd()
+            self.write_set_end()
         elif isinstance(object_, int):
-            self.writeI32(object_)
+            self.write_i32(object_)
         elif isinstance(object_, (list, tuple)):
-            self.writeListBegin(len(object_))
+            self.write_list_begin(len(object_))
             for item in object_:
                 self.writeMixed(item)
-            self.writeListEnd()
+            self.write_list_end()
         elif isinstance(object_, long):
-            self.writeI64(object_)
+            self.write_i64(object_)
         elif isinstance(object_, basestring):
-            self.writeString(object_)
+            self.write_string(object_)
         elif hasattr(object_, 'write'):
             object_.write(self)
         else:
             raise TypeError(type(object_))
         return self
 
-    def writeSetBegin(self, *args, **kwds):
-        self.writeListBegin()
+    def write_set_begin(self, *args, **kwds):
+        self.write_list_begin()
         return self
 
-    def writeSetEnd(self):
-        self.writeListEnd()
+    def write_set_end(self):
+        self.write_list_end()
         return self
 
     def writeUrl(self, url):
-        self.writeString(url)
+        self.write_string(url)
         return self

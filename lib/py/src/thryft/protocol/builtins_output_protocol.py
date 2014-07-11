@@ -40,57 +40,57 @@ class BuiltinsOutputProtocol(_StackedOutputProtocol):
             thryft.protocol._output_protocol._OutputProtocol.__init__(self)
             self.__output_protocol_stack = output_protocol_stack
 
-        def writeBool(self, value):
-            self._writeValue(value)
+        def write_bool(self, value):
+            self._write_value(value)
             return self
 
-        def writeFieldStop(self):
+        def write_field_stop(self):
             return self
 
-        def writeI32(self, value):
-            self._writeValue(value)
+        def write_i32(self, value):
+            self._write_value(value)
             return self
 
-        def writeI64(self, value):
-            self._writeValue(value)
+        def write_i64(self, value):
+            self._write_value(value)
             return self
 
-        def writeListBegin(self, *args, **kwds):
+        def write_list_begin(self, *args, **kwds):
             list_ = []
-            self._writeValue(list_)
+            self._write_value(list_)
             self.__output_protocol_stack.append(BuiltinsOutputProtocol._ListOutputProtocol(list_, self.__output_protocol_stack))
             return self
 
-        def writeListEnd(self):
+        def write_list_end(self):
             return self
 
-        def writeMapBegin(self, *args, **kwds):
+        def write_map_begin(self, *args, **kwds):
             map_ = {}
-            self._writeValue(map_)
+            self._write_value(map_)
             self.__output_protocol_stack.append(BuiltinsOutputProtocol._MapOutputProtocol(map_, self.__output_protocol_stack))
             return self
 
-        def writeMapEnd(self):
+        def write_map_end(self):
             return self
 
-        def writeNull(self):
-            self._writeValue(None)
+        def write_null(self):
+            self._write_value(None)
             return self
 
-        def writeString(self, value):
-            self._writeValue(value)
+        def write_string(self, value):
+            self._write_value(value)
             return self
 
-        def writeStructBegin(self, *args, **kwds):
+        def write_struct_begin(self, *args, **kwds):
             struct = {}
-            self._writeValue(struct)
+            self._write_value(struct)
             self.__output_protocol_stack.append(BuiltinsOutputProtocol._StructOutputProtocol(struct, self.__output_protocol_stack))
             return self
 
-        def writeStructEnd(self):
+        def write_struct_end(self):
             return self
 
-        def _writeValue(self, value):
+        def _write_value(self, value):
             raise NotImplementedError
 
     class _ListOutputProtocol(_OutputProtocol):
@@ -100,7 +100,7 @@ class BuiltinsOutputProtocol(_StackedOutputProtocol):
             BuiltinsOutputProtocol._OutputProtocol.__init__(self, output_protocol_stack)
             self.__list = list_
 
-        def _writeValue(self, value):
+        def _write_value(self, value):
             self.__list.append(value)
 
     class _MapOutputProtocol(_OutputProtocol):
@@ -111,7 +111,7 @@ class BuiltinsOutputProtocol(_StackedOutputProtocol):
             self.__dict = dict_
             self.__next_key = None
 
-        def _writeValue(self, value):
+        def _write_value(self, value):
             if self.__next_key is None:
                 self.__next_key = value
             else:
@@ -128,7 +128,7 @@ class BuiltinsOutputProtocol(_StackedOutputProtocol):
         def value(self):
             return self.__value
 
-        def _writeValue(self, value):
+        def _write_value(self, value):
             self.__value = value
             return self
 
@@ -140,15 +140,15 @@ class BuiltinsOutputProtocol(_StackedOutputProtocol):
             self.__dict = dict_
             self.__next_field_name = None
 
-        def writeFieldBegin(self, name, *args, **kwds):
+        def write_field_begin(self, name, *args, **kwds):
             self.__next_field_name = name
             return self
 
-        def writeFieldEnd(self):
+        def write_field_end(self):
             self.__next_field_name = None
             return self
 
-        def _writeValue(self, value):
+        def _write_value(self, value):
             self.__dict[self.__next_field_name] = value
             return self
 

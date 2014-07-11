@@ -36,20 +36,20 @@ from thryft.protocol._input_protocol import _InputProtocol
 
 
 class _AbstractInputProtocol(_InputProtocol):
-    def readByte(self):
-        return self.readI16()
+    def read_byte(self):
+        return self.read_i16()
 
-    def readDateTime(self):
-        return datetime.fromtimestamp(self.readI64() / 1000.0)
+    def read_date_time(self):
+        return datetime.fromtimestamp(self.read_i64() / 1000.0)
 
-    def readDecimal(self):
-        return Decimal(self.readString())
+    def read_decimal(self):
+        return Decimal(self.read_string())
 
-    def readEmailAddress(self):
-        return self.readString()
+    def read_email_address(self):
+        return self.read_string()
 
-    def readI16(self):
-        return self.readI32()
+    def read_i16(self):
+        return self.read_i32()
 
-    def readUrl(self):
-        return self.readString()
+    def read_url(self):
+        return self.read_string()

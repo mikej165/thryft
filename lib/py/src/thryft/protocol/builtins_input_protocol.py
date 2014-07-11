@@ -44,22 +44,22 @@ class BuiltinsInputProtocol(_AbstractInputProtocol):
         def builtin_object(self):
             return self._builtin_object
 
-        def readFieldBegin(self):
+        def read_field_begin(self):
             if len(self._name_stack) == 0:
                 return None, 0, None  # STOP
             assert isinstance(self._name_stack[-1], basestring), self._name_stack
             return self._name_stack[-1], None, None
 
-        def readFieldEnd(self):
+        def read_field_end(self):
             self._name_stack.pop(-1)
 
-        def readValue(self, expected_type=None):
-            value = self._readValue()
+        def read_value(self, expected_type=None):
+            value = self._read_value()
             if expected_type is not None and not isinstance(value, expected_type):
                 raise TypeError("expected %s, got %s" % (expected_type, type(value)))
             return value
 
-        def _readValue(self):
+        def _read_value(self):
             raise NotImplementedError
 
     class _ListScope(_Scope):
@@ -68,7 +68,7 @@ class BuiltinsInputProtocol(_AbstractInputProtocol):
                 raise TypeError(type(list_))
             BuiltinsInputProtocol._Scope.__init__(self, list_, list(reversed(xrange(len(list_)))))
 
-        def _readValue(self):
+        def _read_value(self):
             return self.builtin_object[self._name_stack.pop(-1)]
 
     class _MapScope(_Scope):
@@ -78,7 +78,7 @@ class BuiltinsInputProtocol(_AbstractInputProtocol):
             BuiltinsInputProtocol._Scope.__init__(self, dict_, list(reversed(sorted(dict_.keys()))))
             self.__next_value_is_key = True
 
-        def _readValue(self):
+        def _read_value(self):
             if self.__next_value_is_key:
                 self.__next_value_is_key = False
                 return self._name_stack[-1]
@@ -87,7 +87,7 @@ class BuiltinsInputProtocol(_AbstractInputProtocol):
                 return self.builtin_object[self._name_stack.pop(-1)]
 
     class _StructScope(_MapScope):
-        def _readValue(self):
+        def _read_value(self):
             return self.builtin_object[self._name_stack[-1]]
 
     def __init__(self, root_builtin_object=None):
@@ -101,49 +101,49 @@ class BuiltinsInputProtocol(_AbstractInputProtocol):
             else:
                 raise TypeError(type(root_builtin_object))
 
-    def readFieldBegin(self):
-        return self._scope_stack[-1].readFieldBegin()
+    def read_field_begin(self):
+        return self._scope_stack[-1].read_field_begin()
 
-    def readBool(self):
-        return self._scope_stack[-1].readValue(bool)
+    def read_bool(self):
+        return self._scope_stack[-1].read_value(bool)
 
-    def readI32(self):
-        return int(self._scope_stack[-1].readValue((Decimal, int)))
+    def read_i32(self):
+        return int(self._scope_stack[-1].read_value((Decimal, int)))
 
-    def readI64(self):
-        return long(self._scope_stack[-1].readValue((Decimal, int, long)))
+    def read_i64(self):
+        return long(self._scope_stack[-1].read_value((Decimal, int, long)))
 
-    def readFieldEnd(self):
-        self._scope_stack[-1].readFieldEnd()
+    def read_field_end(self):
+        self._scope_stack[-1].read_field_end()
 
-    def readListBegin(self):
-        list_ = self._scope_stack[-1].readValue(list)
+    def read_list_begin(self):
+        list_ = self._scope_stack[-1].read_value(list)
         self._scope_stack.append(self._ListScope(list_))
         return None, len(list_)
 
-    def readListEnd(self):
+    def read_list_end(self):
         self._scope_stack.pop(-1)
 
-    def readMapBegin(self):
-        map_ = self._scope_stack[-1].readValue(dict)
+    def read_map_begin(self):
+        map_ = self._scope_stack[-1].read_value(dict)
         self._scope_stack.append(self._MapScope(map_))
         return None, None, len(map_)
 
-    def readMapEnd(self):
+    def read_map_end(self):
         self._scope_stack.pop(-1)
 
-    def readSetBegin(self):
-        return self.readListBegin()
+    def read_set_begin(self):
+        return self.read_list_begin()
 
-    def readSetEnd(self):
-        return self.readListEnd()
+    def read_set_end(self):
+        return self.read_list_end()
 
-    def readString(self):
-        return self._scope_stack[-1].readValue((Decimal, float, str, unicode))
+    def read_string(self):
+        return self._scope_stack[-1].read_value((Decimal, float, str, unicode))
 
-    def readStructBegin(self):
-        struct = self._scope_stack[-1].readValue(dict)
+    def read_struct_begin(self):
+        struct = self._scope_stack[-1].read_value(dict)
         self._scope_stack.append(self._StructScope(struct))
 
-    def readStructEnd(self):
+    def read_struct_end(self):
         self._scope_stack.pop(-1)
