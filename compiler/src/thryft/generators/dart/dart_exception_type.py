@@ -3,4 +3,5 @@ from thryft.generators.dart._dart_compound_type import _DartCompoundType
 
 
 class DartExceptionType(ExceptionType, _DartCompoundType):
-    pass
+    def __repr__(self):
+        return _DartCompoundType.__repr__(self)

@@ -6,7 +6,6 @@ struct TestStruct {
     // @js_view_metadata {"displayFormat": "some format", "editControl": "some control"}
     string stringfield;
 
-    // @faker Internet.email
     optional string emailfield;
 
     // @faker Name.first_name

@@ -171,7 +171,8 @@ from thryft.generators.%(language)s._%(language)s_compound_type import _%(langua
 
 
 class %(language_upper_camelized)sExceptionType(ExceptionType, _%(language_upper_camelized)sCompoundType):
-    pass
+    def __repr__(self):
+        return _%(language_upper_camelized)sCompoundType.__repr__(self)
 """ % locals()
 
 
@@ -286,7 +287,7 @@ class %(language_upper_camelized)sMapType(MapType, _%(language_upper_camelized)s
 
 
 files["%(language)s_native_type.py" % locals()] = """\
-from thryft.generator.service import NativeType
+from thryft.generator.native_type import NativeType
 from thryft.generators.%(language)s._%(language)s_type import _%(language_upper_camelized)sType
 
 
@@ -331,7 +332,8 @@ from thryft.generators.%(language)s._%(language)s_compound_type import _%(langua
 
 
 class %(language_upper_camelized)sStructType(StructType, _%(language_upper_camelized)sCompoundType):
-    pass
+    def __repr__(self):
+        return _%(language_upper_camelized)sCompoundType.__repr__(self)
 """ % locals()
 
 

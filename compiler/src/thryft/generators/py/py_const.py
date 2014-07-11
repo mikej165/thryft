@@ -35,12 +35,6 @@ from thryft.generators.py._py_named_construct import _PyNamedConstruct
 
 
 class PyConst(Const, _PyNamedConstruct):
-    def py_imports_definition(self):
-        return []
-
-    def py_imports_use(self):
-        return []
-
     def py_value(self):
         return self.type.py_literal(self.value)
 

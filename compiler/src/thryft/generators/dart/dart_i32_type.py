@@ -3,4 +3,5 @@ from thryft.generators.dart._dart_numeric_type import _DartNumericType
 
 
 class DartI32Type(I32Type, _DartNumericType):
-    pass
+    def dart_name(self):
+        return 'int'
