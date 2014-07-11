@@ -156,4 +156,4 @@ class BuiltinsOutputProtocol(_StackedOutputProtocol):
         _StackedOutputProtocol.__init__(self)
         self._output_protocol_stack.append(BuiltinsOutputProtocol._RootOutputProtocol(self._output_protocol_stack))
         if root_builtin_object is not None:
-            self.writeMixed(root_builtin_object)
+            self.write_mixed(root_builtin_object)

@@ -9,17 +9,17 @@ class _StackedOutputProtocol(_OutputProtocol):
     def write_bool(self, value):
         return self._output_protocol_stack[-1].write_bool(value)
 
-    def writeByte(self, value):
-        return self._output_protocol_stack[-1].writeByte(value)
+    def write_byte(self, value):
+        return self._output_protocol_stack[-1].write_byte(value)
 
-    def writeDateTime(self, value):
-        return self._output_protocol_stack[-1].writeDateTime(value)
+    def write_date_time(self, value):
+        return self._output_protocol_stack[-1].write_date_time(value)
 
-    def writeDecimal(self, value):
-        return self._output_protocol_stack[-1].writeDecimal(value)
+    def write_decimal(self, value):
+        return self._output_protocol_stack[-1].write_decimal(value)
 
-    def writeEmailAddress(self, value):
-        return self._output_protocol_stack[-1].writeEmailAddress(value)
+    def write_email_address(self, value):
+        return self._output_protocol_stack[-1].write_email_address(value)
 
     def write_field_begin(self, name, *args, **kwds):
         return self._output_protocol_stack[-1].write_field_begin(name, *args, **kwds)
@@ -30,14 +30,14 @@ class _StackedOutputProtocol(_OutputProtocol):
     def write_field_stop(self):
         return self._output_protocol_stack[-1].write_field_stop()
 
-    def writeI16(self, value):
-        return self._output_protocol_stack[-1].writeI16(value)
+    def write_i16(self, value):
+        return self._output_protocol_stack[-1].write_i16(value)
 
     def write_i32(self, value):
         return self._output_protocol_stack[-1].write_i32(value)
 
     def write_i64(self, value):
-        return self._output_protocol_stack[-1].writeI16(value)
+        return self._output_protocol_stack[-1].write_i16(value)
 
     def write_list_begin(self, *args, **kwds):
         return self._output_protocol_stack[-1].write_list_begin(*args, **kwds)
@@ -53,8 +53,8 @@ class _StackedOutputProtocol(_OutputProtocol):
         self._output_protocol_stack.pop(-1)
         return self._output_protocol_stack[-1].write_list_end()
 
-    def writeMixed(self, value):
-        return self._output_protocol_stack[-1].writeMixed(value)
+    def write_mixed(self, value):
+        return self._output_protocol_stack[-1].write_mixed(value)
 
     def write_null(self):
         return self._output_protocol_stack[-1].write_null()

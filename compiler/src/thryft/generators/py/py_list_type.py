@@ -46,4 +46,4 @@ class PyListType(ListType, _PySequenceType):
 
     def py_read_protocol(self):
         element_read_protocol = self.element_type.py_read_protocol()
-        return """tuple([%(element_read_protocol)s for _ in xrange(iprot.readListBegin()[1])] + (iprot.readListEnd() is None and []))""" % locals()
+        return """tuple([%(element_read_protocol)s for _ in xrange(iprot.read_list_begin()[1])] + (iprot.read_list_end() is None and []))""" % locals()

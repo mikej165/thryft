@@ -38,10 +38,5 @@ from thryft.protocol.builtins_output_protocol import BuiltinsOutputProtocol
 
 
 class JsonOutputProtocol(BuiltinsOutputProtocol):
-    def __init__(self, builtin_object=None):
-        BuiltinsOutputProtocol.__init__(self)
-        if builtin_object is not None:
-            self.writeMixed(builtin_object)
-
     def __str__(self):
         return json.dumps(self._output_protocol_stack[0].value)  # @UndefinedVariable

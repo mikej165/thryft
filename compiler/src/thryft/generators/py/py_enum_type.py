@@ -45,14 +45,14 @@ class PyEnumType(EnumType, _PyType):
 
     def py_read_protocol(self):
         qname = self.py_qname()
-        return "%(qname)s.value_of(iprot.readString().strip().upper())" % locals()
+        return "%(qname)s.value_of(iprot.read_string().strip().upper())" % locals()
 
     def py_read_protocol_throws(self):
         return ['TypeError']
 
     def py_write_protocol(self, value, depth=0):
         qname = self.py_qname()
-        return "oprot.writeString([attr for attr in dir(%(qname)s) if getattr(%(qname)s, attr) == %(value)s][0])" % locals()
+        return "oprot.write_string([attr for attr in dir(%(qname)s) if getattr(%(qname)s, attr) == %(value)s][0])" % locals()
 
     def __repr__(self):
         name = self.py_name()

@@ -36,48 +36,48 @@ from thryft.protocol._output_protocol import _OutputProtocol
 
 
 class _AbstractOutputProtocol(_OutputProtocol):
-    def writeByte(self, byte):
-        self.writeI16(byte)
+    def write_byte(self, byte):
+        self.write_i16(byte)
         return self
 
-    def writeDateTime(self, date_time):
+    def write_date_time(self, date_time):
         self.write_i64(long(mktime(date_time.timetuple())) * 1000l)
         return self
 
-    def writeDecimal(self, decimal):
+    def write_decimal(self, decimal):
         self.write_string(str(decimal))
         return self
 
-    def writeEmailAddress(self, email_address):
+    def write_email_address(self, email_address):
         self.write_string(email_address)
         return self
 
-    def writeI16(self, i16):
+    def write_i16(self, i16):
         self.write_i32(i16)
         return self
 
-    def writeMixed(self, object_):
+    def write_mixed(self, object_):
         if object_ is None:
             self.write_null()
         elif isinstance(object_, dict):
             self.write_map_begin(len(object_))
             for key, value in object_.iteritems():
-                self.writeMixed(key)
-                self.writeMixed(value)
+                self.write_mixed(key)
+                self.write_mixed(value)
             self.write_map_end()
         elif isinstance(object_, float):
             self.writeDouble(object_)
         elif isinstance(object_, frozenset):
             self.write_set_begin(len(object_))
             for item in object_:
-                self.writeMixed(item)
+                self.write_mixed(item)
             self.write_set_end()
         elif isinstance(object_, int):
             self.write_i32(object_)
         elif isinstance(object_, (list, tuple)):
             self.write_list_begin(len(object_))
             for item in object_:
-                self.writeMixed(item)
+                self.write_mixed(item)
             self.write_list_end()
         elif isinstance(object_, long):
             self.write_i64(object_)

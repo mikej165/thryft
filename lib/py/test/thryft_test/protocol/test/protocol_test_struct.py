@@ -477,7 +477,7 @@ class ProtocolTestStruct(object):
                 break
             elif ifield_name == 'binary_field':
                 try:
-                    init_kwds['binary_field'] = iprot.readBinary()
+                    init_kwds['binary_field'] = iprot.read_binary()
                 except (TypeError, ValueError,):
                     pass
             elif ifield_name == 'bool_field':
@@ -541,12 +541,12 @@ class ProtocolTestStruct(object):
                 init_kwds['struct_field'] = thryft_test.protocol.test.nested_protocol_test_struct.NestedProtocolTestStruct.read(iprot)
             elif ifield_name == 'u32_field':
                 try:
-                    init_kwds['u32_field'] = iprot.readU32()
+                    init_kwds['u32_field'] = iprot.read_u32()
                 except (TypeError,):
                     pass
             elif ifield_name == 'u64_field':
                 try:
-                    init_kwds['u64_field'] = iprot.readU64()
+                    init_kwds['u64_field'] = iprot.read_u64()
                 except (TypeError,):
                     pass
             elif ifield_name == 'url_field':
@@ -644,7 +644,7 @@ class ProtocolTestStruct(object):
 
         if self.binary_field is not None:
             oprot.write_field_begin('binary_field', 11, -1)
-            oprot.writeBinary(self.binary_field)
+            oprot.write_binary(self.binary_field)
             oprot.write_field_end()
 
         if self.bool_field is not None:
@@ -654,17 +654,17 @@ class ProtocolTestStruct(object):
 
         if self.date_time_field is not None:
             oprot.write_field_begin('date_time_field', 10, -1)
-            oprot.writeDateTime(self.date_time_field)
+            oprot.write_date_time(self.date_time_field)
             oprot.write_field_end()
 
         if self.decimal_field is not None:
             oprot.write_field_begin('decimal_field', 11, -1)
-            oprot.writeDecimal(self.decimal_field)
+            oprot.write_decimal(self.decimal_field)
             oprot.write_field_end()
 
         if self.email_address_field is not None:
             oprot.write_field_begin('email_address_field', 11, -1)
-            oprot.writeEmailAddress(self.email_address_field)
+            oprot.write_email_address(self.email_address_field)
             oprot.write_field_end()
 
         if self.enum_field is not None:
@@ -674,12 +674,12 @@ class ProtocolTestStruct(object):
 
         if self.i8_field is not None:
             oprot.write_field_begin('i8_field', 3, -1)
-            oprot.writeByte(self.i8_field)
+            oprot.write_byte(self.i8_field)
             oprot.write_field_end()
 
         if self.i16_field is not None:
             oprot.write_field_begin('i16_field', 6, -1)
-            oprot.writeI16(self.i16_field)
+            oprot.write_i16(self.i16_field)
             oprot.write_field_end()
 
         if self.i32_field is not None:
@@ -737,17 +737,17 @@ class ProtocolTestStruct(object):
 
         if self.u32_field is not None:
             oprot.write_field_begin('u32_field', 8, -1)
-            oprot.writeU32(self.u32_field)
+            oprot.write_u32(self.u32_field)
             oprot.write_field_end()
 
         if self.u64_field is not None:
             oprot.write_field_begin('u64_field', 10, -1)
-            oprot.writeU64(self.u64_field)
+            oprot.write_u64(self.u64_field)
             oprot.write_field_end()
 
         if self.url_field is not None:
             oprot.write_field_begin('url_field', 11, -1)
-            oprot.writeUrl(self.url_field)
+            oprot.write_url(self.url_field)
             oprot.write_field_end()
 
         oprot.write_field_stop()

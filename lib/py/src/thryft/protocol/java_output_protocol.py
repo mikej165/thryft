@@ -18,7 +18,7 @@ class JavaOutputProtocol(_StackedOutputProtocol):
             self._write_value("true" if value else "false")
             return self
 
-        def writeDateTime(self, value):
+        def write_date_time(self, value):
             self._write_value("new java.util.Date(%sl)" % (long(mktime(value.timetuple())) * 1000l))
             return self
 

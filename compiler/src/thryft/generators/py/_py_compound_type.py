@@ -206,8 +206,8 @@ def __ne__(self, other):
             return {'read': """\
 @classmethod
 def read(cls, iprot):
-    iprot.readStructBegin()
-    iprot.readStructEnd()
+    iprot.read_struct_begin()
+    iprot.read_struct_end()
     return cls()
 """ % locals()}
 
@@ -222,14 +222,14 @@ def read(cls, iprot):
 def read(cls, iprot):
     init_kwds = {}
 
-    iprot.readStructBegin()
+    iprot.read_struct_begin()
     while True:
-        ifield_name, ifield_type, _ifield_id = iprot.readFieldBegin()
+        ifield_name, ifield_type, _ifield_id = iprot.read_field_begin()
         if ifield_type == 0: # STOP
             break
 %(field_read_protocols)s
-        iprot.readFieldEnd()
-    iprot.readStructEnd()
+        iprot.read_field_end()
+    iprot.read_struct_end()
 
     return cls(**init_kwds)
 """ % locals()}
@@ -300,11 +300,11 @@ def %(method_name)s(self):
         name = self.py_name()
         return {'write': """\
 def write(self, oprot):
-    oprot.writeStructBegin('%(name)s')%(field_write_protocols)s
+    oprot.write_struct_begin('%(name)s')%(field_write_protocols)s
 
-    oprot.writeFieldStop()
+    oprot.write_field_stop()
 
-    oprot.writeStructEnd()
+    oprot.write_struct_end()
 
     return self
 """ % locals()}

@@ -30,6 +30,8 @@ public class ProtocolTestStruct implements org.thryft.Base<ProtocolTestStruct> {
         }
 
         protected ProtocolTestStruct _build(final com.google.common.base.Optional<byte[]> binaryField, final com.google.common.base.Optional<Boolean> boolField, final com.google.common.base.Optional<java.util.Date> dateTimeField, final com.google.common.base.Optional<java.math.BigDecimal> decimalField, final com.google.common.base.Optional<org.thryft.native_.EmailAddress> emailAddressField, final com.google.common.base.Optional<org.thryft.protocol.test.ProtocolTestEnum> enumField, final com.google.common.base.Optional<Byte> i8Field, final com.google.common.base.Optional<Short> i16Field, final com.google.common.base.Optional<Integer> i32Field, final com.google.common.base.Optional<Long> i64Field, final com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> stringListField, final com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> stringStringMapField, final int requiredI32Field, final String requiredStringField, final com.google.common.base.Optional<com.google.common.collect.ImmutableSet<String>> stringSetField, final com.google.common.base.Optional<String> stringField, final com.google.common.base.Optional<org.thryft.protocol.test.NestedProtocolTestStruct> structField, final com.google.common.base.Optional<com.google.common.primitives.UnsignedInteger> u32Field, final com.google.common.base.Optional<com.google.common.primitives.UnsignedLong> u64Field, final com.google.common.base.Optional<org.thryft.native_.Url> urlField) {
+            com.google.common.base.Preconditions.checkNotNull(requiredI32Field);
+            com.google.common.base.Preconditions.checkNotNull(requiredStringField);
             return new ProtocolTestStruct(binaryField, boolField, dateTimeField, decimalField, emailAddressField, enumField, i8Field, i16Field, i32Field, i64Field, stringListField, stringStringMapField, requiredI32Field, requiredStringField, stringSetField, stringField, structField, u32Field, u64Field, urlField);
         }
 
@@ -1350,64 +1352,7 @@ public class ProtocolTestStruct implements org.thryft.Base<ProtocolTestStruct> {
 
     @Override
     public String toString() {
-        final com.google.common.base.Objects.ToStringHelper helper = com.google.common.base.Objects.toStringHelper(this);
-        if (getBinaryField().isPresent()) {
-            helper.add("binary_field", getBinaryField());
-        }
-        if (getBoolField().isPresent()) {
-            helper.add("bool_field", getBoolField());
-        }
-        if (getDateTimeField().isPresent()) {
-            helper.add("date_time_field", getDateTimeField());
-        }
-        if (getDecimalField().isPresent()) {
-            helper.add("decimal_field", getDecimalField());
-        }
-        if (getEmailAddressField().isPresent()) {
-            helper.add("email_address_field", getEmailAddressField());
-        }
-        if (getEnumField().isPresent()) {
-            helper.add("enum_field", getEnumField());
-        }
-        if (getI8Field().isPresent()) {
-            helper.add("i8_field", getI8Field());
-        }
-        if (getI16Field().isPresent()) {
-            helper.add("i16_field", getI16Field());
-        }
-        if (getI32Field().isPresent()) {
-            helper.add("i32_field", getI32Field());
-        }
-        if (getI64Field().isPresent()) {
-            helper.add("i64_field", getI64Field());
-        }
-        if (getStringListField().isPresent()) {
-            helper.add("string_list_field", getStringListField());
-        }
-        if (getStringStringMapField().isPresent()) {
-            helper.add("string_string_map_field", getStringStringMapField());
-        }
-        helper.add("required_i32_field", getRequiredI32Field());
-        helper.add("required_string_field", getRequiredStringField());
-        if (getStringSetField().isPresent()) {
-            helper.add("string_set_field", getStringSetField());
-        }
-        if (getStringField().isPresent()) {
-            helper.add("string_field", getStringField());
-        }
-        if (getStructField().isPresent()) {
-            helper.add("struct_field", getStructField());
-        }
-        if (getU32Field().isPresent()) {
-            helper.add("u32_field", getU32Field());
-        }
-        if (getU64Field().isPresent()) {
-            helper.add("u64_field", getU64Field());
-        }
-        if (getUrlField().isPresent()) {
-            helper.add("url_field", getUrlField());
-        }
-        return helper.toString();
+        return com.google.common.base.Objects.toStringHelper(this).omitNullValues().add("binary_field", getBinaryField().orNull()).add("bool_field", getBoolField().orNull()).add("date_time_field", getDateTimeField().orNull()).add("decimal_field", getDecimalField().orNull()).add("email_address_field", getEmailAddressField().orNull()).add("enum_field", getEnumField().orNull()).add("i8_field", getI8Field().orNull()).add("i16_field", getI16Field().orNull()).add("i32_field", getI32Field().orNull()).add("i64_field", getI64Field().orNull()).add("string_list_field", getStringListField().orNull()).add("string_string_map_field", getStringStringMapField().orNull()).add("required_i32_field", getRequiredI32Field()).add("required_string_field", getRequiredStringField()).add("string_set_field", getStringSetField().orNull()).add("string_field", getStringField().orNull()).add("struct_field", getStructField().orNull()).add("u32_field", getU32Field().orNull()).add("u64_field", getU64Field().orNull()).add("url_field", getUrlField().orNull()).toString();
     }
 
     @Override

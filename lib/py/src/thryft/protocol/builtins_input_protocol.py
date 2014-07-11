@@ -32,118 +32,106 @@
 
 from decimal import Decimal
 from thryft.protocol._abstract_input_protocol import _AbstractInputProtocol
+from thryft.protocol._stacked_input_protocol import _StackedInputProtocol
 
 
-class BuiltinsInputProtocol(_AbstractInputProtocol):
-    class _Scope(object):
-        def __init__(self, builtin_object, name_stack):
-            self._builtin_object = builtin_object
-            self._name_stack = name_stack
+class BuiltinsInputProtocol(_StackedInputProtocol):
+    class _InputProtocol(_AbstractInputProtocol):
+        def __init__(self, input_protocol_stack):
+            _AbstractInputProtocol.__init__(self)
+            self.__input_protocol_stack = input_protocol_stack
 
-        @property
-        def builtin_object(self):
-            return self._builtin_object
+        def read_bool(self):
+            return self._read_value(bool)
 
-        def read_field_begin(self):
-            if len(self._name_stack) == 0:
-                return None, 0, None  # STOP
-            assert isinstance(self._name_stack[-1], basestring), self._name_stack
-            return self._name_stack[-1], None, None
+        def read_i32(self):
+            return int(self._read_value((Decimal, int, long)))
 
-        def read_field_end(self):
-            self._name_stack.pop(-1)
+        def read_i64(self):
+            return long(self._read_value((Decimal, int, long)))
 
-        def read_value(self, expected_type=None):
-            value = self._read_value()
+        def read_list_begin(self):
+            list_ = self._read_value(list)
+            self.__input_protocol_stack.append(BuiltinsInputProtocol._ListInputProtocol(list_, self.__input_protocol_stack))
+            return None, len(list_)
+
+        def read_map_begin(self):
+            map_ = self._read_value(dict)
+            self.__input_protocol_stack.append(BuiltinsInputProtocol._MapInputProtocol(map_, self.__input_protocol_stack))
+            return None, None, len(map_)
+
+        def read_string(self):
+            return self._read_value((Decimal, float, str, unicode))
+
+        def read_struct_begin(self):
+            struct = self.__input_protocol_stack[-1]._read_value(dict)
+            self.__input_protocol_stack.append(BuiltinsInputProtocol._StructInputProtocol(struct, self.__input_protocol_stack))
+
+        def _read_value(self, expected_type=None):
+            value = self._read_value_impl()
             if expected_type is not None and not isinstance(value, expected_type):
                 raise TypeError("expected %s, got %s" % (expected_type, type(value)))
             return value
 
-        def _read_value(self):
+        def _read_value_impl(self):
             raise NotImplementedError
 
-    class _ListScope(_Scope):
-        def __init__(self, list_):
+    class _ListInputProtocol(_InputProtocol):
+        def __init__(self, list_, input_protocol_stack):
+            BuiltinsInputProtocol._InputProtocol.__init__(self, input_protocol_stack)
             if not isinstance(list_, (list, tuple)):
                 raise TypeError(type(list_))
-            BuiltinsInputProtocol._Scope.__init__(self, list_, list(reversed(xrange(len(list_)))))
+            self.__index_stack = list(reversed(xrange(len(list_))))
+            self.__list = list_
 
-        def _read_value(self):
-            return self.builtin_object[self._name_stack.pop(-1)]
+        def _read_value_impl(self):
+            return self.__list[self.__index_stack.pop(-1)]
 
-    class _MapScope(_Scope):
-        def __init__(self, dict_):
+    class _MapInputProtocol(_InputProtocol):
+        def __init__(self, dict_, input_protocol_stack):
+            BuiltinsInputProtocol._InputProtocol.__init__(self, input_protocol_stack)
             if not isinstance(dict_, dict):
                 raise TypeError(type(dict_))
-            BuiltinsInputProtocol._Scope.__init__(self, dict_, list(reversed(sorted(dict_.keys()))))
+            self.__dict = dict_
+            self.__key_stack = list(reversed(sorted(dict_.keys())))
             self.__next_value_is_key = True
 
-        def _read_value(self):
+        def _read_value_impl(self):
             if self.__next_value_is_key:
                 self.__next_value_is_key = False
-                return self._name_stack[-1]
+                return self.__key_stack[-1]
             else:
                 self.__next_value_is_key = True
-                return self.builtin_object[self._name_stack.pop(-1)]
+                return self.__dict[self.__key_stack.pop(-1)]
 
-    class _StructScope(_MapScope):
-        def _read_value(self):
-            return self.builtin_object[self._name_stack[-1]]
+    class _RootInputProtocol(_InputProtocol):
+        def __init__(self, input_protocol_stack, root_builtin_object=None):
+            BuiltinsInputProtocol._InputProtocol.__init__(self, input_protocol_stack)
+            self.__root_builtin_object = root_builtin_object
+
+        def _read_value_impl(self):
+            return self.__root_builtin_object
+
+    class _StructInputProtocol(_InputProtocol):
+        def __init__(self, dict_, input_protocol_stack):
+            BuiltinsInputProtocol._InputProtocol.__init__(self, input_protocol_stack)
+            if not isinstance(dict_, dict):
+                raise TypeError(type(dict_))
+            self.__dict = dict_
+            self.__field_name_stack = list(reversed(sorted(dict_.keys())))
+
+        def read_field_begin(self):
+            if len(self.__field_name_stack) == 0:
+                return None, 0, None  # STOP
+            assert isinstance(self.__field_name_stack[-1], basestring), self.__field_name_stack
+            return self.__field_name_stack[-1], None, None
+
+        def read_field_end(self):
+            self.__field_name_stack.pop(-1)
+
+        def _read_value_impl(self):
+            return self.__dict[self.__field_name_stack[-1]]
 
     def __init__(self, root_builtin_object=None):
-        _AbstractInputProtocol.__init__(self)
-        self._scope_stack = []
-        if root_builtin_object is not None:
-            if isinstance(root_builtin_object, dict):
-                self._scope_stack.append(self._StructScope(root_builtin_object))
-            elif isinstance(root_builtin_object, (list, tuple)):
-                self._scope_stack.append(self._ListScope(root_builtin_object))
-            else:
-                raise TypeError(type(root_builtin_object))
-
-    def read_field_begin(self):
-        return self._scope_stack[-1].read_field_begin()
-
-    def read_bool(self):
-        return self._scope_stack[-1].read_value(bool)
-
-    def read_i32(self):
-        return int(self._scope_stack[-1].read_value((Decimal, int)))
-
-    def read_i64(self):
-        return long(self._scope_stack[-1].read_value((Decimal, int, long)))
-
-    def read_field_end(self):
-        self._scope_stack[-1].read_field_end()
-
-    def read_list_begin(self):
-        list_ = self._scope_stack[-1].read_value(list)
-        self._scope_stack.append(self._ListScope(list_))
-        return None, len(list_)
-
-    def read_list_end(self):
-        self._scope_stack.pop(-1)
-
-    def read_map_begin(self):
-        map_ = self._scope_stack[-1].read_value(dict)
-        self._scope_stack.append(self._MapScope(map_))
-        return None, None, len(map_)
-
-    def read_map_end(self):
-        self._scope_stack.pop(-1)
-
-    def read_set_begin(self):
-        return self.read_list_begin()
-
-    def read_set_end(self):
-        return self.read_list_end()
-
-    def read_string(self):
-        return self._scope_stack[-1].read_value((Decimal, float, str, unicode))
-
-    def read_struct_begin(self):
-        struct = self._scope_stack[-1].read_value(dict)
-        self._scope_stack.append(self._StructScope(struct))
-
-    def read_struct_end(self):
-        self._scope_stack.pop(-1)
+        _StackedInputProtocol.__init__(self)
+        self._input_protocol_stack.append(BuiltinsInputProtocol._RootInputProtocol(self._input_protocol_stack, root_builtin_object))

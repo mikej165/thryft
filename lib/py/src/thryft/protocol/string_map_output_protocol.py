@@ -36,8 +36,8 @@ from urllib import urlencode
 
 class StringMapOutputProtocol(BuiltinsOutputProtocol):
     def to_string_map(self):
-        if len(self._scope_stack) > 0:
-            return self.__to_string_map(self._scope_stack[0].builtin_object)
+        if len(self._output_protocol_stack) > 0:
+            return self.__to_string_map(self._output_protocol_stack[0].value)
         else:
             return {}
 

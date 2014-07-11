@@ -172,7 +172,7 @@ def __request(self, method, headers=None, **kwds):
         if value is None:
             continue
         params_oprot.writeFieldBegin(key)
-        params_oprot.writeMixed(value)
+        params_oprot.write_mixed(value)
         params_oprot.writeFieldEnd()
     request['params'] = params
     request_json = json.dumps(request)

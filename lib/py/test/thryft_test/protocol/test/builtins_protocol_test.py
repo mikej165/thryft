@@ -37,9 +37,9 @@ from thryft_test.protocol.test._protocol_test import _ProtocolTest
 
 class BuiltinsProtocolTest(_ProtocolTest):
     def _test(self, in_object):
-        obuiltin = []
-        oprot = BuiltinsOutputProtocol(obuiltin)
+        oprot = BuiltinsOutputProtocol()
         in_object.write(oprot)
+        obuiltin = oprot._output_protocol_stack[0].value
         iprot = BuiltinsInputProtocol(obuiltin)
         out_object = in_object.read(iprot)
         self.assertEquals(in_object, out_object)

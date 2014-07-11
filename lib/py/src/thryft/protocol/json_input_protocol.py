@@ -46,5 +46,4 @@ class JsonInputProtocol(BuiltinsInputProtocol):
             builtin_object = json
         else:
             raise TypeError(type(json))
-        builtin_object = [builtin_object]
         BuiltinsInputProtocol.__init__(self, builtin_object)

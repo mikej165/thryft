@@ -59,7 +59,7 @@ class PyMapType(MapType, _PyContainerType):
     def py_read_protocol(self):
         key_read_protocol = self.key_type.py_read_protocol()
         value_read_protocol = self.value_type.py_read_protocol()
-        return """dict([(%(key_read_protocol)s, %(value_read_protocol)s) for _ in xrange(iprot.readMapBegin()[2])] + (iprot.readMapEnd() is None and []))""" % locals()
+        return """dict([(%(key_read_protocol)s, %(value_read_protocol)s) for _ in xrange(iprot.read_map_begin()[2])] + (iprot.read_map_end() is None and []))""" % locals()
 
     def py_write_protocol(self, value, depth=0):
         key_ttype_id = self.key_type.thrift_ttype_id()
@@ -79,8 +79,8 @@ class PyMapType(MapType, _PyContainerType):
                 )
             )
         return """\
-oprot.writeMapBegin(%(key_ttype_id)u, len(%(value)s), %(value_ttype_id)u)
+oprot.write_map_begin(%(key_ttype_id)u, len(%(value)s), %(value_ttype_id)u)
 for __key%(depth)u, __value%(depth)u in %(value)s.iteritems():
 %(key_write_protocol)s
 %(value_write_protocol)s
-oprot.writeMapEnd()""" % locals()
+oprot.write_map_end()""" % locals()

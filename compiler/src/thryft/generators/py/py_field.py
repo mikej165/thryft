@@ -1,19 +1,19 @@
 #-------------------------------------------------------------------------------
 # Copyright (c) 2013, Minor Gordon
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
 # are met:
-# 
+#
 #     * Redistributions of source code must retain the above copyright
 #       notice, this list of conditions and the following disclaimer.
-# 
+#
 #     * Redistributions in binary form must reproduce the above copyright
 #       notice, this list of conditions and the following disclaimer in
 #       the documentation and/or other materials provided with the
 #       distribution.
-# 
+#
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
 # CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
 # INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
@@ -137,9 +137,9 @@ def %(setter_name)s(self, %(name)s):
                 depth=depth
             )
         write_protocol = """\
-oprot.writeFieldBegin('%(name)s', %(ttype_id)u, %(id_)d)
+oprot.write_field_begin('%(name)s', %(ttype_id)u, %(id_)d)
 %(write_protocol)s
-oprot.writeFieldEnd()
+oprot.write_field_end()
 """ % locals()
         if not self.required:
             write_protocol = indent(' ' * 4, write_protocol)

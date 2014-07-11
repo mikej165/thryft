@@ -51,5 +51,17 @@ class _AbstractInputProtocol(_InputProtocol):
     def read_i16(self):
         return self.read_i32()
 
+    def read_list_end(self):
+        pass
+
+    def read_set_begin(self):
+        return self.read_list_begin()
+
+    def read_set_end(self):
+        return self.read_list_end()
+
+    def read_struct_end(self):
+        pass
+
     def read_url(self):
         return self.read_string()
