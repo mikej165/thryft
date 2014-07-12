@@ -66,8 +66,14 @@ class CppUri(_Uri, CppNativeType):
 
 
 class DartUri(_Uri, DartNativeType):
+    def dart_from_core_type(self, value):
+        return "Uri.parse(%(value)s)" % locals()
+
     def dart_name(self):
         return 'Uri'
+
+    def dart_to_core_type(self, value):
+        return value + '.toString()'
 
 
 class JavaUri(_Uri, JavaNativeType):

@@ -66,8 +66,14 @@ class CppEmailAddress(_EmailAddress, CppNativeType):
 
 
 class DartEmailAddress(_EmailAddress, DartNativeType):
+    def dart_from_core_type(self, value):
+        return value
+
     def dart_name(self):
         return 'String'
+
+    def dart_to_core_type(self, value):
+        return value
 
 
 class JavaEmailAddress(_EmailAddress, JavaNativeType):

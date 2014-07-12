@@ -63,6 +63,9 @@ class CppDateTime(_DateTime, CppNativeType):
 
 
 class DartDateTime(_DateTime, DartNativeType):
+    def dart_from_core_type(self, value):
+        return "new DateTime.fromMillisecondsSinceEpoch(%(value)s)" % locals()
+
     def _dart_imports_definition(self, caller_stack):
         return []
 
@@ -71,6 +74,9 @@ class DartDateTime(_DateTime, DartNativeType):
 
     def dart_name(self):
         return 'DateTime'
+
+    def dart_to_core_type(self, value):
+        return value + '.millisecondsSinceEpoch'
 
 
 class JavaDateTime(_DateTime, JavaNativeType):
