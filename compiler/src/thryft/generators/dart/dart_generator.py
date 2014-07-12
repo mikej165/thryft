@@ -1,12 +1,19 @@
 from thryft.generator.generator import Generator
+from thryft.generators.dart.dart_document import DartDocument
 
 
 class DartGenerator(Generator):
+    def __init__(self, package_name):
+        Generator.__init__(self)
+        self.__package_name = package_name
+
+    def Document(self, **kwds):
+        return DartDocument(self.__package_name, **kwds)
+
     from thryft.generators.dart.dart_binary_type import DartBinaryType as BinaryType  # @UnusedImport
     from thryft.generators.dart.dart_bool_type import DartBoolType as BoolType  # @UnusedImport
     from thryft.generators.dart.dart_byte_type import DartByteType as ByteType  # @UnusedImport
     from thryft.generators.dart.dart_const import DartConst as Const  # @UnusedImport
-    from thryft.generators.dart.dart_document import DartDocument as Document  # @UnusedImport
     from thryft.generators.dart.dart_double_type import DartDoubleType as DoubleType  # @UnusedImport
     from thryft.generators.dart.dart_enum_type import DartEnumType as EnumType  # @UnusedImport
     from thryft.generators.dart.dart_exception_type import DartExceptionType as ExceptionType  # @UnusedImport

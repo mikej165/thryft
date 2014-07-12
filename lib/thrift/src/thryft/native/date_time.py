@@ -34,6 +34,7 @@ from thryft.generator.i64_type import I64Type
 from thryft.generator.native_type import NativeType
 from thryft.generators.cpp.cpp_i64_type import CppI64Type
 from thryft.generators.cpp.cpp_native_type import CppNativeType
+from thryft.generators.dart.dart_native_type import DartNativeType
 from thryft.generators.java.java_native_type import JavaNativeType
 from thryft.generators.js.js_native_type import JsNativeType
 from thryft.generators.py.py_native_type import PyNativeType
@@ -59,6 +60,17 @@ class CppDateTime(_DateTime, CppNativeType):
 
     def cpp_read_protocol(self, *args, **kwds):
         return self.__cpp_i64_type.cpp_read_protocol(*args, **kwds)
+
+
+class DartDateTime(_DateTime, DartNativeType):
+    def _dart_imports_definition(self, caller_stack):
+        return []
+
+    def _dart_imports_use(self, caller_stack):
+        return []
+
+    def dart_name(self):
+        return 'DateTime'
 
 
 class JavaDateTime(_DateTime, JavaNativeType):

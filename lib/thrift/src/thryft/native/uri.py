@@ -34,6 +34,7 @@ from thryft.generator.native_type import NativeType
 from thryft.generator.string_type import StringType
 from thryft.generators.cpp.cpp_native_type import CppNativeType
 from thryft.generators.cpp.cpp_string_type import CppStringType
+from thryft.generators.dart.dart_native_type import DartNativeType
 from thryft.generators.java.java_native_type import JavaNativeType
 from thryft.generators.js.js_native_type import JsNativeType
 from thryft.generators.py.py_native_type import PyNativeType
@@ -62,6 +63,11 @@ class CppUri(_Uri, CppNativeType):
 
     def cpp_read_protocol(self, *args, **kwds):
         return self.__cpp_string_type.cpp_read_protocol(*args, **kwds)
+
+
+class DartUri(_Uri, DartNativeType):
+    def dart_name(self):
+        return 'Uri'
 
 
 class JavaUri(_Uri, JavaNativeType):

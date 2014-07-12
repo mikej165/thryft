@@ -4,6 +4,9 @@ from yutil import indent
 
 
 class DartEnumType(EnumType, _DartType):
+    def _dart_imports_use(self, caller_stack):
+        return self._parent_document().dart_imports_use(caller_stack)
+
     def __repr__(self):
         name = self.dart_name()
         enumerator_definitions = \

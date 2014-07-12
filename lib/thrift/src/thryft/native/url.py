@@ -32,10 +32,14 @@
 
 import os.path
 import sys; sys.path.append(os.path.dirname(__file__))
-from uri import CppUri as _CppUri, JavaUri as _JavaUri, JsUri as _JsUri, PyUri as _PyUri, SqlUri as _SqlUri
+from uri import CppUri as _CppUri, DartUri as _DartUri, JavaUri as _JavaUri, JsUri as _JsUri, PyUri as _PyUri, SqlUri as _SqlUri
 
 
 class CppUrl(_CppUri):
+    pass
+
+
+class DartUrl(_DartUri):
     pass
 
 
