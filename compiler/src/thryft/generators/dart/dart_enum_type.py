@@ -25,7 +25,7 @@ class DartEnumType(EnumType, _DartType):
                for enumerator in self.enumerators
             ))
         enumerator_name_cases = \
-            "\n".join(indent(' ' * 2, (
+            "\n".join(indent(' ' * 4, (
                 "case \"%s\": return %s;" % (
                 enumerator.name, enumerator.name
                 )
