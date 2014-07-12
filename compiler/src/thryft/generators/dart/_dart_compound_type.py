@@ -71,7 +71,8 @@ String toJson() {
         for field in self.fields:
             field_name = field.name
             field_dart_name = field.dart_name()
-            field_put = """map["%(field_name)s"] = this.%(field_dart_name)s;""" % locals()
+            field_to_core_type = field.type.dart_to_core_type("this.%(field_dart_name)s" % locals())
+            field_put = """map["%(field_name)s"] = %(field_to_core_type)s;""" % locals()
             if not field.required:
                 field_put = """\
 if (this.%(field_dart_name)s != null) {
