@@ -1,4 +1,4 @@
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 # Copyright (c) 2013, Minor Gordon
 # All rights reserved.
 #
@@ -28,7 +28,7 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
 # OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 # OF SUCH DAMAGE.
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 
 from thryft.generator._base_type import _BaseType
 from thryft.generators.py import py_generator
@@ -70,7 +70,7 @@ def _%(name)s(self, **kwds):
                     'import re',
                     'import urllib2',
                     ] + \
-                   PyService.py_imports_definition(self)
+                    PyService.py_imports_definition(self)
 
         def __py_methods(self):
             methods = {}
@@ -166,15 +166,16 @@ def __init__(self, api_url, headers=None):
 def __request(self, method, headers=None, **kwds):
     request = {'jsonrpc': '2.0', 'method': method}
     request['id'] = id(request)
-    params = {}
-    params_oprot = thryft.protocol.builtins_output_protocol.BuiltinsOutputProtocol(params)
+    params_oprot = thryft.protocol.builtins_output_protocol.BuiltinsOutputProtocol()
+    params_oprot.write_struct_begin()
     for key, value in kwds.iteritems():
         if value is None:
             continue
         params_oprot.write_field_begin(key)
         params_oprot.write_mixed(value)
         params_oprot.write_field_end()
-    request['params'] = params
+    params_oprot.write_struct_end()
+    request['params'] = params_oprot.value
     request_json = json.dumps(request)
 
     if headers is not None:

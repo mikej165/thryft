@@ -42,53 +42,45 @@ class BuiltinsOutputProtocol(_StackedOutputProtocol):
 
         def write_bool(self, value):
             self._write_value(value)
-            return self
 
         def write_field_stop(self):
-            return self
+            pass
 
         def write_i32(self, value):
             self._write_value(value)
-            return self
 
         def write_i64(self, value):
             self._write_value(value)
-            return self
 
         def write_list_begin(self, *args, **kwds):
             list_ = []
             self._write_value(list_)
             self.__output_protocol_stack.append(BuiltinsOutputProtocol._ListOutputProtocol(list_, self.__output_protocol_stack))
-            return self
 
         def write_list_end(self):
-            return self
+            pass
 
         def write_map_begin(self, *args, **kwds):
             map_ = {}
             self._write_value(map_)
             self.__output_protocol_stack.append(BuiltinsOutputProtocol._MapOutputProtocol(map_, self.__output_protocol_stack))
-            return self
 
         def write_map_end(self):
-            return self
+            pass
 
         def write_null(self):
             self._write_value(None)
-            return self
 
         def write_string(self, value):
             self._write_value(value)
-            return self
 
         def write_struct_begin(self, *args, **kwds):
             struct = {}
             self._write_value(struct)
             self.__output_protocol_stack.append(BuiltinsOutputProtocol._StructOutputProtocol(struct, self.__output_protocol_stack))
-            return self
 
         def write_struct_end(self):
-            return self
+            pass
 
         def _write_value(self, value):
             raise NotImplementedError
@@ -117,7 +109,6 @@ class BuiltinsOutputProtocol(_StackedOutputProtocol):
             else:
                 self.__dict[self.__next_key] = value
                 self.__next_key = None
-            return self
 
     class _RootOutputProtocol(_OutputProtocol):
         def __init__(self, *args, **kwds):
@@ -130,7 +121,6 @@ class BuiltinsOutputProtocol(_StackedOutputProtocol):
 
         def _write_value(self, value):
             self.__value = value
-            return self
 
     class _StructOutputProtocol(_MapOutputProtocol):
         def __init__(self, dict_, output_protocol_stack):
@@ -142,18 +132,17 @@ class BuiltinsOutputProtocol(_StackedOutputProtocol):
 
         def write_field_begin(self, name, *args, **kwds):
             self.__next_field_name = name
-            return self
 
         def write_field_end(self):
             self.__next_field_name = None
-            return self
 
         def _write_value(self, value):
             self.__dict[self.__next_field_name] = value
-            return self
 
-    def __init__(self, root_builtin_object=None):
+    def __init__(self):
         _StackedOutputProtocol.__init__(self)
         self._output_protocol_stack.append(BuiltinsOutputProtocol._RootOutputProtocol(self._output_protocol_stack))
-        if root_builtin_object is not None:
-            self.write_mixed(root_builtin_object)
+
+    @property
+    def value(self):
+        return self._output_protocol_stack[0].value

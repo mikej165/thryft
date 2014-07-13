@@ -16,61 +16,46 @@ class JavaOutputProtocol(_StackedOutputProtocol):
 
         def write_bool(self, value):
             self._write_value("true" if value else "false")
-            return self
 
         def write_date_time(self, value):
             self._write_value("new java.util.Date(%sl)" % (long(mktime(value.timetuple())) * 1000l))
-            return self
-
-        def write_field_stop(self):
-            return self
 
         def write_i32(self, value):
             self._write_value(str(value))
-            return self
 
         def write_i64(self, value):
             self._write_value(str(value))
-            return self
 
         def write_list_begin(self, *args, **kwds):
             self._output_str_list.append('com.google.common.collect.ImmutableList.of(')
             self.__output_protocol_stack.append(JavaOutputProtocol._ListOutputProtocol(self.__output_protocol_stack, self._output_str_list))
-            return self
 
         def write_list_end(self):
             self._output_str_list.pop()
             self._output_str_list.append(')')
-            return self
 
         def write_map_begin(self, *args, **kwds):
             self._output_str_list.append('com.google.common.collect.ImmutableMap.of(')
             self.__output_protocol_stack.append(JavaOutputProtocol._MapOutputProtocol(self.__output_protocol_stack, self._output_str_list))
-            return self
 
         def write_map_end(self):
             self._output_str_list.pop()
             self._output_str_list.append(')')
-            return self
 
         def write_null(self):
             raise NotImplementedError
-            return self
 
         def write_string(self, value):
             ascii_value = value.encode('ascii', 'ignore')
             escaped_value = ascii_value.encode('string-escape').replace('"', '\\"')
             self._write_value("\"" + escaped_value + "\"")
-            return self
 
         def write_struct_begin(self, name):
             self._output_str_list.append("%(name)s.builder()." % locals())
             self.__output_protocol_stack.append(JavaOutputProtocol._StructOutputProtocol(self.__output_protocol_stack, self._output_str_list))
-            return self
 
         def write_struct_end(self):
             self._output_str_list.append('build()')
-            return self
 
         def _write_value(self, value):
             raise NotImplementedError
@@ -92,7 +77,6 @@ class JavaOutputProtocol(_StackedOutputProtocol):
                 self.__output_str_list.append(value)
                 self.__next_key = None
             self.__output_str_list.append(', ')
-            return self
 
     class _RootOutputProtocol(_OutputProtocol):
         def __init__(self, *args, **kwds):
@@ -105,7 +89,6 @@ class JavaOutputProtocol(_StackedOutputProtocol):
 
         def _write_value(self, value):
             self.__value = value
-            return self
 
     class _StructOutputProtocol(_OutputProtocol):
         def __init__(self, *args, **kwds):
@@ -114,15 +97,15 @@ class JavaOutputProtocol(_StackedOutputProtocol):
 
         def write_field_begin(self, name, *args, **kwds):
             self.__next_field_name = name
-            return self
 
         def write_field_end(self):
             self.__next_field_name = None
-            return self
+
+        def write_field_stop(self):
+            pass
 
         def _write_value(self, value):
             self._output_str_list.append("set%s(%s)." % (_upper_camelize(self.__next_field_name), value))
-            return self
 
     def __init__(self):
         _StackedOutputProtocol.__init__(self)

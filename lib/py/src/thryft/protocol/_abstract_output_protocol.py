@@ -38,23 +38,18 @@ from thryft.protocol._output_protocol import _OutputProtocol
 class _AbstractOutputProtocol(_OutputProtocol):
     def write_byte(self, byte):
         self.write_i16(byte)
-        return self
 
     def write_date_time(self, date_time):
         self.write_i64(long(mktime(date_time.timetuple())) * 1000l)
-        return self
 
     def write_decimal(self, decimal):
         self.write_string(str(decimal))
-        return self
 
     def write_email_address(self, email_address):
         self.write_string(email_address)
-        return self
 
     def write_i16(self, i16):
         self.write_i32(i16)
-        return self
 
     def write_mixed(self, object_):
         if object_ is None:
@@ -87,16 +82,15 @@ class _AbstractOutputProtocol(_OutputProtocol):
             object_.write(self)
         else:
             raise TypeError(type(object_))
-        return self
 
     def write_set_begin(self, *args, **kwds):
         self.write_list_begin()
-        return self
 
     def write_set_end(self):
         self.write_list_end()
-        return self
 
-    def writeUrl(self, url):
+    def write_uri(self, uri):
+        self.write_string(uri)
+
+    def write_url(self, url):
         self.write_string(url)
-        return self
