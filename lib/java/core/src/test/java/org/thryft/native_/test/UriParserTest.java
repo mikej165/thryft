@@ -6,19 +6,18 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 import org.thryft.native_.Uri;
-import org.thryft.native_.UriParser;
 
 public class UriParserTest {
     @Test
     public void testParseMailtoUrl() {
-        final Uri uri = UriParser.parseUri("mailto:test@example.com");
+        final Uri uri = Uri.parse("mailto:test@example.com");
         assertThat(uri.getScheme(), equalTo("mailto"));
         assertThat(uri.getPath().get(), equalTo("test@example.com"));
     }
 
     @Test
     public void testParseScheme_user_passwordHost() {
-        final Uri uri = UriParser.parseUri("http://minorg:minorg@localhost");
+        final Uri uri = Uri.parse("http://minorg:minorg@localhost");
         assertThat(uri.getScheme(), equalTo("http"));
         assertThat(uri.getOptionalAuthority().get().getHost(),
                 equalTo("localhost"));
@@ -28,7 +27,7 @@ public class UriParserTest {
 
     @Test
     public void testParseScheme_userHost() {
-        final Uri uri = UriParser.parseUri("http://minorg@localhost");
+        final Uri uri = Uri.parse("http://minorg@localhost");
         assertThat(uri.getScheme(), equalTo("http"));
         assertThat(uri.getOptionalAuthority().get().getHost(),
                 equalTo("localhost"));
@@ -38,7 +37,7 @@ public class UriParserTest {
 
     @Test
     public void testParseSchemeHost1() {
-        final Uri uri = UriParser.parseUri("http://localhost/1/2/3");
+        final Uri uri = Uri.parse("http://localhost/1/2/3");
         assertThat(uri.getScheme(), equalTo("http"));
         assertThat(uri.getOptionalAuthority().get().getHost(),
                 equalTo("localhost"));
@@ -46,7 +45,7 @@ public class UriParserTest {
 
     @Test
     public void testParseSchemeHost2() {
-        final Uri uri = UriParser.parseUri("http://localhost");
+        final Uri uri = Uri.parse("http://localhost");
         assertThat(uri.getScheme(), equalTo("http"));
         assertThat(uri.getOptionalAuthority().get().getHost(),
                 equalTo("localhost"));
@@ -55,38 +54,38 @@ public class UriParserTest {
 
     @Test
     public void testParseSchemeHostPath1() {
-        final Uri uri = UriParser.parseUri("http://localhost/mydir/");
+        final Uri uri = Uri.parse("http://localhost/mydir/");
         assertThat(uri.getPath().get(), equalTo("/mydir/"));
     }
 
     @Test
     public void testParseSchemeHostPath2() {
-        final Uri uri = UriParser.parseUri("http://localhost/mypath");
+        final Uri uri = Uri.parse("http://localhost/mypath");
         assertThat(uri.getPath().get(), equalTo("/mypath"));
     }
 
     @Test
     public void testParseSchemeHostPath3() {
-        final Uri uri = UriParser.parseUri("http://localhost/mydir/mypath");
+        final Uri uri = Uri.parse("http://localhost/mydir/mypath");
         assertThat(uri.getPath().get(), equalTo("/mydir/mypath"));
     }
 
     @Test
     public void testParseSchemeHostPathQuery1() {
-        final Uri uri = UriParser.parseUri("http://localhost/mypath?key=value");
+        final Uri uri = Uri.parse("http://localhost/mypath?key=value");
         assertThat(uri.getPath().get(), equalTo("/mypath"));
     }
 
     @Test
     public void testParseSchemeHostPathQuery2() {
-        final Uri uri = UriParser
-                .parseUri("http://localhost/mypath?key1=value1&key2=value2");
+        final Uri uri = Uri
+                .parse("http://localhost/mypath?key1=value1&key2=value2");
         assertThat(uri.getPath().get(), equalTo("/mypath"));
     }
 
     @Test
     public void testParseSchemeHostPort1() {
-        final Uri uri = UriParser.parseUri("http://*:80");
+        final Uri uri = Uri.parse("http://*:80");
         assertThat(uri.getScheme(), equalTo("http"));
         assertThat(uri.getOptionalAuthority().get().getHost(), equalTo("*"));
         assertFalse(uri.getPath().isPresent());
@@ -94,7 +93,7 @@ public class UriParserTest {
 
     @Test
     public void testParseSchemeHostPort2() {
-        final Uri uri = UriParser.parseUri("http://localhost:1");
+        final Uri uri = Uri.parse("http://localhost:1");
         assertThat(uri.getScheme(), equalTo("http"));
         assertThat(uri.getOptionalAuthority().get().getHost(),
                 equalTo("localhost"));
@@ -103,7 +102,7 @@ public class UriParserTest {
 
     @Test
     public void testParseSchemeHostPort3() {
-        final Uri uri = UriParser.parseUri("http://localhost:1");
+        final Uri uri = Uri.parse("http://localhost:1");
         assertThat(uri.getScheme(), equalTo("http"));
         assertThat(uri.getOptionalAuthority().get().getHost(),
                 equalTo("localhost"));
@@ -113,7 +112,7 @@ public class UriParserTest {
 
     @Test
     public void testParseSchemeHostPort4() {
-        final Uri uri = UriParser.parseUri("http://localhost:8080");
+        final Uri uri = Uri.parse("http://localhost:8080");
         assertThat(uri.getScheme(), equalTo("http"));
         assertThat(uri.getOptionalAuthority().get().getHost(),
                 equalTo("localhost"));

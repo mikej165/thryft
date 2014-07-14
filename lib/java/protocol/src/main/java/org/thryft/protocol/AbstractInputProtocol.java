@@ -39,7 +39,6 @@ import java.util.Date;
 
 import org.thryft.native_.EmailAddress;
 import org.thryft.native_.Uri;
-import org.thryft.native_.UriParser;
 import org.thryft.native_.Url;
 
 import com.google.common.annotations.GwtIncompatible;
@@ -157,11 +156,11 @@ public abstract class AbstractInputProtocol implements InputProtocol {
 
     @Override
     public Uri readUri() throws InputProtocolException {
-        return UriParser.parseUri(readString());
+        return Uri.parse(readString());
     }
 
     @Override
     public Url readUrl() throws InputProtocolException {
-        return (Url) UriParser.parseUri(readString());
+        return Url.parse(readString());
     }
 }

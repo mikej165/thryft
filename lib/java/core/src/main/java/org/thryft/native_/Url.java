@@ -1,5 +1,14 @@
 package org.thryft.native_;
 
-public interface Url extends Uri {
-    public Authority getAuthority();
+public abstract class Url extends Uri {
+    public static Url parse(final String url) {
+        return (Url) UriParser.parseUri(url);
+    }
+
+    protected Url(final String scheme, final String url) {
+        super(scheme, url);
+    }
+
+    public abstract Authority getAuthority();
+
 }

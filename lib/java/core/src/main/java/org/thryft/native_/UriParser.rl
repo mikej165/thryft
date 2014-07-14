@@ -2,8 +2,8 @@ package org.thryft.native_;
 
 import com.google.common.base.Optional;
 
-public final class UriParser {
-    public static Uri parseUri(final String uri) {
+final class UriParser {
+    static Uri parseUri(final String uri) {
         if (uri == null) {
             throw new NullPointerException();
         } else if (uri.startsWith("urn:")) {
@@ -40,7 +40,7 @@ public final class UriParser {
         switch (scheme) {
         case "http":
         case "https":
-            return new HttpUrl(scheme, authority, path, query, fragment, uri);
+            return new GenericUrl(scheme, authority, path, query, fragment, uri);
         default:
             return new GenericUri(scheme, Optional.fromNullable(authority), path, query, fragment, uri);
          }

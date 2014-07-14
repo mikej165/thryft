@@ -37,7 +37,6 @@ import java.util.Date;
 
 import org.junit.Test;
 import org.thryft.native_.EmailAddress;
-import org.thryft.native_.UriParser;
 import org.thryft.native_.Url;
 
 import com.google.common.collect.ImmutableList;
@@ -66,13 +65,13 @@ public abstract class ProtocolTest {
     @Test
     public void testEmailAddress() throws Exception {
         _test(new ProtocolTestStruct.Builder()
-        .setEmailAddressField(new EmailAddress("test@example.com")));
+                .setEmailAddressField(new EmailAddress("test@example.com")));
     }
 
     @Test
     public void testEnum() throws Exception {
         _test(new ProtocolTestStruct.Builder()
-        .setEnumField(ProtocolTestEnum.ENUMERATOR2));
+                .setEnumField(ProtocolTestEnum.ENUMERATOR2));
     }
 
     @Test
@@ -123,26 +122,26 @@ public abstract class ProtocolTest {
     @Test
     public void testStringStringMap() throws Exception {
         _test(new ProtocolTestStruct.Builder()
-        .setStringStringMapField(ImmutableMap
-                .of("testkey", "testvalue")));
+                .setStringStringMapField(ImmutableMap
+                        .of("testkey", "testvalue")));
 
         // Empty map
         _test(new ProtocolTestStruct.Builder()
-        .setStringStringMapField(ImmutableMap.<String, String> of()));
+                .setStringStringMapField(ImmutableMap.<String, String> of()));
     }
 
     @Test
     public void testStruct() throws Exception {
         _test(new ProtocolTestStruct.Builder()
-        .setStructField(new NestedProtocolTestStruct.Builder()
-        .setI32Field(1).setRequiredI32Field(1)
-        .setRequiredStringField("test").build()));
+                .setStructField(new NestedProtocolTestStruct.Builder()
+                        .setI32Field(1).setRequiredI32Field(1)
+                        .setRequiredStringField("test").build()));
 
         // Empty struct
         _test(new ProtocolTestStruct.Builder()
-        .setStructField(new NestedProtocolTestStruct.Builder()
-        .setRequiredI32Field(1).setRequiredStringField("test")
-        .build()));
+                .setStructField(new NestedProtocolTestStruct.Builder()
+                        .setRequiredI32Field(1).setRequiredStringField("test")
+                        .build()));
     }
 
     @Test
@@ -161,8 +160,8 @@ public abstract class ProtocolTest {
 
     @Test
     public void testUrl() throws Exception {
-        _test(new ProtocolTestStruct.Builder().setUrlField((Url) UriParser
-                .parseUri("http://example.com/test")));
+        _test(new ProtocolTestStruct.Builder().setUrlField(Url
+                .parse("http://example.com/test")));
     }
 
     protected abstract void _test(final ProtocolTestStruct expected)

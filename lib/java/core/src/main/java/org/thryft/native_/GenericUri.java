@@ -8,7 +8,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 
-public final class GenericUri extends AbstractUri {
+public final class GenericUri extends Uri {
     public final static class Builder {
         public Builder() {
             authority = null;
@@ -138,6 +138,10 @@ public final class GenericUri extends AbstractUri {
 
     @SuppressWarnings("unused")
     private GenericUri() {
+        authority = Optional.absent();
+        fragment = Optional.absent();
+        path = Optional.absent();
+        query = Optional.absent();
     }
 
     @Override
@@ -181,8 +185,8 @@ public final class GenericUri extends AbstractUri {
         return ImmutableMultimap.copyOf(queryMap);
     }
 
-    private Optional<Authority> authority;
-    private Optional<String> fragment;
-    private Optional<String> path;
-    private Optional<String> query;
+    private final Optional<Authority> authority;
+    private final Optional<String> fragment;
+    private final Optional<String> path;
+    private final Optional<String> query;
 }

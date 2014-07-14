@@ -7,7 +7,6 @@ import java.util.Random;
 
 import org.thryft.native_.EmailAddress;
 import org.thryft.native_.Uri;
-import org.thryft.native_.UriParser;
 import org.thryft.native_.Url;
 
 import com.google.common.collect.ImmutableList;
@@ -47,7 +46,7 @@ public final class Faker {
         }
 
         public static Url url() {
-            return (Url) UriParser.parseUri("http://example.com");
+            return Url.parse("http://example.com");
         }
 
         private Internet() {

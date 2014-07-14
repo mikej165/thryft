@@ -37,7 +37,7 @@ from yutil import indent, rpad, upper_camelize
 class JsonRpcServletJavaGenerator(_servlet_java_generator._ServletJavaGenerator):
     _RESPONSE_HEADERS = {
         "Access-Control-Allow-Origin": "\"http://localhost:8080\"",
-        "Access-Control-Allow-Origin": "org.thryft.native_.GenericUri.builder(org.thryft.native_.UriParser.parseUri(httpServletRequest.getRequestURL().toString())).unsetPath().build().toString()",
+        "Access-Control-Allow-Origin": "org.thryft.native_.GenericUri.builder(org.thryft.native_.Url.parse(httpServletRequest.getRequestURL().toString())).unsetPath().build().toString()",
         "Access-Control-Allow-Methods": "\"POST, GET, OPTIONS\"",
         "Access-Control-Allow-Headers": "\"Origin, X-Requested-With, Content-Type, Accept\"",
         "Access-Control-Allow-Credentials": "\"true\"",

@@ -5,7 +5,7 @@ import static org.thryft.Preconditions.checkNotEmpty;
 
 import com.google.common.base.Optional;
 
-public interface Uri extends Comparable<Uri> {
+public abstract class Uri implements Comparable<Uri> {
     public final static class Authority {
         Authority(final String authority, final String host,
                 final Optional<Integer> port, final Optional<String> userInfo) {
@@ -54,13 +54,76 @@ public interface Uri extends Comparable<Uri> {
         private final Optional<String> userInfo;
     }
 
-    public Optional<String> getFragment();
+    public static Uri parse(final String uri) {
+        return UriParser.parseUri(uri);
+    }
 
-    public Optional<Authority> getOptionalAuthority();
+    protected static Optional<String> _checkOptionalString(
+            final Optional<String> string) {
+        checkNotNull(string);
+        if (string.isPresent() && !string.get().isEmpty()) {
+            return string;
+        } else {
+            return Optional.absent();
+        }
+    }
 
-    public Optional<String> getPath();
+    protected Uri() {
+    }
 
-    public Optional<String> getQuery();
+    protected Uri(final String scheme, final String uri) {
+        checkNotNull(scheme);
+        checkNotNull(uri);
 
-    public String getScheme();
+        this.scheme = scheme;
+        this.uri = uri;
+    }
+
+    protected Uri(final Uri uri) {
+        checkNotNull(uri);
+        scheme = uri.getScheme();
+        this.uri = uri.toString();
+    }
+
+    @Override
+    public final int compareTo(final Uri otherUri) {
+        return toString().compareTo(otherUri.toString());
+    }
+
+    @Override
+    public final boolean equals(final Object other) {
+        if (other == null) {
+            return false;
+        } else if (other == this) {
+            return true;
+        } else if (!(other instanceof Uri)) {
+            return false;
+        }
+        return uri.equals(((Uri) other).uri);
+    }
+
+    public abstract Optional<String> getFragment();
+
+    public abstract Optional<Authority> getOptionalAuthority();
+
+    public abstract Optional<String> getPath();
+
+    public abstract Optional<String> getQuery();
+
+    public final String getScheme() {
+        return scheme;
+    }
+
+    @Override
+    public final int hashCode() {
+        return uri.hashCode();
+    }
+
+    @Override
+    public final String toString() {
+        return uri;
+    }
+
+    private String scheme;
+    private String uri;
 }

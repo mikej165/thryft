@@ -4,7 +4,7 @@ import static org.thryft.Preconditions.checkNotEmpty;
 
 import com.google.common.base.Optional;
 
-public final class Urn extends AbstractUri {
+public final class Urn extends Uri {
     public static Urn parse(final String urn) {
         return UrnParser.parseUrn(urn);
     }
@@ -38,6 +38,11 @@ public final class Urn extends AbstractUri {
     private Urn() {
     }
 
+    @Override
+    public Optional<String> getFragment() {
+        return Optional.absent();
+    }
+
     public String getNamespaceIdentifier() {
         return namespaceIdentifier;
     }
@@ -48,11 +53,6 @@ public final class Urn extends AbstractUri {
 
     @Override
     public Optional<Authority> getOptionalAuthority() {
-        return Optional.absent();
-    }
-
-    @Override
-    public Optional<String> getFragment() {
         return Optional.absent();
     }
 

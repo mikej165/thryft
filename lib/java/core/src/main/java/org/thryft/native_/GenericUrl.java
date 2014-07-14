@@ -4,8 +4,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.base.Optional;
 
-public final class HttpUrl extends AbstractUri implements Url {
-    HttpUrl(final String scheme, final Authority authority,
+public final class GenericUrl extends Url {
+    GenericUrl(final String scheme, final Authority authority,
             final Optional<String> path, final Optional<String> query,
             final Optional<String> fragment, final String url) {
         super(scheme, url);
