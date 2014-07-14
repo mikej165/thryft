@@ -2,7 +2,9 @@ package org.thryft.native_;
 
 import static org.thryft.Preconditions.checkNotEmpty;
 
-public final class Urn extends Uri {
+import com.google.common.base.Optional;
+
+public final class Urn extends AbstractUri {
     public static Urn parse(final String urn) {
         return UrnParser.parseUrn(urn);
     }
@@ -42,6 +44,26 @@ public final class Urn extends Uri {
 
     public String getNamespaceSpecificString() {
         return namespaceSpecificString;
+    }
+
+    @Override
+    public Optional<Authority> getOptionalAuthority() {
+        return Optional.absent();
+    }
+
+    @Override
+    public Optional<String> getFragment() {
+        return Optional.absent();
+    }
+
+    @Override
+    public Optional<String> getPath() {
+        return Optional.of(namespaceIdentifier + ":" + namespaceSpecificString);
+    }
+
+    @Override
+    public Optional<String> getQuery() {
+        return Optional.absent();
     }
 
     private String namespaceIdentifier;

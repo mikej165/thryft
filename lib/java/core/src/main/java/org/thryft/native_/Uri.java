@@ -1,66 +1,66 @@
 package org.thryft.native_;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.thryft.Preconditions.checkNotEmpty;
 
-public abstract class Uri implements Comparable<Uri> {
-    public static Uri parse(final String uri) {
-        checkNotNull(uri);
+import com.google.common.base.Optional;
 
-        if (uri.startsWith("urn:")) {
-            return Urn.parse(uri);
-        } else {
-            return Url.parse(uri);
+public interface Uri extends Comparable<Uri> {
+    public final static class Authority {
+        Authority(final String authority, final String host,
+                final Optional<Integer> port, final Optional<String> userInfo) {
+            this.authority = checkNotEmpty(authority);
+            this.host = checkNotEmpty(host);
+
+            checkNotNull(port);
+            if (port.isPresent() && port.get() > 0) {
+                this.port = port;
+            } else {
+                this.port = Optional.absent();
+            }
+
+            checkNotNull(userInfo);
+            if (userInfo.isPresent() && !userInfo.get().isEmpty()) {
+                this.userInfo = userInfo;
+            } else {
+                this.userInfo = Optional.absent();
+            }
         }
-    }
 
-    protected Uri() {
-    }
-
-    protected Uri(final String scheme, final String uri) {
-        checkNotNull(scheme);
-        checkNotNull(uri);
-
-        this.scheme = scheme;
-        this.uri = uri;
-    }
-
-    protected Uri(final Uri uri) {
-        checkNotNull(uri);
-        scheme = uri.getScheme();
-        this.uri = uri.toString();
-    }
-
-    @Override
-    public final int compareTo(final Uri otherUri) {
-        return toString().compareTo(otherUri.toString());
-    }
-
-    @Override
-    public final boolean equals(final Object other) {
-        if (other == null) {
-            return false;
-        } else if (other == this) {
-            return true;
-        } else if (!(other instanceof Uri)) {
-            return false;
+        public String getAuthority() {
+            return authority;
         }
-        return uri.equals(((Uri) other).uri);
+
+        public String getHost() {
+            return host;
+        }
+
+        public Optional<Integer> getPort() {
+            return port;
+        }
+
+        public Optional<String> getUserInfo() {
+            return userInfo;
+        }
+
+        @Override
+        public String toString() {
+            return authority;
+        }
+
+        private final String authority;
+        private final String host;
+        private final Optional<Integer> port;
+        private final Optional<String> userInfo;
     }
 
-    public final String getScheme() {
-        return scheme;
-    }
+    public Optional<String> getFragment();
 
-    @Override
-    public final int hashCode() {
-        return uri.hashCode();
-    }
+    public Optional<Authority> getOptionalAuthority();
 
-    @Override
-    public final String toString() {
-        return uri.toString();
-    }
+    public Optional<String> getPath();
 
-    private String scheme;
-    private String uri;
+    public Optional<String> getQuery();
+
+    public String getScheme();
 }

@@ -39,7 +39,7 @@
 
   userinfo      = (unreserved | pct_encoded | sub_delims | ":")*
                   >{ mark = fpc; }
-                  %{ userInfo = Optional.of(new String(data, mark, fpc - mark)); };
+                  %{ userInfo = new String(data, mark, fpc - mark); };
 
   reg_name      = (unreserved | pct_encoded | sub_delims)*;
   host          = (ip_literal | IPv4address | reg_name)
@@ -48,11 +48,11 @@
 
   port          = digit*
                   >{ mark = fpc; }
-                  %{ port = Optional.of(Integer.parseInt(new String(data, mark, fpc - mark))); };
+                  %{ port = Integer.parseInt(new String(data, mark, fpc - mark)); };
 
   authority     = ((userinfo "@")? host (":" port)?)
                   >{ authorityMark = fpc; }
-                  %{ authority = new String(data, authorityMark, fpc - authorityMark); };
+                  %{ authority = new Uri.Authority(new String(data, authorityMark, fpc - authorityMark), host, Optional.fromNullable(port), Optional.fromNullable(userInfo)); };
 
   action path_enter { mark = fpc; }
   action path_leave { path = Optional.of(new String(data, mark, fpc - mark)); }

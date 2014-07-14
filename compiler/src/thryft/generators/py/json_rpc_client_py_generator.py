@@ -116,6 +116,13 @@ def __import_exception_class(exception_class_qname):
 def __init__(self, api_url, headers=None):
     %(service_qname)s.__init__(self)
 
+    if headers is None:
+        headers = {}
+    else:
+        if not isinstance(headers, dict):
+            raise TypeError(headers)
+        headers = headers.copy()
+
     api_url = api_url.rstrip('/')
     if not api_url.endswith('/jsonrpc/%(service_endpoint_name)s'):
         api_url += '/jsonrpc/%(service_endpoint_name)s'
@@ -148,12 +155,6 @@ def __init__(self, api_url, headers=None):
 #            opener = urllib2.build_opener(auth_handler)
 #            urllib2.install_opener(opener)
 
-    if headers is None:
-        headers = {}
-    else:
-        if not isinstance(headers, dict):
-            raise TypeError(headers)
-        headers = headers.copy()
     self.__headers = headers
 
     self.__logger = logging.getLogger(self.__class__.__module__ + '.' + self.__class__.__name__)
