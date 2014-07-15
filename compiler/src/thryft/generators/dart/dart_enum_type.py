@@ -19,7 +19,7 @@ class DartEnumType(EnumType, _DartType):
         name = self.dart_name()
         enumerator_definitions = \
             indent(' ' * 2, "\n".join(
-               "static final %s = new %s._(\"%s\", %s);" % (
+               "static const %s = const %s(\"%s\", %s);" % (
                    enumerator.name, name, enumerator.name, enumerator.value
                )
                for enumerator in self.enumerators
@@ -41,7 +41,7 @@ class %(name)s {
 
   static get enumerators => [%(enumerator_names)s];
 
-  %(name)s._(this.name, this.value);
+  const %(name)s(this.name, this.value);
 
   factory %(name)s.fromName(String name) {
     switch (name) {
