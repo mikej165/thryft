@@ -48,4 +48,8 @@ class %(name)s {
 %(enumerator_name_cases)s
     }
   }
+
+  String toString() {
+    return name;
+  }
 }""" % locals()
