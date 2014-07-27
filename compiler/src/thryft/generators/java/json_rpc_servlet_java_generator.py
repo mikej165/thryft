@@ -35,15 +35,6 @@ from yutil import indent, rpad, upper_camelize
 
 
 class JsonRpcServletJavaGenerator(_servlet_java_generator._ServletJavaGenerator):
-    _RESPONSE_HEADERS = {
-        "Access-Control-Allow-Origin": "\"http://localhost:8080\"",
-        "Access-Control-Allow-Origin": "org.thryft.native_.GenericUri.builder(org.thryft.native_.Url.parse(httpServletRequest.getRequestURL().toString())).unsetPath().build().toString()",
-        "Access-Control-Allow-Methods": "\"POST, GET, OPTIONS\"",
-        "Access-Control-Allow-Headers": "\"Origin, X-Requested-With, Content-Type, Accept\"",
-        "Access-Control-Allow-Credentials": "\"true\"",
-        "Access-Control-Expose-Headers": "\"Access-Control-Allow-Origin, Access-Control-Allow-Methods, Access-Control-Allow-Headers, Access-Control-Allow-Credentials\"",
-    }
-
     class Document(_servlet_java_generator._ServletJavaGenerator._Document):
         def __init__(self, **kwds):
             _servlet_java_generator._ServletJavaGenerator._Document.__init__(self, servlet_type='json_rpc', **kwds)
@@ -118,20 +109,6 @@ public %(name)s(final %(service_qname)s service) {
                 "private final %(service_qname)s service;" % locals()
             ]
 
-        def _java_method_do_options(self):
-            headers = JsonRpcServletJavaGenerator._RESPONSE_HEADERS
-            headers = \
-                "\n".join(indent(' ' * 4,
-                    ["""httpServletResponse.setHeader("%s", %s);""" % (header_name, headers[header_name])
-                     for header_name in sorted(headers.keys())]))
-            return """\
-@Override
-protected void doOptions(final javax.servlet.http.HttpServletRequest httpServletRequest, final javax.servlet.http.HttpServletResponse httpServletResponse) throws java.io.IOException, javax.servlet.ServletException {
-    // TODO: remove from production
-%(headers)s
-}
-""" % locals()
-
         def _java_method_do_post(self):
             read_http_servlet_request_body = indent(' ' * 4, self._java_read_http_servlet_request_body())
             function_dispatches = []
@@ -183,7 +160,7 @@ protected void doPost(final javax.servlet.http.HttpServletRequest httpServletReq
 """ % locals()
 
         def _java_method_do_post_error(self):
-            write_http_servlet_response_body = indent(' ' * 4, self._java_write_http_servlet_response_body(headers=JsonRpcServletJavaGenerator._RESPONSE_HEADERS))
+            write_http_servlet_response_body = indent(' ' * 4, self._java_write_http_servlet_response_body())
             return """\
 private void __doPostError(final javax.servlet.http.HttpServletRequest httpServletRequest, final javax.servlet.http.HttpServletResponse httpServletResponse, final org.thryft.protocol.JsonRpcErrorResponse jsonRpcErrorResponse, @javax.annotation.Nullable final Object jsonRpcRequestId) throws java.io.IOException {
     final java.io.StringWriter httpServletResponseBodyWriter = new java.io.StringWriter();
@@ -202,7 +179,7 @@ private void __doPostError(final javax.servlet.http.HttpServletRequest httpServl
 """ % locals()
 
         def _java_method_do_post_response(self):
-            write_http_servlet_response_body = indent(' ' * 4, self._java_write_http_servlet_response_body(headers=JsonRpcServletJavaGenerator._RESPONSE_HEADERS))
+            write_http_servlet_response_body = indent(' ' * 4, self._java_write_http_servlet_response_body())
             return """\
 private void __doPostResponse(final javax.servlet.http.HttpServletRequest httpServletRequest, final javax.servlet.http.HttpServletResponse httpServletResponse, final Object jsonRpcRequestId, final Object jsonRpcResult) throws java.io.IOException {
     final java.io.StringWriter httpServletResponseBodyWriter = new java.io.StringWriter();
@@ -234,7 +211,6 @@ private void __doPostResponse(final javax.servlet.http.HttpServletRequest httpSe
         def _java_methods(self):
             methods = []
             methods.append(self._java_constructor())
-            methods.append(self._java_method_do_options())
             methods.append(self._java_method_do_post())
             methods.append(self._java_method_do_post_error())
             methods.append(self._java_method_do_post_response())

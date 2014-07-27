@@ -63,17 +63,9 @@ class _ServletJavaGenerator(java_generator.JavaGenerator):
             return self.parent._java_write_http_servlet_response_body(**kwds)
 
     class _Service(JavaService):
-        def _java_write_http_servlet_response_body(self, content_type='application/json', headers=None, variable_name_prefix=''):
-            if headers is not None:
-                headers = \
-                    lpad("\n", "\n".join(
-                        """%shttpServletResponse.setHeader("%s", %s);""" % (variable_name_prefix, header_name, headers[header_name])
-                        for header_name in sorted(headers.keys())))
-            else:
-                headers = ''
+        def _java_write_http_servlet_response_body(self, content_type='application/json', variable_name_prefix=''):
             return """\
-// TODO: remove from production
-%(variable_name_prefix)shttpServletResponse.setContentType("%(content_type)s");%(headers)s
+%(variable_name_prefix)shttpServletResponse.setContentType("%(content_type)s");
 
 if (%(variable_name_prefix)shttpServletResponseBody.length() >= 128) {
     final String %(variable_name_prefix)shttpServletRequestAcceptEncoding = %(variable_name_prefix)shttpServletRequest.getHeader("Accept-Encoding");
