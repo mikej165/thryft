@@ -1,4 +1,4 @@
-#-------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
 # Copyright (c) 2013, Minor Gordon
 # All rights reserved.
 #
@@ -28,7 +28,7 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
 # OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 # OF SUCH DAMAGE.
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 
 from inspect import isclass
 from thryft.compiler.ast import Ast
@@ -38,6 +38,7 @@ from thryft.compiler.scanner import Scanner
 from thryft.generator._type import _Type
 from thryft.generator.document import Document
 from thryft.generator.generator import Generator
+from thryft.generator.native_type import NativeType
 from thryft.generator.typedef import Typedef
 import imp
 import logging
@@ -63,8 +64,20 @@ class Compiler(object):
                 parent = self.__generator
             kwds['parent'] = parent
 
+            annotations = kwds.get('annotations')
             name = kwds.get('name')
-            if name is not None:
+            if annotations is None:
+                native = False
+            elif name is None:
+                native = False
+            else:
+                native = False
+                for annotation in annotations:
+                    if annotation == 'native':
+                        native = True
+                        break
+
+            if native:
                 for scope in reversed(self.__scope_stack):
                     if not isinstance(scope, Document):
                         continue
@@ -157,6 +170,8 @@ class Compiler(object):
                     doc=self.__visit_doc_node(compound_type_node.doc),
                     name=compound_type_node.name
                 )
+            if isinstance(compound_type, NativeType):
+                return compound_type
             self.__scope_stack.append(compound_type)
 
             # Insert the compound type into the type_map here to allow recursive
@@ -359,7 +374,11 @@ class Compiler(object):
             return string_literal_node.value
 
         def visit_struct_type_node(self, struct_type_node):
-            return self.__visit_compound_type_node('StructType', struct_type_node)
+            return \
+                self.__visit_compound_type_node(
+                    'StructType',
+                    struct_type_node,
+                )
 
         def visit_type_node(self, type_node):
             try:
@@ -406,11 +425,11 @@ class Compiler(object):
                 '..', '..', '..', '..',
                 'lib', 'thrift', 'src'
             ))
-        if not lib_thrift_src_dir_path in include_dir_paths:
+        if lib_thrift_src_dir_path not in include_dir_paths:
             include_dir_paths.append(lib_thrift_src_dir_path)
         self.__include_dir_paths = []
         for include_dir_path in include_dir_paths:
-            if not include_dir_path in self.__include_dir_paths:
+            if include_dir_path not in self.__include_dir_paths:
                 self.__include_dir_paths.append(include_dir_path)
         self.__include_dir_paths = tuple(self.__include_dir_paths)
 

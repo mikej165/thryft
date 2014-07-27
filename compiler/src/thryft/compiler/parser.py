@@ -935,6 +935,14 @@ def __parse_faker_annotation(ast_node, name, value, **kwds):
 Parser.register_annotation(Ast.FieldNode, 'faker', __parse_faker_annotation)
 
 
+def __parse_native_annotation(ast_node, name, value, **kwds):
+    if value is not None:
+        raise ValueError("@%(name)s does not take a value" % locals())
+    ast_node.annotations.append(Ast.AnnotationNode(name=name, **kwds))
+Parser.register_annotation(Ast.StructTypeNode, 'native', __parse_native_annotation)
+Parser.register_annotation(Ast.TypedefNode, 'native', __parse_native_annotation)
+
+
 def __parse_param_annotation(ast_node, name, value, **kwds):
     parameter, value = __split_param_annotation(ast_node=ast_node, name=name, value=value)
     parameter.doc = Ast.DocNode(text=value, **kwds)
