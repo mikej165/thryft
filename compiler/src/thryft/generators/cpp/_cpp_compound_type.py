@@ -146,7 +146,9 @@ virtual ~%(name)s() {
         return includes
 
     def cpp_includes_use(self):
-        return self._parent_document().cpp_includes_use()
+        includes = ['<sstream>']
+        includes.extend(self._parent_document().cpp_includes_use())
+        return includes
 
     def _cpp_member_declarations(self):
         return [field.cpp_member_declaration()

@@ -111,9 +111,8 @@ request.respond(*new %(response_name)s())""" % locals()
                     exception_type_qname = exception.type.cpp_qname()
                     catches.append("""\
 } catch (const %(exception_type_qname)s<ExceptionT>& %(exception_name)s) {
-  request.respond(%(exception_name)s);
-}""" % locals())
-                catches = "\n".join(catches)
+  request.respond(%(exception_name)s);""" % locals())
+                catches = "\n".join(catches) + "\n}"
                 call = indent(' ' * 2, call)
                 call = """\
 try {
@@ -168,14 +167,14 @@ virtual void handle(const %(name)s& request) {
 
         declaration = """\
 %(return_type_name)s %(name)s(%(parameters)s)""" % locals()
-    
+
         if len(declaration) < 80:
             return declaration
-        
+
         parameters = indent(' ' * 2,
             ',\n'.join(parameter.cpp_parameter()
                       for parameter in self.parameters))
-            
+
         return """\
 %(return_type_name)s
 %(name)s(

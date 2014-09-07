@@ -107,7 +107,7 @@ class CppDocument(Document, _CppNamedConstruct):
 
         global_operators = []
         for definition in self.definitions:
-            if isinstance(definition, _CppCompoundType):
+            if hasattr(definition, 'cpp_global_operators'):
                 global_operators.extend(definition.cpp_global_operators())
         global_operators = lpad("\n\n", "\n\n".join(global_operators))
 
