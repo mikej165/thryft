@@ -49,8 +49,8 @@ import com.google.common.primitives.UnsignedInteger;
 import com.google.common.primitives.UnsignedLong;
 
 public abstract class AbstractOutputProtocol implements OutputProtocol {
-    public static void writeMixed(final OutputProtocol oprot, final Object value)
-            throws OutputProtocolException {
+    public static void writeVariant(final OutputProtocol oprot,
+            final Object value) throws OutputProtocolException {
         if (value == null) {
             oprot.writeNull();
         } else if (value instanceof Boolean) {
@@ -162,10 +162,6 @@ public abstract class AbstractOutputProtocol implements OutputProtocol {
     }
 
     @Override
-    public void writeVariant(final Object value) throws OutputProtocolException {
-    }
-
-    @Override
     public void writeSetBegin(final Type elementType, final int size)
             throws OutputProtocolException {
         writeListBegin(elementType, size);
@@ -196,5 +192,9 @@ public abstract class AbstractOutputProtocol implements OutputProtocol {
     @Override
     public void writeUrl(final Url value) throws OutputProtocolException {
         writeString(value.toString());
+    }
+
+    @Override
+    public void writeVariant(final Object value) throws OutputProtocolException {
     }
 }

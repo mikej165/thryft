@@ -291,17 +291,6 @@ public class LoggingOutputProtocol implements OutputProtocol {
     }
 
     @Override
-    public void writeVariant(final Object value) throws OutputProtocolException {
-        try {
-            wrappedOutputProtocol.writeVariant(value);
-            logger.info(WRITE_MIXED_MESSAGE, value);
-        } catch (final OutputProtocolException e) {
-            logger.info(WRITE_MIXED_MESSAGE, value, e);
-            throw e;
-        }
-    }
-
-    @Override
     public void writeNull() throws OutputProtocolException {
         try {
             wrappedOutputProtocol.writeNull();
@@ -415,6 +404,17 @@ public class LoggingOutputProtocol implements OutputProtocol {
         }
     }
 
+    @Override
+    public void writeVariant(final Object value) throws OutputProtocolException {
+        try {
+            wrappedOutputProtocol.writeVariant(value);
+            logger.info(WRITE_VARIANT_MESSAGE, value);
+        } catch (final OutputProtocolException e) {
+            logger.info(WRITE_VARIANT_MESSAGE, value, e);
+            throw e;
+        }
+    }
+
     private final static String WRITE_BOOL_MESSAGE = "writeBool({})";
     private final static String WRITE_BINARY_MESSAGE = "writeBinary({} bytes)";
     private final static String WRITE_BYTE_MESSAGE = "writeByte({})";
@@ -435,7 +435,6 @@ public class LoggingOutputProtocol implements OutputProtocol {
     private final static String WRITE_MAP_END_MESSAGE = "writeMapEnd()";
     private final static String WRITE_MESSAGE_BEGIN_MESSAGE = "writeMessageBegin({}, {}, {})";
     private final static String WRITE_MESSAGE_END_MESSAGE = "writeMessageEnd()";
-    private final static String WRITE_MIXED_MESSAGE = "writeMixed({})";
     private final static String WRITE_NULL_MESSAGE = "writeNull()";
     private final static String WRITE_SET_BEGIN_MESSAGE = "writeSetBegin({}, {})";
     private final static String WRITE_SET_END_MESSAGE = "writeSetEnd()";
@@ -446,6 +445,7 @@ public class LoggingOutputProtocol implements OutputProtocol {
     private final static String WRITE_U64_MESSAGE = "writeU64({})";
     private final static String WRITE_URI_MESSAGE = "writeUri({})";
     private final static String WRITE_URL_MESSAGE = "writeUrl({})";
+    private final static String WRITE_VARIANT_MESSAGE = "writeVariant({})";
 
     private final Logger logger;
 

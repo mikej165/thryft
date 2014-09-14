@@ -51,38 +51,6 @@ class _AbstractOutputProtocol(_OutputProtocol):
     def write_i16(self, i16):
         self.write_i32(i16)
 
-    def write_mixed(self, object_):
-        if object_ is None:
-            self.write_null()
-        elif isinstance(object_, dict):
-            self.write_map_begin(len(object_))
-            for key, value in object_.iteritems():
-                self.write_mixed(key)
-                self.write_mixed(value)
-            self.write_map_end()
-        elif isinstance(object_, float):
-            self.writeDouble(object_)
-        elif isinstance(object_, frozenset):
-            self.write_set_begin(len(object_))
-            for item in object_:
-                self.write_mixed(item)
-            self.write_set_end()
-        elif isinstance(object_, int):
-            self.write_i32(object_)
-        elif isinstance(object_, (list, tuple)):
-            self.write_list_begin(len(object_))
-            for item in object_:
-                self.write_mixed(item)
-            self.write_list_end()
-        elif isinstance(object_, long):
-            self.write_i64(object_)
-        elif isinstance(object_, basestring):
-            self.write_string(object_)
-        elif hasattr(object_, 'write'):
-            object_.write(self)
-        else:
-            raise TypeError(type(object_))
-
     def write_set_begin(self, *args, **kwds):
         self.write_list_begin()
 
@@ -94,3 +62,35 @@ class _AbstractOutputProtocol(_OutputProtocol):
 
     def write_url(self, url):
         self.write_string(url)
+
+    def write_variant(self, object_):
+        if object_ is None:
+            self.write_null()
+        elif isinstance(object_, dict):
+            self.write_map_begin(len(object_))
+            for key, value in object_.iteritems():
+                self.write_variant(key)
+                self.write_variant(value)
+            self.write_map_end()
+        elif isinstance(object_, float):
+            self.writeDouble(object_)
+        elif isinstance(object_, frozenset):
+            self.write_set_begin(len(object_))
+            for item in object_:
+                self.write_variant(item)
+            self.write_set_end()
+        elif isinstance(object_, int):
+            self.write_i32(object_)
+        elif isinstance(object_, (list, tuple)):
+            self.write_list_begin(len(object_))
+            for item in object_:
+                self.write_variant(item)
+            self.write_list_end()
+        elif isinstance(object_, long):
+            self.write_i64(object_)
+        elif isinstance(object_, basestring):
+            self.write_string(object_)
+        elif hasattr(object_, 'write'):
+            object_.write(self)
+        else:
+            raise TypeError(type(object_))

@@ -53,8 +53,6 @@ class _StackedOutputProtocol(_AbstractOutputProtocol):
         self._output_protocol_stack.pop(-1)
         self._output_protocol_stack[-1].write_list_end()
 
-    # Do not include write_mixed
-
     def write_null(self):
         self._output_protocol_stack[-1].write_null()
 
@@ -80,3 +78,5 @@ class _StackedOutputProtocol(_AbstractOutputProtocol):
 
     def write_url(self, value):
         self._output_protocol_stack[-1].write_url(value)
+
+    # Do not include write_variant

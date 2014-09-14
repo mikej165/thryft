@@ -279,18 +279,6 @@ public class LoggingInputProtocol implements InputProtocol {
     }
 
     @Override
-    public Object readVariant() throws InputProtocolException {
-        try {
-            final Object value = wrappedInputProtocol.readVariant();
-            logger.info(READ_MIXED_MESSAGE, value);
-            return value;
-        } catch (final InputProtocolException e) {
-            logger.info(READ_MIXED_MESSAGE, "", e);
-            throw e;
-        }
-    }
-
-    @Override
     public SetBegin readSetBegin() throws InputProtocolException {
         try {
             final SetBegin value = wrappedInputProtocol.readSetBegin();
@@ -397,6 +385,18 @@ public class LoggingInputProtocol implements InputProtocol {
     }
 
     @Override
+    public Object readVariant() throws InputProtocolException {
+        try {
+            final Object value = wrappedInputProtocol.readVariant();
+            logger.info(READ_VARIANT_MESSAGE, value);
+            return value;
+        } catch (final InputProtocolException e) {
+            logger.info(READ_VARIANT_MESSAGE, "", e);
+            throw e;
+        }
+    }
+
+    @Override
     public String toString() {
         return Objects.toStringHelper(this).add("logger", logger)
                 .add("wrappedInputProtocol", wrappedInputProtocol).toString();
@@ -421,7 +421,6 @@ public class LoggingInputProtocol implements InputProtocol {
     private final static String READ_MAP_END_MESSAGE = "readMapEnd()";
     private final static String READ_MESSAGE_BEGIN_MESSAGE = "readMessageBegin() -> {}";
     private final static String READ_MESSAGE_END_MESSAGE = "readMessageEnd()";
-    private final static String READ_MIXED_MESSAGE = "readMixed() -> {}";
     private final static String READ_SET_BEGIN_MESSAGE = "readSetBegin() -> {}";
     private final static String READ_SET_END_MESSAGE = "readSetEnd()";
     private final static String READ_STRING_MESSAGE = "readString() -> {}";
@@ -431,6 +430,7 @@ public class LoggingInputProtocol implements InputProtocol {
     private final static String READ_U64_MESSAGE = "readU64() -> {}";
     private final static String READ_URI_MESSAGE = "readUri() -> {}";
     private final static String READ_URL_MESSAGE = "readUrl() -> {}";
+    private final static String READ_VARIANT_MESSAGE = "readVariant() -> {}";
 
     private final Logger logger;
 

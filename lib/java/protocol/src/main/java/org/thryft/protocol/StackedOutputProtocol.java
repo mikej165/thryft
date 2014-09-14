@@ -35,7 +35,7 @@ package org.thryft.protocol;
 import java.util.Stack;
 
 public abstract class StackedOutputProtocol<OutputProtocolT extends OutputProtocol>
-        extends ForwardingOutputProtocol {
+extends ForwardingOutputProtocol {
     @Override
     public void flush() throws OutputProtocolException {
         if (!outputProtocolStack.isEmpty()) {
@@ -95,11 +95,6 @@ public abstract class StackedOutputProtocol<OutputProtocolT extends OutputProtoc
     }
 
     @Override
-    public void writeVariant(final Object value) throws OutputProtocolException {
-        AbstractOutputProtocol.writeMixed(this, value);
-    }
-
-    @Override
     public void writeSetBegin(final Type elementType, final int size)
             throws OutputProtocolException {
         outputProtocolStack.peek().writeSetBegin(elementType, size);
@@ -126,6 +121,11 @@ public abstract class StackedOutputProtocol<OutputProtocolT extends OutputProtoc
     public void writeStructEnd() throws OutputProtocolException {
         outputProtocolStack.pop();
         outputProtocolStack.peek().writeStructEnd();
+    }
+
+    @Override
+    public void writeVariant(final Object value) throws OutputProtocolException {
+        AbstractOutputProtocol.writeVariant(this, value);
     }
 
     @Override

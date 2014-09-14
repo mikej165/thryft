@@ -53,8 +53,6 @@ class _StackedInputProtocol(_InputProtocol):
         self._input_protocol_stack.pop(-1)
         return self._input_protocol_stack[-1].read_list_end()
 
-    # Do not include read_mixed
-
     def read_null(self):
         return self._input_protocol_stack[-1].read_null()
 
@@ -74,3 +72,5 @@ class _StackedInputProtocol(_InputProtocol):
     def read_struct_end(self):
         self._input_protocol_stack.pop(-1)
         return self._input_protocol_stack[-1].read_struct_end()
+
+    # Do not include read_variant
