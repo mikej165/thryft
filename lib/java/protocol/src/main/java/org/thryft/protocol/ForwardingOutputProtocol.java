@@ -124,8 +124,8 @@ public abstract class ForwardingOutputProtocol implements OutputProtocol {
     }
 
     @Override
-    public void writeMixed(final Object value) throws OutputProtocolException {
-        _delegate().writeMixed(value);
+    public void writeVariant(final Object value) throws OutputProtocolException {
+        _delegate().writeVariant(value);
     }
 
     @Override

@@ -164,7 +164,7 @@ public class JdbcResultSetInputProtocol extends AbstractInputProtocol {
     }
 
     @Override
-    public Object readMixed() throws InputProtocolException {
+    public Object readVariant() throws InputProtocolException {
         throw new UnsupportedOperationException();
     }
 

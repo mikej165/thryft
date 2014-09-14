@@ -279,9 +279,9 @@ public class LoggingInputProtocol implements InputProtocol {
     }
 
     @Override
-    public Object readMixed() throws InputProtocolException {
+    public Object readVariant() throws InputProtocolException {
         try {
-            final Object value = wrappedInputProtocol.readMixed();
+            final Object value = wrappedInputProtocol.readVariant();
             logger.info(READ_MIXED_MESSAGE, value);
             return value;
         } catch (final InputProtocolException e) {

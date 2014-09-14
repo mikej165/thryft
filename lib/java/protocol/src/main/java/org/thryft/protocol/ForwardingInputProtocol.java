@@ -107,8 +107,8 @@ public abstract class ForwardingInputProtocol implements InputProtocol {
     }
 
     @Override
-    public Object readMixed() throws InputProtocolException {
-        return _delegate().readMixed();
+    public Object readVariant() throws InputProtocolException {
+        return _delegate().readVariant();
     }
 
     @Override

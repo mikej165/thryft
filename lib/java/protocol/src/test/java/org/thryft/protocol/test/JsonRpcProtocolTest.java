@@ -32,7 +32,7 @@ public final class JsonRpcProtocolTest {
         oprot.writeMessageBegin("call", MessageType.CALL, ID);
         final ImmutableSet<String> expectedParams = ImmutableSet.of("test1",
                 "test2");
-        oprot.writeMixed(expectedParams);
+        oprot.writeVariant(expectedParams);
         oprot.writeMessageEnd();
         oprot.flush();
         final String json = writer.toString();
@@ -79,7 +79,7 @@ public final class JsonRpcProtocolTest {
         oprot.writeMessageBegin("reply", MessageType.REPLY, ID);
         final ImmutableSet<String> expectedResults = ImmutableSet.of("test1",
                 "test2");
-        oprot.writeMixed(expectedResults);
+        oprot.writeVariant(expectedResults);
         oprot.writeMessageEnd();
         oprot.flush();
         final String json = writer.toString();

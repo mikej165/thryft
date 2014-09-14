@@ -82,8 +82,6 @@ public interface InputProtocol extends Protocol {
 
     public void readMessageEnd() throws InputProtocolException;
 
-    public Object readMixed() throws InputProtocolException;
-
     public SetBegin readSetBegin() throws InputProtocolException;
 
     public void readSetEnd() throws InputProtocolException;
@@ -101,4 +99,6 @@ public interface InputProtocol extends Protocol {
     public Uri readUri() throws InputProtocolException;
 
     public Url readUrl() throws InputProtocolException;
+
+    public Object readVariant() throws InputProtocolException;
 }

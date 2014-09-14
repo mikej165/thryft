@@ -93,8 +93,6 @@ public interface OutputProtocol extends Protocol {
 
     public void writeMessageEnd() throws OutputProtocolException;
 
-    public void writeMixed(final Object value) throws OutputProtocolException;
-
     public void writeNull() throws OutputProtocolException;
 
     public void writeSetBegin(final Type elementType, final int size)
@@ -118,4 +116,6 @@ public interface OutputProtocol extends Protocol {
     public void writeUri(final Uri value) throws OutputProtocolException;
 
     public void writeUrl(final Url value) throws OutputProtocolException;
+
+    public void writeVariant(final Object value) throws OutputProtocolException;
 }

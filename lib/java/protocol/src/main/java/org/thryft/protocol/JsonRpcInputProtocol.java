@@ -30,7 +30,7 @@ public final class JsonRpcInputProtocol extends ForwardingInputProtocol {
             }
             switch (fieldBegin.getName().toLowerCase()) {
             case "id":
-                id = readMixed();
+                id = readVariant();
                 break;
             case "jsonrpc":
                 jsonrpc = readString();

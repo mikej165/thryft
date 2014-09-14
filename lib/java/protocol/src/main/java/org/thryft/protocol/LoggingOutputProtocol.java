@@ -291,9 +291,9 @@ public class LoggingOutputProtocol implements OutputProtocol {
     }
 
     @Override
-    public void writeMixed(final Object value) throws OutputProtocolException {
+    public void writeVariant(final Object value) throws OutputProtocolException {
         try {
-            wrappedOutputProtocol.writeMixed(value);
+            wrappedOutputProtocol.writeVariant(value);
             logger.info(WRITE_MIXED_MESSAGE, value);
         } catch (final OutputProtocolException e) {
             logger.info(WRITE_MIXED_MESSAGE, value, e);

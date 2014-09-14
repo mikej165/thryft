@@ -68,7 +68,7 @@ public abstract class AbstractOutputProtocol implements OutputProtocol {
             final ImmutableList<Object> set = (ImmutableList<Object>) value;
             oprot.writeListBegin(Type.VOID, set.size());
             for (final Object element : set) {
-                oprot.writeMixed(element);
+                oprot.writeVariant(element);
             }
             oprot.writeListEnd();
         } else if (value instanceof ImmutableMap) {
@@ -77,8 +77,8 @@ public abstract class AbstractOutputProtocol implements OutputProtocol {
             oprot.writeMapBegin(Type.VOID, Type.VOID, map.size());
             for (final ImmutableMap.Entry<Object, Object> entry : map
                     .entrySet()) {
-                oprot.writeMixed(entry.getKey());
-                oprot.writeMixed(entry.getValue());
+                oprot.writeVariant(entry.getKey());
+                oprot.writeVariant(entry.getValue());
             }
             oprot.writeMapEnd();
         } else if (value instanceof ImmutableSet) {
@@ -86,7 +86,7 @@ public abstract class AbstractOutputProtocol implements OutputProtocol {
             final ImmutableSet<Object> set = (ImmutableSet<Object>) value;
             oprot.writeSetBegin(Type.VOID, set.size());
             for (final Object element : set) {
-                oprot.writeMixed(element);
+                oprot.writeVariant(element);
             }
             oprot.writeSetEnd();
         } else if (value instanceof EmailAddress) {
@@ -162,7 +162,7 @@ public abstract class AbstractOutputProtocol implements OutputProtocol {
     }
 
     @Override
-    public void writeMixed(final Object value) throws OutputProtocolException {
+    public void writeVariant(final Object value) throws OutputProtocolException {
     }
 
     @Override

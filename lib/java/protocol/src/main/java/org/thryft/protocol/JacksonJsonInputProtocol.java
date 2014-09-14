@@ -115,7 +115,7 @@ public final class JacksonJsonInputProtocol extends
         }
 
         @Override
-        public Object readMixed() throws InputProtocolException {
+        public Object readVariant() throws InputProtocolException {
             final JsonNode value = _readChildNode();
             if (value.isBoolean()) {
                 return value.asBoolean();

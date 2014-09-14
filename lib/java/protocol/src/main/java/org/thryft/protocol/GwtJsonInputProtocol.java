@@ -119,7 +119,7 @@ public class GwtJsonInputProtocol extends
         }
 
         @Override
-        public Object readMixed() throws InputProtocolException {
+        public Object readVariant() throws InputProtocolException {
             final JSONValue node = _readChildNode();
             if (node.isBoolean() != null) {
                 return ((JSONBoolean) node).booleanValue();
