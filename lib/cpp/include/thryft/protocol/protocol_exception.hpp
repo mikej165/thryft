@@ -9,6 +9,14 @@ class ProtocolException : public Exception {
   public:
     virtual ~ProtocolException() throw() {
     }
+
+  public:
+    // thryft::Base
+    virtual void read(protocol::InputProtocol& iprot) {
+    }
+
+    virtual void write(protocol::OutputProtocol& oprot) const {
+    }
 };
 }
 }

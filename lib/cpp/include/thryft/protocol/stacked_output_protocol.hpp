@@ -74,6 +74,10 @@ class StackedOutputProtocol : public AbstractOutputProtocol {
       protocol_stack_.top()->write(value);
     }
 
+    virtual void write(const ::thryft::native::Variant& value) {
+      protocol_stack_.top()->write(value);
+    }
+
     virtual void write(const ::thryft::Base& value) {
       protocol_stack_.top()->write(value);
     }

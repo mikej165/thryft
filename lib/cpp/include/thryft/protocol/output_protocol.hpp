@@ -10,6 +10,10 @@
 namespace thryft {
 class Base;
 
+namespace native {
+class Variant;
+}
+
 namespace protocol {
 class OutputProtocol {
   public:
@@ -61,6 +65,9 @@ class OutputProtocol {
 
     // U64
     virtual void write(uint64_t value) = 0;
+
+    // Variant
+    virtual void write(const ::thryft::native::Variant& value) = 0;
 
     virtual void write_list_begin(Type element_type, uint32_t size) = 0;
     virtual void write_list_end() = 0;

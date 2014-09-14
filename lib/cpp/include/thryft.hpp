@@ -10,6 +10,7 @@
 #include "thryft/service.hpp"
 #include "thryft/set.hpp"
 #include "thryft/struct.hpp"
+#include "thryft/native/variant.hpp"
 #include "thryft/protocol/abstract_input_protocol.hpp"
 #include "thryft/protocol/abstract_output_protocol.hpp"
 #include "thryft/protocol/input_protocol.hpp"

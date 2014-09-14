@@ -10,6 +10,10 @@
 namespace thryft {
 class Base;
 
+namespace native {
+class Variant;
+}
+
 namespace protocol {
 class InputProtocol {
   public:
@@ -26,6 +30,7 @@ class InputProtocol {
     virtual void read(int64_t& out_value) = 0;
     virtual void read(std::string& out_value) = 0;
     virtual void read(::thryft::Base& out_value) = 0;
+    virtual void read(::thryft::native::Variant& out_value) = 0;
 
     virtual void read_binary(std::string& out_value) = 0;
     virtual bool read_bool() = 0;
@@ -54,6 +59,7 @@ class InputProtocol {
     virtual void read_struct_end() = 0;
     virtual uint32_t read_u32() = 0;
     virtual uint64_t read_u64() = 0;
+    virtual ::thryft::native::Variant read_variant() = 0;
 };
 }
 }

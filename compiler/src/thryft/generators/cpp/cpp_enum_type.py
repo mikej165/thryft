@@ -56,11 +56,11 @@ class CppEnumType(EnumType, _CppType):
 
     def __repr__(self):
         assert len(self.enumerators) > 0
-        default_value = self.enumerators[0].name            
+        default_value = self.enumerators[0].name
         enumerator_check_cases = \
             lpad("\n", "\n".join(indent(' ' * 4, ("""\
 case %s: break;""" % enumerator.name
-                for enumerator in self.enumerators)))) 
+                for enumerator in self.enumerators))))
         enumerator_declarations = \
             lpad("\n", ",\n".join(indent(' ' * 4,
                 ("%s = %u" % (enumerator.name, enumerator.value)
@@ -82,7 +82,7 @@ class %(name)s {
 public:
   enum Enum {%(enumerator_declarations)s
   };
-  
+
 public:
   %(name)s()
     : enum_(%(default_value)s) {
@@ -95,7 +95,7 @@ public:
       throw ::thryft::EnumValueException();
     }
   }
-  
+
   %(name)s(const %(name)s& other)
     : enum_(other.enum_) {
     switch (enum_) {%(enumerator_check_cases)s
@@ -122,7 +122,7 @@ public:
       break;
     }
   }
-  
+
 private:
   Enum enum_;
 };""" % locals()

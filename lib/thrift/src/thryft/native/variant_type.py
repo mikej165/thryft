@@ -31,33 +31,70 @@
 #-------------------------------------------------------------------------------
 
 from thryft.generator.native_type import NativeType
+from thryft.generator.struct_type import StructType
+from thryft.generators.cpp.cpp_native_type import CppNativeType
 from thryft.generators.java.java_native_type import JavaNativeType
 from thryft.generators.py.py_native_type import PyNativeType
 
 
-class JavaMixed(JavaNativeType):
-    def java_compare_to(self, this_value, other_value):
-        return "org.thryft.Comparators.compare(%(this_value)s, %(other_value)s)" % locals()
+class _VariantType(object):
+    def thrift_ttype_id(self):
+        return StructType.THRIFT_TTYPE_ID
 
+    def thrift_ttype_name(self):
+        return StructType.THRIFT_TTYPE_NAME
+
+
+class CppVariantType(_VariantType, CppNativeType):
+    def cpp_default_value(self):
+        pass
+
+    def cpp_includes_use(self):
+        return ('<thryft.hpp>',)
+
+    def cpp_qname(self):
+        return '::thryft::native::Variant::Type'
+
+    def cpp_read_protocol(self, value, optional=False):
+        name = self.cpp_qname()
+        return "%(value)s = static_cast< %(name)s >(iprot.read_i32());" % locals()
+
+    def cpp_to_string(self, depth, oss, value):
+        return "%(oss)s << static_cast<int32_t>(%(value)s);" % locals()
+
+    def cpp_write_protocol(self, value, depth=0):
+        return "oprot.write(static_cast<int32_t>(%(value)s));" % locals()
+
+
+class JavaVariantType(_VariantType, JavaNativeType):
     def java_declaration_name(self, boxed=True):
-        return 'java.lang.Object'
+        return 'org.thryft.protocol.TYpe'
+
+    def java_default_value(self):
+        return 'null'
 
     def java_faker(self, **kwds):
-        return 'org.thryft.Faker.Internet.url()'
+        return 'org.thryft.protocol.Type.STRING'
+
+    def java_is_reference(self):
+        return True
+
+    def java_qname(self):
+        return 'org.thryft.protocol.Type'
 
     def java_read_protocol(self):
-        return "iprot.readMixed()" % locals()
+        return "iprot.readEnum(org.thryft.protocol.Type)" % locals()
 
     def java_write_protocol(self, value, depth=0):
-        return "oprot.writeMixed(%(value)s);" % locals()
+        return "oprot.writeEnum(%(value)s);" % locals()
 
 
-class PyMixed(PyNativeType):
+class PyVariantType(_VariantType, PyNativeType):
     def py_check(self, value):
         return 'True'
 
     def py_read_protocol(self):
-        return 'iprot.read_mixed()'
+        return 'iprot.read_enum()'
 
     def py_write_protocol(self, value, depth=0):
-        return "oprot.write_mixed(%(value)s)" % locals()
+        return "oprot.write_enum(%(value)s)" % locals()

@@ -3,6 +3,7 @@
 
 #include "thryft/base.hpp"
 #include "thryft/protocol/output_protocol.hpp"
+#include "thryft/protocol/output_protocol_exception.hpp"
 
 namespace thryft {
 namespace protocol {
@@ -56,6 +57,40 @@ class AbstractOutputProtocol : public OutputProtocol {
     }
 
     virtual void write(const char* value, size_t value_len) {
+    }
+
+    virtual void write(const ::thryft::native::Variant& value) {
+      switch (value.type()) {
+      case Type::BOOL:
+        write(static_cast<bool>(value));
+        break;
+      case Type::BYTE:
+        write(static_cast<int8_t>(value));
+        break;
+      case Type::DOUBLE:
+        write(static_cast<double>(value));
+        break;
+      case Type::FLOAT:
+        write(static_cast<float>(value));
+        break;
+      case Type::I16:
+        write(static_cast<int16_t>(value));
+        break;
+      case Type::I32:
+        write(static_cast<int32_t>(value));
+        break;
+      case Type::I64:
+        write(static_cast<int64_t>(value));
+        break;    
+      case Type::STRING:
+        write(static_cast<const char*>(value), value.size());
+        break;
+      case Type::U64:
+        write(static_cast<uint64_t>(value));
+        break;
+      default:
+        throw OutputProtocolException();
+      }
     }
 
     virtual void write_field_begin(const char* name, Type type, int16_t id) {

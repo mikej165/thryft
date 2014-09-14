@@ -9,14 +9,6 @@ class JsonInputProtocolException : public InputProtocolException {
   public:
     virtual ~JsonInputProtocolException() throw() {
     }
-
-  public:
-    // thryft::Base
-    virtual void read(protocol::InputProtocol& iprot) {
-    }
-
-    virtual void write(protocol::OutputProtocol& oprot) const {
-    }
 };
 }
 }

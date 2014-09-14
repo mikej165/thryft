@@ -81,11 +81,42 @@ class CppDocument(Document, _CppNamedConstruct):
             includes.extend(other_includes)
         return includes
 
+    def cpp_global_operators(self):
+        global_operators = []
+        for definition in self.definitions:
+            if hasattr(definition, 'cpp_global_operators'):
+                global_operators.extend(definition.cpp_global_operators())
+        return global_operators
+
+    def cpp_guard(self):
+        guard = []
+        namespace = self.cpp_namespace()
+        if namespace is not None:
+            namespace_split = namespace.split('.')
+            guard.extend(s.upper() for s in namespace_split)
+        guard.append(self.cpp_name().upper())
+        guard = '_' + '_'.join(guard) + '_HPP_'
+        return guard
+
     def cpp_name(self):
         return self.name
 
     def cpp_namespace(self):
         return self.namespace_by_scope('cpp').name
+
+    def cpp_namespace_block_closes(self):
+        namespace = self.cpp_namespace()
+        if namespace is None:
+            return ''
+        namespace_split = namespace.split('.')
+        return "\n" + "\n".join('}' for _ in namespace_split)
+
+    def cpp_namespace_block_opens(self):
+        namespace = self.cpp_namespace()
+        if namespace is None:
+            return ''
+        namespace_split = namespace.split('.')
+        return "\n".join("namespace %s {" % s for s in namespace_split) + "\n"
 
     def __repr__(self):
         definitions = []
@@ -97,22 +128,10 @@ class CppDocument(Document, _CppNamedConstruct):
         if len(definitions) == 0:
             return definitions
 
-        guard = []
-        namespace = self.cpp_namespace()
-        if namespace is not None:
-            namespace_split = namespace.split('.')
-            guard.extend(s.upper() for s in namespace_split)
-            namespaces_prefix = "\n".join("namespace %s {" % s for s in namespace_split) + "\n"
-            namespaces_suffix = "\n" + "\n".join('}' for _ in namespace_split)
-
-        global_operators = []
-        for definition in self.definitions:
-            if hasattr(definition, 'cpp_global_operators'):
-                global_operators.extend(definition.cpp_global_operators())
-        global_operators = lpad("\n\n", "\n\n".join(global_operators))
-
-        guard.append(self.cpp_name().upper())
-        guard = '_' + '_'.join(guard) + '_HPP_'
+        global_operators = lpad("\n\n", "\n\n".join(self.cpp_global_operators()))
+        guard = self.cpp_guard()
+        namespace_block_closes = self.cpp_namespace_block_closes()
+        namespace_block_opens = self.cpp_namespace_block_opens()
 
         includes = rpad("\n".join(self.cpp_includes_definition()), "\n\n")
 
@@ -120,7 +139,7 @@ class CppDocument(Document, _CppNamedConstruct):
 #ifndef %(guard)s
 #define %(guard)s
 
-%(includes)s%(namespaces_prefix)s%(definitions)s%(namespaces_suffix)s%(global_operators)s
+%(includes)s%(namespace_block_opens)s%(definitions)s%(namespace_block_closes)s%(global_operators)s
 
 #endif  // %(guard)s
 """ % locals()
@@ -129,7 +148,7 @@ class CppDocument(Document, _CppNamedConstruct):
 
     def _save_to_dir(self, out_dir_path):
         try:
-            out_dir_path = os.path.join(out_dir_path, self.namespace_by_scope('cpp').name.replace('.', os.path.sep))
+            out_dir_path = os.path.join(out_dir_path, self.cpp_namespace().replace('.', os.path.sep))
         except KeyError:
             pass
         return self._save_to_file(os.path.join(out_dir_path, self.name + '.hpp'))

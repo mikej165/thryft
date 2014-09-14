@@ -3,6 +3,7 @@
 
 #include "thryft/base.hpp"
 #include "thryft/protocol/input_protocol.hpp"
+#include "thryft/native/variant.hpp"
 
 namespace thryft {
 namespace protocol {
@@ -38,6 +39,10 @@ class AbstractInputProtocol : public InputProtocol {
 
     virtual void read(int64_t& out_value) {
       out_value = read_i64();
+    }
+
+    virtual void read(::thryft::native::Variant& out_value) {
+      out_value = read_variant();
     }
 
     void read(std::string& out_value) {
@@ -141,6 +146,10 @@ class AbstractInputProtocol : public InputProtocol {
 
     virtual uint64_t read_u64() {
       return static_cast<uint64_t>(0);
+    }
+
+    virtual ::thryft::native::Variant read_variant() {
+      return ::thryft::native::Variant();
     }
 };
 }
