@@ -126,6 +126,15 @@ public:
                     "\n\n".join(function.cpp_pure_virtual_declaration()
                                 for function in self.functions)))
 
+        sections.append(
+"""\
+  #define %s_DECLARATIONS\\
+%s""" % (
+                self._parent_document().cpp_guard()[1:-5],
+                indent(' ' * 2,
+                    "\\\n\\\n".join(function.cpp_declaration(line_ending="\\\n") + ';'
+                                for function in self.functions))))
+
         sections = lpad("\n\n", "\n\n".join(sections))
 
         return """\

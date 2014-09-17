@@ -153,7 +153,7 @@ virtual void handle(const %(name)s& request) {
         def _cpp_template_parameters(self):
             return None
 
-    def _cpp_declaration(self):
+    def cpp_declaration(self, line_ending="\n"):
         name = self.cpp_name()
 
         parameters = \
@@ -172,14 +172,11 @@ virtual void handle(const %(name)s& request) {
             return declaration
 
         parameters = indent(' ' * 2,
-            ',\n'.join(parameter.cpp_parameter()
+            (',' + line_ending).join(parameter.cpp_parameter()
                       for parameter in self.parameters))
 
         return """\
-%(return_type_name)s
-%(name)s(
-%(parameters)s
-)""" % locals()
+%(return_type_name)s%(line_ending)s%(name)s(%(line_ending)s%(parameters)s%(line_ending)s)""" % locals()
 
     def cpp_includes_definition(self):
         includes = []
@@ -192,7 +189,7 @@ virtual void handle(const %(name)s& request) {
         return includes
 
     def cpp_pure_virtual_declaration(self):
-        return 'virtual ' + self._cpp_declaration() + ' = 0;'
+        return 'virtual ' + self.cpp_declaration() + ' = 0;'
 
     def cpp_qname(self):
         return self.name
