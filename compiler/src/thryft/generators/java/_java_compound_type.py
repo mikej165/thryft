@@ -517,7 +517,7 @@ public %(compound_type_name)s %(method_name)s(%(field_parameter)s) {
         return {'toString': """\
 @Override
 public String toString() {
-    return com.google.common.base.Objects.toStringHelper(this).omitNullValues()%(add_statements)s.toString();
+    return com.google.common.base.MoreObjects.toStringHelper(this).omitNullValues()%(add_statements)s.toString();
 }""" % locals()}
 
     def _java_method_write(self):

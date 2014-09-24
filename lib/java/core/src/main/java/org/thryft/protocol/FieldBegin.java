@@ -2,7 +2,7 @@ package org.thryft.protocol;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 
 public class FieldBegin {
     public FieldBegin() {
@@ -29,7 +29,7 @@ public class FieldBegin {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this).add("id", id).add("name", name)
+        return MoreObjects.toStringHelper(this).add("id", id).add("name", name)
                 .add("type", type).toString();
     }
 

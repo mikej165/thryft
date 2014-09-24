@@ -2,7 +2,7 @@ package org.thryft.protocol;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 
 public final class SetBegin {
     public SetBegin(final Type elementType, final int size) {
@@ -20,7 +20,7 @@ public final class SetBegin {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this).add("elementType", elementType)
+        return MoreObjects.toStringHelper(this).add("elementType", elementType)
                 .add("size", size).toString();
     }
 

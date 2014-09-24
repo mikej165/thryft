@@ -2,7 +2,7 @@ package org.thryft.protocol;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 
 public final class MessageBegin {
     public MessageBegin(final String name, final MessageType type,
@@ -26,7 +26,7 @@ public final class MessageBegin {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this).add("id", id).add("name", name)
+        return MoreObjects.toStringHelper(this).add("id", id).add("name", name)
                 .add("type", type).toString();
     }
 

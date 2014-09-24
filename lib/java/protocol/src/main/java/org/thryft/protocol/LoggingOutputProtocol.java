@@ -42,7 +42,7 @@ import org.thryft.native_.Uri;
 import org.thryft.native_.Url;
 
 import com.google.common.annotations.GwtIncompatible;
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.primitives.UnsignedInteger;
 import com.google.common.primitives.UnsignedLong;
 
@@ -60,7 +60,7 @@ public class LoggingOutputProtocol implements OutputProtocol {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this).add("logger", logger)
+        return MoreObjects.toStringHelper(this).add("logger", logger)
                 .add("wrappedOutputProtocol", wrappedOutputProtocol).toString();
     }
 

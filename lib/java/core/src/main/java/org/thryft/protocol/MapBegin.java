@@ -2,7 +2,7 @@ package org.thryft.protocol;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 
 public final class MapBegin {
     public MapBegin(final Type keyType, final Type valueType, final int size) {
@@ -25,7 +25,7 @@ public final class MapBegin {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this).add("keyType", keyType)
+        return MoreObjects.toStringHelper(this).add("keyType", keyType)
                 .add("valueType", valueType).add("size", size).toString();
     }
 
