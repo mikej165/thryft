@@ -115,7 +115,7 @@ public:
     } else if (name == "U64") {
       return U64;
     }
-    return STOP;
+    throw ::thryft::EnumValueException();
   }
 
   void write(::thryft::protocol::OutputProtocol& oprot) const {

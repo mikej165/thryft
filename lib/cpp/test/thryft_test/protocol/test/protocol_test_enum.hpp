@@ -51,7 +51,7 @@ public:
     } else if (name == "ENUMERATOR2") {
       return ENUMERATOR2;
     }
-    return ENUMERATOR1;
+    throw ::thryft::EnumValueException();
   }
 
   void write(::thryft::protocol::OutputProtocol& oprot) const {
