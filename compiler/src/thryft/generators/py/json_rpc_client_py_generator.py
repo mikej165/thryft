@@ -90,15 +90,15 @@ def __import_exception_class(exception_class_qname):
                    .lower()\\
                    .strip('_')
 
-    exception_class_qname = exception_class_qname.split('.')
-    if len(exception_class_qname) < 2:
-        raise
-    elif exception_class_qname[0] not in ('com', 'org'):
-        raise
+    exception_class_qname_split = exception_class_qname.split('.')
+#     if len(exception_class_qname) < 2:
+#         raise
+#     elif exception_class_qname[0] not in ('com', 'org'):
+#         raise
 
-    exception_class_name = exception_class_qname[-1]
+    exception_class_name = exception_class_qname_split[-1]
     exception_module_qname = \\
-        exception_class_qname[1:-1] + \\
+        exception_class_qname_split[:-1] + \\
             [decamelize(exception_class_name)]
 
     exception_module = __import__('.'.join(exception_module_qname))
@@ -219,7 +219,7 @@ def __request(self, method, headers=None, **kwds):
                 raise RuntimeError("JSON-RPC: error: code=%%(code)u, message='%%(message)s'" %% locals())
             data = error.get('data')
             if isinstance(data, dict):
-                data_iprot = thryft.protocol.builtins_input_protocol.BuiltinsInputProtocol([data])
+                data_iprot = thryft.protocol.builtins_input_protocol.BuiltinsInputProtocol(data)
                 exception_ = exception_class.read(data_iprot)
                 raise exception_
             else:
