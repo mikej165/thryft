@@ -127,7 +127,7 @@ if (typeof %(value)s !== "string") {
 
 class PyUri(_Uri, PyNativeType):
     def py_check(self, value):
-        return "isinstance(%(value)s, str)" % locals()
+        return "isinstance(%(value)s, basestring)" % locals()
 
     def _py_imports_definition(self, caller_stack):
         return []
