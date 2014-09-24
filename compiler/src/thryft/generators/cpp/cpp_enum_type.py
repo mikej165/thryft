@@ -55,7 +55,6 @@ class CppEnumType(EnumType, _CppType):
         return "%(value)s.write(oprot);" % locals()
 
     def __repr__(self):
-        assert len(self.enumerators) > 0
         default_value = self.enumerators[0].name
         enumerator_check_cases = \
             lpad("\n", "\n".join(indent(' ' * 4, ("""\
@@ -112,7 +111,7 @@ public:
   static %(name)s read(::thryft::protocol::InputProtocol& iprot) {
     ::std::string name;
     iprot.read_string(name);%(enumerator_value_ofs)s
-    return %(default_value)s;
+    throw ::thryft::EnumValueException();
   }
 
   void write(::thryft::protocol::OutputProtocol& oprot) const {
