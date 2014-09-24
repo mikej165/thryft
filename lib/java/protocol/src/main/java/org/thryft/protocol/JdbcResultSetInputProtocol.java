@@ -155,12 +155,12 @@ public class JdbcResultSetInputProtocol extends AbstractInputProtocol {
 
     @Override
     public ListBegin readListBegin() throws InputProtocolException {
-        return new ListBegin(Type.VOID, 0);
+        return new ListBegin(Type.VOID_, 0);
     }
 
     @Override
     public MapBegin readMapBegin() throws InputProtocolException {
-        return new MapBegin(Type.VOID, Type.VOID, 0);
+        return new MapBegin(Type.VOID_, Type.VOID_, 0);
     }
 
     @Override

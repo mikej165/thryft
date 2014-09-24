@@ -869,7 +869,7 @@ public class NestedProtocolTestStruct implements org.thryft.Base<NestedProtocolT
         builder.setStringListField(com.google.common.collect.ImmutableList.of(org.thryft.Faker.Lorem.word()));
         builder.setStringStringMapField(com.google.common.collect.ImmutableMap.of(org.thryft.Faker.Lorem.word(), org.thryft.Faker.Lorem.word()));
         builder.setRequiredI32Field(org.thryft.Faker.randomI32());
-        builder.setRequiredStringField(org.thryft.Faker.Name.firstName());
+        builder.setRequiredStringField(org.thryft.Faker.Lorem.word());
         builder.setStringSetField(com.google.common.collect.ImmutableSet.of(org.thryft.Faker.Lorem.word()));
         builder.setStringField(org.thryft.Faker.Lorem.word());
         builder.setUrlField(org.thryft.Faker.Internet.url());
@@ -1176,9 +1176,9 @@ public class NestedProtocolTestStruct implements org.thryft.Base<NestedProtocolT
 
     public void write(final org.thryft.protocol.OutputProtocol oprot, final org.thryft.protocol.Type writeAsType) throws org.thryft.protocol.OutputProtocolException {
         switch (writeAsType) {
-            case VOID:
+            case VOID_:
             case LIST:
-                oprot.writeListBegin(org.thryft.protocol.Type.VOID, 17);
+                oprot.writeListBegin(org.thryft.protocol.Type.VOID_, 17);
 
                 if (getBinaryField().isPresent()) {
                     oprot.writeBinary(getBinaryField().get());

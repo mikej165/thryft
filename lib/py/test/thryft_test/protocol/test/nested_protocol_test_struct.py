@@ -586,7 +586,7 @@ class NestedProtocolTestStruct(object):
 
         if self.enum_field is not None:
             oprot.write_field_begin('enum_field', 11, -1)
-            oprot.write_string([attr for attr in dir(thryft_test.protocol.test.protocol_test_enum.ProtocolTestEnum) if getattr(thryft_test.protocol.test.protocol_test_enum.ProtocolTestEnum, attr) == self.enum_field][0])
+            oprot.write_string(str(self.enum_field))
             oprot.write_field_end()
 
         if self.i16_field is not None:

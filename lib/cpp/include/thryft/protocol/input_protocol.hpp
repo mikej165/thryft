@@ -5,7 +5,6 @@
 #include <string>
 
 #include "thryft/protocol/input_protocol_exception.hpp"
-#include "thryft/protocol/type.hpp"
 
 namespace thryft {
 class Base;
@@ -15,6 +14,8 @@ class Variant;
 }
 
 namespace protocol {
+class Type;
+
 class InputProtocol {
   public:
     virtual ~InputProtocol() {

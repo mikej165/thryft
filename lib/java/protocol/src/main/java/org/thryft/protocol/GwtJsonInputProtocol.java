@@ -105,7 +105,7 @@ public class GwtJsonInputProtocol extends
                 throw new InputProtocolException("expected JSON array");
             }
             _getInputProtocolStack().push(__createArrayInputProtocol(node));
-            return new ListBegin(Type.VOID, node.size());
+            return new ListBegin(Type.VOID_, node.size());
         }
 
         @Override
@@ -115,7 +115,7 @@ public class GwtJsonInputProtocol extends
                 throw new InputProtocolException("expected JSON object");
             }
             _getInputProtocolStack().push(__createMapObjectInputProtocol(node));
-            return new MapBegin(Type.VOID, Type.VOID, node.size());
+            return new MapBegin(Type.VOID_, Type.VOID_, node.size());
         }
 
         @Override
@@ -241,7 +241,7 @@ public class GwtJsonInputProtocol extends
         @Override
         public FieldBegin readFieldBegin() throws InputProtocolException {
             if (!fieldNameStack.isEmpty()) {
-                return new FieldBegin(fieldNameStack.peek(), Type.VOID,
+                return new FieldBegin(fieldNameStack.peek(), Type.VOID_,
                         (short) -1);
             } else {
                 return new FieldBegin();
@@ -280,7 +280,7 @@ public class GwtJsonInputProtocol extends
         if (!_getInputProtocolStack().isEmpty()) {
             return _getInputProtocolStack().peek().getType();
         } else {
-            return Type.VOID;
+            return Type.VOID_;
         }
     }
 

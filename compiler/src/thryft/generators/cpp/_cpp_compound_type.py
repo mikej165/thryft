@@ -65,7 +65,7 @@ class _CppCompoundType(_CppType):
   read(iprot);%(body)s
 }
 
-%(name)s(::thryft::protocol::InputProtocol& iprot, ::thryft::protocol::Type as_type) {
+%(name)s(::thryft::protocol::InputProtocol& iprot, const ::thryft::protocol::Type& as_type) {
   read(iprot, as_type);%(body)s
 }""" % locals()
 
@@ -205,8 +205,8 @@ void read(::thryft::protocol::InputProtocol& iprot) {
   read(iprot, ::thryft::protocol::Type::STRUCT);
 }
 
-void read(::thryft::protocol::InputProtocol& iprot, ::thryft::protocol::Type as_type) {
-  switch (as_type) {
+void read(::thryft::protocol::InputProtocol& iprot, const ::thryft::protocol::Type& as_type) {
+  switch (static_cast< ::thryft::protocol::Type::Enum >(as_type)) {
     case ::thryft::protocol::Type::LIST: {
       ::thryft::protocol::Type list_element_type;
       uint32_t list_size;
@@ -274,8 +274,8 @@ void write(::thryft::protocol::OutputProtocol& oprot) const {
   write(oprot, ::thryft::protocol::Type::STRUCT);
 }
 
-void write(::thryft::protocol::OutputProtocol& oprot, ::thryft::protocol::Type as_type) const {
-  switch (as_type) {
+void write(::thryft::protocol::OutputProtocol& oprot, const ::thryft::protocol::Type& as_type) const {
+  switch (static_cast< ::thryft::protocol::Type::Enum >(as_type)) {
   %(case_ttype_void)s
   case ::thryft::protocol::Type::LIST:
     oprot.write_list_begin(::thryft::protocol::Type::VOID_, %(field_count)u);%(field_value_write_protocols)s

@@ -96,7 +96,7 @@ public:
 
 %(message_types)s
 
-  static RequestT* read_request(const char* function_name, ::thryft::protocol::InputProtocol& iprot, ::thryft::protocol::Type as_type) {
+  static RequestT* read_request(const char* function_name, ::thryft::protocol::InputProtocol& iprot, const ::thryft::protocol::Type& as_type) {
     if (function_name == NULL) {
       return NULL;
     }

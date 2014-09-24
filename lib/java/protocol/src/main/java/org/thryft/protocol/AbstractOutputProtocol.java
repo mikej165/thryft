@@ -66,7 +66,7 @@ public abstract class AbstractOutputProtocol implements OutputProtocol {
         } else if (value instanceof ImmutableList) {
             @SuppressWarnings("unchecked")
             final ImmutableList<Object> set = (ImmutableList<Object>) value;
-            oprot.writeListBegin(Type.VOID, set.size());
+            oprot.writeListBegin(Type.VOID_, set.size());
             for (final Object element : set) {
                 oprot.writeVariant(element);
             }
@@ -74,7 +74,7 @@ public abstract class AbstractOutputProtocol implements OutputProtocol {
         } else if (value instanceof ImmutableMap) {
             @SuppressWarnings("unchecked")
             final ImmutableMap<Object, Object> map = (ImmutableMap<Object, Object>) value;
-            oprot.writeMapBegin(Type.VOID, Type.VOID, map.size());
+            oprot.writeMapBegin(Type.VOID_, Type.VOID_, map.size());
             for (final ImmutableMap.Entry<Object, Object> entry : map
                     .entrySet()) {
                 oprot.writeVariant(entry.getKey());
@@ -84,7 +84,7 @@ public abstract class AbstractOutputProtocol implements OutputProtocol {
         } else if (value instanceof ImmutableSet) {
             @SuppressWarnings("unchecked")
             final ImmutableSet<Object> set = (ImmutableSet<Object>) value;
-            oprot.writeSetBegin(Type.VOID, set.size());
+            oprot.writeSetBegin(Type.VOID_, set.size());
             for (final Object element : set) {
                 oprot.writeVariant(element);
             }

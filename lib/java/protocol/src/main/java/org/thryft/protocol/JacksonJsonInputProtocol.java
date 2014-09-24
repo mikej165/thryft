@@ -101,7 +101,7 @@ public final class JacksonJsonInputProtocol extends
                 throw new InputProtocolException("expected JSON array");
             }
             _getInputProtocolStack().push(__createArrayInputProtocol(node));
-            return new ListBegin(Type.VOID, node.size());
+            return new ListBegin(Type.VOID_, node.size());
         }
 
         @Override
@@ -111,7 +111,7 @@ public final class JacksonJsonInputProtocol extends
                 throw new InputProtocolException("expected JSON object");
             }
             _getInputProtocolStack().push(__createMapObjectInputProtocol(node));
-            return new MapBegin(Type.VOID, Type.VOID, node.size());
+            return new MapBegin(Type.VOID_, Type.VOID_, node.size());
         }
 
         @Override
@@ -254,7 +254,7 @@ public final class JacksonJsonInputProtocol extends
                 } else if (value.isTextual()) {
                     type = Type.STRING;
                 } else {
-                    type = Type.VOID;
+                    type = Type.VOID_;
                 }
                 return new FieldBegin(fieldNameStack.peek(), type, (short) -1);
             } else {

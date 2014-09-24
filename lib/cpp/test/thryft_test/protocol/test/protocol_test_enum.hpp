@@ -12,7 +12,7 @@ public:
     ENUMERATOR1 = 1,
     ENUMERATOR2 = 2
   };
-  
+
 public:
   ProtocolTestEnum()
     : enum_(ENUMERATOR1) {
@@ -27,7 +27,7 @@ public:
       throw ::thryft::EnumValueException();
     }
   }
-  
+
   ProtocolTestEnum(const ProtocolTestEnum& other)
     : enum_(other.enum_) {
     switch (enum_) {
@@ -63,7 +63,7 @@ public:
       break;
     }
   }
-  
+
 private:
   Enum enum_;
 };

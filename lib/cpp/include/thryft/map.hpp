@@ -6,13 +6,14 @@
 #include "thryft/base.hpp"
 #include "thryft/protocol/input_protocol.hpp"
 #include "thryft/protocol/output_protocol.hpp"
+#include "thryft/protocol/type.hpp"
 
 namespace thryft {
 template <
   typename KeyCppT,
-  ::thryft::protocol::Type KeyThriftT,
+  ::thryft::protocol::Type::Enum KeyThriftT,
   typename ValueCppT,
-  ::thryft::protocol::Type ValueThriftT
+  ::thryft::protocol::Type::Enum ValueThriftT
   >
 class Map : public ::thryft::Base, public ::std::map< KeyCppT, ValueCppT > {
   public:

@@ -2,6 +2,7 @@
 #define _THRYFT_PROTOCOL_XDR_INPUT_PROTOCOL_HPP_
 
 #include "thryft/protocol/abstract_input_protocol.hpp"
+#include "thryft/protocol/type.hpp"
 #include "thryft/protocol/xdr_output_protocol.hpp"
 
 namespace thryft {
@@ -42,7 +43,7 @@ class XdrInputProtocol : public AbstractInputProtocol {
     void read_field_begin(std::string& out_name, Type& out_type,
                           int16_t& out_id) {
       read_string(out_name);
-      out_type = static_cast<Type>(read_i32());
+      out_type = static_cast<Type::Enum>(read_i32());
       out_id = read_i16();
     }
 

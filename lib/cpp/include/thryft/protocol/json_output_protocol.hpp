@@ -3,8 +3,15 @@
 
 #include "thryft/protocol/abstract_output_protocol.hpp"
 
+#ifdef _WIN32
+#pragma warning(push)
+#pragma warning(disable: 4265 4242 4365)
+#endif
 #include <rapidjson/document.h>
 #include <rapidjson/writer.h>
+#ifdef _WIN32
+#pragma warning(pop)
+#endif
 
 namespace thryft {
 namespace protocol {
@@ -63,12 +70,12 @@ class JsonOutputProtocol : public AbstractOutputProtocol {
       writer_.String(value, value_len);
     }
 
-    virtual void write_field_begin(const char* name, Type type,
+    virtual void write_field_begin(const char* name, const Type& type,
                                    int16_t id) {
       writer_.String(name);
     }
 
-    virtual void write_list_begin(Type element_type, uint32_t size) {
+    virtual void write_list_begin(const Type& element_type, uint32_t size) {
       writer_.StartArray();
     }
 
@@ -76,7 +83,7 @@ class JsonOutputProtocol : public AbstractOutputProtocol {
       writer_.EndArray();
     }
 
-    virtual void write_map_begin(Type key_type, Type value_type,
+    virtual void write_map_begin(const Type& key_type, const Type& value_type,
                                  uint32_t size) {
       writer_.StartObject();
     }

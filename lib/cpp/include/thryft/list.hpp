@@ -6,9 +6,10 @@
 #include "thryft/base.hpp"
 #include "thryft/protocol/input_protocol.hpp"
 #include "thryft/protocol/output_protocol.hpp"
+#include "thryft/protocol/type.hpp"
 
 namespace thryft {
-template <typename ElementCppT, ::thryft::protocol::Type ElementThriftT>
+template <typename ElementCppT, ::thryft::protocol::Type::Enum ElementThriftT>
 class List : public ::thryft::Base, public ::std::vector<ElementCppT> {
   public:
     List() {

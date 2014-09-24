@@ -125,7 +125,7 @@ public class StringMapInputProtocol extends
             final ListInputProtocol listInputProtocol = new ListInputProtocol(
                     input, __joinKeys(myKey, childKey));
             _getInputProtocolStack().push(listInputProtocol);
-            return new ListBegin(Type.VOID, listInputProtocol
+            return new ListBegin(Type.VOID_, listInputProtocol
                     ._getChildKeyStack().size());
         }
 
@@ -134,7 +134,7 @@ public class StringMapInputProtocol extends
             final MapInputProtocol mapInputProtocol = new MapInputProtocol(
                     input, __joinKeys(myKey, childKey));
             _getInputProtocolStack().push(mapInputProtocol);
-            return new MapBegin(Type.VOID, Type.VOID, mapInputProtocol
+            return new MapBegin(Type.VOID_, Type.VOID_, mapInputProtocol
                     ._getChildKeyStack().size());
         }
 
@@ -235,7 +235,7 @@ public class StringMapInputProtocol extends
             final ListInputProtocol listInputProtocol = new ListInputProtocol(
                     _getInput(), "");
             _getInputProtocolStack().push(listInputProtocol);
-            return new ListBegin(Type.VOID, listInputProtocol
+            return new ListBegin(Type.VOID_, listInputProtocol
                     ._getChildKeyStack().size());
         }
 
@@ -244,7 +244,7 @@ public class StringMapInputProtocol extends
             final MapInputProtocol mapInputProtocol = new MapInputProtocol(
                     _getInput(), "");
             _getInputProtocolStack().push(mapInputProtocol);
-            return new MapBegin(Type.VOID, Type.VOID, mapInputProtocol
+            return new MapBegin(Type.VOID_, Type.VOID_, mapInputProtocol
                     ._getChildKeyStack().size());
         }
 
@@ -270,7 +270,7 @@ public class StringMapInputProtocol extends
         @Override
         public FieldBegin readFieldBegin() throws InputProtocolException {
             if (!_getChildKeyStack().empty()) {
-                return new FieldBegin(_getChildKeyStack().peek(), Type.VOID,
+                return new FieldBegin(_getChildKeyStack().peek(), Type.VOID_,
                         (short) -1);
             } else {
                 return new FieldBegin();

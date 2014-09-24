@@ -26,7 +26,6 @@ struct ProtocolTestStruct {
     optional map<string, string> string_string_map_field;
     required i32 required_i32_field;
     // @validation {"minLength": 1}
-    // @faker Name.firstName()
     required string required_string_field;
     optional set<string> string_set_field;
     // @validation {"minLength": 1}

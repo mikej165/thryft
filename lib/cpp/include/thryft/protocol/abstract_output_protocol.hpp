@@ -93,7 +93,7 @@ class AbstractOutputProtocol : public OutputProtocol {
       }
     }
 
-    virtual void write_field_begin(const char* name, Type type, int16_t id) {
+    virtual void write_field_begin(const char* name, const Type& type, int16_t id) {
     }
 
     virtual void write_field_end() {
@@ -102,20 +102,20 @@ class AbstractOutputProtocol : public OutputProtocol {
     virtual void write_field_stop() {
     }
 
-    virtual void write_list_begin(Type element_type, uint32_t size) {
+    virtual void write_list_begin(const Type& element_type, uint32_t size) {
     }
 
     virtual void write_list_end() {
     }
 
-    virtual void write_map_begin(Type key_type, Type value_type,
+    virtual void write_map_begin(const Type& key_type, const Type& value_type,
                                  uint32_t size) {
     }
 
     virtual void write_map_end() {
     }
 
-    virtual void write_set_begin(Type element_type, uint32_t size) {
+    virtual void write_set_begin(const Type& element_type, uint32_t size) {
       write_list_begin(element_type, size);
     }
 

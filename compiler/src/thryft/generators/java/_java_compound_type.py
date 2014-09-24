@@ -521,7 +521,7 @@ public String toString() {
 }""" % locals()}
 
     def _java_method_write(self):
-        case_ttype_void = 'case VOID:'
+        case_ttype_void = 'case VOID_:'
         if len(self.fields) == 1:
             field = self.fields[0]
             from thryft.generators.java._java_container_type import _JavaContainerType
@@ -562,7 +562,7 @@ public void write(final org.thryft.protocol.OutputProtocol oprot, final org.thry
     switch (writeAsType) {
         %(case_ttype_void)s
         case LIST:
-            oprot.writeListBegin(org.thryft.protocol.Type.VOID, %(field_count)u);%(field_value_write_protocols)s
+            oprot.writeListBegin(org.thryft.protocol.Type.VOID_, %(field_count)u);%(field_value_write_protocols)s
             oprot.writeListEnd();
             break;
 

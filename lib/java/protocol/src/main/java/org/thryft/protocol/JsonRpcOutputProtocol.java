@@ -19,7 +19,7 @@ public final class JsonRpcOutputProtocol extends ForwardingOutputProtocol {
         writeFieldEnd();
 
         if (id == null) {
-            writeFieldBegin("id", org.thryft.protocol.Type.VOID, (short) -1);
+            writeFieldBegin("id", org.thryft.protocol.Type.VOID_, (short) -1);
             writeNull();
             writeFieldEnd();
         } else if (id instanceof Integer) {
@@ -46,15 +46,15 @@ public final class JsonRpcOutputProtocol extends ForwardingOutputProtocol {
             writeString(name);
             writeFieldEnd();
 
-            writeFieldBegin("params", org.thryft.protocol.Type.VOID, (short) -1);
+            writeFieldBegin("params", org.thryft.protocol.Type.VOID_, (short) -1);
             break;
 
         case EXCEPTION:
-            writeFieldBegin("error", org.thryft.protocol.Type.VOID, (short) -1);
+            writeFieldBegin("error", org.thryft.protocol.Type.VOID_, (short) -1);
             break;
 
         case REPLY:
-            writeFieldBegin("result", org.thryft.protocol.Type.VOID, (short) -1);
+            writeFieldBegin("result", org.thryft.protocol.Type.VOID_, (short) -1);
             break;
 
         default:

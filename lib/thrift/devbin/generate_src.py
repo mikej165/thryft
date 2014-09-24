@@ -73,6 +73,16 @@ class Main(thryft.main.Main):
                       'py': (os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'py', 'test'),),
                   },
              ),
+              (
+                  os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'thrift', 'src', 'thryft', 'protocol'),
+                  {
+                      'cpp': (os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'cpp', 'include'),),
+                      'java': (
+                          os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'java', 'core', 'src', 'main', 'java'),
+                       ),
+                      'py': (os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'py', 'src'),),
+                  },
+             ),
         ):
             for dir_path, _, file_names in os.walk(in_dir_path):
                 for file_name in file_names:
@@ -97,7 +107,7 @@ class Main(thryft.main.Main):
                         gen_names = gen.keys()
                     for gen_name in gen_names:
                         for generator in generators[gen_name]:
-                            for out_dir_path in out_dir_paths[gen_name]:
+                            for out_dir_path in out_dir_paths.get(gen_name, []):
                                 yield \
                                     self._CompileTask(
                                         generator=generator,

@@ -5,7 +5,6 @@
 #include <string>
 
 #include "thryft/protocol/output_protocol_exception.hpp"
-#include "thryft/protocol/type.hpp"
 
 namespace thryft {
 class Base;
@@ -15,6 +14,8 @@ class Variant;
 }
 
 namespace protocol {
+class Type;
+
 class OutputProtocol {
   public:
     virtual ~OutputProtocol() {
@@ -34,7 +35,7 @@ class OutputProtocol {
     virtual void write(double value) = 0;
 
     // Field
-    virtual void write_field_begin(const char* name, Type type,
+    virtual void write_field_begin(const char* name, const Type& type,
                                    int16_t id) = 0;
     virtual void write_field_end() = 0;
     virtual void write_field_stop() = 0;
@@ -69,16 +70,16 @@ class OutputProtocol {
     // Variant
     virtual void write(const ::thryft::native::Variant& value) = 0;
 
-    virtual void write_list_begin(Type element_type, uint32_t size) = 0;
+    virtual void write_list_begin(const Type& element_type, uint32_t size) = 0;
     virtual void write_list_end() = 0;
 
-    virtual void write_map_begin(Type key_type, Type value_type,
+    virtual void write_map_begin(const Type& key_type, const Type& value_type,
                                  uint32_t size) = 0;
     virtual void write_map_end() = 0;
 
     virtual void write_null() = 0;
 
-    virtual void write_set_begin(Type element_type, uint32_t size) = 0;
+    virtual void write_set_begin(const Type& element_type, uint32_t size) = 0;
     virtual void write_set_end() = 0;
 
     virtual void write_struct_begin() = 0;

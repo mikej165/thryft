@@ -21,7 +21,7 @@ public:
     read(iprot);
   }
 
-  NestedProtocolTestStruct(::thryft::protocol::InputProtocol& iprot, ::thryft::protocol::Type as_type) {
+  NestedProtocolTestStruct(::thryft::protocol::InputProtocol& iprot, const ::thryft::protocol::Type& as_type) {
     read(iprot, as_type);
   }
 
@@ -320,8 +320,8 @@ public:
     read(iprot, ::thryft::protocol::Type::STRUCT);
   }
 
-  void read(::thryft::protocol::InputProtocol& iprot, ::thryft::protocol::Type as_type) {
-    switch (as_type) {
+  void read(::thryft::protocol::InputProtocol& iprot, const ::thryft::protocol::Type& as_type) {
+    switch (static_cast< ::thryft::protocol::Type::Enum >(as_type)) {
       case ::thryft::protocol::Type::LIST: {
         ::thryft::protocol::Type list_element_type;
         uint32_t list_size;
@@ -611,8 +611,8 @@ public:
     write(oprot, ::thryft::protocol::Type::STRUCT);
   }
 
-  void write(::thryft::protocol::OutputProtocol& oprot, ::thryft::protocol::Type as_type) const {
-    switch (as_type) {
+  void write(::thryft::protocol::OutputProtocol& oprot, const ::thryft::protocol::Type& as_type) const {
+    switch (static_cast< ::thryft::protocol::Type::Enum >(as_type)) {
     case ::thryft::protocol::Type::VOID_:
     case ::thryft::protocol::Type::LIST:
       oprot.write_list_begin(::thryft::protocol::Type::VOID_, 17);

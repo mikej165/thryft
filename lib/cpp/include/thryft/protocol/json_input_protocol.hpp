@@ -8,8 +8,15 @@
 #include "thryft/protocol/json_input_protocol_exception.hpp"
 #include "thryft/protocol/json_output_protocol.hpp"
 
+#ifdef _WIN32
+#pragma warning(push)
+#pragma warning(disable: 4265 4242 4365)
+#endif
 #include <rapidjson/document.h>
 #include <rapidjson/writer.h>
+#ifdef _WIN32
+#pragma warning(pop)
+#endif
 
 namespace thryft {
 namespace protocol {
@@ -25,39 +32,39 @@ class JsonInputProtocol : public StackedInputProtocol {
         }
 
       public:
-        char Peek() const {
+        char peek() const {
           if (src_p_ - src_ >= src_len_) {
             throw JsonInputProtocolException();
           }
           return *src_p_;
         }
 
-        char* PutBegin() {
+        char* put_begin() {
           RAPIDJSON_ASSERT(false);
           return 0;
         }
 
-        void Put(char) {
+        void put(char) {
           RAPIDJSON_ASSERT(false);
         }
 
-        size_t PutEnd(char*) {
+        size_t put_end(char*) {
           RAPIDJSON_ASSERT(false);
           return 0;
         }
 
-        char Take() {
+        char take() {
           if (src_p_ - src_ >= src_len_) {
             throw JsonInputProtocolException();
           }
           return *src_p_++;
         }
 
-        size_t Tell() const {
+        size_t tell() const {
           if (src_p_ - src_ >= src_len_) {
             throw JsonInputProtocolException();
           }
-          return src_p_ - src_;
+          return static_cast<size_t>(src_p_ - src_);
         }
 
       private:
@@ -87,7 +94,7 @@ class JsonInputProtocol : public StackedInputProtocol {
           return static_cast<int64_t>(read_child_node().GetInt64());
         }
 
-        void read_list_begin(Type& out_element_type, uint32_t& out_size) {
+        void read_list_begin(Type::Enum& out_element_type, uint32_t& out_size) {
           const ::rapidjson::Value& child_node = read_child_node();
           if (!child_node.IsArray()) {
             throw JsonInputProtocolException();
@@ -98,7 +105,7 @@ class JsonInputProtocol : public StackedInputProtocol {
                                  child_node, protocol_stack_));
         }
 
-        void read_map_begin(Type& out_key_type, Type& out_value_type,
+        void read_map_begin(Type::Enum& out_key_type, Type::Enum& out_value_type,
                             uint32_t& out_size) {
           const ::rapidjson::Value& child_node = read_child_node();
           if (!child_node.IsObject()) {
