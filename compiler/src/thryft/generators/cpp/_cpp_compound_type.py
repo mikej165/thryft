@@ -163,6 +163,13 @@ virtual ~%(name)s() {
   return *new %(name)s(%(member_names)s);
 }""" % locals()}
 
+    def _cpp_method_get_type_name(self):
+        qname = self.cpp_qname()
+        return {'get_type_name': """\
+const char* get_type_name() const {
+  return "%(qname)s";
+}""" % locals()}
+
     def _cpp_method_getters(self):
         return dict((field.cpp_getter_name(), field.cpp_getters())
                     for field in self.fields)
@@ -301,6 +308,7 @@ void write(::thryft::protocol::OutputProtocol& oprot, const ::thryft::protocol::
     def _cpp_methods_map(self):
         methods = {}
         methods.update(self._cpp_method_clone())
+        methods.update(self._cpp_method_get_type_name())
         methods.update(self._cpp_method_getters())
         methods.update(self._cpp_method_setters())
         methods.update(self._cpp_operators())
