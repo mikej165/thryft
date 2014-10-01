@@ -153,7 +153,9 @@ virtual void handle(const %(name)s& request) {
         def _cpp_template_parameters(self):
             return None
 
-    def cpp_declaration(self, line_ending="\n"):
+    def cpp_declaration(self, line_ending="\n", override=False):
+        override = ' override' if override else ''
+
         name = self.cpp_name()
 
         parameters = \
@@ -166,7 +168,7 @@ virtual void handle(const %(name)s& request) {
             return_type_name = 'void'
 
         declaration = """\
-%(return_type_name)s %(name)s(%(parameters)s)""" % locals()
+%(return_type_name)s %(name)s(%(parameters)s)%(override)s""" % locals()
 
         if len(declaration) < 80:
             return declaration
@@ -176,7 +178,7 @@ virtual void handle(const %(name)s& request) {
                       for parameter in self.parameters))
 
         return """\
-%(return_type_name)s%(line_ending)s%(name)s(%(line_ending)s%(parameters)s%(line_ending)s)""" % locals()
+%(return_type_name)s%(line_ending)s%(name)s(%(line_ending)s%(parameters)s%(line_ending)s)%(override)s""" % locals()
 
     def cpp_includes_definition(self):
         includes = []

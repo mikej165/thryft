@@ -132,7 +132,7 @@ public:
 %s""" % (
                 self._parent_document().cpp_guard()[1:-5],
                 indent(' ' * 2,
-                    "\\\n\\\n".join(function.cpp_declaration(line_ending="\\\n") + ';'
+                    "\\\n\\\n".join(function.cpp_declaration(line_ending="\\\n", override=True) + ';'
                                 for function in self.functions))))
 
         sections = lpad("\n\n", "\n\n".join(sections))
