@@ -17,15 +17,15 @@ class XdrOutputProtocol : public AbstractOutputProtocol {
 
   public:
     // OutputProtocol
-    virtual void write(const void* value, size_t value_len) {
+    virtual void write(const void* value, size_t value_len) override {
       do_write(value, value_len);
     }
 
-    virtual void write(bool value) {
+    virtual void write(bool value) override {
       write(static_cast<int32_t>(value ? 1 : 0));
     }
 
-    virtual void write(double value) {
+    virtual void write(double value) override {
       int64_t int64_value;
 
 #ifdef _WIN32
@@ -46,7 +46,7 @@ class XdrOutputProtocol : public AbstractOutputProtocol {
       write(int64_value);
     }
 
-    void write(float value) {
+    void write(float value) override {
       int32_t int32_value;
 
 #ifdef _WIN32
@@ -67,17 +67,17 @@ class XdrOutputProtocol : public AbstractOutputProtocol {
       write(int32_value);
     }
 
-    virtual void write(int32_t value) {
+    virtual void write(int32_t value) override {
       value = static_cast<int32_t>(my_htonl(static_cast<uint32_t>(value)));
       write(&value, sizeof(value));
     }
 
-    virtual void write(int64_t value) {
+    virtual void write(int64_t value) override {
       value = static_cast<int64_t>(my_htonll(static_cast<uint64_t>(value)));
       write(&value, sizeof(value));
     }
 
-    virtual void write(const char* value, size_t value_len) {
+    virtual void write(const char* value, size_t value_len) override {
       write(static_cast<int32_t>(value_len));
 
       write(static_cast<const void*>(value), value_len);
@@ -89,43 +89,43 @@ class XdrOutputProtocol : public AbstractOutputProtocol {
     }
 
     virtual void write_field_begin(const char* name, const Type& type,
-                                   int16_t id) {
+                                   int16_t id) override {
       write(name, strlen(name));
       write(static_cast<int32_t>(type));
       write(id);
     }
 
-    void write_field_stop() {
+    void write_field_stop() override {
       write_field_begin("", Type::STOP, -1);
     }
 
-    virtual void write_list_begin(const Type& element_type, uint32_t size) {
+    virtual void write_list_begin(const Type& element_type, uint32_t size) override {
       //write(static_cast<int32_t>(element_type));
       // Stick with ONC-RPC variable-sized array rules = size + contents
       write(static_cast<int32_t>(size));
     }
 
-    virtual void write_list_end() {
+    virtual void write_list_end() override {
     }
 
     virtual void write_map_begin(const Type& key_type, const Type& value_type,
-                                 uint32_t size) {
+                                 uint32_t size) override {
       //write(static_cast<int32_t>(key_type));
       //write(static_cast<int32_t>(value_type));
       write(static_cast<int32_t>(size));
     }
 
-    virtual void write_map_end() {
+    virtual void write_map_end() override {
     }
 
-    virtual void write_null() {
+    virtual void write_null() override {
       write(static_cast<int32_t>(0));
     }
 
-    virtual void write_struct_begin() {
+    virtual void write_struct_begin() override {
     }
 
-    virtual void write_struct_end() {
+    virtual void write_struct_end() override {
     }
 
   private:

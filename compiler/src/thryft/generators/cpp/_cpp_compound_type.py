@@ -208,7 +208,7 @@ if (list_size > %(field_i)u) {
             lpad("\n", indent(' ' * 6, "\n".join(field_read_protocol_positional)))
         name = self.cpp_name()
         return {'read': """\
-void read(::thryft::protocol::InputProtocol& iprot) {
+void read(::thryft::protocol::InputProtocol& iprot) override {
   read(iprot, ::thryft::protocol::Type::STRUCT);
 }
 
@@ -277,7 +277,7 @@ void read(::thryft::protocol::InputProtocol& iprot, const ::thryft::protocol::Ty
         name = self.cpp_name()
 
         return {'write': """\
-void write(::thryft::protocol::OutputProtocol& oprot) const {
+void write(::thryft::protocol::OutputProtocol& oprot) const override {
   write(oprot, ::thryft::protocol::Type::STRUCT);
 }
 

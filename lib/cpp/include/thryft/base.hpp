@@ -1,6 +1,8 @@
 #ifndef _THRYFT_BASE_HPP_
 #define _THRYFT_BASE_HPP_
 
+#include "thryft/config.hpp"
+
 namespace thryft {
 namespace protocol {
 class InputProtocol;

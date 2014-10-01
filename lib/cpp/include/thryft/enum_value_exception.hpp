@@ -4,17 +4,17 @@
 #include "thryft/exception.hpp"
 
 namespace thryft {
-class EnumValueException : public Exception {
+class EnumValueException final : public Exception {
   public:
     virtual ~EnumValueException() throw() {
     }
 
   public:
     // thryft::Exception
-    virtual void read(protocol::InputProtocol& iprot) {
+    virtual void read(protocol::InputProtocol& iprot) override {
     }
 
-    virtual void write(protocol::OutputProtocol& oprot) const {
+    virtual void write(protocol::OutputProtocol& oprot) const override {
     }
 };
 }

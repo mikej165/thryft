@@ -3,9 +3,11 @@
 
 #include <new>
 
+#include "thryft/config.hpp"
+
 namespace thryft {
 template <typename T>
-class Optional {
+class Optional final {
   public:
     Optional()
       : present_(false) {

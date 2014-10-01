@@ -5,7 +5,7 @@
 
 namespace thryft {
 namespace protocol {
-class JsonInputProtocolException : public InputProtocolException {
+class JsonInputProtocolException final : public InputProtocolException {
   public:
     virtual ~JsonInputProtocolException() throw() {
     }

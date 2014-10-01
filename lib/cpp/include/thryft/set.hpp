@@ -11,7 +11,7 @@
 
 namespace thryft {
 template <typename ElementCppT, ::thryft::protocol::Type::Enum ElementThriftT>
-class Set : public ::thryft::Base, public ::std::set<ElementCppT> {
+class Set final : public ::thryft::Base, public ::std::set<ElementCppT> {
   public:
     Set() {
     }
@@ -24,7 +24,7 @@ class Set : public ::thryft::Base, public ::std::set<ElementCppT> {
     }
 
   public:
-    void read(protocol::InputProtocol& iprot) {
+    void read(protocol::InputProtocol& iprot) override {
       protocol::Type element_type;
       uint32_t size = 0;
       iprot.read_set_begin(element_type, size);
@@ -40,7 +40,7 @@ class Set : public ::thryft::Base, public ::std::set<ElementCppT> {
       iprot.read_set_end();
     }
 
-    void write(protocol::OutputProtocol& oprot) const {
+    void write(protocol::OutputProtocol& oprot) const override {
       oprot.write_set_begin(ElementThriftT, this->size());
       for (auto i = this->cbegin(); i != this->cend(); ++i) {
         oprot.write(*i);

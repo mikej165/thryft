@@ -15,7 +15,7 @@
 
 namespace thryft {
 namespace protocol {
-class JsonOutputProtocol : public AbstractOutputProtocol {
+class JsonOutputProtocol final : public AbstractOutputProtocol {
   private:
     class StlStringStream {
       public:

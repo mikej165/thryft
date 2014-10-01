@@ -25,11 +25,11 @@ class XdrInputProtocol : public AbstractInputProtocol {
 
   public:
     // InputProtocol
-    bool read_bool() {
+    bool read_bool() override {
       return read_i32() == 1;
     }
 
-    double read_double() {
+    double read_double() override {
       int64_t int64_value = read_i64();
       double value;
 #ifdef _WIN32
@@ -41,13 +41,13 @@ class XdrInputProtocol : public AbstractInputProtocol {
     }
 
     void read_field_begin(std::string& out_name, Type& out_type,
-                          int16_t& out_id) {
+                          int16_t& out_id) override {
       read_string(out_name);
       out_type = static_cast<Type::Enum>(read_i32());
       out_id = read_i16();
     }
 
-    float read_float() {
+    float read_float() override {
       int32_t int32_value = read_i32();
       float value;
 #ifdef _WIN32
@@ -58,36 +58,36 @@ class XdrInputProtocol : public AbstractInputProtocol {
       return value;
     }
 
-    int32_t read_i32() {
+    int32_t read_i32() override {
       int32_t value;
       read(&value, sizeof(value));
       return static_cast<int32_t>(my_ntohl(static_cast<uint32_t>(value)));
     }
 
-    int64_t read_i64() {
+    int64_t read_i64() override {
       int64_t value;
       read(&value, sizeof(value));
       return static_cast<int64_t>(my_ntohll(static_cast<uint64_t>(value)));
     }
 
     void read_list_begin(Type& out_element_type,
-                         size_t& out_size) {
+                         size_t& out_size) override {
       //out_element_type = static_cast<Type>(read_i32());
       // Stick with ONC-RPC variable-sized array rules = size + contents
       out_size = static_cast<size_t>(read_i32());
     }
 
-    void read_list_end() {
+    void read_list_end() override {
     }
 
     virtual void read_map_begin(Type& out_key_type,
-                                Type& out_value_type, uint32_t& out_size) {
+                                Type& out_value_type, uint32_t& out_size) override {
       //out_key_type = static_cast<Type>(read_i32());
       //out_value_type = static_cast<Type>(read_i32());
       out_size = static_cast<uint32_t>(read_i32());
     }
 
-    void read_string(std::string& out_value) {
+    void read_string(std::string& out_value) override {
       size_t size = static_cast<size_t>(read_i32());
       if (size > 0 && size < UINT16_MAX) {
         size_t padded_size = size % 4;
@@ -103,7 +103,7 @@ class XdrInputProtocol : public AbstractInputProtocol {
       }
     }
 
-    void read_string(char*& out_value, size_t& out_value_len) {
+    void read_string(char*& out_value, size_t& out_value_len) override {
       size_t size = static_cast<size_t>(read_i32());
       if (size > 0 && size < UINT16_MAX) {
         size_t padded_size = size % 4;

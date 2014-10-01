@@ -25,7 +25,7 @@ class JsonInputProtocol : public StackedInputProtocol {
     typedef JsonOutputProtocol OutputProtocolT;
 
   private:
-    class IovecStream {
+    class IovecStream final {
       public:
         IovecStream(const char* src, size_t src_len)
           : src_(src), src_p_(src), src_len_(src_len_) {
@@ -78,23 +78,23 @@ class JsonInputProtocol : public StackedInputProtocol {
     class JsonValueInputProtocol : public AbstractInputProtocol {
       public:
         // InputProtocol
-        bool read_bool() {
+        bool read_bool() override {
           return read_child_node().GetBool();
         }
 
-        double read_double() {
+        double read_double() override {
           return read_child_node().GetDouble();
         }
 
-        int32_t read_i32() {
+        int32_t read_i32() override {
           return static_cast<int32_t>(read_child_node().GetInt());
         }
 
-        int64_t read_i64() {
+        int64_t read_i64() override {
           return static_cast<int64_t>(read_child_node().GetInt64());
         }
 
-        void read_list_begin(Type::Enum& out_element_type, uint32_t& out_size) {
+        void read_list_begin(Type& out_element_type, uint32_t& out_size) override {
           const ::rapidjson::Value& child_node = read_child_node();
           if (!child_node.IsArray()) {
             throw JsonInputProtocolException();
@@ -105,8 +105,8 @@ class JsonInputProtocol : public StackedInputProtocol {
                                  child_node, protocol_stack_));
         }
 
-        void read_map_begin(Type::Enum& out_key_type, Type::Enum& out_value_type,
-                            uint32_t& out_size) {
+        void read_map_begin(Type& out_key_type, Type& out_value_type,
+                            uint32_t& out_size) override {
           const ::rapidjson::Value& child_node = read_child_node();
           if (!child_node.IsObject()) {
             throw JsonInputProtocolException();
@@ -123,7 +123,7 @@ class JsonInputProtocol : public StackedInputProtocol {
               child_node, protocol_stack_));
         }
 
-        void read_string(std::string& out_value) {
+        void read_string(std::string& out_value) override {
           const ::rapidjson::Value& child_node = read_child_node();
           switch (child_node.GetType()) {
           case ::rapidjson::kStringType:
@@ -141,14 +141,14 @@ class JsonInputProtocol : public StackedInputProtocol {
           }
         }
 
-        void read_string(char*& out_value, size_t& out_value_len) {
+        void read_string(char*& out_value, size_t& out_value_len) override {
           const ::rapidjson::Value& child_node = read_child_node();
           out_value_len = child_node.GetStringLength();
           out_value = new char[out_value_len];
           memcpy(out_value, child_node.GetString(), out_value_len);
         }
 
-        void read_struct_begin() {
+        void read_struct_begin() override {
           const ::rapidjson::Value& child_node = read_child_node();
           if (!child_node.IsObject()) {
             throw JsonInputProtocolException();
@@ -206,7 +206,7 @@ class JsonInputProtocol : public StackedInputProtocol {
         }
 
       protected:
-        const ::rapidjson::Value& read_child_node() {
+        const ::rapidjson::Value& read_child_node() override {
           return node()[next_child_node_index++];
         }
 
@@ -225,7 +225,7 @@ class JsonInputProtocol : public StackedInputProtocol {
         }
 
       protected:
-        const ::rapidjson::Value& read_child_node() {
+        const ::rapidjson::Value& read_child_node() override {
           if (next_read_is_key_) {
             next_read_is_key_ = false;
             return next_child_node_i->name;
@@ -268,7 +268,7 @@ class JsonInputProtocol : public StackedInputProtocol {
       public:
         // InputProtocol
         void read_field_begin(std::string& out_name, Type& out_type,
-                              int16_t& out_id) {
+                              int16_t& out_id) override {
           if (next_child_node_i != node().MemberEnd()) {
             out_name.assign(next_child_node_i->name.GetString(),
                             next_child_node_i->name.GetStringLength());
@@ -297,12 +297,12 @@ class JsonInputProtocol : public StackedInputProtocol {
           }
         }
 
-        void read_field_end() {
+        void read_field_end() override {
           next_child_node_i++;
         }
 
       protected:
-        const ::rapidjson::Value& read_child_node() {
+        const ::rapidjson::Value& read_child_node() override {
           return next_child_node_i->value;
         }
 
@@ -352,7 +352,7 @@ class JsonInputProtocol : public StackedInputProtocol {
 
   public:
     // StackedProtocol
-    void reset() {
+    void reset() override {
       StackedInputProtocol::reset();
       protocol_stack().push(reader_protocol_factory_->create_json_root_input_protocol(
                               document_, protocol_stack()));

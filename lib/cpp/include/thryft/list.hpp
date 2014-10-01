@@ -10,7 +10,7 @@
 
 namespace thryft {
 template <typename ElementCppT, ::thryft::protocol::Type::Enum ElementThriftT>
-class List : public ::thryft::Base, public ::std::vector<ElementCppT> {
+class List final : public ::thryft::Base, public ::std::vector<ElementCppT> {
   public:
     List() {
     }
@@ -23,7 +23,7 @@ class List : public ::thryft::Base, public ::std::vector<ElementCppT> {
     }
 
   public:
-    void read(protocol::InputProtocol& iprot) {
+    void read(protocol::InputProtocol& iprot) override {
       protocol::Type element_type;
       uint32_t size = 0;
       iprot.read_list_begin(element_type, size);
@@ -38,7 +38,7 @@ class List : public ::thryft::Base, public ::std::vector<ElementCppT> {
       iprot.read_list_end();
     }
 
-    void write(protocol::OutputProtocol& oprot) const {
+    void write(protocol::OutputProtocol& oprot) const override {
       oprot.write_list_begin(ElementThriftT, this->size());
       for (auto i = this->cbegin(); i != this->cend(); ++i) {
         oprot.write(*i);

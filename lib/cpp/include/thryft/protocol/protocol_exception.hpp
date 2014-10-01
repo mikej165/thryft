@@ -12,10 +12,10 @@ class ProtocolException : public Exception {
 
   public:
     // thryft::Base
-    virtual void read(protocol::InputProtocol& iprot) {
+    virtual void read(protocol::InputProtocol& iprot) override {
     }
 
-    virtual void write(protocol::OutputProtocol& oprot) const {
+    virtual void write(protocol::OutputProtocol& oprot) const override {
     }
 };
 }

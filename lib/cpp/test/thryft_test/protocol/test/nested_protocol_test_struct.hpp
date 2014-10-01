@@ -320,7 +320,7 @@ public:
     return true;
   }
 
-  void read(::thryft::protocol::InputProtocol& iprot) {
+  void read(::thryft::protocol::InputProtocol& iprot) override {
     read(iprot, ::thryft::protocol::Type::STRUCT);
   }
 
@@ -611,7 +611,7 @@ public:
     return url_field_;
   }
 
-  void write(::thryft::protocol::OutputProtocol& oprot) const {
+  void write(::thryft::protocol::OutputProtocol& oprot) const override {
     write(oprot, ::thryft::protocol::Type::STRUCT);
   }
 

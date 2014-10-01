@@ -15,7 +15,7 @@ template <
   typename ValueCppT,
   ::thryft::protocol::Type::Enum ValueThriftT
   >
-class Map : public ::thryft::Base, public ::std::map< KeyCppT, ValueCppT > {
+class Map final : public ::thryft::Base, public ::std::map< KeyCppT, ValueCppT > {
   public:
     Map() {
     }
@@ -28,7 +28,7 @@ class Map : public ::thryft::Base, public ::std::map< KeyCppT, ValueCppT > {
     }
 
   public:
-    void read(protocol::InputProtocol& iprot) {
+    void read(protocol::InputProtocol& iprot) override {
       protocol::Type key_type, value_type;
       uint32_t size = 0;
       iprot.read_map_begin(key_type, value_type, size);
@@ -46,7 +46,7 @@ class Map : public ::thryft::Base, public ::std::map< KeyCppT, ValueCppT > {
       iprot.read_map_end();
     }
 
-    void write(protocol::OutputProtocol& oprot) const {
+    void write(protocol::OutputProtocol& oprot) const override {
       oprot.write_map_begin(KeyThriftT, ValueThriftT, this->size());
       for (auto i = this->cbegin(); i != this->cend(); ++i) {
         oprot.write(i->first);

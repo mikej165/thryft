@@ -13,53 +13,53 @@ class AbstractOutputProtocol : public OutputProtocol {
     }
 
   public:
-    virtual void write(const void* value, size_t value_len) {
+    virtual void write(const void* value, size_t value_len) override {
     }
 
-    virtual void write(bool value) {
+    virtual void write(bool value) override {
     }
 
-    virtual void write(int8_t value) {
+    virtual void write(int8_t value) override {
       write(static_cast<int16_t>(value));
     }
 
-    virtual void write(double value) {
+    virtual void write(double value) override {
     }
 
-    virtual void write(float value) {
+    virtual void write(float value) override {
       write(static_cast<double>(value));
     }
 
-    virtual void write(int16_t value) {
+    virtual void write(int16_t value) override {
       write(static_cast<int32_t>(value));
     }
 
-    virtual void write(int32_t value) {
+    virtual void write(int32_t value) override {
       write(static_cast<int64_t>(value));
     }
 
-    virtual void write(int64_t value) {
+    virtual void write(int64_t value) override {
     }
 
-    virtual void write(uint32_t value) {
+    virtual void write(uint32_t value) override {
       write(static_cast<uint64_t>(value));
     }
 
-    virtual void write(uint64_t value) {
+    virtual void write(uint64_t value) override {
     }
 
-    virtual void write(const ::thryft::Base& value) {
+    virtual void write(const ::thryft::Base& value) override {
       value.write(*this);
     }
 
-    virtual void write(const std::string& value) {
+    virtual void write(const std::string& value) override {
       write(value.data(), value.size());
     }
 
-    virtual void write(const char* value, size_t value_len) {
+    virtual void write(const char* value, size_t value_len) override {
     }
 
-    virtual void write(const ::thryft::native::Variant& value) {
+    virtual void write(const ::thryft::native::Variant& value) override {
       switch (value.type()) {
       case Type::BOOL:
         write(static_cast<bool>(value));
@@ -93,43 +93,43 @@ class AbstractOutputProtocol : public OutputProtocol {
       }
     }
 
-    virtual void write_field_begin(const char* name, const Type& type, int16_t id) {
+    virtual void write_field_begin(const char* name, const Type& type, int16_t id) override {
     }
 
-    virtual void write_field_end() {
+    virtual void write_field_end() override {
     }
 
-    virtual void write_field_stop() {
+    virtual void write_field_stop() override {
     }
 
-    virtual void write_list_begin(const Type& element_type, uint32_t size) {
+    virtual void write_list_begin(const Type& element_type, uint32_t size) override {
     }
 
-    virtual void write_list_end() {
+    virtual void write_list_end() override {
     }
 
     virtual void write_map_begin(const Type& key_type, const Type& value_type,
-                                 uint32_t size) {
+                                 uint32_t size) override {
     }
 
-    virtual void write_map_end() {
+    virtual void write_map_end() override {
     }
 
-    virtual void write_set_begin(const Type& element_type, uint32_t size) {
+    virtual void write_set_begin(const Type& element_type, uint32_t size) override {
       write_list_begin(element_type, size);
     }
 
-    virtual void write_set_end() {
+    virtual void write_set_end() override {
       write_list_end();
     }
 
-    virtual void write_struct_begin() {
+    virtual void write_struct_begin() override {
     }
 
-    virtual void write_struct_end() {
+    virtual void write_struct_end() override {
     }
 
-    virtual void write_null() {
+    virtual void write_null() override {
     }
 };
 }
