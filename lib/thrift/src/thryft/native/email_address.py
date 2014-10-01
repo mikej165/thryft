@@ -83,9 +83,6 @@ class JavaEmailAddress(_EmailAddress, JavaNativeType):
     def java_qname(self, boxed=False):
         return 'org.thryft.native_.EmailAddress'
 
-    def java_faker(self, **kwds):
-        return 'org.thryft.Faker.Internet.email()'
-
     def java_is_reference(self):
         return True
 

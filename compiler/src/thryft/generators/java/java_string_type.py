@@ -38,9 +38,6 @@ class JavaStringType(StringType, _JavaBaseType):
     def java_default_value(self):
         return 'null'
 
-    def java_faker(self, **kwds):
-        return "org.thryft.Faker.Lorem.word()"
-
     def java_from_string(self, value):
         return value
 

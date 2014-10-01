@@ -73,15 +73,6 @@ class JavaU32(_U32, JavaNativeType):
     def java_qname(self, boxed=False):
         return 'com.google.common.primitives.UnsignedInteger'
 
-    def java_faker(self, validation=None, **kwds):
-        parameters = []
-        if validation is not None:
-            max_ = validation.get('max')
-            if max_ is not None:
-                parameters.append("com.google.common.primitives.UnsignedInteger.valueOf(%s)" % max_)
-        parameters = ', '.join(parameters)
-        return "org.thryft.Faker.randomU32(%(parameters)s)" % locals()
-
     def java_is_reference(self):
         return True
 

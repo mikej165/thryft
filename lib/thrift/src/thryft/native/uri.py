@@ -83,9 +83,6 @@ class JavaUri(_Uri, JavaNativeType):
     def java_qname(self, boxed=False):
         return 'org.thryft.native_.Uri'
 
-    def java_faker(self, **kwds):
-        return 'org.thryft.Faker.Internet.uri()'
-
     def java_is_reference(self):
         return True
 

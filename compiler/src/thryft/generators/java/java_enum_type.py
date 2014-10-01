@@ -39,11 +39,6 @@ class JavaEnumType(EnumType, _JavaType):
     def java_default_value(self):
         return 'null'
 
-    def java_faker(self, **kwds):
-        enumerators = ', '.join(self.java_qname() + '.' + enumerator.name
-                                for enumerator in self.enumerators)
-        return "org.thryft.Faker.randomEnum(com.google.common.collect.ImmutableList.of(%s))" % enumerators
-
     def java_hash_code(self, value):
         return "%(value)s.ordinal()" % locals()
 

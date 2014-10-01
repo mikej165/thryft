@@ -86,9 +86,6 @@ class JavaDateTime(_DateTime, JavaNativeType):
     def java_qname(self, boxed=True):
         return 'java.util.Date'
 
-    def java_faker(self, **kwds):
-        return 'new java.util.Date()'
-
     def java_is_reference(self):
         return True
 

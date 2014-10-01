@@ -96,6 +96,10 @@ public:
     return enum_field_;
   }
 
+  const char* get_type_name() const {
+    return "::thryft_test::protocol::test::NestedProtocolTestStruct";
+  }
+
   ::thryft::Optional< int16_t >& i16_field() {
     return i16_field_;
   }

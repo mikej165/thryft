@@ -982,35 +982,6 @@ public class ProtocolTestStruct implements org.thryft.Base<ProtocolTestStruct> {
             getUrlField().equals(other.getUrlField());
     }
 
-    public static ProtocolTestStruct fake() {
-        return fakeBuilder().build();
-    }
-
-    public static Builder fakeBuilder() {
-        Builder builder = new Builder();
-        builder.setBinaryField(org.thryft.Faker.randomBinary());
-        builder.setBoolField(org.thryft.Faker.randomBool());
-        builder.setDateTimeField(new java.util.Date());
-        builder.setDecimalField(org.thryft.Faker.randomDecimal());
-        builder.setEmailAddressField(org.thryft.Faker.Internet.email());
-        builder.setEnumField(org.thryft.Faker.randomEnum(com.google.common.collect.ImmutableList.of(org.thryft.protocol.test.ProtocolTestEnum.ENUMERATOR1, org.thryft.protocol.test.ProtocolTestEnum.ENUMERATOR2)));
-        builder.setI8Field(org.thryft.Faker.randomByte());
-        builder.setI16Field(org.thryft.Faker.randomI16());
-        builder.setI32Field(org.thryft.Faker.randomI32());
-        builder.setI64Field(org.thryft.Faker.randomI64());
-        builder.setStringListField(com.google.common.collect.ImmutableList.of(org.thryft.Faker.Lorem.word()));
-        builder.setStringStringMapField(com.google.common.collect.ImmutableMap.of(org.thryft.Faker.Lorem.word(), org.thryft.Faker.Lorem.word()));
-        builder.setRequiredI32Field(org.thryft.Faker.randomI32());
-        builder.setRequiredStringField(org.thryft.Faker.Lorem.word());
-        builder.setStringSetField(com.google.common.collect.ImmutableSet.of(org.thryft.Faker.Lorem.word()));
-        builder.setStringField(org.thryft.Faker.Lorem.word());
-        builder.setStructField(org.thryft.protocol.test.NestedProtocolTestStruct.fake());
-        builder.setU32Field(org.thryft.Faker.randomU32());
-        builder.setU64Field(org.thryft.Faker.randomU64());
-        builder.setUrlField(org.thryft.Faker.Internet.url());
-        return builder;
-    }
-
     public Object get(final String fieldName) {
         if (fieldName.equals("binary_field")) {
             return getBinaryField();

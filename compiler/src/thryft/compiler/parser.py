@@ -909,32 +909,6 @@ class Parser(GenericParser):
         return token.type
 
 
-def __parse_faker_annotation(ast_node, name, value, **kwds):
-    if value is None:
-        raise ValueError("@%(name)s requires a value" % locals())
-
-    lib_py_src_thryft_dir_path = \
-        os.path.abspath(os.path.join(
-            os.path.dirname(__file__),
-            '..', '..', '..', '..',
-            'lib', 'py', 'src', 'thryft'
-        ))
-    if not lib_py_src_thryft_dir_path in sys.path:
-        sys.path.append(lib_py_src_thryft_dir_path)
-    from faker import Faker  # @UnresolvedImport
-    try:
-        eval('Faker.' + value, {}, {'Faker': Faker})
-    except AttributeError:
-        try:
-            eval(value)
-        except:
-            raise ValueError("invalid @%(name)s value '%(value)s" % locals())
-        value_copy = value
-        value = lambda: eval(value_copy)
-    ast_node.annotations.append(Ast.AnnotationNode(name=name, value=value, **kwds))
-Parser.register_annotation(Ast.FieldNode, 'faker', __parse_faker_annotation)
-
-
 def __parse_native_annotation(ast_node, name, value, **kwds):
     if value is not None:
         raise ValueError("@%(name)s does not take a value" % locals())

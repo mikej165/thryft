@@ -85,15 +85,6 @@ if (this.%(name)s.isPresent()) {
         else:
             return self.type.java_equals(this_value, other_value)
 
-    def java_faker(self):
-        faker = self.annotations.get('faker')
-        if faker is not None:
-            if isfunction(faker):
-                return self.type.java_literal(faker())
-            else:
-                return 'org.thryft.Faker.' + faker
-        return self.type.java_faker(validation=self.annotations.get('validation'))
-
     def java_getter(self, final=True):
         final = final and 'final ' or ''
         getter_name = self.java_getter_name()

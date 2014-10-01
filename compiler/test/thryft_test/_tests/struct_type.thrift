@@ -8,6 +8,5 @@ struct TestStruct {
 
     optional string emailfield;
 
-    // @faker Name.first_name
     optional string firstnamefield;
 }

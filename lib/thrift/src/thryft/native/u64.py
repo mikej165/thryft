@@ -67,15 +67,6 @@ class JavaU64(_U64, JavaNativeType):
     def java_qname(self, boxed=False):
         return 'com.google.common.primitives.UnsignedLong'
 
-    def java_faker(self, validation=None, **kwds):
-        parameters = []
-        if validation is not None:
-            max_ = validation.get('max')
-            if max_ is not None:
-                parameters.append("com.google.common.primitives.UnsignedLong.valueOf(%s)" % max_)
-        parameters = ', '.join(parameters)
-        return "org.thryft.Faker.randomU64(%(parameters)s)" % locals()
-
     def java_is_reference(self):
         return True
 

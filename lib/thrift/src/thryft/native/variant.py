@@ -69,9 +69,6 @@ class JavaVariant(_Variant, JavaNativeType):
     def java_default_value(self):
         return 'null'
 
-    def java_faker(self, **kwds):
-        return 'org.thryft.Faker.Internet.url()'
-
     def java_is_reference(self):
         return True
 

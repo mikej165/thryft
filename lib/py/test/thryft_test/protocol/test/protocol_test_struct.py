@@ -286,7 +286,7 @@ class ProtocolTestStruct(object):
         self.__u64_field = u64_field
 
         if url_field is not None:
-            if not isinstance(url_field, str):
+            if not isinstance(url_field, basestring):
                 raise TypeError(getattr(__builtin__, 'type')(url_field))
         self.__url_field = url_field
 
