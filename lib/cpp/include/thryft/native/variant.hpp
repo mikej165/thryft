@@ -21,7 +21,8 @@ class Variant {
 
   public:
     Variant()
-      : blob_value_(NULL), type_(Type::VOID_), value_len_(0) {
+      : type_(Type::VOID_) {
+      string_value_ = { 0, 0 };
     }
 
     Variant(const Type& type, uint64_t value) {
@@ -40,9 +41,8 @@ class Variant {
         break;
       case Type::VOID_:
       default:
-        blob_value_ = NULL;
+        string_value_ = { 0, 0 };
         type_ = Type::VOID_;
-        value_len_ = 0;
         break;
       }
     }
@@ -101,7 +101,20 @@ class Variant {
 
   public:
     size_t size() const {
-      return value_len_;
+      switch (type_) {
+      case Type::BOOL:
+        return sizeof(bool_value_);
+      case Type::DOUBLE:
+        return sizeof(double_value_);
+      case Type::I64:
+        return sizeof(signed_integer_value_);
+      case Type::STRING:
+        return string_value_.len;
+      case Type::U64:
+        return sizeof(unsigned_integer_value_);
+      default:
+        return 0;
+      }
     }
 
     const Type& type() const {
@@ -118,7 +131,7 @@ class Variant {
     }
 
     operator const char* () const {
-      return reinterpret_cast<const char*>(blob_value_);
+      return reinterpret_cast<const char*>(string_value_.base);
     }
 
     operator float() const {
@@ -154,13 +167,11 @@ class Variant {
     }
 
     operator const void* () const {
-      return blob_value_;
+      return string_value_.base;
     }
 
     operator ::std::string () const {
       switch (type_) {
-      case Type::STRING:
-        return ::std::string(static_cast<const char*>(*this), value_len_);
       case Type::BOOL:
         return static_cast<bool>(*this) ? "true" : "false";
       case Type::DOUBLE: {
@@ -173,6 +184,8 @@ class Variant {
         oss << static_cast<int64_t>(*this);
         return oss.str();
       }
+      case Type::STRING:
+        return ::std::string(static_cast<const char*>(*this), string_value_.len);
       case Type::U64: {
         ::std::ostringstream oss;
         oss << static_cast<uint64_t>(*this);
@@ -190,11 +203,11 @@ class Variant {
         if (other.type_ != Type::STRING) {
           return false;
         }
-        if (value_len_ != other.value_len_) {
+        if (string_value_.len != other.string_value_.len) {
           return false;
         }
         return memcmp(static_cast<const void*>(*this), static_cast<const void*>(other),
-                      value_len_) == 0;
+                      string_value_.len) == 0;
       }
       case Type::BOOL:
         return static_cast<bool>(*this) == static_cast<bool>(other);
@@ -211,11 +224,23 @@ class Variant {
       }
     }
 
+    bool operator==(bool other) const {
+      return operator==(Variant(other));
+    }
+
     bool operator==(int32_t other) const {
       return operator==(Variant(other));
     }
 
+    bool operator==(int64_t other) const {
+      return operator==(Variant(other));
+    }
+
     bool operator==(uint32_t other) const {
+      return operator==(Variant(other));
+    }
+
+    bool operator==(uint64_t other) const {
       return operator==(Variant(other));
     }
 
@@ -280,47 +305,40 @@ class Variant {
 
   private:
     void init(void* value, size_t value_len) {
-      blob_value_ = static_cast<char*>(value);
+      string_value_.base = static_cast<char*>(value);
+      string_value_.len = value_len;
       type_ = Type::STRING;
-      value_len_ = value_len;
     }
 
     void init(const void* value, size_t value_len) {
-      blob_value_ = new char[value_len];
-      memcpy_s(blob_value_, value_len, value, value_len);
+      string_value_.base = new char[value_len];
+      memcpy_s(string_value_.base, value_len, value, value_len);
+      string_value_.len = value_len;
       type_ = Type::STRING;
-      value_len_ = value_len;
     }
 
     void init(bool value) {
       bool_value_ = value;
       type_ = Type::BOOL;
-      value_len_ = sizeof(value);
     }
 
     void init(double value) {
       double_value_ = value;
       type_ = Type::DOUBLE;
-      value_len_ = sizeof(value);
     }
 
     void init(int64_t value) {
       signed_integer_value_ = value;
       type_ = Type::I64;
-      value_len_ = sizeof(value);
     }
 
     void init(uint64_t value) {
       type_ = Type::U64;
       unsigned_integer_value_ = value;
-      value_len_ = sizeof(value);
     }
 
     void init(const Variant& other) {
       switch (other.type_) {
-      case Type::STRING:
-        init(reinterpret_cast<const void*>(other.blob_value_), other.value_len_);
-        break;
       case Type::BOOL:
         init(static_cast<bool>(other));
         break;
@@ -333,10 +351,12 @@ class Variant {
       case Type::U64:
         init(static_cast<uint64_t>(other));
         break;
+      case Type::STRING:
+        init(reinterpret_cast<const void*>(other.string_value_.base), other.string_value_.len);
+        break;
       default:
-        blob_value_ = NULL;
+        string_value_ = { 0, 0 };
         type_ = other.type_;
-        value_len_ = other.value_len_;
       }
     }
 
@@ -376,32 +396,32 @@ class Variant {
       }
 
       default:
-        blob_value_ = NULL;
+        string_value_ = { 0, 0 };
         type_ = Type::VOID_;
-        value_len_ = 0;
         break;
       }
     }
 
     void reset() {
       if (type_ == Type::STRING) {
-        delete [] blob_value_;
+        delete [] string_value_.base;
       }
-      blob_value_ = NULL;
+      string_value_ = { 0, 0 };
       type_ = Type::VOID_;
-      value_len_ = 0;
     }
 
   private:
     union {
-      char* blob_value_;
       bool bool_value_;
       double double_value_;
       int64_t signed_integer_value_;
+      struct {
+        char* base;
+        uint64_t len;
+      } string_value_;
       uint64_t unsigned_integer_value_;
     };
     Type type_;
-    size_t value_len_;
 };
 #ifdef _WIN32
 #pragma warning(pop)
