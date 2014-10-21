@@ -41,5 +41,5 @@ class PyTypedef(Typedef, _PyNamedConstruct):
     def py_imports_use(self, *args, **kwds):
         return _PyNamedConstruct.py_imports_use(self, *args, **kwds)
 
-    def __repr__(self):
+    def py_repr(self):
         return "%s = %s" % (self.py_name(), self.type.py_name())

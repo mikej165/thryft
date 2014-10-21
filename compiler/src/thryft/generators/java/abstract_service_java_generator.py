@@ -49,7 +49,7 @@ class AbstractServiceJavaGenerator(java_generator.JavaGenerator):
                 return None
 
     class Function(JavaFunction):
-        def __repr__(self):
+        def java_repr(self):
             annotations = lpad("\n", "\n".join(self.java_annotations()))
             name = self.java_name()
             public_parameters = \
@@ -107,9 +107,9 @@ protected abstract %(return_type_name)s _%(name)s(%(protected_parameters)s)%(thr
             return 'Abstract' + JavaService.java_name(self)
 
         def _java_methods(self):
-            return [repr(function) for function in self.functions]
+            return [function.java_repr() for function in self.functions]
 
-        def __repr__(self):
+        def java_repr(self):
             name = self.java_name()
             methods = "\n\n".join(indent(' ' * 4, self._java_methods()))
             service_qname = JavaService.java_qname(self)

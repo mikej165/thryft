@@ -35,13 +35,13 @@ from thryft.generators.js._js_named_construct import _JsNamedConstruct
 
 
 class JsConst(Const, _JsNamedConstruct):
-    def js_value(self):
-        return self.type.js_literal(self.value)
-
-    def __repr__(self):
+    def js_repr(self):
         name = self.js_name()
         qname = self.js_qname()
         if name == qname:
             return "/** @constant */ var %s = %s;" % (qname, self.js_value())
         else:
             return "%s = %s;" % (qname, self.js_value())
+
+    def js_value(self):
+        return self.type.js_literal(self.value)

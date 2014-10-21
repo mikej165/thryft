@@ -54,7 +54,7 @@ class JavaDocument(Document, _JavaNamedConstruct):
         if package is not None:
             return 'package ' + package + ';'
 
-    def __repr__(self):
+    def java_repr(self):
         sections = []
 
         package_declaration = self.java_package_declaration()
@@ -66,7 +66,7 @@ class JavaDocument(Document, _JavaNamedConstruct):
             sections.append("\n".join(imports))
 
         sections.append(
-            "\n\n".join(repr(definition)
+            "\n\n".join(definition.java_repr()
                          for definition in self.definitions)
         )
 
@@ -88,3 +88,6 @@ class JavaDocument(Document, _JavaNamedConstruct):
             except KeyError:
                 pass
         return self._save_to_file(os.path.join(out_dir_path, self.definitions[0].java_name() + self._java_file_ext()))
+
+    def _save_to_file(self, out_file_path):
+        return self._save_to_file_helper(self.java_repr(), out_file_path)

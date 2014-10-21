@@ -45,7 +45,7 @@ class JavaService(Service, _JavaNamedConstruct):
     def java_qname(self, boxed=False):
         return _JavaNamedConstruct.java_qname(self, name=self.name)
 
-    def __repr__(self):
+    def java_repr(self):
         extends = self.java_extends()
         if extends is None:
             extends = ''
@@ -63,7 +63,7 @@ class JavaService(Service, _JavaNamedConstruct):
         if len(message_types) > 0:
             message_types = \
                 "\n\n".join(indent(' ' * 4,
-                    (repr(message_type)
+                    (message_type.java_repr()
                      for message_type in message_types)
                 ))
             sections.append("""\
@@ -71,7 +71,7 @@ public static class Messages {
 %(message_types)s
 }""" % locals())
 
-        sections.append("\n\n".join(repr(function) for function in self.functions))
+        sections.append("\n\n".join(function.java_repr() for function in self.functions))
 
         sections = lpad("\n", "\n\n".join(indent(' ' * 4, sections)))
 

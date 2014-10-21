@@ -52,19 +52,7 @@ class RestServletJavaGenerator(_servlet_java_generator._ServletJavaGenerator):
                 message_types.append(request_type)
             return message_types
 
-        def java_request_type(self):
-            if len(self.parameters) == 0:
-                return None
-            path_parameter = self.java_rest_path_parameter()
-            if path_parameter is None:
-                return None
-            parameters = [parameter for parameter in self.parameters
-                          if parameter is not path_parameter]
-            if len(parameters) == 0:
-                return None
-            return _servlet_java_generator._ServletJavaGenerator._Function.java_request_type(self, java_suppress_warnings=tuple(), parameters=parameters)
-
-        def __repr__(self):
+        def java_repr(self):
             annotations = self.java_annotations()
             name = '__do' + self.java_name()[0].upper() + self.java_name()[1:]
 
@@ -226,6 +214,18 @@ try {
 }
 """ % locals()
 
+        def java_request_type(self):
+            if len(self.parameters) == 0:
+                return None
+            path_parameter = self.java_rest_path_parameter()
+            if path_parameter is None:
+                return None
+            parameters = [parameter for parameter in self.parameters
+                          if parameter is not path_parameter]
+            if len(parameters) == 0:
+                return None
+            return _servlet_java_generator._ServletJavaGenerator._Function.java_request_type(self, java_suppress_warnings=tuple(), parameters=parameters)
+
         def java_rest_path_prefix(self):
             name_split = self.name.split('_')
             request_method = self.java_rest_request_method()
@@ -360,7 +360,7 @@ public void do%(request_method_camelized)s(final javax.servlet.http.HttpServletR
             return methods
 
         def _java_methods_private(self):
-            return [repr(function) for function in self.functions]
+            return [function.java_repr() for function in self.functions]
 
         def _java_methods(self):
             methods = []
@@ -369,11 +369,7 @@ public void do%(request_method_camelized)s(final javax.servlet.http.HttpServletR
             methods.extend(self._java_methods_private())
             return methods
 
-        def java_rest_path_prefix(self):
-            assert self.name.endswith('Service')
-            return '/' + decamelize(self.name[:-len('Service')]) + '/'
-
-        def __repr__(self):
+        def java_repr(self):
             name = self.java_name()
 
             sections = []
@@ -385,7 +381,7 @@ public void do%(request_method_camelized)s(final javax.servlet.http.HttpServletR
             if len(message_types) > 0:
                 message_types = \
                     "\n\n".join(indent(' ' * 4,
-                        (repr(message_type)
+                        (message_type.java_repr()
                          for message_type in message_types)
                     ))
                 sections.append("""\
@@ -410,3 +406,7 @@ private final static class Messages extends %(service_qname)s.Messages {
 public class %(name)s extends javax.servlet.http.HttpServlet {
 %(sections)s
 }""" % locals()
+
+        def java_rest_path_prefix(self):
+            assert self.name.endswith('Service')
+            return '/' + decamelize(self.name[:-len('Service')]) + '/'

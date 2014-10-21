@@ -36,7 +36,7 @@ from yutil import pad, indent, rpad
 
 
 class ThriftExceptionType(ExceptionType, _ThriftCompoundType):
-    def __repr__(self):
+    def thrift_repr(self):
         return "%sexception %s {%s}" % (
             self.doc is not None and rpad(repr(self.doc), "\n") or '',
             self.name,

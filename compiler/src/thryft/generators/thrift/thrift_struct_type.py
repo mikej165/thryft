@@ -36,11 +36,11 @@ from yutil import pad, indent, rpad
 
 
 class ThriftStructType(StructType, _ThriftCompoundType):
-    def __repr__(self):
+    def thrift_repr(self):
         return "%sstruct %s {%s}" % (
             self.doc is not None and rpad(repr(self.doc), "\n") or '',
             self.name,
             pad("\n", "\n".join(indent(' ' * 4,
-                (repr(field) + ';' for field in self.fields)
+                (field.thrift_repr() + ';' for field in self.fields)
             )), "\n")
         )

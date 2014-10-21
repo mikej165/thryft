@@ -10,10 +10,10 @@ class DartService(Service, _DartNamedConstruct):
             imports.extend(function.dart_imports_definition(caller_stack=caller_stack))
         return imports
 
-    def __repr__(self):
+    def dart_repr(self):
         message_types = []
         for function in self.functions:
             message_types.append(function.dart_request_type())
             message_types.append(function.dart_response_type())
-        return "\n\n".join(repr(message_type)
+        return "\n\n".join(message_type.dart_repr()
                            for message_type in message_types)

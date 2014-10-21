@@ -36,11 +36,11 @@ from yutil import pad, indent
 
 
 class ThriftService(Service, _ThriftNamedConstruct):
-    def __repr__(self):
+    def thrift_repr(self):
         return "service %s%s {%s}" % (
             self.name,
             self.extends is not None and (' ' + self.extends) or '',
             pad("\n", "\n".join(indent(' ' * 4,
-                (repr(function) + ';' for function in self.functions)
+                (function.thrift_repr() + ';' for function in self.functions)
             )), "\n")
         )

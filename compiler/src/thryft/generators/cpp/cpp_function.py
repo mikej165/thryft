@@ -196,11 +196,11 @@ virtual void handle(const %(name)s& request) {
     def cpp_qname(self):
         return self.name
 
+    def cpp_repr(self):
+        return self.cpp_declaration()
+
     def cpp_request_type(self, **kwds):
         return self._CppRequestType(parent_function=self, **kwds)
 
     def cpp_response_type(self, **kwds):
         return self._CppResponseType(parent_function=self, **kwds)
-
-    def __repr__(self):
-        return self.cpp_declaration()

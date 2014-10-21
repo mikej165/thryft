@@ -78,16 +78,12 @@ virtual const char* what() const {
         methods = _CppCompoundType._cpp_methods_map(self)
         methods.update(self._cpp_method_what())
         return methods
-        
+
     def _cpp_operator_cast_to_string(self):
         return {'operator ::std::string()': """\
-operator ::std::string() const {        
+operator ::std::string() const {
   return what_;
-}"""}        
-        
+}"""}
+
     def _cpp_template_parameters(self):
         return 'template <class ExceptionT = ::thryft::Exception>'
-
-    def __repr__(self):
-        return _CppCompoundType.__repr__(self)
-

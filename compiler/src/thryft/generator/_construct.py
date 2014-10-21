@@ -33,6 +33,7 @@
 from yutil import class_qname
 import logging
 
+
 class _Construct(object):
     def __init__(self, parent, annotations=None, doc=None, **kwds):
         object.__init__(self)
@@ -79,8 +80,4 @@ class _Construct(object):
             return parent
 
     def __repr__(self):
-        raise NotImplementedError('.'.join((
-                  self.__class__.__module__,
-                  self.__class__.__name__,
-                  '__repr__'
-              )))
+        raise NotImplementedError(class_qname(self) + '.__repr__')

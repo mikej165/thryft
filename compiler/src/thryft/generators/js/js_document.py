@@ -36,7 +36,7 @@ from thryft.generators.js._js_named_construct import _JsNamedConstruct
 
 
 class JsDocument(Document, _JsNamedConstruct):
-    def __repr__(self):
+    def js_repr(self):
         sections = []
         try:
             js_namespace = self.namespace_by_scope('js').name
@@ -54,7 +54,7 @@ if (typeof %(js_namespace_prefix)s === "undefined") {
             sections.append("\n".join(create_namespace))
 
         sections.append(
-            "\n\n".join(repr(definition)
+            "\n\n".join(definition.js_repr()
                          for definition in self.definitions) + "\n"
         )
 
@@ -66,3 +66,6 @@ if (typeof %(js_namespace_prefix)s === "undefined") {
         except KeyError:
             pass
         return self._save_to_file(os.path.join(out_dir_path, self.name + '.js'))
+
+    def _save_to_file(self, out_file_path):
+        return self._save_to_file_helper(self.js_repr(), out_file_path)

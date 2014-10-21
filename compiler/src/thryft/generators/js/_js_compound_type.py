@@ -138,20 +138,7 @@ validation: {%s
 viewMetadata: %s
 """ % view_metadata}
 
-    def js_schema(self):
-        return {'type': 'NestedModel', 'model': self.js_qname()}
-
-    def js_validation(self, value, value_name, **kwds):
-        qname = self.js_qname()
-        return {'type': """\
-if (!(%(value)s instanceof %(qname)s)) {
-    return "expected %(value_name)s to be a %(qname)s";
-}
-if (!%(value)s.isValid(true)) {
-    return %(value)s.validationError;
-}""" % locals()}
-
-    def __repr__(self):
+    def js_repr(self):
         class_properties = []
         class_properties.append("\n\n".join(indent(' ' * 8, self._js_class_properties())))
         class_properties = ",\n\n".join(class_properties)
@@ -171,3 +158,16 @@ if (!%(value)s.isValid(true)) {
 %(class_properties)s
     }
 );""" % locals()
+
+    def js_schema(self):
+        return {'type': 'NestedModel', 'model': self.js_qname()}
+
+    def js_validation(self, value, value_name, **kwds):
+        qname = self.js_qname()
+        return {'type': """\
+if (!(%(value)s instanceof %(qname)s)) {
+    return "expected %(value_name)s to be a %(qname)s";
+}
+if (!%(value)s.isValid(true)) {
+    return %(value)s.validationError;
+}""" % locals()}

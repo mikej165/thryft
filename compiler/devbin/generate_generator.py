@@ -171,8 +171,8 @@ from thryft.generators.%(language)s._%(language)s_compound_type import _%(langua
 
 
 class %(language_upper_camelized)sExceptionType(ExceptionType, _%(language_upper_camelized)sCompoundType):
-    def __repr__(self):
-        return _%(language_upper_camelized)sCompoundType.__repr__(self)
+    def %(language)s_repr(self):
+        return _%(language_upper_camelized)sCompoundType.%(language)s_repr(self)
 """ % locals()
 
 
@@ -332,8 +332,8 @@ from thryft.generators.%(language)s._%(language)s_compound_type import _%(langua
 
 
 class %(language_upper_camelized)sStructType(StructType, _%(language_upper_camelized)sCompoundType):
-    def __repr__(self):
-        return _%(language_upper_camelized)sCompoundType.__repr__(self)
+    def %(language)s_repr(self):
+        return _%(language_upper_camelized)sCompoundType.%(language)s_repr(self)
 """ % locals()
 
 

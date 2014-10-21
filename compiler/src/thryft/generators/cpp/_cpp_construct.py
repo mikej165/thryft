@@ -30,9 +30,15 @@
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
 
+from yutil import class_qname
+
+
 class _CppConstruct(object):
     def cpp_includes_definition(self):
         return tuple()
 
     def cpp_includes_use(self):
         return tuple()
+
+    def cpp_repr(self):
+        raise NotImplementedError(class_qname(self) + '.cpp_repr')

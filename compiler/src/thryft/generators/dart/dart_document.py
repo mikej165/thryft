@@ -24,9 +24,9 @@ class DartDocument(Document, _DartNamedConstruct):
                     self.__package_name,
                     rpad(self.namespace_by_scope('dart').name.replace('.', '/'), '/') + self.dart_name() + '.dart')]
 
-    def __repr__(self):
+    def dart_repr(self):
         imports = "\n".join(self.dart_imports_definition())
-        definitions = "\n\n".join(repr(definition)
+        definitions = "\n\n".join(definition.dart_repr()
                         for definition in self.definitions)
         if len(definitions) == 0:
             return ''
@@ -45,3 +45,6 @@ class DartDocument(Document, _DartNamedConstruct):
         except KeyError:
             pass
         return self._save_to_file(os.path.join(out_dir_path, self.dart_name() + '.dart'))
+
+    def _save_to_file(self, out_file_path):
+        return self._save_to_file_helper(self.dart_repr(), out_file_path)

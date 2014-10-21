@@ -47,7 +47,7 @@ class GwtRpcServerJavaGenerator(JavaGenerator):
                 return None
 
     class Function(JavaFunction):
-        def __repr__(self):
+        def java_repr(self):
             name = self.java_name()
 
             parameters = \
@@ -78,7 +78,7 @@ public %(return_type_name)s %(name)s(%(parameters)s)%(throws)s {
         def java_name(self):
             return JavaService.java_name(self) + 'GwtServlet'
 
-        def __repr__(self):
+        def java_repr(self):
             client_service_package = ''
             try:
                 client_service_package = self._parent_document().namespace_by_scope(('gwt_client_java', 'java')).name + '.'
@@ -87,7 +87,7 @@ public %(return_type_name)s %(name)s(%(parameters)s)%(throws)s {
             client_service_qname = client_service_package + JavaService.java_name(self) + 'GwtClient'
             functions = \
                 lpad("\n", "\n\n".join(indent(' ' * 4,
-                    (repr(function) for function in self.functions)
+                    (function.java_repr() for function in self.functions)
                 )))
             name = self.java_name()
             service_qname = JavaService.java_qname(self)

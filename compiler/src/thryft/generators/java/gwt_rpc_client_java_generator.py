@@ -49,10 +49,10 @@ class GwtRpcClientJavaGenerator(JavaGenerator):
         def java_name(self):
             return JavaService.java_name(self) + 'GwtClient'
 
-        def __repr__(self):
+        def java_repr(self):
             functions = \
                 "\n\n".join(indent(' ' * 4,
-                    (repr(function) for function in self.functions)
+                    (function.java_repr() for function in self.functions)
                 ))
             name = self.java_name()
             service_name = JavaService.java_name(self)

@@ -51,7 +51,7 @@ class CppService(Service, _CppNamedConstruct):
     def cpp_qname(self, boxed=False):
         return _CppNamedConstruct.cpp_qname(self, name=self.name)
 
-    def __repr__(self):
+    def cpp_repr(self):
         extends = self.cpp_extends()
         if extends is None:
             extends = ''
@@ -73,9 +73,9 @@ class CppService(Service, _CppNamedConstruct):
                 read_requests.append(request_type.cpp_read_if())
                 request_forward_declarations.append(request_type.cpp_forward_declaration())
                 handle_request_declarations.append(request_type.cpp_handle_declaration())
-                message_types.append(repr(request_type))
+                message_types.append(request_type.cpp_repr())
                 response_type = function.cpp_response_type()
-                message_types.append(repr(response_type))
+                message_types.append(response_type.cpp_repr())
                 sync_request_handlers.append(request_type.cpp_sync_handler())
             message_types = indent(' ' * 2, "\n\n".join(message_types))
             read_requests = indent(' ' * 4, ' else '.join(read_requests))

@@ -112,6 +112,9 @@ if ifield_name == '%(name)s':
 %(read_protocol)s
 """ % locals()
 
+    def py_repr(self):
+        return self.py_parameter()
+
     def py_setter(self, return_type_name='void'):
         setter_name = self.py_setter_name()
         name = self.py_name()
@@ -156,6 +159,3 @@ if self.%(getter_call)s is not None:
             return quote(self.value)
         else:
             return self.value
-
-    def __repr__(self):
-        return self.py_parameter()

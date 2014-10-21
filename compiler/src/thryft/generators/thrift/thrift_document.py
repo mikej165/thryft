@@ -35,14 +35,17 @@ from thryft.generators.thrift._thrift_named_construct import _ThriftNamedConstru
 
 
 class ThriftDocument(Document, _ThriftNamedConstruct):
-    def __repr__(self):
+    def thrift_repr(self):
         sections = []
         for section in (
             self.doc is not None and repr(self.doc) or '',
-            "\n".join(repr(include) for include in self.includes),
-            "\n".join(repr(namespace) for namespace in self.namespaces),
+            "\n".join(include.thrift_repr() for include in self.includes),
+            "\n".join(namespace.thrift_repr() for namespace in self.namespaces),
         ):
             if len(section) > 0:
                 sections.append(section)
-        sections.extend(repr(definition) for definition in self.definitions)
+        sections.extend(definition.thrift_repr() for definition in self.definitions)
         return "\n\n".join(sections)
+
+    def _save_to_file(self, out_file_path):
+        return self._save_to_file_helper(self.thrift_repr(), out_file_path)

@@ -117,7 +117,7 @@ def update(self, %(other_name)s):
             return ([constructor] if constructor is not None else []) + \
                     [methods[key] for key in sorted(methods.iterkeys())]
 
-        def __repr__(self):
+        def py_repr(self):
             name = self.py_name()
             sections = []
             sections.append("\n\n".join(indent(' ' * 4, self._py_methods())))
@@ -272,7 +272,7 @@ def %(method_name)s(self):
         for field in self.fields:
             field_name = field.name
             field_getter_call = field.py_getter_call()
-            field_repr = field.type.py_repr('self.' + field.py_getter_call())
+            field_repr = field.type.py_runtime_repr('self.' + field.py_getter_call())
             field_repr = "field_reprs.append('%(field_name)s=' + %(field_repr)s)" % locals()
             if not field.required:
                 field_repr = """\
@@ -341,16 +341,16 @@ def write(self, oprot):
         qname = self.py_qname()
         return "%(qname)s.read(iprot)" % locals()
 
-    def py_write_protocol(self, value, depth=0):
-        return "%(value)s.write(oprot)" % locals()
-
-    def __repr__(self):
+    def py_repr(self):
         extends = ', '.join(self._py_extends())
         sections = []
-        sections.append(indent(' ' * 4, repr(self._PyBuilder(self))))
+        sections.append(indent(' ' * 4, self._PyBuilder(self).py_repr()))
         sections.append(indent(' ' * 4, "\n".join(self._py_methods())))
         sections = "\n\n".join(sections)
         name = self.py_name()
         return """\
 class %(name)s(%(extends)s):
 %(sections)s""" % locals()
+
+    def py_write_protocol(self, value, depth=0):
+        return "%(value)s.write(oprot)" % locals()

@@ -36,14 +36,14 @@ from yutil import rpad
 
 
 class ThriftFunction(Function, _ThriftNamedConstruct):
-    def __repr__(self):
+    def thrift_repr(self):
         return "%s%s%s %s(%s)%s" % (
             self.doc is not None and rpad(repr(self.doc), "\n") or '',
             self.oneway and 'oneway ' or '',
             self.return_field is not None and self.return_field.type.thrift_qname() or 'void',
             self.name,
-            ', '.join(repr(parameter) for parameter in self.parameters),
+            ', '.join(parameter.thrift_repr() for parameter in self.parameters),
             len(self.throws) > 0 and \
-                (' throws (' + ', '.join(repr(throws) for throws in self.throws) + ')')
+                (' throws (' + ', '.join(throws.thrift_repr() for throws in self.throws) + ')')
                 or ''
         )

@@ -118,10 +118,10 @@ class CppDocument(Document, _CppNamedConstruct):
         namespace_split = namespace.split('.')
         return "\n".join("namespace %s {" % s for s in namespace_split) + "\n"
 
-    def __repr__(self):
+    def cpp_repr(self):
         definitions = []
         definitions.append(
-            "\n\n".join(repr(definition)
+            "\n\n".join(definition.cpp_repr()
                          for definition in self.definitions)
         )
         definitions = "\n\n".join(definitions)
@@ -152,3 +152,6 @@ class CppDocument(Document, _CppNamedConstruct):
         except KeyError:
             pass
         return self._save_to_file(os.path.join(out_dir_path, self.name + '.hpp'))
+
+    def _save_to_file(self, out_file_path):
+        return self._save_to_file_helper(self.cpp_repr(), out_file_path)

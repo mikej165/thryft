@@ -44,5 +44,5 @@ class PyStringType(StringType, _PyBaseType):
     def py_name(self):
         return 'str'
 
-    def py_repr(self, value):
+    def py_runtime_repr(self, value):
         return "\"'\" + %(value)s.encode('ascii', 'replace') + \"'\"" % locals()

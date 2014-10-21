@@ -45,7 +45,7 @@ class PyService(Service, _PyNamedConstruct):
     def _py_imports_use(self, caller_stack):
         raise NotImplementedError
 
-    def __repr__(self):
+    def py_repr(self):
         name = self.py_name()
 
         if len(self.functions) == 0:

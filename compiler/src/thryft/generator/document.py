@@ -103,17 +103,19 @@ class Document(_NamedConstruct):
     def _save_to_dir(self, out_dir_path):
         raise NotImplementedError(class_qname(self))
 
-    def _save_to_file(self, out_file_path):
+    def _save_to_file(self, out_dir_path):
+        raise NotImplementedError(class_qname(self))
+
+    def _save_to_file_helper(self, out_file_contents, out_file_path):
+        if len(out_file_contents) == 0:
+            return
+
         out_dir_path = os.path.split(out_file_path)[0]
         if not os.path.isdir(out_dir_path):
             os.makedirs(out_dir_path)
 
-        repr_ = repr(self)
-        if len(repr_) == 0:
-            return
-
         with open(out_file_path, 'w+b') as out_file:
-            out_file.write(repr_)
+            out_file.write(out_file_contents)
             self._logger.info('wrote ' + out_file_path)
 
         return out_file_path

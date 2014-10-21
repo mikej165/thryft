@@ -37,7 +37,7 @@ import os.path
 
 
 class PyDocument(Document, _PyNamedConstruct):
-    def __repr__(self):
+    def py_repr(self):
         imports = []
 # Don't import anything that isn't required
 #        for include in self.includes:
@@ -47,7 +47,7 @@ class PyDocument(Document, _PyNamedConstruct):
         imports = "\n".join(list(sorted(set(imports))))
 
         definitions = \
-            "\n\n".join(repr(definition)
+            "\n\n".join(definition.py_repr()
                          for definition in self.definitions)
         return rpad(imports, "\n\n\n") + rpad(definitions, "\n")
 
@@ -77,3 +77,6 @@ class PyDocument(Document, _PyNamedConstruct):
         except KeyError:
             pass
         return self._save_to_file(os.path.join(out_dir_path, self.name + '.py'))
+
+    def _save_to_file(self, out_file_path):
+        return self._save_to_file_helper(self.py_repr(), out_file_path)

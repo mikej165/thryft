@@ -102,10 +102,7 @@ Map<String, Object> toMap() {
         )
         return methods_list
 
-    def dart_to_core_type(self, value):
-        return value + '.toMap()'
-
-    def __repr__(self):
+    def dart_repr(self):
         name = self.dart_name()
         sections = []
         sections.append(indent(' ' * 2, "\n".join(self._dart_member_declarations())))
@@ -114,3 +111,6 @@ Map<String, Object> toMap() {
         return """\
 class %(name)s {%(sections)s
 }""" % locals()
+
+    def dart_to_core_type(self, value):
+        return value + '.toMap()'

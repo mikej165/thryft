@@ -11,10 +11,7 @@ class DartEnumType(EnumType, _DartType):
     def _dart_imports_use(self, caller_stack):
         return self._parent_document().dart_imports_use(caller_stack)
 
-    def dart_to_core_type(self, value):
-        return value + '.name'
-
-    def __repr__(self):
+    def dart_repr(self):
         assert len(self.enumerators) > 0
         name = self.dart_name()
         enumerator_definitions = \
@@ -53,3 +50,6 @@ class %(name)s {
     return name;
   }
 }""" % locals()
+
+    def dart_to_core_type(self, value):
+        return value + '.name'

@@ -41,9 +41,6 @@ class Typedef(_NamedConstruct):
     def __getattr__(self, attr):
         return getattr(self.__type, attr)
 
-    def __repr__(self):
-        return ''
-
     @property
     def type(self):  # @ReservedAssignment
         return self.__type

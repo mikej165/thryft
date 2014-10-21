@@ -1,19 +1,19 @@
 #-------------------------------------------------------------------------------
 # Copyright (c) 2013, Minor Gordon
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
 # are met:
-# 
+#
 #     * Redistributions of source code must retain the above copyright
 #       notice, this list of conditions and the following disclaimer.
-# 
+#
 #     * Redistributions in binary form must reproduce the above copyright
 #       notice, this list of conditions and the following disclaimer in
 #       the documentation and/or other materials provided with the
 #       distribution.
-# 
+#
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
 # CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
 # INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
@@ -54,8 +54,6 @@ class JavaInclude(Include, _JavaConstruct):
         self.__java_class_name = java_class_name
         self.__java_package = java_package
 
-    def java_package(self):
-        return self.__java_package
 
     def java_class_name(self):
         return self.__java_class_name
@@ -63,5 +61,8 @@ class JavaInclude(Include, _JavaConstruct):
     def java_class_qname(self):
         return rpad(self.__java_package, '.') + self.__java_class_name
 
-    def __repr__(self):
+    def java_package(self):
+        return self.__java_package
+
+    def java_repr(self):
         return 'import ' + self.java_class_qname() + ';'

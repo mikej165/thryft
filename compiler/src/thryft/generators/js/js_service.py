@@ -36,7 +36,7 @@ from yutil import indent
 
 
 class JsService(Service, _JsNamedConstruct):
-    def __repr__(self):
+    def js_repr(self):
         qname = self.js_qname()
 
         if len(self.functions) == 0:
@@ -54,13 +54,13 @@ class JsService(Service, _JsNamedConstruct):
             sections.append("%(qname)sMessages = {};" % locals())
             message_types = \
                 "\n\n".join(
-                    repr(message_type) for message_type in message_types
+                    message_type.js_repr() for message_type in message_types
                 )
             sections.append(message_types)
 
         functions = \
             ",\n\n".join(indent(' ' * 4,
-                (repr(function)
+                (function.js_repr()
                  for function in self.functions)
             ))
         sections.append("""

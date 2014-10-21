@@ -36,7 +36,7 @@ from yutil import pad, indent, rpad
 
 
 class ThriftEnumType(EnumType, _ThriftCompoundType):
-    def __repr__(self):
+    def thrift_repr(self):
         return "%senum %s {%s}" % (
             self.doc is not None and rpad(self.doc, "\n") or '',
             self.name,

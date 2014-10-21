@@ -78,10 +78,7 @@ class JsFunction(Function, _JsNamedConstruct):
     def js_request_type(self, **kwds):
         return self._JsRequestType(parent_function=self, **kwds)
 
-    def js_response_type(self, **kwds):
-        return self._JsResponseType(parent_function=self, **kwds)
-
-    def __repr__(self):
+    def js_repr(self):
         for parameter in self.parameters:
             assert parameter.name != 'error', self.parent.name
             assert parameter.name != 'success', self.parent.name
@@ -224,3 +221,6 @@ class JsFunction(Function, _JsNamedConstruct):
 
     return returnValue;
 }""" % locals()
+
+    def js_response_type(self, **kwds):
+        return self._JsResponseType(parent_function=self, **kwds)

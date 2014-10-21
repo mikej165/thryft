@@ -39,5 +39,5 @@ class _CppBaseType(_CppType):
         name = getattr(self, 'name')
         return "%(value)s = iprot.read_%(name)s();" % locals()
 
-    def __repr__(self):
+    def cpp_repr(self):
         return self.cpp_name()

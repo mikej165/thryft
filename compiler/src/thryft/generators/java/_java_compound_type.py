@@ -122,7 +122,7 @@ protected %(name)s _build(%(field_parameters)s) {%(checks)s
             methods.update(self._java_method_setters())
             return methods
 
-        def __repr__(self):
+        def java_repr(self):
             name = self.java_name()
             methods = self._java_methods()
             sections = []
@@ -571,13 +571,7 @@ public void write(final org.thryft.protocol.OutputProtocol oprot, final org.thry
         qname = self.java_qname()
         return "new %(qname)s(iprot)" % locals()
 
-    def java_to_string(self, value):
-        return "%(value)s.toString()" % locals()
-
-    def java_write_protocol(self, value, depth=0):
-        return "%(value)s.write(oprot);" % locals()
-
-    def __repr__(self):
+    def java_repr(self):
         class_annotations = []
         if len(self.__suppress_warnings) > 0:
             class_annotations.append(
@@ -592,7 +586,7 @@ public void write(final org.thryft.protocol.OutputProtocol oprot, final org.thry
         implements = lpad(' implements ', ', '.join(self._java_implements()))
         methods = self._java_methods()
         sections = []
-        sections.append(indent(' ' * 4, repr(self._JavaBuilder(self))))
+        sections.append(indent(' ' * 4, self._JavaBuilder(self).java_repr()))
         sections.append("\n\n".join(indent(' ' * 4,
             self._java_constructors() + \
             [methods[key] for key in sorted(methods.iterkeys())])))
@@ -601,3 +595,9 @@ public void write(final org.thryft.protocol.OutputProtocol oprot, final org.thry
         return """\
 %(javadoc)s%(class_annotations)s%(class_modifiers)sclass %(name)s%(extends)s%(implements)s {%(sections)s
 }""" % locals()
+
+    def java_to_string(self, value):
+        return "%(value)s.toString()" % locals()
+
+    def java_write_protocol(self, value, depth=0):
+        return "%(value)s.write(oprot);" % locals()

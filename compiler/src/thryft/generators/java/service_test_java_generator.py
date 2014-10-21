@@ -49,7 +49,7 @@ class ServiceTestJavaGenerator(java_generator.JavaGenerator):
         def java_name(self):
             return 'test' + upper_camelize(self.name)
 
-        def __repr__(self):
+        def java_repr(self):
             name = self.java_name()
             return """\
 @Test
@@ -75,9 +75,9 @@ public %(name)s(final %(service_qname)s service) {
             ]
 
         def _java_methods(self):
-            return [repr(function) for function in self.functions]
+            return [function.java_repr() for function in self.functions]
 
-        def __repr__(self):
+        def java_repr(self):
             name = self.java_name()
 
             sections = []

@@ -50,11 +50,7 @@ class PyEnumType(EnumType, _PyType):
     def py_read_protocol_throws(self):
         return ['TypeError']
 
-    def py_write_protocol(self, value, depth=0):
-        qname = self.py_qname()
-        return "oprot.write_string(str(%(value)s))" % locals()
-
-    def __repr__(self):
+    def py_repr(self):
         name = self.py_name()
 
         enumerators = []
@@ -97,3 +93,7 @@ class %(name)s(object):%(enumerator_placeholders)s
     @classmethod
     def value_of(cls, name):%(value_of_statements)s
         raise ValueError(name)%(enumerators)s""" % locals()
+
+    def py_write_protocol(self, value, depth=0):
+        qname = self.py_qname()
+        return "oprot.write_string(str(%(value)s))" % locals()

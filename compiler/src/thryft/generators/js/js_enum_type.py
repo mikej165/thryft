@@ -48,6 +48,13 @@ class JsEnumType(EnumType, _JsType):
         name = self.js_qname()
         return "%(name)s[iprot.readString()]" % locals()
 
+    def js_repr(self):
+        enumerators = ', '.join("%s: %u" % (enumerator.name, enumerator.value)
+                                for enumerator in self.enumerators)
+        name = self.js_qname()
+        return """\
+%(name)s = Object.freeze({%(enumerators)s});""" % locals()
+
     def js_schema(self):
         return {'type': 'Select', 'options': [enumerator.name for enumerator in self.enumerators]}
 
@@ -71,10 +78,3 @@ if (typeof %(value)s !== "number") {
     def js_write_protocol(self, value, depth=0):
         name = self.js_qname()
         return "oprot.writeString(function(enumerator_value) { for (var enumerator_name in %(name)s) { if (%(name)s[enumerator_name] == enumerator_value) { return enumerator_name; } } }(%(value)s));" % locals()
-
-    def __repr__(self):
-        enumerators = ', '.join("%s: %u" % (enumerator.name, enumerator.value)
-                                for enumerator in self.enumerators)
-        name = self.js_qname()
-        return """\
-%(name)s = Object.freeze({%(enumerators)s});""" % locals()

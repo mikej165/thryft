@@ -5,7 +5,7 @@ from thryft.generators.sql.sql_generator import SqlGenerator
 
 class CreateTableSqlGenerator(SqlGenerator):
     class Document(SqlGenerator.Document):
-        def __repr__(self):
+        def sql_repr(self):
             repr_ = []
             for definition in self.definitions:
                 if isinstance(definition, SqlGenerator.StructType):

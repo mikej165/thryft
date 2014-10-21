@@ -35,12 +35,12 @@ from thryft.generators.java._java_named_construct import _JavaNamedConstruct
 
 
 class JavaConst(Const, _JavaNamedConstruct):
-    def java_value(self):
-        return self.type.java_literal(self.value)
-
-    def __repr__(self):
+    def java_repr(self):
         javadoc = self.java_doc()
         name = self.java_name()
         type_name = self.type.java_qname()
         value = self.java_value()
         return "%(javadoc)spublic final static %(type_name)s %(name)s = %(value)s;" % locals()
+
+    def java_value(self):
+        return self.type.java_literal(self.value)

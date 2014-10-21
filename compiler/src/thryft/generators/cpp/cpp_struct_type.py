@@ -35,9 +35,4 @@ from thryft.generators.cpp._cpp_compound_type import _CppCompoundType
 
 
 class CppStructType(StructType, _CppCompoundType):
-    def __init__(self, **kwds):
-        StructType.__init__(self, **kwds)
-        _CppCompoundType.__init__(self)
-
-    def __repr__(self):
-        return _CppCompoundType.__repr__(self)
+    pass

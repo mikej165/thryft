@@ -35,11 +35,11 @@ from thryft.generators.cpp._cpp_named_construct import _CppNamedConstruct
 
 
 class CppConst(Const, _CppNamedConstruct):
-    def cpp_value(self):
-        return self.type.cpp_literal(self.value)
-
-    def __repr__(self):
+    def cpp_repr(self):
         name = self.cpp_name()
         type_name = self.type.cpp_qname()
         value = self.cpp_value()
         return "const static %(type_name)s %(name)s = %(value)s;" % locals()
+
+    def cpp_value(self):
+        return self.type.cpp_literal(self.value)

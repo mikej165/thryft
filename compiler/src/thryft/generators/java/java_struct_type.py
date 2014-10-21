@@ -38,6 +38,3 @@ class JavaStructType(StructType, _JavaCompoundType):
     def __init__(self, **kwds):
         StructType.__init__(self, **kwds)
         _JavaCompoundType.__init__(self, **kwds)
-
-    def __repr__(self):
-        return _JavaCompoundType.__repr__(self)

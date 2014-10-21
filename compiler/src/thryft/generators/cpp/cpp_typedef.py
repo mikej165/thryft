@@ -12,5 +12,5 @@ class CppTypedef(Typedef, _CppNamedConstruct):
     def cpp_name(self):
         return self.name
 
-    def __repr__(self):
+    def cpp_repr(self):
         return "typedef %s %s;" % (self.type.cpp_qname(), self.cpp_name())

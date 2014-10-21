@@ -162,8 +162,8 @@ public %(name)s(final org.thryft.protocol.InputProtocol iprot) throws org.thryft
     def java_request_type(self, **kwds):
         return self._JavaRequestType(parent_function=self, **kwds)
 
+    def java_repr(self):
+        return self.java_declaration()
+
     def java_response_type(self, **kwds):
         return self._JavaResponseType(parent_function=self, **kwds)
-
-    def __repr__(self):
-        return self.java_declaration()

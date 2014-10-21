@@ -50,11 +50,7 @@ class CppEnumType(EnumType, _CppType):
         name = _CppType.cpp_qname(self)
         return "%(value)s = %(name)s::read(iprot);" % locals()
 
-    def cpp_write_protocol(self, value, depth=0):
-        name = _CppType.cpp_qname(self)
-        return "%(value)s.write(oprot);" % locals()
-
-    def __repr__(self):
+    def cpp_repr(self):
         default_value = self.enumerators[0].name
         enumerator_check_cases = \
             lpad("\n", "\n".join(indent(' ' * 4, ("""\
@@ -125,3 +121,7 @@ public:
 private:
   Enum enum_;
 };""" % locals()
+
+    def cpp_write_protocol(self, value, depth=0):
+        name = _CppType.cpp_qname(self)
+        return "%(value)s.write(oprot);" % locals()

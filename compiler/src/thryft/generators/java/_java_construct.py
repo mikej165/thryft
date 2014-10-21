@@ -30,6 +30,9 @@
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
 
+from yutil import class_qname
+
+
 class _JavaConstruct(object):
     def java_doc(self):
         if self.doc is not None and len(self.doc) > 0:
@@ -40,3 +43,6 @@ class _JavaConstruct(object):
 """ % ("\n".join(' * ' + doc_line for doc_line in self.doc.splitlines()))
         else:
             return ''
+
+    def java_repr(self):
+        raise NotImplementedError(class_qname(self) + '.java_repr')

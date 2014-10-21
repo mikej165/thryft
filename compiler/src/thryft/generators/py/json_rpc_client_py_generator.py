@@ -39,7 +39,7 @@ from yutil import indent, decamelize
 
 class JsonRpcClientPyGenerator(py_generator.PyGenerator):
     class Function(PyFunction):
-        def __repr__(self):
+        def py_repr(self):
             if self.return_field is not None:
                 if isinstance(self.return_field.type, _BaseType):
                     call_prefix = 'return '
@@ -78,7 +78,7 @@ def _%(name)s(self, **kwds):
             methods.update(self.__py_method_init())
             methods.update(self.__py_method_request())
             for function in self.functions:
-                methods[function.py_name()] = repr(function)
+                methods[function.py_name()] = function.py_repr()
             return [methods[method_name] for method_name in sorted(methods.iterkeys())]
 
         def __py_method_import_exception_class(self):
@@ -232,7 +232,7 @@ def __request(self, method, headers=None, **kwds):
         def _py_name(self):
             return 'JsonRpcClient' + PyService.py_name(self)
 
-        def __repr__(self):
+        def py_repr(self):
             methods = indent(' ' * 4, "\n".join(self.__py_methods()))
             name = self._py_name()
             service_qname = PyService.py_qname(self)

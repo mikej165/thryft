@@ -358,10 +358,7 @@ bool operator==(const %(name)s& other) const {%(field_comparisons)s
         else:
             return "%(value)s.read(iprot);" % locals()
 
-    def _cpp_template_parameters(self):
-        return ''
-
-    def __repr__(self):
+    def cpp_repr(self):
         name = self.cpp_name()
         extends = lpad(' : public ', self._cpp_extends())
         template_parameters = rpad(self._cpp_template_parameters(), "\n")
@@ -375,3 +372,6 @@ bool operator==(const %(name)s& other) const {%(field_comparisons)s
         return """\
 %(template_parameters)sclass %(name)s%(extends)s {%(sections)s
 };""" % locals()
+
+    def _cpp_template_parameters(self):
+        return ''

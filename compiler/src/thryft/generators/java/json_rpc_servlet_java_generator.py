@@ -40,7 +40,7 @@ class JsonRpcServletJavaGenerator(_servlet_java_generator._ServletJavaGenerator)
             _servlet_java_generator._ServletJavaGenerator._Document.__init__(self, servlet_type='json_rpc', **kwds)
 
     class Function(_servlet_java_generator._ServletJavaGenerator._Function):
-        def __repr__(self):
+        def java_repr(self):
             annotations = rpad("\n".join(self.java_annotations()), "\n")
             name = self.java_name()
             request_type_name = self.java_request_type().java_name()
@@ -214,10 +214,10 @@ private void __doPostResponse(final javax.servlet.http.HttpServletRequest httpSe
             methods.append(self._java_method_do_post())
             methods.append(self._java_method_do_post_error())
             methods.append(self._java_method_do_post_response())
-            methods.extend([repr(function) for function in self.functions])
+            methods.extend(function.java_repr() for function in self.functions)
             return methods
 
-        def __repr__(self):
+        def java_repr(self):
             name = self.java_name()
 
             sections = []

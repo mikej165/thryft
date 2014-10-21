@@ -199,6 +199,9 @@ try {
 
         return read_protocol
 
+    def java_repr(self):
+        return self.java_parameter()
+
     def java_setters(self, return_type_name='void'):
         setter_name = self.java_setter_name()
         name = self.java_name()
@@ -284,6 +287,3 @@ if (%(getter_name)s().isPresent()) {
     oprot.writeNull();
 }"""
         return write_protocol
-
-    def __repr__(self):
-        return self.java_parameter()
