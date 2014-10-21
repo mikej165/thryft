@@ -47,7 +47,7 @@ class CompilerTest(_test._Test):
         try:
             documents = compiler((thrift_file_path,), generator=generator)
             self.assertEquals(1, len(documents))
-            document_repr = repr(documents[0])  # @UnusedVariable
+            document_repr = documents[0].thrift_repr()  # @UnusedVariable
         except:
             print >> sys.stderr, 'Error parsing', thrift_file_path
             traceback.print_exc()

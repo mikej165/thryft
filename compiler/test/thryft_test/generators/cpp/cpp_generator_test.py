@@ -4,7 +4,12 @@ from thryft_test import _generator_test
 
 class CppGeneratorTest(_generator_test._GeneratorTest):
     def __init__(self, *args, **kwds):
-        _generator_test._GeneratorTest.__init__(self, generator_class=CppGenerator, *args, **kwds)
+        _generator_test._GeneratorTest.__init__(
+            self,
+            generator_class=CppGenerator,
+            repr_method_name='cpp_repr',
+            *args, **kwds
+        )
 
 
 def load_tests(*args, **kwds):

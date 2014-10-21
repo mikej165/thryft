@@ -102,7 +102,10 @@ class CppDocument(Document, _CppNamedConstruct):
         return self.name
 
     def cpp_namespace(self):
-        return self.namespace_by_scope('cpp').name
+        try:
+            return self.namespace_by_scope(('cpp', '*')).name
+        except KeyError:
+            return
 
     def cpp_namespace_block_closes(self):
         namespace = self.cpp_namespace()

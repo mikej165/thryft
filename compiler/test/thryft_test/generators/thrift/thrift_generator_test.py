@@ -4,7 +4,12 @@ from thryft_test import _generator_test
 
 class ThriftGeneratorTest(_generator_test._GeneratorTest):
     def __init__(self, *args, **kwds):
-        _generator_test._GeneratorTest.__init__(self, generator_class=ThriftGenerator, *args, **kwds)
+        _generator_test._GeneratorTest.__init__(
+            self,
+            generator_class=ThriftGenerator,
+            repr_method_name='thrift_repr',
+            *args, **kwds
+        )
 
 
 def load_tests(*args, **kwds):
