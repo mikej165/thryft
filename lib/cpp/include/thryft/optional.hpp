@@ -13,7 +13,7 @@ class Optional final {
       : present_(false) {
     }
 
-    Optional(const T& value) {
+    explicit Optional(const T& value) {
       init(value);
     }
 
