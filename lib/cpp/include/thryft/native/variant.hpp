@@ -109,7 +109,7 @@ class Variant {
       case Type::I64:
         return sizeof(signed_integer_value_);
       case Type::STRING:
-        return string_value_.len;
+        return static_cast<size_t>(string_value_.len);
       case Type::U64:
         return sizeof(unsigned_integer_value_);
       default:
@@ -185,7 +185,7 @@ class Variant {
         return oss.str();
       }
       case Type::STRING:
-        return ::std::string(static_cast<const char*>(*this), string_value_.len);
+        return ::std::string(static_cast<const char*>(*this), static_cast<size_t>(string_value_.len));
       case Type::U64: {
         ::std::ostringstream oss;
         oss << static_cast<uint64_t>(*this);
@@ -195,6 +195,34 @@ class Variant {
       default:
         return "null";
       }
+    }
+
+    bool operator==(bool value) const {
+      return operator==(Variant(value));
+    }
+
+    bool operator==(double value) const {
+      return operator==(Variant(value));
+    }
+
+    bool operator==(int32_t value) const {
+      return operator==(Variant(value));
+    }
+
+    bool operator==(int64_t value) const {
+      return operator==(Variant(value));
+    }
+
+    bool operator==(uint32_t value) const {
+      return operator==(Variant(value));
+    }
+
+    bool operator==(uint64_t value) const {
+      return operator==(Variant(value));
+    }
+
+    bool operator==(const char* value) const {
+      return operator==(Variant(value));
     }
 
     bool operator==(const Variant& other) const {
@@ -207,7 +235,7 @@ class Variant {
           return false;
         }
         return memcmp(static_cast<const void*>(*this), static_cast<const void*>(other),
-                      string_value_.len) == 0;
+                      static_cast<size_t>(string_value_.len)) == 0;
       }
       case Type::BOOL:
         return static_cast<bool>(*this) == static_cast<bool>(other);
@@ -224,24 +252,36 @@ class Variant {
       }
     }
 
-    bool operator==(bool other) const {
-      return operator==(Variant(other));
+    bool operator!=(bool value) const {
+      return !operator==(value);
     }
 
-    bool operator==(int32_t other) const {
-      return operator==(Variant(other));
+    bool operator!=(double value) const {
+      return !operator==(value);
     }
 
-    bool operator==(int64_t other) const {
-      return operator==(Variant(other));
+    bool operator!=(int32_t value) const {
+      return !operator==(value);
     }
 
-    bool operator==(uint32_t other) const {
-      return operator==(Variant(other));
+    bool operator!=(int64_t value) const {
+      return !operator==(value);
     }
 
-    bool operator==(uint64_t other) const {
-      return operator==(Variant(other));
+    bool operator!=(uint32_t value) const {
+      return !operator==(value);
+    }
+
+    bool operator!=(uint64_t value) const {
+      return !operator==(value);
+    }
+
+    bool operator!=(const char* value) const {
+      return !operator==(value);
+    }
+
+    bool operator!=(const Variant& other) const {
+      return !operator==(other);
     }
 
     Variant& operator=(const Variant& other) {
@@ -352,7 +392,7 @@ class Variant {
         init(static_cast<uint64_t>(other));
         break;
       case Type::STRING:
-        init(reinterpret_cast<const void*>(other.string_value_.base), other.string_value_.len);
+        init(reinterpret_cast<const void*>(other.string_value_.base), static_cast<size_t>(other.string_value_.len));
         break;
       default:
         string_value_ = { 0, 0 };
