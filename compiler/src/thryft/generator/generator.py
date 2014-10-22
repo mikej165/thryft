@@ -46,7 +46,6 @@ class Generator(object):
     from thryft.generator.list_type import ListType  # @UnusedImport
     from thryft.generator.map_type import MapType  # @UnusedImport
     from thryft.generator.namespace import Namespace  # @UnusedImport
-    from thryft.generator.native_type import NativeType  # @UnusedImport
     from thryft.generator.service import Service  # @UnusedImport
     from thryft.generator.set_type import SetType  # @UnusedImport
     from thryft.generator.string_type import StringType  # @UnusedImport

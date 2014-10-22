@@ -54,7 +54,6 @@ class JsGenerator(Generator):
     from thryft.generators.js.js_include import JsInclude as Include  # @UnusedImport
     from thryft.generators.js.js_list_type import JsListType as ListType  # @UnusedImport
     from thryft.generators.js.js_map_type import JsMapType as MapType  # @UnusedImport
-    from thryft.generators.js.js_native_type import JsNativeType as NativeType  # @UnusedImport
     from thryft.generators.js.js_service import JsService as Service  # @UnusedImport
     from thryft.generators.js.js_set_type import JsSetType as SetType  # @UnusedImport
     from thryft.generators.js.js_string_type import JsStringType as StringType  # @UnusedImport

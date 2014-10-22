@@ -30,14 +30,92 @@
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
 
+import imp
+from inspect import isclass
+import logging
+import os.path
 from thryft.generator._construct import _Construct
 
 
 class _NamedConstruct(_Construct):
-    def __init__(self, name, **kwds):
+    def __init__(self, name, allow_override=False, **kwds):
         _Construct.__init__(self, **kwds)
+        self.__overrides = None
         assert name is not None
         self.__name = name
+
+        if not allow_override:
+            return
+        annotations = self.annotations
+        if annotations is None:
+            return
+        allow_override = False
+        for annotation in annotations:
+            if annotation == 'native':
+                allow_override = True
+                break
+        if not allow_override:
+            return
+
+        from thryft.generator.document import Document
+        if isinstance(self, Document):
+            return
+        parent_document = self._parent_document()
+        overrides_module_file_path = os.path.splitext(parent_document.path)[0] + '.py'
+        if not os.path.isfile(overrides_module_file_path):
+            return
+        overrides_module_dir_path, overrides_module_file_name = \
+            os.path.split(overrides_module_file_path)
+        overrides_module_name = \
+            os.path.splitext(overrides_module_file_name)[0]
+        try:
+            overrides_module = \
+                imp.load_module(
+                    overrides_module_name,
+                    *imp.find_module(
+                        overrides_module_name,
+                        [overrides_module_dir_path]
+                    )
+                )
+        except ImportError:
+            logging.error(
+                "error importing overrides module %s",
+                overrides_module_file_path,
+                exc_info=True
+            )
+            return
+
+        try:
+            overrides_class = getattr(overrides_module, name)
+            if not isclass(overrides_class):
+                raise AttributeError
+        except AttributeError:
+            logging.error(
+                "overrides module %s has no class %s",
+                overrides_module_file_path,
+                name
+            )
+            return
+
+        try:
+            self._overrides = overrides_class(self)
+        except:
+            logging.error(
+                "could not instantiate overrides class %s from %s",
+                name,
+                overrides_module_file_path,
+                exc_info=True
+            )
+            return
+
+    def __getattribute__(self, name):
+        if name[0] != '_':
+            try:
+                overrides = object.__getattribute__(self, '_overrides')
+                return getattr(overrides, name)
+            except AttributeError:
+                pass
+        return _Construct.__getattribute__(self, name)
 
     @property
     def name(self):

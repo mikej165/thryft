@@ -30,24 +30,14 @@
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
 
-from thryft.generator.native_type import NativeType
 from thryft.generator.string_type import StringType
-from thryft.generators.cpp.cpp_native_type import CppNativeType
 from thryft.generators.cpp.cpp_string_type import CppStringType
-from thryft.generators.java.java_native_type import JavaNativeType
-from thryft.generators.js.js_native_type import JsNativeType
-from thryft.generators.py.py_native_type import PyNativeType
 
 
-class _Decimal(object):
-    def thrift_ttype_id(self):
-        return StringType.THRIFT_TTYPE_ID
+class Decimal(object):
+    def __init__(self, *args, **kwds):
+        pass
 
-    def thrift_ttype_name(self):
-        return StringType.THRIFT_TTYPE_NAME
-
-
-class CppDecimal(_Decimal, CppNativeType):
     __cpp_string_type = CppStringType()
 
     def cpp_default_value(self):
@@ -62,8 +52,6 @@ class CppDecimal(_Decimal, CppNativeType):
     def cpp_read_protocol(self, *args, **kwds):
         return self.__cpp_string_type.cpp_read_protocol(*args, **kwds)
 
-
-class JavaDecimal(_Decimal, JavaNativeType):
     def java_qname(self, boxed=False):
         return 'java.math.BigDecimal'
 
@@ -79,8 +67,6 @@ class JavaDecimal(_Decimal, JavaNativeType):
     def java_write_protocol(self, value, depth=0):
         return "oprot.writeDecimal(%(value)s);" % locals()
 
-
-class JsDecimal(_Decimal, JsNativeType):
     def js_default_value(self):
         return '"0"'
 
@@ -108,15 +94,13 @@ if (typeof %(value)s !== "string") {
     def js_write_protocol(self, value, depth=0):
         return """oprot.writeDecimal(%(value)s);""" % locals()
 
-
-class PyDecimal(_Decimal, PyNativeType):
     def py_check(self, value):
         return "isinstance(%(value)s, decimal.Decimal)" % locals()
 
-    def _py_imports_definition(self, caller_stack):
+    def py_imports_definition(self, caller_stack=None):
         return []
 
-    def _py_imports_use(self, caller_stack):
+    def py_imports_use(self, caller_stack=None):
         return ['from __future__ import absolute_import; import decimal']
 
     def py_name(self):
@@ -134,3 +118,9 @@ class PyDecimal(_Decimal, PyNativeType):
     def py_write_protocol(self, value, depth=0):
         qname = self.py_qname()
         return "oprot.write_decimal(%(value)s)" % locals()
+
+    def thrift_ttype_id(self):
+        return StringType.THRIFT_TTYPE_ID
+
+    def thrift_ttype_name(self):
+        return StringType.THRIFT_TTYPE_NAME

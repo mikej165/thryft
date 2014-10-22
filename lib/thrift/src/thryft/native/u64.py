@@ -31,23 +31,13 @@
 #-------------------------------------------------------------------------------
 
 from thryft.generator.i64_type import I64Type
-from thryft.generator.native_type import NativeType
 from thryft.generators.cpp.cpp_i64_type import CppI64Type
-from thryft.generators.cpp.cpp_native_type import CppNativeType
-from thryft.generators.java.java_native_type import JavaNativeType
-from thryft.generators.js.js_native_type import JsNativeType
-from thryft.generators.py.py_native_type import PyNativeType
 
 
-class _U64(object):
-    def thrift_ttype_id(self):
-        return I64Type.THRIFT_TTYPE_ID
+class U64(object):
+    def __init__(self, *args, **kwds):
+        pass
 
-    def thrift_ttype_name(self):
-        return I64Type.THRIFT_TTYPE_NAME
-
-
-class CppU64(_U64, CppNativeType):
     __cpp_i64_type = CppI64Type()
 
     def cpp_default_value(self):
@@ -62,8 +52,6 @@ class CppU64(_U64, CppNativeType):
     def cpp_read_protocol(self, value, optional=False):
         return "%(value)s = iprot.read_u64();" % locals()
 
-
-class JavaU64(_U64, JavaNativeType):
     def java_qname(self, boxed=False):
         return 'com.google.common.primitives.UnsignedLong'
 
@@ -79,8 +67,6 @@ class JavaU64(_U64, JavaNativeType):
     def java_write_protocol(self, value, depth=0):
         return "oprot.writeU64(%(value)s);" % locals()
 
-
-class JsU64(_U64, JsNativeType):
     def js_default_value(self):
         return '"0"'
 
@@ -108,15 +94,13 @@ if (typeof %(value)s !== "string") {
     def js_write_protocol(self, value, depth=0):
         return """oprot.writeU64(%(value)s);""" % locals()
 
-
-class PyU64(_U64, PyNativeType):
     def py_check(self, value):
         return "isinstance(%(value)s, long) and %(value)s >= 0" % locals()
 
-    def _py_imports_definition(self, caller_stack):
+    def py_imports_definition(self, caller_stack=None):
         return []
 
-    def _py_imports_use(self, caller_stack):
+    def py_imports_use(self, caller_stack=None):
         return []
 
     def py_name(self):
@@ -134,3 +118,9 @@ class PyU64(_U64, PyNativeType):
     def py_write_protocol(self, value, depth=0):
         qname = self.py_qname()
         return "oprot.write_u64(%(value)s)" % locals()
+
+    def thrift_ttype_id(self):
+        return I64Type.THRIFT_TTYPE_ID
+
+    def thrift_ttype_name(self):
+        return I64Type.THRIFT_TTYPE_NAME

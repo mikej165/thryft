@@ -32,18 +32,10 @@
 
 import os.path
 import sys; sys.path.append(os.path.dirname(__file__))
-from uri import CppUri as _CppUri, DartUri as _DartUri, JavaUri as _JavaUri, JsUri as _JsUri, PyUri as _PyUri, SqlUri as _SqlUri
+from uri import Uri
 
 
-class CppUrl(_CppUri):
-    pass
-
-
-class DartUrl(_DartUri):
-    pass
-
-
-class JavaUrl(_JavaUri):
+class Url(Uri):
     def java_qname(self, boxed=False):
         return 'org.thryft.native_.Url'
 
@@ -53,20 +45,12 @@ class JavaUrl(_JavaUri):
     def java_write_protocol(self, value, depth=0):
         return "oprot.writeUrl(%(value)s);" % locals()
 
-
-class JsUrl(_JsUri):
     def js_validation(self, value, value_name, **kwds):
         return {'pattern': 'url', 'type': """\
 if (typeof %(value)s !== "string") {
     return "expected %(value_name)s to be a string";
 }""" % locals()}
 
-
-class PyUrl(_PyUri):
     def py_write_protocol(self, value, depth=0):
         qname = self.py_qname()
         return "oprot.write_url(%(value)s)" % locals()
-
-
-class SqlUrl(_SqlUri):
-    pass

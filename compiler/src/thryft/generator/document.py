@@ -34,16 +34,16 @@ from collections import OrderedDict
 from thryft.generator.include import Include
 from thryft.generator._named_construct import _NamedConstruct
 from thryft.generator.namespace import Namespace
-from yutil import class_qname, decamelize
+from yutil import class_qname
 import os.path
 
 
 class Document(_NamedConstruct):
     def __init__(self, path, definitions=None, headers=None, **kwds):
-        self.__path = os.path.abspath(path)
+        self.__path = path = os.path.abspath(path)
         _NamedConstruct.__init__(
             self,
-            name=os.path.splitext(os.path.split(self.__path)[1])[0],
+            name=os.path.splitext(os.path.split(path)[1])[0],
             **kwds
         )
         self.__definitions = \

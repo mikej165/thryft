@@ -35,7 +35,7 @@ from thryft.generator._named_construct import _NamedConstruct
 
 class Typedef(_NamedConstruct):
     def __init__(self, type, **kwds):  # @ReservedAssignment
-        _NamedConstruct.__init__(self, **kwds)
+        _NamedConstruct.__init__(self, allow_override=True, **kwds)
         self.__type = type
 
     def __getattr__(self, attr):

@@ -50,7 +50,6 @@ class JavaGenerator(Generator):
     from thryft.generators.java.java_include import JavaInclude as Include  # @UnusedImport
     from thryft.generators.java.java_list_type import JavaListType as ListType  # @UnusedImport
     from thryft.generators.java.java_map_type import JavaMapType as MapType  # @UnusedImport
-    from thryft.generators.java.java_native_type import JavaNativeType as NativeType  # @UnusedImport
     from thryft.generators.java.java_service import JavaService as Service  # @UnusedImport
     from thryft.generators.java.java_set_type import JavaSetType as SetType  # @UnusedImport
     from thryft.generators.java.java_string_type import JavaStringType as StringType  # @UnusedImport

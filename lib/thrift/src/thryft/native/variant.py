@@ -30,22 +30,13 @@
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
 
-from thryft.generator.native_type import NativeType
 from thryft.generator.struct_type import StructType
-from thryft.generators.cpp.cpp_native_type import CppNativeType
-from thryft.generators.java.java_native_type import JavaNativeType
-from thryft.generators.py.py_native_type import PyNativeType
 
 
-class _Variant(object):
-    def thrift_ttype_id(self):
-        return StructType.THRIFT_TTYPE_ID
+class Variant(object):
+    def __init__(self, *args, **kwds):
+        pass
 
-    def thrift_ttype_name(self):
-        return StructType.THRIFT_TTYPE_NAME
-
-
-class CppVariant(_Variant, CppNativeType):
     def cpp_default_value(self):
         pass
 
@@ -55,11 +46,6 @@ class CppVariant(_Variant, CppNativeType):
     def cpp_qname(self):
         return '::thryft::native::Variant'
 
-    def cpp_read_protocol(self, value, optional=False):
-        return "%(value)s = iprot.read_variant();" % locals()
-
-
-class JavaVariant(_Variant, JavaNativeType):
     def java_compare_to(self, this_value, other_value):
         return "org.thryft.Comparators.compare(%(this_value)s, %(other_value)s)" % locals()
 
@@ -81,13 +67,26 @@ class JavaVariant(_Variant, JavaNativeType):
     def java_write_protocol(self, value, depth=0):
         return "oprot.writeVariant(%(value)s);" % locals()
 
+    def cpp_read_protocol(self, value, optional=False):
+        return "%(value)s = iprot.read_variant();" % locals()
 
-class PyVariant(_Variant, PyNativeType):
     def py_check(self, value):
         return 'True'
+
+    def py_imports_definition(self, caller_stack=None):
+        return []
+
+    def py_imports_use(self, caller_stack=None):
+        return []
 
     def py_read_protocol(self):
         return 'iprot.read_variant()'
 
     def py_write_protocol(self, value, depth=0):
         return "oprot.write_variant(%(value)s)" % locals()
+
+    def thrift_ttype_id(self):
+        return StructType.THRIFT_TTYPE_ID
+
+    def thrift_ttype_name(self):
+        return StructType.THRIFT_TTYPE_NAME

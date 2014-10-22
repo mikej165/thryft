@@ -30,53 +30,14 @@
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
 
-from thryft.generator.native_type import NativeType
 from thryft.generator.string_type import StringType
-from thryft.generators.cpp.cpp_native_type import CppNativeType
 from thryft.generators.cpp.cpp_string_type import CppStringType
-from thryft.generators.dart.dart_native_type import DartNativeType
-from thryft.generators.java.java_native_type import JavaNativeType
-from thryft.generators.js.js_native_type import JsNativeType
-from thryft.generators.py.py_native_type import PyNativeType
-from thryft.generators.sql.sql_native_type import SqlNativeType
 
 
-class _EmailAddress(object):
-    def thrift_ttype_id(self):
-        return StringType.THRIFT_TTYPE_ID
+class EmailAddress(object):
+    def __init__(self, *args, **kwds):
+        pass
 
-    def thrift_ttype_name(self):
-        return StringType.THRIFT_TTYPE_NAME
-
-
-class CppEmailAddress(_EmailAddress, CppNativeType):
-    __cpp_string_type = CppStringType()
-
-    def cpp_default_value(self):
-        return self.__cpp_string_type.cpp_default_value()
-
-    def cpp_includes_use(self):
-        return self.__cpp_string_type.cpp_includes_use()
-
-    def cpp_qname(self):
-        return self.__cpp_string_type.cpp_qname()
-
-    def cpp_read_protocol(self, *args, **kwds):
-        return self.__cpp_string_type.cpp_read_protocol(*args, **kwds)
-
-
-class DartEmailAddress(_EmailAddress, DartNativeType):
-    def dart_from_core_type(self, value):
-        return value
-
-    def dart_name(self):
-        return 'String'
-
-    def dart_to_core_type(self, value):
-        return value
-
-
-class JavaEmailAddress(_EmailAddress, JavaNativeType):
     def java_default_value(self):
         return 'null'
 
@@ -92,8 +53,6 @@ class JavaEmailAddress(_EmailAddress, JavaNativeType):
     def java_write_protocol(self, value, depth=0):
         return "oprot.writeEmailAddress(%(value)s);" % locals()
 
-
-class JsEmailAddress(_EmailAddress, JsNativeType):
     def js_default_value(self):
         return '""'
 
@@ -121,34 +80,6 @@ if (typeof %(value)s !== "string") {
     def js_write_protocol(self, value, depth=0):
         return """oprot.writeEmailAddress(%(value)s);""" % locals()
 
-
-class PyEmailAddress(_EmailAddress, PyNativeType):
-    def py_check(self, value):
-        return "isinstance(%(value)s, str)" % locals()
-
-    def _py_imports_definition(self, caller_stack):
-        return []
-
-    def _py_imports_use(self, caller_stack):
-        return []
-
-    def py_name(self):
-        return 'str'
-
-    def py_qname(self):
-        return 'str'
-
-    def py_read_protocol(self):
-        return 'iprot.read_string()'
-
-    def py_read_protocol_throws(self):
-        return []
-
     def py_write_protocol(self, value, depth=0):
         qname = self.py_qname()
         return "oprot.write_email_address(%(value)s)" % locals()
-
-
-class SqlEmailAddress(_EmailAddress, SqlNativeType):
-    def sql_name(self):
-        return 'VARCHAR'

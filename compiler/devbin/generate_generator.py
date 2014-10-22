@@ -217,7 +217,6 @@ class %(language_upper_camelized)sGenerator(Generator):
     from thryft.generators.%(language)s.%(language)s_include import %(language_upper_camelized)sInclude as Include  # @UnusedImport
     from thryft.generators.%(language)s.%(language)s_list_type import %(language_upper_camelized)sListType as ListType  # @UnusedImport
     from thryft.generators.%(language)s.%(language)s_map_type import %(language_upper_camelized)sMapType as MapType  # @UnusedImport
-    from thryft.generators.%(language)s.%(language)s_native_type import %(language_upper_camelized)sNativeType as NativeType  # @UnusedImport
     from thryft.generators.%(language)s.%(language)s_service import %(language_upper_camelized)sService as Service  # @UnusedImport
     from thryft.generators.%(language)s.%(language)s_set_type import %(language_upper_camelized)sSetType as SetType  # @UnusedImport
     from thryft.generators.%(language)s.%(language)s_string_type import %(language_upper_camelized)sStringType as StringType  # @UnusedImport
@@ -285,15 +284,6 @@ class %(language_upper_camelized)sMapType(MapType, _%(language_upper_camelized)s
     pass
 """ % locals()
 
-
-files["%(language)s_native_type.py" % locals()] = """\
-from thryft.generator.native_type import NativeType
-from thryft.generators.%(language)s._%(language)s_type import _%(language_upper_camelized)sType
-
-
-class %(language_upper_camelized)sNativeType(NativeType, _%(language_upper_camelized)sType):
-    pass
-""" % locals()
 
 
 files["%(language)s_service.py" % locals()] = """\

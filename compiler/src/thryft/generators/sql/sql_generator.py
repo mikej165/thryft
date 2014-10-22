@@ -20,7 +20,6 @@ class SqlGenerator(Generator):
     from thryft.generators.sql.sql_include import SqlInclude as Include  # @UnusedImport
     from thryft.generators.sql.sql_list_type import SqlListType as ListType  # @UnusedImport
     from thryft.generators.sql.sql_map_type import SqlMapType as MapType  # @UnusedImport
-    from thryft.generators.sql.sql_native_type import SqlNativeType as NativeType  # @UnusedImport
     from thryft.generators.sql.sql_service import SqlService as Service  # @UnusedImport
     from thryft.generators.sql.sql_set_type import SqlSetType as SetType  # @UnusedImport
     from thryft.generators.sql.sql_string_type import SqlStringType as StringType  # @UnusedImport

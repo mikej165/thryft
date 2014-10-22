@@ -31,23 +31,13 @@
 #-------------------------------------------------------------------------------
 
 from thryft.generator.i32_type import I32Type
-from thryft.generator.native_type import NativeType
 from thryft.generators.cpp.cpp_i32_type import CppI32Type
-from thryft.generators.cpp.cpp_native_type import CppNativeType
-from thryft.generators.java.java_native_type import JavaNativeType
-from thryft.generators.js.js_native_type import JsNativeType
-from thryft.generators.py.py_native_type import PyNativeType
 
 
-class _U32(object):
-    def thrift_ttype_id(self):
-        return I32Type.THRIFT_TTYPE_ID
+class U32(object):
+    def __init__(self, *args, **kwds):
+        pass
 
-    def thrift_ttype_name(self):
-        return I32Type.THRIFT_TTYPE_NAME
-
-
-class CppU32(_U32, CppNativeType):
     __cpp_i32_type = CppI32Type()
 
     def cpp_default_value(self):
@@ -65,8 +55,6 @@ class CppU32(_U32, CppNativeType):
     def cpp_read_protocol(self, value, optional=False):
         return "%(value)s = iprot.read_u32();" % locals()
 
-
-class JavaU32(_U32, JavaNativeType):
     def java_default_value(self):
         return 'com.google.common.primitives.UnsignedInteger.ZERO'
 
@@ -85,8 +73,6 @@ class JavaU32(_U32, JavaNativeType):
     def java_write_protocol(self, value, depth=0):
         return "oprot.writeU32(%(value)s);" % locals()
 
-
-class JsU32(_U32, JsNativeType):
     def js_default_value(self):
         return '"0"'
 
@@ -114,15 +100,13 @@ if (typeof %(value)s !== "string") {
     def js_write_protocol(self, value, depth=0):
         return """oprot.writeU32(%(value)s);""" % locals()
 
-
-class PyU32(_U32, PyNativeType):
     def py_check(self, value):
         return "isinstance(%(value)s, int) and %(value)s >= 0" % locals()
 
-    def _py_imports_definition(self, caller_stack):
+    def py_imports_definition(self, caller_stack=None):
         return []
 
-    def _py_imports_use(self, caller_stack):
+    def py_imports_use(self, caller_stack=None):
         return []
 
     def py_name(self):
@@ -140,3 +124,9 @@ class PyU32(_U32, PyNativeType):
     def py_write_protocol(self, value, depth=0):
         qname = self.py_qname()
         return "oprot.write_u32(%(value)s)" % locals()
+
+    def thrift_ttype_id(self):
+        return I32Type.THRIFT_TTYPE_ID
+
+    def thrift_ttype_name(self):
+        return I32Type.THRIFT_TTYPE_NAME

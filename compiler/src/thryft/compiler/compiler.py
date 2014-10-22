@@ -30,25 +30,18 @@
 # OF SUCH DAMAGE.
 #------------------------------------------------------------------------------
 
-from inspect import isclass
 from thryft.compiler.ast import Ast
 from thryft.compiler.compile_exception import CompileException
 from thryft.compiler.parser import Parser
 from thryft.compiler.scanner import Scanner
 from thryft.generator._type import _Type
 from thryft.generator.document import Document
-from thryft.generator.generator import Generator
-from thryft.generator.native_type import NativeType
 from thryft.generator.typedef import Typedef
-import imp
-import logging
 import os.path
 
 
 class Compiler(object):
     class __AstVisitor(object):
-        __ROOT_GENERATOR = Generator()
-
         def __init__(self, compiler, generator, include_dir_paths):
             object.__init__(self)
             self.__compiler = compiler
@@ -63,83 +56,6 @@ class Compiler(object):
             else:
                 parent = self.__generator
             kwds['parent'] = parent
-
-            annotations = kwds.get('annotations')
-            name = kwds.get('name')
-            if annotations is None:
-                native = False
-            elif name is None:
-                native = False
-            else:
-                native = False
-                for annotation in annotations:
-                    if annotation == 'native':
-                        native = True
-                        break
-
-            if native:
-                for scope in reversed(self.__scope_stack):
-                    if not isinstance(scope, Document):
-                        continue
-
-                    document = scope
-                    overrides_module_file_path = os.path.splitext(document.path)[0] + '.py'
-                    if not os.path.isfile(overrides_module_file_path):
-                        continue
-                    overrides_module_dir_path, overrides_module_file_name = \
-                        os.path.split(overrides_module_file_path)
-                    overrides_module_name = \
-                        os.path.splitext(overrides_module_file_name)[0]
-                    try:
-                        overrides_module = \
-                            imp.load_module(
-                                overrides_module_name,
-                                *imp.find_module(
-                                    overrides_module_name,
-                                    [overrides_module_dir_path]
-                                )
-                            )
-                    except ImportError:
-                        logging.error(
-                            "error importing overrides module %s",
-                            overrides_module_file_path,
-                            exc_info=True
-                        )
-                        continue
-
-                    # Find an override implementation corresponding to our generator
-                    # For example, find JavaDateTime by looking in the module for a
-                    # class that inherits JavaNativeType.
-                    # The first_bases algorithm below covers the case where we want
-                    # JavaDateTime but the generator gave us something that itself
-                    # inherits from JavaStructType e.g., SubJavaStructType.
-                    # In this case there is no SubJavaDateTime(SubJavaStructType), so
-                    # we need to consider SubJavaStructType's parent (JavaStructType)
-                    # and look for a subclass of that.
-                    root_construct_class = getattr(self.__ROOT_GENERATOR, 'NativeType')
-                    generator_construct_class = getattr(self.__generator, 'NativeType')
-                    parent_construct_classes = [generator_construct_class]
-
-                    def __get_first_bases(class_, first_bases):
-                        if len(class_.__bases__) == 0:
-                            return
-                        first_base = class_.__bases__[0]
-                        if first_base is object or first_base is root_construct_class:
-                            return
-                        if first_base.__name__[0] != '_':
-                            first_bases.append(first_base)
-                        __get_first_bases(first_base, first_bases)
-                    __get_first_bases(generator_construct_class, parent_construct_classes)
-
-                    for parent_construct_class in parent_construct_classes:
-                        for attr in dir(overrides_module):
-                            value = getattr(overrides_module, attr)
-                            if isclass(value) and \
-                               issubclass(value, parent_construct_class) and \
-                               value != parent_construct_class:
-                                return getattr(overrides_module, attr)(**kwds)
-                    # logging.warn("could not find override class for %s in %s" % (default_construct_class.__name__, overrides_module_name))
-
             return getattr(self.__generator, class_name)(**kwds)
 
         def visit_annotation_node(self, annotation_node):
@@ -170,8 +86,6 @@ class Compiler(object):
                     doc=self.__visit_doc_node(compound_type_node.doc),
                     name=compound_type_node.name
                 )
-            if isinstance(compound_type, NativeType):
-                return compound_type
             self.__scope_stack.append(compound_type)
 
             # Insert the compound type into the type_map here to allow recursive

@@ -31,29 +31,20 @@
 #-------------------------------------------------------------------------------
 
 from thryft.generator.i64_type import I64Type
-from thryft.generator.native_type import NativeType
 from thryft.generators.cpp.cpp_i64_type import CppI64Type
-from thryft.generators.cpp.cpp_native_type import CppNativeType
-from thryft.generators.dart.dart_native_type import DartNativeType
-from thryft.generators.java.java_native_type import JavaNativeType
-from thryft.generators.js.js_native_type import JsNativeType
-from thryft.generators.py.py_native_type import PyNativeType
-from thryft.generators.sql.sql_native_type import SqlNativeType
 
 
-class _DateTime(object):
-    def thrift_ttype_id(self):
-        return I64Type.THRIFT_TTYPE_ID
-
-    def thrift_ttype_name(self):
-        return I64Type.THRIFT_TTYPE_NAME
-
-
-class CppDateTime(_DateTime, CppNativeType):
+class DateTime(object):
     __cpp_i64_type = CppI64Type()
+
+    def __init__(self, *args, **kwds):
+        pass
 
     def cpp_default_value(self):
         return self.__cpp_i64_type.cpp_default_value()
+
+    def cpp_includes_use(self):
+        return self.__cpp_i64_type.cpp_includes_use()
 
     def cpp_qname(self):
         return self.__cpp_i64_type.cpp_qname()
@@ -61,15 +52,13 @@ class CppDateTime(_DateTime, CppNativeType):
     def cpp_read_protocol(self, *args, **kwds):
         return self.__cpp_i64_type.cpp_read_protocol(*args, **kwds)
 
-
-class DartDateTime(_DateTime, DartNativeType):
     def dart_from_core_type(self, value):
         return "new DateTime.fromMillisecondsSinceEpoch(%(value)s)" % locals()
 
-    def _dart_imports_definition(self, caller_stack):
+    def dart_imports_definition(self, caller_stack=None):
         return []
 
-    def _dart_imports_use(self, caller_stack):
+    def dart_imports_use(self, caller_stack=None):
         return []
 
     def dart_name(self):
@@ -78,8 +67,6 @@ class DartDateTime(_DateTime, DartNativeType):
     def dart_to_core_type(self, value):
         return value + '.millisecondsSinceEpoch'
 
-
-class JavaDateTime(_DateTime, JavaNativeType):
     def java_default_value(self):
         return 'null'
 
@@ -98,8 +85,6 @@ class JavaDateTime(_DateTime, JavaNativeType):
     def java_write_protocol(self, value, depth=0):
         return "oprot.writeDateTime(%(value)s);" % locals()
 
-
-class JsDateTime(_DateTime, JsNativeType):
     def js_default_value(self):
         return 'new Date()'
 
@@ -127,15 +112,13 @@ if (!(%(value)s instanceof Date)) {
     def js_write_protocol(self, value, depth=0):
         return "oprot.writeDateTime(%(value)s);" % locals()
 
-
-class PyDateTime(_DateTime, PyNativeType):
     def py_check(self, value):
         return "isinstance(%(value)s, datetime)" % locals()
 
-    def _py_imports_definition(self, caller_stack):
+    def py_imports_definition(self, caller_stack=None):
         return []
 
-    def _py_imports_use(self, caller_stack):
+    def py_imports_use(self, caller_stack=None):
         return ['from datetime import datetime', 'from time import mktime']
 
     def py_read_protocol(self):
@@ -147,7 +130,11 @@ class PyDateTime(_DateTime, PyNativeType):
     def py_write_protocol(self, value, depth=0):
         return "oprot.write_date_time(%(value)s)" % locals()
 
-
-class SqlDateTime(_DateTime, SqlNativeType):
     def sql_name(self):
         return 'TIMESTAMP'
+
+    def thrift_ttype_id(self):
+        return I64Type.THRIFT_TTYPE_ID
+
+    def thrift_ttype_name(self):
+        return I64Type.THRIFT_TTYPE_NAME

@@ -25,7 +25,6 @@ class DartGenerator(Generator):
     from thryft.generators.dart.dart_include import DartInclude as Include  # @UnusedImport
     from thryft.generators.dart.dart_list_type import DartListType as ListType  # @UnusedImport
     from thryft.generators.dart.dart_map_type import DartMapType as MapType  # @UnusedImport
-    from thryft.generators.dart.dart_native_type import DartNativeType as NativeType  # @UnusedImport
     from thryft.generators.dart.dart_service import DartService as Service  # @UnusedImport
     from thryft.generators.dart.dart_set_type import DartSetType as SetType  # @UnusedImport
     from thryft.generators.dart.dart_string_type import DartStringType as StringType  # @UnusedImport
