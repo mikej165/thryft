@@ -34,7 +34,7 @@ from thryft.generator.i64_type import I64Type
 from thryft.generators.cpp.cpp_i64_type import CppI64Type
 
 
-class U64(object):
+class u64(object):
     def __init__(self, *args, **kwds):
         pass
 

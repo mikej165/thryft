@@ -2,5 +2,4 @@ namespace java org.thryft.native_
 namespace * thryft.native
 
 // @native
-struct U64 {
-}
+typedef i64 u64

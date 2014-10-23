@@ -30,24 +30,13 @@
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
 
-from thryft.generator.i32_type import I32Type
-from thryft.generators.cpp.cpp_i32_type import CppI32Type
 
-
-class U32(object):
+class u32(object):
     def __init__(self, *args, **kwds):
         pass
 
-    __cpp_i32_type = CppI32Type()
-
     def cpp_default_value(self):
         return 'static_cast<uint32_t>(0)'
-
-    def cpp_includes_definition(self):
-        return self.__cpp_i32_type.cpp_includes_definition()
-
-    def cpp_includes_use(self):
-        return self.__cpp_i32_type.cpp_includes_use()
 
     def cpp_qname(self):
         return 'uint32_t'
@@ -55,8 +44,26 @@ class U32(object):
     def cpp_read_protocol(self, value, optional=False):
         return "%(value)s = iprot.read_u32();" % locals()
 
+    def java_compare_to(self, this_value, other_value):
+        return "%(this_value)s.compareTo(%(other_value)s)" % locals()
+
+    def java_declaration_name(self, boxed=False):
+        return 'com.google.common.primitives.UnsignedInteger'
+
     def java_default_value(self):
         return 'com.google.common.primitives.UnsignedInteger.ZERO'
+
+    def java_equals(self, this_value, other_value):
+        return "%(this_value)s.equals(%(other_value)s)" % locals()
+
+    def java_hash_code(self, value):
+        return "%(value)s.hashCode()" % locals()
+
+    def java_is_reference(self):
+        return True
+
+    def java_name(self, boxed=False):
+        return 'com.google.common.primitives.UnsignedInteger'
 
     def java_qname(self, boxed=False):
         return 'com.google.common.primitives.UnsignedInteger'
@@ -124,9 +131,3 @@ if (typeof %(value)s !== "string") {
     def py_write_protocol(self, value, depth=0):
         qname = self.py_qname()
         return "oprot.write_u32(%(value)s)" % locals()
-
-    def thrift_ttype_id(self):
-        return I32Type.THRIFT_TTYPE_ID
-
-    def thrift_ttype_name(self):
-        return I32Type.THRIFT_TTYPE_NAME

@@ -67,10 +67,25 @@ class DateTime(object):
     def dart_to_core_type(self, value):
         return value + '.millisecondsSinceEpoch'
 
+    def java_compare_to(self, this_value, other_value):
+        return "%(this_value)s.compareTo(%(other_value)s)" % locals()
+
+    def java_declaration_name(self, boxed=False):
+        return 'java.util.Date'
+
     def java_default_value(self):
         return 'null'
 
-    def java_qname(self, boxed=True):
+    def java_equals(self, this_value, other_value):
+        return "%(this_value)s.equals(%(other_value)s)" % locals()
+
+    def java_hash_code(self, value):
+        return "%(value)s.hashCode()" % locals()
+
+    def java_name(self, boxed=False):
+        return 'java.util.Date'
+
+    def java_qname(self, boxed=False):
         return 'java.util.Date'
 
     def java_is_reference(self):

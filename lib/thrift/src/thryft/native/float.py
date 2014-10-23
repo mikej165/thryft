@@ -30,17 +30,29 @@
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
 
-from thryft.generator._named_construct import _NamedConstruct
 
+class float(object):
+    def __init__(self, *args, **kwds):
+        pass
 
-class Typedef(_NamedConstruct):
-    def __init__(self, type, overrides=True, **kwds):  # @ReservedAssignment
-        _NamedConstruct.__init__(self, overrides=overrides, **kwds)
-        self.__type = type
+    def cpp_default_value(self):
+        return 'static_cast<float>(0.0)'
 
-    def __getattr__(self, attr):
-        return getattr(self.__type, attr)
+    def cpp_qname(self):
+        return 'float'
 
-    @property
-    def type(self):  # @ReservedAssignment
-        return self.__type
+    def cpp_read_protocol(self, value, optional=False):
+        return "%(value)s = static_cast<float>(iprot.read_double());" % locals()
+
+    def java_qname(self, boxed=False):
+        return 'Float' if boxed else 'float'
+
+    def java_read_protocol(self):
+        return '((float)iprot.readDouble())'
+
+    def py_qname(self):
+        return 'float'
+
+    def py_write_protocol(self, value, depth=0):
+        qname = self.py_qname()
+        return "oprot.write_double(%(value)s)" % locals()
