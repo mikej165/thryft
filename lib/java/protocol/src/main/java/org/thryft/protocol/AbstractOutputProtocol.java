@@ -40,7 +40,6 @@ import javax.annotation.Nullable;
 import org.thryft.Base;
 import org.thryft.native_.EmailAddress;
 import org.thryft.native_.Uri;
-import org.thryft.native_.Url;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -90,7 +89,7 @@ public abstract class AbstractOutputProtocol implements OutputProtocol {
             }
             oprot.writeSetEnd();
         } else if (value instanceof EmailAddress) {
-            oprot.writeEmailAddress((EmailAddress) value);
+            oprot.writeString(((EmailAddress) value).toString());
         } else if (value instanceof Short) {
             oprot.writeI16((Short) value);
         } else if (value instanceof Integer) {
@@ -99,8 +98,8 @@ public abstract class AbstractOutputProtocol implements OutputProtocol {
             oprot.writeI64((Long) value);
         } else if (value instanceof String) {
             oprot.writeString((String) value);
-        } else if (value instanceof Url) {
-            oprot.writeUrl((Url) value);
+        } else if (value instanceof Uri) {
+            oprot.writeString(((Uri) value).toString());
         } else if (value instanceof Base<?>) {
             ((Base<?>) value).write(oprot);
         } else {
@@ -119,12 +118,6 @@ public abstract class AbstractOutputProtocol implements OutputProtocol {
 
     @Override
     public void writeDecimal(final BigDecimal value)
-            throws OutputProtocolException {
-        writeString(value.toString());
-    }
-
-    @Override
-    public void writeEmailAddress(final EmailAddress value)
             throws OutputProtocolException {
         writeString(value.toString());
     }
@@ -182,16 +175,6 @@ public abstract class AbstractOutputProtocol implements OutputProtocol {
     public void writeU64(final UnsignedLong value)
             throws OutputProtocolException {
         writeI64(value.longValue());
-    }
-
-    @Override
-    public void writeUri(final Uri value) throws OutputProtocolException {
-        writeString(value.toString());
-    }
-
-    @Override
-    public void writeUrl(final Url value) throws OutputProtocolException {
-        writeString(value.toString());
     }
 
     @Override

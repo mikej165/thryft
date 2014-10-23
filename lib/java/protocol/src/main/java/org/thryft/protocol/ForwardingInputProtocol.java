@@ -2,10 +2,6 @@ package org.thryft.protocol;
 
 import java.util.Date;
 
-import org.thryft.native_.EmailAddress;
-import org.thryft.native_.Uri;
-import org.thryft.native_.Url;
-
 import com.google.common.primitives.UnsignedInteger;
 import com.google.common.primitives.UnsignedLong;
 
@@ -38,11 +34,6 @@ public abstract class ForwardingInputProtocol implements InputProtocol {
     @Override
     public double readDouble() throws InputProtocolException {
         return _delegate().readDouble();
-    }
-
-    @Override
-    public EmailAddress readEmailAddress() throws InputProtocolException {
-        return _delegate().readEmailAddress();
     }
 
     @Override
@@ -107,11 +98,6 @@ public abstract class ForwardingInputProtocol implements InputProtocol {
     }
 
     @Override
-    public Object readVariant() throws InputProtocolException {
-        return _delegate().readVariant();
-    }
-
-    @Override
     public SetBegin readSetBegin() throws InputProtocolException {
         return _delegate().readSetBegin();
     }
@@ -147,13 +133,8 @@ public abstract class ForwardingInputProtocol implements InputProtocol {
     }
 
     @Override
-    public Uri readUri() throws InputProtocolException {
-        return _delegate().readUri();
-    }
-
-    @Override
-    public Url readUrl() throws InputProtocolException {
-        return _delegate().readUrl();
+    public Object readVariant() throws InputProtocolException {
+        return _delegate().readVariant();
     }
 
     protected abstract InputProtocol _delegate();

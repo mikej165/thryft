@@ -38,20 +38,23 @@ class EmailAddress(object):
     def __init__(self, *args, **kwds):
         pass
 
+    def java_declaration_name(self, boxed=False):
+        return 'org.thryft.native_.EmailAddress'
+
     def java_default_value(self):
         return 'null'
+
+    def java_name(self, boxed=False):
+        return 'org.thryft.native_.EmailAddress'
 
     def java_qname(self, boxed=False):
         return 'org.thryft.native_.EmailAddress'
 
-    def java_is_reference(self):
-        return True
-
     def java_read_protocol(self):
-        return 'iprot.readEmailAddress()'
+        return 'new org.thryft.native_.EmailAddress(iprot.readString())'
 
     def java_write_protocol(self, value, depth=0):
-        return "oprot.writeEmailAddress(%(value)s);" % locals()
+        return "oprot.writeString(%(value)s.toString());" % locals()
 
     def js_default_value(self):
         return '""'
@@ -66,7 +69,7 @@ class EmailAddress(object):
         return 'string'
 
     def js_read_protocol(self):
-        return 'iprot.readEmailAddress()'
+        return 'iprot.readString()'
 
     def js_schema(self):
         return {'type': 'Text', 'validators': ['email']}
@@ -78,8 +81,7 @@ if (typeof %(value)s !== "string") {
 }""" % locals()}
 
     def js_write_protocol(self, value, depth=0):
-        return """oprot.writeEmailAddress(%(value)s);""" % locals()
+        return """oprot.writeString(%(value)s);""" % locals()
 
     def py_write_protocol(self, value, depth=0):
-        qname = self.py_qname()
-        return "oprot.write_email_address(%(value)s)" % locals()
+        return "oprot.write_string(%(value)s)" % locals()

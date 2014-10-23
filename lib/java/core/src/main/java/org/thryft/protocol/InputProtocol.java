@@ -35,10 +35,6 @@ package org.thryft.protocol;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import org.thryft.native_.EmailAddress;
-import org.thryft.native_.Uri;
-import org.thryft.native_.Url;
-
 import com.google.common.primitives.UnsignedInteger;
 import com.google.common.primitives.UnsignedLong;
 
@@ -54,8 +50,6 @@ public interface InputProtocol extends Protocol {
     public BigDecimal readDecimal() throws InputProtocolException;
 
     public double readDouble() throws InputProtocolException;
-
-    public EmailAddress readEmailAddress() throws InputProtocolException;
 
     public <E extends Enum<E>> E readEnum(final Class<E> enumClass)
             throws InputProtocolException;
@@ -95,10 +89,6 @@ public interface InputProtocol extends Protocol {
     public UnsignedInteger readU32() throws InputProtocolException;
 
     public UnsignedLong readU64() throws InputProtocolException;
-
-    public Uri readUri() throws InputProtocolException;
-
-    public Url readUrl() throws InputProtocolException;
 
     public Object readVariant() throws InputProtocolException;
 }

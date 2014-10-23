@@ -45,9 +45,6 @@ class _AbstractOutputProtocol(_OutputProtocol):
     def write_decimal(self, decimal):
         self.write_string(str(decimal))
 
-    def write_email_address(self, email_address):
-        self.write_string(email_address)
-
     def write_i16(self, i16):
         self.write_i32(i16)
 
@@ -56,12 +53,6 @@ class _AbstractOutputProtocol(_OutputProtocol):
 
     def write_set_end(self):
         self.write_list_end()
-
-    def write_uri(self, uri):
-        self.write_string(uri)
-
-    def write_url(self, url):
-        self.write_string(url)
 
     def write_variant(self, object_):
         if object_ is None:

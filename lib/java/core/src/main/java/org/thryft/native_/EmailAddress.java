@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 @SuppressWarnings("serial")
 public final class EmailAddress implements Comparable<EmailAddress>,
-        Serializable {
+Serializable {
     public EmailAddress(final String string) {
         this.string = checkNotNull(string);
     }
@@ -29,6 +29,11 @@ public final class EmailAddress implements Comparable<EmailAddress>,
     @Override
     public int hashCode() {
         return string.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return string;
     }
 
     private final String string;

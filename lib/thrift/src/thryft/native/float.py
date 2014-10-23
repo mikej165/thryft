@@ -44,6 +44,16 @@ class float(object):
     def cpp_read_protocol(self, value, optional=False):
         return "%(value)s = static_cast<float>(iprot.read_double());" % locals()
 
+    def java_compare_to(self, this_value, other_value):
+        boxed_name = self.java_name(boxed=True)
+        return "((%(boxed_name)s)%(this_value)s).compareTo(%(other_value)s)" % locals()
+
+    def java_declaration_name(self, boxed=False):
+        return 'Float' if boxed else 'float'
+
+    def java_name(self, boxed=False):
+        return 'Float' if boxed else 'float'
+
     def java_qname(self, boxed=False):
         return 'Float' if boxed else 'float'
 

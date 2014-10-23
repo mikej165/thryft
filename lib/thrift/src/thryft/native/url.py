@@ -36,21 +36,23 @@ from uri import Uri
 
 
 class Url(Uri):
+    def java_declaration_name(self, boxed=False):
+        return 'org.thryft.native_.Url'
+
+    def java_name(self, boxed=False):
+        return 'org.thryft.native_.Url'
+
     def java_qname(self, boxed=False):
         return 'org.thryft.native_.Url'
 
     def java_read_protocol(self):
-        return 'iprot.readUrl()'
+        return 'org.thryft.native_.Url.parse(iprot.readString())'
 
     def java_write_protocol(self, value, depth=0):
-        return "oprot.writeUrl(%(value)s);" % locals()
+        return "oprot.writeString(%(value)s.toString());" % locals()
 
     def js_validation(self, value, value_name, **kwds):
         return {'pattern': 'url', 'type': """\
 if (typeof %(value)s !== "string") {
     return "expected %(value_name)s to be a string";
 }""" % locals()}
-
-    def py_write_protocol(self, value, depth=0):
-        qname = self.py_qname()
-        return "oprot.write_url(%(value)s)" % locals()

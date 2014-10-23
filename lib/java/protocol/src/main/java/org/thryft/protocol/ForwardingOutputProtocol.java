@@ -4,10 +4,6 @@ import java.util.Date;
 
 import javax.annotation.Nullable;
 
-import org.thryft.native_.EmailAddress;
-import org.thryft.native_.Uri;
-import org.thryft.native_.Url;
-
 import com.google.common.primitives.UnsignedInteger;
 import com.google.common.primitives.UnsignedLong;
 
@@ -46,12 +42,6 @@ public abstract class ForwardingOutputProtocol implements OutputProtocol {
     @Override
     public void writeDouble(final double value) throws OutputProtocolException {
         _delegate().writeDouble(value);
-    }
-
-    @Override
-    public void writeEmailAddress(final EmailAddress value)
-            throws OutputProtocolException {
-        _delegate().writeEmailAddress(value);
     }
 
     @Override
@@ -124,11 +114,6 @@ public abstract class ForwardingOutputProtocol implements OutputProtocol {
     }
 
     @Override
-    public void writeVariant(final Object value) throws OutputProtocolException {
-        _delegate().writeVariant(value);
-    }
-
-    @Override
     public void writeNull() throws OutputProtocolException {
         _delegate().writeNull();
     }
@@ -173,13 +158,8 @@ public abstract class ForwardingOutputProtocol implements OutputProtocol {
     }
 
     @Override
-    public void writeUri(final Uri value) throws OutputProtocolException {
-        _delegate().writeUri(value);
-    }
-
-    @Override
-    public void writeUrl(final Url value) throws OutputProtocolException {
-        _delegate().writeUrl(value);
+    public void writeVariant(final Object value) throws OutputProtocolException {
+        _delegate().writeVariant(value);
     }
 
     protected abstract OutputProtocol _delegate();

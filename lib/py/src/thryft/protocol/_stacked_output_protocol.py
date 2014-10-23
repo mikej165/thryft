@@ -18,9 +18,6 @@ class _StackedOutputProtocol(_AbstractOutputProtocol):
     def write_decimal(self, value):
         self._output_protocol_stack[-1].write_decimal(value)
 
-    def write_email_address(self, value):
-        self._output_protocol_stack[-1].write_email_address(value)
-
     def write_field_begin(self, name, *args, **kwds):
         self._output_protocol_stack[-1].write_field_begin(name, *args, **kwds)
 
@@ -72,11 +69,5 @@ class _StackedOutputProtocol(_AbstractOutputProtocol):
     def write_struct_end(self):
         self._output_protocol_stack.pop(-1)
         self._output_protocol_stack[-1].write_struct_end()
-
-    def write_uri(self, value):
-        self._output_protocol_stack[-1].write_uri(value)
-
-    def write_url(self, value):
-        self._output_protocol_stack[-1].write_url(value)
 
     # Do not include write_variant

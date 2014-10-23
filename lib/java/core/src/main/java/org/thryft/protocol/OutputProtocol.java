@@ -37,10 +37,6 @@ import java.util.Date;
 
 import javax.annotation.Nullable;
 
-import org.thryft.native_.EmailAddress;
-import org.thryft.native_.Uri;
-import org.thryft.native_.Url;
-
 import com.google.common.primitives.UnsignedInteger;
 import com.google.common.primitives.UnsignedLong;
 
@@ -59,9 +55,6 @@ public interface OutputProtocol extends Protocol {
             throws OutputProtocolException;
 
     public void writeDouble(final double value) throws OutputProtocolException;
-
-    public void writeEmailAddress(final EmailAddress value)
-            throws OutputProtocolException;
 
     public void writeEnum(final Enum<?> value) throws OutputProtocolException;
 
@@ -112,10 +105,6 @@ public interface OutputProtocol extends Protocol {
 
     public void writeU64(final UnsignedLong value)
             throws OutputProtocolException;
-
-    public void writeUri(final Uri value) throws OutputProtocolException;
-
-    public void writeUrl(final Url value) throws OutputProtocolException;
 
     public void writeVariant(final Object value) throws OutputProtocolException;
 }

@@ -52,6 +52,24 @@ class u64(object):
     def cpp_read_protocol(self, value, optional=False):
         return "%(value)s = iprot.read_u64();" % locals()
 
+    def java_compare_to(self, this_value, other_value):
+        return "%(this_value)s.compareTo(%(other_value)s)" % locals()
+
+    def java_declaration_name(self, boxed=False):
+        return 'com.google.common.primitives.UnsignedLong'
+
+    def java_default_value(self):
+        return 'com.google.common.primitives.UnsignedLong.ZERO'
+
+    def java_equals(self, this_value, other_value):
+        return "%(this_value)s.equals(%(other_value)s)" % locals()
+
+    def java_hash_code(self, value):
+        return "%(value)s.hashCode()" % locals()
+
+    def java_name(self, boxed=False):
+        return 'com.google.common.primitives.UnsignedLong'
+
     def java_qname(self, boxed=False):
         return 'com.google.common.primitives.UnsignedLong'
 

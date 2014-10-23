@@ -189,7 +189,7 @@ class NestedProtocolTestStruct(object):
         self.__decimal_field = decimal_field
 
         if email_address_field is not None:
-            if not isinstance(email_address_field, str):
+            if not isinstance(email_address_field, basestring):
                 raise TypeError(getattr(__builtin__, 'type')(email_address_field))
         self.__email_address_field = email_address_field
 
@@ -304,9 +304,9 @@ class NestedProtocolTestStruct(object):
         if self.date_time_field is not None:
             field_reprs.append('date_time_field=' + repr(self.date_time_field))
         if self.decimal_field is not None:
-            field_reprs.append('decimal_field=' + repr(self.decimal_field))
+            field_reprs.append('decimal_field=' + "'" + self.decimal_field.encode('ascii', 'replace') + "'")
         if self.email_address_field is not None:
-            field_reprs.append('email_address_field=' + repr(self.email_address_field))
+            field_reprs.append('email_address_field=' + "'" + self.email_address_field.encode('ascii', 'replace') + "'")
         if self.enum_field is not None:
             field_reprs.append('enum_field=' + repr(self.enum_field))
         if self.i16_field is not None:
@@ -326,7 +326,7 @@ class NestedProtocolTestStruct(object):
         if self.string_field is not None:
             field_reprs.append('string_field=' + "'" + self.string_field.encode('ascii', 'replace') + "'")
         if self.url_field is not None:
-            field_reprs.append('url_field=' + repr(self.url_field))
+            field_reprs.append('url_field=' + "'" + self.url_field.encode('ascii', 'replace') + "'")
         return 'NestedProtocolTestStruct(' + ', '.join(field_reprs) + ')'
 
     def __str__(self):
@@ -340,9 +340,9 @@ class NestedProtocolTestStruct(object):
         if self.date_time_field is not None:
             field_reprs.append('date_time_field=' + repr(self.date_time_field))
         if self.decimal_field is not None:
-            field_reprs.append('decimal_field=' + repr(self.decimal_field))
+            field_reprs.append('decimal_field=' + "'" + self.decimal_field.encode('ascii', 'replace') + "'")
         if self.email_address_field is not None:
-            field_reprs.append('email_address_field=' + repr(self.email_address_field))
+            field_reprs.append('email_address_field=' + "'" + self.email_address_field.encode('ascii', 'replace') + "'")
         if self.enum_field is not None:
             field_reprs.append('enum_field=' + repr(self.enum_field))
         if self.i16_field is not None:
@@ -362,7 +362,7 @@ class NestedProtocolTestStruct(object):
         if self.string_field is not None:
             field_reprs.append('string_field=' + "'" + self.string_field.encode('ascii', 'replace') + "'")
         if self.url_field is not None:
-            field_reprs.append('url_field=' + repr(self.url_field))
+            field_reprs.append('url_field=' + "'" + self.url_field.encode('ascii', 'replace') + "'")
         return 'NestedProtocolTestStruct(' + ', '.join(field_reprs) + ')'
 
     def as_dict(self):
@@ -443,7 +443,10 @@ class NestedProtocolTestStruct(object):
                 except (decimal.InvalidOperation, TypeError,):
                     pass
             elif ifield_name == 'email_address_field':
-                init_kwds['email_address_field'] = iprot.read_string()
+                try:
+                    init_kwds['email_address_field'] = iprot.read_string()
+                except (TypeError, ValueError,):
+                    pass
             elif ifield_name == 'enum_field':
                 try:
                     init_kwds['enum_field'] = thryft_test.protocol.test.protocol_test_enum.ProtocolTestEnum.value_of(iprot.read_string().strip().upper())
@@ -480,7 +483,10 @@ class NestedProtocolTestStruct(object):
                 except (TypeError, ValueError,):
                     pass
             elif ifield_name == 'url_field':
-                init_kwds['url_field'] = iprot.read_string()
+                try:
+                    init_kwds['url_field'] = iprot.read_string()
+                except (TypeError, ValueError,):
+                    pass
             iprot.read_field_end()
         iprot.read_struct_end()
 
@@ -581,7 +587,7 @@ class NestedProtocolTestStruct(object):
 
         if self.email_address_field is not None:
             oprot.write_field_begin('email_address_field', 11, -1)
-            oprot.write_email_address(self.email_address_field)
+            oprot.write_string(self.email_address_field)
             oprot.write_field_end()
 
         if self.enum_field is not None:
@@ -644,7 +650,7 @@ class NestedProtocolTestStruct(object):
 
         if self.url_field is not None:
             oprot.write_field_begin('url_field', 11, -1)
-            oprot.write_url(self.url_field)
+            oprot.write_string(self.url_field)
             oprot.write_field_end()
 
         oprot.write_field_stop()

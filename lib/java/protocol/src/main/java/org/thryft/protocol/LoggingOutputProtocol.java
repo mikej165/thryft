@@ -37,9 +37,6 @@ import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.thryft.native_.EmailAddress;
-import org.thryft.native_.Uri;
-import org.thryft.native_.Url;
 
 import com.google.common.annotations.GwtIncompatible;
 import com.google.common.base.MoreObjects;
@@ -127,18 +124,6 @@ public class LoggingOutputProtocol implements OutputProtocol {
             logger.info(WRITE_DOUBLE_MESSAGE, value);
         } catch (final OutputProtocolException e) {
             logger.info(WRITE_DOUBLE_MESSAGE, value, e);
-            throw e;
-        }
-    }
-
-    @Override
-    public void writeEmailAddress(final EmailAddress value)
-            throws OutputProtocolException {
-        try {
-            wrappedOutputProtocol.writeEmailAddress(value);
-            logger.info(WRITE_EMAIL_ADDRESS_MESSAGE, value);
-        } catch (final OutputProtocolException e) {
-            logger.info(WRITE_EMAIL_ADDRESS_MESSAGE, value, e);
             throw e;
         }
     }
@@ -383,28 +368,6 @@ public class LoggingOutputProtocol implements OutputProtocol {
     }
 
     @Override
-    public void writeUri(final Uri value) throws OutputProtocolException {
-        try {
-            wrappedOutputProtocol.writeUri(value);
-            logger.info(WRITE_URI_MESSAGE, value);
-        } catch (final OutputProtocolException e) {
-            logger.info(WRITE_URI_MESSAGE, value, e);
-            throw e;
-        }
-    }
-
-    @Override
-    public void writeUrl(final Url value) throws OutputProtocolException {
-        try {
-            wrappedOutputProtocol.writeUrl(value);
-            logger.info(WRITE_URL_MESSAGE, value);
-        } catch (final OutputProtocolException e) {
-            logger.info(WRITE_URL_MESSAGE, value, e);
-            throw e;
-        }
-    }
-
-    @Override
     public void writeVariant(final Object value) throws OutputProtocolException {
         try {
             wrappedOutputProtocol.writeVariant(value);
@@ -421,7 +384,6 @@ public class LoggingOutputProtocol implements OutputProtocol {
     private final static String WRITE_DATE_TIME_MESSAGE = "writeDateTime({})";
     private final static String WRITE_DECIMAL_MESSAGE = "writeDecimal({})";
     private final static String WRITE_DOUBLE_MESSAGE = "writeDouble({})";
-    private final static String WRITE_EMAIL_ADDRESS_MESSAGE = "writeEmailAddress({})";
     private final static String WRITE_ENUM_MESSAGE = "writeEnum({})";
     private final static String WRITE_FIELD_BEGIN_MESSAGE = "writeFieldBegin({}, {}, {})";
     private final static String WRITE_FIELD_END_MESSAGE = "writeFieldEnd()";
@@ -443,8 +405,6 @@ public class LoggingOutputProtocol implements OutputProtocol {
     private final static String WRITE_STRUCT_END_MESSAGE = "writeStructEnd()";
     private final static String WRITE_U32_MESSAGE = "writeU32({})";
     private final static String WRITE_U64_MESSAGE = "writeU64({})";
-    private final static String WRITE_URI_MESSAGE = "writeUri({})";
-    private final static String WRITE_URL_MESSAGE = "writeUrl({})";
     private final static String WRITE_VARIANT_MESSAGE = "writeVariant({})";
 
     private final Logger logger;

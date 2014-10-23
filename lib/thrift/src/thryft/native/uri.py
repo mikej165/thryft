@@ -52,8 +52,14 @@ class Uri(object):
     def dart_to_core_type(self, value):
         return value + '.toString()'
 
+    def java_declaration_name(self, boxed=False):
+        return 'org.thryft.native_.Uri'
+
     def java_default_value(self):
         return 'null'
+
+    def java_name(self, boxed=False):
+        return 'org.thryft.native_.Uri'
 
     def java_qname(self, boxed=False):
         return 'org.thryft.native_.Uri'
@@ -62,13 +68,10 @@ class Uri(object):
         return True
 
     def java_read_protocol(self):
-        return 'iprot.readUri()'
+        return 'org.thryft.native_.Uri.parse(iprot.readString())'
 
     def java_write_protocol(self, value, depth=0):
-        return "oprot.writeUri(%(value)s);" % locals()
-
-    def js_read_protocol(self):
-        return 'iprot.readUri()'
+        return "oprot.writeString(%(value)s.toString());" % locals()
 
     def js_schema(self):
         return {'type': 'Text', 'validators': ['url']}
@@ -78,34 +81,6 @@ class Uri(object):
 if (typeof %(value)s !== "string") {
     return "expected %(value_name)s to be a string";
 }""" % locals()}
-
-    def js_write_protocol(self, value, depth=0):
-        return "oprot.writeUri(%(value)s);" % locals()
-
-    def py_check(self, value):
-        return "isinstance(%(value)s, basestring)" % locals()
-
-    def py_imports_definition(self, caller_stack=None):
-        return []
-
-    def py_imports_use(self, caller_stack=None):
-        return []
-
-    def py_name(self):
-        return 'str'
-
-    def py_qname(self):
-        return 'str'
-
-    def py_read_protocol(self):
-        return 'iprot.read_string()'
-
-    def py_read_protocol_throws(self):
-        return []
-
-    def py_write_protocol(self, value, depth=0):
-        qname = self.py_qname()
-        return "oprot.write_uri(%(value)s)" % locals()
 
     def thrift_ttype_id(self):
         return StringType.THRIFT_TTYPE_ID

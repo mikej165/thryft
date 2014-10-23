@@ -7,9 +7,12 @@ include "thryft/native/date_time.thrift"
 include "thryft/native/decimal.thrift"
 include "thryft/native/i8.thrift"
 include "thryft/native/email_address.thrift"
+include "thryft/native/float.thrift"
 include "thryft/native/u32.thrift"
 include "thryft/native/u64.thrift"
+include "thryft/native/uri.thrift"
 include "thryft/native/url.thrift"
+include "thryft/native/variant.thrift"
 
 struct ProtocolTestStruct {
     optional binary binary_field;
@@ -18,6 +21,7 @@ struct ProtocolTestStruct {
     optional decimal.Decimal decimal_field;
     optional email_address.EmailAddress email_address_field;
     optional protocol_test_enum.ProtocolTestEnum enum_field;
+    optional float.float float_field;
     optional i8.i8 i8_field;
     optional i16 i16_field;
     optional i32 i32_field;
@@ -31,7 +35,9 @@ struct ProtocolTestStruct {
     // @validation {"minLength": 1}
     optional string string_field;
     optional nested_protocol_test_struct.NestedProtocolTestStruct struct_field;
-    optional u32.U32 u32_field;
-    optional u64.U64 u64_field;
+    optional u32.u32 u32_field;
+    optional u64.u64 u64_field;
+    optional uri.Uri uri_field;
     optional url.Url url_field;
+    optional variant.Variant variant_field;
 }

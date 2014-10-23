@@ -327,7 +327,7 @@ public class NestedProtocolTestStruct implements org.thryft.Base<NestedProtocolT
                     decimalField = com.google.common.base.Optional.of(iprot.readDecimal());
                 } catch (NumberFormatException e) {
                 }
-                emailAddressField = com.google.common.base.Optional.of(iprot.readEmailAddress());
+                emailAddressField = com.google.common.base.Optional.of(new org.thryft.native_.EmailAddress(iprot.readString()));
                 try {
                     enumField = com.google.common.base.Optional.of(iprot.readEnum(org.thryft.protocol.test.ProtocolTestEnum.class));
                 } catch (IllegalArgumentException e) {
@@ -400,7 +400,7 @@ public class NestedProtocolTestStruct implements org.thryft.Base<NestedProtocolT
                     stringField = com.google.common.base.Optional.of(iprot.readString());
                 }
                 if (__list.getSize() > 16) {
-                    urlField = com.google.common.base.Optional.of(iprot.readUrl());
+                    urlField = com.google.common.base.Optional.of(org.thryft.native_.Url.parse(iprot.readString()));
                 }
                 iprot.readListEnd();
                 break;
@@ -432,7 +432,7 @@ public class NestedProtocolTestStruct implements org.thryft.Base<NestedProtocolT
                         } catch (NumberFormatException e) {
                         }
                     } else if (ifield.getName().equals("email_address_field")) {
-                        emailAddressField = com.google.common.base.Optional.of(iprot.readEmailAddress());
+                        emailAddressField = com.google.common.base.Optional.of(new org.thryft.native_.EmailAddress(iprot.readString()));
                     } else if (ifield.getName().equals("enum_field")) {
                         try {
                             enumField = com.google.common.base.Optional.of(iprot.readEnum(org.thryft.protocol.test.ProtocolTestEnum.class));
@@ -511,7 +511,7 @@ public class NestedProtocolTestStruct implements org.thryft.Base<NestedProtocolT
                     } else if (ifield.getName().equals("string_field")) {
                         stringField = com.google.common.base.Optional.of(iprot.readString());
                     } else if (ifield.getName().equals("url_field")) {
-                        urlField = com.google.common.base.Optional.of(iprot.readUrl());
+                        urlField = com.google.common.base.Optional.of(org.thryft.native_.Url.parse(iprot.readString()));
                     }
                     iprot.readFieldEnd();
                 }
@@ -1185,7 +1185,7 @@ public class NestedProtocolTestStruct implements org.thryft.Base<NestedProtocolT
                 }
 
                 if (getEmailAddressField().isPresent()) {
-                    oprot.writeEmailAddress(getEmailAddressField().get());
+                    oprot.writeString(getEmailAddressField().get().toString());
                 } else {
                     oprot.writeNull();
                 }
@@ -1256,7 +1256,7 @@ public class NestedProtocolTestStruct implements org.thryft.Base<NestedProtocolT
                 }
 
                 if (getUrlField().isPresent()) {
-                    oprot.writeUrl(getUrlField().get());
+                    oprot.writeString(getUrlField().get().toString());
                 } else {
                     oprot.writeNull();
                 }
@@ -1300,7 +1300,7 @@ public class NestedProtocolTestStruct implements org.thryft.Base<NestedProtocolT
 
                 if (getEmailAddressField().isPresent()) {
                     oprot.writeFieldBegin("email_address_field", org.thryft.protocol.Type.STRING, (short)-1);
-                    oprot.writeEmailAddress(getEmailAddressField().get());
+                    oprot.writeString(getEmailAddressField().get().toString());
                     oprot.writeFieldEnd();
                 }
 
@@ -1375,7 +1375,7 @@ public class NestedProtocolTestStruct implements org.thryft.Base<NestedProtocolT
 
                 if (getUrlField().isPresent()) {
                     oprot.writeFieldBegin("url_field", org.thryft.protocol.Type.STRING, (short)-1);
-                    oprot.writeUrl(getUrlField().get());
+                    oprot.writeString(getUrlField().get().toString());
                     oprot.writeFieldEnd();
                 }
 

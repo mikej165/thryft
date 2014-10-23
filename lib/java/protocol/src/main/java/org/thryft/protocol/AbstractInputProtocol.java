@@ -37,10 +37,6 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import org.thryft.native_.EmailAddress;
-import org.thryft.native_.Uri;
-import org.thryft.native_.Url;
-
 import com.google.common.annotations.GwtIncompatible;
 import com.google.common.primitives.UnsignedInteger;
 import com.google.common.primitives.UnsignedLong;
@@ -54,11 +50,6 @@ public abstract class AbstractInputProtocol implements InputProtocol {
     @Override
     public BigDecimal readDecimal() throws InputProtocolException {
         return new BigDecimal(readString());
-    }
-
-    @Override
-    public EmailAddress readEmailAddress() throws InputProtocolException {
-        return new EmailAddress(readString());
     }
 
     @GwtIncompatible("")
@@ -152,15 +143,5 @@ public abstract class AbstractInputProtocol implements InputProtocol {
     @Override
     public UnsignedLong readU64() throws InputProtocolException {
         return UnsignedLong.valueOf(readI64());
-    }
-
-    @Override
-    public Uri readUri() throws InputProtocolException {
-        return Uri.parse(readString());
-    }
-
-    @Override
-    public Url readUrl() throws InputProtocolException {
-        return Url.parse(readString());
     }
 }

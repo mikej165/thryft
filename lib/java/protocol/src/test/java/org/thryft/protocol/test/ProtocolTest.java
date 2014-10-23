@@ -37,6 +37,7 @@ import java.util.Date;
 
 import org.junit.Test;
 import org.thryft.native_.EmailAddress;
+import org.thryft.native_.Uri;
 import org.thryft.native_.Url;
 
 import com.google.common.collect.ImmutableList;
@@ -72,6 +73,11 @@ public abstract class ProtocolTest {
     public void testEnum() throws Exception {
         _test(new ProtocolTestStruct.Builder()
                 .setEnumField(ProtocolTestEnum.ENUMERATOR2));
+    }
+
+    @Test
+    public void testFloat() throws Exception {
+        _test(new ProtocolTestStruct.Builder().setFloatField((float) 12.0));
     }
 
     @Test
@@ -159,9 +165,20 @@ public abstract class ProtocolTest {
     }
 
     @Test
+    public void testUri() throws Exception {
+        _test(new ProtocolTestStruct.Builder().setUriField(Uri
+                .parse("urn:test:test")));
+    }
+
+    @Test
     public void testUrl() throws Exception {
         _test(new ProtocolTestStruct.Builder().setUrlField(Url
                 .parse("http://example.com/test")));
+    }
+
+    @Test
+    public void testVariant() throws Exception {
+        _test(new ProtocolTestStruct.Builder().setVariantField("test"));
     }
 
     protected abstract void _test(final ProtocolTestStruct expected)

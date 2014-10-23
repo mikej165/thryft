@@ -37,9 +37,6 @@ import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.thryft.native_.EmailAddress;
-import org.thryft.native_.Uri;
-import org.thryft.native_.Url;
 
 import com.google.common.annotations.GwtIncompatible;
 import com.google.common.base.MoreObjects;
@@ -121,18 +118,6 @@ public class LoggingInputProtocol implements InputProtocol {
             return value;
         } catch (final InputProtocolException e) {
             logger.info(READ_DOUBLE_MESSAGE, "", e);
-            throw e;
-        }
-    }
-
-    @Override
-    public EmailAddress readEmailAddress() throws InputProtocolException {
-        try {
-            final EmailAddress value = wrappedInputProtocol.readEmailAddress();
-            logger.info(READ_EMAIL_ADDRESS_MESSAGE, value);
-            return value;
-        } catch (final InputProtocolException e) {
-            logger.info(READ_EMAIL_ADDRESS_MESSAGE, "", e);
             throw e;
         }
     }
@@ -356,30 +341,6 @@ public class LoggingInputProtocol implements InputProtocol {
             return value;
         } catch (final InputProtocolException e) {
             logger.info(READ_U64_MESSAGE, "", e);
-            throw e;
-        }
-    }
-
-    @Override
-    public Uri readUri() throws InputProtocolException {
-        try {
-            final Uri value = wrappedInputProtocol.readUri();
-            logger.info(READ_URI_MESSAGE, value);
-            return value;
-        } catch (final InputProtocolException e) {
-            logger.info(READ_URI_MESSAGE, "", e);
-            throw e;
-        }
-    }
-
-    @Override
-    public Url readUrl() throws InputProtocolException {
-        try {
-            final Url value = wrappedInputProtocol.readUrl();
-            logger.info(READ_URL_MESSAGE, value);
-            return value;
-        } catch (final InputProtocolException e) {
-            logger.info(READ_URL_MESSAGE, "", e);
             throw e;
         }
     }
