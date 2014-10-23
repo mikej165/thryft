@@ -45,9 +45,6 @@ class _AbstractInputProtocol(_InputProtocol):
     def read_decimal(self):
         return Decimal(self.read_string())
 
-    def read_email_address(self):
-        return self.read_string()
-
     def read_i16(self):
         return self.read_i32()
 
@@ -62,6 +59,3 @@ class _AbstractInputProtocol(_InputProtocol):
 
     def read_struct_end(self):
         pass
-
-    def read_url(self):
-        return self.read_string()

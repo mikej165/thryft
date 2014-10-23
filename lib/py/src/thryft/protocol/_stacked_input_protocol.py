@@ -18,9 +18,6 @@ class _StackedInputProtocol(_InputProtocol):
     def read_decimal(self):
         return self._input_protocol_stack[-1].read_decimal()
 
-    def read_email_address(self):
-        return self._input_protocol_stack[-1].read_email_address()
-
     def read_field_begin(self):
         return self._input_protocol_stack[-1].read_field_begin()
 

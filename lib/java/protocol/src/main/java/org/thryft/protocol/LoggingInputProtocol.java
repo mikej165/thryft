@@ -369,7 +369,6 @@ public class LoggingInputProtocol implements InputProtocol {
     private final static String READ_DATE_TIME_MESSAGE = "readDateTime() -> {}";
     private final static String READ_DECIMAL_MESSAGE = "readDecimal() -> {}";
     private final static String READ_DOUBLE_MESSAGE = "readDouble() -> {}";
-    private final static String READ_EMAIL_ADDRESS_MESSAGE = "readEmailAddress() -> {}";
     private final static String READ_ENUM_MESSAGE = "readEnum({}) -> {}";
     private final static String READ_FIELD_BEGIN_MESSAGE = "readFieldBegin() -> {}";
     private final static String READ_FIELD_END_MESSAGE = "readFieldEnd()";
@@ -389,8 +388,6 @@ public class LoggingInputProtocol implements InputProtocol {
     private final static String READ_STRUCT_END_MESSAGE = "readStructEnd()";
     private final static String READ_U32_MESSAGE = "readU32() -> {}";
     private final static String READ_U64_MESSAGE = "readU64() -> {}";
-    private final static String READ_URI_MESSAGE = "readUri() -> {}";
-    private final static String READ_URL_MESSAGE = "readUrl() -> {}";
     private final static String READ_VARIANT_MESSAGE = "readVariant() -> {}";
 
     private final Logger logger;
