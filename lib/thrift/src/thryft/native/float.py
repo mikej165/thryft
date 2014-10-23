@@ -38,6 +38,9 @@ class float(object):
     def cpp_default_value(self):
         return 'static_cast<float>(0.0)'
 
+    def cpp_includes_use(self):
+        return tuple()
+
     def cpp_qname(self):
         return 'float'
 

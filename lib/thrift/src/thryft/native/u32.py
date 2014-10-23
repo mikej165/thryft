@@ -38,6 +38,9 @@ class u32(object):
     def cpp_default_value(self):
         return 'static_cast<uint32_t>(0)'
 
+    def cpp_includes_use(self):
+        return ('<cstdint>',)
+
     def cpp_qname(self):
         return 'uint32_t'
 

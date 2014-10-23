@@ -31,20 +31,17 @@
 #-------------------------------------------------------------------------------
 
 from thryft.generator.i64_type import I64Type
-from thryft.generators.cpp.cpp_i64_type import CppI64Type
 
 
 class u64(object):
     def __init__(self, *args, **kwds):
         pass
 
-    __cpp_i64_type = CppI64Type()
-
     def cpp_default_value(self):
         return 'static_cast<uint64_t>(0)'
 
     def cpp_includes_use(self):
-        return self.__cpp_i64_type.cpp_includes_use()
+        return ('<cstdint>',)
 
     def cpp_qname(self):
         return 'uint64_t'
