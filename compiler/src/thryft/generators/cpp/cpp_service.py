@@ -38,8 +38,11 @@ from yutil import indent, lpad
 class CppService(Service, _CppNamedConstruct):
     def cpp_includes_definition(self):
         includes = []
+        includes.extend(self._parent_generator().cpp_service_includes_definition)
         for function in self.functions:
             includes.extend(function.cpp_includes_definition())
+            includes.extend(function.cpp_request_type().cpp_includes_definition())
+            includes.extend(function.cpp_response_type().cpp_includes_definition())
         return includes
 
     def cpp_extends(self):
@@ -52,13 +55,14 @@ class CppService(Service, _CppNamedConstruct):
         return _CppNamedConstruct.cpp_qname(self, name=self.name)
 
     def cpp_repr(self):
-        extends = self.cpp_extends()
-        if extends is None:
-            extends = ''
-        else:
-            extends = ' : public ' + extends
-
         name = self.cpp_name()
+
+        parent_class_qname = self._parent_generator().cpp_service_parent_class_qname + "<%s>" % name
+        extends = self.cpp_extends()
+        if extends is not None:
+            extends = ' : public ' + extends + ', public ' + parent_class_qname
+        else:
+            extends = ' : public ' + parent_class_qname
 
         sections = []
 
@@ -81,22 +85,26 @@ class CppService(Service, _CppNamedConstruct):
             read_requests = indent(' ' * 4, ' else '.join(read_requests))
             request_forward_declarations = indent(' ' * 2, "\n".join(request_forward_declarations))
             handle_request_declarations = indent(' ' * 4, "\n".join(handle_request_declarations))
+            service_parent_class_qname = self._parent_generator().cpp_service_parent_class_qname
             sync_request_handlers = indent(' ' * 4, "\n\n".join(sync_request_handlers))
 
             sections.append("public:\n" + indent(' ' * 2, """\
-template <class ExceptionT, class RequestT, class ResponseT>
 class Messages {
 public:
 %(request_forward_declarations)s
 
-  class RequestHandler {
+  class RequestHandler : public %(service_parent_class_qname)s<%(name)s>::Messages::RequestHandler {
   public:
+    void handle(%(service_parent_class_qname)s<%(name)s>::Messages::Request& request) override {
+      request.accept(*this);
+    }
+
 %(handle_request_declarations)s
   };
 
 %(message_types)s
 
-  static RequestT* read_request(const char* function_name, ::thryft::protocol::InputProtocol& iprot, const ::thryft::protocol::Type& as_type) {
+  static %(service_parent_class_qname)s<%(name)s>::Messages::Request* read_request(const char* function_name, ::thryft::protocol::InputProtocol& iprot, const ::thryft::protocol::Type& as_type) {
     if (function_name == NULL) {
       return NULL;
     }
@@ -138,7 +146,7 @@ public:
         sections = lpad("\n\n", "\n\n".join(sections))
 
         return """\
-class %(name)s%(extends)s : public ::thryft::Service {
+class %(name)s%(extends)s {
 public:
   virtual ~%(name)s() {
   }%(sections)s

@@ -42,7 +42,7 @@ class CppFunction(Function, _CppNamedConstruct):
 
     class _CppRequestType(_CppMessageType):
         def __init__(self, parent_function, cpp_suppress_warnings=None, parameters=None):
-            CppStructType.__init__(
+            CppFunction._CppMessageType.__init__(
                 self,
                 name=upper_camelize(parent_function.name) + 'Request',
                 parent=parent_function.parent
@@ -64,7 +64,7 @@ class CppFunction(Function, _CppNamedConstruct):
                 )
 
         def _cpp_extends(self):
-            return 'RequestT'
+            return self._parent_generator().cpp_service_parent_class_qname + "<%s>::Messages::Request" % self.__parent_function.parent.cpp_name()
 
         def cpp_forward_declaration(self):
             return 'class ' + self.cpp_name() + ';'
@@ -76,7 +76,7 @@ class CppFunction(Function, _CppNamedConstruct):
             return {'accept': """\
 void accept(RequestHandler& handler) const {
   handler.handle(*this);
-}"""}
+}""" % locals()}
 
         def _cpp_methods_map(self):
             methods = CppStructType._cpp_methods_map(self)
@@ -98,7 +98,7 @@ if (strcmp(function_name, "%s") == 0) {
             else:
                 call_prefix = ''
                 call_suffix = """;
-request.respond(*new %(response_name)s())""" % locals()
+request.respond(%(response_name)s())""" % locals()
             call_parameters = \
                 ', '.join("request.%s()" % parameter.cpp_getter_name()
                            for parameter in self.fields)
@@ -110,7 +110,7 @@ request.respond(*new %(response_name)s())""" % locals()
                     exception_name = exception.cpp_name()
                     exception_type_qname = exception.type.cpp_qname()
                     catches.append("""\
-} catch (const %(exception_type_qname)s<ExceptionT>& %(exception_name)s) {
+} catch (const %(exception_type_qname)s& %(exception_name)s) {
   request.respond(%(exception_name)s);""" % locals())
                 catches = "\n".join(catches) + "\n}"
                 call = indent(' ' * 2, call)
@@ -124,16 +124,14 @@ virtual void handle(const %(name)s& request) {
 %(call)s
 }""" % locals()
 
-        def _cpp_template_parameters(self):
-            return None
-
     class _CppResponseType(_CppMessageType):
         def __init__(self, parent_function, cpp_suppress_warnings=None):
-            CppStructType.__init__(
+            CppFunction._CppMessageType.__init__(
                 self,
                 name=upper_camelize(parent_function.name) + 'Response',
                 parent=parent_function.parent
             )
+            self.__parent_function = parent_function
             if parent_function.return_field is not None:
                 return_field = parent_function.return_field
                 self.fields.append(
@@ -148,10 +146,7 @@ virtual void handle(const %(name)s& request) {
                 )
 
         def _cpp_extends(self):
-            return 'ResponseT'
-
-        def _cpp_template_parameters(self):
-            return None
+            return self._parent_generator().cpp_service_parent_class_qname + "<%s>::Messages::Response" % self.__parent_function.parent.cpp_name()
 
     def cpp_declaration(self, line_ending="\n", override=False):
         override = ' override' if override else ''

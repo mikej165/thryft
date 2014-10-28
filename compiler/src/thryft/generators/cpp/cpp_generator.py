@@ -55,3 +55,32 @@ class CppGenerator(Generator):
     from thryft.generators.cpp.cpp_string_type import CppStringType as StringType  # @UnusedImport
     from thryft.generators.cpp.cpp_struct_type import CppStructType as StructType  # @UnusedImport
     from thryft.generators.cpp.cpp_typedef import CppTypedef as Typedef  # @UnusedImport
+
+    def __init__(
+        self,
+        cpp_exception_includes_definition=None,
+        cpp_exception_parent_class_qname='::thryft::Exception',
+        cpp_service_includes_definition=None,
+        cpp_service_parent_class_qname='::thryft::Service',
+    ):
+        Generator.__init__(self)
+        self.__cpp_exception_includes_definition = cpp_exception_includes_definition if cpp_exception_includes_definition is not None else tuple()
+        self.__cpp_exception_parent_class_qname = cpp_exception_parent_class_qname
+        self.__cpp_service_includes_definition = cpp_service_includes_definition if cpp_service_includes_definition is not None else tuple()
+        self.__cpp_service_parent_class_qname = cpp_service_parent_class_qname
+
+    @property
+    def cpp_exception_includes_definition(self):
+        return self.__cpp_exception_includes_definition
+
+    @property
+    def cpp_exception_parent_class_qname(self):
+        return self.__cpp_exception_parent_class_qname
+
+    @property
+    def cpp_service_includes_definition(self):
+        return self.__cpp_service_includes_definition
+
+    @property
+    def cpp_service_parent_class_qname(self):
+        return self.__cpp_service_parent_class_qname

@@ -57,15 +57,20 @@ oss << ")";
 what_ = oss.str();""" % locals()
 
     def _cpp_extends(self):
-        return 'ExceptionT'
+        return self._parent_generator().cpp_exception_parent_class_qname
 
     def cpp_global_operators(self):
         return []
 
+    def cpp_includes_definition(self):
+        includes = _CppCompoundType.cpp_includes_definition(self)
+        includes.extend(self._parent_generator().cpp_exception_includes_definition)
+        return includes
+
     def _cpp_method_what(self):
         qname = self.cpp_qname()
         return {'what': """\
-virtual const char* what() const {
+virtual const char* what() const override {
   return what_.c_str();
 }""" % locals()}
 
@@ -84,6 +89,3 @@ virtual const char* what() const {
 operator ::std::string() const {
   return what_;
 }"""}
-
-    def _cpp_template_parameters(self):
-        return 'template <class ExceptionT = ::thryft::Exception>'

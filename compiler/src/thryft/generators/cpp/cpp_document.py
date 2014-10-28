@@ -70,12 +70,15 @@ class CppDocument(Document, _CppNamedConstruct):
                 std_includes.append(include)
             else:
                 raise NotImplementedError
+        std_includes.sort()
         includes = std_includes
         if len(lib_includes) > 0:
+            lib_includes.sort()
             if len(includes) > 0:
                 includes.append('')
             includes.extend(lib_includes)
         if len(other_includes) > 0:
+            other_includes.sort()
             if len(includes) > 0:
                 includes.append('')
             includes.extend(other_includes)

@@ -79,5 +79,13 @@ class _Construct(object):
                 assert parent is not None
             return parent
 
+    def _parent_generator(self):
+        from thryft.generator.generator import Generator  # @UnusedImport
+        parent = self.parent
+        while not isinstance(parent, Generator):
+            parent = parent.parent
+            assert parent is not None
+        return parent
+
     def __repr__(self):
         raise NotImplementedError(class_qname(self) + '.__repr__')
