@@ -1,11 +1,13 @@
 #ifndef _THRYFT_TEST_PROTOCOL_TEST_NESTED_PROTOCOL_TEST_STRUCT_HPP_
 #define _THRYFT_TEST_PROTOCOL_TEST_NESTED_PROTOCOL_TEST_STRUCT_HPP_
 
-#include <string>
 #include <cstdint>
+#include <string>
 
 #include <thryft.hpp>
 
+#include "thryft/native/date_time.hpp"
+#include "thryft/native/decimal.hpp"
 #include "thryft/native/email_address.hpp"
 #include "thryft_test/protocol/test/protocol_test_enum.hpp"
 
@@ -30,7 +32,7 @@ public:
     : required_i32_field_(required_i32_field), required_string_field_(required_string_field) {
   }
 
-  NestedProtocolTestStruct(const ::thryft::Optional< ::std::string >& binary_field, const ::thryft::Optional< bool >& bool_field, const ::thryft::Optional< int8_t >& byte_field, const ::thryft::Optional< int64_t >& date_time_field, const ::thryft::Optional< ::std::string >& decimal_field, const ::thryft::Optional< ::thryft::native::EmailAddress >& email_address_field, const ::thryft::Optional< ::thryft_test::protocol::test::ProtocolTestEnum >& enum_field, const ::thryft::Optional< int16_t >& i16_field, const ::thryft::Optional< int32_t >& i32_field, const ::thryft::Optional< int64_t >& i64_field, const ::thryft::Optional< ::thryft::List< ::std::string, ::thryft::protocol::Type::STRING > >& string_list_field, const ::thryft::Optional< ::thryft::Map< ::std::string, ::thryft::protocol::Type::STRING, ::std::string, ::thryft::protocol::Type::STRING > >& string_string_map_field, const int32_t& required_i32_field, const ::std::string& required_string_field, const ::thryft::Optional< ::thryft::Set< ::std::string, ::thryft::protocol::Type::STRING > >& string_set_field, const ::thryft::Optional< ::std::string >& string_field, const ::thryft::Optional< ::std::string >& url_field)
+  NestedProtocolTestStruct(const ::thryft::Optional< ::std::string >& binary_field, const ::thryft::Optional< bool >& bool_field, const ::thryft::Optional< int8_t >& byte_field, const ::thryft::Optional< ::thryft::native::DateTime >& date_time_field, const ::thryft::Optional< ::thryft::native::Decimal >& decimal_field, const ::thryft::Optional< ::thryft::native::EmailAddress >& email_address_field, const ::thryft::Optional< ::thryft_test::protocol::test::ProtocolTestEnum >& enum_field, const ::thryft::Optional< int16_t >& i16_field, const ::thryft::Optional< int32_t >& i32_field, const ::thryft::Optional< int64_t >& i64_field, const ::thryft::Optional< ::thryft::List< ::std::string, ::thryft::protocol::Type::STRING > >& string_list_field, const ::thryft::Optional< ::thryft::Map< ::std::string, ::thryft::protocol::Type::STRING, ::std::string, ::thryft::protocol::Type::STRING > >& string_string_map_field, const int32_t& required_i32_field, const ::std::string& required_string_field, const ::thryft::Optional< ::thryft::Set< ::std::string, ::thryft::protocol::Type::STRING > >& string_set_field, const ::thryft::Optional< ::std::string >& string_field, const ::thryft::Optional< ::std::string >& url_field)
     : binary_field_(binary_field), bool_field_(bool_field), byte_field_(byte_field), date_time_field_(date_time_field), decimal_field_(decimal_field), email_address_field_(email_address_field), enum_field_(enum_field), i16_field_(i16_field), i32_field_(i32_field), i64_field_(i64_field), string_list_field_(string_list_field), string_string_map_field_(string_string_map_field), required_i32_field_(required_i32_field), required_string_field_(required_string_field), string_set_field_(string_set_field), string_field_(string_field), url_field_(url_field) {
   }
 
@@ -65,19 +67,19 @@ public:
     return *new NestedProtocolTestStruct(binary_field_, bool_field_, byte_field_, date_time_field_, decimal_field_, email_address_field_, enum_field_, i16_field_, i32_field_, i64_field_, string_list_field_, string_string_map_field_, required_i32_field_, required_string_field_, string_set_field_, string_field_, url_field_);
   }
 
-  ::thryft::Optional< int64_t >& date_time_field() {
+  ::thryft::Optional< ::thryft::native::DateTime >& date_time_field() {
     return date_time_field_;
   }
 
-  const ::thryft::Optional< int64_t >& date_time_field() const {
+  const ::thryft::Optional< ::thryft::native::DateTime >& date_time_field() const {
     return date_time_field_;
   }
 
-  ::thryft::Optional< ::std::string >& decimal_field() {
+  ::thryft::Optional< ::thryft::native::Decimal >& decimal_field() {
     return decimal_field_;
   }
 
-  const ::thryft::Optional< ::std::string >& decimal_field() const {
+  const ::thryft::Optional< ::thryft::native::Decimal >& decimal_field() const {
     return decimal_field_;
   }
 
@@ -454,22 +456,22 @@ public:
     return set_byte_field(::thryft::Optional< int8_t >(byte_field));
   }
 
-  NestedProtocolTestStruct& set_date_time_field(const ::thryft::Optional< int64_t >& date_time_field) {
+  NestedProtocolTestStruct& set_date_time_field(const ::thryft::Optional< ::thryft::native::DateTime >& date_time_field) {
     this->date_time_field_ = date_time_field;
     return *this;
   }
 
-  NestedProtocolTestStruct& set_date_time_field(const int64_t& date_time_field) {
-    return set_date_time_field(::thryft::Optional< int64_t >(date_time_field));
+  NestedProtocolTestStruct& set_date_time_field(const ::thryft::native::DateTime& date_time_field) {
+    return set_date_time_field(::thryft::Optional< ::thryft::native::DateTime >(date_time_field));
   }
 
-  NestedProtocolTestStruct& set_decimal_field(const ::thryft::Optional< ::std::string >& decimal_field) {
+  NestedProtocolTestStruct& set_decimal_field(const ::thryft::Optional< ::thryft::native::Decimal >& decimal_field) {
     this->decimal_field_ = decimal_field;
     return *this;
   }
 
-  NestedProtocolTestStruct& set_decimal_field(const ::std::string& decimal_field) {
-    return set_decimal_field(::thryft::Optional< ::std::string >(decimal_field));
+  NestedProtocolTestStruct& set_decimal_field(const ::thryft::native::Decimal& decimal_field) {
+    return set_decimal_field(::thryft::Optional< ::thryft::native::Decimal >(decimal_field));
   }
 
   NestedProtocolTestStruct& set_email_address_field(const ::thryft::Optional< ::thryft::native::EmailAddress >& email_address_field) {
@@ -832,8 +834,8 @@ private:
   ::thryft::Optional< ::std::string > binary_field_;
   ::thryft::Optional< bool > bool_field_;
   ::thryft::Optional< int8_t > byte_field_;
-  ::thryft::Optional< int64_t > date_time_field_;
-  ::thryft::Optional< ::std::string > decimal_field_;
+  ::thryft::Optional< ::thryft::native::DateTime > date_time_field_;
+  ::thryft::Optional< ::thryft::native::Decimal > decimal_field_;
   ::thryft::Optional< ::thryft::native::EmailAddress > email_address_field_;
   ::thryft::Optional< ::thryft_test::protocol::test::ProtocolTestEnum > enum_field_;
   ::thryft::Optional< int16_t > i16_field_;

@@ -120,6 +120,10 @@ class StackedInputProtocol : public AbstractInputProtocol {
       return protocol_stack_.top()->read_u64();
     }
 
+    virtual ::thryft::native::Variant read_variant() override {
+      return protocol_stack_.top()->read_variant();
+    }
+
   protected:
     ::std::stack< InputProtocol* >& protocol_stack() {
       return protocol_stack_;

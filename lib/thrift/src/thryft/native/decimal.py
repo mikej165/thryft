@@ -31,26 +31,14 @@
 #-------------------------------------------------------------------------------
 
 from thryft.generator.string_type import StringType
-from thryft.generators.cpp.cpp_string_type import CppStringType
 
 
 class Decimal(object):
     def __init__(self, *args, **kwds):
         pass
 
-    __cpp_string_type = CppStringType()
-
     def cpp_default_value(self):
         return '"0"'
-
-    def cpp_includes_use(self):
-        return self.__cpp_string_type.cpp_includes_use()
-
-    def cpp_qname(self):
-        return self.__cpp_string_type.cpp_qname()
-
-    def cpp_read_protocol(self, *args, **kwds):
-        return self.__cpp_string_type.cpp_read_protocol(*args, **kwds)
 
     def java_declaration_name(self, boxed=False):
         return 'java.math.BigDecimal'

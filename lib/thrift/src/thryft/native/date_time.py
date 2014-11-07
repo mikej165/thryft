@@ -31,26 +31,11 @@
 #-------------------------------------------------------------------------------
 
 from thryft.generator.i64_type import I64Type
-from thryft.generators.cpp.cpp_i64_type import CppI64Type
 
 
 class DateTime(object):
-    __cpp_i64_type = CppI64Type()
-
     def __init__(self, *args, **kwds):
         pass
-
-    def cpp_default_value(self):
-        return self.__cpp_i64_type.cpp_default_value()
-
-    def cpp_includes_use(self):
-        return self.__cpp_i64_type.cpp_includes_use()
-
-    def cpp_qname(self):
-        return self.__cpp_i64_type.cpp_qname()
-
-    def cpp_read_protocol(self, *args, **kwds):
-        return self.__cpp_i64_type.cpp_read_protocol(*args, **kwds)
 
     def dart_from_core_type(self, value):
         return "new DateTime.fromMillisecondsSinceEpoch(%(value)s)" % locals()

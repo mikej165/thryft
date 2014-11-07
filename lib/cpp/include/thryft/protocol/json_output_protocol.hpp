@@ -46,61 +46,72 @@ class JsonOutputProtocol final : public AbstractOutputProtocol {
 
   public:
     // OutputProtocol
-    virtual void write(const void* value, size_t value_len) {
+    virtual void write(const void* value, size_t value_len) override {
       writer_.String(static_cast<const char*>(value), value_len);
     }
 
-    virtual void write(bool value) {
+    virtual void write(bool value) override {
       writer_.Bool(value);
     }
 
-    virtual void write(double value) {
+    virtual void write(double value) override {
       writer_.Double(value);
     }
 
-    virtual void write(int32_t value) {
+    virtual void write(int32_t value) override {
       writer_.Int(value);
     }
 
-    virtual void write(int64_t value) {
+    virtual void write(int64_t value) override {
       writer_.Int64(value);
     }
 
-    virtual void write(const char* value, size_t value_len) {
+    virtual void write(const char* value, size_t value_len) override {
       writer_.String(value, value_len);
     }
 
+    virtual void write(uint32_t value) override {
+      writer_.Uint(value);
+    }
+
+    virtual void write(uint64_t value) override {
+      writer_.Uint64(value);
+    }
+
     virtual void write_field_begin(const char* name, const Type& type,
-                                   int16_t id) {
+                                   int16_t id) override {
       writer_.String(name);
     }
 
-    virtual void write_list_begin(const Type& element_type, uint32_t size) {
+    virtual void write_field_end() override {
+    }
+
+    virtual void write_list_begin(const Type& element_type, uint32_t size) override {
       writer_.StartArray();
     }
 
-    virtual void write_list_end() {
+    virtual void write_list_end() override {
       writer_.EndArray();
     }
 
     virtual void write_map_begin(const Type& key_type, const Type& value_type,
-                                 uint32_t size) {
+                                 uint32_t size) override {
       writer_.StartObject();
     }
 
-    virtual void write_map_end() {
+    virtual void write_map_end() override {
       writer_.EndObject();
     }
 
-    virtual void write_null() {
+    virtual void write_null() override {
       writer_.Null();
     }
 
-    virtual void write_struct_begin() {
+    virtual void write_struct_begin() override {
       writer_.StartObject();
     }
 
-    virtual void write_struct_end() {
+    virtual void write_struct_end() override {
       writer_.EndObject();
     }
 

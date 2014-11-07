@@ -62,6 +62,12 @@ class Main(thryft.main.Main):
 
         for in_dir_path, out_dir_paths in (
               (
+                  os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'thrift', 'src', 'thryft', 'native'),
+                  {
+                      'cpp': (os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'cpp', 'include'),)
+                  }
+              ),
+              (
                   os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'thrift', 'test'),
                   {
                       'cpp': (os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'cpp', 'test'),),
@@ -84,13 +90,16 @@ class Main(thryft.main.Main):
                   },
              ),
         ):
+            assert os.path.isdir(in_dir_path), in_dir_path
             for dir_path, _, file_names in os.walk(in_dir_path):
                 for file_name in file_names:
                     file_base_name, file_ext = os.path.splitext(file_name)
                     if file_ext != '.thrift':
                         continue
-                    elif os.path.isfile(os.path.join(dir_path, file_base_name + '.py')):
+                    elif file_base_name in ('float', 'i8', 'u32', 'u64', 'variant'):
                         continue
+#                     elif os.path.isfile(os.path.join(dir_path, file_base_name + '.py')):
+#                         continue
                     thrift_file_path = os.path.join(dir_path, file_name)
 
                     compile_task_kwds = {

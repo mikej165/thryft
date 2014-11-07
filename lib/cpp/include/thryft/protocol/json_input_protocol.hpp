@@ -86,6 +86,15 @@ class JsonInputProtocol : public StackedInputProtocol {
           return read_child_node().GetDouble();
         }
 
+        void read_field_begin(std::string& out_name, Type& out_type,
+                              int16_t& out_id) override {
+          throw InputProtocolException("unexpected read_field_begin");
+        }
+
+        void read_field_end() override {
+          throw InputProtocolException("unexpected read_field_end");
+        }
+
         int32_t read_i32() override {
           return static_cast<int32_t>(read_child_node().GetInt());
         }
@@ -105,6 +114,10 @@ class JsonInputProtocol : public StackedInputProtocol {
                                  child_node, protocol_stack_));
         }
 
+        void read_list_end() override {
+          throw InputProtocolException("unexpected read_list_end");
+        }
+
         void read_map_begin(Type& out_key_type, Type& out_value_type,
                             uint32_t& out_size) override {
           const ::rapidjson::Value& child_node = read_child_node();
@@ -121,6 +134,10 @@ class JsonInputProtocol : public StackedInputProtocol {
           protocol_stack_.push(
             reader_protocol_factory_.create_json_map_object_input_protocol(
               child_node, protocol_stack_));
+        }
+
+        void read_map_end() override {
+          throw InputProtocolException("unexpected read_map_end");
         }
 
         void read_string(std::string& out_value) override {
@@ -156,6 +173,36 @@ class JsonInputProtocol : public StackedInputProtocol {
           protocol_stack_.push(
             reader_protocol_factory_.create_json_struct_object_input_protocol(child_node,
                 protocol_stack_));
+        }
+
+        void read_struct_end() override {
+          throw InputProtocolException("unexpected read_struct_end");
+        }
+
+        uint32_t read_u32() override {
+          return static_cast<uint32_t>(read_child_node().GetUint());
+        }
+
+        uint64_t read_u64() override {
+          return static_cast<uint64_t>(read_child_node().GetUint64());
+        }
+
+        ::thryft::native::Variant read_variant() override {
+          const rapidjson::Value& value = read_child_node();
+          switch (value.GetType()) {
+          case rapidjson::Type::kFalseType:
+            return ::thryft::native::Variant(false);
+          case rapidjson::Type::kNullType:
+            return ::thryft::native::Variant();
+          case rapidjson::Type::kNumberType:
+            return ::thryft::native::Variant(value.GetDouble());
+          case rapidjson::Type::kStringType:
+            return ::thryft::native::Variant(value.GetString(), value.GetStringLength());
+          case rapidjson::Type::kTrueType:
+            return ::thryft::native::Variant(true);
+          default:
+            throw InputProtocolException("unexpected variant type");
+          }
         }
 
       protected:
@@ -223,7 +270,7 @@ class JsonInputProtocol : public StackedInputProtocol {
           next_child_node_i = node.MemberBegin();
           next_read_is_key_ = true;
         }
-
+       
       protected:
         const ::rapidjson::Value& read_child_node() override {
           if (next_read_is_key_) {

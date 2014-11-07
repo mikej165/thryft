@@ -7,7 +7,7 @@
 
 namespace thryft {
 namespace protocol {
-class XdrInputProtocol : public AbstractInputProtocol {
+class XdrInputProtocol final : public AbstractInputProtocol {
   public:
     typedef XdrOutputProtocol OutputProtocolT;
 
@@ -58,6 +58,9 @@ class XdrInputProtocol : public AbstractInputProtocol {
       return value;
     }
 
+    void read_field_end() override {
+    }
+
     int32_t read_i32() override {
       int32_t value;
       read(&value, sizeof(value));
@@ -80,11 +83,14 @@ class XdrInputProtocol : public AbstractInputProtocol {
     void read_list_end() override {
     }
 
-    virtual void read_map_begin(Type& out_key_type,
+    void read_map_begin(Type& out_key_type,
                                 Type& out_value_type, uint32_t& out_size) override {
       //out_key_type = static_cast<Type>(read_i32());
       //out_value_type = static_cast<Type>(read_i32());
       out_size = static_cast<uint32_t>(read_i32());
+    }
+
+    void read_map_end() override {
     }
 
     void read_string(std::string& out_value) override {
@@ -119,6 +125,24 @@ class XdrInputProtocol : public AbstractInputProtocol {
       } else {
         out_value_len = 0;
       }
+    }
+
+    void read_struct_begin() override {
+    }
+
+    void read_struct_end() override {
+    }
+
+    uint32_t read_u32() override {
+      return static_cast<uint32_t>(read_i32());
+    }
+
+    uint64_t read_u64() override {
+      return static_cast<uint64_t>(read_i64());
+    }
+
+    ::thryft::native::Variant read_variant() override {
+      throw InputProtocolException("not implemented");
     }
 
   private:

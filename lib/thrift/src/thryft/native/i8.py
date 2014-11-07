@@ -31,54 +31,15 @@
 #-------------------------------------------------------------------------------
 
 
-class EmailAddress(object):
+class i8(object):
     def __init__(self, *args, **kwds):
         pass
 
-    def java_declaration_name(self, boxed=False):
-        return 'org.thryft.native_.EmailAddress'
+    def cpp_default_value(self):
+        return 'static_cast<int8_t>(0)'
 
-    def java_default_value(self):
-        return 'null'
+    def cpp_includes_use(self):
+        return ('<cstdint>',)
 
-    def java_name(self, boxed=False):
-        return 'org.thryft.native_.EmailAddress'
-
-    def java_qname(self, boxed=False):
-        return 'org.thryft.native_.EmailAddress'
-
-    def java_read_protocol(self):
-        return 'new org.thryft.native_.EmailAddress(iprot.readString())'
-
-    def java_write_protocol(self, value, depth=0):
-        return "oprot.writeString(%(value)s.toString());" % locals()
-
-    def js_default_value(self):
-        return '""'
-
-    def js_is_model(self):
-        return False
-
-    def js_name(self):
-        return 'string'
-
-    def js_qname(self):
-        return 'string'
-
-    def js_read_protocol(self):
-        return 'iprot.readString()'
-
-    def js_schema(self):
-        return {'type': 'Text', 'validators': ['email']}
-
-    def js_validation(self, value, value_name, **kwds):
-        return {"minLength": 6, 'pattern': 'email', 'type': """\
-if (typeof %(value)s !== "string") {
-    return "expected %(value_name)s to be a string";
-}""" % locals()}
-
-    def js_write_protocol(self, value, depth=0):
-        return """oprot.writeString(%(value)s);""" % locals()
-
-    def py_write_protocol(self, value, depth=0):
-        return "oprot.write_string(%(value)s)" % locals()
+    def cpp_qname(self):
+        return 'int8_t'
