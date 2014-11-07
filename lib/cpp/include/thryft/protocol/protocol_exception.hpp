@@ -7,6 +7,13 @@ namespace thryft {
 namespace protocol {
 class ProtocolException : public Exception {
   public:
+    ProtocolException() {
+    }
+
+    ProtocolException(const ::std::string& what)
+      : Exception(what) {
+    }
+
     virtual ~ProtocolException() throw() {
     }
 

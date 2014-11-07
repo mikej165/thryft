@@ -2,6 +2,7 @@
 #define _THRYFT_EXCEPTION_HPP_
 
 #include <exception>
+#include <string>
 
 #include "thryft/base.hpp"
 
@@ -11,8 +12,20 @@ class Exception : public ::thryft::Base, public ::std::exception {
     Exception() {
     }
 
+    Exception(const ::std::string& what)
+      : what_(what) {
+    }
+
     virtual ~Exception() throw() {
     }
+
+  public:
+    const char* what() const override {
+      return what_.c_str();
+    }
+
+  private:
+    ::std::string what_;
 };
 }
 
