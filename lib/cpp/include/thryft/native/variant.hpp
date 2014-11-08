@@ -20,29 +20,30 @@ class Variant {
     typedef ::thryft::protocol::Type Type;
 
   public:
-    Variant()
-      : type_(Type::VOID_) {
-      string_value_ = { 0, 0 };
+    Variant() {
+      init();
     }
 
     Variant(const Type& type, uint64_t value) {
       switch (type) {
       case Type::BOOL:
-        init(value == 0);
+        init(value == 1);
         break;
       case Type::DOUBLE:
-        init(static_cast<double>(value));
+        double double_value;
+        memcpy(&double_value, &value, sizeof(double_value));
+        init(double_value);
         break;
       case Type::I64:
-        init(static_cast<int64_t>(value));
+        int64_t int64_value;
+        memcpy(&int64_value, &value, sizeof(int64_value));
+        init(int64_value);
         break;
       case Type::U64:
         init(value);
         break;
-      case Type::VOID_:
       default:
-        string_value_ = { 0, 0 };
-        type_ = Type::VOID_;
+        init();
         break;
       }
     }
@@ -101,20 +102,7 @@ class Variant {
 
   public:
     size_t size() const {
-      switch (type_) {
-      case Type::BOOL:
-        return sizeof(bool_value_);
-      case Type::DOUBLE:
-        return sizeof(double_value_);
-      case Type::I64:
-        return sizeof(signed_integer_value_);
-      case Type::STRING:
-        return static_cast<size_t>(string_value_.len);
-      case Type::U64:
-        return sizeof(unsigned_integer_value_);
-      default:
-        return 0;
-      }
+      return value_len_;
     }
 
     const Type& type() const {
@@ -127,11 +115,13 @@ class Variant {
     }
 
     operator bool() const {
-      return bool_value_;
+      return value_ == 1;
     }
 
     operator const char* () const {
-      return reinterpret_cast<const char*>(string_value_.base);
+      const char* value_ptr;
+      memcpy(&value_ptr, &value_, sizeof(value_));
+      return value_ptr;
     }
 
     operator float() const {
@@ -139,7 +129,9 @@ class Variant {
     }
 
     operator double() const {
-      return double_value_;
+      double double_value;
+      memcpy(&double_value, &value_, sizeof(value_));
+      return double_value;
     }
 
     operator int8_t() const {
@@ -155,7 +147,9 @@ class Variant {
     }
 
     operator int64_t() const {
-      return signed_integer_value_;
+      int64_t int64_value;
+      memcpy(&int64_value, &value_, sizeof(value_));
+      return int64_value;
     }
 
     operator uint32_t() const {
@@ -163,11 +157,13 @@ class Variant {
     }
 
     operator uint64_t() const {
-      return unsigned_integer_value_;
+      return value_;
     }
 
     operator const void* () const {
-      return string_value_.base;
+      const void* value_ptr;
+      memcpy(&value_ptr, &value_, sizeof(value_));
+      return value_ptr;
     }
 
     operator ::std::string () const {
@@ -185,7 +181,7 @@ class Variant {
         return oss.str();
       }
       case Type::STRING:
-        return ::std::string(static_cast<const char*>(*this), static_cast<size_t>(string_value_.len));
+        return ::std::string(static_cast<const char*>(*this), static_cast<size_t>(value_len_));
       case Type::U64: {
         ::std::ostringstream oss;
         oss << static_cast<uint64_t>(*this);
@@ -231,11 +227,11 @@ class Variant {
         if (other.type_ != Type::STRING) {
           return false;
         }
-        if (string_value_.len != other.string_value_.len) {
+        if (value_len_ != other.value_len_) {
           return false;
         }
         return memcmp(static_cast<const void*>(*this), static_cast<const void*>(other),
-                      static_cast<size_t>(string_value_.len)) == 0;
+                      static_cast<size_t>(value_len_)) == 0;
       }
       case Type::BOOL:
         return static_cast<bool>(*this) == static_cast<bool>(other);
@@ -344,37 +340,47 @@ class Variant {
     //}
 
   private:
+    void init() {
+      type_ = Type::VOID_;
+      value_ = value_len_ = 0;
+    }
+
     void init(void* value, size_t value_len) {
-      string_value_.base = static_cast<char*>(value);
-      string_value_.len = value_len;
       type_ = Type::STRING;
+      memcpy(&value_, value, sizeof(value_));
+      value_len_ = value_len;
     }
 
     void init(const void* value, size_t value_len) {
-      string_value_.base = new char[value_len];
-      memcpy_s(string_value_.base, value_len, value, value_len);
-      string_value_.len = value_len;
+      char* value_temp = new char[value_len];
       type_ = Type::STRING;
+      memcpy(&value_, &value_temp, sizeof(value_));
+      memcpy(value_temp, value, value_len);
+      value_len_ = value_len;
     }
 
     void init(bool value) {
-      bool_value_ = value;
       type_ = Type::BOOL;
+      value_ = value ? 1 : 0;
+      value_len_ = 0;
     }
 
     void init(double value) {
-      double_value_ = value;
       type_ = Type::DOUBLE;
+      memcpy(&value_, &value, sizeof(value_));
+      value_len_ = 0;
     }
 
     void init(int64_t value) {
-      signed_integer_value_ = value;
       type_ = Type::I64;
+      memcpy(&value_, &value, sizeof(value_));
+      value_len_ = 0;
     }
 
     void init(uint64_t value) {
       type_ = Type::U64;
-      unsigned_integer_value_ = value;
+      value_ = value;
+      value_len_ = 0;
     }
 
     void init(const Variant& other) {
@@ -392,11 +398,10 @@ class Variant {
         init(static_cast<uint64_t>(other));
         break;
       case Type::STRING:
-        init(reinterpret_cast<const void*>(other.string_value_.base), static_cast<size_t>(other.string_value_.len));
+        init(static_cast<const void*>(other), static_cast<size_t>(other.size()));
         break;
       default:
-        string_value_ = { 0, 0 };
-        type_ = other.type_;
+        init();
       }
     }
 
@@ -436,32 +441,22 @@ class Variant {
       }
 
       default:
-        string_value_ = { 0, 0 };
-        type_ = Type::VOID_;
+        init();
         break;
       }
     }
 
     void reset() {
       if (type_ == Type::STRING) {
-        delete [] string_value_.base;
+        delete [] reinterpret_cast<char*>(value_);
       }
-      string_value_ = { 0, 0 };
-      type_ = Type::VOID_;
+      init();
     }
 
   private:
-    union {
-      bool bool_value_;
-      double double_value_;
-      int64_t signed_integer_value_;
-      struct {
-        char* base;
-        uint64_t len;
-      } string_value_;
-      uint64_t unsigned_integer_value_;
-    };
     Type type_;
+    uint64_t value_;
+    uint64_t value_len_;
 };
 #ifdef _WIN32
 #pragma warning(pop)
