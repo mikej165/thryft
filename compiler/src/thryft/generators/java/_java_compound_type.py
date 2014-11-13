@@ -135,7 +135,13 @@ protected %(name)s _build(%(field_parameters)s) {%(checks)s
 public static class Builder {%(sections)s
 }""" % locals()
 
-    def __init__(self, java_class_modifiers=None, java_suppress_warnings=None, **kwds):
+    def __init__(
+        self,
+        java_class_modifiers=None,
+        java_suppress_warnings=None,
+        message_type=None,
+        **kwds
+    ):
         if java_class_modifiers is None:
             java_class_modifiers = ('public',)
         elif isinstance(java_class_modifiers, str):
@@ -143,6 +149,8 @@ public static class Builder {%(sections)s
         else:
             java_class_modifiers = tuple(java_class_modifiers)
         self.__class_modifiers = java_class_modifiers
+
+        self.__message_type = message_type
 
         if java_suppress_warnings is None:
             self.__suppress_warnings = ('serial',)
@@ -525,6 +533,15 @@ public String toString() {
             )), "\n")
 
         name = self.java_name()
+        qname = self.java_qname()
+        if self.__message_type is not None:
+            message_type = self.__message_type
+            writeStructBegin = "writeMessageBegin(\"%(qname)s\", org.thryft.protocol.MessageType.%(message_type)s)" % locals()
+            writeStructEnd = "writeMessageEnd()"
+        else:
+            writeStructBegin = "writeStructBegin(\"%(qname)s\")" % locals()
+            writeStructEnd = "writeStructEnd()"
+
         return {'write': """\
 @Override
 public void write(final org.thryft.protocol.OutputProtocol oprot) throws org.thryft.protocol.OutputProtocolException {
@@ -541,11 +558,11 @@ public void write(final org.thryft.protocol.OutputProtocol oprot, final org.thry
 
         case STRUCT:
         default:
-            oprot.writeStructBegin(\"%(name)s\");%(field_write_protocols)s
+            oprot.%(writeStructBegin)s;%(field_write_protocols)s
 
             oprot.writeFieldStop();
 
-            oprot.writeStructEnd();
+            oprot.%(writeStructEnd)s;
             break;
     }
 }

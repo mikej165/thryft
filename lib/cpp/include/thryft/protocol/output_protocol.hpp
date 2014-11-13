@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <string>
 
+#include "thryft/protocol/message_type.hpp"
 #include "thryft/protocol/output_protocol_exception.hpp"
 
 namespace thryft {
@@ -77,12 +78,15 @@ class OutputProtocol {
                                  uint32_t size) = 0;
     virtual void write_map_end() = 0;
 
+    virtual void write_message_begin(const char* name, const MessageType& message_type) = 0;
+    virtual void write_message_end() = 0;
+
     virtual void write_null() = 0;
 
     virtual void write_set_begin(const Type& element_type, uint32_t size) = 0;
     virtual void write_set_end() = 0;
 
-    virtual void write_struct_begin() = 0;
+    virtual void write_struct_begin(const char* name) = 0;
     virtual void write_struct_end() = 0;
 };
 }

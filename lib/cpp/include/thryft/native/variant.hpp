@@ -102,7 +102,7 @@ class Variant {
 
   public:
     size_t size() const {
-      return value_len_;
+      return static_cast<size_t>(value_len_);
     }
 
     const Type& type() const {
@@ -361,7 +361,7 @@ class Variant {
 
     void init(bool value) {
       type_ = Type::BOOL;
-      value_ = value ? 1 : 0;
+      value_ = static_cast<uint64_t>(value ? 1 : 0);
       value_len_ = 0;
     }
 

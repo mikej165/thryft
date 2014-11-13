@@ -35,6 +35,6 @@ from thryft.generators.java._java_compound_type import _JavaCompoundType
 
 
 class JavaStructType(StructType, _JavaCompoundType):
-    def __init__(self, **kwds):
+    def __init__(self, message_type=None, **kwds):
         StructType.__init__(self, **kwds)
-        _JavaCompoundType.__init__(self, **kwds)
+        _JavaCompoundType.__init__(self, message_type=message_type, **kwds)

@@ -133,13 +133,11 @@ class XdrOutputProtocol final : public AbstractOutputProtocol {
       write(static_cast<int32_t>(0));
     }
 
-    void write_struct_begin() override {
+    void write_struct_begin(const char* name) override {
     }
 
     void write_struct_end() override {
     }
-
-
 
   private:
     static inline uint32_t my_htonl(uint32_t x) {

@@ -35,6 +35,9 @@ from yutil import lpad, indent, pad, rpad
 
 
 class _CppCompoundType(_CppType):
+    def __init__(self, message_type=None):
+        self.__message_type = message_type
+
     def _cpp_constructor_body(self):
         return ''
 
@@ -163,13 +166,6 @@ virtual ~%(name)s() {
   return *new %(name)s(%(member_names)s);
 }""" % locals()}
 
-    def _cpp_method_get_type_name(self):
-        qname = self.cpp_qname()
-        return {'get_type_name': """\
-const char* get_type_name() const {
-  return "%(qname)s";
-}""" % locals()}
-
     def _cpp_method_getters(self):
         return dict((field.cpp_getter_name(), field.cpp_getters())
                     for field in self.fields)
@@ -275,6 +271,14 @@ void read(::thryft::protocol::InputProtocol& iprot, const ::thryft::protocol::Ty
             )), "\n")
 
         name = self.cpp_name()
+        qname = self.cpp_qname()
+        if self.__message_type is not None:
+            message_type = self.__message_type
+            write_struct_begin = "write_message_begin(\"%(qname)s\", ::thryft::protocol::MessageType::%(message_type)s)" % locals()
+            write_struct_end = "write_message_end()"
+        else:
+            write_struct_begin = "write_struct_begin(\"%(qname)s\")" % locals()
+            write_struct_end = "write_struct_end()"
 
         return {'write': """\
 void write(::thryft::protocol::OutputProtocol& oprot) const override {
@@ -291,11 +295,11 @@ void write(::thryft::protocol::OutputProtocol& oprot, const ::thryft::protocol::
 
   case ::thryft::protocol::Type::STRUCT:
   default:
-    oprot.write_struct_begin();%(field_write_protocols)s
+    oprot.%(write_struct_begin)s;%(field_write_protocols)s
 
     oprot.write_field_stop();
 
-    oprot.write_struct_end();
+    oprot.%(write_struct_end)s;
     break;
   }
 }
@@ -308,7 +312,6 @@ void write(::thryft::protocol::OutputProtocol& oprot, const ::thryft::protocol::
     def _cpp_methods_map(self):
         methods = {}
         methods.update(self._cpp_method_clone())
-        methods.update(self._cpp_method_get_type_name())
         methods.update(self._cpp_method_getters())
         methods.update(self._cpp_method_setters())
         methods.update(self._cpp_operators())

@@ -44,6 +44,7 @@ class CppFunction(Function, _CppNamedConstruct):
         def __init__(self, parent_function, cpp_suppress_warnings=None, parameters=None):
             CppFunction._CppMessageType.__init__(
                 self,
+                message_type='CALL',
                 name=upper_camelize(parent_function.name) + 'Request',
                 parent=parent_function.parent
             )
@@ -128,6 +129,7 @@ virtual void handle(const %(name)s& request) {
         def __init__(self, parent_function, cpp_suppress_warnings=None):
             CppFunction._CppMessageType.__init__(
                 self,
+                message_type='REPLY',
                 name=upper_camelize(parent_function.name) + 'Response',
                 parent=parent_function.parent
             )

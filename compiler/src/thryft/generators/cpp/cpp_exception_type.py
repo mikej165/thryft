@@ -38,7 +38,7 @@ from yutil import indent, lpad
 class CppExceptionType(ExceptionType, _CppCompoundType):
     def __init__(self, **kwds):
         ExceptionType.__init__(self, **kwds)
-        _CppCompoundType.__init__(self)
+        _CppCompoundType.__init__(self, message_type='EXCEPTION')
         for field in self.fields:
             assert field.name != 'what'
 

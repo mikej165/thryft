@@ -133,8 +133,8 @@ class StackedOutputProtocol : public AbstractOutputProtocol {
       protocol_stack_.top()->write_set_end();
     }
 
-    virtual void write_struct_begin() override {
-      protocol_stack_.top()->write_struct_begin();
+    virtual void write_struct_begin(const char* name) override {
+      protocol_stack_.top()->write_struct_begin(name);
     }
 
     virtual void write_struct_end() override {

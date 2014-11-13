@@ -37,7 +37,7 @@ from thryft.generators.java._java_compound_type import _JavaCompoundType
 class JavaExceptionType(ExceptionType, _JavaCompoundType):
     def __init__(self, **kwds):
         ExceptionType.__init__(self, **kwds)
-        _JavaCompoundType.__init__(self, **kwds)
+        _JavaCompoundType.__init__(self, message_type='EXCEPTION', **kwds)
 
     def _java_extends(self):
         return 'java.lang.Exception'

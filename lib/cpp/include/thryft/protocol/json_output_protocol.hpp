@@ -107,8 +107,33 @@ class JsonOutputProtocol final : public AbstractOutputProtocol {
       writer_.Null();
     }
 
-    virtual void write_struct_begin() override {
+    virtual void write_struct_begin(const char* name) override {
       writer_.StartObject();
+
+      ::std::string cpp_type_name(name);
+      if (!cpp_type_name.empty()) {
+        ::std::string java_type_name;
+        java_type_name.reserve(cpp_type_name.size());
+        auto i = cpp_type_name.cbegin();
+        for (; i != cpp_type_name.cend(); ++i) {
+          if (*i != ':') {
+            break;
+          }
+        }
+        for (; i != cpp_type_name.cend(); ++i) {
+          if (*i == ':') {
+            java_type_name.append(1, '.');
+            ++i;
+          } else {
+            java_type_name.append(1, *i);
+          }
+        }
+        if (!java_type_name.empty()) {
+          write_field_begin("@class", ::thryft::protocol::Type::STRING, -1);
+          static_cast<OutputProtocol*>(this)->write(java_type_name);
+          write_field_end();
+        }
+      }
     }
 
     virtual void write_struct_end() override {

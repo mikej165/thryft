@@ -99,10 +99,6 @@ public:
     return enum_field_;
   }
 
-  const char* get_type_name() const {
-    return "::thryft_test::protocol::test::NestedProtocolTestStruct";
-  }
-
   ::thryft::Optional< int16_t >& i16_field() {
     return i16_field_;
   }
@@ -723,7 +719,7 @@ public:
 
     case ::thryft::protocol::Type::STRUCT:
     default:
-      oprot.write_struct_begin();
+      oprot.write_struct_begin("::thryft_test::protocol::test::NestedProtocolTestStruct");
 
       if (binary_field().present()) {
           oprot.write_field_begin("binary_field", ::thryft::protocol::Type::STRING, static_cast<int16_t>(-1));

@@ -1266,7 +1266,7 @@ public class NestedProtocolTestStruct implements org.thryft.Base<NestedProtocolT
 
             case STRUCT:
             default:
-                oprot.writeStructBegin("NestedProtocolTestStruct");
+                oprot.writeStructBegin("org.thryft.protocol.test.NestedProtocolTestStruct");
 
                 if (getBinaryField().isPresent()) {
                     oprot.writeFieldBegin("binary_field", org.thryft.protocol.Type.STRING, (short)-1);

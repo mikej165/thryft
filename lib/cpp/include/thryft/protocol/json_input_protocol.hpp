@@ -33,7 +33,7 @@ class JsonInputProtocol : public StackedInputProtocol {
 
       public:
         char peek() const {
-          if (src_p_ - src_ >= src_len_) {
+          if (static_cast<size_t>(src_p_ - src_) >= src_len_) {
             throw JsonInputProtocolException();
           }
           return *src_p_;
@@ -54,14 +54,14 @@ class JsonInputProtocol : public StackedInputProtocol {
         }
 
         char take() {
-          if (src_p_ - src_ >= src_len_) {
+          if (static_cast<size_t>(src_p_ - src_) >= src_len_) {
             throw JsonInputProtocolException();
           }
           return *src_p_++;
         }
 
         size_t tell() const {
-          if (src_p_ - src_ >= src_len_) {
+          if (static_cast<size_t>(src_p_ - src_) >= src_len_) {
             throw JsonInputProtocolException();
           }
           return static_cast<size_t>(src_p_ - src_);

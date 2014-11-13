@@ -13,18 +13,12 @@ class AbstractOutputProtocol : public OutputProtocol {
     }
 
   public:
-    virtual void write(const void* value, size_t value_len) = 0;
-
-    virtual void write(bool value) = 0;
-
     virtual void write(int8_t value) override {
       write(static_cast<int16_t>(value));
     }
 
-    virtual void write(double value) = 0;
-
     virtual void write(float value) override {
-      write(static_cast<double>(value));
+      static_cast<OutputProtocol*>(this)->write(static_cast<double>(value));
     }
 
     virtual void write(int16_t value) override {
@@ -32,26 +26,20 @@ class AbstractOutputProtocol : public OutputProtocol {
     }
 
     virtual void write(int32_t value) override {
-      write(static_cast<int64_t>(value));
+      static_cast<OutputProtocol*>(this)->write(static_cast<int64_t>(value));
     }
-
-    virtual void write(int64_t value) = 0;
 
     virtual void write(uint32_t value) override {
-      write(static_cast<uint64_t>(value));
+      static_cast<OutputProtocol*>(this)->write(static_cast<uint64_t>(value));
     }
-
-    virtual void write(uint64_t value) = 0;
 
     virtual void write(const ::thryft::Base& value) override {
       value.write(*this);
     }
 
     virtual void write(const std::string& value) override {
-      write(value.data(), value.size());
+      static_cast<OutputProtocol*>(this)->write(value.data(), value.size());
     }
-
-    virtual void write(const char* value, size_t value_len) = 0;
 
     virtual void write(const ::thryft::native::Variant& value) override {
       switch (value.type()) {
@@ -62,7 +50,7 @@ class AbstractOutputProtocol : public OutputProtocol {
         write(static_cast<int8_t>(value));
         break;
       case Type::DOUBLE:
-        write(static_cast<double>(value));
+        static_cast<OutputProtocol*>(this)->write(static_cast<double>(value));
         break;
       case Type::FLOAT:
         write(static_cast<float>(value));
@@ -74,34 +62,29 @@ class AbstractOutputProtocol : public OutputProtocol {
         write(static_cast<int32_t>(value));
         break;
       case Type::I64:
-        write(static_cast<int64_t>(value));
+        static_cast<OutputProtocol*>(this)->write(static_cast<int64_t>(value));
         break;    
       case Type::STRING:
-        write(static_cast<const char*>(value), value.size());
+        static_cast<OutputProtocol*>(this)->write(static_cast<const char*>(value), value.size());
         break;
       case Type::U64:
-        write(static_cast<uint64_t>(value));
+        static_cast<OutputProtocol*>(this)->write(static_cast<uint64_t>(value));
         break;
       default:
         throw OutputProtocolException();
       }
     }
 
-    virtual void write_field_begin(const char* name, const Type& type, int16_t id) = 0;
-
-    virtual void write_field_end() = 0;
-
     virtual void write_field_stop() override {
     }
 
-    virtual void write_list_begin(const Type& element_type, uint32_t size) = 0;
+    virtual void write_message_begin(const char* name, const MessageType& type) override {
+      write_struct_begin(name);
+    }
 
-    virtual void write_list_end() = 0;
-
-    virtual void write_map_begin(const Type& key_type, const Type& value_type,
-                                 uint32_t size) = 0;
-
-    virtual void write_map_end() = 0;
+    virtual void write_message_end() override {
+      write_struct_end();
+    }
 
     virtual void write_set_begin(const Type& element_type, uint32_t size) override {
       write_list_begin(element_type, size);
@@ -110,10 +93,6 @@ class AbstractOutputProtocol : public OutputProtocol {
     virtual void write_set_end() override {
       write_list_end();
     }
-
-    virtual void write_struct_begin() = 0;
-
-    virtual void write_struct_end() = 0;
 
     virtual void write_null() override {
     }

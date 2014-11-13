@@ -1660,7 +1660,7 @@ public class ProtocolTestStruct implements org.thryft.Base<ProtocolTestStruct> {
 
             case STRUCT:
             default:
-                oprot.writeStructBegin("ProtocolTestStruct");
+                oprot.writeStructBegin("org.thryft.protocol.test.ProtocolTestStruct");
 
                 if (getBinaryField().isPresent()) {
                     oprot.writeFieldBegin("binary_field", org.thryft.protocol.Type.STRING, (short)-1);

@@ -38,9 +38,12 @@ from yutil import lower_camelize, lpad, indent, upper_camelize
 
 
 class JavaFunction(Function, _JavaNamedConstruct):
-    class _JavaRequestType(JavaStructType):
+    class _JavaMessageType(JavaStructType):
+        pass
+
+    class _JavaRequestType(_JavaMessageType):
         def __init__(self, parent_function, java_suppress_warnings=None, parameters=None):
-            JavaStructType.__init__(
+            JavaFunction._JavaMessageType.__init__(
                 self,
                 java_class_modifiers='public final static',
                 java_suppress_warnings=java_suppress_warnings,
@@ -62,9 +65,9 @@ class JavaFunction(Function, _JavaNamedConstruct):
                     )
                 )
 
-    class _JavaResponseType(JavaStructType):
+    class _JavaResponseType(_JavaMessageType):
         def __init__(self, parent_function, java_suppress_warnings=None):
-            JavaStructType.__init__(
+            JavaFunction._JavaMessageType.__init__(
                 self,
                 java_class_modifiers='public final static',
                 java_suppress_warnings=java_suppress_warnings,
