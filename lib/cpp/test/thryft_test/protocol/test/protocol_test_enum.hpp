@@ -1,7 +1,9 @@
 #ifndef _THRYFT_TEST_PROTOCOL_TEST_PROTOCOL_TEST_ENUM_HPP_
 #define _THRYFT_TEST_PROTOCOL_TEST_PROTOCOL_TEST_ENUM_HPP_
 
-#include <thryft.hpp>
+#include <thryft/enum_value_exception.hpp>
+#include <thryft/protocol/input_protocol.hpp>
+#include <thryft/protocol/output_protocol.hpp>
 
 namespace thryft_test {
 namespace protocol {

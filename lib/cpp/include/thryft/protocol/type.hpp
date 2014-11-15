@@ -1,7 +1,9 @@
 #ifndef _THRYFT_PROTOCOL_TYPE_HPP_
 #define _THRYFT_PROTOCOL_TYPE_HPP_
 
-#include <thryft.hpp>
+#include <thryft/enum_value_exception.hpp>
+#include <thryft/protocol/input_protocol.hpp>
+#include <thryft/protocol/output_protocol.hpp>
 
 namespace thryft {
 namespace protocol {

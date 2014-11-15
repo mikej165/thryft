@@ -41,7 +41,10 @@ class CppEnumType(EnumType, _CppType):
         return _CppType.cpp_qname(self) + '::' + self.enumerators[0].name
 
     def cpp_includes_definition(self):
-        return ('<thryft.hpp>',)
+        return \
+            ('<thryft/enum_value_exception.hpp>',
+             '<thryft/protocol/input_protocol.hpp>',
+             '<thryft/protocol/output_protocol.hpp>')
 
     def cpp_includes_use(self):
         return self._parent_document().cpp_includes_use()
