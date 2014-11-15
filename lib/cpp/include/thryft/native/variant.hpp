@@ -119,9 +119,7 @@ class Variant {
     }
 
     operator const char* () const {
-      const char* value_ptr;
-      memcpy(&value_ptr, &value_, sizeof(value_));
-      return value_ptr;
+      return static_cast<const char*>(static_cast<const void*>(*this));
     }
 
     operator float() const {
@@ -162,7 +160,7 @@ class Variant {
 
     operator const void* () const {
       const void* value_ptr;
-      memcpy(&value_ptr, &value_, sizeof(value_));
+      memcpy(&value_ptr, &value_, sizeof(value_ptr));
       return value_ptr;
     }
 
@@ -347,14 +345,16 @@ class Variant {
 
     void init(void* value, size_t value_len) {
       type_ = Type::STRING;
-      memcpy(&value_, value, sizeof(value_));
+      memset(&value_, 0, sizeof(value_));
+      memcpy(&value_, &value, sizeof(value));
       value_len_ = value_len;
     }
 
     void init(const void* value, size_t value_len) {
       char* value_temp = new char[value_len];
       type_ = Type::STRING;
-      memcpy(&value_, &value_temp, sizeof(value_));
+      memset(&value_, 0, sizeof(value_));
+      memcpy(&value_, &value_temp, sizeof(value_temp));
       memcpy(value_temp, value, value_len);
       value_len_ = value_len;
     }
