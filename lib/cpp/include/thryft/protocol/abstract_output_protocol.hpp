@@ -70,7 +70,7 @@ class AbstractOutputProtocol : public OutputProtocol {
       case Type::U64:
         static_cast<OutputProtocol*>(this)->write(static_cast<uint64_t>(value));
         break;
-      case Type::STOP:
+      case Type::VOID_:
         static_cast<OutputProtocol*>(this)->write_null();
         break;
       default:
