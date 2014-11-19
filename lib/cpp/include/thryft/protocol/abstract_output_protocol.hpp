@@ -70,8 +70,11 @@ class AbstractOutputProtocol : public OutputProtocol {
       case Type::U64:
         static_cast<OutputProtocol*>(this)->write(static_cast<uint64_t>(value));
         break;
+      case Type::STOP:
+        static_cast<OutputProtocol*>(this)->write_null();
+        break;
       default:
-        throw OutputProtocolException();
+        throw OutputProtocolException("unexpected variant type");
       }
     }
 
