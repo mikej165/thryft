@@ -336,13 +336,18 @@ operator ::std::string() const {
 }""" % locals()}
 
     def _cpp_operator_equality(self):
+        name = self.cpp_name()
+        if len(self.fields) == 0:
+            return {'operator==': """\
+bool operator==(const %(name)s&) const {
+  return true;
+}""" % locals()}
         field_comparisons = \
             pad("\n", "\n\n".join(indent(' ' * 2, ("""\
 if (!(%s() == other.%s())) {
   return false;
 }""")) % (field.cpp_getter_name(), field.cpp_getter_name())
          for field in self.fields), "\n")
-        name = self.cpp_name()
         return {'operator==': """\
 bool operator==(const %(name)s& other) const {%(field_comparisons)s
   return true;
