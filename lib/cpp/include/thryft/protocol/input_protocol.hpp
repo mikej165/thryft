@@ -29,7 +29,7 @@ class InputProtocol {
     virtual void read(int16_t& out_value) = 0;
     virtual void read(int32_t& out_value) = 0;
     virtual void read(int64_t& out_value) = 0;
-    virtual void read(std::string& out_value) = 0;
+    virtual void read(::std::string& out_value) = 0;
     virtual void read(::thryft::Base& out_value) = 0;
     virtual void read(::thryft::native::Variant& out_value) = 0;
 
@@ -37,7 +37,7 @@ class InputProtocol {
     virtual bool read_bool() = 0;
     virtual int8_t read_byte() = 0;
     virtual double read_double() = 0;
-    virtual void read_field_begin(std::string& out_name, Type& out_type,
+    virtual void read_field_begin(::std::string& out_name, Type& out_type,
                                   int16_t& out_id) = 0;
     virtual void read_field_end() = 0;
     virtual float read_float() = 0;

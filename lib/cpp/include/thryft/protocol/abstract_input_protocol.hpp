@@ -45,7 +45,7 @@ class AbstractInputProtocol : public InputProtocol {
       out_value = read_variant();
     }
 
-    void read(std::string& out_value) override {
+    void read(::std::string& out_value) override {
       static_cast<InputProtocol*>(this)->read_string(out_value);
     }
 
@@ -53,7 +53,7 @@ class AbstractInputProtocol : public InputProtocol {
       out_value.read(*this);
     }
 
-    virtual void read_binary(std::string& out_value) override {
+    virtual void read_binary(::std::string& out_value) override {
       static_cast<InputProtocol*>(this)->read_string(out_value);
     }
 
@@ -81,8 +81,8 @@ class AbstractInputProtocol : public InputProtocol {
       read_list_end();
     }
 
-    virtual std::string read_string() override {
-      std::string value;
+    virtual ::std::string read_string() override {
+      ::std::string value;
       static_cast<InputProtocol*>(this)->read_string(value);
       return value;
     }

@@ -40,11 +40,14 @@ class XdrInputProtocol final : public AbstractInputProtocol {
       return value;
     }
 
-    void read_field_begin(std::string& out_name, Type& out_type,
+    void read_field_begin(::std::string& out_name, Type& out_type,
                           int16_t& out_id) override {
       read_string(out_name);
       out_type = static_cast<Type::Enum>(read_i32());
       out_id = read_i16();
+    }
+
+    void read_field_end() override {
     }
 
     float read_float() override {
@@ -56,9 +59,6 @@ class XdrInputProtocol final : public AbstractInputProtocol {
       memcpy(&value, &int32_value, sizeof(int32_value));
 #endif
       return value;
-    }
-
-    void read_field_end() override {
     }
 
     int32_t read_i32() override {
@@ -91,7 +91,7 @@ class XdrInputProtocol final : public AbstractInputProtocol {
     void read_map_end() override {
     }
 
-    void read_string(std::string& out_value) override {
+    void read_string(::std::string& out_value) override {
       size_t size = static_cast<size_t>(read_i32());
       if (size > 0 && size < UINT16_MAX) {
         size_t padded_size = size % 4;

@@ -20,7 +20,7 @@
 
 namespace thryft {
 namespace protocol {
-class JsonInputProtocol : public StackedInputProtocol {
+class JsonInputProtocol final : public StackedInputProtocol {
   public:
     typedef JsonOutputProtocol OutputProtocolT;
 
