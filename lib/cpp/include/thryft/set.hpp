@@ -35,7 +35,7 @@ class Set final : public ::thryft::Base, public ::std::set<ElementCppT> {
       for (uint32_t i = 0; i < size; i++) {
         ElementCppT element;
         iprot.read(element);
-        insert(element);
+        ::std::set<ElementCppT>::insert(element);
       }
       iprot.read_set_end();
     }

@@ -2,6 +2,7 @@
 #define _THRYFT_NATIVE_VARIANT_HPP_
 
 #include <cstdint>
+#include <cstring> // For memcpy
 #include <sstream>
 
 #include "thryft/protocol/input_protocol.hpp"

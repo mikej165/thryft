@@ -229,6 +229,10 @@ class JsonInputProtocol : public StackedInputProtocol {
 
     class JsonValueInputProtocolFactory {
       public:
+        virtual ~JsonValueInputProtocolFactory() {
+        }
+
+      public:
         virtual JsonValueInputProtocol* create_json_array_input_protocol(
           const ::rapidjson::Value&
           node, ::std::stack< InputProtocol* >& protocol_stack) const = 0;
