@@ -73,7 +73,7 @@ class XdrInputProtocol final : public AbstractInputProtocol {
       return static_cast<int64_t>(my_ntohll(static_cast<uint64_t>(value)));
     }
 
-    void read_list_begin(Type&, size_t& out_size) override {
+    void read_list_begin(Type&, uint32_t& out_size) override {
       //out_element_type = static_cast<Type>(read_i32());
       // Stick with ONC-RPC variable-sized array rules = size + contents
       out_size = static_cast<size_t>(read_i32());
