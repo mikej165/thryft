@@ -70,7 +70,7 @@ what_ = oss.str();""" % locals()
     def _cpp_method_what(self):
         qname = self.cpp_qname()
         return {'what': """\
-virtual const char* what() const override {
+virtual const char* what() const throw() override {
   return what_.c_str();
 }""" % locals()}
 

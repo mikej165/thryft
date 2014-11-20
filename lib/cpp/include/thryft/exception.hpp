@@ -20,7 +20,7 @@ class Exception : public ::thryft::Base, public ::std::exception {
     }
 
   public:
-    const char* what() const override {
+    const char* what() const throw() override {
       return what_.c_str();
     }
 
