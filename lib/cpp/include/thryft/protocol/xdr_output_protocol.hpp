@@ -110,7 +110,7 @@ class XdrOutputProtocol final : public AbstractOutputProtocol {
       write_field_begin("", Type::STOP, -1);
     }
 
-    void write_list_begin(const Type& element_type, uint32_t size) override {
+    void write_list_begin(const Type&, uint32_t size) override {
       //write(static_cast<int32_t>(element_type));
       // Stick with ONC-RPC variable-sized array rules = size + contents
       write(static_cast<int32_t>(size));
@@ -119,8 +119,7 @@ class XdrOutputProtocol final : public AbstractOutputProtocol {
     void write_list_end() override {
     }
 
-    void write_map_begin(const Type& key_type, const Type& value_type,
-                                 uint32_t size) override {
+    void write_map_begin(const Type&, const Type&, uint32_t size) override {
       //write(static_cast<int32_t>(key_type));
       //write(static_cast<int32_t>(value_type));
       write(static_cast<int32_t>(size));
@@ -133,7 +132,7 @@ class XdrOutputProtocol final : public AbstractOutputProtocol {
       write(static_cast<int32_t>(0));
     }
 
-    void write_struct_begin(const char* name) override {
+    void write_struct_begin(const char*) override {
     }
 
     void write_struct_end() override {
