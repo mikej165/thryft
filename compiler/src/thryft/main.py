@@ -65,6 +65,7 @@ class Main(object):
 
     def __init__(
         self,
+        clean=False,
         debug=False,
         dry_run=False,
         gen=None,
@@ -74,6 +75,7 @@ class Main(object):
         thrift_file_paths=None
     ):
         object.__init__(self)
+        self.__clean = clean
         self.__debug = debug
         self.__dry_run = dry_run
         if gen is None:
@@ -84,7 +86,7 @@ class Main(object):
         else:
             include_dir_paths_dedup = []
             for include_dir_path in include_dir_paths:
-                if not include_dir_path in include_dir_paths_dedup:
+                if include_dir_path not in include_dir_paths_dedup:
                     include_dir_paths_dedup.append(include_dir_path)
             include_dir_paths = tuple(include_dir_paths_dedup)
         self.__include_dir_paths = include_dir_paths
@@ -103,6 +105,11 @@ class Main(object):
             help='enable debug logging'
         )
         argument_parser.add_argument(
+            '--clean',
+            action='store_true',
+            help="clean out generated code"
+        )
+        argument_parser.add_argument(
             '--dry-run',
             action='store_true',
             help="compile but don't generate code"
@@ -113,7 +120,7 @@ class Main(object):
             help='file name to log messages to'
         )
         argument_parser.add_argument(
-            '-gen',
+            '--gen',
             action='append',
             help='language[:key1=val1[,key2,[key3=val3]]]'
         )
@@ -142,6 +149,10 @@ class Main(object):
             if self.__log_filename is not None:
                 logging_kwds['filename'] = self.__log_filename
         logging.basicConfig(**logging_kwds)
+
+        if self.__clean:
+            self._clean()
+            return
 
         compiler = Compiler(include_dir_paths=self._include_dir_paths)
         for compile_task in self._get_compile_tasks():
@@ -176,6 +187,9 @@ class Main(object):
     @property
     def _gen(self):
         return self.__gen
+
+    def _clean(self):
+        raise NotImplementedError(self.__class__.__module__ + '.' + self.__class__.__name__ + '.clean')
 
     def _get_compile_tasks(self):
         generators = []
@@ -230,6 +244,7 @@ class Main(object):
 
         return \
             cls(
+                clean=args.clean,
                 debug=args.debug,
                 dry_run=args.dry_run,
                 include_dir_paths=args.include_dir_paths,
