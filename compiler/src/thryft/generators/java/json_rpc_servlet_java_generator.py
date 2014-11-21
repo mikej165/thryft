@@ -113,10 +113,10 @@ public %(name)s(final %(service_qname)s service) {
             read_http_servlet_request_body = indent(' ' * 4, self._java_read_http_servlet_request_body())
             function_dispatches = []
             if len(self.functions) == 0:
-                function_dispatches = """\
+                function_dispatches = indent(' ' * 8, """\
 __doPostError(httpServletRequest, httpServletResponse, new org.thryft.protocol.JsonRpcErrorResponse(-32601, String.format("the method '%s' does not exist / is not available", messageBegin.getName())), messageBegin.getId());
 return;
-"""
+""")
             else:
                 function_dispatches = \
                     indent(' ' * 8, ' else '.join(
@@ -155,7 +155,6 @@ protected void doPost(final javax.servlet.http.HttpServletRequest httpServletReq
         __doPostError(httpServletRequest, httpServletResponse, new org.thryft.protocol.JsonRpcErrorResponse(e), messageBegin != null ? messageBegin.getId() : null);
         return;
     }
-
 }
 """ % locals()
 
@@ -188,7 +187,7 @@ private void __doPostResponse(final javax.servlet.http.HttpServletRequest httpSe
         final org.thryft.protocol.JsonRpcOutputProtocol oprot = new org.thryft.protocol.JsonRpcOutputProtocol(new org.thryft.protocol.JacksonJsonOutputProtocol(httpServletResponseBodyWriter));
         oprot.writeMessageBegin("", org.thryft.protocol.MessageType.REPLY, jsonRpcRequestId);
         if (jsonRpcResult != null) {
-            oprot.writeMixed(jsonRpcResult);
+            oprot.writeVariant(jsonRpcResult);
         } else {
             oprot.writeStructBegin("response");
             oprot.writeStructEnd();

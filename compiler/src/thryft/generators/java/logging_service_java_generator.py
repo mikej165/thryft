@@ -107,7 +107,7 @@ __logMessageStringBuilder.append(" -> ");
 try {
     __logMessageStringWriter = new java.io.StringWriter();
     __logMessageProtocol = new org.thryft.protocol.LogMessageOutputProtocol(__logMessageStringWriter);
-    new Messages.%(response_type_name)s(__returnValue).write(__logMessageProtocol, org.thryft.protocol.Type.VOID);
+    new Messages.%(response_type_name)s(__returnValue).write(__logMessageProtocol, org.thryft.protocol.Type.VOID_);
     __logMessageProtocol.flush();
     __logMessageStringBuilder.append(__logMessageStringWriter.toString());
 } catch (final org.thryft.protocol.OutputProtocolException e) {

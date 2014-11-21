@@ -536,7 +536,7 @@ public String toString() {
         qname = self.java_qname()
         if self.__message_type is not None:
             message_type = self.__message_type
-            writeStructBegin = "writeMessageBegin(\"%(qname)s\", org.thryft.protocol.MessageType.%(message_type)s)" % locals()
+            writeStructBegin = "writeMessageBegin(\"%(qname)s\", org.thryft.protocol.MessageType.%(message_type)s, null)" % locals()
             writeStructEnd = "writeMessageEnd()"
         else:
             writeStructBegin = "writeStructBegin(\"%(qname)s\")" % locals()
