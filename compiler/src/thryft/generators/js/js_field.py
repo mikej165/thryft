@@ -65,10 +65,11 @@ if (field.fname == "%(name)s") {
         return {self.js_name(): schema}
 
     def js_validation(self):
-        try:
-            validation = self.annotations['validation'].copy()
-        except KeyError:
-            validation = {}
+        validation = {}
+        for annotation in self.annotation:
+            if annotation.name == 'validation':
+                validation = annotation.value.copy()
+                break
         validation['required'] = self.required
         name = self.js_name()
         qname = self.js_qname()

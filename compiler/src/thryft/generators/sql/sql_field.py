@@ -16,16 +16,24 @@ class SqlField(Field, _SqlNamedConstruct):
         return ret
 
     def sql_foreign_key_definition(self):
-        try:
-            annotation = self.annotations['sql_foreign_key']
-        except KeyError:
-            return None
-        name = self.sql_name()
-        foreign_table_name, foreign_column_name = annotation
-        return "FOREIGN KEY (%(name)s) REFERENCES %(foreign_table_name)s (%(foreign_column_name)s) ON DELETE CASCADE ON UPDATE CASCADE" % locals()
+        for annotation in self.annotations:
+            if annotation.name == 'sql_foreign_key':
+                return \
+                    self.sql_foreign_key_definition_static(
+                        column_name=self.sql_name(),
+                        foreign_table_name=annotation.value[0],
+                        foreign_column_name=annotation.value[1]
+                    )
+
+    @staticmethod
+    def sql_foreign_key_definition_static(column_name, foreign_table_name, foreign_column_name):
+        return "FOREIGN KEY (%(column_name)s) REFERENCES %(foreign_table_name)s (%(foreign_column_name)s) ON DELETE CASCADE ON UPDATE CASCADE" % locals()
 
     def sql_is_unique(self):
-        return self.annotations.has_key('sql_unique')
+        for annotation in self.annotations:
+            if annotation.name == 'sql_unique':
+                return True
+        return False
 
     def sql_name(self):
         return self.name

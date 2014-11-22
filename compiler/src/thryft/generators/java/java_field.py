@@ -243,7 +243,11 @@ public %(return_type_name)s %(setter_name)s(final %(type_name)s %(name)s) {
             if self.required or check_optional_not_null:
                 java_validation = """com.google.common.base.Preconditions.checkNotNull(%(java_validation)s, "%(parent_qname)s: missing %(name)s")""" % locals()
         if self.type.java_has_length():
-            validation = self.annotations.get('validation', {})
+            validation = {}
+            for annotation in self.annotations:
+                if annotation.name == 'validation':
+                    validation = annotation.value.copy()
+                    break
             min_length = validation.get('minLength')
             if min_length == 1:
                 java_validation = """org.thryft.Preconditions.checkNotEmpty(%(java_validation)s,%(value_class)s "%(parent_qname)s: %(name)s is empty")""" % locals()

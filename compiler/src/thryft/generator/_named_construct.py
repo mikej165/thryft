@@ -48,12 +48,9 @@ class _NamedConstruct(_Construct):
             return
         elif overrides is True:
             # Look for an overrides module
-            annotations = self.annotations
-            if annotations is None:
-                return
             overrides = False
-            for annotation in annotations:
-                if annotation == 'native':
+            for annotation in self.annotations:
+                if annotation.name == 'native':
                     overrides = True
                     break
             if not overrides:

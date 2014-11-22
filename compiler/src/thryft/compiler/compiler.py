@@ -50,22 +50,24 @@ class Compiler(object):
             self.__scope_stack = []
             self.__type_cache = {}
 
-        def __construct(self, class_name, **kwds):
+        def __construct(self, class_name, annotation_nodes=None, **kwds):
             if len(self.__scope_stack) > 0:
                 parent = self.__scope_stack[-1]
             else:
                 parent = self.__generator
             kwds['parent'] = parent
-            return getattr(self.__generator, class_name)(**kwds)
-
-        def visit_annotation_node(self, annotation_node):
-            return annotation_node.value
-
-        def __visit_annotation_nodes(self, annotation_nodes):
-            if annotation_nodes is None:
-                return {}
-            return dict((annotation_node.name, annotation_node.accept(self))
-                         for annotation_node in annotation_nodes)
+            construct_class = getattr(self.__generator, class_name)
+            if annotation_nodes is not None and len(annotation_nodes) > 0:
+                annotation_class = getattr(construct_class, 'Annotation')
+                kwds['annotations'] = \
+                    tuple(
+                        annotation_class(
+                            name=annotation_node.name,
+                            value=annotation_node.value
+                        )
+                        for annotation_node in annotation_nodes
+                    )
+            return construct_class(**kwds)
 
         def visit_base_type_node(self, base_type_node):
             try:
@@ -82,7 +84,7 @@ class Compiler(object):
             compound_type = \
                 self.__construct(
                     construct_class_name,
-                    annotations=self.__visit_annotation_nodes(compound_type_node.annotations),
+                    annotations=compound_type_node.annotations,
                     doc=self.__visit_doc_node(compound_type_node.doc),
                     name=compound_type_node.name
                 )
@@ -108,7 +110,7 @@ class Compiler(object):
                     compound_type.enumerators.append(
                         self.__construct(
                             'Field',
-                            annotations=self.__visit_annotation_nodes(enumerator_node.annotations),
+                            annotation_nodes=enumerator_node.annotations,
                             doc=self.__visit_doc_node(enumerator_node.doc),
                             id=enumerator_i,
                             name=enumerator_node.name,
@@ -128,7 +130,7 @@ class Compiler(object):
             return \
                 self.__construct(
                     'Const',
-                    annotations=self.__visit_annotation_nodes(const_node.annotations),
+                    annotation_nodes=const_node.annotations,
                     doc=self.__visit_doc_node(const_node.doc),
                     name=const_node.name,
                     type=const_node.type.accept(self),
@@ -164,7 +166,7 @@ class Compiler(object):
             return \
                 self.__construct(
                     'Field',
-                    annotations=self.__visit_annotation_nodes(field_node.annotations),
+                    annotation_nodes=field_node.annotations,
                     doc=self.__visit_doc_node(field_node.doc),
                     id=field_node.id,
                     name=field_node.name,
@@ -180,7 +182,7 @@ class Compiler(object):
             function = \
                 self.__construct(
                     'Function',
-                    annotations=self.__visit_annotation_nodes(function_node.annotations),
+                    annotation_nodes=function_node.annotations,
                     doc=self.__visit_doc_node(function_node.doc),
                     name=function_node.name,
                     oneway=function_node.oneway
@@ -213,7 +215,7 @@ class Compiler(object):
                     include = \
                         self.__construct(
                             'Include',
-                            annotations=self.__visit_annotation_nodes(include_node.annotations),
+                            annotation_nodes=include_node.annotations,
                             doc=self.__visit_doc_node(include_node.doc),
                             document=included_document,
                             path=include_file_relpath
@@ -250,7 +252,7 @@ class Compiler(object):
             return \
                 self.__construct(
                     'Namespace',
-                    annotations=self.__visit_annotation_nodes(namespace_node.annotations),
+                    annotation_nodes=namespace_node.annotations,
                     doc=self.__visit_doc_node(namespace_node.doc),
                     name=namespace_node.name,
                     scope=namespace_node.scope
@@ -268,7 +270,7 @@ class Compiler(object):
             service = \
                 self.__construct(
                     'Service',
-                    annotations=self.__visit_annotation_nodes(service_node.annotations),
+                    annotation_nodes=service_node.annotations,
                     doc=self.__visit_doc_node(service_node.doc),
                     name=service_node.name
                 )
@@ -311,7 +313,7 @@ class Compiler(object):
             typedef = \
                 self.__construct(
                     'Typedef',
-                    annotations=self.__visit_annotation_nodes(typedef_node.annotations),
+                    annotation_nodes=typedef_node.annotations,
                     doc=self.__visit_doc_node(typedef_node.doc),
                     name=typedef_node.name,
                     type=typedef_node.type.accept(self)

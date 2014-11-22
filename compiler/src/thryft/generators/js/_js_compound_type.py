@@ -128,9 +128,10 @@ validation: {%s
     def _js_property_view_metadata(self):
         view_metadata = {}
         for field in self.fields:
-            field_view_metadata = field.annotations.get('js_view_metadata', None)
-            if field_view_metadata is not None:
-                view_metadata[field.js_name()] = field_view_metadata
+            for annotation in field.annotations:
+                if annotation.name == 'js_view_metadata':
+                    view_metadata[field.js_name()] = annotation.value
+                    break
         if len(view_metadata) == 0:
             return {}
         view_metadata = json.dumps(view_metadata, indent=4)

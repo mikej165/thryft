@@ -35,12 +35,25 @@ import logging
 
 
 class _Construct(object):
+    class Annotation(object):
+        def __init__(self, name, value=None):
+            self.__name = name
+            self.__value = value
+
+        @property
+        def name(self):
+            return self.__name
+
+        @property
+        def value(self):
+            return self.__value
+
     def __init__(self, parent, annotations=None, doc=None, **kwds):
         object.__init__(self)
         if annotations is not None:
-            annotations = annotations.copy()
+            annotations = tuple(annotations)
         else:
-            annotations = {}
+            annotations = tuple()
         self.__annotations = annotations
         assert doc is None or isinstance(doc, str), type(doc)
         self.__doc = doc
@@ -49,10 +62,7 @@ class _Construct(object):
 
     @property
     def annotations(self):
-        if self.__annotations is None:
-            return self.__annotations
-        else:
-            return self.__annotations.copy()
+        return self.__annotations
 
     @property
     def doc(self):

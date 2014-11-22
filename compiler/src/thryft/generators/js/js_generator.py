@@ -74,8 +74,6 @@ def __parse_js_view_metadata_annotation(ast_node, name, value, **kwds):
         if subname not in ('displayFormat', 'editControl'):
             logging.warn("unknown %(name)s property '%s'" % locals())
 
-    annotation = Ast.AnnotationNode(name=name, value=value, **kwds)
-
-    ast_node.annotations.append(annotation)
+    ast_node.annotations.append(Ast.AnnotationNode(name=name, value=value, **kwds))
 
 Parser.register_annotation(Ast.FieldNode, 'js_view_metadata', __parse_js_view_metadata_annotation)

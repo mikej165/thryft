@@ -91,14 +91,18 @@ public %(name)s(final org.thryft.protocol.InputProtocol iprot) throws org.thryft
     def java_annotations(self):
         annotations = []
         for requires_x in ('authentication', 'guest', 'user'):
-            if 'requires_' + requires_x in self.annotations:
-                annotations.append('@org.apache.shiro.authz.annotation.Requires' + requires_x.capitalize())
+            for annotation in self.annotations:
+                if annotation.name == 'requires_' + requires_x:
+                    annotations.append('@org.apache.shiro.authz.annotation.Requires' + requires_x.capitalize())
+                    break
         for requires_x in ('permissions', 'roles'):
-            if 'requires_' + requires_x in self.annotations:
-                annotations.append("@org.apache.shiro.authz.annotation.Requires%s({ %s })" % (
-                    requires_x.capitalize(),
-                    ', '.join('"%s"' % x for x in self.annotations['requires_' + requires_x])
-                ))
+            for annotation in self.annotations:
+                if annotation.name == 'requires_' + requires_x:
+                    annotations.append("@org.apache.shiro.authz.annotation.Requires%s({ %s })" % (
+                        requires_x.capitalize(),
+                        ', '.join('"%s"' % x for x in annotation.value)
+                    ))
+                    break
         return annotations
 
     def java_declaration(self):

@@ -45,6 +45,9 @@ class Ast(object):
                 assert isinstance(annotation, Ast.AnnotationNode)
                 self.__annotations.append(annotation)
 
+            def __len__(self):
+                return len(self.__annotations)
+
             def __iter__(self):
                 return iter(self.__annotations)
 
@@ -216,9 +219,9 @@ class Ast(object):
             Ast.Node.__init__(self, **kwds)
 
             if tags is not None:
-                assert isinstance(tags, dict)
+                assert isinstance(tags, tuple), type(tags)
             else:
-                tags = {}
+                tags = tuple()
             self.__tags = tags
 
             assert isinstance(text, str)

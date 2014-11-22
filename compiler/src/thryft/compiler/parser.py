@@ -37,8 +37,6 @@ from thryft.compiler.token import Token
 from yutil import class_qname
 import json
 import logging
-import os.path
-import sys
 
 
 class Parser(GenericParser):
@@ -48,13 +46,14 @@ class Parser(GenericParser):
         GenericParser.__init__(self, start='document')
         self.__logger = logging.getLogger(class_qname(self))
 
-    def __dispatch(self, p_method, args):
+    def __dispatch(self, p_method, args, parse_annotations=False):
         ret = p_method(args)
 
-        if isinstance(ret, Ast.Node):
+        if parse_annotations:
+            assert isinstance(ret, Ast.Node)
             ast_node = ret
             if ast_node.doc is not None and len(ast_node.doc.tags) > 0:
-                for tag_name, tag_value in ast_node.doc.tags.iteritems():
+                for tag_name, tag_value in ast_node.doc.tags:
                     try:
                         annotation_parser = self.__class__.__annotation_parsers[ast_node.__class__][tag_name]
                     except KeyError:
@@ -136,24 +135,25 @@ class Parser(GenericParser):
 
                 if len(out_doc_lines) > 0:
                     out_doc_text = []
-                    out_doc_tags = {}
+                    out_doc_tags = []
                     for doc_line in out_doc_lines:
                         if doc_line.startswith('@') and len(doc_line) > 1:
                             doc_line_split = doc_line.split(None, 1)
-                            tag = doc_line_split[0][1:].lower()
+                            tag_name = doc_line_split[0][1:].lower()
                             if len(doc_line_split) == 2:
-                                out_doc_tags[tag] = doc_line_split[1].rstrip()
-                                if len(out_doc_tags[tag]) == 0:
-                                    out_doc_tags[tag] = None
+                                tag_value = doc_line_split[1].rstrip()
+                                if len(tag_value) == 0:
+                                    tag_value = None
                             else:
-                                out_doc_tags[tag] = None
+                                tag_value = None
+                            out_doc_tags.append((tag_name, tag_value))
                         else:
                             out_doc_text.append(doc_line)
                     out_doc_node = \
                         Ast.DocNode(
                             start_token=comments[0],
                             stop_token=comments[-1],
-                            tags=out_doc_tags,
+                            tags=tuple(out_doc_tags),
                             text=''.join(out_doc_text)
                         )
 
@@ -227,7 +227,7 @@ class Parser(GenericParser):
         '''
         compound_type_field ::= comments field list_separator_optional
         '''
-        return self.__dispatch(self.__p_compound_type_field, args)
+        return self.__dispatch(self.__p_compound_type_field, args, parse_annotations=True)
 
     def __p_compound_type_field(self, args):
         doc_node, start_token, stop_token = self.__p(args)
@@ -258,7 +258,7 @@ class Parser(GenericParser):
         '''
         const ::= comments KEYWORD_CONST type identifier EQUALS literal semicolon_optional
         '''
-        return self.__dispatch(self.__p_const, args)
+        return self.__dispatch(self.__p_const, args, parse_annotations=True)
 
     def __p_const(self, args):
         doc_node, start_token, stop_token = self.__p(args)
@@ -351,7 +351,7 @@ class Parser(GenericParser):
         '''
         enum ::= comments KEYWORD_ENUM identifier LEFT_BRACE enumerators RIGHT_BRACE
         '''
-        return self.__dispatch(self.__p_enum, args)
+        return self.__dispatch(self.__p_enum, args, parse_annotations=True)
 
     def __p_enum(self, args):
         doc_node, start_token, stop_token = self.__p(args)
@@ -368,7 +368,7 @@ class Parser(GenericParser):
         '''
         enumerator ::= comments identifier enumerator_value list_separator_optional
         '''
-        return self.__dispatch(self.__p_enumerator, args)
+        return self.__dispatch(self.__p_enumerator, args, parse_annotations=True)
 
     def __p_enumerator(self, args):
         doc_node, start_token, stop_token = self.__p(args)
@@ -399,7 +399,7 @@ class Parser(GenericParser):
         '''
         exception_type ::= comments KEYWORD_EXCEPTION identifier LEFT_BRACE compound_type_fields RIGHT_BRACE
         '''
-        return self.__dispatch(self.__p_exception_type, args)
+        return self.__dispatch(self.__p_exception_type, args, parse_annotations=True)
 
     def __p_exception_type(self, args):
         doc_node, start_token, stop_token = self.__p(args)
@@ -485,7 +485,7 @@ class Parser(GenericParser):
         '''
         function ::= comments function_oneway function_return_type identifier LEFT_PARENTHESIS function_parameters RIGHT_PARENTHESIS function_throws list_separator_optional
         '''
-        return self.__dispatch(self.__p_function, args)
+        return self.__dispatch(self.__p_function, args, parse_annotations=True)
 
     def __p_function(self, args):
         doc_node, start_token, stop_token = self.__p(args)
@@ -755,7 +755,7 @@ class Parser(GenericParser):
         '''
         namespace ::= comments KEYWORD_NAMESPACE namespace_scope namespace_name
         '''
-        return self.__dispatch(self.__p_namespace, args)
+        return self.__dispatch(self.__p_namespace, args, parse_annotations=True)
 
     def __p_namespace(self, args):
         doc_node, start_token, stop_token = self.__p(args)
@@ -803,7 +803,7 @@ class Parser(GenericParser):
         '''
         service ::= comments KEYWORD_SERVICE identifier LEFT_BRACE functions RIGHT_BRACE
         '''
-        return self.__dispatch(self.__p_service, args)
+        return self.__dispatch(self.__p_service, args, parse_annotations=True)
 
     def __p_service(self, args):
         doc_node, start_token, stop_token = self.__p(args)
@@ -838,7 +838,7 @@ class Parser(GenericParser):
         '''
         struct_type ::= comments KEYWORD_STRUCT identifier LEFT_BRACE compound_type_fields RIGHT_BRACE
         '''
-        return self.__dispatch(self.__p_struct_type, args)
+        return self.__dispatch(self.__p_struct_type, args, parse_annotations=True)
 
     def __p_struct_type(self, args):
         doc_node, start_token, stop_token = self.__p(args)
@@ -881,7 +881,7 @@ class Parser(GenericParser):
         '''
         typedef ::= comments KEYWORD_TYPEDEF type identifier
         '''
-        return self.__dispatch(self.__p_typedef, args)
+        return self.__dispatch(self.__p_typedef, args, parse_annotations=True)
 
     def __p_typedef(self, args):
         doc_node, start_token, stop_token = self.__p(args)
