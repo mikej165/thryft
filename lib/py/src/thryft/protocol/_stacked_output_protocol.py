@@ -18,6 +18,9 @@ class _StackedOutputProtocol(_AbstractOutputProtocol):
     def write_decimal(self, value):
         self._output_protocol_stack[-1].write_decimal(value)
 
+    def write_double(self, value):
+        self._output_protocol_stack[-1].write_double(value)
+
     def write_field_begin(self, name, *args, **kwds):
         self._output_protocol_stack[-1].write_field_begin(name, *args, **kwds)
 

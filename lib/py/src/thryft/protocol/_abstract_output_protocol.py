@@ -64,7 +64,7 @@ class _AbstractOutputProtocol(_OutputProtocol):
                 self.write_variant(value)
             self.write_map_end()
         elif isinstance(object_, float):
-            self.writeDouble(object_)
+            self.write_double(object_)
         elif isinstance(object_, frozenset):
             self.write_set_begin(len(object_))
             for item in object_:

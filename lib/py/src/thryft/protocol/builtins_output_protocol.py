@@ -43,6 +43,9 @@ class BuiltinsOutputProtocol(_StackedOutputProtocol):
         def write_bool(self, value):
             self._write_value(value)
 
+        def write_double(self, value):
+            self._write_value(value)
+
         def write_field_stop(self):
             pass
 
