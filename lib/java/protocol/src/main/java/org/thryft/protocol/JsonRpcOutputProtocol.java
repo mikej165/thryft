@@ -48,18 +48,15 @@ public final class JsonRpcOutputProtocol extends ForwardingOutputProtocol {
 
             writeFieldBegin("params", org.thryft.protocol.Type.VOID_,
                     (short) -1);
-            writeStructBegin("params");
             break;
 
         case EXCEPTION:
             writeFieldBegin("error", org.thryft.protocol.Type.VOID_, (short) -1);
-            writeStructBegin("error");
             break;
 
         case REPLY:
             writeFieldBegin("result", org.thryft.protocol.Type.VOID_,
                     (short) -1);
-            writeStructBegin("result");
             break;
 
         default:
@@ -69,7 +66,6 @@ public final class JsonRpcOutputProtocol extends ForwardingOutputProtocol {
 
     @Override
     public void writeMessageEnd() throws OutputProtocolException {
-        writeStructEnd();
         writeFieldEnd();
         writeFieldStop();
         writeStructEnd();
