@@ -71,7 +71,8 @@ def %(name)s(self):
         return self.py_name()
 
     def _py_imports_use(self, caller_stack):
-        return self.type.py_imports_use(caller_stack=caller_stack) + ['import __builtin__']
+        imports = self.type.py_imports_use(caller_stack=caller_stack)
+        return imports + ['import __builtin__']
 
     def py_initializer(self):
         check = self.py_check()

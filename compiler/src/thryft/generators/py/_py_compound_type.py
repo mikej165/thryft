@@ -156,6 +156,15 @@ def __init__(
     def _py_extends(self):
         return ['object']
 
+    def _py_imports_definition(self, caller_stack):
+        imports = []
+        for field in self.fields:
+            imports.extend(field.py_imports_use(caller_stack=caller_stack))
+        return imports
+
+    def _py_imports_use(self, caller_stack):
+        return ['import ' + self.py_qname().rsplit('.', 1)[0]]
+
     def _py_method_as_dict(self):
         return {'as_dict': """\
 def as_dict(self):
@@ -327,15 +336,6 @@ def write(self, oprot):
         if len(self.fields) > 0:
             methods_list.insert(0, self._py_constructor())
         return methods_list
-
-    def _py_imports_definition(self, caller_stack):
-        imports = []
-        for field in self.fields:
-            imports.extend(field.py_imports_use(caller_stack=caller_stack))
-        return imports
-
-    def _py_imports_use(self, caller_stack):
-        return ['import ' + self.py_qname().rsplit('.', 1)[0]]
 
     def py_read_protocol(self):
         qname = self.py_qname()

@@ -110,13 +110,17 @@ class _NamedConstruct(_Construct):
         self._overrides = overrides
 
     def __getattribute__(self, name):
-        if name[0] != '_':
-            try:
-                overrides = object.__getattribute__(self, '_overrides')
-                return getattr(overrides, name)
-            except AttributeError:
-                pass
-        return _Construct.__getattribute__(self, name)
+        if name[0] == '_':
+            return _Construct.__getattribute__(self, name)
+
+        overrides = object.__getattribute__(self, '_overrides')
+        if overrides is None:
+            return _Construct.__getattribute__(self, name)
+
+        try:
+            return getattr(overrides, name)
+        except AttributeError:
+            return _Construct.__getattribute__(self, name)
 
     @property
     def name(self):
