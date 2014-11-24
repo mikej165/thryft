@@ -1,5 +1,6 @@
 package org.thryft.protocol;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import com.google.common.annotations.GwtIncompatible;
@@ -7,7 +8,7 @@ import com.google.common.collect.ImmutableMap;
 
 @GwtIncompatible("")
 public final class JdbcPreparedStatementParameterOutputProtocol extends
-AbstractOutputProtocol {
+        AbstractOutputProtocol {
     public JdbcPreparedStatementParameterOutputProtocol() {
         this(ImmutableMap.<String, Object> of());
     }
@@ -42,6 +43,14 @@ AbstractOutputProtocol {
 
     @Override
     public void writeDateTime(final Date value) throws OutputProtocolException {
+        if (depth == 1) {
+            builder.put(nextFieldName, value);
+        }
+    }
+
+    @Override
+    public void writeDecimal(final BigDecimal value)
+            throws OutputProtocolException {
         if (depth == 1) {
             builder.put(nextFieldName, value);
         }

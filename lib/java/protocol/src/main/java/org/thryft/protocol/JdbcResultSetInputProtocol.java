@@ -3,6 +3,7 @@ package org.thryft.protocol;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -105,6 +106,15 @@ public class JdbcResultSetInputProtocol extends AbstractInputProtocol {
     }
 
     @Override
+    public BigDecimal readDecimal() throws InputProtocolException {
+        try {
+            return resultSet.getBigDecimal(fieldBeginStack.peek().getName());
+        } catch (final SQLException e) {
+            throw new InputProtocolException(e);
+        }
+    }
+
+    @Override
     public double readDouble() throws InputProtocolException {
         try {
             return resultSet.getDouble(fieldBeginStack.peek().getName());
@@ -164,11 +174,6 @@ public class JdbcResultSetInputProtocol extends AbstractInputProtocol {
     }
 
     @Override
-    public Object readVariant() throws InputProtocolException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public String readString() throws InputProtocolException {
         try {
             return resultSet.getString(fieldBeginStack.peek().getName());
@@ -180,6 +185,11 @@ public class JdbcResultSetInputProtocol extends AbstractInputProtocol {
     @Override
     public String readStructBegin() throws InputProtocolException {
         return "";
+    }
+
+    @Override
+    public Object readVariant() throws InputProtocolException {
+        throw new UnsupportedOperationException();
     }
 
     private final Stack<FieldBegin> fieldBeginStack = new Stack<FieldBegin>();
