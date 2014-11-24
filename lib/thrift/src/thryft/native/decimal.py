@@ -91,14 +91,14 @@ if (typeof %(value)s !== "string") {
     def py_check(self, value):
         return "isinstance(%(value)s, decimal.Decimal)" % locals()
 
-    def py_imports_definition(self, caller_stack=None):
-        return []
-
     def py_imports_use(self, caller_stack=None):
         return ['from __future__ import absolute_import; import decimal']
 
     def py_name(self):
         return 'Decimal'
+
+    def py_qname(self):
+        return 'decimal.Decimal'
 
     def py_read_protocol(self):
         return 'iprot.read_decimal()'
@@ -112,6 +112,9 @@ if (typeof %(value)s !== "string") {
     def py_write_protocol(self, value, depth=0):
         qname = self.py_qname()
         return "oprot.write_decimal(%(value)s)" % locals()
+
+    def sql_name(self):
+        return 'DECIMAL'
 
     def thrift_ttype_id(self):
         return StringType.THRIFT_TTYPE_ID
