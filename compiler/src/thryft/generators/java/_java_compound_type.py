@@ -114,9 +114,9 @@ protected %(name)s _build(%(field_parameters)s) {%(checks)s
             cases = lpad("\n", "\n".join(indent(' ' * 4, cases)))
             return {'set': """\
 public Builder set(final String name, @javax.annotation.Nullable final Object value) {
-    com.google.common.base.Preconditions.checkNotNull(value);
+    com.google.common.base.Preconditions.checkNotNull(name);
 
-    switch (name) {%(cases)s
+    switch (name.toLowerCase()) {%(cases)s
     default:
         throw new IllegalArgumentException(name);
     }
