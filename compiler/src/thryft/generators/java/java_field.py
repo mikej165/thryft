@@ -207,7 +207,7 @@ try {
             return tuple()
         name = self.name
         setter_name = self.java_setter_name()
-        type_name = self.type.java_declaration_name()
+        type_name = self.type.java_declaration_name(boxed=not self.required)
         return ("""\
 case "%(name)s": %(setter_name)s((%(type_name)s)value); return this;""" % locals(),)
 
@@ -219,10 +219,10 @@ case "%(name)s": %(setter_name)s((%(type_name)s)value); return this;""" % locals
         type_name = self.__java_type_name()
         setters = ["""\
 public %(return_type_name)s %(setter_name)s(final %(type_name)s %(name)s) {
-    this.%(name)s = %(name)s;%(return_statement)s
+    this.%(name)s = com.google.common.base.Preconditions.checkNotNull(%(name)s);%(return_statement)s
 }""" % locals()]
         if not self.required:
-            type_name = self.type.java_declaration_name()
+            type_name = self.type.java_declaration_name(boxed=True)
             setters.append("""\
 public %(return_type_name)s %(setter_name)s(@javax.annotation.Nullable final %(type_name)s %(name)s) {
     this.%(name)s = com.google.common.base.Optional.fromNullable(%(name)s);%(return_statement)s
