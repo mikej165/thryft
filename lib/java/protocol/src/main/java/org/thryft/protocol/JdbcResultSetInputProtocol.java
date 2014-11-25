@@ -44,6 +44,9 @@ public class JdbcResultSetInputProtocol extends AbstractInputProtocol {
             case Types.BOOLEAN:
                 fieldType = Type.BOOL;
                 break;
+            case Types.DECIMAL:
+                fieldType = Type.STRING;
+                break;
             case Types.DOUBLE:
                 fieldType = Type.DOUBLE;
                 break;
