@@ -107,6 +107,21 @@ protected %(name)s _build(%(field_parameters)s) {%(checks)s
             return dict((field.java_getter_name(), field.java_getter())
                         for field in self.fields)
 
+        def _java_method_set(self):
+            cases = []
+            for field in self.fields:
+                cases.extend(field.java_set_cases())
+            cases = lpad("\n", "\n".join(indent(' ' * 4, cases)))
+            return {'set': """\
+public Builder set(final String name, @javax.annotation.Nullable final Object value) {
+    com.google.common.base.Preconditions.checkNotNull(value);
+
+    switch (name) {%(cases)s
+    default:
+        throw new IllegalArgumentException(name);
+    }
+}""" % locals()}
+
         def _java_method_setters(self):
             setters = {}
             for field in self.fields:
@@ -119,6 +134,7 @@ protected %(name)s _build(%(field_parameters)s) {%(checks)s
             methods.update(self._java_method_build())
             methods.update(self._java_method__build())
             methods.update(self._java_method_getters())
+            methods.update(self._java_method_set())
             methods.update(self._java_method_setters())
             return methods
 

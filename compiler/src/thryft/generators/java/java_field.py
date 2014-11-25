@@ -30,9 +30,9 @@
 # OF SUCH DAMAGE.
 #-------------------------------------------------------------------------------
 
-from inspect import isfunction
 from thryft.generator.field import Field
 from thryft.generators.java._java_named_construct import _JavaNamedConstruct
+from thryft.generators.java._java_container_type import _JavaContainerType
 from thryft.generators.java.java_bool_type import JavaBoolType
 from yutil import lower_camelize, upper_camelize, indent, lpad
 
@@ -202,6 +202,15 @@ try {
     def java_repr(self):
         return self.java_parameter()
 
+    def java_set_cases(self):
+        if isinstance(self.type, _JavaContainerType):
+            return tuple()
+        name = self.name
+        setter_name = self.java_setter_name()
+        type_name = self.type.java_declaration_name()
+        return ("""\
+case "%(name)s": %(setter_name)s((%(type_name)s)value); return this;""" % locals(),)
+
     def java_setters(self, return_type_name='void'):
         setter_name = self.java_setter_name()
         name = self.java_name()
@@ -215,7 +224,7 @@ public %(return_type_name)s %(setter_name)s(final %(type_name)s %(name)s) {
         if not self.required:
             type_name = self.type.java_declaration_name()
             setters.append("""\
-public %(return_type_name)s %(setter_name)s(final %(type_name)s %(name)s) {
+public %(return_type_name)s %(setter_name)s(@javax.annotation.Nullable final %(type_name)s %(name)s) {
     this.%(name)s = com.google.common.base.Optional.fromNullable(%(name)s);%(return_statement)s
 }""" % locals())
         return setters
