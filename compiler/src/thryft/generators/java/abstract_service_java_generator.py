@@ -95,7 +95,7 @@ protected void %(validate_method_name)s(%(public_parameters)s) {
 
             return """\
 @Override%(annotations)s
-public %(return_type_name)s %(name)s(%(public_parameters)s)%(throws)s {%(validate_method_call)s
+public final %(return_type_name)s %(name)s(%(public_parameters)s)%(throws)s {%(validate_method_call)s
     %(protected_delegation)s;
 }%(validate_method)s
 
