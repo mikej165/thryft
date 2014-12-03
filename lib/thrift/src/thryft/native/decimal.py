@@ -109,6 +109,9 @@ if (typeof %(value)s !== "string") {
     def py_qname(self):
         return 'Decimal'
 
+    def py_runtime_repr(self, value):
+        return "repr(%(value)s)" % locals()
+
     def py_write_protocol(self, value, depth=0):
         qname = self.py_qname()
         return "oprot.write_decimal(%(value)s)" % locals()
