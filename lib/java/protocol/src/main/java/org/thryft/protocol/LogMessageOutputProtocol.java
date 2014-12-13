@@ -41,7 +41,7 @@ import com.google.common.annotations.GwtIncompatible;
 @GwtIncompatible("")
 public class LogMessageOutputProtocol extends JacksonJsonOutputProtocol {
     private final class ArrayOutputProtocol extends
-    JacksonJsonOutputProtocol.ArrayOutputProtocol {
+            JacksonJsonOutputProtocol.ArrayOutputProtocol {
         @Override
         public void writeBool(final boolean value)
                 throws OutputProtocolException {
@@ -103,7 +103,7 @@ public class LogMessageOutputProtocol extends JacksonJsonOutputProtocol {
         @Override
         public void writeListBegin(final Type elementType, final int size)
                 throws OutputProtocolException {
-            if (size < SIZE_MAX) {
+            if (this.size < SIZE_MAX) {
                 super.writeListBegin(elementType, size);
             } else {
                 _getOutputProtocolStack().push(new NopOutputProtocol());
@@ -121,7 +121,7 @@ public class LogMessageOutputProtocol extends JacksonJsonOutputProtocol {
         @Override
         public void writeMapBegin(final Type keyType, final Type valueType,
                 final int size) throws OutputProtocolException {
-            if (size < SIZE_MAX) {
+            if (this.size < SIZE_MAX) {
                 super.writeMapBegin(keyType, valueType, size);
             } else {
                 _getOutputProtocolStack().push(new NopOutputProtocol());
@@ -169,7 +169,7 @@ public class LogMessageOutputProtocol extends JacksonJsonOutputProtocol {
     }
 
     private final class MapObjectOutputProtocol extends
-    JacksonJsonOutputProtocol.MapObjectOutputProtocol {
+            JacksonJsonOutputProtocol.MapObjectOutputProtocol {
         @Override
         public void writeBool(final boolean value)
                 throws OutputProtocolException {
@@ -373,7 +373,7 @@ public class LogMessageOutputProtocol extends JacksonJsonOutputProtocol {
     }
 
     private final class StructObjectOutputProtocol extends
-    JacksonJsonOutputProtocol.StructObjectOutputProtocol {
+            JacksonJsonOutputProtocol.StructObjectOutputProtocol {
         @Override
         public void writeString(final String value)
                 throws OutputProtocolException {
