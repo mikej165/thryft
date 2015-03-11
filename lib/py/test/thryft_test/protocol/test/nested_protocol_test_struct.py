@@ -304,7 +304,7 @@ class NestedProtocolTestStruct(object):
         if self.date_time_field is not None:
             field_reprs.append('date_time_field=' + repr(self.date_time_field))
         if self.decimal_field is not None:
-            field_reprs.append('decimal_field=' + "'" + self.decimal_field.encode('ascii', 'replace') + "'")
+            field_reprs.append('decimal_field=' + repr(self.decimal_field))
         if self.email_address_field is not None:
             field_reprs.append('email_address_field=' + "'" + self.email_address_field.encode('ascii', 'replace') + "'")
         if self.enum_field is not None:
@@ -340,7 +340,7 @@ class NestedProtocolTestStruct(object):
         if self.date_time_field is not None:
             field_reprs.append('date_time_field=' + repr(self.date_time_field))
         if self.decimal_field is not None:
-            field_reprs.append('decimal_field=' + "'" + self.decimal_field.encode('ascii', 'replace') + "'")
+            field_reprs.append('decimal_field=' + repr(self.decimal_field))
         if self.email_address_field is not None:
             field_reprs.append('email_address_field=' + "'" + self.email_address_field.encode('ascii', 'replace') + "'")
         if self.enum_field is not None:

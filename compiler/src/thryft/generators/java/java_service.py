@@ -39,11 +39,33 @@ class JavaService(Service, _JavaNamedConstruct):
     def java_extends(self):
         return self.extends
 
+    def _java_functions_repr(self):
+        return "\n\n".join(function.java_repr() for function in self.functions)
+
     def java_name(self, boxed=False):
         return self.name
 
     def java_qname(self, boxed=False):
         return _JavaNamedConstruct.java_qname(self, name=self.name)
+
+    def _java_message_types(self):
+        message_types = []
+        for function in self.functions:
+            message_types.extend(function.java_message_types())
+        return message_types
+
+    def _java_message_types_repr(self):
+        message_types = self._java_message_types()
+        if len(message_types) > 0:
+            message_types = \
+                "\n\n".join(indent(' ' * 4,
+                    (message_type.java_repr()
+                     for message_type in message_types)
+                ))
+            return """\
+public static class Messages {
+%(message_types)s
+}""" % locals()
 
     def java_repr(self):
         extends = self.java_extends()
@@ -55,26 +77,18 @@ class JavaService(Service, _JavaNamedConstruct):
         javadoc = self.java_doc()
         name = self.java_name()
 
-        sections = []
-
-        message_types = []
-        for function in self.functions:
-            message_types.extend(function.java_message_types())
-        if len(message_types) > 0:
-            message_types = \
-                "\n\n".join(indent(' ' * 4,
-                    (message_type.java_repr()
-                     for message_type in message_types)
-                ))
-            sections.append("""\
-public static class Messages {
-%(message_types)s
-}""" % locals())
-
-        sections.append("\n\n".join(function.java_repr() for function in self.functions))
-
-        sections = lpad("\n", "\n\n".join(indent(' ' * 4, sections)))
+        sections = lpad("\n", "\n\n".join(indent(' ' * 4, self._java_repr_sections())))
 
         return """\
 %(javadoc)spublic interface %(name)s%(extends)s {%(sections)s
 }""" % locals()
+
+    def _java_repr_sections(self):
+        sections = []
+        for section in (
+            self._java_message_types_repr(),
+            self._java_functions_repr()
+        ):
+            if len(section) > 0:
+                sections.append(section)
+        return sections
