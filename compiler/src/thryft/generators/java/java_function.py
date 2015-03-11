@@ -158,7 +158,10 @@ public %(name)s(final org.thryft.protocol.InputProtocol iprot) throws org.thryft
             return ''
 
     def java_message_types(self):
-        return [self.java_request_type(), self.java_response_type()]
+        message_types = [self.java_request_type()]
+        if not self.oneway:
+            message_types.append(self.java_response_type())
+        return message_types
 
     def java_name(self, boxed=False):
         return lower_camelize(self.name)
