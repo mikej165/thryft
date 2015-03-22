@@ -91,6 +91,8 @@ class CppService(Service, _CppNamedConstruct):
             sections.append("public:\n" + indent(' ' * 2, """\
 class Messages {
 public:
+  typedef %(parent_class_qname)s::Messages::Request Request;
+  typedef %(parent_class_qname)s::Messages::Response Response;
 %(request_forward_declarations)s
 
   class RequestHandler : public %(service_parent_class_qname)s<%(name)s>::Messages::RequestHandler {
@@ -104,19 +106,19 @@ public:
 
 %(message_types)s
 
-  static %(service_parent_class_qname)s<%(name)s>::Messages::Request* read_request(const char* function_name, ::thryft::protocol::InputProtocol& iprot, const ::thryft::protocol::Type& as_type) {
-    if (function_name == NULL) {
+  static ::std::unique_ptr< %(service_parent_class_qname)s<%(name)s>::Messages::Request > read_request(const char* function_name, ::thryft::protocol::InputProtocol& iprot, const ::thryft::protocol::Type& as_type) {
+    if (function_name == NULL || function_name[0] == 0) {
       return NULL;
     }
 
 %(read_requests)s
 
-    return NULL;
+    return ::std::unique_ptr< %(service_parent_class_qname)s<%(name)s>::Messages::Request >();
   }
 
   class SyncRequestHandler : public RequestHandler {
   public:
-    SyncRequestHandler(%(name)s& impl)
+    SyncRequestHandler(::std::shared_ptr<%(name)s> impl)
       : impl_(impl) {
     }
 
@@ -125,7 +127,7 @@ public:
 %(sync_request_handlers)s
 
   private:
-    %(name)s& impl_;
+    ::std::shared_ptr<%(name)s> impl_;
   };
 };""" % locals()))
 

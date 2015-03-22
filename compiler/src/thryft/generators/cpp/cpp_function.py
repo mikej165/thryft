@@ -65,7 +65,7 @@ class CppFunction(Function, _CppNamedConstruct):
                 )
 
         def _cpp_extends(self):
-            return self._parent_generator().cpp_service_parent_class_qname + "<%s>::Messages::Request" % self.__parent_function.parent.cpp_name()
+            return 'Request'
 
         def cpp_forward_declaration(self):
             return 'class ' + self.cpp_name() + ';'
@@ -87,8 +87,8 @@ void accept(RequestHandler& handler) const {
         def cpp_read_if(self):
             return """\
 if (strcmp(function_name, "%s") == 0) {
-  return new %s(iprot, as_type);
-}""" % (self.__parent_function.name, self.cpp_name())
+  return ::std::unique_ptr< %s >(new %s(iprot, as_type));
+}""" % (self.__parent_function.name, self.cpp_name(), self.cpp_name())
 
         def cpp_sync_handler(self):
             name = self.cpp_name()
@@ -104,7 +104,7 @@ request.respond(%(response_name)s())""" % locals()
                 ', '.join("request.%s()" % parameter.cpp_getter_name()
                            for parameter in self.fields)
             call_method_name = self.__parent_function.name
-            call = "%(call_prefix)simpl_.%(call_method_name)s(%(call_parameters)s)%(call_suffix)s;" % locals()
+            call = "%(call_prefix)simpl_->%(call_method_name)s(%(call_parameters)s)%(call_suffix)s;" % locals()
             if len(self.__parent_function.throws) > 0:
                 catches = []
                 for exception in self.__parent_function.throws:
@@ -148,7 +148,7 @@ virtual void handle(const %(name)s& request) {
                 )
 
         def _cpp_extends(self):
-            return self._parent_generator().cpp_service_parent_class_qname + "<%s>::Messages::Response" % self.__parent_function.parent.cpp_name()
+            return 'Response'
 
     def cpp_declaration(self, line_ending="\n", override=False):
         override = ' override' if override else ''

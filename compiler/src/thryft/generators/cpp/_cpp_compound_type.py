@@ -143,7 +143,7 @@ virtual ~%(name)s() {
         return []
 
     def cpp_includes_definition(self):
-        includes = ['<thryft.hpp>']
+        includes = ['<memory>', '<thryft.hpp>']
         for field in self.fields:
             includes.extend(field.cpp_includes_use())
         return includes
@@ -162,8 +162,8 @@ virtual ~%(name)s() {
                                  for field in self.fields)
         name = self.cpp_name()
         return {'clone': """\
-%(name)s& clone() const {
-  return *new %(name)s(%(member_names)s);
+::std::unique_ptr< %(name)s > clone() const {
+  return ::std::unique_ptr< %(name)s >(new %(name)s(%(member_names)s));
 }""" % locals()}
 
     def _cpp_method_getters(self):
