@@ -17,6 +17,7 @@ endif()
 
 add_subdirectory(include)
 if ("${TOP_LEVEL_PROJECT_NAME}" STREQUAL "")
+	enable_testing()
 	add_subdirectory(share)
 	add_subdirectory(test)
 endif()
