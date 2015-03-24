@@ -21,9 +21,10 @@ template <class TypeParam>
 class ProtocolTest : public ::testing::Test {
   protected:
     void test(const ProtocolTestStruct& expected) {
-      TypeParam::OutputProtocolT oprot;
+      typename TypeParam::OutputProtocolT oprot;
       expected.write(oprot);
-      ProtocolTestStruct actual(TypeParam(oprot.to_string()));
+      TypeParam iprot(oprot.to_string());
+      ProtocolTestStruct actual(iprot);
       ASSERT_EQ(expected, actual);
     }
 };
@@ -31,69 +32,69 @@ class ProtocolTest : public ::testing::Test {
 TYPED_TEST_CASE_P(ProtocolTest);
 
 TYPED_TEST_P(ProtocolTest, bool_) {
-  test(ProtocolTestStruct().set_bool_field(true));
+  this->test(ProtocolTestStruct().set_bool_field(true));
 }
 
 TYPED_TEST_P(ProtocolTest, i8) {
-  test(ProtocolTestStruct().set_i8_field(1));
+  this->test(ProtocolTestStruct().set_i8_field(1));
 }
 
 TYPED_TEST_P(ProtocolTest, i16) {
-  test(ProtocolTestStruct().set_i16_field(1));
+  this->test(ProtocolTestStruct().set_i16_field(1));
 }
 
 TYPED_TEST_P(ProtocolTest, i32) {
-  test(ProtocolTestStruct().set_i32_field(1));
+  this->test(ProtocolTestStruct().set_i32_field(1));
 }
 
 TYPED_TEST_P(ProtocolTest, i64) {
-  test(ProtocolTestStruct().set_i64_field(1));
+  this->test(ProtocolTestStruct().set_i64_field(1));
 }
 
 TYPED_TEST_P(ProtocolTest, string_list) {
   List< ::std::string, Type::STRING > string_list;
   string_list.push_back("test");
-  test(ProtocolTestStruct().set_string_list_field(string_list));
+  this->test(ProtocolTestStruct().set_string_list_field(string_list));
 }
 
 TYPED_TEST_P(ProtocolTest, string_list_empty) {
-  test(ProtocolTestStruct().set_string_list_field(
+  this->test(ProtocolTestStruct().set_string_list_field(
          List<::std::string, Type::STRING>()));
 }
 
 TYPED_TEST_P(ProtocolTest, string_string_map) {
   Map<::std::string, Type::STRING, ::std::string, Type::STRING> string_string_map;
   string_string_map.insert(make_pair("test", "test"));
-  test(ProtocolTestStruct().set_string_string_map_field(string_string_map));
+  this->test(ProtocolTestStruct().set_string_string_map_field(string_string_map));
 }
 
 TYPED_TEST_P(ProtocolTest, string_string_map_empty) {
-  test(ProtocolTestStruct().set_string_string_map_field(
+  this->test(ProtocolTestStruct().set_string_string_map_field(
          Map<::std::string, Type::STRING, ::std::string, Type::STRING>()));
 }
 
 TYPED_TEST_P(ProtocolTest, string_set) {
   Set<::std::string, Type::STRING> string_set;
   string_set.insert("test");
-  test(ProtocolTestStruct().set_string_set_field(string_set));
+  this->test(ProtocolTestStruct().set_string_set_field(string_set));
 }
 
 TYPED_TEST_P(ProtocolTest, string_set_empty) {
-  test(ProtocolTestStruct().set_string_set_field(
+  this->test(ProtocolTestStruct().set_string_set_field(
          Set<::std::string, Type::STRING>()));
 }
 
 TYPED_TEST_P(ProtocolTest, string) {
-  test(ProtocolTestStruct().set_string_field(::std::string("test")));
+  this->test(ProtocolTestStruct().set_string_field(::std::string("test")));
 }
 
 TYPED_TEST_P(ProtocolTest, struct_) {
-  test(ProtocolTestStruct().set_struct_field(
+  this->test(ProtocolTestStruct().set_struct_field(
          NestedProtocolTestStruct().set_string_field("test")));
 }
 
 TYPED_TEST_P(ProtocolTest, struct_empty) {
-  test(ProtocolTestStruct().set_struct_field(NestedProtocolTestStruct()));
+  this->test(ProtocolTestStruct().set_struct_field(NestedProtocolTestStruct()));
 }
 
 REGISTER_TYPED_TEST_CASE_P(

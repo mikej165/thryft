@@ -6,3 +6,6 @@ source_group("Source Files\\thryft_test\\native\\test\\" FILES ${SRC_THRYFT_TEST
 source_group("Source Files\\thryft_test\\protocol\\test\\" FILES ${SRC_THRYFT_TEST_PROTOCOL_TEST})
 add_executable(thryft_test ${SRC} ${SRC_THRYFT_TEST_NATIVE_TEST} ${SRC_THRYFT_TEST_PROTOCOL_TEST})
 add_test(thryft_test thryft_test --gtest_output=xml:${CMAKE_BINARY_DIR}/gtest_output/thryft_test.xml)
+if (NOT WIN32)
+	target_link_libraries(thryft_test pthread)
+endif()
