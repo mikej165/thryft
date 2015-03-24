@@ -75,7 +75,7 @@ class CppFunction(Function, _CppNamedConstruct):
 
         def _cpp_method_accept(self):
             return {'accept': """\
-void accept(RequestHandler& handler) const {
+void accept(RequestHandler& handler) const override {
   handler.handle(*this);
 }""" % locals()}
 

@@ -162,7 +162,7 @@ virtual ~%(name)s() {
                                  for field in self.fields)
         name = self.cpp_name()
         return {'clone': """\
-::std::unique_ptr< %(name)s > clone() const {
+::std::unique_ptr<%(name)s> clone() const {
   return ::std::unique_ptr< %(name)s >(new %(name)s(%(member_names)s));
 }""" % locals()}
 

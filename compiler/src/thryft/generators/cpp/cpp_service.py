@@ -97,7 +97,7 @@ public:
 
   class RequestHandler : public %(service_parent_class_qname)s<%(name)s>::Messages::RequestHandler {
   public:
-    void handle(%(service_parent_class_qname)s<%(name)s>::Messages::Request& request) override {
+    void handle(Request& request) override {
       request.accept(*this);
     }
 
