@@ -11,6 +11,10 @@ class OutputProtocol;
 
 class Base {
   public:
+    virtual ~Base() {
+    }
+
+  public:
     virtual void read(protocol::InputProtocol& iprot) = 0;
     virtual void write(protocol::OutputProtocol& oprot) const = 0;
 };
