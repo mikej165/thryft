@@ -31,7 +31,6 @@
 #-------------------------------------------------------------------------------
 
 from thryft.generator.document import Document
-from thryft.generators.cpp._cpp_compound_type import _CppCompoundType
 from thryft.generators.cpp._cpp_named_construct import _CppNamedConstruct
 import os.path
 from yutil import deduplist, lpad, rpad
@@ -157,7 +156,7 @@ class CppDocument(Document, _CppNamedConstruct):
             out_dir_path = os.path.join(out_dir_path, self.cpp_namespace().replace('.', os.path.sep))
         except KeyError:
             pass
-        return self._save_to_file(os.path.join(out_dir_path, self.name + '.hpp'))
+        return self._save_to_file(os.path.join(out_dir_path, self.cpp_name() + '.hpp'))
 
     def _save_to_file(self, out_file_path):
         return self._save_to_file_helper(self.cpp_repr(), out_file_path)

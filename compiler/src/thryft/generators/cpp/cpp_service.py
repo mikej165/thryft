@@ -45,6 +45,9 @@ class CppService(Service, _CppNamedConstruct):
             includes.extend(function.cpp_response_type().cpp_includes_definition())
         return includes
 
+    def cpp_includes_use(self):
+        return self._parent_document().cpp_includes_use()
+
     def cpp_extends(self):
         return self.extends
 
