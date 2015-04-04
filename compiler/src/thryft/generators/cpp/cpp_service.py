@@ -110,8 +110,8 @@ public:
 %(message_types)s
 
   static ::std::unique_ptr< %(service_parent_class_qname)s<%(name)s>::Messages::Request > read_request(const char* function_name, ::thryft::protocol::InputProtocol& iprot, const ::thryft::protocol::Type& as_type) {
-    if (function_name == NULL || function_name[0] == 0) {
-      return NULL;
+    if (!function_name || function_name[0] == 0) {
+      return ::std::unique_ptr< %(service_parent_class_qname)s<%(name)s>::Messages::Request >();
     }
 
 %(read_requests)s
