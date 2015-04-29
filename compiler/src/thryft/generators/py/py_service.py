@@ -36,6 +36,9 @@ from yutil import indent
 
 
 class PyService(Service, _PyNamedConstruct):
+    def _py_extends(self):
+        return ['object']
+
     def py_imports_definition(self, caller_stack=None):
         imports = []
         for function in self.functions:
@@ -45,23 +48,26 @@ class PyService(Service, _PyNamedConstruct):
     def _py_imports_use(self, caller_stack):
         raise NotImplementedError
 
+    def _py_methods(self):
+        methods = []
+        for function in self.functions:
+            methods.append(function.py_public_delegating_definition())
+            methods.append(function.py_protected_abstract_definition())
+        return methods
+
     def py_repr(self):
+        extends = ', '.join(self._py_extends())
+
         name = self.py_name()
 
         if len(self.functions) == 0:
             return """\
-class %(name)s(object):
+class %(name)s(%(extends)s):
     pass
 """ % locals()
 
-        methods = \
-            "\n\n".join(indent(' ' * 4,
-                ("\n".join((
-                     function.py_public_delegating_definition(),
-                     function.py_protected_abstract_definition()
-                 ))
-                for function in self.functions)
-             ))
+        methods = "\n\n".join(indent(' ' * 4, self._py_methods()))
+
         return """\
-class %(name)s(object):
+class %(name)s(%(extends)s):
 %(methods)s""" % locals()

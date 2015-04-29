@@ -34,6 +34,9 @@ from thryft.generators.py._py_type import _PyType
 
 
 class _PyBaseType(_PyType):
+    def _py_imports_use(self, *args, **kwds):
+        return []
+
     def py_read_protocol(self):
         name = self.name
         return "iprot.read_%(name)s()" % locals()

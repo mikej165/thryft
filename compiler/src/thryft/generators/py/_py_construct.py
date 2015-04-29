@@ -49,7 +49,7 @@ class _PyConstruct(object):
         return imports
 
     def _py_imports_definition(self, caller_stack):
-        return []
+        raise NotImplementedError(class_qname(self) + '._py_imports_definition')
 
     def py_imports_use(self, caller_stack=None):
         if caller_stack is None:
@@ -66,7 +66,7 @@ class _PyConstruct(object):
         return imports
 
     def _py_imports_use(self, caller_stack):
-        return self._py_imports_definition(caller_stack=caller_stack)
+        raise NotImplementedError(class_qname(self) + '._py_imports_use')
 
     def py_repr(self):
         raise NotImplementedError(class_qname(self) + '.py_repr')

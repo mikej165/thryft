@@ -119,7 +119,10 @@ if (!(%(value)s instanceof Date)) {
         return []
 
     def py_imports_use(self, caller_stack=None):
-        return ['from datetime import datetime', 'from time import mktime']
+#         import traceback
+#         for line in traceback.format_stack():
+#             print line
+        return ['from datetime import datetime']
 
     def py_read_protocol(self):
         return 'iprot.read_date_time()'

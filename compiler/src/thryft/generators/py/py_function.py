@@ -41,7 +41,7 @@ class PyFunction(Function, _PyNamedConstruct):
         for parameter in self.parameters:
             imports.extend(parameter.py_imports_use(caller_stack=caller_stack))
         if self.return_field is not None:
-            imports.extend(self.return_field.type.py_imports_use(caller_stack=caller_stack))
+            imports.extend(self.return_field.py_imports_use(caller_stack=caller_stack))
         imports.append('import __builtin__')
         return imports
 

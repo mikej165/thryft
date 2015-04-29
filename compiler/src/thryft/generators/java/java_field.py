@@ -136,7 +136,7 @@ if (%s().isPresent()) {
         else:
             return self.java_parameter(boxed=boxed, final=final)
 
-    def java_member_declaration(self, boxed=None, final=False):
+    def java_member_declaration(self, assign_value=True, boxed=None, final=False):
         javadoc = self.java_doc()
         lhs = self.java_parameter(boxed=boxed, final=final)
         if self.value is not None:
@@ -144,7 +144,7 @@ if (%s().isPresent()) {
                 rhs = str(self.java_value())
             else:
                 rhs = "com.google.common.base.Optional.of(%s);" % self.java_value()
-        elif not self.required and not final:
+        elif not self.required and not final and assign_value:
             rhs = 'com.google.common.base.Optional.absent()'
         else:
             rhs = ''

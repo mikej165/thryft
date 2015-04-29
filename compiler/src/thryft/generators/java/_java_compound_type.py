@@ -370,8 +370,8 @@ public %(name)s(%(parameters)s) {
         return ["org.thryft.Base<%(name)s>" % locals()]
 
     def _java_member_declarations(self):
-        final = not self._parent_generator().mutable_compound_types
-        return [field.java_member_declaration(final=final)
+        mutable = self._parent_generator().mutable_compound_types
+        return [field.java_member_declaration(final=not mutable, assign_value=not mutable)
                 for field in self.fields]
 
     def _java_method_builder(self):

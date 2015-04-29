@@ -50,6 +50,9 @@ class PyMapType(MapType, _PyContainerType):
         imports.append('from itertools import ifilterfalse')
         return imports
 
+    def _py_imports_use(self, caller_stack):
+        return []
+
     def py_literal(self, value):
         return "{%s}" % ', '.join(self.key_type.py_literal(key) + ':' + self.value_type.py_literal(value_) for key, value_ in value.iteritems())
 
