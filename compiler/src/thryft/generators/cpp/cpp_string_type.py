@@ -1,5 +1,5 @@
 
-#-------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Copyright (c) 2015, Minor Gordon
 # All rights reserved.
 #
@@ -29,7 +29,7 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
 # OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 # OF SUCH DAMAGE.
-#-------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 from thryft.generator.string_type import StringType
 from thryft.generators.cpp._cpp_base_type import _CppBaseType

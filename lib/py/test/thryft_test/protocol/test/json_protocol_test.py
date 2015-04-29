@@ -1,4 +1,4 @@
-#-------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Copyright (c) 2015, Minor Gordon
 # All rights reserved.
 #
@@ -28,7 +28,7 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
 # OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 # OF SUCH DAMAGE.
-#-------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 from thryft.protocol.json_input_protocol import JsonInputProtocol
 from thryft.protocol.json_output_protocol import JsonOutputProtocol

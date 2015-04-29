@@ -1,4 +1,4 @@
-#-------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Copyright (c) 2015, Minor Gordon
 # All rights reserved.
 #
@@ -28,7 +28,7 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
 # OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 # OF SUCH DAMAGE.
-#-------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 from thryft.generator.service import Service
 from thryft.generators.thrift._thrift_named_construct import _ThriftNamedConstruct

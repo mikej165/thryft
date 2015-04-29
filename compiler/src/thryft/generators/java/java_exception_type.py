@@ -1,4 +1,4 @@
-#-------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Copyright (c) 2015, Minor Gordon
 # All rights reserved.
 #
@@ -28,7 +28,7 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
 # OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 # OF SUCH DAMAGE.
-#-------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 from thryft.generator.exception_type import ExceptionType
 from thryft.generators.java._java_compound_type import _JavaCompoundType
