@@ -51,7 +51,7 @@ import com.google.common.annotations.GwtIncompatible;
 
 @GwtIncompatible("")
 public final class JacksonJsonInputProtocol extends
-        JsonInputProtocol<JacksonJsonInputProtocol.NestedInputProtocol> {
+JsonInputProtocol<JacksonJsonInputProtocol.NestedInputProtocol> {
     public abstract class NestedInputProtocol extends AbstractInputProtocol {
         private NestedInputProtocol(final JsonNode node) {
             myNode = node;
@@ -115,6 +115,22 @@ public final class JacksonJsonInputProtocol extends
         }
 
         @Override
+        public String readString() throws InputProtocolException {
+            return _readChildNode().asText();
+        }
+
+        @Override
+        public String readStructBegin() throws InputProtocolException {
+            final JsonNode node = _readChildNode();
+            if (!node.isObject()) {
+                throw new InputProtocolException("expected JSON object");
+            }
+            _getInputProtocolStack().push(
+                    __createStructObjectInputProtocol(node));
+            return "";
+        }
+
+        @Override
         public Object readVariant() throws InputProtocolException {
             final JsonNode value = _readChildNode();
             if (value.isBoolean()) {
@@ -130,22 +146,6 @@ public final class JacksonJsonInputProtocol extends
             } else {
                 throw new UnsupportedOperationException();
             }
-        }
-
-        @Override
-        public String readString() throws InputProtocolException {
-            return _readChildNode().asText();
-        }
-
-        @Override
-        public String readStructBegin() throws InputProtocolException {
-            final JsonNode node = _readChildNode();
-            if (!node.isObject()) {
-                throw new InputProtocolException("expected JSON object");
-            }
-            _getInputProtocolStack().push(
-                    __createStructObjectInputProtocol(node));
-            return "";
         }
 
         protected JsonNode _getMyNode() {
@@ -236,30 +236,30 @@ public final class JacksonJsonInputProtocol extends
 
         @Override
         public FieldBegin readFieldBegin() throws InputProtocolException {
-            if (!fieldNameStack.isEmpty()) {
-                final JsonNode value = _getMyNode().get(fieldNameStack.peek());
-                Type type;
-                if (value.isArray()) {
-                    type = Type.LIST;
-                } else if (value.isBoolean()) {
-                    type = Type.BOOL;
-                } else if (value.isDouble()) {
-                    type = Type.DOUBLE;
-                } else if (value.isInt()) {
-                    type = Type.I32;
-                } else if (value.isLong()) {
-                    type = Type.I64;
-                } else if (value.isObject()) {
-                    type = Type.STRUCT;
-                } else if (value.isTextual()) {
-                    type = Type.STRING;
-                } else {
-                    type = Type.VOID_;
-                }
-                return new FieldBegin(fieldNameStack.peek(), type, (short) -1);
-            } else {
-                return new FieldBegin();
+            if (fieldNameStack.isEmpty()) {
+                return FieldBegin.STOP;
             }
+
+            final JsonNode value = _getMyNode().get(fieldNameStack.peek());
+            Type type;
+            if (value.isArray()) {
+                type = Type.LIST;
+            } else if (value.isBoolean()) {
+                type = Type.BOOL;
+            } else if (value.isDouble()) {
+                type = Type.DOUBLE;
+            } else if (value.isInt()) {
+                type = Type.I32;
+            } else if (value.isLong()) {
+                type = Type.I64;
+            } else if (value.isObject()) {
+                type = Type.STRUCT;
+            } else if (value.isTextual()) {
+                type = Type.STRING;
+            } else {
+                type = Type.VOID_;
+            }
+            return new FieldBegin(fieldNameStack.peek(), type, (short) -1);
         }
 
         @Override

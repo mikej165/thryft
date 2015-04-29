@@ -49,7 +49,7 @@ import com.google.gwt.json.client.JSONValue;
 import com.googlecode.gwt.crypto.bouncycastle.util.encoders.Base64;
 
 public class GwtJsonInputProtocol extends
-        JsonInputProtocol<NestedInputProtocol> {
+JsonInputProtocol<NestedInputProtocol> {
     abstract class NestedInputProtocol extends AbstractInputProtocol {
         protected NestedInputProtocol(final JSONValue node) {
             myNode = node;
@@ -119,20 +119,6 @@ public class GwtJsonInputProtocol extends
         }
 
         @Override
-        public Object readVariant() throws InputProtocolException {
-            final JSONValue node = _readChildNode();
-            if (node.isBoolean() != null) {
-                return ((JSONBoolean) node).booleanValue();
-            } else if (node.isNumber() != null) {
-                return ((JSONNumber) node).doubleValue();
-            } else if (node.isString() != null) {
-                return ((JSONString) node).stringValue();
-            } else {
-                throw new UnsupportedOperationException();
-            }
-        }
-
-        @Override
         public String readString() throws InputProtocolException {
             return _readChildNode().isString().stringValue();
         }
@@ -146,6 +132,20 @@ public class GwtJsonInputProtocol extends
             _getInputProtocolStack().push(
                     __createStructObjectInputProtocol(node));
             return "";
+        }
+
+        @Override
+        public Object readVariant() throws InputProtocolException {
+            final JSONValue node = _readChildNode();
+            if (node.isBoolean() != null) {
+                return ((JSONBoolean) node).booleanValue();
+            } else if (node.isNumber() != null) {
+                return ((JSONNumber) node).doubleValue();
+            } else if (node.isString() != null) {
+                return ((JSONString) node).stringValue();
+            } else {
+                throw new UnsupportedOperationException();
+            }
         }
 
         protected JSONValue _getMyNode() {
@@ -244,7 +244,7 @@ public class GwtJsonInputProtocol extends
                 return new FieldBegin(fieldNameStack.peek(), Type.VOID_,
                         (short) -1);
             } else {
-                return new FieldBegin();
+                return FieldBegin.STOP;
             }
         }
 

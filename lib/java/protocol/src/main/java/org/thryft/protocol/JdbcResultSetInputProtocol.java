@@ -86,7 +86,7 @@ public class JdbcResultSetInputProtocol extends AbstractInputProtocol {
         while (!fieldBeginStack.isEmpty()) {
             return fieldBeginStack.peek();
         }
-        return new FieldBegin();
+        return FieldBegin.STOP;
     }
 
     @Override

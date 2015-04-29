@@ -5,10 +5,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.common.base.MoreObjects;
 
 public class FieldBegin {
-    public FieldBegin() {
-        this("", Type.STOP, (short) 0);
-    }
-
     public FieldBegin(final String name, final Type type, final short id) {
         this.id = id;
         this.name = checkNotNull(name);
@@ -34,6 +30,9 @@ public class FieldBegin {
     }
 
     private final short id;
+
     private final String name;
     private final Type type;
+    public final static FieldBegin STOP = new FieldBegin("", Type.STOP,
+            (short) 0);
 }
