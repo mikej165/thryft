@@ -78,28 +78,26 @@ public Builder() {
                     for field in self.fields]
 
         def _java_method_build(self):
-            all_field_names = \
-                ', '.join(field.java_name() for field in self.fields)
+            fields = []
+            qname = self.java_qname()
+            for field in self.fields:
+                field_name = field.java_name()
+                fields.append("""com.google.common.base.Preconditions.checkNotNull(%(field_name)s, "%(qname)s: missing %(field_name)s")""" % locals())
+            fields = ', '.join(fields)
             name = self.java_name()
             return {'build': """\
 public %(name)s build() {
-    return _build(%(all_field_names)s);
+    return _build(%(fields)s);
 }""" % locals()}
 
         def _java_method__build(self):
             all_field_names = \
                 ', '.join(field.java_name() for field in self.fields)
-            checks = \
-                lpad("\n", indent(' ' * 4, "\n".join(
-                    "com.google.common.base.Preconditions.checkNotNull(%s);" % field.java_name()
-                    for field in self.fields
-                    if field.required
-                )))
             field_parameters = \
                 ', '.join(field.java_parameter(final=True) for field in self.fields)
             name = self.java_name()
             return {'_build': """\
-protected %(name)s _build(%(field_parameters)s) {%(checks)s
+protected %(name)s _build(%(field_parameters)s) {
     return new %(name)s(%(all_field_names)s);
 }""" % locals()}
 
