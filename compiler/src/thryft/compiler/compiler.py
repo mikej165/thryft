@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# Copyright (c) 2013, Minor Gordon
+# Copyright (c) 2015, Minor Gordon
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
