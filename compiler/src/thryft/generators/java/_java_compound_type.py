@@ -370,7 +370,8 @@ public %(name)s(%(parameters)s) {
         return ["org.thryft.Base<%(name)s>" % locals()]
 
     def _java_member_declarations(self):
-        return [field.java_member_declaration(final=True)
+        final = not self._parent_generator().mutable_compound_types
+        return [field.java_member_declaration(final=final)
                 for field in self.fields]
 
     def _java_method_builder(self):
@@ -471,7 +472,7 @@ public int hashCode() {
     return hashCode;
 }""" % locals()}
 
-    def _java_method_replace(self):
+    def _java_method_replacers(self):
         methods = {}
         compound_type_name = self.java_name()
         all_field_names = [field.java_name() for field in self.fields]
@@ -498,6 +499,15 @@ public %(compound_type_name)s %(method_name)s(%(field_parameter)s) {
 }""" % locals()
 
         return methods
+
+    def _java_method_setters(self):
+        if not self._parent_generator().mutable_compound_types:
+            return {}
+        setters = {}
+        for field in self.fields:
+            for field_setter_i, field_setter in enumerate(field.java_setters()):
+                setters[field.java_setter_name() + str(field_setter_i)] = field_setter
+        return setters
 
     def _java_method_to_string(self):
         add_statements = []
@@ -590,7 +600,8 @@ public void write(final org.thryft.protocol.OutputProtocol oprot, final org.thry
         methods.update(self._java_method_get())
         methods.update(self._java_method_getters())
         methods.update(self._java_method_hash_code())
-        methods.update(self._java_method_replace())
+        methods.update(self._java_method_replacers())
+        methods.update(self._java_method_setters())
         methods.update(self._java_method_to_string())
         methods.update(self._java_method_write())  # Must be after TBase
         return methods

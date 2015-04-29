@@ -54,3 +54,11 @@ class JavaGenerator(Generator):
     from thryft.generators.java.java_set_type import JavaSetType as SetType  # @UnusedImport
     from thryft.generators.java.java_string_type import JavaStringType as StringType  # @UnusedImport
     from thryft.generators.java.java_struct_type import JavaStructType as StructType  # @UnusedImport
+
+    def __init__(self, mutable_compound_types=False):
+        self.__mutable_compound_types = mutable_compound_types
+
+    @property
+    def mutable_compound_types(self):
+        return self.__mutable_compound_types
+
