@@ -120,6 +120,21 @@ public Builder set(final String name, @javax.annotation.Nullable final Object va
     }
 }""" % locals()}
 
+        def _java_method_set_if_present(self):
+            sets = []
+            for field in self.fields:
+                sets.append(field.java_set_if_present())
+            sets = "\n".join(indent(' ' * 4, sets))
+            name = self.java_name()
+            return {'setIfPresent': """\
+public Builder setIfPresent(final %(name)s other) {
+    com.google.common.base.Preconditions.checkNotNull(other);
+
+%(sets)s
+
+    return this;
+}""" % locals()}
+
         def _java_method_setters(self):
             setters = {}
             for field in self.fields:
@@ -133,6 +148,7 @@ public Builder set(final String name, @javax.annotation.Nullable final Object va
             methods.update(self._java_method__build())
             methods.update(self._java_method_getters())
             methods.update(self._java_method_set())
+            methods.update(self._java_method_set_if_present())
             methods.update(self._java_method_setters())
             return methods
 

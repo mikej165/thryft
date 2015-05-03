@@ -211,6 +211,18 @@ try {
         return ("""\
 case "%(name)s": %(setter_name)s((%(type_name)s)value); return this;""" % locals(),)
 
+    def java_set_if_present(self):
+        getter_name = self.java_getter_name()
+        setter_name = self.java_setter_name()
+        if self.required:
+            return """\
+%(setter_name)s(other.%(getter_name)s());""" % locals()
+        else:
+            return """\
+if (other.%(getter_name)s().isPresent()) {
+    %(setter_name)s(other.%(getter_name)s());
+}""" % locals()
+
     def java_setters(self, return_type_name='void'):
         setter_name = self.java_setter_name()
         name = self.java_name()
