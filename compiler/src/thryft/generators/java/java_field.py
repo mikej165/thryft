@@ -118,8 +118,8 @@ if (%s().isPresent()) {
 }""" % (self.java_getter_name(), hashCode_update)
         return hashCode_update
 
-    def java_initializer(self, check_optional_not_null=True):
-        return 'this.' + self.java_name() + ' = ' + self.java_validation(check_optional_not_null=check_optional_not_null) + ';'
+    def java_initializer(self, check_optional_not_null=True, nullable=False):
+        return 'this.' + self.java_name() + ' = ' + self.java_validation(check_optional_not_null=check_optional_not_null, nullable=nullable) + ';'
 
     def java_local_declaration(self, boxed=None, final=False):
         if self.value is not None:
@@ -154,13 +154,13 @@ if (%s().isPresent()) {
     def java_name(self, boxed=False):
         return lower_camelize(self.name)
 
-    def java_parameter(self, boxed=None, final=False):
+    def java_parameter(self, boxed=None, final=False, nullable=False):
         if boxed is None:
             boxed = not self.required
         parameter = []
         if final:
             parameter.append('final')
-        parameter.append(self.__java_type_name(boxed=boxed))
+        parameter.append(self.__java_type_name(boxed=boxed, nullable=nullable))
         parameter.append(self.java_name())
         return ' '.join(parameter)
 
@@ -232,13 +232,15 @@ public %(return_type_name)s %(setter_name)s(@javax.annotation.Nullable final %(t
     def java_setter_name(self):
         return 'set' + upper_camelize(self.name)
 
-    def __java_type_name(self, boxed=None):
+    def __java_type_name(self, boxed=None, nullable=False):
         if self.required:
             return self.type.java_declaration_name(boxed=boxed)
+        elif nullable:
+            return "@javax.annotation.Nullable %s" % self.type.java_declaration_name(boxed=True)
         else:
             return "com.google.common.base.Optional<%s>" % self.type.java_declaration_name(boxed=True)
 
-    def java_validation(self, check_optional_not_null=True, value=None):
+    def java_validation(self, check_optional_not_null=True, value=None, nullable=False):
         name = self.java_name()
         parent_qname = self.parent.java_qname()
         if value is None:
@@ -247,10 +249,13 @@ public %(return_type_name)s %(setter_name)s(@javax.annotation.Nullable final %(t
             value_class = ' ' + self.type.java_qname() + '.class,'
         else:
             value_class = ''
-        java_validation = value
-        if self.type.java_is_reference():
-            if self.required or check_optional_not_null:
-                java_validation = """com.google.common.base.Preconditions.checkNotNull(%(java_validation)s, "%(parent_qname)s: missing %(name)s")""" % locals()
+        if not self.required and nullable:
+            java_validation = "com.google.common.base.Optional.fromNullable(%(value)s)" % locals()
+        else:
+            java_validation = value
+            if self.type.java_is_reference():
+                if self.required or check_optional_not_null:
+                    java_validation = """com.google.common.base.Preconditions.checkNotNull(%(java_validation)s, "%(parent_qname)s: missing %(name)s")""" % locals()
         if self.type.java_has_length():
             validation = {}
             for annotation in self.annotations:

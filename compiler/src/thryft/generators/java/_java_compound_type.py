@@ -301,23 +301,6 @@ public %(name)s(final org.thryft.protocol.InputProtocol iprot, final org.thryft.
 public %(name)s(%(parameters)s) {%(initializers)s
 }""" % locals()
 
-    def _java_constructor_total(self):
-        if len(self.fields) == 0:
-            return None  # Will be covered by default constructor
-
-        initializers = \
-            "\n".join(indent(' ' * 4,
-                (field.java_initializer()
-                 for field in self.fields)
-            ))
-        name = self.java_name()
-        parameters = ', '.join(field.java_parameter(final=True)
-                                for field in self.fields)
-        return """\
-public %(name)s(%(parameters)s) {
-%(initializers)s
-}""" % locals()
-
     def _java_constructor_total_boxed(self):
         if len(self.fields) == 0:
             return None  # Will be covered by default constructor
@@ -338,6 +321,7 @@ public %(name)s(%(parameters)s) {
 public %(name)s(%(parameters)s) {
 %(initializers)s
 }""" % locals()
+            # else will be covered by total_optional constructor
 
     def _java_constructors(self):
         constructors = []
@@ -346,12 +330,57 @@ public %(name)s(%(parameters)s) {
             self._java_constructor_copy(),
             self._java_constructor_protocol(),
             self._java_constructor_required(),
-            self._java_constructor_total(),
-            self._java_constructor_total_boxed()
+            self._java_constructor_total_boxed(),
+            self._java_constructor_total_nullable(),
+            self._java_constructor_total_optional(),
         ):
             if constructor is not None:
                 constructors.append(constructor)
         return constructors
+
+    def _java_constructor_total_nullable(self):
+        if len(self.fields) == 0:
+            return None  # Will be covered by default constructor
+        has_optional_field = False
+        for field in self.fields:
+            if not field.required:
+                has_optional_field = True
+                break
+        if not has_optional_field:
+            return None  # Will be covered by total_optional constructor
+
+        initializers = \
+            "\n".join(indent(' ' * 4,
+                (field.java_initializer(nullable=True)
+                 for field in self.fields)
+            ))
+        name = self.java_name()
+        parameters = \
+            ', '.join(field.java_parameter(final=True, nullable=True)
+                      for field in self.fields)
+        return """\
+public %(name)s(%(parameters)s) {
+%(initializers)s
+}
+""" % locals()
+
+    def _java_constructor_total_optional(self):
+        if len(self.fields) == 0:
+            return None  # Will be covered by default constructor
+
+        initializers = \
+            "\n".join(indent(' ' * 4,
+                (field.java_initializer(nullable=False)
+                 for field in self.fields)
+            ))
+        name = self.java_name()
+        parameters = ', '.join(field.java_parameter(final=True, nullable=False)
+                                for field in self.fields)
+        return """\
+public %(name)s(%(parameters)s) {
+%(initializers)s
+}
+""" % locals()
 
     def java_default_value(self):
         return 'null'
