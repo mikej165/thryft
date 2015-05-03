@@ -126,6 +126,9 @@ def update(self, %(other_name)s):
 class Builder:%(sections)s
 """ % locals()
 
+    def _py_builder(self):
+        return self._PyBuilder(self).py_repr()
+
     def py_check(self, value):
         qname = self.py_qname()
         return "isinstance(%(value)s, %(qname)s)" % locals()
@@ -344,7 +347,9 @@ def write(self, oprot):
     def py_repr(self):
         extends = ', '.join(self._py_extends())
         sections = []
-        sections.append(indent(' ' * 4, self._PyBuilder(self).py_repr()))
+        builder = self._py_builder()
+        if builder is not None:
+            sections.append(indent(' ' * 4, builder))
         sections.append(indent(' ' * 4, "\n".join(self._py_methods())))
         sections = "\n\n".join(sections)
         name = self.py_name()

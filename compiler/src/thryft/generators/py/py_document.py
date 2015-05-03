@@ -38,18 +38,23 @@ import os.path
 
 class PyDocument(Document, _PyNamedConstruct):
     def py_repr(self):
+        sections = []
         imports = []
 # Don't import anything that isn't required
 #        for include in self.includes:
 #            imports.append(str(include))
         for definition in self.definitions:
             imports.extend(definition.py_imports_definition())
-        imports = "\n".join(list(sorted(set(imports))))
+        if len(imports) > 0:
+            sections.append("\n".join(list(sorted(set(imports)))) + "\n")
 
         definitions = \
             "\n\n".join(definition.py_repr()
                          for definition in self.definitions)
-        return rpad(imports, "\n\n\n") + rpad(definitions, "\n")
+        if len(definitions) > 0:
+            sections.append(definitions)
+
+        return rpad("\n\n".join(sections), "\n")
 
     def save(self, out_path):
         out_file_path = Document.save(self, out_path)
