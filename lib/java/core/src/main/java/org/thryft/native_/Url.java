@@ -10,5 +10,4 @@ public abstract class Url extends Uri {
     }
 
     public abstract Authority getAuthority();
-
 }
