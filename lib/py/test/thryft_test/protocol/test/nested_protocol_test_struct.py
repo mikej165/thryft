@@ -1,7 +1,6 @@
 from __future__ import absolute_import; import decimal
 from datetime import datetime
 from itertools import ifilterfalse
-from time import mktime
 import __builtin__
 import thryft_test.protocol.test.protocol_test_enum
 

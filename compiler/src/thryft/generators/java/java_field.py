@@ -46,6 +46,8 @@ class JavaField(Field, _JavaNamedConstruct):
             this_value += '.get()'
             other_value += '.get()'
         type_compare_to = self.type.java_compare_to(this_value, other_value)
+        if type_compare_to is None:
+            return None
         compare_to = """\
 result = %(type_compare_to)s;
 if (result != 0) {

@@ -67,25 +67,25 @@ public abstract class StoreTest {
             // Use a long string to overflow SimpleDBStore's attribute
             // value limit of 1024
             final ProtocolTestStruct model = new ProtocolTestStruct.Builder()
-                    .setBoolField(true)
-                    .setDateTimeField(new Date())
-                    .setDecimalField(new BigDecimal(modelI))
-                    .setEnumField(ProtocolTestEnum.ENUMERATOR1)
-                    .setI8Field((byte) modelI)
-                    .setI16Field((short) modelI)
-                    .setI32Field(modelI)
-                    .setI64Field(modelI)
-                    .setStringListField(
-                            ImmutableList.of("Test model "
-                                    + StringUtils.repeat("0", 1024)
-                                    + Integer.toString(modelI)))
-                    .setStringStringMapField(
-                            ImmutableMap.of("key", "Test model " + modelI))
-                    .setRequiredI32Field(1).setRequiredStringField("test")
-                    .setStringSetField(ImmutableSet.of("Test model " + modelI))
-                    .setStringField("testmodel" + modelI)
-                    .setStructField(new NestedProtocolTestStruct(1, "test"))
-                    .build();
+            .setBoolField(true)
+            .setDateTimeField(new Date())
+            .setDecimalField(new BigDecimal(modelI))
+            .setEnumField(ProtocolTestEnum.ENUMERATOR1)
+            .setI8Field((byte) modelI)
+            .setI16Field((short) modelI)
+            .setI32Field(modelI)
+            .setI64Field((long) modelI)
+            .setStringListField(
+                    ImmutableList.of("Test model "
+                            + StringUtils.repeat("0", 1024)
+                            + Integer.toString(modelI)))
+                            .setStringStringMapField(
+                                    ImmutableMap.of("key", "Test model " + modelI))
+                                    .setRequiredI32Field(1).setRequiredStringField("test")
+                                    .setStringSetField(ImmutableSet.of("Test model " + modelI))
+                                    .setStringField("testmodel" + modelI)
+                                    .setStructField(new NestedProtocolTestStruct(1, "test"))
+                                    .build();
             models.put(model.getStringField().get(), model);
         }
         this.models = models.build();
@@ -137,7 +137,7 @@ public abstract class StoreTest {
 
     @Test
     public void testGetModelById() throws ModelIoException,
-            NoSuchModelException {
+    NoSuchModelException {
         __putModels();
 
         for (final ImmutableMap.Entry<String, ProtocolTestStruct> modelEntry : models
@@ -149,7 +149,7 @@ public abstract class StoreTest {
 
     @Test
     public void testGetModelByIdCached() throws ModelIoException,
-            NoSuchModelException {
+    NoSuchModelException {
         __putModels();
 
         for (final ImmutableMap.Entry<String, ProtocolTestStruct> modelEntry : models
@@ -200,7 +200,7 @@ public abstract class StoreTest {
 
     @Test
     public void testGetModelsByIds() throws ModelIoException,
-            NoSuchModelException {
+    NoSuchModelException {
         __putModels();
 
         final ImmutableMap<String, ProtocolTestStruct> models = store
@@ -241,7 +241,7 @@ public abstract class StoreTest {
 
     @Test
     public void testHeadModelById() throws ModelIoException,
-            NoSuchModelException {
+    NoSuchModelException {
         __putModels();
 
         for (final String modelId : models.keySet()) {

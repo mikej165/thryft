@@ -2,6 +2,7 @@
 #define _THRYFT_TEST_PROTOCOL_TEST_PROTOCOL_TEST_STRUCT_HPP_
 
 #include <cstdint>
+#include <memory>
 #include <sstream>
 #include <string>
 
@@ -57,8 +58,8 @@ public:
     return bool_field_;
   }
 
-  ProtocolTestStruct& clone() const {
-    return *new ProtocolTestStruct(binary_field_, bool_field_, date_time_field_, decimal_field_, email_address_field_, enum_field_, float_field_, i8_field_, i16_field_, i32_field_, i64_field_, string_list_field_, string_string_map_field_, required_i32_field_, required_string_field_, string_set_field_, string_field_, struct_field_, u32_field_, u64_field_, uri_field_, url_field_, variant_field_);
+  ::std::unique_ptr<ProtocolTestStruct> clone() const {
+    return ::std::unique_ptr< ProtocolTestStruct >(new ProtocolTestStruct(binary_field_, bool_field_, date_time_field_, decimal_field_, email_address_field_, enum_field_, float_field_, i8_field_, i16_field_, i32_field_, i64_field_, string_list_field_, string_string_map_field_, required_i32_field_, required_string_field_, string_set_field_, string_field_, struct_field_, u32_field_, u64_field_, uri_field_, url_field_, variant_field_));
   }
 
   ::thryft::Optional< ::thryft::native::DateTime >& date_time_field() {

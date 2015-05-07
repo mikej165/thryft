@@ -1,7 +1,6 @@
 from __future__ import absolute_import; import decimal
 from datetime import datetime
 from itertools import ifilterfalse
-from time import mktime
 import __builtin__
 import thryft_test.protocol.test.nested_protocol_test_struct
 import thryft_test.protocol.test.protocol_test_enum
@@ -393,7 +392,7 @@ class ProtocolTestStruct(object):
         if self.date_time_field is not None:
             field_reprs.append('date_time_field=' + repr(self.date_time_field))
         if self.decimal_field is not None:
-            field_reprs.append('decimal_field=' + "'" + self.decimal_field.encode('ascii', 'replace') + "'")
+            field_reprs.append('decimal_field=' + repr(self.decimal_field))
         if self.email_address_field is not None:
             field_reprs.append('email_address_field=' + "'" + self.email_address_field.encode('ascii', 'replace') + "'")
         if self.enum_field is not None:
@@ -441,7 +440,7 @@ class ProtocolTestStruct(object):
         if self.date_time_field is not None:
             field_reprs.append('date_time_field=' + repr(self.date_time_field))
         if self.decimal_field is not None:
-            field_reprs.append('decimal_field=' + "'" + self.decimal_field.encode('ascii', 'replace') + "'")
+            field_reprs.append('decimal_field=' + repr(self.decimal_field))
         if self.email_address_field is not None:
             field_reprs.append('email_address_field=' + "'" + self.email_address_field.encode('ascii', 'replace') + "'")
         if self.enum_field is not None:

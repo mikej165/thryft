@@ -5,6 +5,22 @@ import java.util.Collection;
 import com.google.common.collect.ImmutableMap;
 
 public final class Comparators {
+    public static int compare(final byte[] left, final byte[] right) {
+        if (left.length < right.length) {
+            return -1;
+        } else if (right.length < left.length) {
+            return 1;
+        }
+
+        for (int i = 0; i < left.length; i++) {
+            final int ret = Byte.compare(left[i], right[i]);
+            if (ret != 0) {
+                return ret;
+            }
+        }
+        return 0;
+    }
+
     public static <E extends Comparable<E>> int compare(
             final Collection<E> left, final Collection<E> right) {
         int result = ((Integer) left.size()).compareTo(right.size());

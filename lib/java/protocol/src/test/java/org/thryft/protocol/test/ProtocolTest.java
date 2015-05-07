@@ -66,13 +66,13 @@ public abstract class ProtocolTest {
     @Test
     public void testEmailAddress() throws Exception {
         _test(new ProtocolTestStruct.Builder()
-                .setEmailAddressField(new EmailAddress("test@example.com")));
+        .setEmailAddressField(new EmailAddress("test@example.com")));
     }
 
     @Test
     public void testEnum() throws Exception {
         _test(new ProtocolTestStruct.Builder()
-                .setEnumField(ProtocolTestEnum.ENUMERATOR2));
+        .setEnumField(ProtocolTestEnum.ENUMERATOR2));
     }
 
     @Test
@@ -92,7 +92,7 @@ public abstract class ProtocolTest {
 
     @Test
     public void testI64() throws Exception {
-        _test(new ProtocolTestStruct.Builder().setI64Field(1));
+        _test(new ProtocolTestStruct.Builder().setI64Field(1l));
     }
 
     @Test
@@ -128,26 +128,26 @@ public abstract class ProtocolTest {
     @Test
     public void testStringStringMap() throws Exception {
         _test(new ProtocolTestStruct.Builder()
-                .setStringStringMapField(ImmutableMap
-                        .of("testkey", "testvalue")));
+        .setStringStringMapField(ImmutableMap
+                .of("testkey", "testvalue")));
 
         // Empty map
         _test(new ProtocolTestStruct.Builder()
-                .setStringStringMapField(ImmutableMap.<String, String> of()));
+        .setStringStringMapField(ImmutableMap.<String, String> of()));
     }
 
     @Test
     public void testStruct() throws Exception {
         _test(new ProtocolTestStruct.Builder()
-                .setStructField(new NestedProtocolTestStruct.Builder()
-                        .setI32Field(1).setRequiredI32Field(1)
-                        .setRequiredStringField("test").build()));
+        .setStructField(new NestedProtocolTestStruct.Builder()
+        .setI32Field(1).setRequiredI32Field(1)
+        .setRequiredStringField("test").build()));
 
         // Empty struct
         _test(new ProtocolTestStruct.Builder()
-                .setStructField(new NestedProtocolTestStruct.Builder()
-                        .setRequiredI32Field(1).setRequiredStringField("test")
-                        .build()));
+        .setStructField(new NestedProtocolTestStruct.Builder()
+        .setRequiredI32Field(1).setRequiredStringField("test")
+        .build()));
     }
 
     @Test

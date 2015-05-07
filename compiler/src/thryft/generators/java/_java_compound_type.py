@@ -431,9 +431,14 @@ public static Builder builder(final %(name)s other) {
 }""" % locals()}
 
     def _java_method_compare_to(self):
+        field_compare_tos = []
+        for field in self.fields:
+            field_compare_to = field.java_compare_to()
+            if field_compare_to is not None:
+                field_compare_tos.append(field_compare_to)
         field_compare_tos = \
-            pad("\n\n    int result;\n", "\n\n".join(indent(' ' * 4, \
-                (field.java_compare_to() for field in self.fields)
+            pad("\n\n    int result;\n", "\n\n".join(indent(' ' * 4,
+                field_compare_tos
             )), "\n")
         name = self.java_name()
         return {'compareTo': """\

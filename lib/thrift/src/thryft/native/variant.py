@@ -47,7 +47,7 @@ class Variant(object):
         return '::thryft::native::Variant'
 
     def java_compare_to(self, this_value, other_value):
-        return "org.thryft.Comparators.compare(%(this_value)s, %(other_value)s)" % locals()
+        return None
 
     def java_declaration_name(self, boxed=True):
         return 'java.lang.Object'

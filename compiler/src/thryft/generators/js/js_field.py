@@ -66,7 +66,7 @@ if (field.fname == "%(name)s") {
 
     def js_validation(self):
         validation = {}
-        for annotation in self.annotation:
+        for annotation in self.annotations:
             if annotation.name == 'validation':
                 validation = annotation.value.copy()
                 break
