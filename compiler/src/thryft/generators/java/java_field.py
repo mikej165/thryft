@@ -99,8 +99,12 @@ if (this.%(name)s.isPresent()) {
 }""" % locals()
 
     def java_getter_name(self):
-        getter_name = upper_camelize(self.name)
-        if isinstance(self.type, JavaBoolType) and self.required:
+        return JavaField.java_getter_name_static(self)
+
+    @staticmethod
+    def java_getter_name_static(field):
+        getter_name = upper_camelize(field.name)
+        if isinstance(field.type, JavaBoolType) and field.required:
             if getter_name.startswith('Is'):
                 return 'is' + getter_name[2:]
             else:

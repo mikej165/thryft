@@ -32,10 +32,43 @@
 
 from thryft.generator.function import Function
 from thryft.generators.py._py_named_construct import _PyNamedConstruct
-from yutil import indent, pad
+from thryft.generators.py.py_struct_type import PyStructType
+from yutil import indent, pad, upper_camelize
 
 
 class PyFunction(Function, _PyNamedConstruct):
+    class _PyMessageType(PyStructType):
+        pass
+
+    class _PyRequestType(_PyMessageType):
+        def __init__(self, parent_function):
+            PyFunction._PyMessageType.__init__(
+                self,
+                name=upper_camelize(parent_function.name) + 'Request',
+                parent=parent_function.parent
+            )
+            for parameter in parent_function.parameters:
+                self.fields.append(
+                    parameter.__class__(
+                        annotations=parameter.annotations,
+                        doc=parameter.doc,
+                        name=parameter.name,
+                        type=parameter.type,
+                        parent=self,
+                        required=parameter.required,
+                    )
+                )
+
+    class _PyResponseType(_PyMessageType):
+        def __init__(self, parent_function):
+            PyFunction._PyMessageType.__init__(
+                self,
+                name=upper_camelize(parent_function.name) + 'Response',
+                parent=parent_function.parent
+            )
+            if parent_function.return_field is not None:
+                self.fields.append(parent_function.return_field)
+
     def _py_imports_definition(self, caller_stack):
         imports = []
         for parameter in self.parameters:
@@ -107,4 +140,14 @@ def %(name)s(%(parameters)s):%(parameter_checks)s
     %(return_prefix)sself._%(name)s(%(call)s)%(return_suffix)s
 """ % locals()
 
+    def py_message_types(self):
+        message_types = [self.py_request_type()]
+        if not self.oneway:
+            message_types.append(self.py_response_type())
+        return message_types
 
+    def py_request_type(self):
+        return self._PyRequestType(parent_function=self)
+
+    def py_response_type(self):
+        return self._PyResponseType(parent_function=self)
