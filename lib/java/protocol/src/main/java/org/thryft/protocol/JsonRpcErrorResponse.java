@@ -6,7 +6,7 @@ import org.thryft.Base;
 
 @SuppressWarnings("serial")
 public final class JsonRpcErrorResponse extends RuntimeException implements
-        Base<JsonRpcErrorResponse> {
+Base<JsonRpcErrorResponse> {
     public static JsonRpcErrorResponse read(final InputProtocol iprot)
             throws InputProtocolException {
         int code = 0;
@@ -86,17 +86,14 @@ public final class JsonRpcErrorResponse extends RuntimeException implements
         oprot.writeI32(code);
         oprot.writeFieldEnd();
 
-        // if (jsonRpcErrorData != null && jsonRpcErrorData instanceof
-        // org.thryft.TBase<?>) {
-        // oprot.writeFieldBegin(new org.thryft.protocol.TField("@class",
-        // org.thryft.protocol.TType.STRING, (short)-1));
-        // oprot.writeString(jsonRpcErrorData.getClass().getName());
-        // oprot.writeFieldEnd();
-        // oprot.writeFieldBegin(new org.thryft.protocol.TField("data",
-        // org.thryft.protocol.TType.STRUCT, (short)-1));
-        // ((org.thryft.TBase<?>)jsonRpcErrorData).write(oprot);
-        // oprot.writeFieldEnd();
-        // }
+        if (getCause() != null && getCause() instanceof Base<?>) {
+            oprot.writeFieldBegin("@class", Type.STRING, (short) -1);
+            oprot.writeString(getCause().getClass().getName());
+            oprot.writeFieldEnd();
+            oprot.writeFieldBegin("data", Type.STRUCT, (short) -1);
+            ((Base<?>) getCause()).write(oprot);
+            oprot.writeFieldEnd();
+        }
 
         oprot.writeFieldBegin("message", org.thryft.protocol.Type.STRING,
                 (short) -1);
