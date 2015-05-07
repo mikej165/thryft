@@ -30,13 +30,15 @@
 # OF SUCH DAMAGE.
 # -----------------------------------------------------------------------------
 
+import logging
+import os.path
+
+import argparse
+
 from thryft.compiler import Compiler
 from thryft.compiler.compile_exception import CompileException
 from thryft.compiler.scan_exception import ScanException
-from yutil import camelize
-import argparse
-import logging
-import os.path
+from yutil import camelize, decamelize
 
 
 MY_DIR_PATH = os.path.dirname(os.path.realpath(__file__))
@@ -156,7 +158,16 @@ class Main(object):
 
         compiler = Compiler(include_dir_paths=self._include_dir_paths)
         for compile_task in self._get_compile_tasks():
+            if compile_task.generator is None and not self.__dry_run:
+                continue
+
             for i in xrange(2):
+                gen = compile_task.generator.__class__.__name__
+                gen = gen[:gen.index('Generator')]
+                gen = decamelize(gen)
+                if len(self.__gen) > 0 and gen not in self.__gen:
+                    continue
+
                 try:
                     documents = compiler(compile_task.thrift_file_path, generator=compile_task.generator)
                 except (ScanException, CompileException):
@@ -211,6 +222,20 @@ class Main(object):
             else:
                 for generator in generators:
                     yield self._CompileTask(generator=generator, **compile_task_kwds)
+
+    def _get_thrift_file_paths(self, thrift_dir_path):
+        thrift_file_paths = self._thrift_file_paths
+        for dir_path, _, file_names in os.walk(thrift_dir_path):
+            for file_name in file_names:
+                if os.path.splitext(file_name)[1] != '.thrift':
+                    continue
+
+                thrift_file_name = file_name
+                thrift_file_path = os.path.join(dir_path, thrift_file_name)
+                if len(thrift_file_paths) > 0 and not thrift_file_path in thrift_file_paths:
+                    continue
+
+                yield thrift_file_path
 
     @property
     def _include_dir_paths(self):

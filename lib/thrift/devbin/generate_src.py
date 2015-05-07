@@ -90,39 +90,26 @@ class Main(thryft.main.Main):
                   },
              ),
         ):
-            assert os.path.isdir(in_dir_path), in_dir_path
-            for dir_path, _, file_names in os.walk(in_dir_path):
-                for file_name in file_names:
-                    file_base_name, file_ext = os.path.splitext(file_name)
-                    if file_ext != '.thrift':
-                        continue
-                    elif file_base_name in ('float', 'i8', 'u32', 'u64', 'variant'):
-                        continue
-#                     elif os.path.isfile(os.path.join(dir_path, file_base_name + '.py')):
-#                         continue
-                    thrift_file_path = os.path.join(dir_path, file_name)
+            gen = self._gen
+            for thrift_file_path in self._get_thrift_file_paths(in_dir_path):
+                if os.path.splitext(os.path.split(thrift_file_path)[1])[0] in ('float', 'i8', 'u32', 'u64', 'variant'):
+                    continue
 
-                    compile_task_kwds = {
-                        'thrift_file_path': thrift_file_path
-                    }
+                compile_task_kwds = {
+                    'thrift_file_path': thrift_file_path
+                }
 
-                    if self._dry_run:
-                        yield self._CompileTask(generator=None, out=None, **compile_task_kwds)
-                        continue
+                yield self._CompileTask(generator=None, out=None, **compile_task_kwds)
 
-                    if len(gen) == 0:
-                        gen_names = generators.keys()
-                    else:
-                        gen_names = gen.keys()
-                    for gen_name in gen_names:
-                        for generator in generators[gen_name]:
-                            for out_dir_path in out_dir_paths.get(gen_name, []):
-                                yield \
-                                    self._CompileTask(
-                                        generator=generator,
-                                        out=out_dir_path,
-                                        **compile_task_kwds
-                                    )
+                for gen_name in generators.keys() if len(gen) == 0 else gen.keys():
+                    for generator in generators[gen_name]:
+                        for out_dir_path in out_dir_paths.get(gen_name, []):
+                            yield \
+                                self._CompileTask(
+                                    generator=generator,
+                                    out=out_dir_path,
+                                    **compile_task_kwds
+                                )
 
 
 assert __name__ == '__main__'
