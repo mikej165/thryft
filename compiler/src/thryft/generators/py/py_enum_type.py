@@ -58,6 +58,7 @@ class PyEnumType(EnumType, _PyType):
 
         enumerators = []
         enumerator_placeholders = []
+        enumerator_qnames = []
         value_of_statements = []
         if len(self.enumerators) > 0:
             for enumerator in self.enumerators:
@@ -65,12 +66,14 @@ class PyEnumType(EnumType, _PyType):
                 enumerator_value = enumerator.value
                 enumerator_placeholders.append("%(enumerator_name)s = None" % locals())
                 enumerators.append("%(name)s.%(enumerator_name)s = %(name)s('%(enumerator_name)s', %(enumerator_value)u)" % locals())
+                enumerator_qnames.append("%(name)s.%(enumerator_name)s" % locals())
                 value_of_statements.append("""\
 if name == '%(enumerator_name)s' or name == '%(enumerator_value)u':
     return getattr(%(name)s, '%(enumerator_name)s')
 """ % locals())
         enumerators = \
             lpad("\n\n", "\n".join(enumerators))
+        enumerator_qnames = ', '.join(enumerator_qnames)
         enumerator_placeholders = \
             pad("\n", "\n".join(indent(' ' * 4,
                 enumerator_placeholders
@@ -95,7 +98,11 @@ class %(name)s(object):%(enumerator_placeholders)s
 
     @classmethod
     def value_of(cls, name):%(value_of_statements)s
-        raise ValueError(name)%(enumerators)s""" % locals()
+        raise ValueError(name)
+
+    @classmethod
+    def values(cls):
+        return (%(enumerator_qnames)s,)%(enumerators)s""" % locals()
 
     def py_write_protocol(self, value, depth=0):
         qname = self.py_qname()
