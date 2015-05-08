@@ -22,7 +22,8 @@ public final class Comparators {
     }
 
     public static <E extends Comparable<E>> int compare(
-            final Collection<E> left, final Collection<E> right) {
+            final Collection<? extends E> left,
+            final Collection<? extends E> right) {
         int result = ((Integer) left.size()).compareTo(right.size());
         if (result != 0) {
             return result;
