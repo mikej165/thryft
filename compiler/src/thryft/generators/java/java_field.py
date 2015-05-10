@@ -170,6 +170,23 @@ if (%s().isPresent()) {
         parameter.append(self.java_name())
         return ' '.join(parameter)
 
+    def java_null_initializer(self):
+        null_value = self.java_default_value()
+        name = self.java_name()
+        return """\
+%(name)s = %(null_value)s;""" % locals()
+
+    def java_null_value(self):
+        if self.value is not None:
+            if self.required:
+                return str(self.java_value())
+            else:
+                return "com.google.common.base.Optional.of(%s);" % self.java_value()
+        elif not self.required:
+            return 'com.google.common.base.Optional.absent()'
+        else:
+            return 'null'
+
     def java_protocol_initializer(self):
         read_protocol_lhs = self.java_name()
         read_protocol_rhs = self.type.java_read_protocol()
