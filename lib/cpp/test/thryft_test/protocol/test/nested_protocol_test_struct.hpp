@@ -33,8 +33,8 @@ public:
     : required_i32_field_(required_i32_field), required_string_field_(required_string_field) {
   }
 
-  NestedProtocolTestStruct(const ::thryft::Optional< ::std::string >& binary_field, const ::thryft::Optional< bool >& bool_field, const ::thryft::Optional< int8_t >& byte_field, const ::thryft::Optional< ::thryft::native::DateTime >& date_time_field, const ::thryft::Optional< ::thryft::native::Decimal >& decimal_field, const ::thryft::Optional< ::thryft::native::EmailAddress >& email_address_field, const ::thryft::Optional< ::thryft_test::protocol::test::ProtocolTestEnum >& enum_field, const ::thryft::Optional< int16_t >& i16_field, const ::thryft::Optional< int32_t >& i32_field, const ::thryft::Optional< int64_t >& i64_field, const ::thryft::Optional< ::thryft::List< ::std::string, ::thryft::protocol::Type::STRING > >& string_list_field, const ::thryft::Optional< ::thryft::Map< ::std::string, ::thryft::protocol::Type::STRING, ::std::string, ::thryft::protocol::Type::STRING > >& string_string_map_field, const int32_t& required_i32_field, const ::std::string& required_string_field, const ::thryft::Optional< ::thryft::Set< ::std::string, ::thryft::protocol::Type::STRING > >& string_set_field, const ::thryft::Optional< ::std::string >& string_field, const ::thryft::Optional< ::std::string >& url_field)
-    : binary_field_(binary_field), bool_field_(bool_field), byte_field_(byte_field), date_time_field_(date_time_field), decimal_field_(decimal_field), email_address_field_(email_address_field), enum_field_(enum_field), i16_field_(i16_field), i32_field_(i32_field), i64_field_(i64_field), string_list_field_(string_list_field), string_string_map_field_(string_string_map_field), required_i32_field_(required_i32_field), required_string_field_(required_string_field), string_set_field_(string_set_field), string_field_(string_field), url_field_(url_field) {
+  NestedProtocolTestStruct(const int32_t& required_i32_field, const ::std::string& required_string_field, const ::thryft::Optional< ::std::string >& binary_field, const ::thryft::Optional< bool >& bool_field, const ::thryft::Optional< int8_t >& byte_field, const ::thryft::Optional< ::thryft::native::DateTime >& date_time_field, const ::thryft::Optional< ::thryft::native::Decimal >& decimal_field, const ::thryft::Optional< ::thryft::native::EmailAddress >& email_address_field, const ::thryft::Optional< ::thryft_test::protocol::test::ProtocolTestEnum >& enum_field, const ::thryft::Optional< int16_t >& i16_field, const ::thryft::Optional< int32_t >& i32_field, const ::thryft::Optional< int64_t >& i64_field, const ::thryft::Optional< ::thryft::List< ::std::string, ::thryft::protocol::Type::STRING > >& string_list_field, const ::thryft::Optional< ::thryft::Map< ::std::string, ::thryft::protocol::Type::STRING, ::std::string, ::thryft::protocol::Type::STRING > >& string_string_map_field, const ::thryft::Optional< ::thryft::Set< ::std::string, ::thryft::protocol::Type::STRING > >& string_set_field, const ::thryft::Optional< ::std::string >& string_field, const ::thryft::Optional< ::std::string >& url_field)
+    : required_i32_field_(required_i32_field), required_string_field_(required_string_field), binary_field_(binary_field), bool_field_(bool_field), byte_field_(byte_field), date_time_field_(date_time_field), decimal_field_(decimal_field), email_address_field_(email_address_field), enum_field_(enum_field), i16_field_(i16_field), i32_field_(i32_field), i64_field_(i64_field), string_list_field_(string_list_field), string_string_map_field_(string_string_map_field), string_set_field_(string_set_field), string_field_(string_field), url_field_(url_field) {
   }
 
   virtual ~NestedProtocolTestStruct() {
@@ -65,7 +65,7 @@ public:
   }
 
   ::std::unique_ptr<NestedProtocolTestStruct> clone() const {
-    return ::std::unique_ptr< NestedProtocolTestStruct >(new NestedProtocolTestStruct(binary_field_, bool_field_, byte_field_, date_time_field_, decimal_field_, email_address_field_, enum_field_, i16_field_, i32_field_, i64_field_, string_list_field_, string_string_map_field_, required_i32_field_, required_string_field_, string_set_field_, string_field_, url_field_));
+    return ::std::unique_ptr< NestedProtocolTestStruct >(new NestedProtocolTestStruct(required_i32_field_, required_string_field_, binary_field_, bool_field_, byte_field_, date_time_field_, decimal_field_, email_address_field_, enum_field_, i16_field_, i32_field_, i64_field_, string_list_field_, string_string_map_field_, string_set_field_, string_field_, url_field_));
   }
 
   ::thryft::Optional< ::thryft::native::DateTime >& date_time_field() {
@@ -127,7 +127,11 @@ public:
   operator ::std::string() const {
     ::std::ostringstream oss;
     oss << "NestedProtocolTestStruct(";
-    oss << "binary_field=";
+    oss << "required_i32_field=";
+    oss << required_i32_field_;
+    oss << ", required_string_field=";
+    oss << required_string_field_;
+    oss << ", binary_field=";
     if (binary_field_.present()) {
       oss << (*binary_field_);
     } else {
@@ -215,10 +219,6 @@ public:
     } else {
       oss << "";
     }
-    oss << ", required_i32_field=";
-    oss << required_i32_field_;
-    oss << ", required_string_field=";
-    oss << required_string_field_;
     oss << ", string_set_field=";
     if (string_set_field_.present()) {
       oss << "[";
@@ -249,6 +249,14 @@ public:
   }
 
   bool operator==(const NestedProtocolTestStruct& other) const {
+    if (!(required_i32_field() == other.required_i32_field())) {
+      return false;
+    }
+
+    if (!(required_string_field() == other.required_string_field())) {
+      return false;
+    }
+
     if (!(binary_field() == other.binary_field())) {
       return false;
     }
@@ -297,14 +305,6 @@ public:
       return false;
     }
 
-    if (!(required_i32_field() == other.required_i32_field())) {
-      return false;
-    }
-
-    if (!(required_string_field() == other.required_string_field())) {
-      return false;
-    }
-
     if (!(string_set_field() == other.string_set_field())) {
       return false;
     }
@@ -330,20 +330,44 @@ public:
         ::thryft::protocol::Type list_element_type;
         uint32_t list_size;
         iprot.read_list_begin(list_element_type, list_size);
-        binary_field_ = iprot.read_string();
-        bool_field_ = iprot.read_bool();
-        byte_field_ = iprot.read_byte();
-        date_time_field_ = iprot.read_i64();
-        decimal_field_ = iprot.read_string();
-        email_address_field_ = iprot.read_string();
-        enum_field_ = ::thryft_test::protocol::test::ProtocolTestEnum::read(iprot);
-        i16_field_ = iprot.read_i16();
-        i32_field_ = iprot.read_i32();
-        i64_field_ = iprot.read_i64();
-        string_list_field_.set(::thryft::List< ::std::string, ::thryft::protocol::Type::STRING >())->read(iprot);
-        string_string_map_field_.set(::thryft::Map< ::std::string, ::thryft::protocol::Type::STRING, ::std::string, ::thryft::protocol::Type::STRING >())->read(iprot);
         required_i32_field_ = iprot.read_i32();
         iprot.read_string(required_string_field_);
+        if (list_size > 2) {
+          binary_field_ = iprot.read_string();
+        }
+        if (list_size > 3) {
+          bool_field_ = iprot.read_bool();
+        }
+        if (list_size > 4) {
+          byte_field_ = iprot.read_byte();
+        }
+        if (list_size > 5) {
+          date_time_field_ = iprot.read_i64();
+        }
+        if (list_size > 6) {
+          decimal_field_ = iprot.read_string();
+        }
+        if (list_size > 7) {
+          email_address_field_ = iprot.read_string();
+        }
+        if (list_size > 8) {
+          enum_field_ = ::thryft_test::protocol::test::ProtocolTestEnum::read(iprot);
+        }
+        if (list_size > 9) {
+          i16_field_ = iprot.read_i16();
+        }
+        if (list_size > 10) {
+          i32_field_ = iprot.read_i32();
+        }
+        if (list_size > 11) {
+          i64_field_ = iprot.read_i64();
+        }
+        if (list_size > 12) {
+          string_list_field_.set(::thryft::List< ::std::string, ::thryft::protocol::Type::STRING >())->read(iprot);
+        }
+        if (list_size > 13) {
+          string_string_map_field_.set(::thryft::Map< ::std::string, ::thryft::protocol::Type::STRING, ::std::string, ::thryft::protocol::Type::STRING >())->read(iprot);
+        }
         if (list_size > 14) {
           string_set_field_.set(::thryft::Set< ::std::string, ::thryft::protocol::Type::STRING >())->read(iprot);
         }
@@ -367,6 +391,10 @@ public:
           iprot.read_field_begin(ifield_name, ifield_type, ifield_id);
           if (ifield_type == ::thryft::protocol::Type::STOP) {
             break;
+          } else if (ifield_name == "required_i32_field") {
+            required_i32_field_ = iprot.read_i32();
+          } else if (ifield_name == "required_string_field") {
+            iprot.read_string(required_string_field_);
           } else if (ifield_name == "binary_field") {
             binary_field_ = iprot.read_string();
           } else if (ifield_name == "bool_field") {
@@ -391,10 +419,6 @@ public:
             string_list_field_.set(::thryft::List< ::std::string, ::thryft::protocol::Type::STRING >())->read(iprot);
           } else if (ifield_name == "string_string_map_field") {
             string_string_map_field_.set(::thryft::Map< ::std::string, ::thryft::protocol::Type::STRING, ::std::string, ::thryft::protocol::Type::STRING >())->read(iprot);
-          } else if (ifield_name == "required_i32_field") {
-            required_i32_field_ = iprot.read_i32();
-          } else if (ifield_name == "required_string_field") {
-            iprot.read_string(required_string_field_);
           } else if (ifield_name == "string_set_field") {
             string_set_field_.set(::thryft::Set< ::std::string, ::thryft::protocol::Type::STRING >())->read(iprot);
           } else if (ifield_name == "string_field") {
@@ -621,6 +645,10 @@ public:
     case ::thryft::protocol::Type::LIST:
       oprot.write_list_begin(::thryft::protocol::Type::VOID_, 17);
 
+      oprot.write(required_i32_field());
+
+      oprot.write(required_string_field());
+
       if (binary_field().present()) {
           oprot.write(binary_field().get());
       } else {
@@ -693,10 +721,6 @@ public:
           oprot.write_null();
       }
 
-      oprot.write(required_i32_field());
-
-      oprot.write(required_string_field());
-
       if (string_set_field().present()) {
           oprot.write(string_set_field().get());
       } else {
@@ -721,6 +745,14 @@ public:
     case ::thryft::protocol::Type::STRUCT:
     default:
       oprot.write_struct_begin("::thryft_test::protocol::test::NestedProtocolTestStruct");
+
+      oprot.write_field_begin("required_i32_field", ::thryft::protocol::Type::I32, static_cast<int16_t>(-1));
+      oprot.write(required_i32_field());
+      oprot.write_field_end();
+
+      oprot.write_field_begin("required_string_field", ::thryft::protocol::Type::STRING, static_cast<int16_t>(-1));
+      oprot.write(required_string_field());
+      oprot.write_field_end();
 
       if (binary_field().present()) {
           oprot.write_field_begin("binary_field", ::thryft::protocol::Type::STRING, static_cast<int16_t>(-1));
@@ -794,14 +826,6 @@ public:
           oprot.write_field_end();
       }
 
-      oprot.write_field_begin("required_i32_field", ::thryft::protocol::Type::I32, static_cast<int16_t>(-1));
-      oprot.write(required_i32_field());
-      oprot.write_field_end();
-
-      oprot.write_field_begin("required_string_field", ::thryft::protocol::Type::STRING, static_cast<int16_t>(-1));
-      oprot.write(required_string_field());
-      oprot.write_field_end();
-
       if (string_set_field().present()) {
           oprot.write_field_begin("string_set_field", ::thryft::protocol::Type::SET, static_cast<int16_t>(-1));
           oprot.write(string_set_field().get());
@@ -828,6 +852,8 @@ public:
   }
 
 private:
+  int32_t required_i32_field_;
+  ::std::string required_string_field_;
   ::thryft::Optional< ::std::string > binary_field_;
   ::thryft::Optional< bool > bool_field_;
   ::thryft::Optional< int8_t > byte_field_;
@@ -840,8 +866,6 @@ private:
   ::thryft::Optional< int64_t > i64_field_;
   ::thryft::Optional< ::thryft::List< ::std::string, ::thryft::protocol::Type::STRING > > string_list_field_;
   ::thryft::Optional< ::thryft::Map< ::std::string, ::thryft::protocol::Type::STRING, ::std::string, ::thryft::protocol::Type::STRING > > string_string_map_field_;
-  int32_t required_i32_field_;
-  ::std::string required_string_field_;
   ::thryft::Optional< ::thryft::Set< ::std::string, ::thryft::protocol::Type::STRING > > string_set_field_;
   ::thryft::Optional< ::std::string > string_field_;
   ::thryft::Optional< ::std::string > url_field_;

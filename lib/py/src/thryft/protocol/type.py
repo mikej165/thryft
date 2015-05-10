@@ -63,6 +63,10 @@ class Type(object):
             return getattr(Type, 'U64')
         raise ValueError(name)
 
+    @classmethod
+    def values(cls):
+        return (Type.STOP, Type.VOID_, Type.BOOL, Type.BYTE, Type.DOUBLE, Type.FLOAT, Type.I16, Type.I32, Type.I64, Type.LIST, Type.MAP, Type.SET, Type.STRING, Type.STRUCT, Type.U64,)
+
 Type.STOP = Type('STOP', 0)
 Type.VOID_ = Type('VOID_', 1)
 Type.BOOL = Type('BOOL', 2)

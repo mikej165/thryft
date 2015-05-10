@@ -15,6 +15,10 @@ include "thryft/native/url.thrift"
 include "thryft/native/variant.thrift"
 
 struct ProtocolTestStruct {
+    required i32 required_i32_field;
+    // @validation {"minLength": 1}
+    required string required_string_field;
+
     optional binary binary_field;
     optional bool bool_field;
     optional date_time.DateTime date_time_field;
@@ -28,9 +32,6 @@ struct ProtocolTestStruct {
     optional i64 i64_field;
     optional list<string> string_list_field;
     optional map<string, string> string_string_map_field;
-    required i32 required_i32_field;
-    // @validation {"minLength": 1}
-    required string required_string_field;
     optional set<string> string_set_field;
     // @validation {"minLength": 1}
     optional string string_field;

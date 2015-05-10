@@ -119,8 +119,13 @@ class Compiler(object):
                         )
                     )
             else:
-                for field in compound_type_node.fields:
-                    compound_type.fields.append(field.accept(self))
+                for field_node in compound_type_node.fields:
+                    field = field_node.accept(self)
+                    if field.required:
+                        if len(compound_type.fields) > 0:
+                            if not compound_type.fields[-1].required:
+                                raise CompileException("compound type %s has a required field %s after an optional field %s" % (compound_type_node.name, field.name, compound_type.fields[-1].name))
+                    compound_type.fields.append(field)
 
             self.__scope_stack.pop(-1)
 
@@ -190,7 +195,12 @@ class Compiler(object):
             self.__scope_stack.append(function)
 
             for parameter_node in function_node.parameters:
-                function.parameters.append(parameter_node.accept(self))
+                parameter = parameter_node.accept(self)
+                if parameter.required:
+                    if len(function.parameters) > 0:
+                        if not function.parameters[-1].required:
+                            raise CompileException("function %s has a required parameter %s after an optional parameter %s" % (function.name, parameter.name, function.parameters[-1].name))
+                function.parameters.append(parameter)
             if function_node.return_field is not None:
                 function.return_field = function_node.return_field.accept(self)
             for throws_node in function_node.throws:

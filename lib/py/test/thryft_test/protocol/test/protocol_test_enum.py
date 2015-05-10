@@ -24,5 +24,9 @@ class ProtocolTestEnum(object):
             return getattr(ProtocolTestEnum, 'ENUMERATOR2')
         raise ValueError(name)
 
+    @classmethod
+    def values(cls):
+        return (ProtocolTestEnum.ENUMERATOR1, ProtocolTestEnum.ENUMERATOR2,)
+
 ProtocolTestEnum.ENUMERATOR1 = ProtocolTestEnum('ENUMERATOR1', 1)
 ProtocolTestEnum.ENUMERATOR2 = ProtocolTestEnum('ENUMERATOR2', 2)

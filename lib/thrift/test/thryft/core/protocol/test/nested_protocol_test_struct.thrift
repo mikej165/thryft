@@ -8,6 +8,10 @@ include "thryft/native/email_address.thrift"
 include "thryft/native/url.thrift"
 
 struct NestedProtocolTestStruct {
+    required i32 required_i32_field;
+    // @validation {"minLength": 1}
+    required string required_string_field;
+
     optional binary binary_field;
     optional bool bool_field;
     optional byte byte_field
@@ -20,9 +24,6 @@ struct NestedProtocolTestStruct {
     optional i64 i64_field;
     optional list<string> string_list_field;
     optional map<string, string> string_string_map_field;
-    required i32 required_i32_field;
-    // @validation {"minLength": 1}
-    required string required_string_field;
     optional set<string> string_set_field;
     // @validation {"minLength": 1}
     optional string string_field;
