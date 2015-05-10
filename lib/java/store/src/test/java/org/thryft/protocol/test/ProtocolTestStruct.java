@@ -1550,6 +1550,14 @@ public class ProtocolTestStruct implements org.thryft.Base<ProtocolTestStruct> {
         return new Builder(other);
     }
 
+    public static Builder builder(final org.thryft.protocol.InputProtocol iprot) throws org.thryft.protocol.InputProtocolException {
+        return new Builder(iprot);
+    }
+
+    public static Builder builder(final org.thryft.protocol.InputProtocol iprot, final org.thryft.protocol.Type readAsType) throws org.thryft.protocol.InputProtocolException {
+        return new Builder(iprot, readAsType);
+    }
+
     @Override
     public int compareTo(final ProtocolTestStruct other) {
         if (other == null) {

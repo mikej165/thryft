@@ -457,6 +457,14 @@ public static Builder builder() {
 
 public static Builder builder(final %(name)s other) {
     return new Builder(other);
+}
+
+public static Builder builder(final org.thryft.protocol.InputProtocol iprot) throws org.thryft.protocol.InputProtocolException {
+    return new Builder(iprot);
+}
+
+public static Builder builder(final org.thryft.protocol.InputProtocol iprot, final org.thryft.protocol.Type readAsType) throws org.thryft.protocol.InputProtocolException {
+    return new Builder(iprot, readAsType);
 }""" % locals()}
 
     def _java_method_compare_to(self):
