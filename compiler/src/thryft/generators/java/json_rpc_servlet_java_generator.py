@@ -51,7 +51,16 @@ class JsonRpcServletJavaGenerator(_servlet_java_generator._ServletJavaGenerator)
                 read_request = """
     final %(service_qname)s.Messages.%(request_type_name)s serviceRequest;
     try {
-        serviceRequest = new %(service_qname)s.Messages.%(request_type_name)s(iprot, iprot.getCurrentFieldType());
+        switch (iprot.getCurrentFieldType()) {
+        case LIST:
+            serviceRequest = %(service_qname)s.Messages.%(request_type_name)s.readAsList(iprot);
+            break;
+        case STRUCT:
+            serviceRequest = %(service_qname)s.Messages.%(request_type_name)s.readAsStruct(iprot);
+            break;
+        default:
+            throw new UnsupportedOperationException("unable to read message as " + iprot.getCurrentFieldType());
+        }
     } catch (final IllegalArgumentException | org.thryft.protocol.InputProtocolException | NullPointerException e) {
         logger.debug("error deserializing service request: ", e);
         __doPostError(httpServletRequest, httpServletResponse, new org.thryft.protocol.JsonRpcErrorResponse(e, -32602, "invalid JSON-RPC request method parameters: " + String.valueOf(e.getMessage())), jsonRpcRequestId);
@@ -166,7 +175,7 @@ private void __doPostError(final javax.servlet.http.HttpServletRequest httpServl
     try {
         final org.thryft.protocol.JsonRpcOutputProtocol oprot = new org.thryft.protocol.JsonRpcOutputProtocol(new org.thryft.protocol.JacksonJsonOutputProtocol(httpServletResponseBodyWriter));
         oprot.writeMessageBegin("", org.thryft.protocol.MessageType.EXCEPTION, jsonRpcRequestId);
-        jsonRpcErrorResponse.write(oprot);
+        jsonRpcErrorResponse.writeAsStruct(oprot);
         oprot.writeMessageEnd();
         oprot.flush();
     } catch (final org.thryft.protocol.OutputProtocolException e) {

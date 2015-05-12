@@ -31,6 +31,8 @@
 # -----------------------------------------------------------------------------
 
 from thryft.generators.java import java_generator
+from thryft.generators.java._java_container_type import _JavaContainerType
+from thryft.generators.java.java_struct_type import JavaStructType
 from yutil import indent, lpad
 
 
@@ -82,7 +84,7 @@ class LoggingServiceJavaGenerator(java_generator.JavaGenerator):
 try {
     __logMessageStringWriter = new java.io.StringWriter();
     __logMessageProtocol = new org.thryft.protocol.LogMessageOutputProtocol(__logMessageStringWriter);
-    new Messages.%(request_type_name)s(%(parameter_names)s).write(__logMessageProtocol);
+    new Messages.%(request_type_name)s(%(parameter_names)s).writeAsStruct(__logMessageProtocol);
     __logMessageProtocol.flush();
     __logMessageStringBuilder.append(__logMessageStringWriter.toString());
 } catch (final org.thryft.protocol.OutputProtocolException e) {
@@ -102,12 +104,21 @@ service.%(java_name)s(%(parameter_names)s);
 """ % locals()
             if self.return_field is not None:
                 service_call = self.return_field.type.java_qname(boxed=False) + ' __returnValue = ' + service_call
+                if isinstance(self.return_field.type, _JavaContainerType) or isinstance(self.return_field.type, JavaStructType):
+                    write_response_message = """\
+{
+    final org.thryft.protocol.OutputProtocol oprot = __logMessageProtocol;
+%s
+}""" % indent(' ' * 4, self.return_field.type.java_write_protocol('__returnValue', depth=0))
+                else:
+                    write_response_message = "new Messages.%(response_type_name)s(__returnValue).writeAsStruct(__logMessageProtocol);" % locals()
+                write_response_message = indent(' ' * 4, write_response_message)
                 service_call += """
 __logMessageStringBuilder.append(" -> ");
 try {
     __logMessageStringWriter = new java.io.StringWriter();
     __logMessageProtocol = new org.thryft.protocol.LogMessageOutputProtocol(__logMessageStringWriter);
-    new Messages.%(response_type_name)s(__returnValue).write(__logMessageProtocol, org.thryft.protocol.Type.VOID_);
+%(write_response_message)s
     __logMessageProtocol.flush();
     __logMessageStringBuilder.append(__logMessageStringWriter.toString());
 } catch (final org.thryft.protocol.OutputProtocolException e) {

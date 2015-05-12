@@ -593,22 +593,6 @@ public String toString() {
     return com.google.common.base.MoreObjects.toStringHelper(this).omitNullValues()%(add_statements)s.toString();
 }""" % locals()}
 
-#         case_ttype_void = 'case VOID_:'
-#         if len(self.fields) == 1:
-#             field = self.fields[0]
-#             from thryft.generators.java._java_container_type import _JavaContainerType
-#             from thryft.generators.java.java_struct_type import JavaStructType
-#             if isinstance(field.type, _JavaContainerType) or isinstance(field.type, JavaStructType):
-#                 field_value_java_write_protocol = \
-#                     indent(' ' * 12, field.type.java_write_protocol(field.java_getter_name() + (field.required and '()' or '().get()'), depth=0))
-#                 field_thrift_ttype_name = field.type.thrift_ttype_name()
-#                 case_ttype_void = """\
-# %(case_ttype_void)s {
-# %(field_value_java_write_protocol)s
-#             break;
-#         }
-# """ % locals()
-
     def _java_method_write_as_list(self):
         field_count = len(self.fields)
         field_value_write_protocols = \
@@ -617,6 +601,7 @@ public String toString() {
                  for field in self.fields)
             )), "\n")
         return {'writeAsList': """\
+@Override
 public void writeAsList(final org.thryft.protocol.OutputProtocol oprot) throws org.thryft.protocol.OutputProtocolException {
     oprot.writeListBegin(org.thryft.protocol.Type.VOID_, %(field_count)u);%(field_value_write_protocols)s
     oprot.writeListEnd();
@@ -650,6 +635,7 @@ public void writeAsMessage(final org.thryft.protocol.OutputProtocol oprot) throw
             )))
         qname = self.java_qname()
         return {'writeAsStruct': """\
+@Override
 public void writeAsStruct(final org.thryft.protocol.OutputProtocol oprot) throws org.thryft.protocol.OutputProtocolException {
     oprot.writeStructBegin("%(qname)s");%(field_write_protocols)s
 
