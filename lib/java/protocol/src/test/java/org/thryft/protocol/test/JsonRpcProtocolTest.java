@@ -57,7 +57,7 @@ public final class JsonRpcProtocolTest {
         oprot.writeMessageBegin("exception", MessageType.EXCEPTION, ID);
         final JsonRpcErrorResponse expectedError = new JsonRpcErrorResponse(
                 -32600, "some message");
-        expectedError.write(oprot);
+        expectedError.writeAsStruct(oprot);
         oprot.writeMessageEnd();
         oprot.flush();
         final String json = writer.toString();

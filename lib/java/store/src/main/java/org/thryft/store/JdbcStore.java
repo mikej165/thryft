@@ -59,7 +59,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
 public final class JdbcStore<ModelT extends Base<?>> extends
-AbstractStore<ModelT> {
+        AbstractStore<ModelT> {
     public final static class Configuration {
         public Configuration() {
             this(DRIVER_CLASS_NAME_DEFAULT, PASSWORD_DEFAULT, URL_DEFAULT,
@@ -128,17 +128,17 @@ AbstractStore<ModelT> {
             return user;
         }
 
+        private String driverClassName;
+        private String password;
+        private String user;
+        private String url;
+
         public final static String DRIVER_CLASS_NAME_DEFAULT = "org.h2.Driver";
         public final static String PASSWORD_DEFAULT = "";
         // DB_CLOSE_DELAY = don't wipe the in-memory DB after the connection is
         // closed, but keep it alive until the JVM exits
         public final static String URL_DEFAULT = "jdbc:h2:mem;DB_CLOSE_DELAY=-1;TRACE_LEVEL_FILE=0;TRACE_LEVEL_SYSTEM_OUT=0";
         public final static String USER_DEFAULT = "";
-
-        private String driverClassName;
-        private String password;
-        private String user;
-        private String url;
     }
 
     public JdbcStore(final Configuration configuration,
@@ -298,7 +298,7 @@ AbstractStore<ModelT> {
     @Override
     protected ImmutableMap<String, ModelT> _getModelsByIds(
             final ImmutableSet<String> modelIds, final String userId)
-                    throws ModelIoException, NoSuchModelException {
+            throws ModelIoException, NoSuchModelException {
         final StringBuilder getModelsByIdsSqlBuilder = new StringBuilder();
         getModelsByIdsSqlBuilder.append("SELECT * FROM ");
         getModelsByIdsSqlBuilder.append(tableName);
@@ -459,7 +459,7 @@ AbstractStore<ModelT> {
             final StringWriter stringWriter = new StringWriter();
             final JacksonJsonOutputProtocol oprot = new JacksonJsonOutputProtocol(
                     stringWriter);
-            model.write(oprot);
+            model.writeAsStruct(oprot);
             oprot.flush();
             final String json = stringWriter.toString();
             statement.setString(1, modelId);

@@ -53,7 +53,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 public final class FsStore<ModelT extends Base<?>> extends
-AbstractStore<ModelT> {
+        AbstractStore<ModelT> {
     public final static class Configuration {
         public Configuration() {
             this(ROOT_DIRECTORY_PATH_DEFAULT);
@@ -181,7 +181,7 @@ AbstractStore<ModelT> {
     @Override
     protected synchronized ImmutableMap<String, ModelT> _getModelsByIds(
             final ImmutableSet<String> modelIds, final String userId)
-                    throws ModelIoException, NoSuchModelException {
+            throws ModelIoException, NoSuchModelException {
         final ImmutableMap.Builder<String, ModelT> models = ImmutableMap
                 .builder();
         for (final String modelId : modelIds) {
@@ -215,7 +215,7 @@ AbstractStore<ModelT> {
     @Override
     protected synchronized void _putModel(final ModelT model,
             final String modelId, final String userId)
-                    throws org.thryft.store.AbstractStore.ModelIoException {
+            throws org.thryft.store.AbstractStore.ModelIoException {
         final File modelDirectoryPath = __createModelDirectory(userId);
         __putModel(model, modelDirectoryPath, modelId);
     }
@@ -223,7 +223,7 @@ AbstractStore<ModelT> {
     @Override
     protected synchronized void _putModels(
             final ImmutableMap<String, ModelT> models, final String userId)
-                    throws ModelIoException {
+            throws ModelIoException {
         final File modelDirectoryPath = __createModelDirectory(userId);
         for (final ImmutableMap.Entry<String, ModelT> model : models.entrySet()) {
             __putModel(model.getValue(), modelDirectoryPath, model.getKey());
@@ -295,7 +295,7 @@ AbstractStore<ModelT> {
             try {
                 final JacksonJsonOutputProtocol oprot = new JacksonJsonOutputProtocol(
                         fileWriter);
-                model.write(oprot);
+                model.writeAsStruct(oprot);
                 oprot.flush();
             } finally {
                 fileWriter.close();

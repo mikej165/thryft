@@ -72,27 +72,10 @@ public Builder(final %(name)s other) {%(initializers)s
 public Builder() {%(initializers)s
 }""" % locals()
 
-        def _java_constructor_protocol(self):
-            field_initializers = \
-                lpad("\n", "\n".join(indent(' ' * 4,
-                    (field.java_null_initializer()
-                     for field in self.fields)
-                )))
-            switch = indent(' ' * 4, self._java_constructor_protocol_switch())
-            return """\
-public Builder(final org.thryft.protocol.InputProtocol iprot) throws org.thryft.protocol.InputProtocolException {
-    this(iprot, org.thryft.protocol.Type.STRUCT);
-}
-
-public Builder(final org.thryft.protocol.InputProtocol iprot, final org.thryft.protocol.Type readAsType) throws org.thryft.protocol.InputProtocolException {%(field_initializers)s
-%(switch)s
-}""" % locals()
-
         def _java_constructors(self):
             return [
                 self._java_constructor_default(),
                 self._java_constructor_copy(),
-                self._java_constructor_protocol(),
             ]
 
         def _java_member_declarations(self):
@@ -121,6 +104,22 @@ public %(name)s build() {
             return {'_build': """\
 protected %(name)s _build(%(field_parameters)s) {
     return new %(name)s(%(all_field_names)s);
+}""" % locals()}
+
+        def _java_method_read_as_list(self):
+            body = indent(' ' * 4, self.__java_compound_type._java_method_read_as_list_body())
+            return {'readAsList': """\
+public Builder readAsList(final org.thryft.protocol.InputProtocol iprot) throws org.thryft.protocol.InputProtocolException {
+%(body)s
+    return this;
+}""" % locals()}
+
+        def _java_method_read_as_struct(self):
+            body = indent(' ' * 4, self.__java_compound_type._java_method_read_as_struct_body())
+            return {'readAsStruct': """\
+public Builder readAsStruct(final org.thryft.protocol.InputProtocol iprot) throws org.thryft.protocol.InputProtocolException {
+%(body)s
+    return this;
 }""" % locals()}
 
         def _java_method_getters(self):
@@ -157,18 +156,6 @@ public Builder set(final String name, @javax.annotation.Nullable final Object va
     }
 }""" % locals()}
 
-        def _java_method_set_protocol(self):
-            switch = indent(' ' * 4, self._java_constructor_protocol_switch())
-            return {'set_protocol': """\
-public Builder set(final org.thryft.protocol.InputProtocol iprot) throws org.thryft.protocol.InputProtocolException {
-    return set(iprot, org.thryft.protocol.Type.STRUCT);
-}
-
-public Builder set(final org.thryft.protocol.InputProtocol iprot, final org.thryft.protocol.Type readAsType) throws org.thryft.protocol.InputProtocolException {
-%(switch)s
-    return this;
-}""" % locals()}
-
         def _java_method_setters(self):
             setters = {}
             for field in self.fields:
@@ -181,9 +168,10 @@ public Builder set(final org.thryft.protocol.InputProtocol iprot, final org.thry
             methods.update(self._java_method_build())
             methods.update(self._java_method__build())
             methods.update(self._java_method_getters())
+            methods.update(self._java_method_read_as_list())
+            methods.update(self._java_method_read_as_struct())
             methods.update(self._java_method_set_if_present())
             methods.update(self._java_method_set_name_value())
-            methods.update(self._java_method_set_protocol())
             methods.update(self._java_method_setters())
             return methods
 
@@ -256,73 +244,6 @@ public %(name)s() {%(initializers)s
 public %(name)s(final %(name)s other) {%(this_call)s
 }""" % locals()
 
-    def _java_constructor_protocol(self):
-        field_declarations = \
-            pad("\n", indent(' ' * 4, "\n".join(
-                field.java_local_declaration(final=False)
-                for field in self.fields
-            )), "\n")
-        field_initializers = \
-            lpad("\n\n", "\n".join(indent(' ' * 4,
-                (field.java_initializer(check_optional_not_null=False)
-                 for field in self.fields)
-            )))
-        name = self.java_name()
-        switch = indent(' ' * 4, self._java_constructor_protocol_switch())
-        return """\
-public %(name)s(final org.thryft.protocol.InputProtocol iprot) throws org.thryft.protocol.InputProtocolException {
-    this(iprot, org.thryft.protocol.Type.STRUCT);
-}
-
-public %(name)s(final org.thryft.protocol.InputProtocol iprot, final org.thryft.protocol.Type readAsType) throws org.thryft.protocol.InputProtocolException {%(field_declarations)s
-%(switch)s%(field_initializers)s
-}""" % locals()
-
-    def _java_constructor_protocol_switch(self):
-        field_protocol_named_initializers = \
-            lpad(' else ', indent(' ' * 12, ' else '.join(
-                """\
-if (ifield.getName().equals("%s")) {
-%s
-}""" % (field.name, indent(' ' * 4, field.java_protocol_initializer()))
-                 for field in self.fields
-            )).lstrip())
-        field_protocol_positional_initializers = []
-        read_list = ''
-        all_fields_required = True
-        for field_i, field in enumerate(self.fields):
-            field_protocol_initializer = field.java_protocol_initializer()
-            if not field.required:
-                field_protocol_initializer = indent(' ' * 4, field_protocol_initializer)
-                field_protocol_initializer = """\
-if (__list.getSize() > %(field_i)u) {
-%(field_protocol_initializer)s
-}""" % locals()
-                read_list = "final org.thryft.protocol.ListBegin __list = "
-            field_protocol_positional_initializers.append(field_protocol_initializer)
-        field_protocol_positional_initializers = \
-            lpad("\n", indent(' ' * 8, "\n".join(field_protocol_positional_initializers)))
-        return """\
-switch (readAsType) {
-    case LIST:
-        %(read_list)siprot.readListBegin();%(field_protocol_positional_initializers)s
-        iprot.readListEnd();
-        break;
-
-    case STRUCT:
-    default:
-        iprot.readStructBegin();
-        while (true) {
-            final org.thryft.protocol.FieldBegin ifield = iprot.readFieldBegin();
-            if (ifield.getType() == org.thryft.protocol.Type.STOP) {
-                break;
-            }%(field_protocol_named_initializers)s
-            iprot.readFieldEnd();
-        }
-        iprot.readStructEnd();
-        break;
-}""" % locals()
-
     def _java_constructor_required(self):
         if len(self.fields) == 0:
             return None  # Will be covered by default constructor
@@ -373,7 +294,6 @@ public %(name)s(%(parameters)s) {
         for constructor in (
             self._java_constructor_default(),
             self._java_constructor_copy(),
-            self._java_constructor_protocol(),
             self._java_constructor_required(),
             self._java_constructor_total_boxed(),
             self._java_constructor_total_nullable(),
@@ -457,14 +377,6 @@ public static Builder builder() {
 
 public static Builder builder(final %(name)s other) {
     return new Builder(other);
-}
-
-public static Builder builder(final org.thryft.protocol.InputProtocol iprot) throws org.thryft.protocol.InputProtocolException {
-    return new Builder(iprot);
-}
-
-public static Builder builder(final org.thryft.protocol.InputProtocol iprot, final org.thryft.protocol.Type readAsType) throws org.thryft.protocol.InputProtocolException {
-    return new Builder(iprot, readAsType);
 }""" % locals()}
 
     def _java_method_compare_to(self):
@@ -559,6 +471,75 @@ public int hashCode() {
     return hashCode;
 }""" % locals()}
 
+    def _java_method_read_as_list(self):
+        body = indent(' ' * 4, self._java_method_read_as_list_body())
+        field_declarations = \
+            pad("\n", indent(' ' * 4, "\n".join(
+                field.java_local_declaration(final=False)
+                for field in self.fields
+            )), "\n")
+        field_names = ', '.join(field.java_name() for field in self.fields)
+        name = self.java_name()
+        return {'readAsList': """\
+public static %(name)s readAsList(final org.thryft.protocol.InputProtocol iprot) throws org.thryft.protocol.InputProtocolException {%(field_declarations)s
+%(body)s
+    return new %(name)s(%(field_names)s);
+}""" % locals()}
+
+    def _java_method_read_as_list_body(self):
+        field_protocol_positional_initializers = []
+        read_list = ''
+        for field_i, field in enumerate(self.fields):
+            field_protocol_initializer = field.java_protocol_initializer()
+            if not field.required:
+                field_protocol_initializer = indent(' ' * 4, field_protocol_initializer)
+                field_protocol_initializer = """\
+if (__list.getSize() > %(field_i)u) {
+%(field_protocol_initializer)s
+}""" % locals()
+                read_list = "final org.thryft.protocol.ListBegin __list = "
+            field_protocol_positional_initializers.append(field_protocol_initializer)
+        field_protocol_positional_initializers = \
+            lpad("\n", "\n".join(field_protocol_positional_initializers))
+        return """\
+%(read_list)siprot.readListBegin();%(field_protocol_positional_initializers)s
+iprot.readListEnd();""" % locals()
+
+    def _java_method_read_as_struct(self):
+        body = indent(' ' * 4, self._java_method_read_as_struct_body())
+        field_declarations = \
+            pad("\n", indent(' ' * 4, "\n".join(
+                field.java_local_declaration(final=False)
+                for field in self.fields
+            )), "\n")
+        field_names = ', '.join(field.java_name() for field in self.fields)
+        name = self.java_name()
+        return {'readAsStruct': """\
+public static %(name)s readAsStruct(final org.thryft.protocol.InputProtocol iprot) throws org.thryft.protocol.InputProtocolException {%(field_declarations)s
+%(body)s
+    return new %(name)s(%(field_names)s);
+}""" % locals()}
+
+    def _java_method_read_as_struct_body(self):
+        field_protocol_named_initializers = \
+            lpad(' else ', indent(' ' * 4, ' else '.join(
+                """\
+if (ifield.getName().equals("%s")) {
+%s
+}""" % (field.name, indent(' ' * 4, field.java_protocol_initializer()))
+                 for field in self.fields
+            )).lstrip())
+        return """\
+iprot.readStructBegin();
+while (true) {
+    final org.thryft.protocol.FieldBegin ifield = iprot.readFieldBegin();
+    if (ifield.getType() == org.thryft.protocol.Type.STOP) {
+        break;
+    }%(field_protocol_named_initializers)s
+    iprot.readFieldEnd();
+}
+iprot.readStructEnd();""" % locals()
+
     def _java_method_replacers(self):
         methods = {}
         compound_type_name = self.java_name()
@@ -612,72 +593,70 @@ public String toString() {
     return com.google.common.base.MoreObjects.toStringHelper(this).omitNullValues()%(add_statements)s.toString();
 }""" % locals()}
 
-    def _java_method_write(self):
-        case_ttype_void = 'case VOID_:'
-        if len(self.fields) == 1:
-            field = self.fields[0]
-            from thryft.generators.java._java_container_type import _JavaContainerType
-            from thryft.generators.java.java_struct_type import JavaStructType
-            if isinstance(field.type, _JavaContainerType) or isinstance(field.type, JavaStructType):
-                field_value_java_write_protocol = \
-                    indent(' ' * 12, field.type.java_write_protocol(field.java_getter_name() + (field.required and '()' or '().get()'), depth=0))
-                field_thrift_ttype_name = field.type.thrift_ttype_name()
-                case_ttype_void = """\
-%(case_ttype_void)s {
-%(field_value_java_write_protocol)s
-            break;
-        }
-""" % locals()
+#         case_ttype_void = 'case VOID_:'
+#         if len(self.fields) == 1:
+#             field = self.fields[0]
+#             from thryft.generators.java._java_container_type import _JavaContainerType
+#             from thryft.generators.java.java_struct_type import JavaStructType
+#             if isinstance(field.type, _JavaContainerType) or isinstance(field.type, JavaStructType):
+#                 field_value_java_write_protocol = \
+#                     indent(' ' * 12, field.type.java_write_protocol(field.java_getter_name() + (field.required and '()' or '().get()'), depth=0))
+#                 field_thrift_ttype_name = field.type.thrift_ttype_name()
+#                 case_ttype_void = """\
+# %(case_ttype_void)s {
+# %(field_value_java_write_protocol)s
+#             break;
+#         }
+# """ % locals()
 
+    def _java_method_write_as_list(self):
         field_count = len(self.fields)
-
-        field_write_protocols = \
-            lpad("\n\n", "\n\n".join(indent(' ' * 12,
-                (field.java_write_protocol(depth=0, write_field=True)
-                 for field in self.fields)
-            )))
-
         field_value_write_protocols = \
-            pad("\n\n", "\n\n".join(indent(' ' * 12,
+            pad("\n\n", "\n\n".join(indent(' ' * 4,
                 (field.java_write_protocol(depth=0, write_field=False)
                  for field in self.fields)
             )), "\n")
+        return {'writeAsList': """\
+public void writeAsList(final org.thryft.protocol.OutputProtocol oprot) throws org.thryft.protocol.OutputProtocolException {
+    oprot.writeListBegin(org.thryft.protocol.Type.VOID_, %(field_count)u);%(field_value_write_protocols)s
+    oprot.writeListEnd();
+}""" % locals()}
 
-        name = self.java_name()
+    def _java_method_write_as_message(self):
+        if self.__message_type is None:
+            return {}
+
+        field_write_protocols = \
+            lpad("\n\n", "\n\n".join(indent(' ' * 4,
+                (field.java_write_protocol(depth=0, write_field=True)
+                 for field in self.fields)
+            )))
+        message_type = self.__message_type
         qname = self.java_qname()
-        if self.__message_type is not None:
-            message_type = self.__message_type
-            writeStructBegin = "writeMessageBegin(\"%(qname)s\", org.thryft.protocol.MessageType.%(message_type)s, null)" % locals()
-            writeStructEnd = "writeMessageEnd()"
-        else:
-            writeStructBegin = "writeStructBegin(\"%(qname)s\")" % locals()
-            writeStructEnd = "writeStructEnd()"
+        return {'writeAsMessage': """\
+public void writeAsMessage(final org.thryft.protocol.OutputProtocol oprot) throws org.thryft.protocol.OutputProtocolException {
+    oprot.writeMessageBegin(\"%(qname)s\", org.thryft.protocol.MessageType.%(message_type)s, null);%(field_write_protocols)s
 
-        return {'write': """\
-@Override
-public void write(final org.thryft.protocol.OutputProtocol oprot) throws org.thryft.protocol.OutputProtocolException {
-    write(oprot, org.thryft.protocol.Type.STRUCT);
-}
+    oprot.writeFieldStop();
 
-public void write(final org.thryft.protocol.OutputProtocol oprot, final org.thryft.protocol.Type writeAsType) throws org.thryft.protocol.OutputProtocolException {
-    switch (writeAsType) {
-        %(case_ttype_void)s
-        case LIST:
-            oprot.writeListBegin(org.thryft.protocol.Type.VOID_, %(field_count)u);%(field_value_write_protocols)s
-            oprot.writeListEnd();
-            break;
+    oprot.writeMessageEnd();
+}""" % locals()}
 
-        case STRUCT:
-        default:
-            oprot.%(writeStructBegin)s;%(field_write_protocols)s
+    def _java_method_write_as_struct(self):
+        field_write_protocols = \
+            lpad("\n\n", "\n\n".join(indent(' ' * 4,
+                (field.java_write_protocol(depth=0, write_field=True)
+                 for field in self.fields)
+            )))
+        qname = self.java_qname()
+        return {'writeAsStruct': """\
+public void writeAsStruct(final org.thryft.protocol.OutputProtocol oprot) throws org.thryft.protocol.OutputProtocolException {
+    oprot.writeStructBegin("%(qname)s");%(field_write_protocols)s
 
-            oprot.writeFieldStop();
+    oprot.writeFieldStop();
 
-            oprot.%(writeStructEnd)s;
-            break;
-    }
-}
-""" % locals()}
+    oprot.writeStructEnd();
+}""" % locals()}
 
     def _java_methods(self):
         methods = {}
@@ -687,10 +666,14 @@ public void write(final org.thryft.protocol.OutputProtocol oprot, final org.thry
         methods.update(self._java_method_get())
         methods.update(self._java_method_getters())
         methods.update(self._java_method_hash_code())
+        methods.update(self._java_method_read_as_list())
+        methods.update(self._java_method_read_as_struct())
         methods.update(self._java_method_replacers())
         methods.update(self._java_method_setters())
         methods.update(self._java_method_to_string())
-        methods.update(self._java_method_write())  # Must be after TBase
+        methods.update(self._java_method_write_as_list())
+        methods.update(self._java_method_write_as_message())
+        methods.update(self._java_method_write_as_struct())
         return methods
 
     def java_qname(self, boxed=False):
@@ -698,7 +681,7 @@ public void write(final org.thryft.protocol.OutputProtocol oprot, final org.thry
 
     def java_read_protocol(self):
         qname = self.java_qname()
-        return "new %(qname)s(iprot)" % locals()
+        return "%(qname)s.readAsStruct(iprot)" % locals()
 
     def java_repr(self):
         class_annotations = []
@@ -729,4 +712,4 @@ public void write(final org.thryft.protocol.OutputProtocol oprot, final org.thry
         return "%(value)s.toString()" % locals()
 
     def java_write_protocol(self, value, depth=0):
-        return "%(value)s.write(oprot);" % locals()
+        return "%(value)s.writeAsStruct(oprot);" % locals()

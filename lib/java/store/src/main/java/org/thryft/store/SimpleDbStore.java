@@ -76,9 +76,9 @@ import com.google.common.collect.Multimap;
 import com.google.common.hash.Hashing;
 
 public final class SimpleDbStore<ModelT extends Base<?>> extends
-        AwsKeyValueStore<ModelT> {
+AwsKeyValueStore<ModelT> {
     public final static class Configuration extends
-            AwsKeyValueStore.Configuration {
+    AwsKeyValueStore.Configuration {
         public Configuration(final AWSCredentials credentials) {
             this(credentials, DOMAIN_NAME_PREFIX_DEFAULT);
         }
@@ -104,9 +104,9 @@ public final class SimpleDbStore<ModelT extends Base<?>> extends
             return domainNamePrefix;
         }
 
-        public final static String DOMAIN_NAME_PREFIX_DEFAULT = "yogento-dev-";
-
         private final String domainNamePrefix;
+
+        public final static String DOMAIN_NAME_PREFIX_DEFAULT = "yogento-dev-";
     }
 
     public SimpleDbStore(final Configuration configuration,
@@ -147,7 +147,7 @@ public final class SimpleDbStore<ModelT extends Base<?>> extends
             final List<DeletableItem> deleteItems = Lists.newArrayList();
             for (final String modelId : modelIdBatch) {
                 deleteItems.add(new DeletableItem(new Key(modelId, userId)
-                        .toString(), ImmutableList.<Attribute> of()));
+                .toString(), ImmutableList.<Attribute> of()));
             }
             client.batchDeleteAttributes(new BatchDeleteAttributesRequest(
                     domainName, deleteItems));
@@ -156,7 +156,7 @@ public final class SimpleDbStore<ModelT extends Base<?>> extends
 
     @Override
     protected ModelT _getModelById(final Key modelKey) throws ModelIoException,
-            ModelIoException, NoSuchModelException {
+    ModelIoException, NoSuchModelException {
         final GetAttributesRequest request = new GetAttributesRequest(
                 domainName, modelKey.toString());
         request.setConsistentRead(true);
@@ -301,7 +301,7 @@ public final class SimpleDbStore<ModelT extends Base<?>> extends
             final ModelT model) {
         final StringMapOutputProtocol oprot = new StringMapOutputProtocol();
         try {
-            model.write(oprot);
+            model.writeAsStruct(oprot);
         } catch (final OutputProtocolException e) {
             return ImmutableList.of();
         }
@@ -437,7 +437,7 @@ public final class SimpleDbStore<ModelT extends Base<?>> extends
                             .entrySet()) {
                         if (attributeValueChunkEntry.getKey() == attributeValueChunkI) {
                             attributeValueBuilder
-                                    .append(attributeValueChunkEntry.getValue());
+                            .append(attributeValueChunkEntry.getValue());
                             attributeValueChunkI++;
                         } else {
                             logger.error("missing attribute value chunk "
@@ -477,7 +477,7 @@ public final class SimpleDbStore<ModelT extends Base<?>> extends
         return items.build();
     }
 
-    private final static int ITEM_BATCH_SIZE = 25;
     private final AmazonSimpleDBClient client;
     private final String domainName;
+    private final static int ITEM_BATCH_SIZE = 25;
 }

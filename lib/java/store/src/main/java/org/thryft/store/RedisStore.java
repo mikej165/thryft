@@ -54,7 +54,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
 public final class RedisStore<ModelT extends Base<?>> extends
-        KeyValueStore<ModelT> {
+KeyValueStore<ModelT> {
     public final static class Configuration {
         public Configuration(final Properties properties) {
             host = properties.getProperty(this.getClass().getCanonicalName()
@@ -152,7 +152,7 @@ public final class RedisStore<ModelT extends Base<?>> extends
 
     @Override
     protected ModelT _getModelById(final Key modelKey) throws ModelIoException,
-            NoSuchModelException {
+    NoSuchModelException {
         try {
             final Jedis jedis = jedisPool.getResource();
             try {
@@ -249,7 +249,7 @@ public final class RedisStore<ModelT extends Base<?>> extends
             try {
                 final StringMapOutputProtocol oprot = new StringMapOutputProtocol();
                 try {
-                    model.write(oprot);
+                    model.writeAsStruct(oprot);
                 } catch (final OutputProtocolException e) {
                     throw new ModelIoException(e, modelKey.getModelId());
                 }

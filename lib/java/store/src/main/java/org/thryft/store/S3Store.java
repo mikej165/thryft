@@ -70,9 +70,9 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 
 public final class S3Store<ModelT extends Base<?>> extends
-AwsKeyValueStore<ModelT> {
+        AwsKeyValueStore<ModelT> {
     public final static class Configuration extends
-    AwsKeyValueStore.Configuration {
+            AwsKeyValueStore.Configuration {
         public Configuration(final AWSCredentials credentials) {
             super(credentials);
         }
@@ -128,15 +128,15 @@ AwsKeyValueStore<ModelT> {
             return objectCacheExpireAfterAccessTimeUnit;
         }
 
-        public final static String BUCKET_NAME_PREFIX_DEFAULT = "yogento-dev-";
-
-        public final static long OBJECT_CACHE_EXPIRE_AFTER_ACCESS_DURATION_DEFAULT = 1;
-
-        public final static TimeUnit OBJECT_CACHE_EXPIRE_AFTER_ACCESS_TIME_UNIT_DEFAULT = TimeUnit.HOURS;
-
         private String bucketNamePrefix = BUCKET_NAME_PREFIX_DEFAULT;
+
         private long objectCacheExpireAfterAccessDuration = OBJECT_CACHE_EXPIRE_AFTER_ACCESS_DURATION_DEFAULT;
+
         private TimeUnit objectCacheExpireAfterAccessTimeUnit = OBJECT_CACHE_EXPIRE_AFTER_ACCESS_TIME_UNIT_DEFAULT;
+
+        public final static String BUCKET_NAME_PREFIX_DEFAULT = "yogento-dev-";
+        public final static long OBJECT_CACHE_EXPIRE_AFTER_ACCESS_DURATION_DEFAULT = 1;
+        public final static TimeUnit OBJECT_CACHE_EXPIRE_AFTER_ACCESS_TIME_UNIT_DEFAULT = TimeUnit.HOURS;
     }
 
     private final class ObjectCacheEntry {
@@ -180,7 +180,7 @@ AwsKeyValueStore<ModelT> {
                 .expireAfterAccess(
                         configuration.getObjectCacheExpireAfterAccessDuration(),
                         configuration.getObjectCacheExpireAfterAccessTimeUnit())
-                        .build();
+                .build();
     }
 
     @Override
@@ -211,7 +211,7 @@ AwsKeyValueStore<ModelT> {
 
     @Override
     protected ModelT _getModelById(final Key modelKey) throws ModelIoException,
-    NoSuchModelException {
+            NoSuchModelException {
         final ImmutableMap<String, ModelT> models;
         try {
             models = __getModels(modelKey.getUserId());
@@ -300,7 +300,7 @@ AwsKeyValueStore<ModelT> {
             for (final ImmutableMap.Entry<Key, ModelT> model : models
                     .entrySet()) {
                 updatedModels
-                .put(model.getKey().getModelId(), model.getValue());
+                        .put(model.getKey().getModelId(), model.getValue());
             }
             __putModels(ImmutableMap.copyOf(updatedModels), userId);
         } catch (final AmazonServiceException e) {
@@ -396,7 +396,7 @@ AwsKeyValueStore<ModelT> {
             for (final ImmutableMap.Entry<String, ModelT> model : models
                     .entrySet()) {
                 oprot.writeString(model.getKey());
-                model.getValue().write(oprot);
+                model.getValue().writeAsStruct(oprot);
             }
             oprot.writeMapEnd();
             oprot.flush();

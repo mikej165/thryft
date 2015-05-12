@@ -47,14 +47,15 @@ public final class JacksonJsonProtocolTest extends ProtocolTest {
     protected void _test(final ProtocolTestStruct expected) throws Exception {
         final StringWriter writer = new StringWriter();
         final OutputProtocol oprot = new JacksonJsonOutputProtocol(writer);
-        expected.write(oprot);
+        expected.writeAsStruct(oprot);
         oprot.flush();
 
         final String ostring = writer.toString();
 
         final StringReader reader = new StringReader(ostring);
         final InputProtocol iprot = new JacksonJsonInputProtocol(reader);
-        final ProtocolTestStruct actual = new ProtocolTestStruct(iprot);
+        final ProtocolTestStruct actual = ProtocolTestStruct
+                .readAsStruct(iprot);
         assertEquals(expected, actual);
     }
 }

@@ -101,7 +101,7 @@ public abstract class AbstractOutputProtocol implements OutputProtocol {
         } else if (value instanceof Uri) {
             oprot.writeString(((Uri) value).toString());
         } else if (value instanceof Base<?>) {
-            ((Base<?>) value).write(oprot);
+            ((Base<?>) value).writeAsStruct(oprot);
         } else {
             throw new UnsupportedOperationException(value.toString());
         }

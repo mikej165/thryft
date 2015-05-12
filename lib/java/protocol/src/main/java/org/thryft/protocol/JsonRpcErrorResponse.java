@@ -6,7 +6,7 @@ import org.thryft.Base;
 
 @SuppressWarnings("serial")
 public final class JsonRpcErrorResponse extends RuntimeException implements
-Base<JsonRpcErrorResponse> {
+        Base<JsonRpcErrorResponse> {
     public static JsonRpcErrorResponse read(final InputProtocol iprot)
             throws InputProtocolException {
         int code = 0;
@@ -78,7 +78,13 @@ Base<JsonRpcErrorResponse> {
     }
 
     @Override
-    public void write(final OutputProtocol oprot)
+    public void writeAsList(final OutputProtocol oprot)
+            throws OutputProtocolException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void writeAsStruct(final OutputProtocol oprot)
             throws OutputProtocolException {
         oprot.writeStructBegin("error");
 
@@ -91,7 +97,7 @@ Base<JsonRpcErrorResponse> {
             oprot.writeString(getCause().getClass().getName());
             oprot.writeFieldEnd();
             oprot.writeFieldBegin("data", Type.STRUCT, (short) -1);
-            ((Base<?>) getCause()).write(oprot);
+            ((Base<?>) getCause()).writeAsStruct(oprot);
             oprot.writeFieldEnd();
         }
 

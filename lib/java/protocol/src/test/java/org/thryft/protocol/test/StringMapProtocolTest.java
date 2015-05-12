@@ -43,12 +43,13 @@ public final class StringMapProtocolTest extends ProtocolTest {
     @Override
     protected void _test(final ProtocolTestStruct expected) throws Exception {
         final StringMapOutputProtocol oprot = new StringMapOutputProtocol();
-        expected.write(oprot);
+        expected.writeAsStruct(oprot);
         final ImmutableMap<String, String> ostringMap = oprot.toStringMap();
 
         final StringMapInputProtocol iprot = new StringMapInputProtocol(
                 ostringMap);
-        final ProtocolTestStruct actual = new ProtocolTestStruct(iprot);
+        final ProtocolTestStruct actual = ProtocolTestStruct
+                .readAsStruct(iprot);
         assertEquals(expected, actual);
     }
 }

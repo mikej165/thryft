@@ -60,7 +60,7 @@ class JavaMapType(MapType, _JavaContainerType):
         return """\
 (new com.google.common.base.Function<org.thryft.protocol.InputProtocol, com.google.common.collect.ImmutableMap<%(key_type_name)s, %(value_type_name)s>>() {
     @Override
-    public com.google.common.collect.ImmutableMap<%(key_type_name)s, %(value_type_name)s> apply(org.thryft.protocol.InputProtocol iprot) {
+    public com.google.common.collect.ImmutableMap<%(key_type_name)s, %(value_type_name)s> apply(final org.thryft.protocol.InputProtocol iprot) {
         try {
             final org.thryft.protocol.MapBegin mapBegin = iprot.readMapBegin();
             final com.google.common.collect.ImmutableMap.Builder<%(key_type_name)s, %(value_type_name)s> map = com.google.common.collect.ImmutableMap.builder();
