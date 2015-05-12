@@ -129,12 +129,13 @@ class _NamedConstruct(_Construct):
     def _qname(self, scope, include_parent_document_name=True, **kwds):
         if self.parent is None:
             return getattr(self, scope + '_name')(**kwds)
-        from thryft.generator.document import Document
-        parent_document = self.parent
-        while not isinstance(parent_document, Document):
-            parent_document = parent_document.parent
-        if parent_document is None:
-            return getattr(self, scope + '_name')(**kwds)
+#         from thryft.generator.document import Document
+#         parent_document = self.parent
+#         while not isinstance(parent_document, Document):
+#             parent_document = parent_document.parent
+#         if parent_document is None:
+#             return getattr(self, scope + '_name')(**kwds)
+        parent_document = self._parent_document()
         qname = []
         try:
             qname.append(parent_document.namespace_by_scope(scope).name)

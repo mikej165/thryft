@@ -67,7 +67,6 @@ def _%(name)s(self, **kwds):
                     'import base64',
                     'import json',
                     'import logging',
-                    'import re',
                     'import urllib2',
                     ] + \
                     PyService.py_imports_definition(self)
@@ -85,24 +84,31 @@ def _%(name)s(self, **kwds):
             return {'__import_exception_class': """\
 @staticmethod
 def __import_exception_class(exception_class_qname):
-    def decamelize(name):
-        return re.sub('(((?<=[a-z])[A-Z])|([A-Z](?![A-Z]|$)))', '_\\\\1', name)\\
-                   .lower()\\
-                   .strip('_')
+#     def decamelize(name):
+#         return re.sub('(((?<=[a-z])[A-Z])|([A-Z](?![A-Z]|$)))', '_\\\\1', name)\\
+#                    .lower()\\
+#                    .strip('_')
+#
+#     exception_class_qname_split = exception_class_qname.split('.')
+# #     if len(exception_class_qname) < 2:
+# #         raise
+# #     elif exception_class_qname[0] not in ('com', 'org'):
+# #         raise
+#
+#
+#     exception_class_name = exception_class_qname_split[-1]
+#     exception_module_qname = \\
+#         exception_class_qname_split[:-1] + \\
+#             [decamelize(exception_class_name)]
+#
+#     exception_module = __import__('.'.join(exception_module_qname))
+#     for module_name in exception_module_qname[1:]:
+#         exception_module = getattr(exception_module, module_name)
 
-    exception_class_qname_split = exception_class_qname.split('.')
-#     if len(exception_class_qname) < 2:
-#         raise
-#     elif exception_class_qname[0] not in ('com', 'org'):
-#         raise
+    exception_module_qname, exception_class_name = exception_class_qname.rsplit('.', 1)
 
-    exception_class_name = exception_class_qname_split[-1]
-    exception_module_qname = \\
-        exception_class_qname_split[:-1] + \\
-            [decamelize(exception_class_name)]
-
-    exception_module = __import__('.'.join(exception_module_qname))
-    for module_name in exception_module_qname[1:]:
+    exception_module = __import__(exception_module_qname)
+    for module_name in exception_module_qname.split('.')[1:]:
         exception_module = getattr(exception_module, module_name)
 
     return getattr(exception_module, exception_class_name)

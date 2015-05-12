@@ -38,3 +38,6 @@ class JavaStructType(StructType, _JavaCompoundType):
     def __init__(self, message_type=None, **kwds):
         StructType.__init__(self, **kwds)
         _JavaCompoundType.__init__(self, message_type=message_type, **kwds)
+
+    def _java_implements(self):
+        return ['org.thryft.Struct'] + _JavaCompoundType._java_implements(self)

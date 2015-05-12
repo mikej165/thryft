@@ -40,7 +40,7 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.thryft.Base;
+import org.thryft.Struct;
 import org.thryft.protocol.OutputProtocolException;
 import org.thryft.protocol.StringMapInputProtocol;
 import org.thryft.protocol.StringMapOutputProtocol;
@@ -53,7 +53,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
-public final class RedisStore<ModelT extends Base<?>> extends
+public final class RedisStore<ModelT extends Struct> extends
 KeyValueStore<ModelT> {
     public final static class Configuration {
         public Configuration(final Properties properties) {

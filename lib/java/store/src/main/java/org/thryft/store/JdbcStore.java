@@ -47,7 +47,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.h2.jdbcx.JdbcConnectionPool;
-import org.thryft.Base;
+import org.thryft.Struct;
 import org.thryft.protocol.InputProtocolException;
 import org.thryft.protocol.JacksonJsonInputProtocol;
 import org.thryft.protocol.JacksonJsonOutputProtocol;
@@ -58,7 +58,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
-public final class JdbcStore<ModelT extends Base<?>> extends
+public final class JdbcStore<ModelT extends Struct> extends
         AbstractStore<ModelT> {
     public final static class Configuration {
         public Configuration() {

@@ -41,7 +41,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.thryft.Base;
+import org.thryft.Struct;
 import org.thryft.protocol.OutputProtocolException;
 import org.thryft.protocol.StringMapInputProtocol;
 import org.thryft.protocol.StringMapOutputProtocol;
@@ -75,7 +75,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.hash.Hashing;
 
-public final class SimpleDbStore<ModelT extends Base<?>> extends
+public final class SimpleDbStore<ModelT extends Struct> extends
 AwsKeyValueStore<ModelT> {
     public final static class Configuration extends
     AwsKeyValueStore.Configuration {

@@ -1,7 +1,6 @@
 package org.thryft.protocol.test;
 
-@SuppressWarnings({"serial"})
-public class ProtocolTestStruct implements org.thryft.Base<ProtocolTestStruct> {
+public class ProtocolTestStruct implements org.thryft.Struct, java.lang.Comparable<ProtocolTestStruct> {
     public static class Builder {
         public Builder() {
             requiredI32Field = 0;
@@ -1935,6 +1934,7 @@ public class ProtocolTestStruct implements org.thryft.Base<ProtocolTestStruct> {
         return com.google.common.base.MoreObjects.toStringHelper(this).omitNullValues().add("required_i32_field", getRequiredI32Field()).add("required_string_field", getRequiredStringField()).add("binary_field", getBinaryField().orNull()).add("bool_field", getBoolField().orNull()).add("date_time_field", getDateTimeField().orNull()).add("decimal_field", getDecimalField().orNull()).add("email_address_field", getEmailAddressField().orNull()).add("enum_field", getEnumField().orNull()).add("float_field", getFloatField().orNull()).add("i8_field", getI8Field().orNull()).add("i16_field", getI16Field().orNull()).add("i32_field", getI32Field().orNull()).add("i64_field", getI64Field().orNull()).add("string_list_field", getStringListField().orNull()).add("string_string_map_field", getStringStringMapField().orNull()).add("string_set_field", getStringSetField().orNull()).add("string_field", getStringField().orNull()).add("struct_field", getStructField().orNull()).add("u32_field", getU32Field().orNull()).add("u64_field", getU64Field().orNull()).add("uri_field", getUriField().orNull()).add("url_field", getUrlField().orNull()).add("variant_field", getVariantField().orNull()).toString();
     }
 
+    @Override
     public void writeAsList(final org.thryft.protocol.OutputProtocol oprot) throws org.thryft.protocol.OutputProtocolException {
         oprot.writeListBegin(org.thryft.protocol.Type.VOID_, 23);
 
@@ -2084,6 +2084,7 @@ public class ProtocolTestStruct implements org.thryft.Base<ProtocolTestStruct> {
         oprot.writeListEnd();
     }
 
+    @Override
     public void writeAsStruct(final org.thryft.protocol.OutputProtocol oprot) throws org.thryft.protocol.OutputProtocolException {
         oprot.writeStructBegin("org.thryft.protocol.test.ProtocolTestStruct");
 

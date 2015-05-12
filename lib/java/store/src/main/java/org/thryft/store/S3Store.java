@@ -45,7 +45,7 @@ import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.IOUtils;
-import org.thryft.Base;
+import org.thryft.Struct;
 import org.thryft.protocol.InputProtocolException;
 import org.thryft.protocol.JacksonJsonInputProtocol;
 import org.thryft.protocol.JacksonJsonOutputProtocol;
@@ -69,7 +69,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 
-public final class S3Store<ModelT extends Base<?>> extends
+public final class S3Store<ModelT extends Struct> extends
         AwsKeyValueStore<ModelT> {
     public final static class Configuration extends
             AwsKeyValueStore.Configuration {

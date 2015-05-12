@@ -42,7 +42,7 @@ import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.thryft.Base;
+import org.thryft.Struct;
 import org.thryft.protocol.InputProtocolException;
 import org.thryft.protocol.JacksonJsonInputProtocol;
 import org.thryft.protocol.JacksonJsonOutputProtocol;
@@ -52,8 +52,7 @@ import com.google.common.base.CaseFormat;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
-public final class FsStore<ModelT extends Base<?>> extends
-        AbstractStore<ModelT> {
+public final class FsStore<ModelT extends Struct> extends AbstractStore<ModelT> {
     public final static class Configuration {
         public Configuration() {
             this(ROOT_DIRECTORY_PATH_DEFAULT);

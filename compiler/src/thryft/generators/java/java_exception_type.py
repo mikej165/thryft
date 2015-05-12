@@ -37,20 +37,28 @@ from thryft.generators.java._java_compound_type import _JavaCompoundType
 class JavaExceptionType(ExceptionType, _JavaCompoundType):
     def __init__(self, **kwds):
         ExceptionType.__init__(self, **kwds)
-        _JavaCompoundType.__init__(self, message_type='EXCEPTION', **kwds)
+        _JavaCompoundType.__init__(self, message_type='EXCEPTION', java_suppress_warnings=('serial',), **kwds)
 
     def _java_extends(self):
-        return 'java.lang.Exception'
+        return 'org.thryft.Exception'
 
     def _java_method_get_message(self):
         return {'getMessage': '''\
 @Override
 public String getMessage() {
     return toString();
-}
-'''}
+}'''}
+
+    def _java_method_get_thrift_qualified_class_name(self):
+        qname = self._parent_document().namespace_by_scope('*').name + '.' + self.parent.name + '.' + self.name
+        return {'getThriftQualifiedClassName': """\
+@Override
+public String getThriftQualifiedClassName() {
+    return "%(qname)s";
+}""" % locals()}
 
     def _java_methods(self):
         methods = _JavaCompoundType._java_methods(self)
         methods.update(self._java_method_get_message())
+        methods.update(self._java_method_get_thrift_qualified_class_name())
         return methods

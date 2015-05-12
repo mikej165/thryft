@@ -38,14 +38,14 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.thryft.Base;
+import org.thryft.Struct;
 import org.thryft.protocol.InputProtocol;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
-public abstract class AbstractStore<ModelT extends Base<?>> implements
-        Store<ModelT> {
+public abstract class AbstractStore<ModelT extends Struct> implements
+Store<ModelT> {
     protected AbstractStore(final Class<ModelT> modelClass) {
         logger = LoggerFactory.getLogger(getClass());
         this.modelClass = checkNotNull(modelClass);
@@ -107,7 +107,7 @@ public abstract class AbstractStore<ModelT extends Base<?>> implements
     @Override
     public final ImmutableMap<String, ModelT> getModelsByIds(
             final ImmutableSet<String> modelIds, final String userId)
-            throws ModelIoException, NoSuchModelException {
+                    throws ModelIoException, NoSuchModelException {
         checkNotNull(modelIds);
         if (modelIds.isEmpty()) {
             return ImmutableMap.of();
@@ -155,10 +155,11 @@ public abstract class AbstractStore<ModelT extends Base<?>> implements
     protected abstract void _deleteModels(final String userId)
             throws ModelIoException;
 
-    protected ModelT _getModel(final InputProtocol iprot) throws ModelIoException {
+    protected ModelT _getModel(final InputProtocol iprot)
+            throws ModelIoException {
         try {
-            return modelClass.getConstructor(InputProtocol.class)
-                    .newInstance(iprot);
+            return modelClass.getConstructor(InputProtocol.class).newInstance(
+                    iprot);
         } catch (InstantiationException | IllegalAccessException
                 | IllegalArgumentException | InvocationTargetException
                 | NoSuchMethodException | SecurityException e) {
@@ -181,7 +182,7 @@ public abstract class AbstractStore<ModelT extends Base<?>> implements
 
     protected abstract ImmutableMap<String, ModelT> _getModelsByIds(
             final ImmutableSet<String> modelIds, final String userId)
-            throws ModelIoException, NoSuchModelException;
+                    throws ModelIoException, NoSuchModelException;
 
     protected abstract ImmutableSet<String> _getUserIds()
             throws ModelIoException;
@@ -194,7 +195,7 @@ public abstract class AbstractStore<ModelT extends Base<?>> implements
 
     protected abstract void _putModels(
             final ImmutableMap<String, ModelT> models, final String userId)
-            throws ModelIoException;
+                    throws ModelIoException;
 
     protected final Logger logger;
 

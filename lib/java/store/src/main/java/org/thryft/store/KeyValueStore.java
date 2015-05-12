@@ -37,12 +37,12 @@ import static org.thryft.Preconditions.checkNotEmpty;
 
 import java.util.Map;
 
-import org.thryft.Base;
+import org.thryft.Struct;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
-public abstract class KeyValueStore<ModelT extends Base<?>> extends
+public abstract class KeyValueStore<ModelT extends Struct> extends
         AbstractStore<ModelT> {
     protected final static class Key {
         public static Key parse(final String key) {

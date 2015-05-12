@@ -34,12 +34,12 @@ package org.thryft.store;
 
 import static org.thryft.Preconditions.checkNotEmpty;
 
-import org.thryft.Base;
+import org.thryft.Struct;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
-public interface Store<ModelT extends Base<?>> {
+public interface Store<ModelT extends Struct> {
     @SuppressWarnings("serial")
     public final static class ModelIoException extends Exception {
         public ModelIoException(final String message) {
@@ -98,7 +98,7 @@ public interface Store<ModelT extends Base<?>> {
 
     public ImmutableMap<String, ModelT> getModelsByIds(
             ImmutableSet<String> modelIds, String userId)
-            throws ModelIoException, NoSuchModelException;
+                    throws ModelIoException, NoSuchModelException;
 
     public ImmutableSet<String> getUserIds() throws ModelIoException;
 

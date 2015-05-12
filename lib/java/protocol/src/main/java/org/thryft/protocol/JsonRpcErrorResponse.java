@@ -2,11 +2,11 @@ package org.thryft.protocol;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import org.thryft.Base;
+import org.thryft.CompoundType;
 
 @SuppressWarnings("serial")
 public final class JsonRpcErrorResponse extends RuntimeException implements
-        Base<JsonRpcErrorResponse> {
+CompoundType {
     public static JsonRpcErrorResponse read(final InputProtocol iprot)
             throws InputProtocolException {
         int code = 0;
@@ -41,11 +41,6 @@ public final class JsonRpcErrorResponse extends RuntimeException implements
 
     public JsonRpcErrorResponse(final JsonRpcInputProtocolException e) {
         this(e.getCode(), e.getMessage());
-    }
-
-    @Override
-    public int compareTo(final JsonRpcErrorResponse other) {
-        throw new UnsupportedOperationException();
     }
 
     public boolean equals(final JsonRpcErrorResponse other) {
@@ -92,12 +87,13 @@ public final class JsonRpcErrorResponse extends RuntimeException implements
         oprot.writeI32(code);
         oprot.writeFieldEnd();
 
-        if (getCause() != null && getCause() instanceof Base<?>) {
+        if (getCause() instanceof org.thryft.Exception) {
             oprot.writeFieldBegin("@class", Type.STRING, (short) -1);
-            oprot.writeString(getCause().getClass().getName());
+            oprot.writeString(((org.thryft.Exception) getCause())
+                    .getThriftQualifiedClassName());
             oprot.writeFieldEnd();
             oprot.writeFieldBegin("data", Type.STRUCT, (short) -1);
-            ((Base<?>) getCause()).writeAsStruct(oprot);
+            ((CompoundType) getCause()).writeAsStruct(oprot);
             oprot.writeFieldEnd();
         }
 

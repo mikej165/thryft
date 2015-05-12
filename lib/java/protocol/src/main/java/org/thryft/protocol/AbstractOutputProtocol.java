@@ -37,7 +37,7 @@ import java.util.Date;
 
 import javax.annotation.Nullable;
 
-import org.thryft.Base;
+import org.thryft.CompoundType;
 import org.thryft.native_.EmailAddress;
 import org.thryft.native_.Uri;
 
@@ -100,8 +100,8 @@ public abstract class AbstractOutputProtocol implements OutputProtocol {
             oprot.writeString((String) value);
         } else if (value instanceof Uri) {
             oprot.writeString(((Uri) value).toString());
-        } else if (value instanceof Base<?>) {
-            ((Base<?>) value).writeAsStruct(oprot);
+        } else if (value instanceof CompoundType) {
+            ((CompoundType) value).writeAsStruct(oprot);
         } else {
             throw new UnsupportedOperationException(value.toString());
         }

@@ -206,7 +206,7 @@ public static class Builder {%(sections)s
         self.__message_type = message_type
 
         if java_suppress_warnings is None:
-            self.__suppress_warnings = ('serial',)
+            self.__suppress_warnings = tuple()
         else:
             self.__suppress_warnings = tuple(java_suppress_warnings)
 
@@ -361,7 +361,7 @@ public %(name)s(%(parameters)s) {
 
     def _java_implements(self):
         name = self.java_name()
-        return ["org.thryft.Base<%(name)s>" % locals()]
+        return ["java.lang.Comparable<%(name)s>" % locals()]
 
     def _java_member_declarations(self):
         mutable = self._parent_generator().mutable_compound_types
