@@ -123,7 +123,7 @@ def update(self, %(other_name)s):
             sections.append("\n\n".join(indent(' ' * 4, self._py_methods())))
             sections = lpad("\n", "\n\n".join(sections))
             return """\
-class Builder:%(sections)s
+class Builder(object):%(sections)s
 """ % locals()
 
     def _py_builder(self):
