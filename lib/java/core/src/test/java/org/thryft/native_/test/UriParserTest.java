@@ -3,16 +3,26 @@ package org.thryft.native_.test;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import org.junit.Test;
 import org.thryft.native_.Uri;
 
-public class UriParserTest {
+public final class UriParserTest {
     @Test
     public void testParseMailtoUrl() {
         final Uri uri = Uri.parse("mailto:test@example.com");
         assertThat(uri.getScheme(), equalTo("mailto"));
         assertThat(uri.getPath().get(), equalTo("test@example.com"));
+    }
+
+    @Test
+    public void testParseNoScheme() {
+        try {
+            Uri.parse("/test/path");
+            fail();
+        } catch (final IllegalArgumentException e) {
+        }
     }
 
     @Test

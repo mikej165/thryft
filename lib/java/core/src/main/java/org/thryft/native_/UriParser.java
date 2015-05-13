@@ -259,6 +259,9 @@ case 5:
 // line 38 "UriParser.rl"
 
 
+        if (scheme == null) {
+            throw new IllegalArgumentException("missing scheme");
+        }
         switch (scheme) {
         case "http":
         case "https":
@@ -269,7 +272,7 @@ case 5:
     }
 
 
-// line 268 "UriParser.java"
+// line 271 "UriParser.java"
 private static byte[] init__UriParser_actions_0()
 {
 	return new byte [] {
@@ -1380,5 +1383,5 @@ static final int UriParser_error = 0;
 static final int UriParser_en_main = 1;
 
 
-// line 50 "UriParser.rl"
+// line 53 "UriParser.rl"
 }

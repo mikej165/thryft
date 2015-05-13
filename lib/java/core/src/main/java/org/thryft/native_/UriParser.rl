@@ -37,6 +37,9 @@ final class UriParser {
     write exec;
 }%%
 
+        if (scheme == null) {
+            throw new IllegalArgumentException("missing scheme");
+        }
         switch (scheme) {
         case "http":
         case "https":
