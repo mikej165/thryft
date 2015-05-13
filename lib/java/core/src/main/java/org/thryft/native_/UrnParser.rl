@@ -10,9 +10,11 @@ public final class UrnParser {
                 (segment_nz >{ mark = fpc; } %{ namespaceSpecificString = new String(data, mark, fpc - mark); });
 }%%
 
-    public static URN parseUrn(final String urn) {
+    public static Urn parseUrn(final String urn) {
         if (urn == null) {
             throw new NullPointerException();
+        } else if (urn.isEmpty()) {
+            throw new IllegalArgumentException("empty urn");
         }
 
         // Ragel state machine variables
@@ -31,12 +33,12 @@ public final class UrnParser {
 %% write exec;
 
         if (namespaceIdentifier == null) {
-            throw new IllegalArgumentException(urn);
+            throw new IllegalArgumentException("missing namespace identifier: " + urn);
         } else if (namespaceSpecificString == null) {
-            throw new IllegalArgumentException(urn);
+            throw new IllegalArgumentException("missing namespace-specific string: " + urn);
         }
 
-        return new URN(namespaceIdentifier, namespaceSpecificString, urn);
+        return new Urn(namespaceIdentifier, namespaceSpecificString, urn);
     }
 
  %% write data;

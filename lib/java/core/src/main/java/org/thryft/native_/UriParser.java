@@ -8,6 +8,8 @@ final class UriParser {
     static Uri parseUri(final String uri) {
         if (uri == null) {
             throw new NullPointerException();
+        } else if (uri.isEmpty()) {
+            throw new IllegalArgumentException("empty uri");
         } else if (uri.startsWith("urn:")) {
             return UrnParser.parseUrn(uri);
         }
@@ -32,12 +34,12 @@ final class UriParser {
         String userInfo = null;
 
 
-// line 34 "UriParser.java"
+// line 36 "UriParser.java"
 	{
 	cs = UriParser_start;
 	}
 
-// line 38 "UriParser.java"
+// line 40 "UriParser.java"
 	{
 	int _klen;
 	int _trans = 0;
@@ -177,7 +179,7 @@ case 1:
 // line 79 "Rfc3986.rl"
 	{ mark = p; }
 	break;
-// line 178 "UriParser.java"
+// line 180 "UriParser.java"
 			}
 		}
 	}
@@ -246,7 +248,7 @@ case 4:
 // line 80 "Rfc3986.rl"
 	{ fragment = Optional.of(new String(data, mark, p - mark)); }
 	break;
-// line 247 "UriParser.java"
+// line 249 "UriParser.java"
 		}
 	}
 	}
@@ -256,11 +258,11 @@ case 5:
 	break; }
 	}
 
-// line 38 "UriParser.rl"
+// line 40 "UriParser.rl"
 
 
         if (scheme == null) {
-            throw new IllegalArgumentException("missing scheme");
+            throw new IllegalArgumentException("missing scheme: " + uri);
         }
         switch (scheme) {
         case "http":
@@ -272,7 +274,7 @@ case 5:
     }
 
 
-// line 271 "UriParser.java"
+// line 273 "UriParser.java"
 private static byte[] init__UriParser_actions_0()
 {
 	return new byte [] {
@@ -1383,5 +1385,5 @@ static final int UriParser_error = 0;
 static final int UriParser_en_main = 1;
 
 
-// line 53 "UriParser.rl"
+// line 55 "UriParser.rl"
 }

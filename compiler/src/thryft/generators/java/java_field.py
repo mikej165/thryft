@@ -204,14 +204,14 @@ if (%s().isPresent()) {
             if self.required:
                 read_protocol_throws = \
                     ''.join("""\
- catch (%(exception_type_name)s e) {
+ catch (final %(exception_type_name)s e) {
      throw new IllegalArgumentException(e);
 }""" % locals()
                          for exception_type_name in read_protocol_throws)
             else:
                 read_protocol_throws = \
                     ''.join("""\
- catch (%(exception_type_name)s e) {
+ catch (final %(exception_type_name)s e) {
 }""" % locals()
                          for exception_type_name in read_protocol_throws)
             read_protocol = indent(' ' * 4, read_protocol)

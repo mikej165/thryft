@@ -70,6 +70,9 @@ class Uri(object):
     def java_read_protocol(self):
         return 'org.thryft.native_.Uri.parse(iprot.readString())'
 
+    def java_read_protocol_throws_unchecked(self):
+        return ['java.lang.IllegalArgumentException']
+
     def java_write_protocol(self, value, depth=0):
         return "oprot.writeString(%(value)s.toString());" % locals()
 

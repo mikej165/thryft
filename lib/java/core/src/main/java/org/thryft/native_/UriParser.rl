@@ -6,6 +6,8 @@ final class UriParser {
     static Uri parseUri(final String uri) {
         if (uri == null) {
             throw new NullPointerException();
+        } else if (uri.isEmpty()) {
+            throw new IllegalArgumentException("empty uri");
         } else if (uri.startsWith("urn:")) {
             return UrnParser.parseUrn(uri);
         }
@@ -38,7 +40,7 @@ final class UriParser {
 }%%
 
         if (scheme == null) {
-            throw new IllegalArgumentException("missing scheme");
+            throw new IllegalArgumentException("missing scheme: " + uri);
         }
         switch (scheme) {
         case "http":
