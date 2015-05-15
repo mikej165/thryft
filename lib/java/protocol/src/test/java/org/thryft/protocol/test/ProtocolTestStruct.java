@@ -167,13 +167,13 @@ public class ProtocolTestStruct implements org.thryft.Struct, java.lang.Comparab
             if (__list.getSize() > 4) {
                 try {
                     dateTimeField = com.google.common.base.Optional.of(iprot.readDateTime());
-                } catch (IllegalArgumentException e) {
+                } catch (final IllegalArgumentException e) {
                 }
             }
             if (__list.getSize() > 5) {
                 try {
                     decimalField = com.google.common.base.Optional.of(iprot.readDecimal());
-                } catch (NumberFormatException e) {
+                } catch (final NumberFormatException e) {
                 }
             }
             if (__list.getSize() > 6) {
@@ -182,37 +182,37 @@ public class ProtocolTestStruct implements org.thryft.Struct, java.lang.Comparab
             if (__list.getSize() > 7) {
                 try {
                     enumField = com.google.common.base.Optional.of(iprot.readEnum(org.thryft.protocol.test.ProtocolTestEnum.class));
-                } catch (IllegalArgumentException e) {
+                } catch (final IllegalArgumentException e) {
                 }
             }
             if (__list.getSize() > 8) {
                 try {
                     floatField = com.google.common.base.Optional.of(((float)iprot.readDouble()));
-                } catch (NumberFormatException e) {
+                } catch (final NumberFormatException e) {
                 }
             }
             if (__list.getSize() > 9) {
                 try {
                     i8Field = com.google.common.base.Optional.of(iprot.readByte());
-                } catch (NumberFormatException e) {
+                } catch (final NumberFormatException e) {
                 }
             }
             if (__list.getSize() > 10) {
                 try {
                     i16Field = com.google.common.base.Optional.of(iprot.readI16());
-                } catch (NumberFormatException e) {
+                } catch (final NumberFormatException e) {
                 }
             }
             if (__list.getSize() > 11) {
                 try {
                     i32Field = com.google.common.base.Optional.of(iprot.readI32());
-                } catch (NumberFormatException e) {
+                } catch (final NumberFormatException e) {
                 }
             }
             if (__list.getSize() > 12) {
                 try {
                     i64Field = com.google.common.base.Optional.of(iprot.readI64());
-                } catch (NumberFormatException e) {
+                } catch (final NumberFormatException e) {
                 }
             }
             if (__list.getSize() > 13) {
@@ -278,20 +278,26 @@ public class ProtocolTestStruct implements org.thryft.Struct, java.lang.Comparab
             if (__list.getSize() > 18) {
                 try {
                     u32Field = com.google.common.base.Optional.of(iprot.readU32());
-                } catch (NumberFormatException e) {
+                } catch (final NumberFormatException e) {
                 }
             }
             if (__list.getSize() > 19) {
                 try {
                     u64Field = com.google.common.base.Optional.of(iprot.readU64());
-                } catch (NumberFormatException e) {
+                } catch (final NumberFormatException e) {
                 }
             }
             if (__list.getSize() > 20) {
-                uriField = com.google.common.base.Optional.of(org.thryft.native_.Uri.parse(iprot.readString()));
+                try {
+                    uriField = com.google.common.base.Optional.of(org.thryft.native_.Uri.parse(iprot.readString()));
+                } catch (final java.lang.IllegalArgumentException e) {
+                }
             }
             if (__list.getSize() > 21) {
-                urlField = com.google.common.base.Optional.of(org.thryft.native_.Url.parse(iprot.readString()));
+                try {
+                    urlField = com.google.common.base.Optional.of(org.thryft.native_.Url.parse(iprot.readString()));
+                } catch (final java.lang.IllegalArgumentException e) {
+                }
             }
             if (__list.getSize() > 22) {
                 variantField = com.google.common.base.Optional.of(iprot.readVariant());
@@ -317,44 +323,44 @@ public class ProtocolTestStruct implements org.thryft.Struct, java.lang.Comparab
                 } else if (ifield.getName().equals("date_time_field")) {
                     try {
                         dateTimeField = com.google.common.base.Optional.of(iprot.readDateTime());
-                    } catch (IllegalArgumentException e) {
+                    } catch (final IllegalArgumentException e) {
                     }
                 } else if (ifield.getName().equals("decimal_field")) {
                     try {
                         decimalField = com.google.common.base.Optional.of(iprot.readDecimal());
-                    } catch (NumberFormatException e) {
+                    } catch (final NumberFormatException e) {
                     }
                 } else if (ifield.getName().equals("email_address_field")) {
                     emailAddressField = com.google.common.base.Optional.of(new org.thryft.native_.EmailAddress(iprot.readString()));
                 } else if (ifield.getName().equals("enum_field")) {
                     try {
                         enumField = com.google.common.base.Optional.of(iprot.readEnum(org.thryft.protocol.test.ProtocolTestEnum.class));
-                    } catch (IllegalArgumentException e) {
+                    } catch (final IllegalArgumentException e) {
                     }
                 } else if (ifield.getName().equals("float_field")) {
                     try {
                         floatField = com.google.common.base.Optional.of(((float)iprot.readDouble()));
-                    } catch (NumberFormatException e) {
+                    } catch (final NumberFormatException e) {
                     }
                 } else if (ifield.getName().equals("i8_field")) {
                     try {
                         i8Field = com.google.common.base.Optional.of(iprot.readByte());
-                    } catch (NumberFormatException e) {
+                    } catch (final NumberFormatException e) {
                     }
                 } else if (ifield.getName().equals("i16_field")) {
                     try {
                         i16Field = com.google.common.base.Optional.of(iprot.readI16());
-                    } catch (NumberFormatException e) {
+                    } catch (final NumberFormatException e) {
                     }
                 } else if (ifield.getName().equals("i32_field")) {
                     try {
                         i32Field = com.google.common.base.Optional.of(iprot.readI32());
-                    } catch (NumberFormatException e) {
+                    } catch (final NumberFormatException e) {
                     }
                 } else if (ifield.getName().equals("i64_field")) {
                     try {
                         i64Field = com.google.common.base.Optional.of(iprot.readI64());
-                    } catch (NumberFormatException e) {
+                    } catch (final NumberFormatException e) {
                     }
                 } else if (ifield.getName().equals("string_list_field")) {
                     stringListField = com.google.common.base.Optional.of((new com.google.common.base.Function<org.thryft.protocol.InputProtocol, com.google.common.collect.ImmutableList<String>>() {
@@ -414,17 +420,23 @@ public class ProtocolTestStruct implements org.thryft.Struct, java.lang.Comparab
                 } else if (ifield.getName().equals("u32_field")) {
                     try {
                         u32Field = com.google.common.base.Optional.of(iprot.readU32());
-                    } catch (NumberFormatException e) {
+                    } catch (final NumberFormatException e) {
                     }
                 } else if (ifield.getName().equals("u64_field")) {
                     try {
                         u64Field = com.google.common.base.Optional.of(iprot.readU64());
-                    } catch (NumberFormatException e) {
+                    } catch (final NumberFormatException e) {
                     }
                 } else if (ifield.getName().equals("uri_field")) {
-                    uriField = com.google.common.base.Optional.of(org.thryft.native_.Uri.parse(iprot.readString()));
+                    try {
+                        uriField = com.google.common.base.Optional.of(org.thryft.native_.Uri.parse(iprot.readString()));
+                    } catch (final java.lang.IllegalArgumentException e) {
+                    }
                 } else if (ifield.getName().equals("url_field")) {
-                    urlField = com.google.common.base.Optional.of(org.thryft.native_.Url.parse(iprot.readString()));
+                    try {
+                        urlField = com.google.common.base.Optional.of(org.thryft.native_.Url.parse(iprot.readString()));
+                    } catch (final java.lang.IllegalArgumentException e) {
+                    }
                 } else if (ifield.getName().equals("variant_field")) {
                     variantField = com.google.common.base.Optional.of(iprot.readVariant());
                 }
@@ -1462,13 +1474,13 @@ public class ProtocolTestStruct implements org.thryft.Struct, java.lang.Comparab
         if (__list.getSize() > 4) {
             try {
                 dateTimeField = com.google.common.base.Optional.of(iprot.readDateTime());
-            } catch (IllegalArgumentException e) {
+            } catch (final IllegalArgumentException e) {
             }
         }
         if (__list.getSize() > 5) {
             try {
                 decimalField = com.google.common.base.Optional.of(iprot.readDecimal());
-            } catch (NumberFormatException e) {
+            } catch (final NumberFormatException e) {
             }
         }
         if (__list.getSize() > 6) {
@@ -1477,37 +1489,37 @@ public class ProtocolTestStruct implements org.thryft.Struct, java.lang.Comparab
         if (__list.getSize() > 7) {
             try {
                 enumField = com.google.common.base.Optional.of(iprot.readEnum(org.thryft.protocol.test.ProtocolTestEnum.class));
-            } catch (IllegalArgumentException e) {
+            } catch (final IllegalArgumentException e) {
             }
         }
         if (__list.getSize() > 8) {
             try {
                 floatField = com.google.common.base.Optional.of(((float)iprot.readDouble()));
-            } catch (NumberFormatException e) {
+            } catch (final NumberFormatException e) {
             }
         }
         if (__list.getSize() > 9) {
             try {
                 i8Field = com.google.common.base.Optional.of(iprot.readByte());
-            } catch (NumberFormatException e) {
+            } catch (final NumberFormatException e) {
             }
         }
         if (__list.getSize() > 10) {
             try {
                 i16Field = com.google.common.base.Optional.of(iprot.readI16());
-            } catch (NumberFormatException e) {
+            } catch (final NumberFormatException e) {
             }
         }
         if (__list.getSize() > 11) {
             try {
                 i32Field = com.google.common.base.Optional.of(iprot.readI32());
-            } catch (NumberFormatException e) {
+            } catch (final NumberFormatException e) {
             }
         }
         if (__list.getSize() > 12) {
             try {
                 i64Field = com.google.common.base.Optional.of(iprot.readI64());
-            } catch (NumberFormatException e) {
+            } catch (final NumberFormatException e) {
             }
         }
         if (__list.getSize() > 13) {
@@ -1573,20 +1585,26 @@ public class ProtocolTestStruct implements org.thryft.Struct, java.lang.Comparab
         if (__list.getSize() > 18) {
             try {
                 u32Field = com.google.common.base.Optional.of(iprot.readU32());
-            } catch (NumberFormatException e) {
+            } catch (final NumberFormatException e) {
             }
         }
         if (__list.getSize() > 19) {
             try {
                 u64Field = com.google.common.base.Optional.of(iprot.readU64());
-            } catch (NumberFormatException e) {
+            } catch (final NumberFormatException e) {
             }
         }
         if (__list.getSize() > 20) {
-            uriField = com.google.common.base.Optional.of(org.thryft.native_.Uri.parse(iprot.readString()));
+            try {
+                uriField = com.google.common.base.Optional.of(org.thryft.native_.Uri.parse(iprot.readString()));
+            } catch (final java.lang.IllegalArgumentException e) {
+            }
         }
         if (__list.getSize() > 21) {
-            urlField = com.google.common.base.Optional.of(org.thryft.native_.Url.parse(iprot.readString()));
+            try {
+                urlField = com.google.common.base.Optional.of(org.thryft.native_.Url.parse(iprot.readString()));
+            } catch (final java.lang.IllegalArgumentException e) {
+            }
         }
         if (__list.getSize() > 22) {
             variantField = com.google.common.base.Optional.of(iprot.readVariant());
@@ -1636,44 +1654,44 @@ public class ProtocolTestStruct implements org.thryft.Struct, java.lang.Comparab
             } else if (ifield.getName().equals("date_time_field")) {
                 try {
                     dateTimeField = com.google.common.base.Optional.of(iprot.readDateTime());
-                } catch (IllegalArgumentException e) {
+                } catch (final IllegalArgumentException e) {
                 }
             } else if (ifield.getName().equals("decimal_field")) {
                 try {
                     decimalField = com.google.common.base.Optional.of(iprot.readDecimal());
-                } catch (NumberFormatException e) {
+                } catch (final NumberFormatException e) {
                 }
             } else if (ifield.getName().equals("email_address_field")) {
                 emailAddressField = com.google.common.base.Optional.of(new org.thryft.native_.EmailAddress(iprot.readString()));
             } else if (ifield.getName().equals("enum_field")) {
                 try {
                     enumField = com.google.common.base.Optional.of(iprot.readEnum(org.thryft.protocol.test.ProtocolTestEnum.class));
-                } catch (IllegalArgumentException e) {
+                } catch (final IllegalArgumentException e) {
                 }
             } else if (ifield.getName().equals("float_field")) {
                 try {
                     floatField = com.google.common.base.Optional.of(((float)iprot.readDouble()));
-                } catch (NumberFormatException e) {
+                } catch (final NumberFormatException e) {
                 }
             } else if (ifield.getName().equals("i8_field")) {
                 try {
                     i8Field = com.google.common.base.Optional.of(iprot.readByte());
-                } catch (NumberFormatException e) {
+                } catch (final NumberFormatException e) {
                 }
             } else if (ifield.getName().equals("i16_field")) {
                 try {
                     i16Field = com.google.common.base.Optional.of(iprot.readI16());
-                } catch (NumberFormatException e) {
+                } catch (final NumberFormatException e) {
                 }
             } else if (ifield.getName().equals("i32_field")) {
                 try {
                     i32Field = com.google.common.base.Optional.of(iprot.readI32());
-                } catch (NumberFormatException e) {
+                } catch (final NumberFormatException e) {
                 }
             } else if (ifield.getName().equals("i64_field")) {
                 try {
                     i64Field = com.google.common.base.Optional.of(iprot.readI64());
-                } catch (NumberFormatException e) {
+                } catch (final NumberFormatException e) {
                 }
             } else if (ifield.getName().equals("string_list_field")) {
                 stringListField = com.google.common.base.Optional.of((new com.google.common.base.Function<org.thryft.protocol.InputProtocol, com.google.common.collect.ImmutableList<String>>() {
@@ -1733,17 +1751,23 @@ public class ProtocolTestStruct implements org.thryft.Struct, java.lang.Comparab
             } else if (ifield.getName().equals("u32_field")) {
                 try {
                     u32Field = com.google.common.base.Optional.of(iprot.readU32());
-                } catch (NumberFormatException e) {
+                } catch (final NumberFormatException e) {
                 }
             } else if (ifield.getName().equals("u64_field")) {
                 try {
                     u64Field = com.google.common.base.Optional.of(iprot.readU64());
-                } catch (NumberFormatException e) {
+                } catch (final NumberFormatException e) {
                 }
             } else if (ifield.getName().equals("uri_field")) {
-                uriField = com.google.common.base.Optional.of(org.thryft.native_.Uri.parse(iprot.readString()));
+                try {
+                    uriField = com.google.common.base.Optional.of(org.thryft.native_.Uri.parse(iprot.readString()));
+                } catch (final java.lang.IllegalArgumentException e) {
+                }
             } else if (ifield.getName().equals("url_field")) {
-                urlField = com.google.common.base.Optional.of(org.thryft.native_.Url.parse(iprot.readString()));
+                try {
+                    urlField = com.google.common.base.Optional.of(org.thryft.native_.Url.parse(iprot.readString()));
+                } catch (final java.lang.IllegalArgumentException e) {
+                }
             } else if (ifield.getName().equals("variant_field")) {
                 variantField = com.google.common.base.Optional.of(iprot.readVariant());
             }
