@@ -45,7 +45,7 @@ class JavaField(Field, _JavaNamedConstruct):
         if not self.required:
             this_value += '.get()'
             other_value += '.get()'
-        type_compare_to = self.type.java_compare_to(this_value, other_value)
+        type_compare_to = self.type.java_compare_to(this_value, other_value, already_boxed=not self.required)
         if type_compare_to is None:
             return None
         compare_to = """\
@@ -115,7 +115,7 @@ if (this.%(name)s.isPresent()) {
     def java_hash_code_update(self):
         hashCode_update = \
             'hashCode = 31 * hashCode + ' + \
-                self.type.java_hash_code(self.java_getter_name() + (self.required and '()' or '().get()')) + \
+                self.type.java_hash_code(self.java_getter_name() + (self.required and '()' or '().get()'), already_boxed=not self.required) + \
             ';'
         if not self.required:
             hashCode_update = """\
@@ -231,8 +231,11 @@ try {
         name = self.name
         setter_name = self.java_setter_name()
         type_name = self.type.java_declaration_name(boxed=not self.required)
+        value = 'value'
+        if type_name != 'java.lang.Object':
+            value = "(%(type_name)s)%(value)s" % locals()
         return ("""\
-case "%(name)s": %(setter_name)s((%(type_name)s)value); return this;""" % locals(),)
+case "%(name)s": %(setter_name)s(%(value)s); return this;""" % locals(),)
 
     def java_set_if_present(self):
         getter_name = self.java_getter_name()

@@ -35,7 +35,7 @@ from thryft.generators.java._java_base_type import _JavaBaseType
 
 
 class JavaBinaryType(BinaryType, _JavaBaseType):
-    def java_compare_to(self, this_value, other_value):
+    def java_compare_to(self, this_value, other_value, **kwds):
         return "com.google.common.primitives.SignedBytes.lexicographicalComparator().compare(%(this_value)s, %(other_value)s)" % locals()
 
     def java_default_value(self):
@@ -47,7 +47,7 @@ class JavaBinaryType(BinaryType, _JavaBaseType):
     def java_from_string(self, value):
         return "%(value)s.getBytes()" % locals()
 
-    def java_hash_code(self, value):
+    def java_hash_code(self, value, **kwds):
         return "java.util.Arrays.hashCode(%(value)s)" % locals()
 
     def java_has_length(self):

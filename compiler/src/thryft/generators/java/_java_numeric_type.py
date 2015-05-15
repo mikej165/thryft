@@ -34,9 +34,16 @@ from thryft.generators.java._java_base_type import _JavaBaseType
 
 
 class _JavaNumericType(_JavaBaseType):
-    def java_compare_to(self, this_value, other_value):
+    def java_compare_to(self, this_value, other_value, **kwds):
         boxed_name = self.java_name(boxed=True)
         return "%(boxed_name)s.compare(%(this_value)s, %(other_value)s)" % locals()
+
+    def java_default_value(self):
+        return "((%s)0)" % self.java_name(boxed=False)
+
+    def java_from_string(self, value):
+        boxed_name = self.java_name(boxed=True)
+        return "%(boxed_name)s.parse%(boxed_name)s(%(value)s)" % locals()
 
     def java_min_value(self):
         return self.java_name(boxed=True) + '.MIN_VALUE'
@@ -46,3 +53,15 @@ class _JavaNumericType(_JavaBaseType):
 
     def java_read_protocol_throws_unchecked(self):
         return ['NumberFormatException']
+
+    def java_hash_code(self, value, already_boxed):
+        if already_boxed:
+            return "%(value)s.hashCode()" % locals()
+        else:
+            return value
+
+    def java_literal(self, value):
+        return "((%s)%s)" % (self.java_name(boxed=False), value)
+
+    def java_to_string(self, value):
+        return "%s.toString(%(value)s)" % (self.java_name(boxed=True), value)

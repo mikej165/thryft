@@ -761,7 +761,7 @@ public class ProtocolTestStruct implements org.thryft.Struct, java.lang.Comparab
             case "u64_field": setU64Field((com.google.common.primitives.UnsignedLong)value); return this;
             case "uri_field": setUriField((org.thryft.native_.Uri)value); return this;
             case "url_field": setUrlField((org.thryft.native_.Url)value); return this;
-            case "variant_field": setVariantField((java.lang.Object)value); return this;
+            case "variant_field": setVariantField(value); return this;
             default:
                 throw new IllegalArgumentException(name);
             }
@@ -940,7 +940,7 @@ public class ProtocolTestStruct implements org.thryft.Struct, java.lang.Comparab
 
         if (this.boolField.isPresent()) {
             if (other.boolField.isPresent()) {
-                result = ((Boolean)this.boolField.get()).compareTo(other.boolField.get());
+                result = this.boolField.get().compareTo(other.boolField.get());
                 if (result != 0) {
                     return result;
                 }
@@ -1005,7 +1005,7 @@ public class ProtocolTestStruct implements org.thryft.Struct, java.lang.Comparab
 
         if (this.floatField.isPresent()) {
             if (other.floatField.isPresent()) {
-                result = ((Float)this.floatField.get()).compareTo(other.floatField.get());
+                result = this.floatField.get().compareTo(other.floatField.get());
                 if (result != 0) {
                     return result;
                 }
@@ -1369,7 +1369,7 @@ public class ProtocolTestStruct implements org.thryft.Struct, java.lang.Comparab
     @Override
     public int hashCode() {
         int hashCode = 17;
-        hashCode = 31 * hashCode + ((int)getRequiredI32Field());
+        hashCode = 31 * hashCode + getRequiredI32Field();
         hashCode = 31 * hashCode + getRequiredStringField().hashCode();
         if (getBinaryField().isPresent()) {
             hashCode = 31 * hashCode + java.util.Arrays.hashCode(getBinaryField().get());
@@ -1393,13 +1393,13 @@ public class ProtocolTestStruct implements org.thryft.Struct, java.lang.Comparab
             hashCode = 31 * hashCode + ((int)(Double.doubleToLongBits(getFloatField().get()) ^ (Double.doubleToLongBits(getFloatField().get()) >>> 32)));
         }
         if (getI8Field().isPresent()) {
-            hashCode = 31 * hashCode + ((byte)getI8Field().get());
+            hashCode = 31 * hashCode + getI8Field().get().hashCode();
         }
         if (getI16Field().isPresent()) {
-            hashCode = 31 * hashCode + ((int)getI16Field().get());
+            hashCode = 31 * hashCode + getI16Field().get().hashCode();
         }
         if (getI32Field().isPresent()) {
-            hashCode = 31 * hashCode + ((int)getI32Field().get());
+            hashCode = 31 * hashCode + getI32Field().get().hashCode();
         }
         if (getI64Field().isPresent()) {
             hashCode = 31 * hashCode + ((int)(getI64Field().get() ^ (getI64Field().get() >>> 32)));

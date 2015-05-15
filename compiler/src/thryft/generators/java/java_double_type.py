@@ -38,7 +38,7 @@ class JavaDoubleType(DoubleType, _JavaNumericType):
     def java_default_value(self):
         return '0.0'
 
-    def java_hash_code(self, value):
+    def java_hash_code(self, value, **kwds):
         return "((int)(Double.doubleToLongBits(%(value)s) ^ (Double.doubleToLongBits(%(value)s) >>> 32)))" % locals()
 
     def java_literal(self, value):
@@ -46,6 +46,3 @@ class JavaDoubleType(DoubleType, _JavaNumericType):
 
     def java_name(self, boxed=False):
         return boxed and 'Double' or 'double'
-
-    def java_to_string(self, value):
-        return "Double.toString(%(value)s)" % locals()

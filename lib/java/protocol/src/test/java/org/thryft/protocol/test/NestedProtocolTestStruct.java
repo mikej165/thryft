@@ -736,7 +736,7 @@ public class NestedProtocolTestStruct implements org.thryft.Struct, java.lang.Co
 
         if (this.boolField.isPresent()) {
             if (other.boolField.isPresent()) {
-                result = ((Boolean)this.boolField.get()).compareTo(other.boolField.get());
+                result = this.boolField.get().compareTo(other.boolField.get());
                 if (result != 0) {
                     return result;
                 }
@@ -1058,7 +1058,7 @@ public class NestedProtocolTestStruct implements org.thryft.Struct, java.lang.Co
     @Override
     public int hashCode() {
         int hashCode = 17;
-        hashCode = 31 * hashCode + ((int)getRequiredI32Field());
+        hashCode = 31 * hashCode + getRequiredI32Field();
         hashCode = 31 * hashCode + getRequiredStringField().hashCode();
         if (getBinaryField().isPresent()) {
             hashCode = 31 * hashCode + java.util.Arrays.hashCode(getBinaryField().get());
@@ -1067,7 +1067,7 @@ public class NestedProtocolTestStruct implements org.thryft.Struct, java.lang.Co
             hashCode = 31 * hashCode + (getBoolField().get() ? 1 : 0);
         }
         if (getByteField().isPresent()) {
-            hashCode = 31 * hashCode + ((byte)getByteField().get());
+            hashCode = 31 * hashCode + getByteField().get().hashCode();
         }
         if (getDateTimeField().isPresent()) {
             hashCode = 31 * hashCode + getDateTimeField().get().hashCode();
@@ -1082,10 +1082,10 @@ public class NestedProtocolTestStruct implements org.thryft.Struct, java.lang.Co
             hashCode = 31 * hashCode + getEnumField().get().ordinal();
         }
         if (getI16Field().isPresent()) {
-            hashCode = 31 * hashCode + ((int)getI16Field().get());
+            hashCode = 31 * hashCode + getI16Field().get().hashCode();
         }
         if (getI32Field().isPresent()) {
-            hashCode = 31 * hashCode + ((int)getI32Field().get());
+            hashCode = 31 * hashCode + getI32Field().get().hashCode();
         }
         if (getI64Field().isPresent()) {
             hashCode = 31 * hashCode + ((int)(getI64Field().get() ^ (getI64Field().get() >>> 32)));

@@ -35,17 +35,5 @@ from thryft.generators.java._java_numeric_type import _JavaNumericType
 
 
 class JavaByteType(ByteType, _JavaNumericType):
-    def java_default_value(self):
-        return '((byte)0)'
-
-    def java_hash_code(self, value):
-        return "((byte)%(value)s)" % locals()
-
-    def java_literal(self, value):
-        return "((byte)%s)" % value
-
     def java_name(self, boxed=False):
         return boxed and 'Byte' or 'byte'
-
-    def java_to_string(self, value):
-        return "Byte.toString(%(value)s)" % locals()

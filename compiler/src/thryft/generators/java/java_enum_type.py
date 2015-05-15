@@ -39,7 +39,7 @@ class JavaEnumType(EnumType, _JavaType):
     def java_default_value(self):
         return 'null'
 
-    def java_hash_code(self, value):
+    def java_hash_code(self, value, **kwds):
         return "%(value)s.ordinal()" % locals()
 
     def java_is_reference(self):

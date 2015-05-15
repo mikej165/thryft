@@ -46,7 +46,7 @@ class Variant(object):
     def cpp_qname(self):
         return '::thryft::native::Variant'
 
-    def java_compare_to(self, this_value, other_value):
+    def java_compare_to(self, this_value, other_value, **kwds):
         return None
 
     def java_declaration_name(self, boxed=True):

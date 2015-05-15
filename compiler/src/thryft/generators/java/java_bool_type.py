@@ -38,13 +38,16 @@ class JavaBoolType(BoolType, _JavaBaseType):
     def java_default_value(self):
         return 'false'
 
-    def java_compare_to(self, this_value, other_value):
-        return "((Boolean)%(this_value)s).compareTo(%(other_value)s)" % locals()
+    def java_compare_to(self, this_value, other_value, already_boxed):
+        if already_boxed:
+            return "%(this_value)s.compareTo(%(other_value)s)" % locals()
+        else:
+            return "((Boolean)%(this_value)s).compareTo(%(other_value)s)" % locals()
 
     def java_from_string(self, value):
         return """(%(value)s.equals("1") || %(value)s.equalsIgnoreCase("true"))""" % locals()
 
-    def java_hash_code(self, value):
+    def java_hash_code(self, value, **kwds):
         return "(%(value)s ? 1 : 0)" % locals()
 
     def java_literal(self, value):

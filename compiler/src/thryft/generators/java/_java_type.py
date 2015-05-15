@@ -41,7 +41,7 @@ class _JavaType(_JavaNamedConstruct):
     def java_default_value(self):
         raise NotImplementedError(class_qname(self) + '.java_default_value')
 
-    def java_compare_to(self, this_value, other_value):
+    def java_compare_to(self, this_value, other_value, already_boxed):
         if self.java_is_reference():
             return "%(this_value)s.compareTo(%(other_value)s)" % locals()
         else:
@@ -56,7 +56,7 @@ class _JavaType(_JavaNamedConstruct):
     def java_from_string(self, value):
         raise NotImplementedError(class_qname(self) + '.java_from_string')
 
-    def java_hash_code(self, value):
+    def java_hash_code(self, value, **kwds):
         return "%(value)s.hashCode()" % locals()
 
     def java_has_length(self):

@@ -35,20 +35,8 @@ from thryft.generators.java._java_numeric_type import _JavaNumericType
 
 
 class JavaI64Type(I64Type, _JavaNumericType):
-    def java_default_value(self):
-        return '((long)0)'
-
-    def java_from_string(self, value):
-        return "Long.parseLong(%(value)s)" % locals()
-
-    def java_hash_code(self, value):
+    def java_hash_code(self, value, **kwds):
         return "((int)(%(value)s ^ (%(value)s >>> 32)))" % locals()
-
-    def java_literal(self, value):
-        return "((long)%s)" % value
 
     def java_name(self, boxed=False):
         return boxed and 'Long' or 'long'
-
-    def java_to_string(self, value):
-        return "Long.toString(%(value)s)" % locals()

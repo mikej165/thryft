@@ -47,7 +47,7 @@ class u32(object):
     def cpp_read_protocol(self, value, optional=False):
         return "%(value)s = iprot.read_u32();" % locals()
 
-    def java_compare_to(self, this_value, other_value):
+    def java_compare_to(self, this_value, other_value, **kwds):
         return "%(this_value)s.compareTo(%(other_value)s)" % locals()
 
     def java_declaration_name(self, boxed=False):
@@ -59,7 +59,7 @@ class u32(object):
     def java_equals(self, this_value, other_value):
         return "%(this_value)s.equals(%(other_value)s)" % locals()
 
-    def java_hash_code(self, value):
+    def java_hash_code(self, value, **kwds):
         return "%(value)s.hashCode()" % locals()
 
     def java_is_reference(self):

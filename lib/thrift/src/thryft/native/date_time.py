@@ -52,7 +52,7 @@ class DateTime(object):
     def dart_to_core_type(self, value):
         return value + '.millisecondsSinceEpoch'
 
-    def java_compare_to(self, this_value, other_value):
+    def java_compare_to(self, this_value, other_value, **kwds):
         return "%(this_value)s.compareTo(%(other_value)s)" % locals()
 
     def java_declaration_name(self, boxed=False):
@@ -64,7 +64,7 @@ class DateTime(object):
     def java_equals(self, this_value, other_value):
         return "%(this_value)s.equals(%(other_value)s)" % locals()
 
-    def java_hash_code(self, value):
+    def java_hash_code(self, value, **kwds):
         return "%(value)s.hashCode()" % locals()
 
     def java_name(self, boxed=False):

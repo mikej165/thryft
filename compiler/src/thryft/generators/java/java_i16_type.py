@@ -35,17 +35,5 @@ from thryft.generators.java._java_numeric_type import _JavaNumericType
 
 
 class JavaI16Type(I16Type, _JavaNumericType):
-    def java_default_value(self):
-        return '((short)0)'
-
-    def java_hash_code(self, value):
-        return "((int)%(value)s)" % locals()
-
-    def java_literal(self, value):
-        return "((short)%s)" % value
-
     def java_name(self, boxed=False):
         return boxed and 'Short' or 'short'
-
-    def java_to_string(self, value):
-        return "Short.toString(%(value)s)" % locals()
