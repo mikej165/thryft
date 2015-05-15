@@ -22,7 +22,7 @@ final class UriParser {
         // Variables used by actions
         int authorityMark = 0;
         int mark = 0;
-        Uri.Authority authority = null;
+        Optional<Uri.Authority> authority = Optional.absent();
         Optional<String> fragment = Optional.absent();
         String host = null;
         Optional<String> path = Optional.absent();
@@ -43,11 +43,12 @@ final class UriParser {
             throw new IllegalArgumentException("missing scheme: " + uri);
         }
         switch (scheme) {
+        case "file":
         case "http":
         case "https":
             return new GenericUrl(scheme, authority, path, query, fragment, uri);
         default:
-            return new GenericUri(scheme, Optional.fromNullable(authority), path, query, fragment, uri);
+            return new GenericUri(scheme, authority, path, query, fragment, uri);
          }
     }
 

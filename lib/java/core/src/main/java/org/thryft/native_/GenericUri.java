@@ -18,7 +18,7 @@ public final class GenericUri extends Uri {
         }
 
         public Builder(final Uri template) {
-            authority = template.getOptionalAuthority().orNull();
+            authority = template.getAuthority().orNull();
             path = template.getPath().orNull();
             query = template.getQuery().orNull();
             scheme = template.getScheme();
@@ -119,7 +119,7 @@ public final class GenericUri extends Uri {
 
     public GenericUri(final Uri uri) {
         super(uri.getScheme(), uri.toString());
-        authority = uri.getOptionalAuthority();
+        authority = uri.getAuthority();
         fragment = uri.getFragment();
         path = uri.getPath();
         query = uri.getQuery();
@@ -145,13 +145,13 @@ public final class GenericUri extends Uri {
     }
 
     @Override
-    public Optional<String> getFragment() {
-        return fragment;
+    public Optional<Authority> getAuthority() {
+        return authority;
     }
 
     @Override
-    public Optional<Authority> getOptionalAuthority() {
-        return authority;
+    public Optional<String> getFragment() {
+        return fragment;
     }
 
     @Override

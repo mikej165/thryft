@@ -8,6 +8,4 @@ public abstract class Url extends Uri {
     protected Url(final String scheme, final String url) {
         super(scheme, url);
     }
-
-    public abstract Authority getAuthority();
 }

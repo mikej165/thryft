@@ -52,7 +52,7 @@
 
   authority     = ((userinfo "@")? host (":" port)?)
                   >{ authorityMark = fpc; }
-                  %{ authority = new Uri.Authority(new String(data, authorityMark, fpc - authorityMark), host, Optional.fromNullable(port), Optional.fromNullable(userInfo)); };
+                  %{ if (fpc - authorityMark > 0) { authority = Optional.of(new Uri.Authority(new String(data, authorityMark, fpc - authorityMark), host, Optional.fromNullable(port), Optional.fromNullable(userInfo))); } };
 
   action path_enter { mark = fpc; }
   action path_leave { path = Optional.of(new String(data, mark, fpc - mark)); }

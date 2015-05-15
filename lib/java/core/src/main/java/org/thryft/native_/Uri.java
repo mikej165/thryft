@@ -102,9 +102,9 @@ public abstract class Uri implements Comparable<Uri> {
         return uri.equals(((Uri) other).uri);
     }
 
-    public abstract Optional<String> getFragment();
+    public abstract Optional<Authority> getAuthority();
 
-    public abstract Optional<Authority> getOptionalAuthority();
+    public abstract Optional<String> getFragment();
 
     public abstract Optional<String> getPath();
 

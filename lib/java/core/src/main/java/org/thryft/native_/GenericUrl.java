@@ -1,31 +1,28 @@
 package org.thryft.native_;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.google.common.base.Optional;
 
 public final class GenericUrl extends Url {
-    GenericUrl(final String scheme, final Authority authority,
+    GenericUrl(final String scheme, final Optional<Authority> authority,
             final Optional<String> path, final Optional<String> query,
             final Optional<String> fragment, final String url) {
         super(scheme, url);
-        this.authority = Optional.of(authority);
+        this.authority = checkNotNull(authority);
         this.path = _checkOptionalString(path);
         this.query = _checkOptionalString(query);
         this.fragment = _checkOptionalString(fragment);
     }
 
     @Override
-    public Authority getAuthority() {
-        return authority.get();
+    public Optional<Authority> getAuthority() {
+        return authority;
     }
 
     @Override
     public Optional<String> getFragment() {
         return fragment;
-    }
-
-    @Override
-    public Optional<Authority> getOptionalAuthority() {
-        return authority;
     }
 
     @Override

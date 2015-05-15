@@ -24,7 +24,7 @@ final class UriParser {
         // Variables used by actions
         int authorityMark = 0;
         int mark = 0;
-        Uri.Authority authority = null;
+        Optional<Uri.Authority> authority = Optional.absent();
         Optional<String> fragment = Optional.absent();
         String host = null;
         Optional<String> path = Optional.absent();
@@ -157,7 +157,7 @@ case 1:
 	break;
 	case 9:
 // line 55 "Rfc3986.rl"
-	{ authority = new Uri.Authority(new String(data, authorityMark, p - authorityMark), host, Optional.fromNullable(port), Optional.fromNullable(userInfo)); }
+	{ if (p - authorityMark > 0) { authority = Optional.of(new Uri.Authority(new String(data, authorityMark, p - authorityMark), host, Optional.fromNullable(port), Optional.fromNullable(userInfo))); } }
 	break;
 	case 10:
 // line 57 "Rfc3986.rl"
@@ -222,7 +222,7 @@ case 4:
 	break;
 	case 9:
 // line 55 "Rfc3986.rl"
-	{ authority = new Uri.Authority(new String(data, authorityMark, p - authorityMark), host, Optional.fromNullable(port), Optional.fromNullable(userInfo)); }
+	{ if (p - authorityMark > 0) { authority = Optional.of(new Uri.Authority(new String(data, authorityMark, p - authorityMark), host, Optional.fromNullable(port), Optional.fromNullable(userInfo))); } }
 	break;
 	case 10:
 // line 57 "Rfc3986.rl"
@@ -265,16 +265,17 @@ case 5:
             throw new IllegalArgumentException("missing scheme: " + uri);
         }
         switch (scheme) {
+        case "file":
         case "http":
         case "https":
             return new GenericUrl(scheme, authority, path, query, fragment, uri);
         default:
-            return new GenericUri(scheme, Optional.fromNullable(authority), path, query, fragment, uri);
+            return new GenericUri(scheme, authority, path, query, fragment, uri);
          }
     }
 
 
-// line 273 "UriParser.java"
+// line 274 "UriParser.java"
 private static byte[] init__UriParser_actions_0()
 {
 	return new byte [] {
@@ -1385,5 +1386,5 @@ static final int UriParser_error = 0;
 static final int UriParser_en_main = 1;
 
 
-// line 55 "UriParser.rl"
+// line 56 "UriParser.rl"
 }

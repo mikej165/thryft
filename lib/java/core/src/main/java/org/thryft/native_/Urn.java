@@ -39,6 +39,11 @@ public final class Urn extends Uri {
     }
 
     @Override
+    public Optional<Authority> getAuthority() {
+        return Optional.absent();
+    }
+
+    @Override
     public Optional<String> getFragment() {
         return Optional.absent();
     }
@@ -49,11 +54,6 @@ public final class Urn extends Uri {
 
     public String getNamespaceSpecificString() {
         return namespaceSpecificString;
-    }
-
-    @Override
-    public Optional<Authority> getOptionalAuthority() {
-        return Optional.absent();
     }
 
     @Override
