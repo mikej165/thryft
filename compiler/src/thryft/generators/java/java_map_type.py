@@ -42,11 +42,8 @@ class JavaMapType(MapType, _JavaContainerType):
         value_type_qname = self.value_type.java_declaration_name(boxed=True)
         value_compare = indent(' ' * 16, self.value_type.java_compare_to(this_value='leftValue', other_value='rightValue', already_boxed=True))
         return """\
-new com.google.common.base.Function<com.google.common.collect.ImmutableList<%(qname)s>, Integer>() {
-    public Integer apply(final com.google.common.collect.ImmutableList<%(qname)s> inputs) {
-        final %(qname)s left = inputs.get(0);
-        final %(qname)s right = inputs.get(1);
-
+new java.util.Comparator<%(qname)s>() {
+    public int compare(final %(qname)s left, final %(qname)s right) {
         int result = ((Integer) left.size()).compareTo(right.size());
         if (result != 0) {
             return result;
@@ -87,7 +84,7 @@ new com.google.common.base.Function<com.google.common.collect.ImmutableList<%(qn
 
         return 0;
     }
-}.apply(com.google.common.collect.ImmutableList.of(%(this_value)s, %(other_value)s))""" % locals()
+}.compare(%(this_value)s, %(other_value)s)""" % locals()
 
     def java_literal(self, value):
         return "com.google.common.collect.ImmutableMap.<%s, %s> of(%s)" % (

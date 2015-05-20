@@ -853,11 +853,8 @@ public class NestedProtocolTestStruct implements org.thryft.Struct, java.lang.Co
 
         if (this.stringListField.isPresent()) {
             if (other.stringListField.isPresent()) {
-                result = new com.google.common.base.Function<com.google.common.collect.ImmutableList<com.google.common.collect.ImmutableList<String>>, Integer>() {
-                    public Integer apply(final com.google.common.collect.ImmutableList<com.google.common.collect.ImmutableList<String>> inputs) {
-                        final com.google.common.collect.ImmutableList<String> left = inputs.get(0);
-                        final com.google.common.collect.ImmutableList<String> right = inputs.get(1);
-
+                result = new java.util.Comparator<com.google.common.collect.ImmutableList<String>>() {
+                    public int compare(final com.google.common.collect.ImmutableList<String> left, final com.google.common.collect.ImmutableList<String> right) {
                         int result = ((Integer) left.size()).compareTo(right.size());
                         if (result != 0) {
                             return result;
@@ -886,7 +883,7 @@ public class NestedProtocolTestStruct implements org.thryft.Struct, java.lang.Co
 
                         return 0;
                     }
-                }.apply(com.google.common.collect.ImmutableList.of(this.stringListField.get(), other.stringListField.get()));
+                }.compare(this.stringListField.get(), other.stringListField.get());
                 if (result != 0) {
                     return result;
                 }
@@ -899,11 +896,8 @@ public class NestedProtocolTestStruct implements org.thryft.Struct, java.lang.Co
 
         if (this.stringStringMapField.isPresent()) {
             if (other.stringStringMapField.isPresent()) {
-                result = new com.google.common.base.Function<com.google.common.collect.ImmutableList<com.google.common.collect.ImmutableMap<String, String>>, Integer>() {
-                    public Integer apply(final com.google.common.collect.ImmutableList<com.google.common.collect.ImmutableMap<String, String>> inputs) {
-                        final com.google.common.collect.ImmutableMap<String, String> left = inputs.get(0);
-                        final com.google.common.collect.ImmutableMap<String, String> right = inputs.get(1);
-
+                result = new java.util.Comparator<com.google.common.collect.ImmutableMap<String, String>>() {
+                    public int compare(final com.google.common.collect.ImmutableMap<String, String> left, final com.google.common.collect.ImmutableMap<String, String> right) {
                         int result = ((Integer) left.size()).compareTo(right.size());
                         if (result != 0) {
                             return result;
@@ -944,7 +938,7 @@ public class NestedProtocolTestStruct implements org.thryft.Struct, java.lang.Co
 
                         return 0;
                     }
-                }.apply(com.google.common.collect.ImmutableList.of(this.stringStringMapField.get(), other.stringStringMapField.get()));
+                }.compare(this.stringStringMapField.get(), other.stringStringMapField.get());
                 if (result != 0) {
                     return result;
                 }
@@ -957,11 +951,8 @@ public class NestedProtocolTestStruct implements org.thryft.Struct, java.lang.Co
 
         if (this.stringSetField.isPresent()) {
             if (other.stringSetField.isPresent()) {
-                result = new com.google.common.base.Function<com.google.common.collect.ImmutableList<com.google.common.collect.ImmutableSet<String>>, Integer>() {
-                    public Integer apply(final com.google.common.collect.ImmutableList<com.google.common.collect.ImmutableSet<String>> inputs) {
-                        final com.google.common.collect.ImmutableSet<String> left = inputs.get(0);
-                        final com.google.common.collect.ImmutableSet<String> right = inputs.get(1);
-
+                result = new java.util.Comparator<com.google.common.collect.ImmutableSet<String>>() {
+                    public int compare(final com.google.common.collect.ImmutableSet<String> left, final com.google.common.collect.ImmutableSet<String> right) {
                         int result = ((Integer) left.size()).compareTo(right.size());
                         if (result != 0) {
                             return result;
@@ -990,7 +981,7 @@ public class NestedProtocolTestStruct implements org.thryft.Struct, java.lang.Co
 
                         return 0;
                     }
-                }.apply(com.google.common.collect.ImmutableList.of(this.stringSetField.get(), other.stringSetField.get()));
+                }.compare(this.stringSetField.get(), other.stringSetField.get());
                 if (result != 0) {
                     return result;
                 }
