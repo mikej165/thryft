@@ -34,9 +34,6 @@ from thryft.generators.java._java_type import _JavaType
 
 
 class _JavaContainerType(_JavaType):
-    def java_compare_to(self, this_value, other_value, **kwds):
-        return "org.thryft.Comparators.compare(%(this_value)s, %(other_value)s)" % locals()
-
     def java_default_value(self):
         return 'null'
 

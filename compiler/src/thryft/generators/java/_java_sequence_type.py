@@ -35,6 +35,46 @@ from yutil import decamelize, indent
 
 
 class _JavaSequenceType(_JavaContainerType):
+    def java_compare_to(self, this_value, other_value, **kwds):
+        qname = self.java_qname()
+        element_type_qname = self.element_type.java_declaration_name(boxed=True)
+        element_compare = indent(' ' * 16, self.element_type.java_compare_to(this_value='leftElement', other_value='rightElement', already_boxed=True))
+        return """\
+new com.google.common.base.Function<com.google.common.collect.ImmutableList<%(qname)s>, Integer>() {
+    public Integer apply(final com.google.common.collect.ImmutableList<%(qname)s> inputs) {
+        final %(qname)s left = inputs.get(0);
+        final %(qname)s right = inputs.get(1);
+
+        int result = ((Integer) left.size()).compareTo(right.size());
+        if (result != 0) {
+            return result;
+        }
+
+        final java.util.List<%(element_type_qname)s> leftSortedList = com.google.common.collect.Lists
+                .newArrayList(left);
+        java.util.Collections.sort(leftSortedList);
+        final java.util.Iterator<%(element_type_qname)s> leftI = leftSortedList.iterator();
+
+        final java.util.List<%(element_type_qname)s> rightSortedList = com.google.common.collect.Lists
+                .newArrayList(right);
+        java.util.Collections.sort(rightSortedList);
+        final java.util.Iterator<%(element_type_qname)s> rightI = leftSortedList.iterator();
+
+        while (leftI.hasNext()) {
+            final %(element_type_qname)s leftElement = leftI.next();
+            final %(element_type_qname)s rightElement = rightI.next();
+
+            result =
+%(element_compare)s;
+            if (result != 0) {
+                return result;
+            }
+        }
+
+        return 0;
+    }
+}.apply(com.google.common.collect.ImmutableList.of(%(this_value)s, %(other_value)s))""" % locals()
+
     def java_name(self, boxed=False):
         return self.java_qname(boxed=boxed)
 

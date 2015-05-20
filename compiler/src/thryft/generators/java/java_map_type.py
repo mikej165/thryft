@@ -36,6 +36,59 @@ from yutil import indent
 
 
 class JavaMapType(MapType, _JavaContainerType):
+    def java_compare_to(self, this_value, other_value, **kwds):
+        qname = self.java_qname()
+        key_type_qname = self.key_type.java_declaration_name(boxed=True)
+        value_type_qname = self.value_type.java_declaration_name(boxed=True)
+        value_compare = indent(' ' * 16, self.value_type.java_compare_to(this_value='leftValue', other_value='rightValue', already_boxed=True))
+        return """\
+new com.google.common.base.Function<com.google.common.collect.ImmutableList<%(qname)s>, Integer>() {
+    public Integer apply(final com.google.common.collect.ImmutableList<%(qname)s> inputs) {
+        final %(qname)s left = inputs.get(0);
+        final %(qname)s right = inputs.get(1);
+
+        int result = ((Integer) left.size()).compareTo(right.size());
+        if (result != 0) {
+            return result;
+        }
+
+        // Compare keys
+        final java.util.List<%(key_type_qname)s> leftSortedKeySet = com.google.common.collect.Lists
+                .newArrayList(left.keySet());
+        java.util.Collections.sort(leftSortedKeySet);
+        final java.util.Iterator<%(key_type_qname)s> leftKeyI = leftSortedKeySet.iterator();
+
+        final java.util.List<%(key_type_qname)s> rightSortedKeySet = com.google.common.collect.Lists
+                .newArrayList(right.keySet());
+        java.util.Collections.sort(rightSortedKeySet);
+        final java.util.Iterator<%(key_type_qname)s> rightKeyI = leftSortedKeySet.iterator();
+
+        while (leftKeyI.hasNext()) {
+            final %(key_type_qname)s leftKey = leftKeyI.next();
+            final %(key_type_qname)s rightKey = rightKeyI.next();
+
+            result = leftKey.compareTo(rightKey);
+            if (result != 0) {
+                return result;
+            }
+        }
+
+        // Compare values
+        for (final java.util.Map.Entry<%(key_type_qname)s, %(value_type_qname)s> leftEntry : left.entrySet()) {
+            final %(value_type_qname)s leftValue = leftEntry.getValue();
+            final %(value_type_qname)s rightValue = right.get(leftEntry.getKey());
+
+            result =
+%(value_compare)s;
+            if (result != 0) {
+                return result;
+            }
+        }
+
+        return 0;
+    }
+}.apply(com.google.common.collect.ImmutableList.of(%(this_value)s, %(other_value)s))""" % locals()
+
     def java_literal(self, value):
         return "com.google.common.collect.ImmutableMap.<%s, %s> of(%s)" % (
             self.key_type.java_qname(boxed=True),

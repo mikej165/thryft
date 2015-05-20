@@ -1070,7 +1070,40 @@ public class ProtocolTestStruct implements org.thryft.Struct, java.lang.Comparab
 
         if (this.stringListField.isPresent()) {
             if (other.stringListField.isPresent()) {
-                result = org.thryft.Comparators.compare(this.stringListField.get(), other.stringListField.get());
+                result = new com.google.common.base.Function<com.google.common.collect.ImmutableList<com.google.common.collect.ImmutableList<String>>, Integer>() {
+                    public Integer apply(final com.google.common.collect.ImmutableList<com.google.common.collect.ImmutableList<String>> inputs) {
+                        final com.google.common.collect.ImmutableList<String> left = inputs.get(0);
+                        final com.google.common.collect.ImmutableList<String> right = inputs.get(1);
+
+                        int result = ((Integer) left.size()).compareTo(right.size());
+                        if (result != 0) {
+                            return result;
+                        }
+
+                        final java.util.List<String> leftSortedList = com.google.common.collect.Lists
+                                .newArrayList(left);
+                        java.util.Collections.sort(leftSortedList);
+                        final java.util.Iterator<String> leftI = leftSortedList.iterator();
+
+                        final java.util.List<String> rightSortedList = com.google.common.collect.Lists
+                                .newArrayList(right);
+                        java.util.Collections.sort(rightSortedList);
+                        final java.util.Iterator<String> rightI = leftSortedList.iterator();
+
+                        while (leftI.hasNext()) {
+                            final String leftElement = leftI.next();
+                            final String rightElement = rightI.next();
+
+                            result =
+                                leftElement.compareTo(rightElement);
+                            if (result != 0) {
+                                return result;
+                            }
+                        }
+
+                        return 0;
+                    }
+                }.apply(com.google.common.collect.ImmutableList.of(this.stringListField.get(), other.stringListField.get()));
                 if (result != 0) {
                     return result;
                 }
@@ -1083,7 +1116,52 @@ public class ProtocolTestStruct implements org.thryft.Struct, java.lang.Comparab
 
         if (this.stringStringMapField.isPresent()) {
             if (other.stringStringMapField.isPresent()) {
-                result = org.thryft.Comparators.compare(this.stringStringMapField.get(), other.stringStringMapField.get());
+                result = new com.google.common.base.Function<com.google.common.collect.ImmutableList<com.google.common.collect.ImmutableMap<String, String>>, Integer>() {
+                    public Integer apply(final com.google.common.collect.ImmutableList<com.google.common.collect.ImmutableMap<String, String>> inputs) {
+                        final com.google.common.collect.ImmutableMap<String, String> left = inputs.get(0);
+                        final com.google.common.collect.ImmutableMap<String, String> right = inputs.get(1);
+
+                        int result = ((Integer) left.size()).compareTo(right.size());
+                        if (result != 0) {
+                            return result;
+                        }
+
+                        // Compare keys
+                        final java.util.List<String> leftSortedKeySet = com.google.common.collect.Lists
+                                .newArrayList(left.keySet());
+                        java.util.Collections.sort(leftSortedKeySet);
+                        final java.util.Iterator<String> leftKeyI = leftSortedKeySet.iterator();
+
+                        final java.util.List<String> rightSortedKeySet = com.google.common.collect.Lists
+                                .newArrayList(right.keySet());
+                        java.util.Collections.sort(rightSortedKeySet);
+                        final java.util.Iterator<String> rightKeyI = leftSortedKeySet.iterator();
+
+                        while (leftKeyI.hasNext()) {
+                            final String leftKey = leftKeyI.next();
+                            final String rightKey = rightKeyI.next();
+
+                            result = leftKey.compareTo(rightKey);
+                            if (result != 0) {
+                                return result;
+                            }
+                        }
+
+                        // Compare values
+                        for (final java.util.Map.Entry<String, String> leftEntry : left.entrySet()) {
+                            final String leftValue = leftEntry.getValue();
+                            final String rightValue = right.get(leftEntry.getKey());
+
+                            result =
+                                leftValue.compareTo(rightValue);
+                            if (result != 0) {
+                                return result;
+                            }
+                        }
+
+                        return 0;
+                    }
+                }.apply(com.google.common.collect.ImmutableList.of(this.stringStringMapField.get(), other.stringStringMapField.get()));
                 if (result != 0) {
                     return result;
                 }
@@ -1096,7 +1174,40 @@ public class ProtocolTestStruct implements org.thryft.Struct, java.lang.Comparab
 
         if (this.stringSetField.isPresent()) {
             if (other.stringSetField.isPresent()) {
-                result = org.thryft.Comparators.compare(this.stringSetField.get(), other.stringSetField.get());
+                result = new com.google.common.base.Function<com.google.common.collect.ImmutableList<com.google.common.collect.ImmutableSet<String>>, Integer>() {
+                    public Integer apply(final com.google.common.collect.ImmutableList<com.google.common.collect.ImmutableSet<String>> inputs) {
+                        final com.google.common.collect.ImmutableSet<String> left = inputs.get(0);
+                        final com.google.common.collect.ImmutableSet<String> right = inputs.get(1);
+
+                        int result = ((Integer) left.size()).compareTo(right.size());
+                        if (result != 0) {
+                            return result;
+                        }
+
+                        final java.util.List<String> leftSortedList = com.google.common.collect.Lists
+                                .newArrayList(left);
+                        java.util.Collections.sort(leftSortedList);
+                        final java.util.Iterator<String> leftI = leftSortedList.iterator();
+
+                        final java.util.List<String> rightSortedList = com.google.common.collect.Lists
+                                .newArrayList(right);
+                        java.util.Collections.sort(rightSortedList);
+                        final java.util.Iterator<String> rightI = leftSortedList.iterator();
+
+                        while (leftI.hasNext()) {
+                            final String leftElement = leftI.next();
+                            final String rightElement = rightI.next();
+
+                            result =
+                                leftElement.compareTo(rightElement);
+                            if (result != 0) {
+                                return result;
+                            }
+                        }
+
+                        return 0;
+                    }
+                }.apply(com.google.common.collect.ImmutableList.of(this.stringSetField.get(), other.stringSetField.get()));
                 if (result != 0) {
                     return result;
                 }
