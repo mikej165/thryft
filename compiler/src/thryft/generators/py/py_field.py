@@ -55,6 +55,19 @@ if %(name)s is None:
 if %(name)s is not None:
 %(type_check)s""" % locals()
 
+    def py_decorated_setter(self):
+        decorated_setter_name = self.py_decorated_setter_name()
+        name = self.py_name()
+        setter_name = self.py_setter_name()
+        return """\
+@%(name)s.setter
+def %(decorated_setter_name)s(self, %(name)s):
+    self.%(setter_name)s(%(name)s)
+""" % locals()
+
+    def py_decorated_setter_name(self):
+        return self.py_name()
+
     def py_getter(self):
         name = self.py_name()
         defensive_copy = self.type.py_defensive_copy('self.__' + name)

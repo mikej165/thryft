@@ -67,6 +67,22 @@ def __init__(
 %(initializers)s
 """ % locals()
 
+        def _py_decorated_setters(self):
+            return \
+                dict((
+                    field.py_decorated_setter_name(),
+                    field.py_decorated_setter()
+                )
+                for field in self.fields)
+
+        def _py_getters(self):
+            return \
+                dict((
+                    field.py_getter_name(),
+                    field.py_getter()
+                )
+                for field in self.fields)
+
         def _py_method_build(self):
             kwds = \
                 ', '.join("%s=self.__%s" % (field.py_name(), field.py_name())
@@ -100,7 +116,7 @@ def update(self, %(other_name)s):
     return self
 """ % locals()}
 
-        def _py_method_setters(self):
+        def _py_setters(self):
             return \
                 dict((
                     field.py_setter_name(),
@@ -111,11 +127,14 @@ def update(self, %(other_name)s):
         def _py_methods(self):
             constructor = self._py_constructor()
             methods = {}
+            methods.update(self._py_method_getters())
             methods.update(self._py_method_build())
-            methods.update(self._py_method_setters())
+            methods.update(self._py_setters())
             methods.update(self._py_method_update())
+            decorated_setters = self._py_decorated_setters()
             return ([constructor] if constructor is not None else []) + \
-                    [methods[key] for key in sorted(methods.iterkeys())]
+                   ([methods[key] for key in sorted(methods.iterkeys())]) + \
+                   ([decorated_setters[key] for key in sorted(decorated_setters.iterkeys())])
 
         def py_repr(self):
             name = self.py_name()
