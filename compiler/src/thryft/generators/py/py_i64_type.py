@@ -37,3 +37,9 @@ from thryft.generators.py._py_numeric_type import _PyNumericType
 class PyI64Type(I64Type, _PyNumericType):
     def py_check(self, value):
         return "isinstance(%(value)s, (int, long))" % locals()
+
+    def py_description(self):
+        return 'int or long'
+
+    def py_name(self):
+        return 'long'

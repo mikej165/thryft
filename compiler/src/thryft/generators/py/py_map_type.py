@@ -44,6 +44,9 @@ class PyMapType(MapType, _PyContainerType):
     def py_defensive_copy(self, value):
         return "%(value)s.copy() if %(value)s is not None else None" % locals()
 
+    def py_description(self):
+        return "dict(%s: %s)" % (self.key_type.py_description(), self.value_type.py_description())
+
     def _py_imports_definition(self, caller_stack):
         imports = list(self.key_type.py_imports_definition(caller_stack=caller_stack))
         imports.extend(self.value_type.py_imports_definition(caller_stack=caller_stack))

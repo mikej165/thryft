@@ -41,6 +41,9 @@ class _PyType(_PyNamedConstruct):
     def py_defensive_copy(self, value):
         return value
 
+    def py_description(self):
+        return self.py_qname()
+
     def py_read_protocol(self):
         raise NotImplementedError(class_qname(self) + '.py_read_protocol')
 

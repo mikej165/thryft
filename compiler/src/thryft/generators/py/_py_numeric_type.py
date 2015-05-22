@@ -36,10 +36,10 @@ from yutil import class_qname
 
 class _PyNumericType(_PyBaseType):
     def py_from_string(self, value):
-        return "%s(%s)" % (self._py_name(), value)
+        return "%s(%s)" % (self.py_name(), value)
 
     def py_literal(self, value):
         return str(value)
 
-    def _py_name(self):
-        raise NotImplementedError(class_qname(self) + '._py_name')
+    def py_name(self):
+        raise NotImplementedError(class_qname(self) + '.py_name')

@@ -35,8 +35,5 @@ from thryft.generators.py._py_numeric_type import _PyNumericType
 
 
 class PyI32Type(I32Type, _PyNumericType):
-    def py_check(self, value):
-        return "isinstance(%(value)s, int)" % locals()
-
-    def _py_name(self):
+    def py_name(self):
         return 'int'

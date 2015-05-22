@@ -39,6 +39,9 @@ class PySetType(SetType, _PySequenceType):
         element_check = self.element_type.py_check('_')
         return "(isinstance(%(value)s, frozenset) and len(list(ifilterfalse(lambda _: %(element_check)s, %(value)s))) == 0)" % locals()
 
+    def py_description(self):
+        return "frozenset(%s)" % self.element_type.py_description()
+
     def py_literal(self, value):
         if len(value) == 0:
             return 'frozenset()'

@@ -40,9 +40,10 @@ class PyField(Field, _PyNamedConstruct):
         name = self.py_name()
 
         type_check = self.type.py_check(name)
+        type_description = self.type.py_description()
         type_check = """\
 if not %(type_check)s:
-    raise TypeError(getattr(__builtin__, 'type')(%(name)s))""" % locals()
+    raise TypeError("expected %(name)s to be a %(type_description)s but it is a %%s" %% getattr(__builtin__, 'type')(%(name)s))""" % locals()
 
         if self.required:
             return """\
@@ -84,8 +85,7 @@ def %(name)s(self):
         return self.py_name()
 
     def _py_imports_use(self, caller_stack):
-        imports = self.type.py_imports_use(caller_stack=caller_stack)
-        return imports + ['import __builtin__']
+        return self.type.py_imports_use(caller_stack=caller_stack) + ['import __builtin__']
 
     def py_initializer(self):
         check = self.py_check()
