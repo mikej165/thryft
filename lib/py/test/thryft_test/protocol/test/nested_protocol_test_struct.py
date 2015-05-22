@@ -48,6 +48,54 @@ class NestedProtocolTestStruct(object):
         def build(self):
             return NestedProtocolTestStruct(required_i32_field=self.__required_i32_field, required_string_field=self.__required_string_field, binary_field=self.__binary_field, bool_field=self.__bool_field, byte_field=self.__byte_field, date_time_field=self.__date_time_field, decimal_field=self.__decimal_field, email_address_field=self.__email_address_field, enum_field=self.__enum_field, i16_field=self.__i16_field, i32_field=self.__i32_field, i64_field=self.__i64_field, string_list_field=self.__string_list_field, string_string_map_field=self.__string_string_map_field, string_set_field=self.__string_set_field, string_field=self.__string_field, url_field=self.__url_field)
 
+        @property
+        def binary_field(self):
+            return self.__binary_field
+
+        @property
+        def bool_field(self):
+            return self.__bool_field
+
+        @property
+        def byte_field(self):
+            return self.__byte_field
+
+        @property
+        def date_time_field(self):
+            return self.__date_time_field
+
+        @property
+        def decimal_field(self):
+            return self.__decimal_field
+
+        @property
+        def email_address_field(self):
+            return self.__email_address_field
+
+        @property
+        def enum_field(self):
+            return self.__enum_field
+
+        @property
+        def i16_field(self):
+            return self.__i16_field
+
+        @property
+        def i32_field(self):
+            return self.__i32_field
+
+        @property
+        def i64_field(self):
+            return self.__i64_field
+
+        @property
+        def required_i32_field(self):
+            return self.__required_i32_field
+
+        @property
+        def required_string_field(self):
+            return self.__required_string_field
+
         def set_binary_field(self, binary_field):
             self.__binary_field = binary_field
             return self
@@ -116,6 +164,22 @@ class NestedProtocolTestStruct(object):
             self.__url_field = url_field
             return self
 
+        @property
+        def string_field(self):
+            return self.__string_field
+
+        @property
+        def string_list_field(self):
+            return self.__string_list_field
+
+        @property
+        def string_set_field(self):
+            return self.__string_set_field
+
+        @property
+        def string_string_map_field(self):
+            return self.__string_string_map_field.copy() if self.__string_string_map_field is not None else None
+
         def update(self, nested_protocol_test_struct):
             if isinstance(nested_protocol_test_struct, NestedProtocolTestStruct):
                 self.set_required_i32_field(nested_protocol_test_struct.required_i32_field)
@@ -141,6 +205,78 @@ class NestedProtocolTestStruct(object):
             else:
                 raise TypeError(nested_protocol_test_struct)
             return self
+
+        @property
+        def url_field(self):
+            return self.__url_field
+
+        @binary_field.setter
+        def binary_field(self, binary_field):
+            self.set_binary_field(binary_field)
+
+        @bool_field.setter
+        def bool_field(self, bool_field):
+            self.set_bool_field(bool_field)
+
+        @byte_field.setter
+        def byte_field(self, byte_field):
+            self.set_byte_field(byte_field)
+
+        @date_time_field.setter
+        def date_time_field(self, date_time_field):
+            self.set_date_time_field(date_time_field)
+
+        @decimal_field.setter
+        def decimal_field(self, decimal_field):
+            self.set_decimal_field(decimal_field)
+
+        @email_address_field.setter
+        def email_address_field(self, email_address_field):
+            self.set_email_address_field(email_address_field)
+
+        @enum_field.setter
+        def enum_field(self, enum_field):
+            self.set_enum_field(enum_field)
+
+        @i16_field.setter
+        def i16_field(self, i16_field):
+            self.set_i16_field(i16_field)
+
+        @i32_field.setter
+        def i32_field(self, i32_field):
+            self.set_i32_field(i32_field)
+
+        @i64_field.setter
+        def i64_field(self, i64_field):
+            self.set_i64_field(i64_field)
+
+        @required_i32_field.setter
+        def required_i32_field(self, required_i32_field):
+            self.set_required_i32_field(required_i32_field)
+
+        @required_string_field.setter
+        def required_string_field(self, required_string_field):
+            self.set_required_string_field(required_string_field)
+
+        @string_field.setter
+        def string_field(self, string_field):
+            self.set_string_field(string_field)
+
+        @string_list_field.setter
+        def string_list_field(self, string_list_field):
+            self.set_string_list_field(string_list_field)
+
+        @string_set_field.setter
+        def string_set_field(self, string_set_field):
+            self.set_string_set_field(string_set_field)
+
+        @string_string_map_field.setter
+        def string_string_map_field(self, string_string_map_field):
+            self.set_string_string_map_field(string_string_map_field)
+
+        @url_field.setter
+        def url_field(self, url_field):
+            self.set_url_field(url_field)
 
     def __init__(
         self,
