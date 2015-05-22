@@ -34,6 +34,9 @@ from thryft.generators.py._py_type import _PyType
 
 
 class _PyBaseType(_PyType):
+    def py_check(self, value):
+        return "isinstance(%s, %s)" % (value, self.py_name())
+
     def _py_imports_use(self, *args, **kwds):
         return []
 

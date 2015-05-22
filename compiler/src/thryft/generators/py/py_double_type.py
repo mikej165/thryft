@@ -35,5 +35,5 @@ from thryft.generators.py._py_numeric_type import _PyNumericType
 
 
 class PyDoubleType(DoubleType, _PyNumericType):
-    def py_check(self, value):
-        return "isinstance(%(value)s, float)" % locals()
+    def py_name(self):
+        return 'float'

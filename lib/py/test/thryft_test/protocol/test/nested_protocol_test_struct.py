@@ -301,88 +301,88 @@ class NestedProtocolTestStruct(object):
         if required_i32_field is None:
             raise ValueError('required_i32_field is required')
         if not isinstance(required_i32_field, int):
-            raise TypeError(getattr(__builtin__, 'type')(required_i32_field))
+            raise TypeError("expected required_i32_field to be a int but it is a %s" % getattr(__builtin__, 'type')(required_i32_field))
         self.__required_i32_field = required_i32_field
 
         if required_string_field is None:
             raise ValueError('required_string_field is required')
         if not isinstance(required_string_field, basestring):
-            raise TypeError(getattr(__builtin__, 'type')(required_string_field))
+            raise TypeError("expected required_string_field to be a str but it is a %s" % getattr(__builtin__, 'type')(required_string_field))
         self.__required_string_field = required_string_field
 
         if binary_field is not None:
             if not isinstance(binary_field, basestring):
-                raise TypeError(getattr(__builtin__, 'type')(binary_field))
+                raise TypeError("expected binary_field to be a str but it is a %s" % getattr(__builtin__, 'type')(binary_field))
         self.__binary_field = binary_field
 
         if bool_field is not None:
             if not isinstance(bool_field, bool):
-                raise TypeError(getattr(__builtin__, 'type')(bool_field))
+                raise TypeError("expected bool_field to be a bool but it is a %s" % getattr(__builtin__, 'type')(bool_field))
         self.__bool_field = bool_field
 
         if byte_field is not None:
             if not isinstance(byte_field, int):
-                raise TypeError(getattr(__builtin__, 'type')(byte_field))
+                raise TypeError("expected byte_field to be a int but it is a %s" % getattr(__builtin__, 'type')(byte_field))
         self.__byte_field = byte_field
 
         if date_time_field is not None:
             if not isinstance(date_time_field, datetime):
-                raise TypeError(getattr(__builtin__, 'type')(date_time_field))
+                raise TypeError("expected date_time_field to be a int or long but it is a %s" % getattr(__builtin__, 'type')(date_time_field))
         self.__date_time_field = date_time_field
 
         if decimal_field is not None:
             if not isinstance(decimal_field, decimal.Decimal):
-                raise TypeError(getattr(__builtin__, 'type')(decimal_field))
+                raise TypeError("expected decimal_field to be a str but it is a %s" % getattr(__builtin__, 'type')(decimal_field))
         self.__decimal_field = decimal_field
 
         if email_address_field is not None:
             if not isinstance(email_address_field, basestring):
-                raise TypeError(getattr(__builtin__, 'type')(email_address_field))
+                raise TypeError("expected email_address_field to be a str but it is a %s" % getattr(__builtin__, 'type')(email_address_field))
         self.__email_address_field = email_address_field
 
         if enum_field is not None:
             if not isinstance(enum_field, thryft_test.protocol.test.protocol_test_enum.ProtocolTestEnum):
-                raise TypeError(getattr(__builtin__, 'type')(enum_field))
+                raise TypeError("expected enum_field to be a thryft_test.protocol.test.protocol_test_enum.ProtocolTestEnum but it is a %s" % getattr(__builtin__, 'type')(enum_field))
         self.__enum_field = enum_field
 
         if i16_field is not None:
             if not isinstance(i16_field, int):
-                raise TypeError(getattr(__builtin__, 'type')(i16_field))
+                raise TypeError("expected i16_field to be a int but it is a %s" % getattr(__builtin__, 'type')(i16_field))
         self.__i16_field = i16_field
 
         if i32_field is not None:
             if not isinstance(i32_field, int):
-                raise TypeError(getattr(__builtin__, 'type')(i32_field))
+                raise TypeError("expected i32_field to be a int but it is a %s" % getattr(__builtin__, 'type')(i32_field))
         self.__i32_field = i32_field
 
         if i64_field is not None:
             if not isinstance(i64_field, (int, long)):
-                raise TypeError(getattr(__builtin__, 'type')(i64_field))
+                raise TypeError("expected i64_field to be a int or long but it is a %s" % getattr(__builtin__, 'type')(i64_field))
         self.__i64_field = i64_field
 
         if string_list_field is not None:
             if not (isinstance(string_list_field, tuple) and len(list(ifilterfalse(lambda _: isinstance(_, basestring), string_list_field))) == 0):
-                raise TypeError(getattr(__builtin__, 'type')(string_list_field))
+                raise TypeError("expected string_list_field to be a tuple(str) but it is a %s" % getattr(__builtin__, 'type')(string_list_field))
         self.__string_list_field = string_list_field
 
         if string_string_map_field is not None:
             if not (isinstance(string_string_map_field, dict) and len(list(ifilterfalse(lambda __item: isinstance(__item[0], basestring) and isinstance(__item[1], basestring), string_string_map_field.iteritems()))) == 0):
-                raise TypeError(getattr(__builtin__, 'type')(string_string_map_field))
+                raise TypeError("expected string_string_map_field to be a dict(str: str) but it is a %s" % getattr(__builtin__, 'type')(string_string_map_field))
         self.__string_string_map_field = string_string_map_field.copy() if string_string_map_field is not None else None
 
         if string_set_field is not None:
             if not (isinstance(string_set_field, frozenset) and len(list(ifilterfalse(lambda _: isinstance(_, basestring), string_set_field))) == 0):
-                raise TypeError(getattr(__builtin__, 'type')(string_set_field))
+                raise TypeError("expected string_set_field to be a frozenset(str) but it is a %s" % getattr(__builtin__, 'type')(string_set_field))
         self.__string_set_field = string_set_field
 
         if string_field is not None:
             if not isinstance(string_field, basestring):
-                raise TypeError(getattr(__builtin__, 'type')(string_field))
+                raise TypeError("expected string_field to be a str but it is a %s" % getattr(__builtin__, 'type')(string_field))
         self.__string_field = string_field
 
         if url_field is not None:
             if not isinstance(url_field, basestring):
-                raise TypeError(getattr(__builtin__, 'type')(url_field))
+                raise TypeError("expected url_field to be a str but it is a %s" % getattr(__builtin__, 'type')(url_field))
         self.__url_field = url_field
 
     def __eq__(self, other):
