@@ -38,6 +38,9 @@ class PyStringType(StringType, _PyBaseType):
     def py_check(self, value):
         return "isinstance(%(value)s, basestring)" % locals()
 
+    def py_from_string(self, value):
+        return value
+
     def py_literal(self, value):
         return "'%s'" % value
 

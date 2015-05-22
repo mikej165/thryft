@@ -338,8 +338,9 @@ def write(self, oprot):
     return self
 """ % locals()}
 
-    def _py_methods(self):
-        methods_dict = {}
+    def _py_methods(self, methods_dict=None):
+        if methods_dict is None:
+            methods_dict = {}
         methods_dict.update(self._py_method_as_dict())
         methods_dict.update(self._py_method_as_tuple())
         methods_dict.update(self._py_method_eq())
