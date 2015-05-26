@@ -163,6 +163,12 @@ public Builder set(final String name, @javax.annotation.Nullable final Object va
                     setters[field.java_setter_name() + str(field_setter_i)] = field_setter
             return setters
 
+        def _java_method_unsetters(self):
+            unsetters = {}
+            for field in self.fields:
+                unsetters[field.java_unsetter_name()] = field.java_unsetter(return_type_name='Builder')
+            return unsetters
+
         def _java_methods(self):
             methods = {}
             methods.update(self._java_method_build())
@@ -173,6 +179,7 @@ public Builder set(final String name, @javax.annotation.Nullable final Object va
             methods.update(self._java_method_set_if_present())
             methods.update(self._java_method_set_name_value())
             methods.update(self._java_method_setters())
+            methods.update(self._java_method_unsetters())
             return methods
 
         def java_repr(self):

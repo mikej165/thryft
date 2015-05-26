@@ -270,6 +270,23 @@ public %(return_type_name)s %(setter_name)s(@javax.annotation.Nullable final %(t
     def java_setter_name(self):
         return 'set' + upper_camelize(self.name)
 
+    def java_unsetter(self, return_type_name='void'):
+        name = self.java_name()
+        return_statement = \
+            return_type_name != 'void' and "\n    return this;" or ''
+        unsetter_name = self.java_unsetter_name()
+        if self.required:
+            unset = "this.%s = %s;" % (name, self.java_default_value())
+        else:
+            unset = "this.%s = com.google.common.base.Optional.absent();" % name
+        return """\
+public %(return_type_name)s %(unsetter_name)s() {
+    %(unset)s%(return_statement)s
+}""" % locals()
+
+    def java_unsetter_name(self):
+        return 'unset' + upper_camelize(self.name)
+
     def __java_type_name(self, boxed=None, nullable=False):
         if self.required:
             return self.type.java_declaration_name(boxed=boxed)
