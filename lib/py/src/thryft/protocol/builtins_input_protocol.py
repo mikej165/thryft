@@ -128,7 +128,7 @@ class BuiltinsInputProtocol(_StackedInputProtocol):
             colon_i = field_name.find(':')
             if colon_i != -1:
                 field_id = int(field_name[:colon_i])
-                field_name = field_name[colon_i+1]
+                field_name = field_name[colon_i+1:]
             else:
                 field_id = None
             field_value = self._read_value_impl()

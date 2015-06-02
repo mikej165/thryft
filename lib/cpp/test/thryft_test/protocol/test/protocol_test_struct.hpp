@@ -976,136 +976,136 @@ public:
     default:
       oprot.write_struct_begin("::thryft_test::protocol::test::ProtocolTestStruct");
 
-      oprot.write_field_begin("required_i32_field", ::thryft::protocol::Type::I32, static_cast<int16_t>(0));
+      oprot.write_field_begin("required_i32_field", ::thryft::protocol::Type::I32, static_cast<int16_t>(1));
       oprot.write(required_i32_field());
       oprot.write_field_end();
 
-      oprot.write_field_begin("required_string_field", ::thryft::protocol::Type::STRING, static_cast<int16_t>(0));
+      oprot.write_field_begin("required_string_field", ::thryft::protocol::Type::STRING, static_cast<int16_t>(2));
       oprot.write(required_string_field());
       oprot.write_field_end();
 
       if (binary_field().present()) {
-          oprot.write_field_begin("binary_field", ::thryft::protocol::Type::STRING, static_cast<int16_t>(0));
+          oprot.write_field_begin("binary_field", ::thryft::protocol::Type::STRING, static_cast<int16_t>(3));
           oprot.write(binary_field().get());
           oprot.write_field_end();
       }
 
       if (bool_field().present()) {
-          oprot.write_field_begin("bool_field", ::thryft::protocol::Type::BOOL, static_cast<int16_t>(0));
+          oprot.write_field_begin("bool_field", ::thryft::protocol::Type::BOOL, static_cast<int16_t>(4));
           oprot.write(bool_field().get());
           oprot.write_field_end();
       }
 
       if (date_time_field().present()) {
-          oprot.write_field_begin("date_time_field", ::thryft::protocol::Type::I64, static_cast<int16_t>(0));
+          oprot.write_field_begin("date_time_field", ::thryft::protocol::Type::I64, static_cast<int16_t>(5));
           oprot.write(date_time_field().get());
           oprot.write_field_end();
       }
 
       if (decimal_field().present()) {
-          oprot.write_field_begin("decimal_field", ::thryft::protocol::Type::STRING, static_cast<int16_t>(0));
+          oprot.write_field_begin("decimal_field", ::thryft::protocol::Type::STRING, static_cast<int16_t>(6));
           oprot.write(decimal_field().get());
           oprot.write_field_end();
       }
 
       if (email_address_field().present()) {
-          oprot.write_field_begin("email_address_field", ::thryft::protocol::Type::STRING, static_cast<int16_t>(0));
+          oprot.write_field_begin("email_address_field", ::thryft::protocol::Type::STRING, static_cast<int16_t>(7));
           oprot.write(email_address_field().get());
           oprot.write_field_end();
       }
 
       if (enum_field().present()) {
-          oprot.write_field_begin("enum_field", ::thryft::protocol::Type::STRING, static_cast<int16_t>(0));
+          oprot.write_field_begin("enum_field", ::thryft::protocol::Type::STRING, static_cast<int16_t>(8));
           enum_field().get().write(oprot);
           oprot.write_field_end();
       }
 
       if (float_field().present()) {
-          oprot.write_field_begin("float_field", ::thryft::protocol::Type::DOUBLE, static_cast<int16_t>(0));
+          oprot.write_field_begin("float_field", ::thryft::protocol::Type::DOUBLE, static_cast<int16_t>(9));
           oprot.write(float_field().get());
           oprot.write_field_end();
       }
 
       if (i8_field().present()) {
-          oprot.write_field_begin("i8_field", ::thryft::protocol::Type::BYTE, static_cast<int16_t>(0));
+          oprot.write_field_begin("i8_field", ::thryft::protocol::Type::BYTE, static_cast<int16_t>(10));
           oprot.write(i8_field().get());
           oprot.write_field_end();
       }
 
       if (i16_field().present()) {
-          oprot.write_field_begin("i16_field", ::thryft::protocol::Type::I16, static_cast<int16_t>(0));
+          oprot.write_field_begin("i16_field", ::thryft::protocol::Type::I16, static_cast<int16_t>(11));
           oprot.write(i16_field().get());
           oprot.write_field_end();
       }
 
       if (i32_field().present()) {
-          oprot.write_field_begin("i32_field", ::thryft::protocol::Type::I32, static_cast<int16_t>(0));
+          oprot.write_field_begin("i32_field", ::thryft::protocol::Type::I32, static_cast<int16_t>(12));
           oprot.write(i32_field().get());
           oprot.write_field_end();
       }
 
       if (i64_field().present()) {
-          oprot.write_field_begin("i64_field", ::thryft::protocol::Type::I64, static_cast<int16_t>(0));
+          oprot.write_field_begin("i64_field", ::thryft::protocol::Type::I64, static_cast<int16_t>(13));
           oprot.write(i64_field().get());
           oprot.write_field_end();
       }
 
       if (string_list_field().present()) {
-          oprot.write_field_begin("string_list_field", ::thryft::protocol::Type::LIST, static_cast<int16_t>(0));
+          oprot.write_field_begin("string_list_field", ::thryft::protocol::Type::LIST, static_cast<int16_t>(14));
           oprot.write(string_list_field().get());
           oprot.write_field_end();
       }
 
       if (string_string_map_field().present()) {
-          oprot.write_field_begin("string_string_map_field", ::thryft::protocol::Type::MAP, static_cast<int16_t>(0));
+          oprot.write_field_begin("string_string_map_field", ::thryft::protocol::Type::MAP, static_cast<int16_t>(15));
           oprot.write(string_string_map_field().get());
           oprot.write_field_end();
       }
 
       if (string_set_field().present()) {
-          oprot.write_field_begin("string_set_field", ::thryft::protocol::Type::SET, static_cast<int16_t>(0));
+          oprot.write_field_begin("string_set_field", ::thryft::protocol::Type::SET, static_cast<int16_t>(16));
           oprot.write(string_set_field().get());
           oprot.write_field_end();
       }
 
       if (string_field().present()) {
-          oprot.write_field_begin("string_field", ::thryft::protocol::Type::STRING, static_cast<int16_t>(0));
+          oprot.write_field_begin("string_field", ::thryft::protocol::Type::STRING, static_cast<int16_t>(17));
           oprot.write(string_field().get());
           oprot.write_field_end();
       }
 
       if (struct_field().present()) {
-          oprot.write_field_begin("struct_field", ::thryft::protocol::Type::STRUCT, static_cast<int16_t>(0));
+          oprot.write_field_begin("struct_field", ::thryft::protocol::Type::STRUCT, static_cast<int16_t>(18));
           oprot.write(struct_field().get());
           oprot.write_field_end();
       }
 
       if (u32_field().present()) {
-          oprot.write_field_begin("u32_field", ::thryft::protocol::Type::I32, static_cast<int16_t>(0));
+          oprot.write_field_begin("u32_field", ::thryft::protocol::Type::I32, static_cast<int16_t>(19));
           oprot.write(u32_field().get());
           oprot.write_field_end();
       }
 
       if (u64_field().present()) {
-          oprot.write_field_begin("u64_field", ::thryft::protocol::Type::I64, static_cast<int16_t>(0));
+          oprot.write_field_begin("u64_field", ::thryft::protocol::Type::I64, static_cast<int16_t>(20));
           oprot.write(u64_field().get());
           oprot.write_field_end();
       }
 
       if (uri_field().present()) {
-          oprot.write_field_begin("uri_field", ::thryft::protocol::Type::STRING, static_cast<int16_t>(0));
+          oprot.write_field_begin("uri_field", ::thryft::protocol::Type::STRING, static_cast<int16_t>(21));
           oprot.write(uri_field().get());
           oprot.write_field_end();
       }
 
       if (url_field().present()) {
-          oprot.write_field_begin("url_field", ::thryft::protocol::Type::STRING, static_cast<int16_t>(0));
+          oprot.write_field_begin("url_field", ::thryft::protocol::Type::STRING, static_cast<int16_t>(22));
           oprot.write(url_field().get());
           oprot.write_field_end();
       }
 
       if (variant_field().present()) {
-          oprot.write_field_begin("variant_field", ::thryft::protocol::Type::STRUCT, static_cast<int16_t>(0));
+          oprot.write_field_begin("variant_field", ::thryft::protocol::Type::STRUCT, static_cast<int16_t>(23));
           oprot.write(variant_field().get());
           oprot.write_field_end();
       }

@@ -525,13 +525,18 @@ public static %(name)s readAsStruct(final org.thryft.protocol.InputProtocol ipro
 }""" % locals()}
 
     def _java_method_read_as_struct_body(self):
+        field_protocol_named_initializers = []
+        for field in self.fields:
+            field_id_check = (" && ifield.getId() == %d" % field.id) if field.id is not None else ''
+            field_name = field.name
+            field_protocol_initializer = indent(' ' * 4, field.java_protocol_initializer())
+            field_protocol_named_initializers.append("""\
+if (ifield.getName().equals("%(field_name)s")%(field_id_check)s) {
+%(field_protocol_initializer)s
+}""" % locals())
         field_protocol_named_initializers = \
             lpad(' else ', indent(' ' * 4, ' else '.join(
-                """\
-if (ifield.getName().equals("%s")) {
-%s
-}""" % (field.name, indent(' ' * 4, field.java_protocol_initializer()))
-                 for field in self.fields
+                field_protocol_named_initializers
             )).lstrip())
         return """\
 iprot.readStructBegin();

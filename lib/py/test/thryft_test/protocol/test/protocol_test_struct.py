@@ -722,102 +722,102 @@ class ProtocolTestStruct(object):
 
         iprot.read_struct_begin()
         while True:
-            ifield_name, ifield_type, _ifield_id = iprot.read_field_begin()
+            ifield_name, ifield_type, ifield_id = iprot.read_field_begin()
             if ifield_type == 0: # STOP
                 break
-            elif ifield_name == 'required_i32_field':
+            elif ifield_name == 'required_i32_field' and ifield_id == 1:
                 init_kwds['required_i32_field'] = iprot.read_i32()
-            elif ifield_name == 'required_string_field':
+            elif ifield_name == 'required_string_field' and ifield_id == 2:
                 init_kwds['required_string_field'] = iprot.read_string()
-            elif ifield_name == 'binary_field':
+            elif ifield_name == 'binary_field' and ifield_id == 3:
                 try:
                     init_kwds['binary_field'] = iprot.read_binary()
                 except (TypeError, ValueError,):
                     pass
-            elif ifield_name == 'bool_field':
+            elif ifield_name == 'bool_field' and ifield_id == 4:
                 try:
                     init_kwds['bool_field'] = iprot.read_bool()
                 except (TypeError, ValueError,):
                     pass
-            elif ifield_name == 'date_time_field':
+            elif ifield_name == 'date_time_field' and ifield_id == 5:
                 try:
                     init_kwds['date_time_field'] = iprot.read_date_time()
                 except (TypeError,):
                     pass
-            elif ifield_name == 'decimal_field':
+            elif ifield_name == 'decimal_field' and ifield_id == 6:
                 try:
                     init_kwds['decimal_field'] = iprot.read_decimal()
                 except (decimal.InvalidOperation, TypeError,):
                     pass
-            elif ifield_name == 'email_address_field':
+            elif ifield_name == 'email_address_field' and ifield_id == 7:
                 try:
                     init_kwds['email_address_field'] = iprot.read_string()
                 except (TypeError, ValueError,):
                     pass
-            elif ifield_name == 'enum_field':
+            elif ifield_name == 'enum_field' and ifield_id == 8:
                 try:
                     init_kwds['enum_field'] = thryft_test.protocol.test.protocol_test_enum.ProtocolTestEnum.value_of(iprot.read_string().strip().upper())
                 except (TypeError,):
                     pass
-            elif ifield_name == 'float_field':
+            elif ifield_name == 'float_field' and ifield_id == 9:
                 try:
                     init_kwds['float_field'] = iprot.read_double()
                 except (TypeError, ValueError,):
                     pass
-            elif ifield_name == 'i8_field':
+            elif ifield_name == 'i8_field' and ifield_id == 10:
                 try:
                     init_kwds['i8_field'] = iprot.read_byte()
                 except (TypeError, ValueError,):
                     pass
-            elif ifield_name == 'i16_field':
+            elif ifield_name == 'i16_field' and ifield_id == 11:
                 try:
                     init_kwds['i16_field'] = iprot.read_i16()
                 except (TypeError, ValueError,):
                     pass
-            elif ifield_name == 'i32_field':
+            elif ifield_name == 'i32_field' and ifield_id == 12:
                 try:
                     init_kwds['i32_field'] = iprot.read_i32()
                 except (TypeError, ValueError,):
                     pass
-            elif ifield_name == 'i64_field':
+            elif ifield_name == 'i64_field' and ifield_id == 13:
                 try:
                     init_kwds['i64_field'] = iprot.read_i64()
                 except (TypeError, ValueError,):
                     pass
-            elif ifield_name == 'string_list_field':
+            elif ifield_name == 'string_list_field' and ifield_id == 14:
                 init_kwds['string_list_field'] = tuple([iprot.read_string() for _ in xrange(iprot.read_list_begin()[1])] + (iprot.read_list_end() is None and []))
-            elif ifield_name == 'string_string_map_field':
+            elif ifield_name == 'string_string_map_field' and ifield_id == 15:
                 init_kwds['string_string_map_field'] = dict([(iprot.read_string(), iprot.read_string()) for _ in xrange(iprot.read_map_begin()[2])] + (iprot.read_map_end() is None and []))
-            elif ifield_name == 'string_set_field':
+            elif ifield_name == 'string_set_field' and ifield_id == 16:
                 init_kwds['string_set_field'] = frozenset([iprot.read_string() for _ in xrange(iprot.read_set_begin()[1])] + (iprot.read_set_end() is None and []))
-            elif ifield_name == 'string_field':
+            elif ifield_name == 'string_field' and ifield_id == 17:
                 try:
                     init_kwds['string_field'] = iprot.read_string()
                 except (TypeError, ValueError,):
                     pass
-            elif ifield_name == 'struct_field':
+            elif ifield_name == 'struct_field' and ifield_id == 18:
                 init_kwds['struct_field'] = thryft_test.protocol.test.nested_protocol_test_struct.NestedProtocolTestStruct.read(iprot)
-            elif ifield_name == 'u32_field':
+            elif ifield_name == 'u32_field' and ifield_id == 19:
                 try:
                     init_kwds['u32_field'] = iprot.read_u32()
                 except (TypeError,):
                     pass
-            elif ifield_name == 'u64_field':
+            elif ifield_name == 'u64_field' and ifield_id == 20:
                 try:
                     init_kwds['u64_field'] = iprot.read_u64()
                 except (TypeError,):
                     pass
-            elif ifield_name == 'uri_field':
+            elif ifield_name == 'uri_field' and ifield_id == 21:
                 try:
                     init_kwds['uri_field'] = iprot.read_string()
                 except (TypeError, ValueError,):
                     pass
-            elif ifield_name == 'url_field':
+            elif ifield_name == 'url_field' and ifield_id == 22:
                 try:
                     init_kwds['url_field'] = iprot.read_string()
                 except (TypeError, ValueError,):
                     pass
-            elif ifield_name == 'variant_field':
+            elif ifield_name == 'variant_field' and ifield_id == 23:
                 init_kwds['variant_field'] = iprot.read_variant()
             iprot.read_field_end()
         iprot.read_struct_end()
@@ -924,71 +924,71 @@ class ProtocolTestStruct(object):
     def write(self, oprot):
         oprot.write_struct_begin('ProtocolTestStruct')
 
-        oprot.write_field_begin(name='required_i32_field', type=8, id=None)
+        oprot.write_field_begin(name='required_i32_field', type=8, id=1)
         oprot.write_i32(self.required_i32_field)
         oprot.write_field_end()
 
-        oprot.write_field_begin(name='required_string_field', type=11, id=None)
+        oprot.write_field_begin(name='required_string_field', type=11, id=2)
         oprot.write_string(self.required_string_field)
         oprot.write_field_end()
 
         if self.binary_field is not None:
-            oprot.write_field_begin(name='binary_field', type=11, id=None)
+            oprot.write_field_begin(name='binary_field', type=11, id=3)
             oprot.write_binary(self.binary_field)
             oprot.write_field_end()
 
         if self.bool_field is not None:
-            oprot.write_field_begin(name='bool_field', type=2, id=None)
+            oprot.write_field_begin(name='bool_field', type=2, id=4)
             oprot.write_bool(self.bool_field)
             oprot.write_field_end()
 
         if self.date_time_field is not None:
-            oprot.write_field_begin(name='date_time_field', type=10, id=None)
+            oprot.write_field_begin(name='date_time_field', type=10, id=5)
             oprot.write_date_time(self.date_time_field)
             oprot.write_field_end()
 
         if self.decimal_field is not None:
-            oprot.write_field_begin(name='decimal_field', type=11, id=None)
+            oprot.write_field_begin(name='decimal_field', type=11, id=6)
             oprot.write_decimal(self.decimal_field)
             oprot.write_field_end()
 
         if self.email_address_field is not None:
-            oprot.write_field_begin(name='email_address_field', type=11, id=None)
+            oprot.write_field_begin(name='email_address_field', type=11, id=7)
             oprot.write_string(self.email_address_field)
             oprot.write_field_end()
 
         if self.enum_field is not None:
-            oprot.write_field_begin(name='enum_field', type=11, id=None)
+            oprot.write_field_begin(name='enum_field', type=11, id=8)
             oprot.write_string(str(self.enum_field))
             oprot.write_field_end()
 
         if self.float_field is not None:
-            oprot.write_field_begin(name='float_field', type=4, id=None)
+            oprot.write_field_begin(name='float_field', type=4, id=9)
             oprot.write_double(self.float_field)
             oprot.write_field_end()
 
         if self.i8_field is not None:
-            oprot.write_field_begin(name='i8_field', type=3, id=None)
+            oprot.write_field_begin(name='i8_field', type=3, id=10)
             oprot.write_byte(self.i8_field)
             oprot.write_field_end()
 
         if self.i16_field is not None:
-            oprot.write_field_begin(name='i16_field', type=6, id=None)
+            oprot.write_field_begin(name='i16_field', type=6, id=11)
             oprot.write_i16(self.i16_field)
             oprot.write_field_end()
 
         if self.i32_field is not None:
-            oprot.write_field_begin(name='i32_field', type=8, id=None)
+            oprot.write_field_begin(name='i32_field', type=8, id=12)
             oprot.write_i32(self.i32_field)
             oprot.write_field_end()
 
         if self.i64_field is not None:
-            oprot.write_field_begin(name='i64_field', type=10, id=None)
+            oprot.write_field_begin(name='i64_field', type=10, id=13)
             oprot.write_i64(self.i64_field)
             oprot.write_field_end()
 
         if self.string_list_field is not None:
-            oprot.write_field_begin(name='string_list_field', type=15, id=None)
+            oprot.write_field_begin(name='string_list_field', type=15, id=14)
             oprot.write_list_begin(11, len(self.string_list_field))
             for _0 in self.string_list_field:
                 oprot.write_string(_0)
@@ -996,7 +996,7 @@ class ProtocolTestStruct(object):
             oprot.write_field_end()
 
         if self.string_string_map_field is not None:
-            oprot.write_field_begin(name='string_string_map_field', type=13, id=None)
+            oprot.write_field_begin(name='string_string_map_field', type=13, id=15)
             oprot.write_map_begin(11, len(self.string_string_map_field), 11)
             for __key0, __value0 in self.string_string_map_field.iteritems():
                 oprot.write_string(__key0)
@@ -1005,7 +1005,7 @@ class ProtocolTestStruct(object):
             oprot.write_field_end()
 
         if self.string_set_field is not None:
-            oprot.write_field_begin(name='string_set_field', type=14, id=None)
+            oprot.write_field_begin(name='string_set_field', type=14, id=16)
             oprot.write_set_begin(11, len(self.string_set_field))
             for _0 in self.string_set_field:
                 oprot.write_string(_0)
@@ -1013,37 +1013,37 @@ class ProtocolTestStruct(object):
             oprot.write_field_end()
 
         if self.string_field is not None:
-            oprot.write_field_begin(name='string_field', type=11, id=None)
+            oprot.write_field_begin(name='string_field', type=11, id=17)
             oprot.write_string(self.string_field)
             oprot.write_field_end()
 
         if self.struct_field is not None:
-            oprot.write_field_begin(name='struct_field', type=12, id=None)
+            oprot.write_field_begin(name='struct_field', type=12, id=18)
             self.struct_field.write(oprot)
             oprot.write_field_end()
 
         if self.u32_field is not None:
-            oprot.write_field_begin(name='u32_field', type=8, id=None)
+            oprot.write_field_begin(name='u32_field', type=8, id=19)
             oprot.write_u32(self.u32_field)
             oprot.write_field_end()
 
         if self.u64_field is not None:
-            oprot.write_field_begin(name='u64_field', type=10, id=None)
+            oprot.write_field_begin(name='u64_field', type=10, id=20)
             oprot.write_u64(self.u64_field)
             oprot.write_field_end()
 
         if self.uri_field is not None:
-            oprot.write_field_begin(name='uri_field', type=11, id=None)
+            oprot.write_field_begin(name='uri_field', type=11, id=21)
             oprot.write_string(self.uri_field)
             oprot.write_field_end()
 
         if self.url_field is not None:
-            oprot.write_field_begin(name='url_field', type=11, id=None)
+            oprot.write_field_begin(name='url_field', type=11, id=22)
             oprot.write_string(self.url_field)
             oprot.write_field_end()
 
         if self.variant_field is not None:
-            oprot.write_field_begin(name='variant_field', type=12, id=None)
+            oprot.write_field_begin(name='variant_field', type=12, id=23)
             oprot.write_variant(self.variant_field)
             oprot.write_field_end()
 

@@ -46,7 +46,7 @@ import com.google.common.annotations.GwtIncompatible;
 
 @GwtIncompatible("")
 public class JacksonJsonOutputProtocol extends
-        JsonOutputProtocol<NestedOutputProtocol> {
+JsonOutputProtocol<NestedOutputProtocol> {
     protected class ArrayOutputProtocol extends NestedOutputProtocol {
     }
 
@@ -176,7 +176,7 @@ public class JacksonJsonOutputProtocol extends
     }
 
     protected abstract class NestedOutputProtocol extends
-            AbstractOutputProtocol {
+    AbstractOutputProtocol {
         @Override
         public void writeBinary(final byte[] value)
                 throws OutputProtocolException {
@@ -265,7 +265,7 @@ public class JacksonJsonOutputProtocol extends
             try {
                 generator.writeStartObject();
                 _getOutputProtocolStack()
-                        .push(_createMapObjectOutputProtocol());
+                .push(_createMapObjectOutputProtocol());
             } catch (final IOException e) {
                 throw new OutputProtocolException(e);
             }
@@ -336,7 +336,11 @@ public class JacksonJsonOutputProtocol extends
         public void writeFieldBegin(final String name, final Type type,
                 final short id) throws OutputProtocolException {
             try {
-                generator.writeFieldName(name);
+                if (id != FieldBegin.ABSENT_ID) {
+                    generator.writeFieldName(id + ":" + name);
+                } else {
+                    generator.writeFieldName(name);
+                }
             } catch (final IOException e) {
                 throw new OutputProtocolException(e);
             }
@@ -354,7 +358,7 @@ public class JacksonJsonOutputProtocol extends
     private static JsonGenerator __createJsonGenerator(final Writer writer)
             throws OutputProtocolException {
         try {
-            return new JsonFactory().createJsonGenerator(writer);
+            return new JsonFactory().createGenerator(writer);
         } catch (final IOException e) {
             throw new OutputProtocolException(e);
         }

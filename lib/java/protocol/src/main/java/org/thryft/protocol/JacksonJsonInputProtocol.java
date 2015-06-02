@@ -240,6 +240,16 @@ JsonInputProtocol<JacksonJsonInputProtocol.NestedInputProtocol> {
                 return FieldBegin.STOP;
             }
 
+            short fieldId;
+            String fieldName = fieldNameStack.peek();
+            final int colonI = fieldName.indexOf(':');
+            if (colonI != -1) {
+                fieldId = Short.parseShort(fieldName.substring(0, colonI));
+                fieldName = fieldName.substring(colonI + 1);
+            } else {
+                fieldId = FieldBegin.ABSENT_ID;
+            }
+
             final JsonNode value = _getMyNode().get(fieldNameStack.peek());
             Type type;
             if (value.isArray()) {
@@ -259,7 +269,7 @@ JsonInputProtocol<JacksonJsonInputProtocol.NestedInputProtocol> {
             } else {
                 type = Type.VOID_;
             }
-            return new FieldBegin(fieldNameStack.peek(), type, (short) -1);
+            return new FieldBegin(fieldName, type, fieldId);
         }
 
         @Override
