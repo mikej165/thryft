@@ -52,9 +52,24 @@ class JsonRpcClientPyGenerator(py_generator.PyGenerator):
             else:
                 call_prefix = call_suffix = ''
             name = self.py_name()
+            parameters = ', '.join(['self'] + [parameter.py_parameter()
+                                              for parameter in self.parameters])
+            if len(self.parameters) > 0:
+                parameter_writes = ''.join(parameter.py_write_protocol(value=parameter.py_name())
+                                             for parameter in self.parameters)
+                construct_params = indent(' ' * 4, """
+oprot = thryft.protocol.builtins_output_protocol.BuiltinsOutputProtocol()
+oprot.write_struct_begin()
+%(parameter_writes)soprot.write_struct_end()
+
+""" % locals())
+                params_value = 'oprot.value'
+            else:
+                construct_params = ''
+                params_value = '{}'
             return """\
-def _%(name)s(self, **kwds):
-    %(call_prefix)sself.__request('%(name)s', **kwds)%(call_suffix)s
+def _%(name)s(%(parameters)s):%(construct_params)s
+    %(call_prefix)sself.__request(method='%(name)s', params=%(params_value)s)%(call_suffix)s
 """ % locals()
 
     class Service(PyService):
@@ -170,19 +185,9 @@ def __init__(self, api_url, headers=None):
 
         def __py_method_request(self):
             return {'__request': """\
-def __request(self, method, headers=None, **kwds):
-    request = {'jsonrpc': '2.0', 'method': method}
+def __request(self, method, params, headers=None):
+    request = {'jsonrpc': '2.0', 'method': method, 'params': params}
     request['id'] = id(request)
-    params_oprot = thryft.protocol.builtins_output_protocol.BuiltinsOutputProtocol()
-    params_oprot.write_struct_begin()
-    for key, value in kwds.iteritems():
-        if value is None:
-            continue
-        params_oprot.write_field_begin(key)
-        params_oprot.write_variant(value)
-        params_oprot.write_field_end()
-    params_oprot.write_struct_end()
-    request['params'] = params_oprot.value
     request_json = json.dumps(request)
 
     if headers is not None:

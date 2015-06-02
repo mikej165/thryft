@@ -141,16 +141,17 @@ def %(setter_name)s(self, %(name)s):
     def py_setter_name(self):
         return 'set_' + self.py_name()
 
-    def py_write_protocol(self, depth=0):
+    def py_write_protocol(self, depth=0, value=None):
+        if value is None:
+            value = 'self.' + self.py_getter_call()
         id_ = self.id
         if id_ is None:
             id_ = -1
         name = self.name
-        getter_call = self.py_getter_call()
         ttype_id = self.type.thrift_ttype_id()
         write_protocol = \
             self.type.py_write_protocol(
-                'self.' + getter_call,
+                value,
                 depth=depth
             )
         write_protocol = """\
@@ -161,7 +162,7 @@ oprot.write_field_end()
         if not self.required:
             write_protocol = indent(' ' * 4, write_protocol)
             write_protocol = """\
-if self.%(getter_call)s is not None:
+if %(value)s is not None:
 %(write_protocol)s
 """ % locals()
         return write_protocol
