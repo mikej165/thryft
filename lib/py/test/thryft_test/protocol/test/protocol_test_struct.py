@@ -924,71 +924,71 @@ class ProtocolTestStruct(object):
     def write(self, oprot):
         oprot.write_struct_begin('ProtocolTestStruct')
 
-        oprot.write_field_begin('required_i32_field', 8, -1)
+        oprot.write_field_begin(name='required_i32_field', type=8, id=None)
         oprot.write_i32(self.required_i32_field)
         oprot.write_field_end()
 
-        oprot.write_field_begin('required_string_field', 11, -1)
+        oprot.write_field_begin(name='required_string_field', type=11, id=None)
         oprot.write_string(self.required_string_field)
         oprot.write_field_end()
 
         if self.binary_field is not None:
-            oprot.write_field_begin('binary_field', 11, -1)
+            oprot.write_field_begin(name='binary_field', type=11, id=None)
             oprot.write_binary(self.binary_field)
             oprot.write_field_end()
 
         if self.bool_field is not None:
-            oprot.write_field_begin('bool_field', 2, -1)
+            oprot.write_field_begin(name='bool_field', type=2, id=None)
             oprot.write_bool(self.bool_field)
             oprot.write_field_end()
 
         if self.date_time_field is not None:
-            oprot.write_field_begin('date_time_field', 10, -1)
+            oprot.write_field_begin(name='date_time_field', type=10, id=None)
             oprot.write_date_time(self.date_time_field)
             oprot.write_field_end()
 
         if self.decimal_field is not None:
-            oprot.write_field_begin('decimal_field', 11, -1)
+            oprot.write_field_begin(name='decimal_field', type=11, id=None)
             oprot.write_decimal(self.decimal_field)
             oprot.write_field_end()
 
         if self.email_address_field is not None:
-            oprot.write_field_begin('email_address_field', 11, -1)
+            oprot.write_field_begin(name='email_address_field', type=11, id=None)
             oprot.write_string(self.email_address_field)
             oprot.write_field_end()
 
         if self.enum_field is not None:
-            oprot.write_field_begin('enum_field', 11, -1)
+            oprot.write_field_begin(name='enum_field', type=11, id=None)
             oprot.write_string(str(self.enum_field))
             oprot.write_field_end()
 
         if self.float_field is not None:
-            oprot.write_field_begin('float_field', 4, -1)
+            oprot.write_field_begin(name='float_field', type=4, id=None)
             oprot.write_double(self.float_field)
             oprot.write_field_end()
 
         if self.i8_field is not None:
-            oprot.write_field_begin('i8_field', 3, -1)
+            oprot.write_field_begin(name='i8_field', type=3, id=None)
             oprot.write_byte(self.i8_field)
             oprot.write_field_end()
 
         if self.i16_field is not None:
-            oprot.write_field_begin('i16_field', 6, -1)
+            oprot.write_field_begin(name='i16_field', type=6, id=None)
             oprot.write_i16(self.i16_field)
             oprot.write_field_end()
 
         if self.i32_field is not None:
-            oprot.write_field_begin('i32_field', 8, -1)
+            oprot.write_field_begin(name='i32_field', type=8, id=None)
             oprot.write_i32(self.i32_field)
             oprot.write_field_end()
 
         if self.i64_field is not None:
-            oprot.write_field_begin('i64_field', 10, -1)
+            oprot.write_field_begin(name='i64_field', type=10, id=None)
             oprot.write_i64(self.i64_field)
             oprot.write_field_end()
 
         if self.string_list_field is not None:
-            oprot.write_field_begin('string_list_field', 15, -1)
+            oprot.write_field_begin(name='string_list_field', type=15, id=None)
             oprot.write_list_begin(11, len(self.string_list_field))
             for _0 in self.string_list_field:
                 oprot.write_string(_0)
@@ -996,7 +996,7 @@ class ProtocolTestStruct(object):
             oprot.write_field_end()
 
         if self.string_string_map_field is not None:
-            oprot.write_field_begin('string_string_map_field', 13, -1)
+            oprot.write_field_begin(name='string_string_map_field', type=13, id=None)
             oprot.write_map_begin(11, len(self.string_string_map_field), 11)
             for __key0, __value0 in self.string_string_map_field.iteritems():
                 oprot.write_string(__key0)
@@ -1005,7 +1005,7 @@ class ProtocolTestStruct(object):
             oprot.write_field_end()
 
         if self.string_set_field is not None:
-            oprot.write_field_begin('string_set_field', 14, -1)
+            oprot.write_field_begin(name='string_set_field', type=14, id=None)
             oprot.write_set_begin(11, len(self.string_set_field))
             for _0 in self.string_set_field:
                 oprot.write_string(_0)
@@ -1013,37 +1013,37 @@ class ProtocolTestStruct(object):
             oprot.write_field_end()
 
         if self.string_field is not None:
-            oprot.write_field_begin('string_field', 11, -1)
+            oprot.write_field_begin(name='string_field', type=11, id=None)
             oprot.write_string(self.string_field)
             oprot.write_field_end()
 
         if self.struct_field is not None:
-            oprot.write_field_begin('struct_field', 12, -1)
+            oprot.write_field_begin(name='struct_field', type=12, id=None)
             self.struct_field.write(oprot)
             oprot.write_field_end()
 
         if self.u32_field is not None:
-            oprot.write_field_begin('u32_field', 8, -1)
+            oprot.write_field_begin(name='u32_field', type=8, id=None)
             oprot.write_u32(self.u32_field)
             oprot.write_field_end()
 
         if self.u64_field is not None:
-            oprot.write_field_begin('u64_field', 10, -1)
+            oprot.write_field_begin(name='u64_field', type=10, id=None)
             oprot.write_u64(self.u64_field)
             oprot.write_field_end()
 
         if self.uri_field is not None:
-            oprot.write_field_begin('uri_field', 11, -1)
+            oprot.write_field_begin(name='uri_field', type=11, id=None)
             oprot.write_string(self.uri_field)
             oprot.write_field_end()
 
         if self.url_field is not None:
-            oprot.write_field_begin('url_field', 11, -1)
+            oprot.write_field_begin(name='url_field', type=11, id=None)
             oprot.write_string(self.url_field)
             oprot.write_field_end()
 
         if self.variant_field is not None:
-            oprot.write_field_begin('variant_field', 12, -1)
+            oprot.write_field_begin(name='variant_field', type=12, id=None)
             oprot.write_variant(self.variant_field)
             oprot.write_field_end()
 
