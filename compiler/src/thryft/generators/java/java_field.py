@@ -331,9 +331,7 @@ public %(return_type_name)s %(unsetter_name)s() {
             return self.value
 
     def java_write_protocol(self, write_field=True, depth=0):
-        id_ = self.id
-        if id_ is None:
-            id_ = -1
+        id_ = self.id if self.id is not None else 0
         name = self.name
         getter_name = self.java_getter_name()
         ttype = self.type.thrift_ttype_name()

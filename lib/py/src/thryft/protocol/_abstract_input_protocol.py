@@ -33,9 +33,33 @@
 from decimal import Decimal
 from datetime import datetime
 from thryft.protocol._input_protocol import _InputProtocol
+from thryft.protocol.type import Type
 
 
 class _AbstractInputProtocol(_InputProtocol):
+    @classmethod
+    def infer_type(cls, value):
+        if value is None:
+            return Type.VOID_
+        elif isinstance(value, dict):
+            return Type.MAP
+        elif isinstance(value, float):
+            return Type.DOUBLE
+        elif isinstance(value, frozenset):
+            return Type.SET
+        elif isinstance(value, int):
+            return Type.I32
+        elif isinstance(value, (list, tuple)):
+            return Type.LIST
+        elif isinstance(value, long):
+            return Type.I64
+        elif isinstance(value, basestring):
+            return Type.STRING
+        elif hasattr(value, 'write'):
+            return Type.STRUCT
+        else:
+            raise TypeError(type(value))
+
     def read_byte(self):
         return self.read_i16()
 

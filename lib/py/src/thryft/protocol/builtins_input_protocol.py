@@ -123,8 +123,17 @@ class BuiltinsInputProtocol(_StackedInputProtocol):
         def read_field_begin(self):
             if len(self.__field_name_stack) == 0:
                 return None, 0, None  # STOP
-            assert isinstance(self.__field_name_stack[-1], basestring), self.__field_name_stack
-            return self.__field_name_stack[-1], None, None
+            field_name = self.__field_name_stack[-1]
+            assert isinstance(field_name, basestring), self.__field_name_stack
+            colon_i = field_name.find(':')
+            if colon_i != -1:
+                field_id = int(field_name[:colon_i])
+                field_name = field_name[colon_i+1]
+            else:
+                field_id = None
+            field_value = self._read_value_impl()
+            field_type = _AbstractInputProtocol.infer_type(field_value)
+            return field_name, field_type, field_id
 
         def read_field_end(self):
             self.__field_name_stack.pop(-1)

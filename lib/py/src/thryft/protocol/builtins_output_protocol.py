@@ -133,14 +133,19 @@ class BuiltinsOutputProtocol(_StackedOutputProtocol):
             self.__dict = dict_
             self.__next_field_name = None
 
-        def write_field_begin(self, name, *args, **kwds):
+        def write_field_begin(self, name, type, id=None):  # @ReservedAssignment
+            self.__next_field_id = id
             self.__next_field_name = name
 
         def write_field_end(self):
+            self.__next_field_id = None
             self.__next_field_name = None
 
         def _write_value(self, value):
-            self.__dict[self.__next_field_name] = value
+            key = self.__next_field_name
+            if self.__next_field_id is not None:
+                key =  str(self.__next_field_id) + ':' + key
+            self.__dict[key] = value
 
     def __init__(self):
         _StackedOutputProtocol.__init__(self)

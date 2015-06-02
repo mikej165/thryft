@@ -106,6 +106,7 @@ self.__%(name)s = %(defensive_copy)s
             return self.py_name()
 
     def py_read_protocol(self):
+        id_check = (' and ifield_id == ' + str(self.id)) if self.id is not None else ''
         name = self.name
         read_protocol = self.type.py_read_protocol()
         read_protocol = "init_kwds['%(name)s'] = %(read_protocol)s" % locals()
@@ -122,7 +123,7 @@ except (%(read_protocol_throws)s,):
 """ % locals()
         read_protocol = indent(' ' * 4, read_protocol)
         return """\
-if ifield_name == '%(name)s':
+if ifield_name == '%(name)s'%(id_check)s:
 %(read_protocol)s
 """ % locals()
 
@@ -145,8 +146,6 @@ def %(setter_name)s(self, %(name)s):
         if value is None:
             value = 'self.' + self.py_getter_call()
         id_ = self.id
-        if id_ is None:
-            id_ = -1
         name = self.name
         ttype_id = self.type.thrift_ttype_id()
         write_protocol = \
@@ -155,7 +154,7 @@ def %(setter_name)s(self, %(name)s):
                 depth=depth
             )
         write_protocol = """\
-oprot.write_field_begin('%(name)s', %(ttype_id)u, %(id_)d)
+oprot.write_field_begin(name='%(name)s', type=%(ttype_id)u, id=%(id_)s)
 %(write_protocol)s
 oprot.write_field_end()
 """ % locals()

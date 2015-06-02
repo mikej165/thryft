@@ -142,9 +142,7 @@ if (%(member_name)s.present()) {
         return self.type.cpp_literal(self.value)
 
     def cpp_write_protocol(self, write_field=True):
-        id_ = self.id
-        if id_ is None:
-            id_ = -1
+        id_ = self.id if self.id is not None else 0
         name = self.name
         getter_name = self.cpp_getter_name()
         ttype = self.type.thrift_ttype_name()

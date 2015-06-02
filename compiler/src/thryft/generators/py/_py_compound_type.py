@@ -258,7 +258,11 @@ def read(cls, iprot):
     iprot.read_struct_end()
     return cls()
 """ % locals()}
-
+        ifield_id_prefix = '_'
+        for field in self.fields:
+            if field.id is not None:
+                ifield_id_prefix = ''
+                break
         field_read_protocols = \
             indent(' ' * 8, lpad('el', "el".join(
                 field.py_read_protocol()
@@ -272,7 +276,7 @@ def read(cls, iprot):
 
     iprot.read_struct_begin()
     while True:
-        ifield_name, ifield_type, _ifield_id = iprot.read_field_begin()
+        ifield_name, ifield_type, %(ifield_id_prefix)sifield_id = iprot.read_field_begin()
         if ifield_type == 0: # STOP
             break
 %(field_read_protocols)s

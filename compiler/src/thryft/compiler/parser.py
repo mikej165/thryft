@@ -423,6 +423,8 @@ class Parser(GenericParser):
         id_ = value = None
         if args[0] is not None:
             id_ = args[0].value
+            if id_ <= 0:
+                raise ParseException("expected positive int for field id '%d'" % id_, token=start_token)
         if args[-1] is not None:
             value = args[-1].value
         return \
