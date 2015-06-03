@@ -50,14 +50,14 @@ import com.fasterxml.jackson.databind.node.TextNode;
 import com.google.common.annotations.GwtIncompatible;
 
 @GwtIncompatible("")
-public final class JacksonJsonInputProtocol extends
+public class JacksonJsonInputProtocol extends
 JsonInputProtocol<JacksonJsonInputProtocol.NestedInputProtocol> {
-    public abstract class NestedInputProtocol extends AbstractInputProtocol {
+    public abstract class NestedInputProtocol
+            extends
+            JsonInputProtocol<JacksonJsonInputProtocol.NestedInputProtocol>.NestedInputProtocol {
         private NestedInputProtocol(final JsonNode node) {
             myNode = node;
         }
-
-        public abstract Type getType();
 
         @Override
         public byte[] readBinary() throws InputProtocolException {
@@ -100,7 +100,7 @@ JsonInputProtocol<JacksonJsonInputProtocol.NestedInputProtocol> {
             if (!node.isArray()) {
                 throw new InputProtocolException("expected JSON array");
             }
-            _getInputProtocolStack().push(__createArrayInputProtocol(node));
+            _getInputProtocolStack().push(new ArrayInputProtocol(node));
             return new ListBegin(Type.VOID_, node.size());
         }
 
@@ -110,7 +110,7 @@ JsonInputProtocol<JacksonJsonInputProtocol.NestedInputProtocol> {
             if (!node.isObject()) {
                 throw new InputProtocolException("expected JSON object");
             }
-            _getInputProtocolStack().push(__createMapObjectInputProtocol(node));
+            _getInputProtocolStack().push(new MapObjectInputProtocol(node));
             return new MapBegin(Type.VOID_, Type.VOID_, node.size());
         }
 
@@ -125,8 +125,7 @@ JsonInputProtocol<JacksonJsonInputProtocol.NestedInputProtocol> {
             if (!node.isObject()) {
                 throw new InputProtocolException("expected JSON object");
             }
-            _getInputProtocolStack().push(
-                    __createStructObjectInputProtocol(node));
+            _getInputProtocolStack().push(new StructObjectInputProtocol(node));
             return "";
         }
 
@@ -301,7 +300,7 @@ JsonInputProtocol<JacksonJsonInputProtocol.NestedInputProtocol> {
 
     public JacksonJsonInputProtocol(final JsonNode rootNode) {
         this.rootNode = checkNotNull(rootNode);
-        _getInputProtocolStack().push(__createRootInputProtocol(rootNode));
+        _getInputProtocolStack().push(new RootInputProtocol(rootNode));
     }
 
     public JacksonJsonInputProtocol(final Reader reader)
@@ -322,25 +321,7 @@ JsonInputProtocol<JacksonJsonInputProtocol.NestedInputProtocol> {
     @Override
     public void reset() {
         _getInputProtocolStack().clear();
-        _getInputProtocolStack().push(__createRootInputProtocol(rootNode));
-    }
-
-    private ArrayInputProtocol __createArrayInputProtocol(final JsonNode node) {
-        return new ArrayInputProtocol(node);
-    }
-
-    private MapObjectInputProtocol __createMapObjectInputProtocol(
-            final JsonNode node) {
-        return new MapObjectInputProtocol(node);
-    }
-
-    private RootInputProtocol __createRootInputProtocol(final JsonNode rootNode) {
-        return new RootInputProtocol(rootNode);
-    }
-
-    private StructObjectInputProtocol __createStructObjectInputProtocol(
-            final JsonNode node) {
-        return new StructObjectInputProtocol(node);
+        _getInputProtocolStack().push(new RootInputProtocol(rootNode));
     }
 
     private final JsonNode rootNode;

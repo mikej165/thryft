@@ -47,9 +47,9 @@ import com.google.gwt.json.client.JSONValue;
 import com.googlecode.gwt.crypto.bouncycastle.util.encoders.Base64;
 
 public class GwtJsonOutputProtocol extends
-        JsonOutputProtocol<NestedOutputProtocol> {
+StackedOutputProtocol<NestedOutputProtocol> {
     protected abstract class NestedOutputProtocol extends
-            AbstractOutputProtocol {
+    AbstractOutputProtocol {
         public abstract JSONValue getJsonValue();
 
         @Override
