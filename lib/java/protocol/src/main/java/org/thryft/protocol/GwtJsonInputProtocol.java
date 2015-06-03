@@ -49,10 +49,10 @@ import com.google.gwt.json.client.JSONValue;
 import com.googlecode.gwt.crypto.bouncycastle.util.encoders.Base64;
 
 public class GwtJsonInputProtocol extends
-JsonInputProtocol<NestedInputProtocol<?>> {
+        JsonInputProtocol<NestedInputProtocol<?>> {
     abstract class NestedInputProtocol<JSONValueT extends JSONValue>
-    extends
-    JsonInputProtocol<NestedInputProtocol<JSONValueT>>.NestedInputProtocol {
+            extends
+            JsonInputProtocol<NestedInputProtocol<JSONValueT>>.NestedInputProtocol {
         protected NestedInputProtocol(final JSONValueT node) {
             myNode = node;
         }
@@ -141,7 +141,7 @@ JsonInputProtocol<NestedInputProtocol<?>> {
     }
 
     private final class ArrayInputProtocol extends
-    NestedInputProtocol<JSONArray> {
+            NestedInputProtocol<JSONArray> {
         public ArrayInputProtocol(final JSONArray node) {
             super(node);
         }
@@ -160,7 +160,7 @@ JsonInputProtocol<NestedInputProtocol<?>> {
     }
 
     private final class MapObjectInputProtocol extends
-    NestedInputProtocol<JSONObject> {
+            NestedInputProtocol<JSONObject> {
         public MapObjectInputProtocol(final JSONObject node) {
             super(node);
             fieldNameStack.addAll(node.keySet());
@@ -187,7 +187,7 @@ JsonInputProtocol<NestedInputProtocol<?>> {
     }
 
     private final class RootInputProtocol extends
-    NestedInputProtocol<JSONValue> {
+            NestedInputProtocol<JSONValue> {
         protected RootInputProtocol(final JSONValue node) {
             super(node);
         }
@@ -204,7 +204,7 @@ JsonInputProtocol<NestedInputProtocol<?>> {
     }
 
     private final class StructObjectInputProtocol extends
-    NestedInputProtocol<JSONObject> {
+            NestedInputProtocol<JSONObject> {
         public StructObjectInputProtocol(final JSONObject node) {
             super(node);
             fieldNameStack.addAll(node.keySet());

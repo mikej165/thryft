@@ -51,10 +51,10 @@ import com.google.common.annotations.GwtIncompatible;
 
 @GwtIncompatible("")
 public class JacksonJsonInputProtocol extends
-JsonInputProtocol<JacksonJsonInputProtocol.NestedInputProtocol> {
+        JsonInputProtocol<JacksonJsonInputProtocol.NestedInputProtocol> {
     public abstract class NestedInputProtocol
-            extends
-            JsonInputProtocol<JacksonJsonInputProtocol.NestedInputProtocol>.NestedInputProtocol {
+    extends
+    JsonInputProtocol<JacksonJsonInputProtocol.NestedInputProtocol>.NestedInputProtocol {
         private NestedInputProtocol(final JsonNode node) {
             myNode = node;
         }

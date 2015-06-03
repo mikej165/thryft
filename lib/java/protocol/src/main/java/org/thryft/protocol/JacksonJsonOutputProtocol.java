@@ -124,6 +124,16 @@ public class JacksonJsonOutputProtocol extends JsonOutputProtocol {
         }
 
         @Override
+        public void writeNumber(final long value)
+                throws OutputProtocolException {
+            try {
+                delegate.writeNumber(value);
+            } catch (final IOException e) {
+                throw new OutputProtocolException(e);
+            }
+        }
+
+        @Override
         public void writeStartArray() throws OutputProtocolException {
             try {
                 delegate.writeStartArray();

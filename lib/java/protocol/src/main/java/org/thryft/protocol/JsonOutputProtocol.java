@@ -21,6 +21,8 @@ public abstract class JsonOutputProtocol extends
 
         public void writeNumber(int value) throws OutputProtocolException;
 
+        public void writeNumber(long value) throws OutputProtocolException;
+
         public void writeStartArray() throws OutputProtocolException;
 
         public void writeStartObject() throws OutputProtocolException;
