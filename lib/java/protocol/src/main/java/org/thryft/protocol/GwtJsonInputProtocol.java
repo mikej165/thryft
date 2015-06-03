@@ -49,17 +49,12 @@ import com.google.gwt.json.client.JSONValue;
 import com.googlecode.gwt.crypto.bouncycastle.util.encoders.Base64;
 
 public class GwtJsonInputProtocol extends
-JsonInputProtocol<NestedInputProtocol> {
-    abstract class NestedInputProtocol extends AbstractInputProtocol {
-        protected NestedInputProtocol(final JSONValue node) {
+JsonInputProtocol<NestedInputProtocol<?>> {
+    abstract class NestedInputProtocol<JSONValueT extends JSONValue>
+    extends
+    JsonInputProtocol<NestedInputProtocol<JSONValueT>>.NestedInputProtocol {
+        protected NestedInputProtocol(final JSONValueT node) {
             myNode = node;
-        }
-
-        public abstract Type getType();
-
-        @Override
-        public byte[] readBinary() throws InputProtocolException {
-            return Base64.decode(readString());
         }
 
         @Override
@@ -68,24 +63,8 @@ JsonInputProtocol<NestedInputProtocol> {
         }
 
         @Override
-        public byte readByte() throws InputProtocolException {
-            return (byte) _readChildNode().isNumber().doubleValue();
-        }
-
-        @Override
         public double readDouble() throws InputProtocolException {
             return _readChildNode().isNumber().doubleValue();
-        }
-
-        @Override
-        public <E extends Enum<E>> E readEnum(final Class<E> enumClass)
-                throws InputProtocolException {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public short readI16() throws InputProtocolException {
-            return (short) _readChildNode().isNumber().doubleValue();
         }
 
         @Override
@@ -104,7 +83,7 @@ JsonInputProtocol<NestedInputProtocol> {
             if (node == null) {
                 throw new InputProtocolException("expected JSON array");
             }
-            _getInputProtocolStack().push(__createArrayInputProtocol(node));
+            _getInputProtocolStack().push(new ArrayInputProtocol(node));
             return new ListBegin(Type.VOID_, node.size());
         }
 
@@ -114,7 +93,7 @@ JsonInputProtocol<NestedInputProtocol> {
             if (node == null) {
                 throw new InputProtocolException("expected JSON object");
             }
-            _getInputProtocolStack().push(__createMapObjectInputProtocol(node));
+            _getInputProtocolStack().push(new MapObjectInputProtocol(node));
             return new MapBegin(Type.VOID_, Type.VOID_, node.size());
         }
 
@@ -129,8 +108,7 @@ JsonInputProtocol<NestedInputProtocol> {
             if (node == null) {
                 throw new InputProtocolException("expected JSON object");
             }
-            _getInputProtocolStack().push(
-                    __createStructObjectInputProtocol(node));
+            _getInputProtocolStack().push(new StructObjectInputProtocol(node));
             return "";
         }
 
@@ -148,16 +126,22 @@ JsonInputProtocol<NestedInputProtocol> {
             }
         }
 
-        protected JSONValue _getMyNode() {
+        @Override
+        protected byte[] _decodeBase64(final String base64String) {
+            return Base64.decode(base64String);
+        }
+
+        protected final JSONValueT _getMyNode() {
             return myNode;
         }
 
         protected abstract JSONValue _readChildNode();
 
-        private final JSONValue myNode;
+        private final JSONValueT myNode;
     }
 
-    private final class ArrayInputProtocol extends NestedInputProtocol {
+    private final class ArrayInputProtocol extends
+    NestedInputProtocol<JSONArray> {
         public ArrayInputProtocol(final JSONArray node) {
             super(node);
         }
@@ -168,11 +152,6 @@ JsonInputProtocol<NestedInputProtocol> {
         }
 
         @Override
-        protected JSONArray _getMyNode() {
-            return (JSONArray) super._getMyNode();
-        }
-
-        @Override
         protected JSONValue _readChildNode() {
             return _getMyNode().get(nextValueIndex++);
         }
@@ -180,7 +159,8 @@ JsonInputProtocol<NestedInputProtocol> {
         private int nextValueIndex = 0;
     }
 
-    private final class MapObjectInputProtocol extends NestedInputProtocol {
+    private final class MapObjectInputProtocol extends
+    NestedInputProtocol<JSONObject> {
         public MapObjectInputProtocol(final JSONObject node) {
             super(node);
             fieldNameStack.addAll(node.keySet());
@@ -189,11 +169,6 @@ JsonInputProtocol<NestedInputProtocol> {
         @Override
         public Type getType() {
             return Type.MAP;
-        }
-
-        @Override
-        protected JSONObject _getMyNode() {
-            return (JSONObject) super._getMyNode();
         }
 
         @Override
@@ -211,7 +186,8 @@ JsonInputProtocol<NestedInputProtocol> {
         private boolean nextReadIsKey = true;
     }
 
-    private final class RootInputProtocol extends NestedInputProtocol {
+    private final class RootInputProtocol extends
+    NestedInputProtocol<JSONValue> {
         protected RootInputProtocol(final JSONValue node) {
             super(node);
         }
@@ -227,7 +203,8 @@ JsonInputProtocol<NestedInputProtocol> {
         }
     }
 
-    private final class StructObjectInputProtocol extends NestedInputProtocol {
+    private final class StructObjectInputProtocol extends
+    NestedInputProtocol<JSONObject> {
         public StructObjectInputProtocol(final JSONObject node) {
             super(node);
             fieldNameStack.addAll(node.keySet());
@@ -254,11 +231,6 @@ JsonInputProtocol<NestedInputProtocol> {
         }
 
         @Override
-        protected JSONObject _getMyNode() {
-            return (JSONObject) super._getMyNode();
-        }
-
-        @Override
         protected JSONValue _readChildNode() {
             return _getMyNode().get(fieldNameStack.peek());
         }
@@ -268,7 +240,7 @@ JsonInputProtocol<NestedInputProtocol> {
 
     public GwtJsonInputProtocol(final JSONValue rootNode) {
         this.rootNode = checkNotNull(rootNode);
-        _getInputProtocolStack().push(__createRootInputProtocol(rootNode));
+        _getInputProtocolStack().push(new RootInputProtocol(rootNode));
     }
 
     public GwtJsonInputProtocol(final String json) throws IOException {
@@ -276,37 +248,9 @@ JsonInputProtocol<NestedInputProtocol> {
     }
 
     @Override
-    public Type getCurrentFieldType() {
-        if (!_getInputProtocolStack().isEmpty()) {
-            return _getInputProtocolStack().peek().getType();
-        } else {
-            return Type.VOID_;
-        }
-    }
-
-    @Override
     public void reset() {
         _getInputProtocolStack().clear();
-        _getInputProtocolStack().push(__createRootInputProtocol(rootNode));
-    }
-
-    protected StructObjectInputProtocol __createStructObjectInputProtocol(
-            final JSONObject node) {
-        return new StructObjectInputProtocol(node);
-    }
-
-    private ArrayInputProtocol __createArrayInputProtocol(final JSONArray node) {
-        return new ArrayInputProtocol(node);
-    }
-
-    private MapObjectInputProtocol __createMapObjectInputProtocol(
-            final JSONObject node) {
-        return new MapObjectInputProtocol(node);
-    }
-
-    private RootInputProtocol __createRootInputProtocol(
-            final JSONValue parsedTree) {
-        return new RootInputProtocol(parsedTree);
+        _getInputProtocolStack().push(new RootInputProtocol(rootNode));
     }
 
     private final JSONValue rootNode;

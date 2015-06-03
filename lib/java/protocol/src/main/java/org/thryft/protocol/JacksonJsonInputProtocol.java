@@ -60,28 +60,13 @@ JsonInputProtocol<JacksonJsonInputProtocol.NestedInputProtocol> {
         }
 
         @Override
-        public byte[] readBinary() throws InputProtocolException {
-            return Base64.decodeBase64(readString());
-        }
-
-        @Override
         public boolean readBool() throws InputProtocolException {
             return _readChildNode().asBoolean();
         }
 
         @Override
-        public byte readByte() throws InputProtocolException {
-            return (byte) _readChildNode().asInt();
-        }
-
-        @Override
         public double readDouble() throws InputProtocolException {
             return _readChildNode().asDouble();
-        }
-
-        @Override
-        public short readI16() throws InputProtocolException {
-            return (short) _readChildNode().asInt();
         }
 
         @Override
@@ -145,6 +130,11 @@ JsonInputProtocol<JacksonJsonInputProtocol.NestedInputProtocol> {
             } else {
                 throw new UnsupportedOperationException();
             }
+        }
+
+        @Override
+        protected final byte[] _decodeBase64(final String base64String) {
+            return Base64.decodeBase64(base64String);
         }
 
         protected JsonNode _getMyNode() {
@@ -311,11 +301,6 @@ JsonInputProtocol<JacksonJsonInputProtocol.NestedInputProtocol> {
     public JacksonJsonInputProtocol(final String json)
             throws InputProtocolException {
         this(new StringReader(json));
-    }
-
-    @Override
-    public Type getCurrentFieldType() {
-        return _getInputProtocolStack().peek().getType();
     }
 
     @Override
