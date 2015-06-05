@@ -5,10 +5,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.common.base.MoreObjects;
 
 public final class FieldBegin {
+    public FieldBegin(final String name) {
+        this(name, Type.VOID_, ABSENT_ID);
+    }
+
     public FieldBegin(final String name, final Type type) {
-        this.id = 0;
-        this.name = checkNotNull(name);
-        this.type = checkNotNull(type);
+        this(name, type, ABSENT_ID);
     }
 
     public FieldBegin(final String name, final Type type, final short id) {

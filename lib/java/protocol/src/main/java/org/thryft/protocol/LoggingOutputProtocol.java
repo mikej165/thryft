@@ -140,6 +140,18 @@ public class LoggingOutputProtocol implements OutputProtocol {
     }
 
     @Override
+    public void writeFieldBegin(final String name, final Type type)
+            throws OutputProtocolException {
+        try {
+            wrappedOutputProtocol.writeFieldBegin(name, type);
+            logger.info(WRITE_FIELD_BEGIN_MESSAGE, name, type);
+        } catch (final OutputProtocolException e) {
+            logger.info(WRITE_FIELD_BEGIN_MESSAGE, name, type, e);
+            throw e;
+        }
+    }
+
+    @Override
     public void writeFieldBegin(final String name, final Type type,
             final short id) throws OutputProtocolException {
         try {
@@ -378,6 +390,8 @@ public class LoggingOutputProtocol implements OutputProtocol {
         }
     }
 
+    private final Logger logger;
+    private final OutputProtocol wrappedOutputProtocol;
     private final static String WRITE_BOOL_MESSAGE = "writeBool({})";
     private final static String WRITE_BINARY_MESSAGE = "writeBinary({} bytes)";
     private final static String WRITE_BYTE_MESSAGE = "writeByte({})";
@@ -404,10 +418,8 @@ public class LoggingOutputProtocol implements OutputProtocol {
     private final static String WRITE_STRUCT_BEGIN_MESSAGE = "writeStructBegin({})";
     private final static String WRITE_STRUCT_END_MESSAGE = "writeStructEnd()";
     private final static String WRITE_U32_MESSAGE = "writeU32({})";
+
     private final static String WRITE_U64_MESSAGE = "writeU64({})";
+
     private final static String WRITE_VARIANT_MESSAGE = "writeVariant({})";
-
-    private final Logger logger;
-
-    private final OutputProtocol wrappedOutputProtocol;
 }

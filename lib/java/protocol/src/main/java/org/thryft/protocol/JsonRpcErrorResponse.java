@@ -83,22 +83,21 @@ CompoundType {
             throws OutputProtocolException {
         oprot.writeStructBegin("error");
 
-        oprot.writeFieldBegin("code", org.thryft.protocol.Type.I32, (short) -1);
+        oprot.writeFieldBegin("code", org.thryft.protocol.Type.I32);
         oprot.writeI32(code);
         oprot.writeFieldEnd();
 
         if (getCause() instanceof org.thryft.Exception) {
-            oprot.writeFieldBegin("@class", Type.STRING, (short) -1);
+            oprot.writeFieldBegin("@class", Type.STRING);
             oprot.writeString(((org.thryft.Exception) getCause())
                     .getThriftQualifiedClassName());
             oprot.writeFieldEnd();
-            oprot.writeFieldBegin("data", Type.STRUCT, (short) -1);
+            oprot.writeFieldBegin("data", Type.STRUCT);
             ((CompoundType) getCause()).writeAsStruct(oprot);
             oprot.writeFieldEnd();
         }
 
-        oprot.writeFieldBegin("message", org.thryft.protocol.Type.STRING,
-                (short) -1);
+        oprot.writeFieldBegin("message", org.thryft.protocol.Type.STRING);
         oprot.writeString(getMessage());
         oprot.writeFieldEnd();
 

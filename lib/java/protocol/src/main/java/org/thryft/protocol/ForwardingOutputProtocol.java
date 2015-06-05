@@ -50,6 +50,12 @@ public abstract class ForwardingOutputProtocol implements OutputProtocol {
     }
 
     @Override
+    public void writeFieldBegin(final String name, final Type type)
+            throws OutputProtocolException {
+        _delegate().writeFieldBegin(name, type);
+    }
+
+    @Override
     public void writeFieldBegin(final String name, final Type type,
             final short id) throws OutputProtocolException {
         _delegate().writeFieldBegin(name, type, id);

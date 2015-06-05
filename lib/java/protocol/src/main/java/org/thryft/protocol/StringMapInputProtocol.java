@@ -47,7 +47,7 @@ import com.google.common.collect.Sets;
 
 @GwtIncompatible("")
 public class StringMapInputProtocol extends
-StackedInputProtocol<StringMapInputProtocol.NestedInputProtocol> {
+        StackedInputProtocol<StringMapInputProtocol.NestedInputProtocol> {
     abstract class NestedInputProtocol extends AbstractInputProtocol {
         protected NestedInputProtocol(final ImmutableMap<String, String> input,
                 final String myKey) {
@@ -270,8 +270,7 @@ StackedInputProtocol<StringMapInputProtocol.NestedInputProtocol> {
         @Override
         public FieldBegin readFieldBegin() throws InputProtocolException {
             if (!_getChildKeyStack().empty()) {
-                return new FieldBegin(_getChildKeyStack().peek(), Type.VOID_,
-                        (short) -1);
+                return new FieldBegin(_getChildKeyStack().peek());
             } else {
                 return FieldBegin.STOP;
             }

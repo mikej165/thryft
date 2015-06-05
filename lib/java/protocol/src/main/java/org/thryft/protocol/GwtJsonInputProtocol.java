@@ -218,8 +218,7 @@ public class GwtJsonInputProtocol extends
         @Override
         public FieldBegin readFieldBegin() throws InputProtocolException {
             if (!fieldNameStack.isEmpty()) {
-                return new FieldBegin(fieldNameStack.peek(), Type.VOID_,
-                        (short) -1);
+                return new FieldBegin(fieldNameStack.peek());
             } else {
                 return FieldBegin.STOP;
             }

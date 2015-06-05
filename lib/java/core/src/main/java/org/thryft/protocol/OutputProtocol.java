@@ -58,6 +58,9 @@ public interface OutputProtocol extends Protocol {
 
     public void writeEnum(final Enum<?> value) throws OutputProtocolException;
 
+    public void writeFieldBegin(final String name, final Type type)
+            throws OutputProtocolException;
+
     public void writeFieldBegin(final String name, final Type type,
             final short id) throws OutputProtocolException;
 

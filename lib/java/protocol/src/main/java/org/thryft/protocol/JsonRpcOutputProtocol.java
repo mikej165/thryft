@@ -14,24 +14,24 @@ public final class JsonRpcOutputProtocol extends ForwardingOutputProtocol {
             @Nullable final Object id) throws OutputProtocolException {
         writeStructBegin("JSON-RPC");
 
-        writeFieldBegin("jsonrpc", org.thryft.protocol.Type.STRING, (short) -1);
+        writeFieldBegin("jsonrpc", org.thryft.protocol.Type.STRING);
         writeString("2.0");
         writeFieldEnd();
 
         if (id == null) {
-            writeFieldBegin("id", org.thryft.protocol.Type.VOID_, (short) -1);
+            writeFieldBegin("id", org.thryft.protocol.Type.VOID_);
             writeNull();
             writeFieldEnd();
         } else if (id instanceof Integer) {
-            writeFieldBegin("id", org.thryft.protocol.Type.I32, (short) -1);
+            writeFieldBegin("id", org.thryft.protocol.Type.I32);
             writeI32((Integer) id);
             writeFieldEnd();
         } else if (id instanceof Long) {
-            writeFieldBegin("id", org.thryft.protocol.Type.I32, (short) -1);
+            writeFieldBegin("id", org.thryft.protocol.Type.I32);
             writeI64((Long) id);
             writeFieldEnd();
         } else if (id instanceof String) {
-            writeFieldBegin("id", org.thryft.protocol.Type.STRING, (short) -1);
+            writeFieldBegin("id", org.thryft.protocol.Type.STRING);
             writeString((String) id);
             writeFieldEnd();
         } else {
@@ -41,22 +41,19 @@ public final class JsonRpcOutputProtocol extends ForwardingOutputProtocol {
         switch (type) {
         case CALL:
         case ONEWAY:
-            writeFieldBegin("method", org.thryft.protocol.Type.STRING,
-                    (short) -1);
+            writeFieldBegin("method", org.thryft.protocol.Type.STRING);
             writeString(name);
             writeFieldEnd();
 
-            writeFieldBegin("params", org.thryft.protocol.Type.VOID_,
-                    (short) -1);
+            writeFieldBegin("params", org.thryft.protocol.Type.VOID_);
             break;
 
         case EXCEPTION:
-            writeFieldBegin("error", org.thryft.protocol.Type.VOID_, (short) -1);
+            writeFieldBegin("error", org.thryft.protocol.Type.VOID_);
             break;
 
         case REPLY:
-            writeFieldBegin("result", org.thryft.protocol.Type.VOID_,
-                    (short) -1);
+            writeFieldBegin("result", org.thryft.protocol.Type.VOID_);
             break;
 
         default:

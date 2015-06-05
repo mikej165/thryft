@@ -128,6 +128,12 @@ public abstract class AbstractOutputProtocol implements OutputProtocol {
     }
 
     @Override
+    public final void writeFieldBegin(final String name, final Type type)
+            throws OutputProtocolException {
+        writeFieldBegin(name, type, FieldBegin.ABSENT_ID);
+    }
+
+    @Override
     public void writeFieldBegin(final String name, final Type type,
             final short id) throws OutputProtocolException {
         throw new UnsupportedOperationException();
