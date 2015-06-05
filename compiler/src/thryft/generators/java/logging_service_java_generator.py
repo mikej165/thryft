@@ -37,8 +37,10 @@ from yutil import indent, lpad
 
 
 class LoggingServiceJavaGenerator(java_generator.JavaGenerator):
-    def __init__(self, include_current_user=True, **kwds):
+    def __init__(self, call_log_level='info', exception_log_level='error', include_current_user=True, **kwds):
         java_generator.JavaGenerator.__init__(self, **kwds)
+        self._call_log_level = call_log_level.lower()
+        self._exception_log_level = exception_log_level.lower()
         self._include_current_user = include_current_user
 
     class Document(java_generator.JavaGenerator.Document):
@@ -50,6 +52,8 @@ class LoggingServiceJavaGenerator(java_generator.JavaGenerator):
 
     class Function(java_generator.JavaGenerator.Function):
         def java_repr(self):
+            call_log_level = self._parent_generator()._call_log_level
+            exception_log_level = self._parent_generator()._exception_log_level
             java_name = self.java_name()
             name = self.name
 
@@ -60,7 +64,7 @@ class LoggingServiceJavaGenerator(java_generator.JavaGenerator):
             local_declarations.append('final StringBuilder __logMessageStringBuilder = new StringBuilder();')
             local_declarations = "\n".join(indent(' ' * 4, local_declarations))
 
-            if self.parent.parent.parent._include_current_user:
+            if self._parent_generator()._include_current_user:
                 log_current_user = lpad("\n\n", """\
     final org.apache.shiro.subject.Subject currentUser = org.apache.shiro.SecurityUtils.getSubject();
     if (currentUser.getPrincipal() instanceof String) {
@@ -124,23 +128,23 @@ try {
 } catch (final org.thryft.protocol.OutputProtocolException e) {
     __logMessageStringBuilder.append("(serialization error)");
 }
-logger.info(__logMessageStringBuilder.toString());
+logger.%(call_log_level)s(__logMessageStringBuilder.toString());
 
 return __returnValue;
 """ % locals()
             else:
                 service_call += """
-logger.info(__logMessageStringBuilder.toString());
-"""
+logger.%(call_log_level)s(__logMessageStringBuilder.toString());
+""" % locals()
             service_call = indent(' ' * 4, service_call)
             if len(self.throws) > 0:
                 catches = ' '.join("""\
 catch (final %s e) {
         __logMessageStringBuilder.append(" -> ");
         __logMessageStringBuilder.append(e.getMessage());
-        logger.error(__logMessageStringBuilder.toString());
+        logger.%s(__logMessageStringBuilder.toString());
         throw e;
-    }""" % throw.type.java_declaration_name() for throw in self.throws)
+    }""" % (throw.type.java_declaration_name(), exception_log_level) for throw in self.throws)
                 service_call = """\
     try {
 %s
