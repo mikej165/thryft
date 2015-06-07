@@ -231,18 +231,8 @@ class Parser(GenericParser):
 
     def __p_compound_type_field(self, args):
         doc_node, start_token, stop_token = self.__p(args)
-        field = args[1]
-        return \
-            Ast.FieldNode(
-                doc=doc_node,
-                id_=field.id,
-                name=field.name,
-                required=field.required,
-                start_token=start_token,
-                stop_token=stop_token,
-                type_=field.type,
-                value=field.value
-            )
+        field_node = args[1]
+        return field_node.replace(doc=doc_node, start_token=start_token, stop_token=stop_token)
 
     def p_compound_type_fields(self, args):
         '''
@@ -528,10 +518,21 @@ class Parser(GenericParser):
     def __p_function_oneway(self, args):
         return len(args) > 0
 
+    def p_function_parameter(self, args):
+        '''
+        function_parameter ::= comments field
+        '''
+        return self.__dispatch(self.__p_function_parameter, args, parse_annotations=True)
+
+    def __p_function_parameter(self, args):
+        doc_node, start_token, stop_token = self.__p(args)
+        field_node = args[1]
+        return field_node.replace(doc=doc_node, start_token=start_token, stop_token=stop_token)
+
     def p_function_parameters(self, args):
         '''
-        function_parameters ::= field
-        function_parameters ::= field COMMA function_parameters
+        function_parameters ::= function_parameter
+        function_parameters ::= function_parameter COMMA function_parameters
         function_parameters ::=
         '''
         return self.__dispatch(self.__p_function_parameters, args)
@@ -558,6 +559,17 @@ class Parser(GenericParser):
         else:
             return args[0]
 
+    def p_function_throw(self, args):
+        '''
+        function_throw ::= comments field
+        '''
+        return self.__dispatch(self.__p_function_throw, args, parse_annotations=True)
+
+    def __p_function_throw(self, args):
+        doc_node, start_token, stop_token = self.__p(args)
+        field_node = args[1]
+        return field_node.replace(doc=doc_node, start_token=start_token, stop_token=stop_token)
+
     def p_function_throws(self, args):
         '''
         function_throws ::=
@@ -573,8 +585,8 @@ class Parser(GenericParser):
 
     def p_function_throws_body(self, args):
         '''
-        function_throws_body ::= field
-        function_throws_body ::= field COMMA function_throws_body
+        function_throws_body ::= function_throw
+        function_throws_body ::= function_throw COMMA function_throws_body
         '''
         return self.__dispatch(self.__p_function_throws_body, args)
 

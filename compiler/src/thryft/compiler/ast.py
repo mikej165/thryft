@@ -93,7 +93,7 @@ class Ast(object):
         def __properties(self):
             properties = {}
             for attr in dir(self):
-                if attr[0] == '_' or attr in ('accept', 'to_dict'):
+                if attr[0] == '_' or attr in ('accept', 'replace', 'to_dict'):
                     continue
                 value = getattr(self, attr)
                 if value is None:
@@ -309,6 +309,19 @@ class Ast(object):
         @property
         def id(self):
             return self.__id
+
+        def replace(self, doc=None, start_token=None, stop_token=None):
+            return \
+                Ast.FieldNode(
+                    doc=doc,
+                    id_=self.id,
+                    name=self.name,
+                    required=self.required,
+                    start_token=start_token,
+                    stop_token=stop_token,
+                    type_=self.type,
+                    value=self.value
+                )
 
         @property
         def required(self):
