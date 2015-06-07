@@ -2,11 +2,12 @@
 struct TestStruct {
     // field comment
     1:double dfield;
+
     // @validation {"minLength": 2}
     // @js_view_metadata {"displayFormat": "some format", "editControl": "some control"}
-    string stringfield;
+    2: string stringfield;
 
-    optional string emailfield;
+    3: optional string emailfield;
 
-    optional string firstnamefield;
+    4: optional string firstnamefield;
 }

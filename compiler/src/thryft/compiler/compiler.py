@@ -125,13 +125,13 @@ class Compiler(object):
                     if field.required:
                         if len(compound_type.fields) > 0:
                             if not compound_type.fields[-1].required:
-                                raise CompileException("compound type %s has a required field %s after an optional field %s" % (compound_type_node.name, field.name, compound_type.fields[-1].name))
+                                raise CompileException("compound type %s has a required field %s after an optional field %s" % (compound_type_node.name, field.name, compound_type.fields[-1].name), ast_node=compound_type_node)
                     if field.id is not None:
                         id_count += 1
                     compound_type.fields.append(field)
                 if len(compound_type.fields) > 0:
                     if id_count != 0 and id_count != len(compound_type_node.fields):
-                        raise CompileException("compound type %s has some fields with ids and some fields without" % compound_type_node.name)
+                        raise CompileException("compound type %s has some fields with ids and some fields without" % compound_type_node.name, ast_node=compound_type_node)
 
             self.__scope_stack.pop(-1)
 
