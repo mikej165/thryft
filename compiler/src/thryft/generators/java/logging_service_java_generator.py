@@ -34,13 +34,21 @@ from thryft.generators.java import java_generator
 from thryft.generators.java._java_container_type import _JavaContainerType
 from thryft.generators.java.java_struct_type import JavaStructType
 from yutil import indent, lpad
+from thryft.compiler.ast import Ast
+from thryft.compiler.parser import Parser
 
 
 class LoggingServiceJavaGenerator(java_generator.JavaGenerator):
-    def __init__(self, call_log_level='info', exception_log_level='error', include_current_user=True, **kwds):
+    _LOG_LEVELS = ('debug', 'error', 'info', 'trace', 'warn')
+
+    def __init__(self, call_log_level_default='info', exception_log_level_default='error', include_current_user=True, **kwds):
         java_generator.JavaGenerator.__init__(self, **kwds)
-        self._call_log_level = call_log_level.lower()
-        self._exception_log_level = exception_log_level.lower()
+        self._call_log_level_default = call_log_level_default.lower()
+        if not self._call_log_level_default in self._LOG_LEVELS:
+            raise ValueError("call log level default is not a valid log level: '%s'" % self._call_log_level_default)
+        self._exception_log_level_default = exception_log_level_default.lower()
+        if not self._exception_log_level_default in self._LOG_LEVELS:
+            raise ValueError("exception log level default is not a valid log level: '%s'" % self._exception_log_level_default)
         self._include_current_user = include_current_user
 
     class Document(java_generator.JavaGenerator.Document):
@@ -52,8 +60,11 @@ class LoggingServiceJavaGenerator(java_generator.JavaGenerator):
 
     class Function(java_generator.JavaGenerator.Function):
         def java_repr(self):
-            call_log_level = self._parent_generator()._call_log_level
-            exception_log_level = self._parent_generator()._exception_log_level
+            call_log_level = self._parent_generator()._call_log_level_default
+            for annotation in self.annotations:
+                if annotation.name == 'java_log_level':
+                    call_log_level = annotation.value
+                    break
             java_name = self.java_name()
             name = self.name
 
@@ -138,18 +149,24 @@ logger.%(call_log_level)s(__logMessageStringBuilder.toString());
 """ % locals()
             service_call = indent(' ' * 4, service_call)
             if len(self.throws) > 0:
-                catches = ' '.join("""\
+                catches = []
+                for throw in self.throws:
+                    exception_log_level = self._parent_generator()._exception_log_level_default
+                    for annotation in throw.annotations:
+                        if annotation.name == 'java_log_level':
+                            exception_log_level = annotation.value
+                            break
+                    catches.append("""\
 catch (final %s e) {
         __logMessageStringBuilder.append(" -> ");
         __logMessageStringBuilder.append(e.getMessage());
         logger.%s(__logMessageStringBuilder.toString());
         throw e;
-    }""" % (throw.type.java_declaration_name(), exception_log_level) for throw in self.throws)
+    }""" % (throw.type.java_declaration_name(), exception_log_level))
                 service_call = """\
     try {
 %s
-    } %s""" % (indent(' ' * 4, service_call), catches)
-
+    } %s""" % (indent(' ' * 4, service_call), ' '.join(catches))
             throws = \
                 lpad(
                     ' throws ',
@@ -205,3 +222,14 @@ public %(name)s(@com.google.inject.name.Named("impl") final %(service_qname)s se
 public class %(name)s implements %(service_qname)s {
 %(sections)s
 }""" % locals()
+
+def __parse_java_log_level(ast_node, name, value, **kwds):
+    assert isinstance(ast_node, Ast.FieldNode)
+
+    value_lower = value.lower()
+    if not value_lower in LoggingServiceJavaGenerator._LOG_LEVELS:
+        raise ValueError("@%s has an invalid log level: '%s', exception: %s" % (name, value))
+
+    ast_node.annotations.append(Ast.AnnotationNode(name=name, value=value, **kwds))
+
+Parser.register_annotation(Ast.FieldNode, 'java_log_level', __parse_java_log_level)
