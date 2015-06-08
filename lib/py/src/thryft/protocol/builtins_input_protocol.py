@@ -45,10 +45,22 @@ class BuiltinsInputProtocol(_StackedInputProtocol):
             return self._read_value(bool)
 
         def read_i32(self):
-            return int(self._read_value((Decimal, int, long)))
+            value = self._read_value()
+            if isinstance(value, (Decimal, int, long)):
+                return value
+            elif isinstance(value, basestring):
+                return int(value)
+            else:
+                raise TypeError("expected i32, got %s", type(value))
 
         def read_i64(self):
-            return long(self._read_value((Decimal, int, long)))
+            value = self._read_value()
+            if isinstance(value, (Decimal, int, long)):
+                return value
+            elif isinstance(value, basestring):
+                return long(value)
+            else:
+                raise TypeError("expected i64, got %s", type(value))
 
         def read_list_begin(self):
             list_ = self._read_value(list)
@@ -61,7 +73,11 @@ class BuiltinsInputProtocol(_StackedInputProtocol):
             return None, None, len(map_)
 
         def read_string(self):
-            return self._read_value((Decimal, float, str, unicode))
+            value = self._read_value()
+            if isinstance(value, basestring):
+                return value
+            else:
+                return str(value)
 
         def read_struct_begin(self):
             struct = self.__input_protocol_stack[-1]._read_value(dict)
