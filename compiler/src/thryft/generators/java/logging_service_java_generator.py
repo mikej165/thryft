@@ -230,6 +230,6 @@ def __parse_java_log_level(ast_node, name, value, **kwds):
     if not value_lower in LoggingServiceJavaGenerator._LOG_LEVELS:
         raise ValueError("@%s has an invalid log level: '%s', exception: %s" % (name, value))
 
-    ast_node.annotations.append(Ast.AnnotationNode(name=name, value=value, **kwds))
+    ast_node.annotations.append(Ast.AnnotationNode(name=name, value=value_lower, **kwds))
 
 Parser.register_annotation(Ast.FieldNode, 'java_log_level', __parse_java_log_level)
