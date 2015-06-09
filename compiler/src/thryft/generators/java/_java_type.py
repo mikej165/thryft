@@ -62,6 +62,9 @@ class _JavaType(_JavaNamedConstruct):
     def java_has_length(self):
         return False
 
+    def java_is_parameterized(self):
+        return False
+
     def java_is_reference(self):
         raise NotImplementedError(class_qname(self) + '.java_is_reference')
 

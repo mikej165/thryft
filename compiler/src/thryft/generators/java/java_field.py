@@ -32,7 +32,6 @@
 
 from thryft.generator.field import Field
 from thryft.generators.java._java_named_construct import _JavaNamedConstruct
-from thryft.generators.java._java_container_type import _JavaContainerType
 from thryft.generators.java.java_bool_type import JavaBoolType
 from yutil import lower_camelize, upper_camelize, indent, lpad
 
@@ -226,8 +225,6 @@ try {
         return self.java_parameter()
 
     def java_set_cases(self):
-        if isinstance(self.type, _JavaContainerType):
-            return tuple()
         name = self.name
         setter_name = self.java_setter_name()
         type_name = self.type.java_declaration_name(boxed=not self.required)
@@ -248,6 +245,12 @@ case "%(name)s": %(setter_name)s(%(value)s); return this;""" % locals(),)
 if (other.%(getter_name)s().isPresent()) {
     %(setter_name)s(other.%(getter_name)s());
 }""" % locals()
+
+    def java_set_suppress_warnings(self):
+        if self.type.java_is_parameterized():
+            return ('unchecked',)
+        else:
+            return tuple()
 
     def java_setters(self, return_type_name='void'):
         setter_name = self.java_setter_name()

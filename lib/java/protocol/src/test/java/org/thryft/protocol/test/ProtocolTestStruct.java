@@ -738,6 +738,7 @@ public class ProtocolTestStruct implements org.thryft.Struct, java.lang.Comparab
             return this;
         }
 
+        @SuppressWarnings({"unchecked"})
         public Builder set(final String name, @javax.annotation.Nullable final Object value) {
             com.google.common.base.Preconditions.checkNotNull(name);
 
@@ -755,6 +756,9 @@ public class ProtocolTestStruct implements org.thryft.Struct, java.lang.Comparab
             case "i16_field": setI16Field((Short)value); return this;
             case "i32_field": setI32Field((Integer)value); return this;
             case "i64_field": setI64Field((Long)value); return this;
+            case "string_list_field": setStringListField((com.google.common.collect.ImmutableList<String>)value); return this;
+            case "string_string_map_field": setStringStringMapField((com.google.common.collect.ImmutableMap<String, String>)value); return this;
+            case "string_set_field": setStringSetField((com.google.common.collect.ImmutableSet<String>)value); return this;
             case "string_field": setStringField((String)value); return this;
             case "struct_field": setStructField((org.thryft.protocol.test.NestedProtocolTestStruct)value); return this;
             case "u32_field": setU32Field((com.google.common.primitives.UnsignedInteger)value); return this;

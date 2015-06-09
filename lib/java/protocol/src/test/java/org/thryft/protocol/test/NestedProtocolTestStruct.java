@@ -570,6 +570,7 @@ public class NestedProtocolTestStruct implements org.thryft.Struct, java.lang.Co
             return this;
         }
 
+        @SuppressWarnings({"unchecked"})
         public Builder set(final String name, @javax.annotation.Nullable final Object value) {
             com.google.common.base.Preconditions.checkNotNull(name);
 
@@ -586,6 +587,9 @@ public class NestedProtocolTestStruct implements org.thryft.Struct, java.lang.Co
             case "i16_field": setI16Field((Short)value); return this;
             case "i32_field": setI32Field((Integer)value); return this;
             case "i64_field": setI64Field((Long)value); return this;
+            case "string_list_field": setStringListField((com.google.common.collect.ImmutableList<String>)value); return this;
+            case "string_string_map_field": setStringStringMapField((com.google.common.collect.ImmutableMap<String, String>)value); return this;
+            case "string_set_field": setStringSetField((com.google.common.collect.ImmutableSet<String>)value); return this;
             case "string_field": setStringField((String)value); return this;
             case "url_field": setUrlField((org.thryft.native_.Url)value); return this;
             default:

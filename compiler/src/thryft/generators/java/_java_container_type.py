@@ -40,6 +40,9 @@ class _JavaContainerType(_JavaType):
     def java_has_length(self):
         return True
 
+    def java_is_parameterized(self):
+        return True
+
     def java_is_reference(self):
         return True
 

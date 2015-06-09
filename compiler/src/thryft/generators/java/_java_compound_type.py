@@ -33,6 +33,7 @@
 from thryft.generators.java._java_named_construct import _JavaNamedConstruct
 from thryft.generators.java._java_type import _JavaType
 from yutil import lpad, indent, pad, rpad, upper_camelize
+from argparse import SUPPRESS
 
 
 class _JavaCompoundType(_JavaType):
@@ -143,11 +144,20 @@ public Builder setIfPresent(final %(name)s other) {
 
         def _java_method_set_name_value(self):
             cases = []
+            suppress_warnings = []
             for field in self.fields:
-                cases.extend(field.java_set_cases())
+                field_cases = field.java_set_cases()
+                if len(field_cases) == 0:
+                    continue
+                cases.extend(field_cases)
+                for suppress_warning in field.java_set_suppress_warnings():
+                    if not suppress_warning in suppress_warnings:
+                        suppress_warnings.append(suppress_warning)
+            suppress_warnings = pad("@SuppressWarnings({", ', '.join('"%s"' % suppress_warning
+                                                                     for suppress_warning in suppress_warnings), "})\n")
             cases = lpad("\n", "\n".join(indent(' ' * 4, cases)))
             return {'set_name_value': """\
-public Builder set(final String name, @javax.annotation.Nullable final Object value) {
+%(suppress_warnings)spublic Builder set(final String name, @javax.annotation.Nullable final Object value) {
     com.google.common.base.Preconditions.checkNotNull(name);
 
     switch (name.toLowerCase()) {%(cases)s
