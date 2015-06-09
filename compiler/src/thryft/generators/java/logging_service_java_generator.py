@@ -159,8 +159,7 @@ logger.%(call_log_level)s(__logMessageStringBuilder.toString());
                     catches.append("""\
 catch (final %s e) {
         __logMessageStringBuilder.append(" -> ");
-        __logMessageStringBuilder.append(e.getMessage());
-        logger.%s(__logMessageStringBuilder.toString());
+        logger.%s(__logMessageStringBuilder.toString(), e);
         throw e;
     }""" % (throw.type.java_declaration_name(), exception_log_level))
                 service_call = """\
