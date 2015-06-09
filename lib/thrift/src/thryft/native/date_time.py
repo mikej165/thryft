@@ -115,6 +115,9 @@ if (!(%(value)s instanceof Date)) {
     def py_check(self, value):
         return "isinstance(%(value)s, datetime)" % locals()
 
+    def py_description(self):
+        return 'datetime'
+
     def py_imports_definition(self, caller_stack=None):
         return []
 

@@ -91,6 +91,9 @@ if (typeof %(value)s !== "string") {
     def py_check(self, value):
         return "isinstance(%(value)s, decimal.Decimal)" % locals()
 
+    def py_description(self):
+        return 'Decimal'
+
     def py_imports_use(self, caller_stack=None):
         return ['from __future__ import absolute_import; import decimal']
 

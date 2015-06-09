@@ -66,6 +66,9 @@ class float(object):
     def java_read_protocol(self):
         return '((float)iprot.readDouble())'
 
+    def py_description(self):
+        return 'float'
+
     def py_qname(self):
         return 'float'
 
