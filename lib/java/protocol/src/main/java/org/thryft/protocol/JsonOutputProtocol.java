@@ -1,13 +1,17 @@
 package org.thryft.protocol;
 
+import java.util.Date;
+
 import org.apache.commons.codec.binary.Base64;
 
 public abstract class JsonOutputProtocol extends
-        StackedOutputProtocol<JsonOutputProtocol.NestedOutputProtocol> {
+StackedOutputProtocol<JsonOutputProtocol.NestedOutputProtocol> {
     protected interface JsonGenerator {
         public void flush() throws OutputProtocolException;
 
         public void writeBoolean(boolean value) throws OutputProtocolException;
+
+        public void writeDateTime(Date value) throws OutputProtocolException;
 
         public void writeEndArray() throws OutputProtocolException;
 
@@ -31,7 +35,7 @@ public abstract class JsonOutputProtocol extends
     }
 
     protected abstract class NestedOutputProtocol extends
-            AbstractOutputProtocol {
+    AbstractOutputProtocol {
         @Override
         public void writeBinary(final byte[] value)
                 throws OutputProtocolException {
@@ -41,39 +45,29 @@ public abstract class JsonOutputProtocol extends
         @Override
         public void writeBool(final boolean value)
                 throws OutputProtocolException {
-            try {
-                generator.writeBoolean(value);
-            } catch (final OutputProtocolException e) {
-                throw new OutputProtocolException(e);
-            }
+            generator.writeBoolean(value);
         }
 
         @Override
         public void writeByte(final byte value) throws OutputProtocolException {
-            try {
-                generator.writeNumber(value);
-            } catch (final OutputProtocolException e) {
-                throw new OutputProtocolException(e);
-            }
+            generator.writeNumber(value);
+        }
+
+        @Override
+        public void writeDateTime(final Date value)
+                throws OutputProtocolException {
+            generator.writeDateTime(value);
         }
 
         @Override
         public void writeDouble(final double value)
                 throws OutputProtocolException {
-            try {
-                generator.writeNumber(value);
-            } catch (final OutputProtocolException e) {
-                throw new OutputProtocolException(e);
-            }
+            generator.writeNumber(value);
         }
 
         @Override
         public void writeI16(final short value) throws OutputProtocolException {
-            try {
-                generator.writeNumber(value);
-            } catch (final OutputProtocolException e) {
-                throw new OutputProtocolException(e);
-            }
+            generator.writeNumber(value);
         }
 
         @Override
@@ -112,21 +106,13 @@ public abstract class JsonOutputProtocol extends
 
         @Override
         public void writeNull() throws OutputProtocolException {
-            try {
-                generator.writeNull();
-            } catch (final OutputProtocolException e) {
-                throw new OutputProtocolException(e);
-            }
+            generator.writeNull();
         }
 
         @Override
         public void writeString(final String value)
                 throws OutputProtocolException {
-            try {
-                generator.writeString(value);
-            } catch (final OutputProtocolException e) {
-                throw new OutputProtocolException(e);
-            }
+            generator.writeString(value);
         }
 
         @Override
@@ -138,11 +124,7 @@ public abstract class JsonOutputProtocol extends
 
         @Override
         public void writeStructEnd() throws OutputProtocolException {
-            try {
-                generator.writeEndObject();
-            } catch (final OutputProtocolException e) {
-                throw new OutputProtocolException(e);
-            }
+            generator.writeEndObject();
         }
     }
 
@@ -160,14 +142,10 @@ public abstract class JsonOutputProtocol extends
         @Override
         public void writeFieldBegin(final String name, final Type type,
                 final short id) throws OutputProtocolException {
-            try {
-                if (id != FieldBegin.ABSENT_ID) {
-                    generator.writeFieldName(id + ":" + name);
-                } else {
-                    generator.writeFieldName(name);
-                }
-            } catch (final OutputProtocolException e) {
-                throw new OutputProtocolException(e);
+            if (id != FieldBegin.ABSENT_ID) {
+                generator.writeFieldName(id + ":" + name);
+            } else {
+                generator.writeFieldName(name);
             }
         }
 
@@ -283,11 +261,7 @@ public abstract class JsonOutputProtocol extends
                 throws OutputProtocolException {
             if (nextWriteIsKey) {
                 nextWriteIsKey = false;
-                try {
-                    generator.writeFieldName(value);
-                } catch (final OutputProtocolException e) {
-                    throw new OutputProtocolException(e);
-                }
+                generator.writeFieldName(value);
             } else {
                 nextWriteIsKey = true;
                 super.writeString(value);

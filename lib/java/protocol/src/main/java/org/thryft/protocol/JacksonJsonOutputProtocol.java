@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.Date;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.google.common.annotations.GwtIncompatible;
@@ -62,6 +63,16 @@ public class JacksonJsonOutputProtocol extends JsonOutputProtocol {
                 throws OutputProtocolException {
             try {
                 delegate.writeBoolean(value);
+            } catch (final IOException e) {
+                throw new OutputProtocolException(e);
+            }
+        }
+
+        @Override
+        public void writeDateTime(final Date value)
+                throws OutputProtocolException {
+            try {
+                delegate.writeNumber(value.getTime());
             } catch (final IOException e) {
                 throw new OutputProtocolException(e);
             }
