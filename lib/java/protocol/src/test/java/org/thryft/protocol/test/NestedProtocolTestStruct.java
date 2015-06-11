@@ -701,6 +701,56 @@ public class NestedProtocolTestStruct implements org.thryft.Struct, java.lang.Co
         private com.google.common.base.Optional<org.thryft.native_.Url> urlField;
     }
 
+    public enum Field {
+        REQUIRED_I32_FIELD(0, "required_i32_field"),
+        REQUIRED_STRING_FIELD(0, "required_string_field"),
+        BINARY_FIELD(0, "binary_field"),
+        BOOL_FIELD(0, "bool_field"),
+        BYTE_FIELD(0, "byte_field"),
+        DATE_TIME_FIELD(0, "date_time_field"),
+        DECIMAL_FIELD(0, "decimal_field"),
+        EMAIL_ADDRESS_FIELD(0, "email_address_field"),
+        ENUM_FIELD(0, "enum_field"),
+        I16_FIELD(0, "i16_field"),
+        I32_FIELD(0, "i32_field"),
+        I64_FIELD(0, "i64_field"),
+        STRING_LIST_FIELD(0, "string_list_field"),
+        STRING_STRING_MAP_FIELD(0, "string_string_map_field"),
+        STRING_SET_FIELD(0, "string_set_field"),
+        STRING_FIELD(0, "string_field"),
+        URL_FIELD(0, "url_field");
+
+        public int getId() {
+            return id;
+        }
+
+        public String getProtocolKey() {
+            return protocolKey;
+        }
+
+        public String getThriftName() {
+            return thriftName;
+        }
+
+        public boolean hasId() {
+            return id != org.thryft.protocol.FieldBegin.ABSENT_ID;
+        }
+
+        private Field(final int id, final String thriftName) {
+            this.id = id;
+            if (id != org.thryft.protocol.FieldBegin.ABSENT_ID) {
+                this.protocolKey = Integer.toString(id) + ":" + thriftName;
+            } else {
+                this.protocolKey = thriftName;
+            }
+            this.thriftName = thriftName;
+        }
+
+        private final int id;
+        private final String protocolKey;
+        private final String thriftName;
+    }
+
     public NestedProtocolTestStruct(final NestedProtocolTestStruct other) {
         this(other.getRequiredI32Field(), other.getRequiredStringField(), other.getBinaryField(), other.getBoolField(), other.getByteField(), other.getDateTimeField(), other.getDecimalField(), other.getEmailAddressField(), other.getEnumField(), other.getI16Field(), other.getI32Field(), other.getI64Field(), other.getStringListField(), other.getStringStringMapField(), other.getStringSetField(), other.getStringField(), other.getUrlField());
     }

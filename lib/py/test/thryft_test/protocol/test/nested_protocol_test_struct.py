@@ -327,12 +327,12 @@ class NestedProtocolTestStruct(object):
 
         if date_time_field is not None:
             if not isinstance(date_time_field, datetime):
-                raise TypeError("expected date_time_field to be a int or long but it is a %s" % getattr(__builtin__, 'type')(date_time_field))
+                raise TypeError("expected date_time_field to be a datetime but it is a %s" % getattr(__builtin__, 'type')(date_time_field))
         self.__date_time_field = date_time_field
 
         if decimal_field is not None:
             if not isinstance(decimal_field, decimal.Decimal):
-                raise TypeError("expected decimal_field to be a str but it is a %s" % getattr(__builtin__, 'type')(decimal_field))
+                raise TypeError("expected decimal_field to be a Decimal but it is a %s" % getattr(__builtin__, 'type')(decimal_field))
         self.__decimal_field = decimal_field
 
         if email_address_field is not None:

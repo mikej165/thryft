@@ -911,6 +911,62 @@ public class ProtocolTestStruct implements org.thryft.Struct, java.lang.Comparab
         private com.google.common.base.Optional<java.lang.Object> variantField;
     }
 
+    public enum Field {
+        REQUIRED_I32_FIELD(1, "required_i32_field"),
+        REQUIRED_STRING_FIELD(2, "required_string_field"),
+        BINARY_FIELD(3, "binary_field"),
+        BOOL_FIELD(4, "bool_field"),
+        DATE_TIME_FIELD(5, "date_time_field"),
+        DECIMAL_FIELD(6, "decimal_field"),
+        EMAIL_ADDRESS_FIELD(7, "email_address_field"),
+        ENUM_FIELD(8, "enum_field"),
+        FLOAT_FIELD(9, "float_field"),
+        I8_FIELD(10, "i8_field"),
+        I16_FIELD(11, "i16_field"),
+        I32_FIELD(12, "i32_field"),
+        I64_FIELD(13, "i64_field"),
+        STRING_LIST_FIELD(14, "string_list_field"),
+        STRING_STRING_MAP_FIELD(15, "string_string_map_field"),
+        STRING_SET_FIELD(16, "string_set_field"),
+        STRING_FIELD(17, "string_field"),
+        STRUCT_FIELD(18, "struct_field"),
+        U32_FIELD(19, "u32_field"),
+        U64_FIELD(20, "u64_field"),
+        URI_FIELD(21, "uri_field"),
+        URL_FIELD(22, "url_field"),
+        VARIANT_FIELD(23, "variant_field");
+
+        public int getId() {
+            return id;
+        }
+
+        public String getProtocolKey() {
+            return protocolKey;
+        }
+
+        public String getThriftName() {
+            return thriftName;
+        }
+
+        public boolean hasId() {
+            return id != org.thryft.protocol.FieldBegin.ABSENT_ID;
+        }
+
+        private Field(final int id, final String thriftName) {
+            this.id = id;
+            if (id != org.thryft.protocol.FieldBegin.ABSENT_ID) {
+                this.protocolKey = Integer.toString(id) + ":" + thriftName;
+            } else {
+                this.protocolKey = thriftName;
+            }
+            this.thriftName = thriftName;
+        }
+
+        private final int id;
+        private final String protocolKey;
+        private final String thriftName;
+    }
+
     public ProtocolTestStruct(final ProtocolTestStruct other) {
         this(other.getRequiredI32Field(), other.getRequiredStringField(), other.getBinaryField(), other.getBoolField(), other.getDateTimeField(), other.getDecimalField(), other.getEmailAddressField(), other.getEnumField(), other.getFloatField(), other.getI8Field(), other.getI16Field(), other.getI32Field(), other.getI64Field(), other.getStringListField(), other.getStringStringMapField(), other.getStringSetField(), other.getStringField(), other.getStructField(), other.getU32Field(), other.getU64Field(), other.getUriField(), other.getUrlField(), other.getVariantField());
     }
