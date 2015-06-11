@@ -33,7 +33,6 @@
 from thryft.generators.java._java_named_construct import _JavaNamedConstruct
 from thryft.generators.java._java_type import _JavaType
 from yutil import lpad, indent, pad, rpad, upper_camelize
-from argparse import SUPPRESS
 
 
 class _JavaCompoundType(_JavaType):
@@ -373,6 +372,49 @@ public %(name)s(%(parameters)s) {
     def _java_extends(self):
         return None
 
+    def __java_fields_enum(self):
+        if len(self.fields) == 0:
+            return None
+        enumerators = []
+        for field in self.fields:
+            field_id = field.id if field.id is not None else 0
+            field_thrift_name = field.name
+            enumerator_name = field.name.upper()
+            enumerators.append("%(enumerator_name)s(%(field_id)d, \"%(field_thrift_name)s\")" % locals())
+        enumerators = pad("\n", indent(' ' * 4, ",\n".join(enumerators)), ";\n")
+        return """\
+public enum Field {%(enumerators)s
+    public int getId() {
+        return id;
+    }
+
+    public String getProtocolKey() {
+        return protocolKey;
+    }
+
+    public String getThriftName() {
+        return thriftName;
+    }
+
+    public boolean hasId() {
+        return id != org.thryft.protocol.FieldBegin.ABSENT_ID;
+    }
+
+    private Field(final int id, final String thriftName) {
+        this.id = id;
+        if (id != org.thryft.protocol.FieldBegin.ABSENT_ID) {
+            this.protocolKey = Integer.toString(id) + ":" + thriftName;
+        } else {
+            this.protocolKey = thriftName;
+        }
+        this.thriftName = thriftName;
+    }
+
+    private final int id;
+    private final String protocolKey;
+    private final String thriftName;
+}""" % locals()
+
     def _java_implements(self):
         name = self.java_name()
         return ["java.lang.Comparable<%(name)s>" % locals()]
@@ -700,10 +742,13 @@ public void writeAsStruct(final org.thryft.protocol.OutputProtocol oprot) throws
         javadoc = self.java_doc()
         name = self.java_name()
         extends = lpad(' extends ', self._java_extends())
+        fields_enum = self.__java_fields_enum()
         implements = lpad(' implements ', ', '.join(self._java_implements()))
         methods = self._java_methods()
         sections = []
         sections.append(indent(' ' * 4, self._JavaBuilder(self).java_repr()))
+        if fields_enum is not None:
+            sections.append(indent(' ' * 4, fields_enum))
         sections.append("\n\n".join(indent(' ' * 4,
             self._java_constructors() + \
             [methods[key] for key in sorted(methods.iterkeys())])))
