@@ -39,22 +39,42 @@ class PyField(Field, _PyNamedConstruct):
     def py_check(self):
         name = self.py_name()
 
+        check = []
+
         type_check = self.type.py_check(name)
         type_description = self.type.py_description()
-        type_check = """\
+        check.append("""\
 if not %(type_check)s:
-    raise TypeError("expected %(name)s to be a %(type_description)s but it is a %%s" %% getattr(__builtin__, 'type')(%(name)s))""" % locals()
+    raise TypeError("expected %(name)s to be a %(type_description)s but it is a %%s" %% getattr(__builtin__, 'type')(%(name)s))""" % locals())
+
+        validation = {}
+        for annotation in self.annotations:
+            if annotation.name == 'validation':
+                validation = annotation.value.copy()
+                break
+        min_length = validation.get('minLength')
+        if min_length is not None:
+            check.append("""\
+if len(%(name)s) < %(min_length)d:
+    raise ValueError("expected len(%(name)s) to be >= %(min_length)d, was %%d" %% len(%(name)s))""" % locals())
+        max_length = validation.get('maxLength')
+        if max_length is not None:
+            check.append("""\
+if len(%(name)s) > %(max_length)d:
+    raise ValueError("expected len(%(name)s) to be <= %(min_length)d, was %%d" %% len(%(name)s))""" % locals())
+
+        check = "\n".join(check)
 
         if self.required:
             return """\
 if %(name)s is None:
     raise ValueError('%(name)s is required')
-%(type_check)s""" % locals()
+%(check)s""" % locals()
         else:
-            type_check = indent(' ' * 4, type_check)
+            check = indent(' ' * 4, check)
             return """\
 if %(name)s is not None:
-%(type_check)s""" % locals()
+%(check)s""" % locals()
 
     def py_decorated_setter(self):
         decorated_setter_name = self.py_decorated_setter_name()

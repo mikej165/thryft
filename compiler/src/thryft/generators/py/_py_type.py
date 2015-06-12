@@ -44,6 +44,9 @@ class _PyType(_PyNamedConstruct):
     def py_description(self):
         return self.py_qname()
 
+    def py_has_length(self):
+        return False
+
     def py_read_protocol(self):
         raise NotImplementedError(class_qname(self) + '.py_read_protocol')
 
