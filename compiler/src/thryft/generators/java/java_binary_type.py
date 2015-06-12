@@ -50,9 +50,6 @@ class JavaBinaryType(BinaryType, _JavaBaseType):
     def java_hash_code(self, value, **kwds):
         return "java.util.Arrays.hashCode(%(value)s)" % locals()
 
-    def java_has_length(self):
-        return True
-
     def java_is_reference(self):
         return True
 

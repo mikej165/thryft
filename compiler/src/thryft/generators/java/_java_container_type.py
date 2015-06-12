@@ -37,14 +37,14 @@ class _JavaContainerType(_JavaType):
     def java_default_value(self):
         return 'null'
 
-    def java_has_length(self):
-        return True
-
     def java_is_parameterized(self):
         return True
 
     def java_is_reference(self):
         return True
+
+    def java_precondition_name(self):
+        return 'Collection'
 
     def java_to_string(self, value):
         return "%(value)s.toString()" % locals()

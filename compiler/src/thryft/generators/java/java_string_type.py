@@ -41,9 +41,6 @@ class JavaStringType(StringType, _JavaBaseType):
     def java_from_string(self, value):
         return value
 
-    def java_has_length(self):
-        return True
-
     def java_is_reference(self):
         return True
 
@@ -51,6 +48,9 @@ class JavaStringType(StringType, _JavaBaseType):
         return "\"%s\"" % value
 
     def java_name(self, boxed=False):
+        return 'String'
+
+    def java_precondition_name(self):
         return 'String'
 
     def java_to_string(self, value):

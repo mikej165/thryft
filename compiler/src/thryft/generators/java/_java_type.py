@@ -59,9 +59,6 @@ class _JavaType(_JavaNamedConstruct):
     def java_hash_code(self, value, **kwds):
         return "%(value)s.hashCode()" % locals()
 
-    def java_has_length(self):
-        return False
-
     def java_is_parameterized(self):
         return False
 
@@ -73,6 +70,9 @@ class _JavaType(_JavaNamedConstruct):
 
     def java_name(self, boxed=False):
         return _JavaNamedConstruct.java_name(self)
+
+    def java_precondition_name(self):
+        raise NotImplementedError(class_qname(self) + '.java_precondition_name')
 
     def java_read_protocol(self):
         raise NotImplementedError(class_qname(self) + '.java_read_protocol')
