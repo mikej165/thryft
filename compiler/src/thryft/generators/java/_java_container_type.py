@@ -43,8 +43,5 @@ class _JavaContainerType(_JavaType):
     def java_is_reference(self):
         return True
 
-    def java_precondition_name(self):
-        return 'Collection'
-
     def java_to_string(self, value):
         return "%(value)s.toString()" % locals()

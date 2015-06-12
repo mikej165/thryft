@@ -405,6 +405,8 @@ class ProtocolTestStruct(object):
             raise ValueError('required_string_field is required')
         if not isinstance(required_string_field, basestring):
             raise TypeError("expected required_string_field to be a str but it is a %s" % getattr(__builtin__, 'type')(required_string_field))
+        if len(required_string_field) < 1:
+            raise ValueError("expected len(required_string_field) to be >= 1, was %d" % len(required_string_field))
         self.__required_string_field = required_string_field
 
         if binary_field is not None:
@@ -480,6 +482,8 @@ class ProtocolTestStruct(object):
         if string_field is not None:
             if not isinstance(string_field, basestring):
                 raise TypeError("expected string_field to be a str but it is a %s" % getattr(__builtin__, 'type')(string_field))
+            if len(string_field) < 1:
+                raise ValueError("expected len(string_field) to be >= 1, was %d" % len(string_field))
         self.__string_field = string_field
 
         if struct_field is not None:

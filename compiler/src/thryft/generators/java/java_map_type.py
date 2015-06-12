@@ -96,6 +96,9 @@ new java.util.Comparator<%(qname)s>() {
     def java_name(self, boxed=False):
         return self.java_qname(boxed=boxed)
 
+    def java_precondition_name(self):
+        return 'Map'
+
     def java_qname(self, boxed=False):
         return "com.google.common.collect.ImmutableMap<%s, %s>" % (
                    self.key_type.java_declaration_name(boxed=True),

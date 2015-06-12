@@ -303,6 +303,7 @@ public %(return_type_name)s %(unsetter_name)s() {
         parent_qname = self.parent.java_qname()
         if value is None:
             value = self.java_name()
+
         if not self.required and nullable:
             java_validation = "com.google.common.base.Optional.fromNullable(%(value)s)" % locals()
         else:
@@ -310,18 +311,27 @@ public %(return_type_name)s %(unsetter_name)s() {
             if self.type.java_is_reference():
                 if self.required or check_optional_not_null:
                     java_validation = """com.google.common.base.Preconditions.checkNotNull(%(java_validation)s, "%(parent_qname)s: missing %(name)s")""" % locals()
+
         validation = {}
         for annotation in self.annotations:
             if annotation.name == 'validation':
                 validation = annotation.value.copy()
                 break
-        min_length = validation.get('minLength')
-        if min_length == 1:
+        if len(validation) > 0:
             precondition_name = self.type.java_precondition_name()
-            java_validation = """org.thryft.Preconditions.check%(precondition_name)sNotEmpty(%(java_validation)s, "%(parent_qname)s: %(name)s is empty")""" % locals()
-        elif min_length is not None:
-            precondition_name = self.type.java_precondition_name()
-            java_validation = """org.thryft.Preconditions.check%(precondition_name)sMinLength(%(java_validation)s, %(min_length)u, "%(parent_qname)s: %(name)s must have a minimum length of %(min_length)u")""" % locals()
+            if not self.required:
+                precondition_name = 'Optional' + precondition_name
+
+            min_length = validation.get('minLength')
+            if min_length == 1:
+                java_validation = """org.thryft.Preconditions.check%(precondition_name)sNotEmpty(%(java_validation)s, "%(parent_qname)s: %(name)s is empty")""" % locals()
+            elif min_length is not None:
+                java_validation = """org.thryft.Preconditions.check%(precondition_name)sMinLength(%(java_validation)s, %(min_length)u, "%(parent_qname)s: %(name)s must have a minimum length of %(min_length)u")""" % locals()
+
+            max_length = validation.get('maxLength')
+            if max_length is not None:
+                java_validation = """org.thryft.Preconditions.check%(precondition_name)sMaxLength(%(java_validation)s, %(max_length)u, "%(parent_qname)s: %(name)s must have a maximum length of %(max_length)u")""" % locals()
+
         return java_validation
 
     def java_value(self):
