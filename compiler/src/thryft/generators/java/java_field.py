@@ -304,13 +304,15 @@ public %(return_type_name)s %(unsetter_name)s() {
         if value is None:
             value = self.java_name()
 
-        if not self.required and nullable:
-            java_validation = "com.google.common.base.Optional.fromNullable(%(value)s)" % locals()
-        else:
-            java_validation = value
+        java_validation = value
+        if self.required:
             if self.type.java_is_reference():
-                if self.required or check_optional_not_null:
-                    java_validation = """com.google.common.base.Preconditions.checkNotNull(%(java_validation)s, "%(parent_qname)s: missing %(name)s")""" % locals()
+                java_validation = """com.google.common.base.Preconditions.checkNotNull(%(java_validation)s, "%(parent_qname)s: missing %(name)s")""" % locals()
+        else:
+            if nullable:
+                java_validation = "com.google.common.base.Optional.fromNullable(%(java_validation)s)" % locals()
+            elif check_optional_not_null:
+                java_validation = """com.google.common.base.Preconditions.checkNotNull(%(java_validation)s, "%(parent_qname)s: missing %(name)s")""" % locals()
 
         validation = {}
         for annotation in self.annotations:

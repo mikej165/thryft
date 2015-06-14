@@ -244,6 +244,9 @@ public %(name)s() {
                  for field in self.fields)
             )))
         return """\
+/**
+ * Default constructor
+ */
 public %(name)s() {%(initializers)s
 }""" % locals()
 
@@ -257,6 +260,9 @@ public %(name)s() {%(initializers)s
                 ");\n")
             )
         return """\
+/**
+ * Copy constructor
+ */
 public %(name)s(final %(name)s other) {%(this_call)s
 }""" % locals()
 
@@ -280,6 +286,9 @@ public %(name)s(final %(name)s other) {%(this_call)s
             lpad("\n", "\n".join(indent(' ' * 4, initializers)))
         parameters = ", ".join(parameters)
         return """\
+/**
+ * Required constructor
+ */
 public %(name)s(%(parameters)s) {%(initializers)s
 }""" % locals()
 
@@ -300,6 +309,9 @@ public %(name)s(%(parameters)s) {%(initializers)s
                 parameters = ', '.join(field.java_parameter(boxed=True, final=True)
                                         for field in self.fields)
                 return """\
+/**
+ * Total boxed constructor
+ */
 public %(name)s(%(parameters)s) {
 %(initializers)s
 }""" % locals()
@@ -340,6 +352,9 @@ public %(name)s(%(parameters)s) {
             ', '.join(field.java_parameter(final=True, nullable=True)
                       for field in self.fields)
         return """\
+/**
+ * Total Nullable constructor
+ */
 public %(name)s(%(parameters)s) {
 %(initializers)s
 }
@@ -358,6 +373,9 @@ public %(name)s(%(parameters)s) {
         parameters = ', '.join(field.java_parameter(final=True, nullable=False)
                                 for field in self.fields)
         return """\
+/**
+ * Optional constructor
+ */
 public %(name)s(%(parameters)s) {
 %(initializers)s
 }
