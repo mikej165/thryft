@@ -10,6 +10,23 @@ import javax.annotation.Nullable;
 import com.google.common.base.Optional;
 
 public final class Preconditions {
+    public static byte[] checkByteArrayNotEmpty(final byte[] byteArray) {
+        return checkByteArrayNotEmpty(byteArray, null);
+    }
+
+    public static byte[] checkByteArrayNotEmpty(final byte[] byteArray,
+            @Nullable final Object errorMessage) {
+        checkNotNull(byteArray, errorMessage);
+        if (byteArray.length == 0) {
+            if (errorMessage != null) {
+                throw new IllegalArgumentException(String.valueOf(errorMessage));
+            } else {
+                throw new IllegalArgumentException();
+            }
+        }
+        return byteArray;
+    }
+
     public static <CollectionT extends Collection<?>> CollectionT checkCollectionMaxLength(
             final CollectionT collection, final int minLength) {
         return checkCollectionMaxLength(collection, minLength, null);
@@ -123,6 +140,15 @@ public final class Preconditions {
         return checkStringMinLength(string, minLength, errorMessage);
     }
 
+    public static byte[] checkNotEmpty(final byte[] byteArray) {
+        return checkByteArrayNotEmpty(byteArray);
+    }
+
+    public static byte[] checkNotEmpty(final byte[] byteArray,
+            @Nullable final Object errorMessage) {
+        return checkByteArrayNotEmpty(byteArray, errorMessage);
+    }
+
     public static <CollectionT extends Collection<?>> CollectionT checkNotEmpty(
             final CollectionT collection) {
         return checkCollectionNotEmpty(collection);
@@ -140,6 +166,20 @@ public final class Preconditions {
     public static String checkNotEmpty(final String string,
             @Nullable final Object errorMessage) {
         return checkStringNotEmpty(string, errorMessage);
+    }
+
+    public static Optional<byte[]> checkOptionalByteArrayNotEmpty(
+            final Optional<byte[]> byteArray) {
+        return checkOptionalByteArrayNotEmpty(byteArray, null);
+    }
+
+    public static Optional<byte[]> checkOptionalByteArrayNotEmpty(
+            final Optional<byte[]> byteArray,
+            @Nullable final Object errorMessage) {
+        if (byteArray.isPresent()) {
+            checkByteArrayNotEmpty(byteArray.get(), errorMessage);
+        }
+        return byteArray;
     }
 
     public static <CollectionT extends Collection<?>> Optional<CollectionT> checkOptionalCollectionMaxLength(
