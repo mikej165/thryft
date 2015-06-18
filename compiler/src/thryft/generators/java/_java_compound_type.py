@@ -302,7 +302,7 @@ public %(name)s(%(parameters)s) {%(initializers)s
                 field.type.java_declaration_name(boxed=False)):
                 initializers = \
                     "\n".join(indent(' ' * 4,
-                        (field.java_initializer()
+                        (field.java_initializer(boxed=True)
                          for field in self.fields)
                     ))
                 name = self.java_name()
@@ -439,7 +439,7 @@ public enum Field {%(enumerators)s
 
     def _java_member_declarations(self):
         mutable = self._parent_generator().mutable_compound_types
-        return [field.java_member_declaration(final=not mutable, assign_value=not mutable)
+        return [field.java_member_declaration(final=not mutable, assign_value=mutable)
                 for field in self.fields]
 
     def _java_method_builder(self):

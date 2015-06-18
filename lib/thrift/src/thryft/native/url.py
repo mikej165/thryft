@@ -42,6 +42,9 @@ class Url(Uri):
     def java_from_string(self, value):
         return "org.thryft.native_.Url.parse(%(value)s)" % locals()
 
+    def java_literal(self, value):
+        return "org.thryft.native_.Url.parse(\"%s\")" % value
+
     def java_name(self, boxed=False):
         return 'org.thryft.native_.Url'
 

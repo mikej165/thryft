@@ -32,7 +32,6 @@
 
 from thryft.generator.function import Function
 from thryft.generators.java._java_named_construct import _JavaNamedConstruct
-from thryft.generators.java.java_field import JavaField
 from thryft.generators.java.java_struct_type import JavaStructType
 from yutil import lower_camelize, lpad, indent, upper_camelize
 

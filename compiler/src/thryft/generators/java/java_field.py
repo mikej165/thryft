@@ -123,8 +123,8 @@ if (%s().isPresent()) {
 }""" % (self.java_getter_name(), hashCode_update)
         return hashCode_update
 
-    def java_initializer(self, check_optional_not_null=True, nullable=False):
-        return 'this.' + self.java_name() + ' = ' + self.java_validation(check_optional_not_null=check_optional_not_null, nullable=nullable) + ';'
+    def java_initializer(self, **kwds):
+        return 'this.' + self.java_name() + ' = ' + self.java_validation(**kwds) + ';'
 
     def java_local_declaration(self, boxed=None, final=False):
         if self.value is not None:
@@ -144,7 +144,7 @@ if (%s().isPresent()) {
     def java_member_declaration(self, assign_value=True, boxed=None, final=False):
         javadoc = self.java_doc()
         lhs = self.java_parameter(boxed=boxed, final=final)
-        if self.value is not None:
+        if self.value is not None and assign_value:
             if self.required:
                 rhs = str(self.java_value())
             else:
@@ -298,7 +298,7 @@ public %(return_type_name)s %(unsetter_name)s() {
         else:
             return "com.google.common.base.Optional<%s>" % self.type.java_declaration_name(boxed=True)
 
-    def java_validation(self, check_optional_not_null=True, value=None, nullable=False):
+    def java_validation(self, boxed=False, check_optional_not_null=True, value=None, nullable=False):
         name = self.java_name()
         parent_qname = self.parent.java_qname()
         if value is None:
@@ -306,7 +306,7 @@ public %(return_type_name)s %(unsetter_name)s() {
 
         java_validation = value
         if self.required:
-            if self.type.java_is_reference():
+            if boxed or self.type.java_is_reference():
                 java_validation = """com.google.common.base.Preconditions.checkNotNull(%(java_validation)s, "%(parent_qname)s: missing %(name)s")""" % locals()
         else:
             if nullable:
@@ -337,10 +337,8 @@ public %(return_type_name)s %(unsetter_name)s() {
         return java_validation
 
     def java_value(self):
-        if isinstance(self.value, str):
-            return "\"%s\"" % self.value
-        else:
-            return self.value
+        assert self.value is not None
+        return self.type.java_literal(self.value)
 
     def java_write_protocol(self, write_field=True, depth=0):
         id_ = self.id if self.id is not None else 0
