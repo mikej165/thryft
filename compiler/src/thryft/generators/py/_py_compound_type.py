@@ -47,13 +47,11 @@ class _PyCompoundType(_PyType):
             if len(self.fields) == 0:
                 return None
 
-            parameters = []
-            for field in self.fields:
-                if field.required:
-                    parameters.append(field.py_name() + '=None')
-                else:
-                    parameters.append(field.py_parameter())
-            parameters = ",\n".join(indent(' ' * 4, parameters))
+            parameters = \
+                ",\n".join(indent(' ' * 4, (
+                    field.py_parameter(default_value='None')
+                    for field in self.fields
+                )))
             initializers = \
                 "\n".join(indent(' ' * 4,
                     ('self.__%s = %s' % (field.py_name(), field.py_name())
@@ -154,14 +152,15 @@ class Builder(object):%(sections)s
 
     def _py_constructor(self):
         assert len(self.fields) > 0
-        parameters = []
+        required_parameters = []
+        optional_parameters = []
         for field in self.fields:
-            if field.required:
-                parameters.append(field.py_parameter())
-        for field in self.fields:
-            if not field.required:
-                parameters.append(field.py_parameter())
-        parameters = ",\n".join(indent(' ' * 4, parameters))
+            parameter = field.py_parameter()
+            if '=' in parameter:
+                optional_parameters.append(parameter)
+            else:
+                required_parameters.append(parameter)
+        parameters = ",\n".join(indent(' ' * 4, required_parameters + optional_parameters))
         initializers = \
             "\n\n".join(indent(' ' * 4,
                 (field.py_initializer()

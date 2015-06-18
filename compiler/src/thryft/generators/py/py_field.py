@@ -116,14 +116,15 @@ def %(name)s(self):
 self.__%(name)s = %(defensive_copy)s
 """ % locals()
 
-    def py_parameter(self):
-        if not self.required:
-            if self.value is not None:
-                return self.py_name() + '=' + str(self.py_value())
-            else:
-                return self.py_name() + '=None'
-        else:
+    def py_parameter(self, default_value=None):
+        if self.value is not None:
+            return self.py_name() + '=' + str(self.py_value())
+        elif default_value is not None:
+            return self.py_name() + '=' + str(default_value)
+        elif self.required:
             return self.py_name()
+        else:
+            return self.py_name() + '=None'
 
     def py_read_protocol(self):
         id_check = (' and ifield_id == ' + str(self.id)) if self.id is not None else ''
