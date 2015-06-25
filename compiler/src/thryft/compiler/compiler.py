@@ -38,6 +38,7 @@ from thryft.generator._type import _Type
 from thryft.generator.document import Document
 from thryft.generator.typedef import Typedef
 import os.path
+from yutil import lower_camelize
 
 
 class Compiler(object):
@@ -95,18 +96,23 @@ class Compiler(object):
             self.__type_cache[compound_type.thrift_qname()] = compound_type
 
             if construct_class_name == 'EnumType':
+                enum_type_node = compound_type_node
                 have_enumerator_with_value = False
-                for enumerator_node in compound_type_node.enumerators:
+                enumerator_node_names = []
+                for enumerator_i, enumerator_node in enumerate(enum_type_node.enumerators):
+                    if enumerator_node.name in enumerator_node_names:
+                        raise CompileException("%s has a duplicate enumerator name, %s" % (enum_type_node.name, enumerator_node.name), ast_node=enumerator_node)
+                    enumerator_node_names.append(enumerator_node.name)
+
                     if enumerator_node.value is not None:
                         have_enumerator_with_value = True
-                    elif have_enumerator_with_value:
-                        raise CompileException("%s has mix of enumerators with and without values, must be one or the other" % compound_type_node.name, ast_node=compound_type_node)
-                for enumerator_i, enumerator_node in enumerate(compound_type_node.enumerators):
-                    if enumerator_node.value is None:
-                        value = enumerator_i
-                    else:
                         assert isinstance(enumerator_node.value, Ast.IntLiteralNode), type(enumerator_node.value)
                         value = enumerator_node.value.value
+                    else:
+                        if have_enumerator_with_value:
+                            raise CompileException("%s has mix of enumerators with and without values, must be one or the other" % enum_type_node.name, ast_node=enum_type_node)
+                        value = enumerator_i
+
                     compound_type.enumerators.append(
                         self.__construct(
                             'Field',
@@ -119,8 +125,18 @@ class Compiler(object):
                         )
                     )
             else:
+                field_names = []
                 id_count = 0
                 for field_node in compound_type_node.fields:
+                    field_name = field_node.name
+                    if field_name in field_names:
+                        raise CompileException("compound type %s has a duplicate field %s" % (compound_type_node.name, field_name), ast_node=field_node)
+                    field_name_lower_camelized = lower_camelize(field_name)
+                    if field_name_lower_camelized in field_names:
+                        raise CompileException("compound type %s has a duplicate field %s" % (compound_type_node.name, field_name), ast_node=field_node)
+                    field_names.append(field_name)
+                    field_names.append(field_name_lower_camelized)
+
                     field = field_node.accept(self)
                     if field.required:
                         if len(compound_type.fields) > 0:
