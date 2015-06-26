@@ -69,6 +69,24 @@ class PyFunction(Function, _PyNamedConstruct):
             if parent_function.return_field is not None:
                 self.fields.append(parent_function.return_field)
 
+    def py_doc(self):
+        doc_sections = []
+        if self.doc is not None:
+            doc_sections.append(self.doc)
+
+        if len(self.parameters) > 0 or self.return_field is not None:
+            parameter_doc_lines = []
+            for parameter in self.parameters:
+                parameter_doc_lines.append(parameter.py_sphinx_doc())
+            if self.return_field is not None:
+                parameter_doc_lines.append(":rtype: %s" % self.return_field.type.py_description())
+            doc_sections.append("\n".join(parameter_doc_lines))
+
+        if len(doc_sections) > 0:
+            return "\n\n".join(doc_sections)
+        else:
+            return None
+
     def _py_imports_definition(self, caller_stack):
         imports = []
         for parameter in self.parameters:
@@ -100,6 +118,17 @@ def _%(name)s(%(parameters)s):
 """ % locals()
 
     def py_public_delegating_definition(self):
+        doc = self.py_doc()
+        if doc is not None:
+            doc = indent(' ' * 4, """
+'''
+%(doc)s
+'''
+
+""" % locals())
+        else:
+            doc = ''
+
         name = self.py_name()
 
         parameters = ', '.join(['self'] + self.py_parameters())
@@ -136,7 +165,7 @@ if not %(return_type_check)s:
             return_prefix = return_suffix = ''
 
         return """\
-def %(name)s(%(parameters)s):%(parameter_checks)s
+def %(name)s(%(parameters)s):%(doc)s%(parameter_checks)s
     %(return_prefix)sself._%(name)s(%(call)s)%(return_suffix)s
 """ % locals()
 
