@@ -47,11 +47,16 @@ ROOT_DIR_PATH = os.path.normpath(os.path.join(MY_DIR_PATH, '..'))
 
 class Main(object):
     class _CompileTask(object):
-        def __init__(self, generator, out, thrift_file_path):
+        def __init__(self, generator, out, thrift_file_path, document_root_dir_path=None):
             object.__init__(self)
+            self.__document_root_dir_path = document_root_dir_path
             self.__generator = generator
             self.__out = out
             self.__thrift_file_path = thrift_file_path
+
+        @property
+        def document_root_dir_path(self):
+            return self.__document_root_dir_path
 
         @property
         def generator(self):
@@ -169,7 +174,12 @@ class Main(object):
                     continue
 
                 try:
-                    documents = compiler(compile_task.thrift_file_path, generator=compile_task.generator)
+                    documents = \
+                        compiler(
+                            document_root_dir_path=compile_task.document_root_dir_path,
+                            generator=compile_task.generator,
+                            thrift_file_paths=compile_task.thrift_file_path,
+                        )
                 except (ScanException, CompileException):
                     if self._debug:
                         raise

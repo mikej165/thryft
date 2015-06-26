@@ -39,7 +39,7 @@ import os.path
 
 
 class Document(_NamedConstruct):
-    def __init__(self, path, definitions=None, headers=None, **kwds):
+    def __init__(self, path, definitions=None, document_root_dir_path=None, headers=None, **kwds):
         self.__path = path = os.path.abspath(path)
         _NamedConstruct.__init__(
             self,
@@ -48,11 +48,16 @@ class Document(_NamedConstruct):
         )
         self.__definitions = \
             definitions is not None and list(definitions) or []
+        self.__document_root_dir_path = document_root_dir_path
         self.__headers = headers is not None and list(headers) or []
 
     @property
     def definitions(self):
         return self.__definitions
+
+    @property
+    def document_root_dir_path(self):
+        return self.__document_root_dir_path
 
     @property
     def headers(self):

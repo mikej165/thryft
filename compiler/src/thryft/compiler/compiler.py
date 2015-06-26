@@ -43,9 +43,10 @@ from yutil import lower_camelize
 
 class Compiler(object):
     class __AstVisitor(object):
-        def __init__(self, compiler, generator, include_dir_paths):
+        def __init__(self, compiler, document_root_dir_path, generator, include_dir_paths):
             object.__init__(self)
             self.__compiler = compiler
+            self.__document_root_dir_path = document_root_dir_path
             self.__generator = generator
             self.__include_dir_paths = include_dir_paths
             self.__scope_stack = []
@@ -171,7 +172,12 @@ class Compiler(object):
                 return None
 
         def visit_document_node(self, document_node):
-            document = self.__construct('Document', path=document_node.path)
+            document = \
+                self.__construct(
+                    'Document',
+                    document_root_dir_path=self.__document_root_dir_path,
+                    path=document_node.path
+                )
             self.__scope_stack.append(document)
 
             for header_node in document_node.headers:
@@ -385,10 +391,10 @@ class Compiler(object):
         self.__scanner = Scanner()
         self.__parser = Parser()
 
-    def __call__(self, thrift_file_paths, generator=None):
-        return self.compile(thrift_file_paths, generator=generator)
+    def __call__(self, *args, **kwds):
+        return self.compile(*args, **kwds)
 
-    def compile(self, thrift_file_paths, generator=None):
+    def compile(self, thrift_file_paths, document_root_dir_path=None, generator=None):
         if not isinstance(thrift_file_paths, (list, tuple)):
             thrift_file_paths = (thrift_file_paths,)
 
@@ -404,6 +410,7 @@ class Compiler(object):
                 ast_visitor = \
                     self.__AstVisitor(
                         compiler=self,
+                        document_root_dir_path=document_root_dir_path,
                         generator=generator,
                         include_dir_paths=self.__include_dir_paths
                     )

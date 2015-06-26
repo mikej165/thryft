@@ -34,6 +34,7 @@ from thryft.generator.document import Document
 from thryft.generator.typedef import Typedef
 from thryft.generators.java._java_named_construct import _JavaNamedConstruct
 import os.path
+from thryft.compiler.compile_exception import CompileException
 
 
 class JavaDocument(Document, _JavaNamedConstruct):
@@ -81,12 +82,21 @@ class JavaDocument(Document, _JavaNamedConstruct):
         return Document.save(self, *args, **kwds)
 
     def _save_to_dir(self, out_dir_path):
+        root_out_dir_path = out_dir_path
         java_package = self.java_package()
         if java_package is not None:
-            try:
-                out_dir_path = os.path.join(out_dir_path, java_package.replace('.', os.path.sep))
-            except KeyError:
-                pass
+            out_dir_path = os.path.join(out_dir_path, java_package.replace('.', os.path.sep))
+
+        try:
+            basic_java_package = self.namespace_by_scope('java').name
+        except KeyError:
+            basic_java_package = None
+        if basic_java_package is not None and basic_java_package == java_package:
+            if self.document_root_dir_path is not None:
+                document_relpath = os.path.relpath(os.path.dirname(self.path), self.document_root_dir_path)
+                out_dir_relpath = os.path.relpath(out_dir_path, root_out_dir_path)
+                if not out_dir_relpath.endswith(document_relpath):
+                    self._logger.warn("Java package %s (relative directory %s) does not match .thrift file path %s (relative directory %s)", java_package, out_dir_relpath, self.path, document_relpath)
         return self._save_to_file(os.path.join(out_dir_path, self.definitions[0].java_name() + self._java_file_ext()))
 
     def _save_to_file(self, out_file_path):
