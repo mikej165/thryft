@@ -59,7 +59,7 @@ class LoggingServiceJavaGenerator(java_generator.JavaGenerator):
                 return None
 
     class Function(java_generator.JavaGenerator.Function):
-        def java_definition(self):
+        def java_definitions(self):
             call_log_level = self._parent_generator()._call_log_level_default
             for annotation in self.annotations:
                 if annotation.name == 'java_log_level':
@@ -172,7 +172,7 @@ catch (final %s e) {
                     ', '.join([field.type.java_declaration_name()
                                for field in self.throws])
                 )
-            return """\
+            return self._java_delegating_definitions() + ["""\
 public %(return_type_name)s %(java_name)s(%(parameters)s)%(throws)s {
 %(local_declarations)s%(log_current_user)s
 
@@ -180,7 +180,7 @@ public %(return_type_name)s %(java_name)s(%(parameters)s)%(throws)s {
     __logMessageStringBuilder.append(")");
 
 %(service_call)s
-}""" % locals()
+}""" % locals()]
 
     class Service(java_generator.JavaGenerator.Service):
         def java_name(self, boxed=False):
@@ -204,7 +204,10 @@ public %(name)s(@com.google.inject.name.Named("impl") final %(service_qname)s se
             ]
 
         def _java_methods(self):
-            return [function.java_definition() for function in self.functions]
+            methods = []
+            for function in self.functions:
+                methods.extend(function.java_definitions())
+            return methods
 
         def java_repr(self):
             name = self.java_name()

@@ -51,9 +51,6 @@ class JavaService(Service, _JavaNamedConstruct):
     def _java_methods_repr(self):
         return "\n\n".join(self._java_methods())
 
-    def java_name(self, boxed=False):
-        return self.name
-
     def _java_message_types(self):
         message_types = []
         for function in self.functions:
@@ -72,6 +69,9 @@ class JavaService(Service, _JavaNamedConstruct):
 public static class Messages {
 %(message_types)s
 }""" % locals()
+
+    def java_name(self, boxed=False):
+        return self.name
 
     def java_qname(self, boxed=False):
         return _JavaNamedConstruct.java_qname(self, name=self.name)

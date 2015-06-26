@@ -93,14 +93,14 @@ protected void %(validate_method_name)s(%(public_parameters)s) {
                                for field in self.throws)
                 )
 
-            return """\
+            return ["""\
 @Override%(annotations)s
 public final %(return_type_name)s %(name)s(%(public_parameters)s)%(throws)s {%(validate_method_call)s
     %(protected_delegation)s;
 }%(validate_method)s
 
 protected abstract %(return_type_name)s _%(name)s(%(protected_parameters)s)%(throws)s;
-""" % locals()
+""" % locals()] + self._java_delegating_definitions()
 
     class Service(JavaService):
         def java_name(self, boxed=False):
@@ -109,7 +109,7 @@ protected abstract %(return_type_name)s _%(name)s(%(protected_parameters)s)%(thr
         def _java_methods(self):
             methods = []
             for function in self.functions:
-                methods.append(function.java_definitions())
+                methods.extend(function.java_definitions())
             return methods
 
         def java_repr(self):

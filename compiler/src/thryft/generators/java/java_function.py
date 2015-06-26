@@ -106,17 +106,11 @@ public %(name)s(final org.thryft.protocol.InputProtocol iprot) throws org.thryft
 
     def java_declarations(self):
         javadoc = self.java_doc()
-
         name = self.java_name()
-
-        parameters = \
-            ', '.join(parameter.java_parameter(final=True) for parameter in self.parameters)
-
         if self.return_field is not None:
             return_type_name = self.return_field.type.java_declaration_name()
         else:
             return_type_name = 'void'
-
         throws = \
             lpad(
                 ' throws ',
@@ -124,8 +118,48 @@ public %(name)s(final org.thryft.protocol.InputProtocol iprot) throws org.thryft
                            for field in self.throws)
             )
 
-        return ("""\
-%(javadoc)spublic %(return_type_name)s %(name)s(%(parameters)s)%(throws)s;""" % locals(),)
+        declarations = []
+        for parameters in self._java_overload_parameter_lists():
+            parameters = \
+                ', '.join(parameter.java_parameter(final=True) for parameter in parameters)
+            declarations.append("""\
+%(javadoc)spublic %(return_type_name)s %(name)s(%(parameters)s)%(throws)s;""" % locals())
+        return declarations
+
+    def _java_delegating_definitions(self):
+        javadoc = self.java_doc()
+        name = self.java_name()
+        if self.return_field is not None:
+            return_prefix = 'return '
+            return_type_name = self.return_field.type.java_declaration_name()
+        else:
+            return_prefix = ''
+            return_type_name = 'void'
+        throws = \
+            lpad(
+                ' throws ',
+                ', '.join(field.type.java_declaration_name()
+                           for field in self.throws)
+            )
+
+        definitions = []
+        for parameters in self._java_overload_parameter_lists():
+            if len(parameters) == len(self.parameters):
+                continue
+            parameters = [parameter.java_parameter(final=True) for parameter in parameters]
+            delegate_values = []
+            for parameter_i, parameter in enumerate(self.parameters):
+                if parameter.required:
+                    delegate_values.append(parameter.java_name())
+                elif parameter_i <= len(parameters):
+                    delegate_values.append(parameter.java_absent_value())
+            delegate_values = ', '.join(delegate_values)
+            parameters = ', '.join(parameters)
+            definitions.append("""\
+%(javadoc)spublic %(return_type_name)s %(name)s(%(parameters)s)%(throws)s {
+    %(return_prefix)s%(name)s(%(delegate_values)s);
+}""" % locals())
+        return definitions
 
     def java_doc(self):
         javadoc_lines = []
@@ -164,6 +198,20 @@ public %(name)s(final org.thryft.protocol.InputProtocol iprot) throws org.thryft
 
     def java_name(self, boxed=False):
         return lower_camelize(self.name)
+
+    def _java_overload_parameter_lists(self):
+        first_optional_parameter_i = -1
+        for parameter_i, parameter in enumerate(self.parameters):
+            if not parameter.required:
+                first_optional_parameter_i = parameter_i
+                break
+        if first_optional_parameter_i == -1:
+            return (self.parameters,)
+
+        overload_parameter_lists = []
+        for optional_parameter_i in xrange(first_optional_parameter_i, len(self.parameters)+1):
+            overload_parameter_lists.append(tuple(self.parameters[:optional_parameter_i]))
+        return overload_parameter_lists
 
     def java_qname(self, boxed=False):
         return self.parent.java_qname() + '.' + self.java_name()
