@@ -47,7 +47,7 @@ class GwtRpcServerJavaGenerator(JavaGenerator):
                 return None
 
     class Function(JavaFunction):
-        def java_repr(self):
+        def java_definition(self):
             name = self.java_name()
 
             parameters = \
@@ -87,7 +87,7 @@ public %(return_type_name)s %(name)s(%(parameters)s)%(throws)s {
             client_service_qname = client_service_package + JavaService.java_name(self) + 'GwtClient'
             functions = \
                 lpad("\n", "\n\n".join(indent(' ' * 4,
-                    (function.java_repr() for function in self.functions)
+                    (function.java_definition() for function in self.functions)
                 )))
             name = self.java_name()
             service_qname = JavaService.java_qname(self)

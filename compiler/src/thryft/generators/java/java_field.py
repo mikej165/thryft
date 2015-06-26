@@ -37,6 +37,10 @@ from yutil import lower_camelize, upper_camelize, indent, lpad
 
 
 class JavaField(Field, _JavaNamedConstruct):
+    def java_absent_value(self):
+        assert not self.required
+        return "com.google.common.base.Optional.<%s> absent()" % self.type.java_declaration_name(boxed=True)
+
     def java_compare_to(self):
         name = self.java_name()
         this_value = 'this.' + name

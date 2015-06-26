@@ -30,7 +30,6 @@
 # OF SUCH DAMAGE.
 # -----------------------------------------------------------------------------
 
-import os.path
 from thryft.generators.java.java_document import JavaDocument
 from thryft.generators.java.java_generator import JavaGenerator
 from thryft.generators.java.java_service import JavaService
@@ -46,18 +45,12 @@ class GwtRpcClientJavaGenerator(JavaGenerator):
                 return None
 
     class Service(JavaService):
+        def _java_annotations(self):
+            service_name = JavaService.java_name(self)
+            return ("""@com.google.gwt.user.client.rpc.RemoteServiceRelativePath("%(service_name)s")""" % locals(),)
+
+        def _java_extends(self):
+            return 'com.google.gwt.user.client.rpc.RemoteService'
+
         def java_name(self):
             return JavaService.java_name(self) + 'GwtClient'
-
-        def java_repr(self):
-            functions = \
-                "\n\n".join(indent(' ' * 4,
-                    (function.java_repr() for function in self.functions)
-                ))
-            name = self.java_name()
-            service_name = JavaService.java_name(self)
-            return """\
-@com.google.gwt.user.client.rpc.RemoteServiceRelativePath("%(service_name)s")
-public interface %(name)s extends com.google.gwt.user.client.rpc.RemoteService {
-%(functions)s
-}""" % locals()

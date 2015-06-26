@@ -45,7 +45,7 @@ class GwtJsonRpcClientJavaGenerator(java_generator.JavaGenerator):
                 return None
 
     class Function(java_generator.JavaGenerator.Function):
-        def java_repr(self):
+        def java_definition(self):
             name = self.name
             java_name = self.java_name()
             parameters = [parameter.java_parameter(final=True) for parameter in self.parameters]
@@ -143,11 +143,9 @@ public %(name)s(final String jsonRpcUrlPath) {
 """ % locals()
 
         def _java_member_declarations(self):
-            name = self.java_name()
             return [
                 "private final org.thryft.native_.Url jsonRpcUrl;",
             ]
-
 
         def _java_methods(self):
             methods = []
@@ -155,7 +153,7 @@ public %(name)s(final String jsonRpcUrlPath) {
             # methods.append(self._java_method_do_post())
             # methods.append(self._java_method_do_post_error())
             # methods.append(self._java_method_do_post_response())
-            methods.extend([function.java_repr() for function in self.functions])
+            methods.extend([function.java_definition() for function in self.functions])
             return methods
 
         def java_repr(self):

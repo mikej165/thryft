@@ -143,7 +143,8 @@ public %(name)s(@com.google.inject.name.Named("%(name_lower_camelized)sUrl") fin
             # methods.append(self._java_method_do_post())
             # methods.append(self._java_method_do_post_error())
             # methods.append(self._java_method_do_post_response())
-            methods.extend(function.java_repr() for function in self.functions)
+            for function in self.functions:
+                methods.extend(function.java_declarations())
             return methods
 
         def java_repr(self):

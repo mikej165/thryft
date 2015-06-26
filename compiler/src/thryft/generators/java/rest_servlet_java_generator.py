@@ -52,7 +52,7 @@ class RestServletJavaGenerator(_servlet_java_generator._ServletJavaGenerator):
                 message_types.append(request_type)
             return message_types
 
-        def java_repr(self):
+        def java_definition(self):
             annotations = self.java_annotations()
             name = '__do' + self.java_name()[0].upper() + self.java_name()[1:]
 
@@ -360,7 +360,7 @@ public void do%(request_method_camelized)s(final javax.servlet.http.HttpServletR
             return methods
 
         def _java_methods_private(self):
-            return [function.java_repr() for function in self.functions]
+            return [function.java_definition() for function in self.functions]
 
         def _java_methods(self):
             methods = []

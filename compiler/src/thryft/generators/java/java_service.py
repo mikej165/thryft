@@ -32,21 +32,24 @@
 
 from thryft.generator.service import Service
 from thryft.generators.java._java_named_construct import _JavaNamedConstruct
-from yutil import indent, lpad
+from yutil import indent, lpad, pad
 
 
 class JavaService(Service, _JavaNamedConstruct):
-    def java_extends(self):
+    def _java_annotations(self):
+        return []
+
+    def _java_extends(self):
         return self.extends
 
-    def _java_functions_repr(self):
-        return "\n\n".join(function.java_repr() for function in self.functions)
+    def _java_methods(self):
+        methods = []
+        for function in self.functions:
+            methods.extend(function.java_declarations())
+        return methods
 
-    def java_name(self, boxed=False):
-        return self.name
-
-    def java_qname(self, boxed=False):
-        return _JavaNamedConstruct.java_qname(self, name=self.name)
+    def _java_methods_repr(self):
+        return "\n\n".join(self._java_methods())
 
     def _java_message_types(self):
         message_types = []
@@ -67,8 +70,16 @@ public static class Messages {
 %(message_types)s
 }""" % locals()
 
+    def java_name(self, boxed=False):
+        return self.name
+
+    def java_qname(self, boxed=False):
+        return _JavaNamedConstruct.java_qname(self, name=self.name)
+
     def java_repr(self):
-        extends = self.java_extends()
+        annotations = pad("\n", "\n".join(self._java_annotations()), "\n")
+
+        extends = self._java_extends()
         if extends is None:
             extends = ''
         else:
@@ -80,14 +91,14 @@ public static class Messages {
         sections = lpad("\n", "\n\n".join(indent(' ' * 4, self._java_repr_sections())))
 
         return """\
-%(javadoc)spublic interface %(name)s%(extends)s {%(sections)s
+%(javadoc)s%(annotations)spublic interface %(name)s%(extends)s {%(sections)s
 }""" % locals()
 
     def _java_repr_sections(self):
         sections = []
         for section in (
             self._java_message_types_repr(),
-            self._java_functions_repr()
+            self._java_methods_repr()
         ):
             if len(section) > 0:
                 sections.append(section)
