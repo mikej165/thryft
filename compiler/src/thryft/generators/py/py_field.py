@@ -78,11 +78,16 @@ if %(name)s is not None:
 
     def py_decorated_setter(self):
         decorated_setter_name = self.py_decorated_setter_name()
+        doc = self.py_sphinx_doc()
         name = self.py_name()
         setter_name = self.py_setter_name()
         return """\
 @%(name)s.setter
 def %(decorated_setter_name)s(self, %(name)s):
+    '''
+    %(doc)s
+    '''
+
     self.%(setter_name)s(%(name)s)
 """ % locals()
 
@@ -92,9 +97,14 @@ def %(decorated_setter_name)s(self, %(name)s):
     def py_getter(self):
         name = self.py_name()
         defensive_copy = self.type.py_defensive_copy('self.__' + name)
+        type_description = self.type.py_description()
         return """\
 @property
 def %(name)s(self):
+    '''
+    :rtype: %(type_description)s
+    '''
+
     return %(defensive_copy)s
 """ % locals()
 
@@ -152,16 +162,24 @@ if ifield_name == '%(name)s'%(id_check)s:
         return self.py_parameter()
 
     def py_setter(self, return_type_name='void'):
+        doc = self.py_sphinx_doc()
         setter_name = self.py_setter_name()
         name = self.py_name()
         return """\
 def %(setter_name)s(self, %(name)s):
+    '''
+    %(doc)s
+    '''
+
     self.__%(name)s = %(name)s
     return self
 """ % locals()
 
     def py_setter_name(self):
         return 'set_' + self.py_name()
+
+    def py_sphinx_doc(self):
+        return ":type %s: %s%s" % (self.py_name(), self.type.py_description(), ' or None' if not self.required else '')
 
     def py_write_protocol(self, depth=0, value=None):
         if value is None:

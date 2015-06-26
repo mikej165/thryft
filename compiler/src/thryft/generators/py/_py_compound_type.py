@@ -46,7 +46,8 @@ class _PyCompoundType(_PyType):
         def _py_constructor(self):
             if len(self.fields) == 0:
                 return None
-
+            doc = indent(' ' * 4, "\n".join(field.py_sphinx_doc()
+                                            for field in self.fields))
             parameters = \
                 ",\n".join(indent(' ' * 4, (
                     field.py_parameter(default_value='None')
@@ -62,6 +63,10 @@ def __init__(
     self,
 %(parameters)s
 ):
+    '''
+%(doc)s
+    '''
+
 %(initializers)s
 """ % locals()
 
@@ -95,6 +100,8 @@ def build(self):
             if len(self.fields) == 0:
                 return {}
 
+            doc = indent(' ' * 4, "\n".join(field.py_sphinx_doc()
+                                            for field in self.fields))
             name = self.py_name()
             other_name = decamelize(self.py_name())
             object_updates = \
@@ -104,6 +111,10 @@ def build(self):
                  ))
             return {'update': """\
 def update(self, %(other_name)s):
+    '''
+%(doc)s
+    '''
+
     if isinstance(%(other_name)s, %(name)s):
 %(object_updates)s
     elif isinstance(%(other_name)s, dict):
@@ -152,6 +163,8 @@ class Builder(object):%(sections)s
 
     def _py_constructor(self):
         assert len(self.fields) > 0
+        doc = indent(' ' * 4, "\n".join(field.py_sphinx_doc()
+                                        for field in self.fields))
         required_parameters = []
         optional_parameters = []
         for field in self.fields:
@@ -171,6 +184,10 @@ def __init__(
     self,
 %(parameters)s
 ):
+    '''
+%(doc)s
+    '''
+
 %(initializers)s
 """ % locals()
 
@@ -189,6 +206,12 @@ def __init__(
     def _py_method_as_dict(self):
         return {'as_dict': """\
 def as_dict(self):
+    '''
+    Return the fields of this object as a dictionary.
+
+    :rtype: dict
+    '''
+
     return {%s}
 """ % ', '.join("'%s': %s" % (field.py_name(), 'self.' + field.py_getter_call())
                                  for field in self.fields)}
@@ -201,6 +224,12 @@ def as_dict(self):
                                         for field in self.fields)
         return {'as_tuple': """\
 def as_tuple(self):
+    '''
+    Return the fields of this object in declaration order as a tuple.
+
+    :rtype: tuple
+    '''
+
     return %(tuple_)s
 """ % locals()}
 
@@ -249,10 +278,18 @@ def __ne__(self, other):
 '''}
 
     def _py_method_read_protocol(self):
+        qname = self.py_qname()
         if len(self.fields) == 0:
             return {'read': """\
 @classmethod
 def read(cls, iprot):
+    '''
+    Read a new object from the given input protocol and return the object.
+
+    :type iprot: thryft.protocol._input_protocol._InputProtocol
+    :rtype: %(qname)s
+    '''
+
     iprot.read_struct_begin()
     iprot.read_struct_end()
     return cls()
@@ -271,6 +308,13 @@ def read(cls, iprot):
         return {'read': """\
 @classmethod
 def read(cls, iprot):
+    '''
+    Read a new object from the given input protocol and return the object.
+
+    :type iprot: thryft.protocol._input_protocol._InputProtocol
+    :rtype: %(qname)s
+    '''
+
     init_kwds = {}
 
     iprot.read_struct_begin()
@@ -289,23 +333,34 @@ def read(cls, iprot):
         if len(self.fields) == 0:
             return {}
 
+        field_docs = []
         in_kwds = []
         out_kwds = []
+        qname = self.py_qname()
         replacements = []
         for field in self.fields:
             field_getter_call = field.py_getter_call()
             field_name = field.py_name()
+            field_docs.append(":type %s: %s or None" % (field_name, field.type.py_description()))
             in_kwds.append("%(field_name)s=None" % locals())
             out_kwds.append("%(field_name)s=%(field_name)s" % locals())
             replacements.append("""\
 if %(field_name)s is None:
     %(field_name)s = self.%(field_getter_call)s
 """ % locals())
+        field_docs = indent(' ' * 4, "\n".join(field_docs))
         in_kwds = ', '.join(in_kwds)
         out_kwds = ', '.join(out_kwds)
         replacements = "\n".join(indent(' ' * 4, replacements))
         return {'replace': """\
 def replace(self, %(in_kwds)s):
+    '''
+    Copy this object, replace one or more fields, and return the copy.
+
+%(field_docs)s
+    :rtype: %(qname)s
+    '''
+
 %(replacements)s
     return self.__class__(%(out_kwds)s)
 """ % locals()}
@@ -349,8 +404,16 @@ def %(method_name)s(self):
                  for field in self.fields)
             )))
         name = self.py_name()
+        qname = self.py_qname()
         return {'write': """\
 def write(self, oprot):
+    '''
+    Write this object to the given output protocol and return self.
+
+    :type oprot: thryft.protocol._output_protocol._OutputProtocol
+    :rtype: %(qname)s
+    '''
+
     oprot.write_struct_begin('%(name)s')%(field_write_protocols)s
 
     oprot.write_field_stop()
