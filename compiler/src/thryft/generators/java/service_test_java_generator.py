@@ -46,15 +46,15 @@ class ServiceTestJavaGenerator(java_generator.JavaGenerator):
             return '.java.template'
 
     class Function(JavaFunction):
-        def java_name(self):
-            return 'test' + upper_camelize(self.name)
-
-        def java_repr(self):
+        def java_definition(self):
             name = self.java_name()
             return """\
 @Test
 public void %(name)s() {
 }""" % locals()
+
+        def java_name(self):
+            return 'test' + upper_camelize(self.name)
 
     class Service(JavaService):
         def java_name(self, boxed=False):
@@ -75,7 +75,7 @@ public %(name)s(final %(service_qname)s service) {
             ]
 
         def _java_methods(self):
-            return [function.java_repr() for function in self.functions]
+            return [function.java_definition() for function in self.functions]
 
         def java_repr(self):
             name = self.java_name()

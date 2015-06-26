@@ -104,7 +104,7 @@ public %(name)s(final org.thryft.protocol.InputProtocol iprot) throws org.thryft
                     break
         return annotations
 
-    def java_declaration(self):
+    def java_declarations(self):
         javadoc = self.java_doc()
 
         name = self.java_name()
@@ -124,8 +124,8 @@ public %(name)s(final org.thryft.protocol.InputProtocol iprot) throws org.thryft
                            for field in self.throws)
             )
 
-        return """\
-%(javadoc)spublic %(return_type_name)s %(name)s(%(parameters)s)%(throws)s;""" % locals()
+        return ("""\
+%(javadoc)spublic %(return_type_name)s %(name)s(%(parameters)s)%(throws)s;""" % locals(),)
 
     def java_doc(self):
         javadoc_lines = []
@@ -170,9 +170,6 @@ public %(name)s(final org.thryft.protocol.InputProtocol iprot) throws org.thryft
 
     def java_request_type(self, **kwds):
         return self._JavaRequestType(parent_function=self, **kwds)
-
-    def java_repr(self):
-        return self.java_declaration()
 
     def java_response_type(self, **kwds):
         return self._JavaResponseType(parent_function=self, **kwds)

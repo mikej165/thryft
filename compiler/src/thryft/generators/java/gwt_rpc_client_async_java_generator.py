@@ -34,12 +34,11 @@ from thryft.generators.java.gwt_rpc_client_java_generator import \
     GwtRpcClientJavaGenerator
 from thryft.generators.java.java_function import JavaFunction
 from thryft.generators.java.java_service import JavaService
-from yutil import indent
 
 
 class GwtRpcClientAsyncJavaGenerator(GwtRpcClientJavaGenerator):
     class Function(JavaFunction):
-        def java_declaration(self):
+        def java_declarations(self):
             javadoc = self.java_doc()
 
             name = self.java_name()
@@ -52,21 +51,12 @@ class GwtRpcClientAsyncJavaGenerator(GwtRpcClientJavaGenerator):
             parameters.append("final com.google.gwt.user.client.rpc.AsyncCallback<%s> callback" % return_type_name)
             parameters = ', '.join(parameters)
 
-            return """\
-%(javadoc)spublic void %(name)s(%(parameters)s);""" % locals()
+            return ("""\
+%(javadoc)spublic void %(name)s(%(parameters)s);""" % locals(),)
 
     class Service(JavaService):
+        def _java_message_types(self):
+            return []
+
         def java_name(self):
             return JavaService.java_name(self) + 'GwtClientAsync'
-
-        def java_repr(self):
-            functions = \
-                "\n\n".join(indent(' ' * 4,
-                    (function.java_repr() for function in self.functions)
-                ))
-            name = self.java_name()
-            service_name = JavaService.java_name(self)
-            return """\
-public interface %(name)s {
-%(functions)s
-}""" % locals()
