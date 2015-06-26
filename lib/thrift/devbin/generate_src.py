@@ -72,8 +72,7 @@ class Main(thryft.main.Main):
                   {
                       'cpp': (os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'cpp', 'test'),),
                       'java': (
-                          os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'java', 'protocol', 'src', 'test', 'java'),
-                          os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'java', 'store', 'src', 'test', 'java'),
+                          os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'java', 'src', 'test', 'java'),
                        ),
                       'js': (os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'js', 'test'),),
                       'py': (os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'py', 'test'),),
@@ -84,7 +83,7 @@ class Main(thryft.main.Main):
                   {
                       'cpp': (os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'cpp', 'include'),),
                       'java': (
-                          os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'java', 'core', 'src', 'main', 'java'),
+                          os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'java', 'src', 'main', 'java'),
                        ),
                       'py': (os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'py', 'src'),),
                   },
