@@ -96,6 +96,7 @@ class Main(thryft.main.Main):
                     continue
 
                 compile_task_kwds = {
+                    'document_root_dir_path': in_dir_path,
                     'thrift_file_path': thrift_file_path
                 }
 
