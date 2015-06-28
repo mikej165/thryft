@@ -39,6 +39,16 @@ from yutil import indent, decamelize
 
 class JsonRpcClientPyGenerator(py_generator.PyGenerator):
     class Function(PyFunction):
+        def _py_imports_definition(self, caller_stack):
+            imports = []
+            for parameter in self.parameters:
+                imports.extend(parameter.py_imports_use(caller_stack=caller_stack))
+            if self.return_field is not None:
+                imports.extend(self.return_field.py_imports_use(caller_stack=caller_stack))
+            for throw in self.throws:
+                imports.extend(throw.py_imports_use(caller_stack=caller_stack))
+            return imports
+
         def py_repr(self):
             if self.return_field is not None:
                 if isinstance(self.return_field.type, _BaseType):
@@ -73,8 +83,9 @@ def _%(name)s(%(parameters)s):%(construct_params)s
 """ % locals()
 
     class Service(PyService):
-        def py_imports_definition(self):
-            return ['import ' + PyService.py_qname(self).rsplit('.', 1)[0],
+        def py_imports_definition(self, caller_stack=None):
+            imports = [
+                    'import ' + PyService.py_qname(self).rsplit('.', 1)[0],
                     'import thryft.protocol.builtins_input_protocol',
                     'import thryft.protocol.builtins_output_protocol',
                     'import thryft.protocol.json_input_protocol',
@@ -83,54 +94,21 @@ def _%(name)s(%(parameters)s):%(construct_params)s
                     'import json',
                     'import logging',
                     'import urllib2',
-                    ] + \
-                    PyService.py_imports_definition(self)
+            ]
+            for function in self.functions:
+                imports.extend(function.py_imports_definition(caller_stack=caller_stack))
+            return imports
 
         def __py_methods(self):
             methods = {}
-            methods.update(self.__py_method_import_exception_class())
             methods.update(self.__py_method_init())
             methods.update(self.__py_method_request())
             for function in self.functions:
                 methods[function.py_name()] = function.py_repr()
             return [methods[method_name] for method_name in sorted(methods.iterkeys())]
 
-        def __py_method_import_exception_class(self):
-            return {'__import_exception_class': """\
-@staticmethod
-def __import_exception_class(exception_class_qname):
-#     def decamelize(name):
-#         return re.sub('(((?<=[a-z])[A-Z])|([A-Z](?![A-Z]|$)))', '_\\\\1', name)\\
-#                    .lower()\\
-#                    .strip('_')
-#
-#     exception_class_qname_split = exception_class_qname.split('.')
-# #     if len(exception_class_qname) < 2:
-# #         raise
-# #     elif exception_class_qname[0] not in ('com', 'org'):
-# #         raise
-#
-#
-#     exception_class_name = exception_class_qname_split[-1]
-#     exception_module_qname = \\
-#         exception_class_qname_split[:-1] + \\
-#             [decamelize(exception_class_name)]
-#
-#     exception_module = __import__('.'.join(exception_module_qname))
-#     for module_name in exception_module_qname[1:]:
-#         exception_module = getattr(exception_module, module_name)
-
-    exception_module_qname, exception_class_name = exception_class_qname.rsplit('.', 1)
-
-    exception_module = __import__(exception_module_qname)
-    for module_name in exception_module_qname.split('.')[1:]:
-        exception_module = getattr(exception_module, module_name)
-
-    return getattr(exception_module, exception_class_name)
-""" % locals()}
-
         def __py_method_init(self):
-            name = self._py_name()
+            name = self.py_name()
             service_endpoint_name = decamelize(PyService.py_name(self)).rsplit('_', 1)[0]
             service_qname = PyService.py_qname(self)
             return {'__init__': """\
@@ -178,8 +156,6 @@ def __init__(self, api_url, headers=None):
 
     self.__headers = headers
 
-    self.__logger = logging.getLogger(self.__class__.__module__ + '.' + self.__class__.__name__)
-
     self.__next_id = 1
 """ % locals()}
 
@@ -214,6 +190,7 @@ def __request(self, method, params, headers=None):
         raise RuntimeError("JSON-RPC: mismatched id: got %%s, expected %%s" %% (response.get('id'), request['id']))
     if response.get('jsonrpc') != '2.0':
         raise RuntimeError("JSON-RPC: unexpected version: " + str(response.get('jsonrpc')))
+
     error = response.get('error')
     if error is not None:
         code = error.get('code')
@@ -222,30 +199,39 @@ def __request(self, method, params, headers=None):
         message = error.get('message')
         if message is None:
             raise RuntimeError("JSON-RPC: error response is missing message")
+
         exception_class_qname = error.get('@class')
         if exception_class_qname is not None:
             try:
-                exception_class = self.__import_exception_class(exception_class_qname)
-            except ImportError:
-                raise RuntimeError("JSON-RPC: error: code=%%(code)u, message='%%(message)s'" %% locals())
-            data = error.get('data')
-            if isinstance(data, dict):
-                data_iprot = thryft.protocol.builtins_input_protocol.BuiltinsInputProtocol(data)
-                exception_ = exception_class.read(data_iprot)
-                raise exception_
-            else:
-                raise exception_class()
-        else:
-            raise RuntimeError("JSON-RPC error: code=%%s, message='%%s'" %% (code, message))
+                exception_class = None
+                for exception_class_qname_component in exception_class_qname.split('.'):
+                    if exception_class is None:
+                        exception_class = globals()[exception_class_qname_component]
+                    else:
+                        exception_class = getattr(exception_class, exception_class_qname_component)
+            except (AttributeError, KeyError):
+                exception_class = None
+
+            if exception_class is not None and issubclass(exception_class, Exception):
+                data = error.get('data')
+                if isinstance(data, dict):
+                    data_iprot = thryft.protocol.builtins_input_protocol.BuiltinsInputProtocol(data)
+                    exception_ = exception_class.read(data_iprot)
+                    raise exception_
+                else:
+                    raise exception_class()
+
+        raise RuntimeError("JSON-RPC error: code=%%s, message='%%s'" %% (code, message))
+
     return response.get('result')
 """ % locals()}
 
-        def _py_name(self):
-            return 'JsonRpcClient' + PyService.py_name(self)
+        def py_name(self):
+            return PyService.py_name(self) + 'JsonRpcClient'
 
         def py_repr(self):
             methods = indent(' ' * 4, "\n".join(self.__py_methods()))
-            name = self._py_name()
+            name = self.py_name()
             service_qname = PyService.py_qname(self)
             return """\
 class %(name)s(%(service_qname)s):

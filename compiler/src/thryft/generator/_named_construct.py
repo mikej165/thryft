@@ -126,9 +126,12 @@ class _NamedConstruct(_Construct):
     def name(self):
         return self.__name
 
-    def _qname(self, scope, include_parent_document_name=True, **kwds):
+    def _qname(self, scope, include_parent_document_name=True, name=None, **kwds):
+        if name is None:
+            name = getattr(self, scope + '_name')(**kwds)
+
         if self.parent is None:
-            return getattr(self, scope + '_name')(**kwds)
+            return name
 #         from thryft.generator.document import Document
 #         parent_document = self.parent
 #         while not isinstance(parent_document, Document):
@@ -143,7 +146,7 @@ class _NamedConstruct(_Construct):
             pass
         if include_parent_document_name:
             qname.append(parent_document.name)
-        qname.append(getattr(self, scope + '_name')(**kwds))
+        qname.append(name)
         return '.'.join(qname)
 
     def thrift_qname(self):

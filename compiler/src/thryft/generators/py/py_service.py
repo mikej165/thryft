@@ -55,6 +55,9 @@ class PyService(Service, _PyNamedConstruct):
             methods.append(function.py_protected_abstract_definition())
         return methods
 
+    def py_qname(self):
+        return self._qname(scope='py', name=self.name)
+
     def py_repr(self):
         extends = ', '.join(self._py_extends())
 

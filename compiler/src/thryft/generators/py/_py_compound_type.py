@@ -201,7 +201,7 @@ def __init__(
         return imports
 
     def _py_imports_use(self, caller_stack):
-        return ['import ' + self.py_qname().rsplit('.', 1)[0]]
+        return ['import ' + self.py_qname().rsplit('.', 1)[0] + '  # @UnusedImport']
 
     def _py_method_as_dict(self):
         return {'as_dict': """\
