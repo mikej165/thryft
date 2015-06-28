@@ -97,7 +97,6 @@ def _%(name)s(%(parameters)s):%(construct_params)s
                     'from urlparse import urlparse',
                     'import base64',
                     'import json',
-                    'import logging',
                     'import urllib2',
             ]
             for function in self.functions:

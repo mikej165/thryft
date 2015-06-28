@@ -40,12 +40,41 @@ class CliClientPyGenerator(JsonRpcClientPyGenerator):
         def py_argparse_action(self):
             return 'store_true'
 
+        def py_argparse_parse(self, input_variable, required, output_variable):
+            if required:
+                return "%(output_variable)s = %(input_variable)s if %(input_variable)s is not None else False" % locals()
+            else:
+                return "%(output_variable)s = %(input_variable)s if %(input_variable)s is not None else None" % locals()
+
+    class _ContainerType(object):
+        def py_argparse_action(self):
+            return 'store'
+
+        def py_argparse_name(self):
+            return 'str'
+
+        def py_argparse_parse(self, input_variable, required, output_variable):
+            read_protocol = self.py_read_protocol()
+            return """\
+if %(input_variable)s is not None:
+    iprot = thryft.protocol.json_input_protocol.JsonInputProtocol(%(input_variable)s)
+    %(output_variable)s = %(read_protocol)s
+else:
+    %(output_variable)s = None
+""" % locals()
+
+    class EnumType(JsonRpcClientPyGenerator.EnumType):  # @UndefinedVariable
+        def py_argparse_parse(self, input_variable, required, output_variable):
+            qname = self.py_qname()
+            return "%(output_variable)s = %(qname)s.value_of(%(input_variable)s) if %(input_variable)s is not None else None" % locals()
+
     class Field(JsonRpcClientPyGenerator.Field):  # @UndefinedVariable
         def py_argparse_action(self):
             try:
-                return self.type.py_argparse_action()
+                delegate = self.type.py_argparse_action
             except AttributeError:
                 return 'store'
+            return delegate()
 
         def py_argparse_name(self):
             return self.py_name()
@@ -54,19 +83,35 @@ class CliClientPyGenerator(JsonRpcClientPyGenerator):
             input_variable = '__args.' + self.py_argparse_name()
             output_variable = self.py_argparse_name()
             try:
-                return self.type.py_argparse_parse(input_variable=input_variable, output_variable=output_variable)
+                delegate = self.type.py_argparse_parse
             except AttributeError:
                 return output_variable + ' = ' + input_variable
+            return delegate(input_variable=input_variable, required=self.required, output_variable=output_variable)
+
+        def py_argparse_required(self):
+            if self.required:
+                return self.py_argparse_action() == 'store'
+            else:
+                return False
 
         def py_argparse_type(self):
             try:
-                return self.type.py_argparse_name()
+                delegate = self.type.py_argparse_name
             except AttributeError:
                 return 'str'
+            return delegate()
 
-    class I32Type(JsonRpcClientPyGenerator.I32Type):
+    class I16Type(JsonRpcClientPyGenerator.I16Type):  # @UndefinedVariable
         def py_argparse_name(self):
             return 'int'
+
+    class I32Type(JsonRpcClientPyGenerator.I32Type):  # @UndefinedVariable
+        def py_argparse_name(self):
+            return 'int'
+
+    class I64Type(JsonRpcClientPyGenerator.I64Type):  # @UndefinedVariable
+        def py_argparse_name(self):
+            return 'long'
 
     class Function(JsonRpcClientPyGenerator.Function):
         def py_add_arguments(self):
@@ -76,7 +121,7 @@ class CliClientPyGenerator(JsonRpcClientPyGenerator):
             for parameter in self.parameters:
                 parameter_action = parameter.py_argparse_action()
                 parameter_name = parameter.py_argparse_name()
-                parameter_required = ', required=True' if parameter.required else ''
+                parameter_required = ', required=True' if parameter.py_argparse_required() else ''
                 parameter_type = ", type=%s" % parameter.py_argparse_type() if parameter_action == 'store' else ''
                 add_arguments.append("%(name)s_argument_parser.add_argument('--%(parameter_name)s', action='%(parameter_action)s'%(parameter_required)s%(parameter_type)s)" % locals())
                 parse_args.append(parameter.py_argparse_parse())
@@ -89,6 +134,12 @@ def %(name)s(__args):%(parse_args)s
 %(name)s_argument_parser = argument_subparsers.add_parser('%(name)s')%(add_arguments)s
 %(name)s_argument_parser.set_defaults(func=%(name)s)
 """ % locals()
+
+    class ListType(JsonRpcClientPyGenerator.ListType, _ContainerType):  # @UndefinedVariable
+        pass
+
+    class MapType(JsonRpcClientPyGenerator.MapType, _ContainerType):  # @UndefinedVariable
+        pass
 
     class Service(JsonRpcClientPyGenerator.Service):
         def py_imports_definition(self, caller_stack=None):
@@ -111,7 +162,9 @@ def main(cls):
 %(function_add_arguments)s
 
     args = argument_parser.parse_args()
-    print args.func(args)
+    result = args.func(args)
+    if result is not None:
+        print result
 """ % locals()
 
         def _py_methods(self):
@@ -122,18 +175,17 @@ def main(cls):
 
         def py_repr(self):
             name = self.py_name()
-            return JsonRpcClientPyGenerator.Service.py_repr(self) + """
+            return """\
+#!/usr/bin/env python
+
+""" + JsonRpcClientPyGenerator.Service.py_repr(self) + """
 assert __name__ == '__main__'
 %(name)s.main()
 
 """ % locals()
 
-    class SetType(JsonRpcClientPyGenerator.SetType):  # @UndefinedVariable
-        def py_argparse_action(self):
-            return 'store'
-
-        def py_argparse_name(self):
-            return 'str'
+    class SetType(JsonRpcClientPyGenerator.SetType, _ContainerType):  # @UndefinedVariable
+        pass
 
     class StringType(JsonRpcClientPyGenerator.StringType):  # @UndefinedVariable
         def py_argparse_name(self):
@@ -142,3 +194,8 @@ assert __name__ == '__main__'
     class StructType(JsonRpcClientPyGenerator.StructType):  # @UndefinedVariable
         def py_argparse_name(self):
             return 'str'
+
+        def py_argparse_parse(self, input_variable, required, output_variable):
+            type_qname = self.py_qname()
+            return "%(output_variable)s = %(type_qname)s.read(thryft.protocol.json_input_protocol.JsonInputProtocol(%(input_variable)s)) if %(input_variable)s is not None else None" % locals()
+
