@@ -47,6 +47,9 @@ class PySetType(SetType, _PySequenceType):
             return 'frozenset()'
         return "frozenset((%s,))" % ', '.join(self.element_type.py_literal(element_value) for element_value in value)
 
+    def _py_name(self):
+        return 'frozenset'
+
     def py_read_protocol(self):
         element_read_protocol = self.element_type.py_read_protocol()
         return """frozenset([%(element_read_protocol)s for _ in xrange(iprot.read_set_begin()[1])] + (iprot.read_set_end() is None and []))""" % locals()
