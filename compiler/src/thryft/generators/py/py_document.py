@@ -30,10 +30,11 @@
 # OF SUCH DAMAGE.
 # -----------------------------------------------------------------------------
 
+import os.path
+
 from thryft.generator.document import Document
 from thryft.generators.py._py_named_construct import _PyNamedConstruct
-from yutil import rpad
-import os.path
+from yutil import decamelize, rpad
 
 
 class PyDocument(Document, _PyNamedConstruct):
@@ -89,7 +90,12 @@ class PyDocument(Document, _PyNamedConstruct):
         except KeyError:
             pass
 
-        return self._save_to_file(os.path.join(out_dir_path, self.name + '.py'))
+        if len(self.definitions) == 1:
+            out_file_name = decamelize(self.definitions[0].py_name()) + '.py'
+        else:
+            out_file_name = self.name + '.py'
+
+        return self._save_to_file(os.path.join(out_dir_path, out_file_name))
 
     def _save_to_file(self, out_file_path):
         return self._save_to_file_helper(self.py_repr(), out_file_path)
