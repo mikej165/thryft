@@ -78,7 +78,10 @@ if (this.%(name)s.isPresent()) {
 
     def java_default_value(self):
         if self.value is not None:
-            return self.java_value()
+            if self.required:
+                return self.java_value()
+            else:
+                return "com.google.common.base.Optional.of(%s)" % self.java_value()
         elif not self.required:
             return 'com.google.common.base.Optional.absent()'
         else:
@@ -132,18 +135,20 @@ if (%s().isPresent()) {
 
     def java_local_declaration(self, boxed=None, final=False):
         if self.value is not None:
-            return "%s = %s;" % \
-                    (self.java_parameter(boxed=boxed), self.java_value())
-        elif not final:
-            if boxed is False or self.required:
-                return "%s = %s;" % \
-                        (self.java_parameter(boxed=boxed, final=final),
-                         self.type.java_default_value())
+            lhs = self.java_parameter(boxed=boxed)
+            if self.required:
+                rhs = self.java_value()
             else:
-                return "%s = com.google.common.base.Optional.absent();" % \
-                        self.java_parameter(boxed=boxed, final=final)
+                rhs = "com.google.common.base.Optional.of(%s)" % self.java_value()
+        elif not final:
+            lhs = self.java_parameter(boxed=boxed, final=final)
+            if boxed is False or self.required:
+                rhs = self.type.java_default_value()
+            else:
+                rhs = "com.google.common.base.Optional.absent()"
         else:
             return self.java_parameter(boxed=boxed, final=final)
+        return "%(lhs)s = %(rhs)s;" % locals()
 
     def java_member_declaration(self, assign_value=True, boxed=None, final=False):
         javadoc = self.java_doc()

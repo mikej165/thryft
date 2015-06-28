@@ -38,6 +38,11 @@ from yutil import indent, decamelize
 
 
 class JsonRpcClientPyGenerator(py_generator.PyGenerator):
+    def __init__(self, api_url_default=None, service_imports_definition=None):
+        py_generator.PyGenerator.__init__(self)
+        self._api_url_default = api_url_default
+        self._service_imports_definition = tuple(service_imports_definition) if service_imports_definition is not None else tuple()
+
     class Function(PyFunction):
         def _py_imports_definition(self, caller_stack):
             imports = []
@@ -92,28 +97,38 @@ def _%(name)s(%(parameters)s):%(construct_params)s
                     'from urlparse import urlparse',
                     'import base64',
                     'import json',
-                    'import logging',
                     'import urllib2',
             ]
             for function in self.functions:
                 imports.extend(function.py_imports_definition(caller_stack=caller_stack))
+            imports.extend(self._parent_generator()._service_imports_definition)
             return imports
 
-        def __py_methods(self):
+        def _py_methods(self):
             methods = {}
-            methods.update(self.__py_method_init())
-            methods.update(self.__py_method_request())
+            methods.update(self._py_method_init())
+            methods.update(self._py_method_request())
             for function in self.functions:
                 methods[function.py_name()] = function.py_repr()
             return [methods[method_name] for method_name in sorted(methods.iterkeys())]
 
-        def __py_method_init(self):
+        def _py_method_init(self):
+            api_url_default = self._parent_generator()._api_url_default
+            if api_url_default is not None:
+                api_url_parameter = 'api_url=None'
+                set_api_url_default = """
+
+    if api_url is None:
+        api_url = %(api_url_default)s""" % locals()
+            else:
+                api_url_parameter = 'api_url'
+                set_api_url_default = ''
             name = self.py_name()
             service_endpoint_name = decamelize(PyService.py_name(self)).rsplit('_', 1)[0]
             service_qname = PyService.py_qname(self)
             return {'__init__': """\
-def __init__(self, api_url, headers=None):
-    %(service_qname)s.__init__(self)
+def __init__(self, %(api_url_parameter)s, headers=None):
+    %(service_qname)s.__init__(self)%(set_api_url_default)s
 
     if headers is None:
         headers = {}
@@ -146,6 +161,11 @@ def __init__(self, api_url, headers=None):
                     parsed_api_url.path + \\
                     parsed_api_url.query
 
+    self.__headers = headers
+
+    self.__next_id = 1
+""" % locals()}
+
 #            auth_handler = urllib2.HTTPBasicAuthHandler()
 #            auth_handler.add_password(realm='Realm',
 #                                      uri=self.__api_url,
@@ -154,12 +174,7 @@ def __init__(self, api_url, headers=None):
 #            opener = urllib2.build_opener(auth_handler)
 #            urllib2.install_opener(opener)
 
-    self.__headers = headers
-
-    self.__next_id = 1
-""" % locals()}
-
-        def __py_method_request(self):
+        def _py_method_request(self):
             return {'__request': """\
 def __request(self, method, params, headers=None):
     request = {'jsonrpc': '2.0', 'method': method, 'params': params}
@@ -230,7 +245,7 @@ def __request(self, method, params, headers=None):
             return PyService.py_name(self) + 'JsonRpcClient'
 
         def py_repr(self):
-            methods = indent(' ' * 4, "\n".join(self.__py_methods()))
+            methods = indent(' ' * 4, "\n".join(self._py_methods()))
             name = self.py_name()
             service_qname = PyService.py_qname(self)
             return """\

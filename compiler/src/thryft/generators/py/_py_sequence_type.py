@@ -31,7 +31,7 @@
 # -----------------------------------------------------------------------------
 
 from thryft.generators.py._py_container_type import _PyContainerType
-from yutil import decamelize, indent
+from yutil import indent
 
 
 class _PySequenceType(_PyContainerType):
@@ -43,12 +43,10 @@ class _PySequenceType(_PyContainerType):
         return self.element_type.py_imports_use(caller_stack=caller_stack) + \
                ['from itertools import ifilterfalse']
 
-    def py_write_protocol(self, value, depth=0):
-        class_name_split = decamelize(self.__class__.__name__).split('_')
-        assert len(class_name_split) == 3
-        assert class_name_split[0] == 'py'
-        assert class_name_split[2] == 'type'
+    def _py_name(self):
+        raise NotImplementedError
 
+    def py_write_protocol(self, value, depth=0):
         element_ttype_id = self.element_type.thrift_ttype_id()
         element_write_protocol = \
             indent(' ' * 4,
@@ -57,7 +55,8 @@ class _PySequenceType(_PyContainerType):
                     depth=depth + 1
                 )
             )
-        type_name = class_name_split[1]
+        from thryft.generators.py.py_set_type import PySetType
+        type_name = 'set' if isinstance(self, PySetType) else 'list'
         return """\
 oprot.write_%(type_name)s_begin(%(element_ttype_id)u, len(%(value)s))
 for _%(depth)u in %(value)s:
