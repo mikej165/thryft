@@ -2,7 +2,7 @@ from __future__ import absolute_import; import decimal
 from datetime import datetime
 from itertools import ifilterfalse
 import __builtin__
-import thryft_test.protocol.test.nested_protocol_test_struct
+import thryft_test.protocol.test.nested_protocol_test_struct  # @UnusedImport
 import thryft_test.protocol.test.protocol_test_enum
 
 
@@ -34,6 +34,32 @@ class ProtocolTestStruct(object):
             url_field=None,
             variant_field=None
         ):
+            '''
+            :type required_i32_field: int
+            :type required_string_field: str
+            :type binary_field: str or None
+            :type bool_field: bool or None
+            :type date_time_field: datetime or None
+            :type decimal_field: Decimal or None
+            :type email_address_field: str or None
+            :type enum_field: thryft_test.protocol.test.protocol_test_enum.ProtocolTestEnum or None
+            :type float_field: float or None
+            :type i8_field: int or None
+            :type i16_field: int or None
+            :type i32_field: int or None
+            :type i64_field: int or long or None
+            :type string_list_field: tuple(str) or None
+            :type string_string_map_field: dict(str: str) or None
+            :type string_set_field: frozenset(str) or None
+            :type string_field: str or None
+            :type struct_field: thryft_test.protocol.test.nested_protocol_test_struct.NestedProtocolTestStruct or None
+            :type u32_field: int or None
+            :type u64_field: int or long or None
+            :type uri_field: str or None
+            :type url_field: str or None
+            :type variant_field: object or None
+            '''
+
             self.__required_i32_field = required_i32_field
             self.__required_string_field = required_string_field
             self.__binary_field = binary_field
@@ -63,177 +89,375 @@ class ProtocolTestStruct(object):
 
         @property
         def binary_field(self):
+            '''
+            :rtype: str
+            '''
+
             return self.__binary_field
 
         @property
         def bool_field(self):
+            '''
+            :rtype: bool
+            '''
+
             return self.__bool_field
 
         @property
         def date_time_field(self):
+            '''
+            :rtype: datetime
+            '''
+
             return self.__date_time_field
 
         @property
         def decimal_field(self):
+            '''
+            :rtype: Decimal
+            '''
+
             return self.__decimal_field
 
         @property
         def email_address_field(self):
+            '''
+            :rtype: str
+            '''
+
             return self.__email_address_field
 
         @property
         def enum_field(self):
+            '''
+            :rtype: thryft_test.protocol.test.protocol_test_enum.ProtocolTestEnum
+            '''
+
             return self.__enum_field
 
         @property
         def float_field(self):
+            '''
+            :rtype: float
+            '''
+
             return self.__float_field
 
         @property
         def i16_field(self):
+            '''
+            :rtype: int
+            '''
+
             return self.__i16_field
 
         @property
         def i32_field(self):
+            '''
+            :rtype: int
+            '''
+
             return self.__i32_field
 
         @property
         def i64_field(self):
+            '''
+            :rtype: int or long
+            '''
+
             return self.__i64_field
 
         @property
         def i8_field(self):
+            '''
+            :rtype: int
+            '''
+
             return self.__i8_field
 
         @property
         def required_i32_field(self):
+            '''
+            :rtype: int
+            '''
+
             return self.__required_i32_field
 
         @property
         def required_string_field(self):
+            '''
+            :rtype: str
+            '''
+
             return self.__required_string_field
 
         def set_binary_field(self, binary_field):
+            '''
+            :type binary_field: str or None
+            '''
+
             self.__binary_field = binary_field
             return self
 
         def set_bool_field(self, bool_field):
+            '''
+            :type bool_field: bool or None
+            '''
+
             self.__bool_field = bool_field
             return self
 
         def set_date_time_field(self, date_time_field):
+            '''
+            :type date_time_field: datetime or None
+            '''
+
             self.__date_time_field = date_time_field
             return self
 
         def set_decimal_field(self, decimal_field):
+            '''
+            :type decimal_field: Decimal or None
+            '''
+
             self.__decimal_field = decimal_field
             return self
 
         def set_email_address_field(self, email_address_field):
+            '''
+            :type email_address_field: str or None
+            '''
+
             self.__email_address_field = email_address_field
             return self
 
         def set_enum_field(self, enum_field):
+            '''
+            :type enum_field: thryft_test.protocol.test.protocol_test_enum.ProtocolTestEnum or None
+            '''
+
             self.__enum_field = enum_field
             return self
 
         def set_float_field(self, float_field):
+            '''
+            :type float_field: float or None
+            '''
+
             self.__float_field = float_field
             return self
 
         def set_i16_field(self, i16_field):
+            '''
+            :type i16_field: int or None
+            '''
+
             self.__i16_field = i16_field
             return self
 
         def set_i32_field(self, i32_field):
+            '''
+            :type i32_field: int or None
+            '''
+
             self.__i32_field = i32_field
             return self
 
         def set_i64_field(self, i64_field):
+            '''
+            :type i64_field: int or long or None
+            '''
+
             self.__i64_field = i64_field
             return self
 
         def set_i8_field(self, i8_field):
+            '''
+            :type i8_field: int or None
+            '''
+
             self.__i8_field = i8_field
             return self
 
         def set_required_i32_field(self, required_i32_field):
+            '''
+            :type required_i32_field: int
+            '''
+
             self.__required_i32_field = required_i32_field
             return self
 
         def set_required_string_field(self, required_string_field):
+            '''
+            :type required_string_field: str
+            '''
+
             self.__required_string_field = required_string_field
             return self
 
         def set_string_field(self, string_field):
+            '''
+            :type string_field: str or None
+            '''
+
             self.__string_field = string_field
             return self
 
         def set_string_list_field(self, string_list_field):
+            '''
+            :type string_list_field: tuple(str) or None
+            '''
+
             self.__string_list_field = string_list_field
             return self
 
         def set_string_set_field(self, string_set_field):
+            '''
+            :type string_set_field: frozenset(str) or None
+            '''
+
             self.__string_set_field = string_set_field
             return self
 
         def set_string_string_map_field(self, string_string_map_field):
+            '''
+            :type string_string_map_field: dict(str: str) or None
+            '''
+
             self.__string_string_map_field = string_string_map_field
             return self
 
         def set_struct_field(self, struct_field):
+            '''
+            :type struct_field: thryft_test.protocol.test.nested_protocol_test_struct.NestedProtocolTestStruct or None
+            '''
+
             self.__struct_field = struct_field
             return self
 
         def set_u32_field(self, u32_field):
+            '''
+            :type u32_field: int or None
+            '''
+
             self.__u32_field = u32_field
             return self
 
         def set_u64_field(self, u64_field):
+            '''
+            :type u64_field: int or long or None
+            '''
+
             self.__u64_field = u64_field
             return self
 
         def set_uri_field(self, uri_field):
+            '''
+            :type uri_field: str or None
+            '''
+
             self.__uri_field = uri_field
             return self
 
         def set_url_field(self, url_field):
+            '''
+            :type url_field: str or None
+            '''
+
             self.__url_field = url_field
             return self
 
         def set_variant_field(self, variant_field):
+            '''
+            :type variant_field: object or None
+            '''
+
             self.__variant_field = variant_field
             return self
 
         @property
         def string_field(self):
+            '''
+            :rtype: str
+            '''
+
             return self.__string_field
 
         @property
         def string_list_field(self):
+            '''
+            :rtype: tuple(str)
+            '''
+
             return self.__string_list_field
 
         @property
         def string_set_field(self):
+            '''
+            :rtype: frozenset(str)
+            '''
+
             return self.__string_set_field
 
         @property
         def string_string_map_field(self):
+            '''
+            :rtype: dict(str: str)
+            '''
+
             return self.__string_string_map_field.copy() if self.__string_string_map_field is not None else None
 
         @property
         def struct_field(self):
+            '''
+            :rtype: thryft_test.protocol.test.nested_protocol_test_struct.NestedProtocolTestStruct
+            '''
+
             return self.__struct_field
 
         @property
         def u32_field(self):
+            '''
+            :rtype: int
+            '''
+
             return self.__u32_field
 
         @property
         def u64_field(self):
+            '''
+            :rtype: int or long
+            '''
+
             return self.__u64_field
 
         def update(self, protocol_test_struct):
+            '''
+            :type required_i32_field: int
+            :type required_string_field: str
+            :type binary_field: str or None
+            :type bool_field: bool or None
+            :type date_time_field: datetime or None
+            :type decimal_field: Decimal or None
+            :type email_address_field: str or None
+            :type enum_field: thryft_test.protocol.test.protocol_test_enum.ProtocolTestEnum or None
+            :type float_field: float or None
+            :type i8_field: int or None
+            :type i16_field: int or None
+            :type i32_field: int or None
+            :type i64_field: int or long or None
+            :type string_list_field: tuple(str) or None
+            :type string_string_map_field: dict(str: str) or None
+            :type string_set_field: frozenset(str) or None
+            :type string_field: str or None
+            :type struct_field: thryft_test.protocol.test.nested_protocol_test_struct.NestedProtocolTestStruct or None
+            :type u32_field: int or None
+            :type u64_field: int or long or None
+            :type uri_field: str or None
+            :type url_field: str or None
+            :type variant_field: object or None
+            '''
+
             if isinstance(protocol_test_struct, ProtocolTestStruct):
                 self.set_required_i32_field(protocol_test_struct.required_i32_field)
                 self.set_required_string_field(protocol_test_struct.required_string_field)
@@ -267,106 +491,210 @@ class ProtocolTestStruct(object):
 
         @property
         def uri_field(self):
+            '''
+            :rtype: str
+            '''
+
             return self.__uri_field
 
         @property
         def url_field(self):
+            '''
+            :rtype: str
+            '''
+
             return self.__url_field
 
         @property
         def variant_field(self):
+            '''
+            :rtype: object
+            '''
+
             return self.__variant_field
 
         @binary_field.setter
         def binary_field(self, binary_field):
+            '''
+            :type binary_field: str or None
+            '''
+
             self.set_binary_field(binary_field)
 
         @bool_field.setter
         def bool_field(self, bool_field):
+            '''
+            :type bool_field: bool or None
+            '''
+
             self.set_bool_field(bool_field)
 
         @date_time_field.setter
         def date_time_field(self, date_time_field):
+            '''
+            :type date_time_field: datetime or None
+            '''
+
             self.set_date_time_field(date_time_field)
 
         @decimal_field.setter
         def decimal_field(self, decimal_field):
+            '''
+            :type decimal_field: Decimal or None
+            '''
+
             self.set_decimal_field(decimal_field)
 
         @email_address_field.setter
         def email_address_field(self, email_address_field):
+            '''
+            :type email_address_field: str or None
+            '''
+
             self.set_email_address_field(email_address_field)
 
         @enum_field.setter
         def enum_field(self, enum_field):
+            '''
+            :type enum_field: thryft_test.protocol.test.protocol_test_enum.ProtocolTestEnum or None
+            '''
+
             self.set_enum_field(enum_field)
 
         @float_field.setter
         def float_field(self, float_field):
+            '''
+            :type float_field: float or None
+            '''
+
             self.set_float_field(float_field)
 
         @i16_field.setter
         def i16_field(self, i16_field):
+            '''
+            :type i16_field: int or None
+            '''
+
             self.set_i16_field(i16_field)
 
         @i32_field.setter
         def i32_field(self, i32_field):
+            '''
+            :type i32_field: int or None
+            '''
+
             self.set_i32_field(i32_field)
 
         @i64_field.setter
         def i64_field(self, i64_field):
+            '''
+            :type i64_field: int or long or None
+            '''
+
             self.set_i64_field(i64_field)
 
         @i8_field.setter
         def i8_field(self, i8_field):
+            '''
+            :type i8_field: int or None
+            '''
+
             self.set_i8_field(i8_field)
 
         @required_i32_field.setter
         def required_i32_field(self, required_i32_field):
+            '''
+            :type required_i32_field: int
+            '''
+
             self.set_required_i32_field(required_i32_field)
 
         @required_string_field.setter
         def required_string_field(self, required_string_field):
+            '''
+            :type required_string_field: str
+            '''
+
             self.set_required_string_field(required_string_field)
 
         @string_field.setter
         def string_field(self, string_field):
+            '''
+            :type string_field: str or None
+            '''
+
             self.set_string_field(string_field)
 
         @string_list_field.setter
         def string_list_field(self, string_list_field):
+            '''
+            :type string_list_field: tuple(str) or None
+            '''
+
             self.set_string_list_field(string_list_field)
 
         @string_set_field.setter
         def string_set_field(self, string_set_field):
+            '''
+            :type string_set_field: frozenset(str) or None
+            '''
+
             self.set_string_set_field(string_set_field)
 
         @string_string_map_field.setter
         def string_string_map_field(self, string_string_map_field):
+            '''
+            :type string_string_map_field: dict(str: str) or None
+            '''
+
             self.set_string_string_map_field(string_string_map_field)
 
         @struct_field.setter
         def struct_field(self, struct_field):
+            '''
+            :type struct_field: thryft_test.protocol.test.nested_protocol_test_struct.NestedProtocolTestStruct or None
+            '''
+
             self.set_struct_field(struct_field)
 
         @u32_field.setter
         def u32_field(self, u32_field):
+            '''
+            :type u32_field: int or None
+            '''
+
             self.set_u32_field(u32_field)
 
         @u64_field.setter
         def u64_field(self, u64_field):
+            '''
+            :type u64_field: int or long or None
+            '''
+
             self.set_u64_field(u64_field)
 
         @uri_field.setter
         def uri_field(self, uri_field):
+            '''
+            :type uri_field: str or None
+            '''
+
             self.set_uri_field(uri_field)
 
         @url_field.setter
         def url_field(self, url_field):
+            '''
+            :type url_field: str or None
+            '''
+
             self.set_url_field(url_field)
 
         @variant_field.setter
         def variant_field(self, variant_field):
+            '''
+            :type variant_field: object or None
+            '''
+
             self.set_variant_field(variant_field)
 
     def __init__(
@@ -395,6 +723,32 @@ class ProtocolTestStruct(object):
         url_field=None,
         variant_field=None
     ):
+        '''
+        :type required_i32_field: int
+        :type required_string_field: str
+        :type binary_field: str or None
+        :type bool_field: bool or None
+        :type date_time_field: datetime or None
+        :type decimal_field: Decimal or None
+        :type email_address_field: str or None
+        :type enum_field: thryft_test.protocol.test.protocol_test_enum.ProtocolTestEnum or None
+        :type float_field: float or None
+        :type i8_field: int or None
+        :type i16_field: int or None
+        :type i32_field: int or None
+        :type i64_field: int or long or None
+        :type string_list_field: tuple(str) or None
+        :type string_string_map_field: dict(str: str) or None
+        :type string_set_field: frozenset(str) or None
+        :type string_field: str or None
+        :type struct_field: thryft_test.protocol.test.nested_protocol_test_struct.NestedProtocolTestStruct or None
+        :type u32_field: int or None
+        :type u64_field: int or long or None
+        :type uri_field: str or None
+        :type url_field: str or None
+        :type variant_field: object or None
+        '''
+
         if required_i32_field is None:
             raise ValueError('required_i32_field is required')
         if not isinstance(required_i32_field, int):
@@ -671,57 +1025,120 @@ class ProtocolTestStruct(object):
         return 'ProtocolTestStruct(' + ', '.join(field_reprs) + ')'
 
     def as_dict(self):
+        '''
+        Return the fields of this object as a dictionary.
+
+        :rtype: dict
+        '''
+
         return {'required_i32_field': self.required_i32_field, 'required_string_field': self.required_string_field, 'binary_field': self.binary_field, 'bool_field': self.bool_field, 'date_time_field': self.date_time_field, 'decimal_field': self.decimal_field, 'email_address_field': self.email_address_field, 'enum_field': self.enum_field, 'float_field': self.float_field, 'i8_field': self.i8_field, 'i16_field': self.i16_field, 'i32_field': self.i32_field, 'i64_field': self.i64_field, 'string_list_field': self.string_list_field, 'string_string_map_field': self.string_string_map_field, 'string_set_field': self.string_set_field, 'string_field': self.string_field, 'struct_field': self.struct_field, 'u32_field': self.u32_field, 'u64_field': self.u64_field, 'uri_field': self.uri_field, 'url_field': self.url_field, 'variant_field': self.variant_field}
 
     def as_tuple(self):
+        '''
+        Return the fields of this object in declaration order as a tuple.
+
+        :rtype: tuple
+        '''
+
         return (self.required_i32_field, self.required_string_field, self.binary_field, self.bool_field, self.date_time_field, self.decimal_field, self.email_address_field, self.enum_field, self.float_field, self.i8_field, self.i16_field, self.i32_field, self.i64_field, self.string_list_field, self.string_string_map_field, self.string_set_field, self.string_field, self.struct_field, self.u32_field, self.u64_field, self.uri_field, self.url_field, self.variant_field,)
 
     @property
     def binary_field(self):
+        '''
+        :rtype: str
+        '''
+
         return self.__binary_field
 
     @property
     def bool_field(self):
+        '''
+        :rtype: bool
+        '''
+
         return self.__bool_field
 
     @property
     def date_time_field(self):
+        '''
+        :rtype: datetime
+        '''
+
         return self.__date_time_field
 
     @property
     def decimal_field(self):
+        '''
+        :rtype: Decimal
+        '''
+
         return self.__decimal_field
 
     @property
     def email_address_field(self):
+        '''
+        :rtype: str
+        '''
+
         return self.__email_address_field
 
     @property
     def enum_field(self):
+        '''
+        :rtype: thryft_test.protocol.test.protocol_test_enum.ProtocolTestEnum
+        '''
+
         return self.__enum_field
 
     @property
     def float_field(self):
+        '''
+        :rtype: float
+        '''
+
         return self.__float_field
 
     @property
     def i16_field(self):
+        '''
+        :rtype: int
+        '''
+
         return self.__i16_field
 
     @property
     def i32_field(self):
+        '''
+        :rtype: int
+        '''
+
         return self.__i32_field
 
     @property
     def i64_field(self):
+        '''
+        :rtype: int or long
+        '''
+
         return self.__i64_field
 
     @property
     def i8_field(self):
+        '''
+        :rtype: int
+        '''
+
         return self.__i8_field
 
     @classmethod
     def read(cls, iprot):
+        '''
+        Read a new object from the given input protocol and return the object.
+
+        :type iprot: thryft.protocol._input_protocol._InputProtocol
+        :rtype: thryft_test.protocol.test.protocol_test_struct.ProtocolTestStruct
+        '''
+
         init_kwds = {}
 
         iprot.read_struct_begin()
@@ -829,6 +1246,35 @@ class ProtocolTestStruct(object):
         return cls(**init_kwds)
 
     def replace(self, required_i32_field=None, required_string_field=None, binary_field=None, bool_field=None, date_time_field=None, decimal_field=None, email_address_field=None, enum_field=None, float_field=None, i8_field=None, i16_field=None, i32_field=None, i64_field=None, string_list_field=None, string_string_map_field=None, string_set_field=None, string_field=None, struct_field=None, u32_field=None, u64_field=None, uri_field=None, url_field=None, variant_field=None):
+        '''
+        Copy this object, replace one or more fields, and return the copy.
+
+        :type required_i32_field: int or None
+        :type required_string_field: str or None
+        :type binary_field: str or None
+        :type bool_field: bool or None
+        :type date_time_field: datetime or None
+        :type decimal_field: Decimal or None
+        :type email_address_field: str or None
+        :type enum_field: thryft_test.protocol.test.protocol_test_enum.ProtocolTestEnum or None
+        :type float_field: float or None
+        :type i8_field: int or None
+        :type i16_field: int or None
+        :type i32_field: int or None
+        :type i64_field: int or long or None
+        :type string_list_field: tuple(str) or None
+        :type string_string_map_field: dict(str: str) or None
+        :type string_set_field: frozenset(str) or None
+        :type string_field: str or None
+        :type struct_field: thryft_test.protocol.test.nested_protocol_test_struct.NestedProtocolTestStruct or None
+        :type u32_field: int or None
+        :type u64_field: int or long or None
+        :type uri_field: str or None
+        :type url_field: str or None
+        :type variant_field: object or None
+        :rtype: thryft_test.protocol.test.protocol_test_struct.ProtocolTestStruct
+        '''
+
         if required_i32_field is None:
             required_i32_field = self.required_i32_field
         if required_string_field is None:
@@ -879,53 +1325,108 @@ class ProtocolTestStruct(object):
 
     @property
     def required_i32_field(self):
+        '''
+        :rtype: int
+        '''
+
         return self.__required_i32_field
 
     @property
     def required_string_field(self):
+        '''
+        :rtype: str
+        '''
+
         return self.__required_string_field
 
     @property
     def string_field(self):
+        '''
+        :rtype: str
+        '''
+
         return self.__string_field
 
     @property
     def string_list_field(self):
+        '''
+        :rtype: tuple(str)
+        '''
+
         return self.__string_list_field
 
     @property
     def string_set_field(self):
+        '''
+        :rtype: frozenset(str)
+        '''
+
         return self.__string_set_field
 
     @property
     def string_string_map_field(self):
+        '''
+        :rtype: dict(str: str)
+        '''
+
         return self.__string_string_map_field.copy() if self.__string_string_map_field is not None else None
 
     @property
     def struct_field(self):
+        '''
+        :rtype: thryft_test.protocol.test.nested_protocol_test_struct.NestedProtocolTestStruct
+        '''
+
         return self.__struct_field
 
     @property
     def u32_field(self):
+        '''
+        :rtype: int
+        '''
+
         return self.__u32_field
 
     @property
     def u64_field(self):
+        '''
+        :rtype: int or long
+        '''
+
         return self.__u64_field
 
     @property
     def uri_field(self):
+        '''
+        :rtype: str
+        '''
+
         return self.__uri_field
 
     @property
     def url_field(self):
+        '''
+        :rtype: str
+        '''
+
         return self.__url_field
 
     @property
     def variant_field(self):
+        '''
+        :rtype: object
+        '''
+
         return self.__variant_field
 
     def write(self, oprot):
+        '''
+        Write this object to the given output protocol and return self.
+
+        :type oprot: thryft.protocol._output_protocol._OutputProtocol
+        :rtype: thryft_test.protocol.test.protocol_test_struct.ProtocolTestStruct
+        '''
+
         oprot.write_struct_begin('ProtocolTestStruct')
 
         oprot.write_field_begin(name='required_i32_field', type=8, id=1)
