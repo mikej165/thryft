@@ -33,7 +33,7 @@
 from thryft.generator.function import Function
 from thryft.generators.py._py_named_construct import _PyNamedConstruct
 from thryft.generators.py.py_struct_type import PyStructType
-from yutil import indent, pad, upper_camelize
+from yutil import indent, pad, upper_camelize, lpad
 
 
 class PyFunction(Function, _PyNamedConstruct):
@@ -109,14 +109,13 @@ class PyFunction(Function, _PyNamedConstruct):
     def py_protected_abstract_definition(self):
         name = self.py_name()
         parameters = \
-            "\n".join(indent(' ' * 4, (
-                parameter.py_parameter(default_value='None')
+            lpad("\n", "\n".join(indent(' ' * 4, (
+                parameter.py_parameter(required=True)
                 for parameter in self.parameters
-            )))
+            ))))
         return """\
 def _%(name)s(
-    self,
-    %(parameters)s
+    self,%(parameters)s
 ):
     raise NotImplementedError(self.__class__.__module__ + '.' + self.__class__.__name__ + '._%(name)s')
 """ % locals()
@@ -136,10 +135,10 @@ def _%(name)s(
         name = self.py_name()
 
         parameters = \
-            "\n".join(indent(' ' * 4, (
+            lpad("\n", "\n".join(indent(' ' * 4, (
                 parameter.py_parameter(default_value='None')
                 for parameter in self.parameters
-            )))
+            ))))
 
         parameter_checks = \
             pad("\n", "\n".join(indent(' ' * 4,
@@ -182,8 +181,7 @@ if not %(return_type_check)s:
 
         return """\
 def %(name)s(
-    self,
-    %(parameters)s
+    self,%(parameters)s
 ):%(doc)s%(parameter_checks)s
     %(return_prefix)sself._%(name)s(%(call)s)%(return_suffix)s
 """ % locals()

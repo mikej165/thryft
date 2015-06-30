@@ -132,13 +132,15 @@ def %(name)s(self):%(suppress_warnings)s
 self.__%(name)s = %(defensive_copy)s
 """ % locals()
 
-    def py_parameter(self, default_value=None):
+    def py_parameter(self, default_value=None, required=None):
+        if required is None:
+            required = self.required
         suppress_warnings = '  # @ReservedAssignment' if self._py_is_reserved_name(self.py_name()) else ''
         if self.value is not None:
             return self.py_name() + '=' + str(self.py_value()) + ',' + suppress_warnings
         elif default_value is not None:
             return self.py_name() + '=' + str(default_value) + ',' + suppress_warnings
-        elif self.required:
+        elif required:
             return self.py_name() + ',' + suppress_warnings
         else:
             return self.py_name() + '=None,' + suppress_warnings
