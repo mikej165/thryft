@@ -30,9 +30,14 @@
 # OF SUCH DAMAGE.
 # -----------------------------------------------------------------------------
 
+import __builtin__
+
 from yutil import class_qname
 
 
 class _PyConstruct(object):
+    def _py_is_reserved_name(self, name):
+        return hasattr(__builtin__, name)
+
     def py_repr(self):
         raise NotImplementedError(class_qname(self) + '.py_repr')

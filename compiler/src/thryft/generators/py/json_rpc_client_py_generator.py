@@ -68,8 +68,11 @@ class JsonRpcClientPyGenerator(py_generator.PyGenerator):
             else:
                 call_prefix = call_suffix = ''
             name = self.py_name()
-            parameters = ', '.join(['self'] + [parameter.py_parameter()
-                                              for parameter in self.parameters])
+            parameters = \
+                "\n".join(indent(' ' * 4, (
+                    parameter.py_parameter(default_value='None')
+                    for parameter in self.parameters
+                )))
             if len(self.parameters) > 0:
                 parameter_writes = ''.join(parameter.py_write_protocol(value=parameter.py_name())
                                              for parameter in self.parameters)
@@ -84,7 +87,10 @@ oprot.write_struct_begin()
                 construct_params = ''
                 params_value = '{}'
             return """\
-def _%(name)s(%(parameters)s):%(construct_params)s
+def _%(name)s(
+    self,
+%(parameters)s
+):%(construct_params)s
     %(call_prefix)sself.__request(method='%(name)s', params=%(params_value)s)%(call_suffix)s
 """ % locals()
 

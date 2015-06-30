@@ -49,7 +49,7 @@ class _PyCompoundType(_PyType):
             doc = indent(' ' * 4, "\n".join(field.py_sphinx_doc()
                                             for field in self.fields))
             parameters = \
-                ",\n".join(indent(' ' * 4, (
+                "\n".join(indent(' ' * 4, (
                     field.py_parameter(default_value='None')
                     for field in self.fields
                 )))
@@ -173,7 +173,7 @@ class Builder(object):%(sections)s
                 optional_parameters.append(parameter)
             else:
                 required_parameters.append(parameter)
-        parameters = ",\n".join(indent(' ' * 4, required_parameters + optional_parameters))
+        parameters = "\n".join(indent(' ' * 4, required_parameters + optional_parameters))
         initializers = \
             "\n\n".join(indent(' ' * 4,
                 (field.py_initializer()
@@ -346,18 +346,25 @@ def read(cls, iprot):
             field_getter_call = field.py_getter_call()
             field_name = field.py_name()
             field_docs.append(":type %s: %s or None" % (field_name, field.type.py_description()))
-            in_kwds.append("%(field_name)s=None" % locals())
             out_kwds.append("%(field_name)s=%(field_name)s" % locals())
+            suppress_warnings = '  # @ReservedAssignment' if self._py_is_reserved_name(field_name) else ''
             replacements.append("""\
 if %(field_name)s is None:
-    %(field_name)s = self.%(field_getter_call)s
+    %(field_name)s = self.%(field_getter_call)s%(suppress_warnings)s
 """ % locals())
         field_docs = indent(' ' * 4, "\n".join(field_docs))
-        in_kwds = ', '.join(in_kwds)
+        in_kwds = \
+            "\n".join(indent(' ' * 4, (
+                field.py_parameter(default_value='None')
+                for field in self.fields
+            )))
         out_kwds = ', '.join(out_kwds)
         replacements = "\n".join(indent(' ' * 4, replacements))
         return {'replace': """\
-def replace(self, %(in_kwds)s):
+def replace(
+    self,
+%(in_kwds)s
+):
     '''
     Copy this object, replace one or more fields, and return the copy.
 

@@ -108,9 +108,16 @@ class PyFunction(Function, _PyNamedConstruct):
 
     def py_protected_abstract_definition(self):
         name = self.py_name()
-        parameters = ', '.join(['self'] + self.py_parameters())
+        parameters = \
+            "\n".join(indent(' ' * 4, (
+                parameter.py_parameter(default_value='None')
+                for parameter in self.parameters
+            )))
         return """\
-def _%(name)s(%(parameters)s):
+def _%(name)s(
+    self,
+    %(parameters)s
+):
     raise NotImplementedError(self.__class__.__module__ + '.' + self.__class__.__name__ + '._%(name)s')
 """ % locals()
 
@@ -128,7 +135,11 @@ def _%(name)s(%(parameters)s):
 
         name = self.py_name()
 
-        parameters = ', '.join(['self'] + self.py_parameters())
+        parameters = \
+            "\n".join(indent(' ' * 4, (
+                parameter.py_parameter(default_value='None')
+                for parameter in self.parameters
+            )))
 
         parameter_checks = \
             pad("\n", "\n".join(indent(' ' * 4,
@@ -161,8 +172,19 @@ if not %(return_type_check)s:
         else:
             return_prefix = return_suffix = ''
 
+        suppress_warnings = ''
+        if self._py_is_reserved_name(name):
+            suppress_warnings = '  # @ReservedAssignment'
+        for parameter in self.parameters:
+            if self._py_is_reserved_name(parameter.py_name()):
+                suppress_warnings = '  # @ReservedAssignment'
+                break
+
         return """\
-def %(name)s(%(parameters)s):%(doc)s%(parameter_checks)s
+def %(name)s(
+    self,
+    %(parameters)s
+):%(doc)s%(parameter_checks)s
     %(return_prefix)sself._%(name)s(%(call)s)%(return_suffix)s
 """ % locals()
 
