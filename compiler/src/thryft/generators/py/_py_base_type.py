@@ -37,8 +37,14 @@ class _PyBaseType(_PyType):
     def py_check(self, value):
         return "isinstance(%s, %s)" % (value, self.py_name())
 
+    def _py_imports_check(self, caller_stack):
+        return []
+
     def _py_imports_use(self, *args, **kwds):
         return []
+
+    def py_qname(self):
+        return self.py_name()
 
     def py_read_protocol(self):
         name = self.name

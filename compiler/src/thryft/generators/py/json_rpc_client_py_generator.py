@@ -46,12 +46,13 @@ class JsonRpcClientPyGenerator(py_generator.PyGenerator):
     class Function(PyFunction):
         def _py_imports_definition(self, caller_stack):
             imports = []
-            for parameter in self.parameters:
-                imports.extend(parameter.py_imports_use(caller_stack=caller_stack))
+#             for parameter in self.parameters:
+#                 imports.extend(parameter.py_imports_use(caller_stack=caller_stack))
             if self.return_field is not None:
                 imports.extend(self.return_field.py_imports_use(caller_stack=caller_stack))
             for throw in self.throws:
-                imports.extend(throw.py_imports_use(caller_stack=caller_stack))
+                for import_ in throw.py_imports_use(caller_stack=caller_stack):
+                    imports.append(import_ + '  # @UnusedImport')
             return imports
 
         def py_repr(self):

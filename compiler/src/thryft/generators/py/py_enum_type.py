@@ -40,6 +40,9 @@ class PyEnumType(EnumType, _PyType):
         qname = self.py_qname()
         return "isinstance(%(value)s, %(qname)s)" % locals()
 
+    def _py_imports_check(self, caller_stack):
+        return self._py_imports_use(caller_stack)
+
     def _py_imports_definition(self, *args, **kwds):
         return []
 

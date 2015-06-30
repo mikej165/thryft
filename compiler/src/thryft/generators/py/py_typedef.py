@@ -35,6 +35,9 @@ from thryft.generators.py._py_named_construct import _PyNamedConstruct
 
 
 class PyTypedef(Typedef, _PyNamedConstruct):
+    def py_imports_check(self, *args, **kwds):
+        return self.type.py_imports_check(*args, **kwds)
+
     def py_imports_definition(self, *args, **kwds):
         return self.type.py_imports_use(*args, **kwds)
 

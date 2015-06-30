@@ -35,13 +35,15 @@ from yutil import indent
 
 
 class _PySequenceType(_PyContainerType):
-    def _py_imports_definition(self, caller_stack):
-        return self.element_type.py_imports_definition(caller_stack=caller_stack) + \
-               ['from itertools import ifilterfalse']
+#     def _py_imports_definition(self, caller_stack):
+#         return self.element_type.py_imports_definition(caller_stack=caller_stack) + \
+#                ['from itertools import ifilterfalse']
+
+    def _py_imports_check(self, caller_stack):
+        return self.element_type.py_imports_check(caller_stack=caller_stack) + ['from itertools import ifilterfalse']
 
     def _py_imports_use(self, caller_stack):
-        return self.element_type.py_imports_use(caller_stack=caller_stack) + \
-               ['from itertools import ifilterfalse']
+        return []
 
     def _py_name(self):
         raise NotImplementedError

@@ -114,8 +114,11 @@ def %(name)s(self):
     def py_getter_name(self):
         return self.py_name()
 
+    def _py_imports_check(self, caller_stack):
+        return self.type.py_imports_check(caller_stack=caller_stack) + ['import __builtin__']
+
     def _py_imports_use(self, caller_stack):
-        return self.type.py_imports_use(caller_stack=caller_stack) + ['import __builtin__']
+        return self.type.py_imports_use(caller_stack=caller_stack)
 
     def py_initializer(self):
         check = self.py_check()

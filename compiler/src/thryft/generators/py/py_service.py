@@ -45,9 +45,6 @@ class PyService(Service, _PyNamedConstruct):
             imports.extend(function.py_imports_definition(caller_stack=caller_stack))
         return imports
 
-    def _py_imports_use(self, caller_stack):
-        raise NotImplementedError
-
     def _py_methods(self):
         methods = []
         for function in self.functions:

@@ -31,9 +31,61 @@
 # -----------------------------------------------------------------------------
 
 from thryft.generators.py._py_construct import _PyConstruct
+from yutil import class_qname
 
 
 class _PyNamedConstruct(_PyConstruct):
+    def py_imports_check(self, caller_stack=None):
+        if caller_stack is None:
+            caller_stack = []
+        elif self in caller_stack:
+            return []
+        caller_stack.append(self)
+
+        imports = self._py_imports_check(caller_stack=caller_stack)
+
+        assert caller_stack[-1] is self
+        caller_stack.pop(-1)
+
+        return imports
+
+    def _py_imports_check(self, caller_stack):
+        raise NotImplementedError(class_qname(self) + '._py_imports_definition')
+
+    def py_imports_definition(self, caller_stack=None):
+        if caller_stack is None:
+            caller_stack = []
+        elif self in caller_stack:
+            return []
+        caller_stack.append(self)
+
+        imports = self._py_imports_definition(caller_stack=caller_stack)
+
+        assert caller_stack[-1] is self
+        caller_stack.pop(-1)
+
+        return imports
+
+    def _py_imports_definition(self, caller_stack):
+        raise NotImplementedError(class_qname(self) + '._py_imports_definition')
+
+    def py_imports_use(self, caller_stack=None):
+        if caller_stack is None:
+            caller_stack = []
+        elif self in caller_stack:
+            return []
+        caller_stack.append(self)
+
+        imports = self._py_imports_use(caller_stack=caller_stack)
+
+        assert caller_stack[-1] is self
+        caller_stack.pop(-1)
+
+        return imports
+
+    def _py_imports_use(self, caller_stack):
+        raise NotImplementedError(class_qname(self) + '._py_imports_use')
+
     def py_name(self):
         return getattr(self, 'name')
 

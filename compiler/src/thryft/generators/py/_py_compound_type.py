@@ -194,14 +194,18 @@ def __init__(
     def _py_extends(self):
         return ['object']
 
+    def _py_imports_check(self, caller_stack):
+        return self._py_imports_use(caller_stack)
+
     def _py_imports_definition(self, caller_stack):
         imports = []
         for field in self.fields:
             imports.extend(field.py_imports_use(caller_stack=caller_stack))
+            imports.extend(field.py_imports_check(caller_stack=caller_stack))
         return imports
 
     def _py_imports_use(self, caller_stack):
-        return ['import ' + self.py_qname().rsplit('.', 1)[0] + '  # @UnusedImport']
+        return ['import ' + self.py_qname().rsplit('.', 1)[0]]
 
     def _py_method_as_dict(self):
         return {'as_dict': """\

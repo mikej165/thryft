@@ -90,14 +90,11 @@ class PyFunction(Function, _PyNamedConstruct):
     def _py_imports_definition(self, caller_stack):
         imports = []
         for parameter in self.parameters:
-            imports.extend(parameter.py_imports_use(caller_stack=caller_stack))
+            imports.extend(parameter.py_imports_check(caller_stack=caller_stack))
         if self.return_field is not None:
-            imports.extend(self.return_field.py_imports_use(caller_stack=caller_stack))
+            imports.extend(self.return_field.py_imports_check(caller_stack=caller_stack))
         imports.append('import __builtin__')
         return imports
-
-    def _py_imports_use(self, caller_stack):
-        raise NotImplementedError
 
     def py_parameters(self):
         parameters = []

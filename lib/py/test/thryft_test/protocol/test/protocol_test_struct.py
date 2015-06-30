@@ -2,7 +2,8 @@ from __future__ import absolute_import; import decimal
 from datetime import datetime
 from itertools import ifilterfalse
 import __builtin__
-import thryft_test.protocol.test.nested_protocol_test_struct  # @UnusedImport
+import thryft.native.variant
+import thryft_test.protocol.test.nested_protocol_test_struct
 import thryft_test.protocol.test.protocol_test_enum
 
 

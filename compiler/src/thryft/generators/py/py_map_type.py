@@ -48,16 +48,20 @@ class PyMapType(MapType, _PyContainerType):
         return "dict(%s: %s)" % (self.key_type.py_description(), self.value_type.py_description())
 
     def _py_imports_definition(self, caller_stack):
-        imports = list(self.key_type.py_imports_definition(caller_stack=caller_stack))
-        imports.extend(self.value_type.py_imports_definition(caller_stack=caller_stack))
-        imports.append('from itertools import ifilterfalse')
+        raise NotImplementedError
+#         imports = list(self.key_type.py_imports_definition(caller_stack=caller_stack))
+#         imports.extend(self.value_type.py_imports_definition(caller_stack=caller_stack))
+#         imports.append('from itertools import ifilterfalse')
+#         return imports
+
+    def _py_imports_check(self, caller_stack):
+        imports = ['from itertools import ifilterfalse']
+        imports.extend(self.key_type.py_imports_check(caller_stack=caller_stack))
+        imports.extend(self.value_type.py_imports_check(caller_stack=caller_stack))
         return imports
 
     def _py_imports_use(self, caller_stack):
-        imports = ['from itertools import ifilterfalse']
-        imports.extend(self.key_type.py_imports_use(caller_stack=caller_stack))
-        imports.extend(self.value_type.py_imports_use(caller_stack=caller_stack))
-        return imports
+        return []
 
     def py_literal(self, value):
         return "{%s}" % ', '.join(self.key_type.py_literal(key) + ':' + self.value_type.py_literal(value_) for key, value_ in value.iteritems())
