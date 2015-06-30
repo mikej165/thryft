@@ -81,9 +81,10 @@ if %(name)s is not None:
         doc = self.py_sphinx_doc()
         name = self.py_name()
         setter_name = self.py_setter_name()
+        suppress_warnings = '  # @ReservedAssignment' if self._py_is_reserved_name(name) else ''
         return """\
 @%(name)s.setter
-def %(decorated_setter_name)s(self, %(name)s):
+def %(decorated_setter_name)s(self, %(name)s):%(suppress_warnings)s
     '''
     %(doc)s
     '''
@@ -98,9 +99,11 @@ def %(decorated_setter_name)s(self, %(name)s):
         name = self.py_name()
         defensive_copy = self.type.py_defensive_copy('self.__' + name)
         type_description = self.type.py_description()
+        suppress_warnings = '  # @ReservedAssignment' if self._py_is_reserved_name(name) else ''
+
         return """\
 @property
-def %(name)s(self):
+def %(name)s(self):%(suppress_warnings)s
     '''
     :rtype: %(type_description)s
     '''
@@ -129,15 +132,18 @@ def %(name)s(self):
 self.__%(name)s = %(defensive_copy)s
 """ % locals()
 
-    def py_parameter(self, default_value=None):
+    def py_parameter(self, default_value=None, required=None):
+        if required is None:
+            required = self.required
+        suppress_warnings = '  # @ReservedAssignment' if self._py_is_reserved_name(self.py_name()) else ''
         if self.value is not None:
-            return self.py_name() + '=' + str(self.py_value())
+            return self.py_name() + '=' + str(self.py_value()) + ',' + suppress_warnings
         elif default_value is not None:
-            return self.py_name() + '=' + str(default_value)
-        elif self.required:
-            return self.py_name()
+            return self.py_name() + '=' + str(default_value) + ',' + suppress_warnings
+        elif required:
+            return self.py_name() + ',' + suppress_warnings
         else:
-            return self.py_name() + '=None'
+            return self.py_name() + '=None,' + suppress_warnings
 
     def py_read_protocol(self):
         id_check = (' and ifield_id == ' + str(self.id)) if self.id is not None else ''
@@ -168,8 +174,9 @@ if ifield_name == '%(name)s'%(id_check)s:
         doc = self.py_sphinx_doc()
         setter_name = self.py_setter_name()
         name = self.py_name()
+        suppress_warnings = '  # @ReservedAssignment' if self._py_is_reserved_name(name) else ''
         return """\
-def %(setter_name)s(self, %(name)s):
+def %(setter_name)s(self, %(name)s):%(suppress_warnings)s
     '''
     %(doc)s
     '''

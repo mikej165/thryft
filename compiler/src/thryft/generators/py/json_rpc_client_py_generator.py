@@ -34,7 +34,7 @@ from thryft.generator._base_type import _BaseType
 from thryft.generators.py import py_generator
 from thryft.generators.py.py_function import PyFunction
 from thryft.generators.py.py_service import PyService
-from yutil import indent, decamelize
+from yutil import indent, decamelize, lpad
 
 
 class JsonRpcClientPyGenerator(py_generator.PyGenerator):
@@ -68,8 +68,11 @@ class JsonRpcClientPyGenerator(py_generator.PyGenerator):
             else:
                 call_prefix = call_suffix = ''
             name = self.py_name()
-            parameters = ', '.join(['self'] + [parameter.py_parameter()
-                                              for parameter in self.parameters])
+            parameters = \
+                lpad("\n", "\n".join(indent(' ' * 4, (
+                    parameter.py_parameter(required=True)
+                    for parameter in self.parameters
+                ))))
             if len(self.parameters) > 0:
                 parameter_writes = ''.join(parameter.py_write_protocol(value=parameter.py_name())
                                              for parameter in self.parameters)
@@ -84,7 +87,9 @@ oprot.write_struct_begin()
                 construct_params = ''
                 params_value = '{}'
             return """\
-def _%(name)s(%(parameters)s):%(construct_params)s
+def _%(name)s(
+    self,%(parameters)s
+):%(construct_params)s
     %(call_prefix)sself.__request(method='%(name)s', params=%(params_value)s)%(call_suffix)s
 """ % locals()
 
@@ -94,7 +99,6 @@ def _%(name)s(%(parameters)s):%(construct_params)s
                     'import ' + PyService.py_qname(self).rsplit('.', 1)[0],
                     'import thryft.protocol.builtins_input_protocol',
                     'import thryft.protocol.builtins_output_protocol',
-                    'import thryft.protocol.json_input_protocol',
                     'from urlparse import urlparse',
                     'import base64',
                     'import json',
@@ -102,6 +106,8 @@ def _%(name)s(%(parameters)s):%(construct_params)s
             ]
             for function in self.functions:
                 imports.extend(function.py_imports_definition(caller_stack=caller_stack))
+                if function.return_field is not None:
+                    imports.append('import thryft.protocol.json_input_protocol')
             imports.extend(self._parent_generator()._service_imports_definition)
             return imports
 

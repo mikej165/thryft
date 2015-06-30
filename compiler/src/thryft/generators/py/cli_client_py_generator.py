@@ -175,10 +175,7 @@ def main(cls):
 
         def py_repr(self):
             name = self.py_name()
-            return """\
-#!/usr/bin/env python
-
-""" + JsonRpcClientPyGenerator.Service.py_repr(self) + """
+            return JsonRpcClientPyGenerator.Service.py_repr(self) + """
 assert __name__ == '__main__'
 %(name)s.main()
 
