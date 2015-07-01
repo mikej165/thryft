@@ -61,8 +61,14 @@ class u64(object):
     def java_equals(self, this_value, other_value):
         return "%(this_value)s.equals(%(other_value)s)" % locals()
 
+    def java_from_string(self, value):
+        return "com.google.common.primitives.UnsignedLong.valueOf(%(value)s)" % locals()
+
     def java_hash_code(self, value, **kwds):
         return "%(value)s.hashCode()" % locals()
+
+    def java_literal(self, value):
+        return "com.google.common.primitives.UnsignedLong.valueOf(%s)" % value
 
     def java_name(self, boxed=False):
         return 'com.google.common.primitives.UnsignedLong'

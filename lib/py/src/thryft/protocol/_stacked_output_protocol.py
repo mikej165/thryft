@@ -73,4 +73,10 @@ class _StackedOutputProtocol(_AbstractOutputProtocol):
         self._output_protocol_stack.pop(-1)
         self._output_protocol_stack[-1].write_struct_end()
 
+    def write_u32(self, value):
+        self._output_protocol_stack[-1].write_u32(value)
+
+    def write_u64(self, value):
+        self._output_protocol_stack[-1].write_u64(value)
+
     # Do not include write_variant

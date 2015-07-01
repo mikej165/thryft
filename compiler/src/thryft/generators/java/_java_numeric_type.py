@@ -45,12 +45,6 @@ class _JavaNumericType(_JavaBaseType):
         boxed_name = self.java_name(boxed=True)
         return "%(boxed_name)s.parse%(boxed_name)s(%(value)s)" % locals()
 
-    def java_min_value(self):
-        return self.java_name(boxed=True) + '.MIN_VALUE'
-
-    def java_max_value(self):
-        return self.java_name(boxed=True) + '.MAX_VALUE'
-
     def java_read_protocol_throws_unchecked(self):
         return ['NumberFormatException']
 

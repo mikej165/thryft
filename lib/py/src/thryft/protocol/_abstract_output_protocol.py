@@ -54,6 +54,12 @@ class _AbstractOutputProtocol(_OutputProtocol):
     def write_set_end(self):
         self.write_list_end()
 
+    def write_u32(self, u32):
+        self.write_i32(u32)
+
+    def write_u64(self, u64):
+        self.write_u64(u64)
+
     def write_variant(self, object_):
         if object_ is None:
             self.write_null()
