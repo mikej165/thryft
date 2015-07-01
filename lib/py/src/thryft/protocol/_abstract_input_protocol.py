@@ -83,3 +83,16 @@ class _AbstractInputProtocol(_InputProtocol):
 
     def read_struct_end(self):
         pass
+
+    def read_u32(self):
+        value = self.read_i32()
+        if value < 0:
+            raise ValueError('u32 value is < 0')
+        return value
+
+    def read_u64(self):
+        value = self.read_u64()
+        if value < 0:
+            raise ValueError('u64 value is < 0')
+        return value
+

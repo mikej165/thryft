@@ -70,4 +70,10 @@ class _StackedInputProtocol(_InputProtocol):
         self._input_protocol_stack.pop(-1)
         return self._input_protocol_stack[-1].read_struct_end()
 
+    def read_u32(self):
+        return self._input_protocol_stack[-1].read_u32()
+
+    def read_u64(self):
+        return self._input_protocol_stack[-1].read_u64()
+
     # Do not include read_variant
