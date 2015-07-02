@@ -48,8 +48,7 @@ import com.google.common.primitives.UnsignedInteger;
 import com.google.common.primitives.UnsignedLong;
 
 public abstract class AbstractOutputProtocol implements OutputProtocol {
-    public static void writeVariant(final OutputProtocol oprot,
-            final Object value) throws OutputProtocolException {
+    public static void writeVariant(final OutputProtocol oprot, final Object value) throws OutputProtocolException {
         if (value == null) {
             oprot.writeNull();
         } else if (value instanceof Boolean) {
@@ -74,8 +73,7 @@ public abstract class AbstractOutputProtocol implements OutputProtocol {
             @SuppressWarnings("unchecked")
             final ImmutableMap<Object, Object> map = (ImmutableMap<Object, Object>) value;
             oprot.writeMapBegin(Type.VOID_, Type.VOID_, map.size());
-            for (final ImmutableMap.Entry<Object, Object> entry : map
-                    .entrySet()) {
+            for (final ImmutableMap.Entry<Object, Object> entry : map.entrySet()) {
                 oprot.writeVariant(entry.getKey());
                 oprot.writeVariant(entry.getValue());
             }
@@ -98,6 +96,10 @@ public abstract class AbstractOutputProtocol implements OutputProtocol {
             oprot.writeI64((Long) value);
         } else if (value instanceof String) {
             oprot.writeString((String) value);
+        } else if (value instanceof UnsignedInteger) {
+            oprot.writeU32((UnsignedInteger) value);
+        } else if (value instanceof UnsignedLong) {
+            oprot.writeU64((UnsignedLong) value);
         } else if (value instanceof Uri) {
             oprot.writeString(((Uri) value).toString());
         } else if (value instanceof CompoundType) {
@@ -117,8 +119,7 @@ public abstract class AbstractOutputProtocol implements OutputProtocol {
     }
 
     @Override
-    public void writeDecimal(final BigDecimal value)
-            throws OutputProtocolException {
+    public void writeDecimal(final BigDecimal value) throws OutputProtocolException {
         writeString(value.toString());
     }
 
@@ -128,14 +129,12 @@ public abstract class AbstractOutputProtocol implements OutputProtocol {
     }
 
     @Override
-    public final void writeFieldBegin(final String name, final Type type)
-            throws OutputProtocolException {
+    public final void writeFieldBegin(final String name, final Type type) throws OutputProtocolException {
         writeFieldBegin(name, type, FieldBegin.ABSENT_ID);
     }
 
     @Override
-    public void writeFieldBegin(final String name, final Type type,
-            final short id) throws OutputProtocolException {
+    public void writeFieldBegin(final String name, final Type type, final short id) throws OutputProtocolException {
         throw new UnsupportedOperationException();
     }
 
@@ -150,8 +149,8 @@ public abstract class AbstractOutputProtocol implements OutputProtocol {
     }
 
     @Override
-    public void writeMessageBegin(final String name, final MessageType type,
-            @Nullable final Object id) throws OutputProtocolException {
+    public void writeMessageBegin(final String name, final MessageType type, @Nullable final Object id)
+            throws OutputProtocolException {
         throw new UnsupportedOperationException();
     }
 
@@ -161,8 +160,7 @@ public abstract class AbstractOutputProtocol implements OutputProtocol {
     }
 
     @Override
-    public void writeSetBegin(final Type elementType, final int size)
-            throws OutputProtocolException {
+    public void writeSetBegin(final Type elementType, final int size) throws OutputProtocolException {
         writeListBegin(elementType, size);
     }
 
@@ -172,14 +170,12 @@ public abstract class AbstractOutputProtocol implements OutputProtocol {
     }
 
     @Override
-    public void writeU32(final UnsignedInteger value)
-            throws OutputProtocolException {
+    public void writeU32(final UnsignedInteger value) throws OutputProtocolException {
         writeI32(value.intValue());
     }
 
     @Override
-    public void writeU64(final UnsignedLong value)
-            throws OutputProtocolException {
+    public void writeU64(final UnsignedLong value) throws OutputProtocolException {
         writeI64(value.longValue());
     }
 
