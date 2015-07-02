@@ -117,7 +117,7 @@ if (typeof %(value)s !== "string") {
         return """oprot.writeU32(%(value)s);""" % locals()
 
     def py_check(self, value):
-        return "isinstance(%(value)s, int) and %(value)s >= 0" % locals()
+        return "isinstance(%(value)s, (int, long)) and %(value)s >= 0" % locals()
 
     def py_imports_definition(self, caller_stack=None):
         return []
