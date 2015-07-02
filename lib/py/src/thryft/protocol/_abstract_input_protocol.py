@@ -91,7 +91,7 @@ class _AbstractInputProtocol(_InputProtocol):
         return value
 
     def read_u64(self):
-        value = self.read_u64()
+        value = self.read_i64()
         if value < 0:
             raise ValueError('u64 value is < 0')
         return value
