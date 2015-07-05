@@ -38,5 +38,8 @@ class PyBoolType(BoolType, _PyBaseType):
     def py_check(self, value):
         return "isinstance(%(value)s, bool)" % locals()
 
+    def py_from_string(self, value):
+        return "(%(value)s.lower() == 'true')" % locals()
+
     def py_literal(self, value):
         return str(value)
