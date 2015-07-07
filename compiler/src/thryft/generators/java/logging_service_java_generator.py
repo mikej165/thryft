@@ -33,7 +33,7 @@
 from thryft.generators.java import java_generator
 from thryft.generators.java._java_container_type import _JavaContainerType
 from thryft.generators.java.java_struct_type import JavaStructType
-from yutil import indent, lpad
+from yutil import indent, lpad, decamelize
 from thryft.compiler.ast import Ast
 from thryft.compiler.parser import Parser
 
@@ -74,6 +74,8 @@ class LoggingServiceJavaGenerator(java_generator.JavaGenerator):
                 local_declarations.append('org.thryft.protocol.LogMessageOutputProtocol __logMessageProtocol;')
             local_declarations.append('final StringBuilder __logMessageStringBuilder = new StringBuilder();')
             local_declarations = "\n".join(indent(' ' * 4, local_declarations))
+
+            marker = 'Markers.' + self.java_marker_name()
 
             if self._parent_generator()._include_current_user:
                 log_current_user = lpad("\n\n", """\
@@ -139,13 +141,13 @@ try {
 } catch (final org.thryft.protocol.OutputProtocolException e) {
     __logMessageStringBuilder.append("(serialization error)");
 }
-logger.%(call_log_level)s(__logMessageStringBuilder.toString());
+logger.%(call_log_level)s(%(marker)s, __logMessageStringBuilder.toString());
 
 return __returnValue;
 """ % locals()
             else:
                 service_call += """
-logger.%(call_log_level)s(__logMessageStringBuilder.toString());
+logger.%(call_log_level)s(%(marker)s, __logMessageStringBuilder.toString());
 """ % locals()
             service_call = indent(' ' * 4, service_call)
             if len(self.throws) > 0:
@@ -159,9 +161,9 @@ logger.%(call_log_level)s(__logMessageStringBuilder.toString());
                     catches.append("""\
 catch (final %s e) {
         __logMessageStringBuilder.append(" -> ");
-        logger.%s(__logMessageStringBuilder.toString(), e);
+        logger.%s(%s, __logMessageStringBuilder.toString(), e);
         throw e;
-    }""" % (throw.type.java_declaration_name(), exception_log_level))
+    }""" % (throw.type.java_declaration_name(), exception_log_level, marker))
                 service_call = """\
     try {
 %s
@@ -182,6 +184,9 @@ public %(return_type_name)s %(java_name)s(%(parameters)s)%(throws)s {
 %(service_call)s
 }""" % locals()]
 
+        def java_marker_name(self):
+            return decamelize(self.parent.name).upper() + '_' + self.name.upper()
+
     class Service(java_generator.JavaGenerator.Service):
         def java_name(self, boxed=False):
             return 'Logging' + java_generator.JavaGenerator.Service.java_name(self)
@@ -193,6 +198,17 @@ public %(return_type_name)s %(java_name)s(%(parameters)s)%(throws)s {
 @com.google.inject.Inject
 public %(name)s(@com.google.inject.name.Named("impl") final %(service_qname)s service) {
     this.service = service;
+}""" % locals()
+
+        def __java_markers(self):
+            markers = []
+            for function in self.functions:
+                marker_name = function.java_marker_name()
+                markers.append("public final static org.slf4j.Marker %(marker_name)s = org.slf4j.MarkerFactory.getMarker(\"%(marker_name)s\");" % locals())
+            markers = "\n".join(indent(' ' * 4, markers))
+            return """\
+private final static class Markers {
+%(markers)s
 }""" % locals()
 
         def _java_member_declarations(self):
@@ -214,6 +230,7 @@ public %(name)s(@com.google.inject.name.Named("impl") final %(service_qname)s se
 
             sections = []
             sections.append("\n\n".join([self._java_constructor()] + self._java_methods()))
+            sections.append(self.__java_markers())
             sections.append("\n".join(self._java_member_declarations()))
             sections = "\n\n".join(indent(' ' * 4, sections))
 
