@@ -43,8 +43,7 @@ import com.google.common.primitives.UnsignedLong;
 
 @GwtIncompatible("")
 public final class LogMessageOutputProtocol implements OutputProtocol {
-    public LogMessageOutputProtocol(final Writer writer)
-            throws OutputProtocolException {
+    public LogMessageOutputProtocol(final Writer writer) throws OutputProtocolException {
         delegate = new JacksonJsonOutputProtocol(writer);
     }
 
@@ -82,8 +81,7 @@ public final class LogMessageOutputProtocol implements OutputProtocol {
     }
 
     @Override
-    public void writeDecimal(final BigDecimal value)
-            throws OutputProtocolException {
+    public void writeDecimal(final BigDecimal value) throws OutputProtocolException {
         if (__writeValueBegin()) {
             delegate.writeDecimal(value);
         }
@@ -104,14 +102,12 @@ public final class LogMessageOutputProtocol implements OutputProtocol {
     }
 
     @Override
-    public void writeFieldBegin(final String name, final Type type)
-            throws OutputProtocolException {
+    public void writeFieldBegin(final String name, final Type type) throws OutputProtocolException {
         delegate.writeFieldBegin(name, type);
     }
 
     @Override
-    public void writeFieldBegin(final String name, final Type type,
-            final short id) throws OutputProtocolException {
+    public void writeFieldBegin(final String name, final Type type, final short id) throws OutputProtocolException {
         delegate.writeFieldBegin(name, type, id);
     }
 
@@ -147,8 +143,7 @@ public final class LogMessageOutputProtocol implements OutputProtocol {
     }
 
     @Override
-    public void writeListBegin(final Type elementType, final int size)
-            throws OutputProtocolException {
+    public void writeListBegin(final Type elementType, final int size) throws OutputProtocolException {
         sizeStack.push(0);
         delegate.writeListBegin(elementType, size);
     }
@@ -160,8 +155,7 @@ public final class LogMessageOutputProtocol implements OutputProtocol {
     }
 
     @Override
-    public void writeMapBegin(final Type keyType, final Type valueType,
-            final int size) throws OutputProtocolException {
+    public void writeMapBegin(final Type keyType, final Type valueType, final int size) throws OutputProtocolException {
         sizeStack.push(0);
         delegate.writeMapBegin(keyType, valueType, size);
     }
@@ -173,8 +167,8 @@ public final class LogMessageOutputProtocol implements OutputProtocol {
     }
 
     @Override
-    public void writeMessageBegin(final String name, final MessageType type,
-            final Object id) throws OutputProtocolException {
+    public void writeMessageBegin(final String name, final MessageType type, final Object id)
+            throws OutputProtocolException {
         delegate.writeMessageBegin(name, type, id);
     }
 
@@ -191,8 +185,7 @@ public final class LogMessageOutputProtocol implements OutputProtocol {
     }
 
     @Override
-    public void writeSetBegin(final Type elementType, final int size)
-            throws OutputProtocolException {
+    public void writeSetBegin(final Type elementType, final int size) throws OutputProtocolException {
         sizeStack.push(0);
         delegate.writeSetBegin(elementType, size);
     }
@@ -215,8 +208,7 @@ public final class LogMessageOutputProtocol implements OutputProtocol {
     }
 
     @Override
-    public void writeStructBegin(final String name)
-            throws OutputProtocolException {
+    public void writeStructBegin(final String name) throws OutputProtocolException {
         sizeStack.push(null);
         delegate.writeStructBegin(name);
     }
@@ -228,16 +220,14 @@ public final class LogMessageOutputProtocol implements OutputProtocol {
     }
 
     @Override
-    public void writeU32(final UnsignedInteger value)
-            throws OutputProtocolException {
+    public void writeU32(final UnsignedInteger value) throws OutputProtocolException {
         if (__writeValueBegin()) {
             delegate.writeU32(value);
         }
     }
 
     @Override
-    public void writeU64(final UnsignedLong value)
-            throws OutputProtocolException {
+    public void writeU64(final UnsignedLong value) throws OutputProtocolException {
         if (__writeValueBegin()) {
             delegate.writeU64(value);
         }
@@ -251,17 +241,18 @@ public final class LogMessageOutputProtocol implements OutputProtocol {
     }
 
     private boolean __writeValueBegin() {
-        if (sizeStack.isEmpty()) {
-            return true;
-        } else if (sizeStack.peek() == null) {
-            // Struct
-            return true;
-        } else if (sizeStack.peek() < CONTAINER_SIZE_MAX) {
-            sizeStack.push(sizeStack.pop() + 1);
-            return true;
-        } else {
-            return false;
-        }
+        return true;
+        // if (sizeStack.isEmpty()) {
+        // return true;
+        // } else if (sizeStack.peek() == null) {
+        // // Struct
+        // return true;
+        // } else if (sizeStack.peek() < CONTAINER_SIZE_MAX) {
+        // sizeStack.push(sizeStack.pop() + 1);
+        // return true;
+        // } else {
+        // return false;
+        // }
     }
 
     private final JacksonJsonOutputProtocol delegate;
