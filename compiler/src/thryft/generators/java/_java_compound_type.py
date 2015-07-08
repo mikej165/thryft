@@ -396,9 +396,10 @@ public %(name)s(%(parameters)s) {
         enumerators = []
         for field in self.fields:
             field_id = field.id if field.id is not None else 0
+            field_required = 'true' if field.required else 'false'
             field_thrift_name = field.name
             enumerator_name = field.name.upper()
-            enumerators.append("%(enumerator_name)s(%(field_id)d, \"%(field_thrift_name)s\")" % locals())
+            enumerators.append("%(enumerator_name)s(%(field_id)d, %(field_required)s, \"%(field_thrift_name)s\")" % locals())
         enumerators = pad("\n", indent(' ' * 4, ",\n".join(enumerators)), ";\n")
         return """\
 public enum Field {%(enumerators)s
@@ -418,18 +419,24 @@ public enum Field {%(enumerators)s
         return id != org.thryft.protocol.FieldBegin.ABSENT_ID;
     }
 
-    private Field(final int id, final String thriftName) {
+    public boolean isRequired()  {
+        return required;
+    }
+
+    private Field(final int id, final boolean required, final String thriftName) {
         this.id = id;
         if (id != org.thryft.protocol.FieldBegin.ABSENT_ID) {
             this.protocolKey = Integer.toString(id) + ":" + thriftName;
         } else {
             this.protocolKey = thriftName;
         }
+        this.required = required;
         this.thriftName = thriftName;
     }
 
     private final int id;
     private final String protocolKey;
+    private final boolean required;
     private final String thriftName;
 }""" % locals()
 
@@ -597,7 +604,7 @@ public static %(name)s readAsStruct(final org.thryft.protocol.InputProtocol ipro
     def _java_method_read_as_struct_body(self):
         field_protocol_named_initializers = []
         for field in self.fields:
-            field_id_check = (" && ifield.getId() == %d" % field.id) if field.id is not None else ''
+            field_id_check = (" && (!ifield.hasId() || ifield.getId() == %d)" % field.id) if field.id is not None else ''
             field_name = field.name
             field_protocol_initializer = indent(' ' * 4, field.java_protocol_initializer())
             field_protocol_named_initializers.append("""\

@@ -25,7 +25,7 @@ class NestedProtocolTestStruct(object):
             string_string_map_field=None,
             string_set_field=None,
             string_field=None,
-            url_field=None
+            url_field=None,
         ):
             '''
             :type required_i32_field: int
@@ -540,7 +540,7 @@ class NestedProtocolTestStruct(object):
         string_string_map_field=None,
         string_set_field=None,
         string_field=None,
-        url_field=None
+        url_field=None,
     ):
         '''
         :type required_i32_field: int
@@ -960,7 +960,26 @@ class NestedProtocolTestStruct(object):
 
         return cls(**init_kwds)
 
-    def replace(self, required_i32_field=None, required_string_field=None, binary_field=None, bool_field=None, byte_field=None, date_time_field=None, decimal_field=None, email_address_field=None, enum_field=None, i16_field=None, i32_field=None, i64_field=None, string_list_field=None, string_string_map_field=None, string_set_field=None, string_field=None, url_field=None):
+    def replace(
+        self,
+        required_i32_field=None,
+        required_string_field=None,
+        binary_field=None,
+        bool_field=None,
+        byte_field=None,
+        date_time_field=None,
+        decimal_field=None,
+        email_address_field=None,
+        enum_field=None,
+        i16_field=None,
+        i32_field=None,
+        i64_field=None,
+        string_list_field=None,
+        string_string_map_field=None,
+        string_set_field=None,
+        string_field=None,
+        url_field=None,
+    ):
         '''
         Copy this object, replace one or more fields, and return the copy.
 

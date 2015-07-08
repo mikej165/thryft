@@ -33,7 +33,7 @@ class ProtocolTestStruct(object):
             u64_field=None,
             uri_field=None,
             url_field=None,
-            variant_field=None
+            variant_field=None,
         ):
             '''
             :type required_i32_field: int
@@ -722,7 +722,7 @@ class ProtocolTestStruct(object):
         u64_field=None,
         uri_field=None,
         url_field=None,
-        variant_field=None
+        variant_field=None,
     ):
         '''
         :type required_i32_field: int
@@ -847,12 +847,12 @@ class ProtocolTestStruct(object):
         self.__struct_field = struct_field
 
         if u32_field is not None:
-            if not isinstance(u32_field, int) and u32_field >= 0:
+            if not isinstance(u32_field, (int, long)) and u32_field >= 0:
                 raise TypeError("expected u32_field to be a int but it is a %s" % getattr(__builtin__, 'type')(u32_field))
         self.__u32_field = u32_field
 
         if u64_field is not None:
-            if not isinstance(u64_field, long) and u64_field >= 0:
+            if not isinstance(u64_field, (int, long)) and u64_field >= 0:
                 raise TypeError("expected u64_field to be a int or long but it is a %s" % getattr(__builtin__, 'type')(u64_field))
         self.__u64_field = u64_field
 
@@ -1246,7 +1246,32 @@ class ProtocolTestStruct(object):
 
         return cls(**init_kwds)
 
-    def replace(self, required_i32_field=None, required_string_field=None, binary_field=None, bool_field=None, date_time_field=None, decimal_field=None, email_address_field=None, enum_field=None, float_field=None, i8_field=None, i16_field=None, i32_field=None, i64_field=None, string_list_field=None, string_string_map_field=None, string_set_field=None, string_field=None, struct_field=None, u32_field=None, u64_field=None, uri_field=None, url_field=None, variant_field=None):
+    def replace(
+        self,
+        required_i32_field=None,
+        required_string_field=None,
+        binary_field=None,
+        bool_field=None,
+        date_time_field=None,
+        decimal_field=None,
+        email_address_field=None,
+        enum_field=None,
+        float_field=None,
+        i8_field=None,
+        i16_field=None,
+        i32_field=None,
+        i64_field=None,
+        string_list_field=None,
+        string_string_map_field=None,
+        string_set_field=None,
+        string_field=None,
+        struct_field=None,
+        u32_field=None,
+        u64_field=None,
+        uri_field=None,
+        url_field=None,
+        variant_field=None,
+    ):
         '''
         Copy this object, replace one or more fields, and return the copy.
 

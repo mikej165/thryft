@@ -702,23 +702,23 @@ public class NestedProtocolTestStruct implements org.thryft.Struct, java.lang.Co
     }
 
     public enum Field {
-        REQUIRED_I32_FIELD(0, "required_i32_field"),
-        REQUIRED_STRING_FIELD(0, "required_string_field"),
-        BINARY_FIELD(0, "binary_field"),
-        BOOL_FIELD(0, "bool_field"),
-        BYTE_FIELD(0, "byte_field"),
-        DATE_TIME_FIELD(0, "date_time_field"),
-        DECIMAL_FIELD(0, "decimal_field"),
-        EMAIL_ADDRESS_FIELD(0, "email_address_field"),
-        ENUM_FIELD(0, "enum_field"),
-        I16_FIELD(0, "i16_field"),
-        I32_FIELD(0, "i32_field"),
-        I64_FIELD(0, "i64_field"),
-        STRING_LIST_FIELD(0, "string_list_field"),
-        STRING_STRING_MAP_FIELD(0, "string_string_map_field"),
-        STRING_SET_FIELD(0, "string_set_field"),
-        STRING_FIELD(0, "string_field"),
-        URL_FIELD(0, "url_field");
+        REQUIRED_I32_FIELD(0, true, "required_i32_field"),
+        REQUIRED_STRING_FIELD(0, true, "required_string_field"),
+        BINARY_FIELD(0, false, "binary_field"),
+        BOOL_FIELD(0, false, "bool_field"),
+        BYTE_FIELD(0, false, "byte_field"),
+        DATE_TIME_FIELD(0, false, "date_time_field"),
+        DECIMAL_FIELD(0, false, "decimal_field"),
+        EMAIL_ADDRESS_FIELD(0, false, "email_address_field"),
+        ENUM_FIELD(0, false, "enum_field"),
+        I16_FIELD(0, false, "i16_field"),
+        I32_FIELD(0, false, "i32_field"),
+        I64_FIELD(0, false, "i64_field"),
+        STRING_LIST_FIELD(0, false, "string_list_field"),
+        STRING_STRING_MAP_FIELD(0, false, "string_string_map_field"),
+        STRING_SET_FIELD(0, false, "string_set_field"),
+        STRING_FIELD(0, false, "string_field"),
+        URL_FIELD(0, false, "url_field");
 
         public int getId() {
             return id;
@@ -736,18 +736,24 @@ public class NestedProtocolTestStruct implements org.thryft.Struct, java.lang.Co
             return id != org.thryft.protocol.FieldBegin.ABSENT_ID;
         }
 
-        private Field(final int id, final String thriftName) {
+        public boolean isRequired()  {
+            return required;
+        }
+
+        private Field(final int id, final boolean required, final String thriftName) {
             this.id = id;
             if (id != org.thryft.protocol.FieldBegin.ABSENT_ID) {
                 this.protocolKey = Integer.toString(id) + ":" + thriftName;
             } else {
                 this.protocolKey = thriftName;
             }
+            this.required = required;
             this.thriftName = thriftName;
         }
 
         private final int id;
         private final String protocolKey;
+        private final boolean required;
         private final String thriftName;
     }
 
