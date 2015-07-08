@@ -394,13 +394,17 @@ public %(name)s(%(parameters)s) {
         if len(self.fields) == 0:
             return None
         enumerators = []
+        thrift_name_cases = []
         for field in self.fields:
             field_id = field.id if field.id is not None else 0
+            field_type = field.type.thrift_ttype_name()
             field_required = 'true' if field.required else 'false'
             field_thrift_name = field.name
             enumerator_name = field.name.upper()
-            enumerators.append("%(enumerator_name)s(%(field_id)d, %(field_required)s, \"%(field_thrift_name)s\")" % locals())
+            enumerators.append("%(enumerator_name)s(%(field_id)d, org.thryft.protocol.Type.%(field_type)s, %(field_required)s, \"%(field_thrift_name)s\")" % locals())
+            thrift_name_cases.append("""case "%(field_thrift_name)s": return %(enumerator_name)s;""" % locals())
         enumerators = pad("\n", indent(' ' * 4, ",\n".join(enumerators)), ";\n")
+        thrift_name_cases = lpad("\n", indent(' ' * 4, "\n".join(thrift_name_cases)))
         return """\
 public enum Field {%(enumerators)s
     public int getId() {
@@ -409,6 +413,10 @@ public enum Field {%(enumerators)s
 
     public String getProtocolKey() {
         return protocolKey;
+    }
+
+    public org.thryft.protocol.Type getProtocolType() {
+        return protocolType;
     }
 
     public String getThriftName() {
@@ -423,19 +431,28 @@ public enum Field {%(enumerators)s
         return required;
     }
 
-    private Field(final int id, final boolean required, final String thriftName) {
+    public static Field valueOfThriftName(final String thriftName) {
+        switch (thriftName) {%(thrift_name_cases)s
+        default:
+            throw new IllegalArgumentException(thriftName);
+        }
+    }
+
+    private Field(final int id, final org.thryft.protocol.Type protocolType, final boolean required, final String thriftName) {
         this.id = id;
         if (id != org.thryft.protocol.FieldBegin.ABSENT_ID) {
             this.protocolKey = Integer.toString(id) + ":" + thriftName;
         } else {
             this.protocolKey = thriftName;
         }
+        this.protocolType = protocolType;
         this.required = required;
         this.thriftName = thriftName;
     }
 
     private final int id;
     private final String protocolKey;
+    private final org.thryft.protocol.Type protocolType;
     private final boolean required;
     private final String thriftName;
 }""" % locals()
