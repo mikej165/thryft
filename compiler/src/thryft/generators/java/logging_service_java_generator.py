@@ -185,7 +185,8 @@ public %(return_type_name)s %(java_name)s(%(parameters)s)%(throws)s {
 }""" % locals()]
 
         def java_marker_name(self):
-            return decamelize(self.parent.name).upper() + '_' + self.name.upper()
+#             return decamelize(self.parent.name).upper() + '_' + self.name.upper()
+            return self.name.upper()
 
         def java_marker_variable_name(self):
             return self.name.upper()
@@ -204,17 +205,27 @@ public %(name)s(@com.google.inject.name.Named("impl") final %(service_qname)s se
 }""" % locals()
 
         def __java_markers(self):
-            markers = []
+            service_marker_variable_name = service_marker_name = decamelize(self.name).upper()
+            add_function_markers = []
+            function_markers = []
             for function in self.functions:
-                markers.append(
+                function_marker_variable_name = function.java_marker_variable_name()
+                function_markers.append(
                     "public final static org.slf4j.Marker %s = org.slf4j.MarkerFactory.getMarker(\"%s\");" % (
-                        function.java_marker_variable_name(),
+                        function_marker_variable_name,
                         function.java_marker_name()
                 ))
-            markers = "\n".join(indent(' ' * 4, markers))
+                add_function_markers.append("%(service_marker_variable_name)s.add(%(function_marker_variable_name)s);" % locals())
+            add_function_markers = "\n".join(indent(' ' * 8, add_function_markers))
+            function_markers = "\n".join(indent(' ' * 4, function_markers))
             return """\
 public final static class Markers {
-%(markers)s
+%(function_markers)s
+
+    public final static org.slf4j.Marker %(service_marker_variable_name)s = org.slf4j.MarkerFactory.getMarker("%(service_marker_name)s");
+    static {
+%(add_function_markers)s
+    }
 }""" % locals()
 
         def _java_member_declarations(self):
