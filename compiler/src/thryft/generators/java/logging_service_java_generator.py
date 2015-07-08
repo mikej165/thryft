@@ -75,7 +75,7 @@ class LoggingServiceJavaGenerator(java_generator.JavaGenerator):
             local_declarations.append('final StringBuilder __logMessageStringBuilder = new StringBuilder();')
             local_declarations = "\n".join(indent(' ' * 4, local_declarations))
 
-            marker = 'Markers.' + self.java_marker_name()
+            marker = 'Markers.' + self.java_marker_variable_name()
 
             if self._parent_generator()._include_current_user:
                 log_current_user = lpad("\n\n", """\
@@ -187,6 +187,9 @@ public %(return_type_name)s %(java_name)s(%(parameters)s)%(throws)s {
         def java_marker_name(self):
             return decamelize(self.parent.name).upper() + '_' + self.name.upper()
 
+        def java_marker_variable_name(self):
+            return self.name.upper()
+
     class Service(java_generator.JavaGenerator.Service):
         def java_name(self, boxed=False):
             return 'Logging' + java_generator.JavaGenerator.Service.java_name(self)
@@ -203,11 +206,14 @@ public %(name)s(@com.google.inject.name.Named("impl") final %(service_qname)s se
         def __java_markers(self):
             markers = []
             for function in self.functions:
-                marker_name = function.java_marker_name()
-                markers.append("public final static org.slf4j.Marker %(marker_name)s = org.slf4j.MarkerFactory.getMarker(\"%(marker_name)s\");" % locals())
+                markers.append(
+                    "public final static org.slf4j.Marker %s = org.slf4j.MarkerFactory.getMarker(\"%s\");" % (
+                        function.java_marker_variable_name(),
+                        function.java_marker_name()
+                ))
             markers = "\n".join(indent(' ' * 4, markers))
             return """\
-private final static class Markers {
+public final static class Markers {
 %(markers)s
 }""" % locals()
 
@@ -229,8 +235,8 @@ private final static class Markers {
             name = self.java_name()
 
             sections = []
-            sections.append("\n\n".join([self._java_constructor()] + self._java_methods()))
             sections.append(self.__java_markers())
+            sections.append("\n\n".join([self._java_constructor()] + self._java_methods()))
             sections.append("\n".join(self._java_member_declarations()))
             sections = "\n\n".join(indent(' ' * 4, sections))
 
