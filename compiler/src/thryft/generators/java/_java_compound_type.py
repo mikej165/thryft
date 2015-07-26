@@ -235,7 +235,7 @@ public %(name)s() {
 }""" % locals()
 
         for field in self.fields:
-            if field.required:
+            if field.required and field.value is None:
                 return None  # Will be covered by total constructor
 
         initializers = \
@@ -269,15 +269,24 @@ public %(name)s(final %(name)s other) {%(this_call)s
     def _java_constructor_required(self):
         if len(self.fields) == 0:
             return None  # Will be covered by default constructor
-        elif len(set([field.required for field in self.fields])) <= 1:
-            # All fields are optional or all fields are required
-            return None  # Will be covered by total constructor
+        else:
+            optional_field_count = 0
+            required_field_count = 0
+            for field in self.fields:
+                if field.required and field.value is None:
+                    required_field_count += 1
+                else:
+                    optional_field_count += 1
+            if optional_field_count == len(self.fields):
+                return None  # Will be covered by total constructor
+            elif required_field_count == len(self.fields):
+                return None  # Will be covered by total constructor
 
         initializers = []
         name = self.java_name()
         parameters = []
         for field in self.fields:
-            if field.required:
+            if field.required and field.value is None:
                 initializers.append(field.java_initializer())
                 parameters.append(field.java_parameter(final=True))
             else:
