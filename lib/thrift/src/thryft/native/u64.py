@@ -68,7 +68,13 @@ class u64(object):
         return "%(value)s.hashCode()" % locals()
 
     def java_literal(self, value):
-        return "com.google.common.primitives.UnsignedLong.valueOf(%s)" % value
+        assert isinstance(value, (int, long))
+        if value == 0:
+            return 'com.google.common.primitives.UnsignedLong.ZERO'
+        elif value == 1:
+            return 'com.google.common.primitives.UnsignedLong.ONE'
+        else:
+            return "com.google.common.primitives.UnsignedLong.valueOf(%s)" % value
 
     def java_name(self, boxed=False):
         return 'com.google.common.primitives.UnsignedLong'

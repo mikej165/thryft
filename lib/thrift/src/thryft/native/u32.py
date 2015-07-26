@@ -69,7 +69,13 @@ class u32(object):
         return True
 
     def java_literal(self, value):
-        return "com.google.common.primitives.UnsignedInteger.valueOf(%s)" % value
+        assert isinstance(value, (int, long))
+        if value == 0:
+            return 'com.google.common.primitives.UnsignedInteger.ZERO'
+        elif value == 1:
+            return 'com.google.common.primitives.UnsignedInteger.ONE'
+        else:
+            return "com.google.common.primitives.UnsignedInteger.valueOf(%s)" % value
 
     def java_name(self, boxed=False):
         return 'com.google.common.primitives.UnsignedInteger'
