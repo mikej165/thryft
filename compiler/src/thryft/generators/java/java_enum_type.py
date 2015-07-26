@@ -45,6 +45,10 @@ class JavaEnumType(EnumType, _JavaType):
     def java_is_reference(self):
         return True
 
+    def java_literal(self, value):
+        qname = self.java_qname()
+        return "%(qname)s.valueOf(\"%(value)s\")" % locals()
+
     def java_read_protocol(self):
         qname = self.java_qname()
         return "iprot.readEnum(%(qname)s.class)" % locals()
