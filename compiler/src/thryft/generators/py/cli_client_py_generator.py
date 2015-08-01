@@ -135,6 +135,13 @@ def %(name)s(__args):%(parse_args)s
 %(name)s_argument_parser.set_defaults(func=%(name)s)
 """ % locals()
 
+        def _py_imports_definition(self, caller_stack):
+            imports = JsonRpcClientPyGenerator.Function._py_imports_definition(self, caller_stack)
+            for parameter in self.parameters:
+                imports.extend(parameter.py_imports_use(caller_stack=caller_stack))
+            return imports
+
+
     class ListType(JsonRpcClientPyGenerator.ListType, _ContainerType):  # @UndefinedVariable
         pass
 
