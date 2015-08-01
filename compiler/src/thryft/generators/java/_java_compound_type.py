@@ -415,27 +415,33 @@ public %(name)s(%(parameters)s) {
         enumerators = pad("\n", indent(' ' * 4, ",\n".join(enumerators)), ";\n")
         thrift_name_cases = lpad("\n", indent(' ' * 4, "\n".join(thrift_name_cases)))
         return """\
-public enum Field {%(enumerators)s
+public enum Field implements org.thryft.CompoundType.Field {%(enumerators)s
+    @Override
     public int getId() {
         return id;
     }
 
+    @Override
     public String getProtocolKey() {
         return protocolKey;
     }
 
+    @Override
     public org.thryft.protocol.Type getProtocolType() {
         return protocolType;
     }
 
+    @Override
     public String getThriftName() {
         return thriftName;
     }
 
+    @Override
     public boolean hasId() {
         return id != org.thryft.protocol.FieldBegin.ABSENT_ID;
     }
 
+    @Override
     public boolean isRequired()  {
         return required;
     }

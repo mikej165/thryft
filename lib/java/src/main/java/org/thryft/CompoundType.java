@@ -4,9 +4,21 @@ import org.thryft.protocol.OutputProtocol;
 import org.thryft.protocol.OutputProtocolException;
 
 public interface CompoundType {
-    public void writeAsList(OutputProtocol oprot)
-            throws OutputProtocolException;
+    public interface Field {
+        public int getId();
 
-    public void writeAsStruct(OutputProtocol oprot)
-            throws OutputProtocolException;
+        public String getProtocolKey();
+
+        public org.thryft.protocol.Type getProtocolType();
+
+        public String getThriftName();
+
+        public boolean hasId();
+
+        public boolean isRequired();
+    }
+
+    public void writeAsList(OutputProtocol oprot) throws OutputProtocolException;
+
+    public void writeAsStruct(OutputProtocol oprot) throws OutputProtocolException;
 }
