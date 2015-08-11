@@ -36,15 +36,11 @@ from thryft.generators.java.java_service import JavaService
 from yutil import indent, lpad, upper_camelize
 
 
-class AbstractServiceJavaGenerator(java_generator.JavaGenerator):
-    def __init__(self, include_current_user=False, **kwds):
-        java_generator.JavaGenerator.__init__(self, **kwds)
-        self._include_current_user = include_current_user
-
+class ValidatingServiceJavaGenerator(java_generator.JavaGenerator):
     class Document(java_generator.JavaGenerator.Document):
         def java_package(self):
             try:
-                return self.namespace_by_scope(('abstract_service_java', 'java')).name
+                return self.namespace_by_scope(('validating_service_java', 'java')).name
             except KeyError:
                 return None
 
@@ -71,18 +67,10 @@ protected void %(validate_method_name)s(%(public_parameters)s) {
                 validate_method_call = lpad("\n", indent(' ' * 4, "%s(%s);" % (validate_method_name, public_parameter_names)))
             else:
                 validate_method = validate_method_call = ''
-            protected_parameters = [parameter.java_parameter(final=True)
-                                    for parameter in self.parameters]
-            protected_parameter_names = [parameter.java_name()
-                                         for parameter in self.parameters]
-            if self.parent.parent.parent._include_current_user:
-                protected_parameters.insert(0, 'org.apache.shiro.subject.Subject currentUser')
-                protected_parameter_names.insert(0, 'org.apache.shiro.SecurityUtils.getSubject()')
-            protected_delegation = \
-                "_%s(%s)" % (name, ', '.join(protected_parameter_names))
-            protected_parameters = ', '.join(protected_parameters)
+            delegation = \
+                "delegate.%s(%s)" % (name, ', '.join(parameter.java_name() for parameter in self.parameters))
             if self.return_field is not None:
-                protected_delegation = 'return ' + self.return_field.java_validation(value=protected_delegation)
+                delegation = 'return ' + self.return_field.java_validation(value=delegation)
                 return_type_name = self.return_field.type.java_declaration_name()
             else:
                 return_type_name = 'void'
@@ -96,15 +84,13 @@ protected void %(validate_method_name)s(%(public_parameters)s) {
             return ["""\
 @Override%(annotations)s
 public final %(return_type_name)s %(name)s(%(public_parameters)s)%(throws)s {%(validate_method_call)s
-    %(protected_delegation)s;
+    %(delegation)s;
 }%(validate_method)s
-
-protected abstract %(return_type_name)s _%(name)s(%(protected_parameters)s)%(throws)s;
 """ % locals()] + self._java_delegating_definitions()
 
     class Service(JavaService):
         def java_name(self, boxed=False):
-            return 'Abstract' + JavaService.java_name(self)
+            return 'Validating' + JavaService.java_name(self)
 
         def _java_methods(self):
             methods = []
@@ -115,9 +101,20 @@ protected abstract %(return_type_name)s _%(name)s(%(protected_parameters)s)%(thr
         def java_repr(self):
             name = self.java_name()
             methods = "\n\n".join(indent(' ' * 4, self._java_methods()))
+            delegate_name = "%s.%s.delegate" % (self._parent_document().java_package(), name)
             service_qname = JavaService.java_qname(self)
 
             return """\
-public abstract class %(name)s implements %(service_qname)s {
+@com.google.inject.Singleton
+public class %(name)s implements %(service_qname)s {
+    public final static com.google.inject.name.Named DELEGATE_NAME = com.google.inject.name.Names.named("%(delegate_name)s");
+
+    @com.google.inject.Inject
+    public %(name)s(@com.google.inject.name.Named("%(delegate_name)s") %(service_qname)s delegate) {
+        this.delegate = com.google.common.base.Preconditions.checkNotNull(delegate);
+    }
+
 %(methods)s
+
+    private final %(service_qname)s delegate;
 }""" % locals()

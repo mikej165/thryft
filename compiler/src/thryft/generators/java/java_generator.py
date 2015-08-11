@@ -55,8 +55,19 @@ class JavaGenerator(Generator):
     from thryft.generators.java.java_string_type import JavaStringType as StringType  # @UnusedImport
     from thryft.generators.java.java_struct_type import JavaStructType as StructType  # @UnusedImport
 
-    def __init__(self, mutable_compound_types=False):
+    def __init__(self, default_methods=False, function_overloads=False, mutable_compound_types=False, **kwds):
+        Generator.__init__(self, **kwds)
+        self.__default_methods = default_methods
+        self.__function_overloads = function_overloads
         self.__mutable_compound_types = mutable_compound_types
+
+    @property
+    def default_methods(self):
+        return self.__default_methods
+
+    @property
+    def function_overloads(self):
+        return self.__function_overloads
 
     @property
     def mutable_compound_types(self):

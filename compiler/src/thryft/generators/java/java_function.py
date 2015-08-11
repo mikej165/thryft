@@ -120,14 +120,18 @@ public %(name)s(final org.thryft.protocol.InputProtocol iprot) throws org.thryft
 
         declarations = []
         for parameters in self._java_overload_parameter_lists():
-            parameters = \
-                ', '.join(parameter.java_parameter(final=True) for parameter in parameters)
-            declarations.append("""\
+            if len(parameters) < len(self.parameters) and self._parent_generator().default_methods:
+                declarations.append(self.__java_delegation_definition(parameters, default=True))
+            else:
+                parameters = \
+                    ', '.join(parameter.java_parameter(final=True) for parameter in parameters)
+                declarations.append("""\
 %(javadoc)spublic %(return_type_name)s %(name)s(%(parameters)s)%(throws)s;""" % locals())
         return declarations
 
-    def _java_delegating_definitions(self):
-        javadoc = self.java_doc()
+    def __java_delegation_definition(self, parameters, default=False):
+        if default:
+            default = 'default '
         name = self.java_name()
         if self.return_field is not None:
             return_prefix = 'return '
@@ -142,23 +146,26 @@ public %(name)s(final org.thryft.protocol.InputProtocol iprot) throws org.thryft
                            for field in self.throws)
             )
 
+        parameters = [parameter.java_parameter(final=True) for parameter in parameters]
+        delegate_values = []
+        for parameter_i, parameter in enumerate(self.parameters):
+            if parameter.required:
+                delegate_values.append(parameter.java_name())
+            elif parameter_i <= len(parameters):
+                delegate_values.append(parameter.java_absent_value())
+        delegate_values = ', '.join(delegate_values)
+        parameters = ', '.join(parameters)
+        return """\
+public %(default)s%(return_type_name)s %(name)s(%(parameters)s)%(throws)s {
+    %(return_prefix)s%(name)s(%(delegate_values)s);
+}""" % locals()
+
+    def _java_delegating_definitions(self):
         definitions = []
         for parameters in self._java_overload_parameter_lists():
             if len(parameters) == len(self.parameters):
                 continue
-            parameters = [parameter.java_parameter(final=True) for parameter in parameters]
-            delegate_values = []
-            for parameter_i, parameter in enumerate(self.parameters):
-                if parameter.required:
-                    delegate_values.append(parameter.java_name())
-                elif parameter_i <= len(parameters):
-                    delegate_values.append(parameter.java_absent_value())
-            delegate_values = ', '.join(delegate_values)
-            parameters = ', '.join(parameters)
-            definitions.append("""\
-%(javadoc)spublic %(return_type_name)s %(name)s(%(parameters)s)%(throws)s {
-    %(return_prefix)s%(name)s(%(delegate_values)s);
-}""" % locals())
+            definitions.append(self.__java_delegation_definition(parameters, default=False))
         return definitions
 
     def java_doc(self):
@@ -200,6 +207,9 @@ public %(name)s(final org.thryft.protocol.InputProtocol iprot) throws org.thryft
         return lower_camelize(self.name)
 
     def _java_overload_parameter_lists(self):
+        if not self._parent_generator().function_overloads:
+            return (self.parameters,)
+
         first_optional_parameter_i = -1
         for parameter_i, parameter in enumerate(self.parameters):
             if not parameter.required:

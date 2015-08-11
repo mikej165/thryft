@@ -117,7 +117,7 @@ try {
                     'void'
 
             service_call = """\
-service.%(java_name)s(%(parameter_names)s);
+delegate.%(java_name)s(%(parameter_names)s);
 """ % locals()
             if self.return_field is not None:
                 service_call = self.return_field.type.java_qname(boxed=False) + ' __returnValue = ' + service_call
@@ -192,16 +192,20 @@ public %(return_type_name)s %(java_name)s(%(parameters)s)%(throws)s {
             return self.name.upper()
 
     class Service(java_generator.JavaGenerator.Service):
+        def __java_delegate_name(self):
+            return "%s.%s.delegate" % (self._parent_document().java_package(), self.java_name())
+
         def java_name(self, boxed=False):
             return 'Logging' + java_generator.JavaGenerator.Service.java_name(self)
 
         def _java_constructor(self):
+            delegate_name = self.__java_delegate_name()
             name = self.java_name()
             service_qname = java_generator.JavaGenerator.Service.java_qname(self)
             return """\
 @com.google.inject.Inject
-public %(name)s(@com.google.inject.name.Named("impl") final %(service_qname)s service) {
-    this.service = service;
+public %(name)s(@com.google.inject.name.Named("%(delegate_name)s") final %(service_qname)s delegate) {
+    this.delegate = com.google.common.base.Preconditions.checkNotNull(delegate);
 }""" % locals()
 
         def __java_markers(self):
@@ -233,7 +237,7 @@ public final static class Markers {
             service_qname = java_generator.JavaGenerator.Service.java_qname(self)
             return [
                 "private final static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(%(name)s.class);" % locals(),
-                "private final %(service_qname)s service;" % locals()
+                "private final %(service_qname)s delegate;" % locals()
             ]
 
         def _java_methods(self):
@@ -243,10 +247,12 @@ public final static class Markers {
             return methods
 
         def java_repr(self):
+            delegate_name = self.__java_delegate_name()
             name = self.java_name()
 
             sections = []
             sections.append(self.__java_markers())
+            sections.append("""public final static com.google.inject.name.Named DELEGATE_NAME = com.google.inject.name.Names.named("%(delegate_name)s");""" % locals())
             sections.append("\n\n".join([self._java_constructor()] + self._java_methods()))
             sections.append("\n".join(self._java_member_declarations()))
             sections = "\n\n".join(indent(' ' * 4, sections))
