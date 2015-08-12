@@ -474,7 +474,11 @@ public enum Field implements org.thryft.CompoundType.Field {%(enumerators)s
 
     def _java_implements(self):
         name = self.java_name()
-        return ["java.lang.Comparable<%(name)s>" % locals()]
+        implements = ["java.lang.Comparable<%(name)s>" % locals()]
+        for annotation in self.annotations:
+            if annotation.name == 'java_implements':
+                implements.append(annotation.value)
+        return implements
 
     def _java_member_declarations(self):
         mutable = self._parent_generator().mutable_compound_types

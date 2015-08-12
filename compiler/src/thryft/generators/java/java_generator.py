@@ -31,6 +31,8 @@
 # -----------------------------------------------------------------------------
 
 from thryft.generator.generator import Generator
+from thryft.compiler.ast import Ast
+from thryft.compiler.parser import Parser
 
 
 class JavaGenerator(Generator):
@@ -73,3 +75,9 @@ class JavaGenerator(Generator):
     def mutable_compound_types(self):
         return self.__mutable_compound_types
 
+
+def __parse_java_implements(ast_node, name, value, **kwds):
+    ast_node.annotations.append(Ast.AnnotationNode(name=name, value=value, **kwds))
+
+for ast_node_type in (Ast.ExceptionTypeNode, Ast.ServiceNode, Ast.StructTypeNode):
+    Parser.register_annotation(ast_node_type, 'java_implements', __parse_java_implements)

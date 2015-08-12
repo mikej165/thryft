@@ -42,6 +42,13 @@ class JavaService(Service, _JavaNamedConstruct):
     def _java_extends(self):
         return self.extends
 
+    def _java_implements(self):
+        implements = []
+        for annotation in self.annotations:
+            if annotation.name == 'java_implements':
+                implements.append(annotation.value)
+        return implements
+
     def _java_methods(self):
         methods = []
         for function in self.functions:
@@ -80,10 +87,9 @@ public static class Messages {
         annotations = pad("\n", "\n".join(self._java_annotations()), "\n")
 
         extends = self._java_extends()
-        if extends is None:
-            extends = ''
-        else:
-            extends = ' extends ' + extends
+        extends = ' extends ' + extends if extends is not None else ''
+
+        implements = lpad(' implements ', ', '.join(self._java_implements()))
 
         javadoc = self.java_doc()
         name = self.java_name()
@@ -91,7 +97,7 @@ public static class Messages {
         sections = lpad("\n", "\n\n".join(indent(' ' * 4, self._java_repr_sections())))
 
         return """\
-%(javadoc)s%(annotations)spublic interface %(name)s%(extends)s {%(sections)s
+%(javadoc)s%(annotations)spublic interface %(name)s%(extends)s%(implements)s {%(sections)s
 }""" % locals()
 
     def _java_repr_sections(self):
