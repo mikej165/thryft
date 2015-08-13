@@ -73,7 +73,16 @@ class JsonRpcServletJavaGenerator(_servlet_java_generator._ServletJavaGenerator)
                                     for parameter in self.parameters])
             service_call = "service.%(name)s(%(parameters)s);" % locals()
             if self.return_field is not None:
+                result_declaration = "    final %s result;\n" % self.return_field.type.java_qname()
                 service_call = 'result = ' + service_call
+                write_result = self.return_field.type.java_write_protocol(value='result')
+            else:
+                result_declaration = ''
+                write_result = '''\
+oprot.writeStructBegin("response");
+oprot.writeStructEnd();
+'''
+            write_result = indent(' ' * 12, write_result)
             if len(self.throws) > 0:
                 catches = ' '.join(["""\
 catch (final %s e) {
@@ -89,10 +98,24 @@ try {
 
             return """\
 %(annotations)sprivate void __doPost%(upper_camelized_name)s(final javax.servlet.http.HttpServletRequest httpServletRequest, final javax.servlet.http.HttpServletResponse httpServletResponse, final org.thryft.protocol.JsonRpcInputProtocol iprot, final Object jsonRpcRequestId) throws java.io.IOException {%(read_request)s
-    Object result = null;
-%(service_call)s
+%(result_declaration)s%(service_call)s
 
-    __doPostResponse(httpServletRequest, httpServletResponse, jsonRpcRequestId, result);
+    final String httpServletResponseBody;
+    {
+        final java.io.StringWriter httpServletResponseBodyWriter = new java.io.StringWriter();
+        try {
+            final org.thryft.protocol.JsonRpcOutputProtocol oprot = new org.thryft.protocol.JsonRpcOutputProtocol(new org.thryft.protocol.JacksonJsonOutputProtocol(httpServletResponseBodyWriter));
+            oprot.writeMessageBegin("", org.thryft.protocol.MessageType.REPLY, jsonRpcRequestId);
+%(write_result)s
+            oprot.writeMessageEnd();
+            oprot.flush();
+        } catch (final org.thryft.protocol.OutputProtocolException e) {
+            logger.error("error serializing service error response: ", e);
+            throw new IllegalStateException(e);
+        }
+        httpServletResponseBody = httpServletResponseBodyWriter.toString();
+    }
+    __doPostResponse(httpServletRequest, httpServletResponse, httpServletResponseBody);
 }
 """ % locals()
 
@@ -189,28 +212,6 @@ private void __doPostError(final javax.servlet.http.HttpServletRequest httpServl
         def _java_method_do_post_response(self):
             write_http_servlet_response_body = indent(' ' * 4, self._java_write_http_servlet_response_body())
             return """\
-private void __doPostResponse(final javax.servlet.http.HttpServletRequest httpServletRequest, final javax.servlet.http.HttpServletResponse httpServletResponse, final Object jsonRpcRequestId, final Object jsonRpcResult) throws java.io.IOException {
-    final java.io.StringWriter httpServletResponseBodyWriter = new java.io.StringWriter();
-
-    try {
-        final org.thryft.protocol.JsonRpcOutputProtocol oprot = new org.thryft.protocol.JsonRpcOutputProtocol(new org.thryft.protocol.JacksonJsonOutputProtocol(httpServletResponseBodyWriter));
-        oprot.writeMessageBegin("", org.thryft.protocol.MessageType.REPLY, jsonRpcRequestId);
-        if (jsonRpcResult != null) {
-            oprot.writeVariant(jsonRpcResult);
-        } else {
-            oprot.writeStructBegin("response");
-            oprot.writeStructEnd();
-        }
-        oprot.writeMessageEnd();
-        oprot.flush();
-    } catch (final org.thryft.protocol.OutputProtocolException e) {
-        logger.error("error serializing service error response: ", e);
-        throw new IllegalStateException(e);
-    }
-
-    __doPostResponse(httpServletRequest, httpServletResponse, httpServletResponseBodyWriter.toString());
-}
-
 private void __doPostResponse(final javax.servlet.http.HttpServletRequest httpServletRequest, final javax.servlet.http.HttpServletResponse httpServletResponse, final String httpServletResponseBody) throws java.io.IOException {
 %(write_http_servlet_response_body)s
 }
