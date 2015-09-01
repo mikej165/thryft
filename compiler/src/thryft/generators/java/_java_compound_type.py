@@ -413,7 +413,7 @@ public %(name)s(%(parameters)s) {
             enumerators.append("%(enumerator_name)s(%(field_id)d, org.thryft.protocol.Type.%(field_type)s, %(field_required)s, \"%(field_thrift_name)s\")" % locals())
             thrift_name_cases.append("""case "%(field_thrift_name)s": return %(enumerator_name)s;""" % locals())
         enumerators = pad("\n", indent(' ' * 4, ",\n".join(enumerators)), ";\n")
-        thrift_name_cases = lpad("\n", indent(' ' * 4, "\n".join(thrift_name_cases)))
+        thrift_name_cases = lpad("\n", indent(' ' * 8, "\n".join(thrift_name_cases)))
         return """\
 public enum Field implements org.thryft.CompoundType.Field {%(enumerators)s
     @Override

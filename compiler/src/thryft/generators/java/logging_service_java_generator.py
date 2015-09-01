@@ -223,7 +223,7 @@ public %(name)s(@com.google.inject.name.Named("%(delegate_name)s") final %(servi
             add_function_markers = "\n".join(indent(' ' * 8, add_function_markers))
             function_markers = "\n".join(indent(' ' * 4, function_markers))
             return """\
-public final static class Markers {
+public static class Markers {
 %(function_markers)s
 
     public final static org.slf4j.Marker %(service_marker_variable_name)s = org.slf4j.MarkerFactory.getMarker("%(service_marker_name)s");
