@@ -26,10 +26,13 @@ final %(type_qname)s %(java_name)s;
     String %(java_name)sString = __properties.getProperty("%(thrift_name)s");
     if (%(java_name)sString == null) {
         %(null_initializer)s
-    } else if (%(java_name)sString.isEmpty()) {
-        %(empty_initializer)s
     } else {
-        %(java_name)s = %(from_string)s;
+        %(java_name)sString = %(java_name)sString.trim();
+        if (%(java_name)sString.isEmpty()) {
+            %(empty_initializer)s
+        } else {
+            %(java_name)s = %(from_string)s;
+        }
     }
 }""" % locals()
             else:
@@ -44,10 +47,13 @@ final com.google.common.base.Optional<%(type_qname)s> %(java_name)s;
     String %(java_name)sString = __properties.getProperty("%(thrift_name)s");
     if (%(java_name)sString == null) {
         %(null_or_empty_initializer)s;
-    } else if (%(java_name)sString.isEmpty()) {
-        %(null_or_empty_initializer)s;
     } else {
-        %(java_name)s = com.google.common.base.Optional.of(%(from_string)s);
+        %(java_name)sString = %(java_name)sString.trim();
+        if (%(java_name)sString.isEmpty()) {
+            %(null_or_empty_initializer)s;
+        } else {
+            %(java_name)s = com.google.common.base.Optional.of(%(from_string)s);
+        }
     }
 }""" % locals()
 
@@ -120,11 +126,11 @@ private static java.util.Properties __readProperties(final java.io.File properti
     try (final java.io.FileReader propertiesFileReader = new java.io.FileReader(
             propertiesFilePath)) {
         properties.load(propertiesFileReader);
-        logger.info("read server properties file {}", propertiesFilePath);
+        logger.debug("read properties file {}", propertiesFilePath);
     } catch (final java.io.FileNotFoundException e) {
-        logger.info("server properties file {} not found", propertiesFilePath);
+        logger.debug("properties file {} not found", propertiesFilePath);
     } catch (final java.io.IOException e) {
-        logger.warn("unable to read server properties file {}: ", propertiesFilePath, e);
+        logger.warn("unable to read properties file {}: ", propertiesFilePath, e);
     }
     return properties;
 }
@@ -135,19 +141,19 @@ private static java.util.Properties __readProperties(final String propertiesReso
     final java.io.InputStream propertiesInputStream = %(name)s.class
             .getResourceAsStream(propertiesResourceName);
     if (propertiesInputStream == null) {
-        logger.info("server properties file {} not found in the CLASSPATH", propertiesResourceName);
+        logger.debug("properties file {} not found in the CLASSPATH", propertiesResourceName);
         return properties;
     }
 
     try {
         try {
             properties.load(propertiesInputStream);
-            logger.info("read server properties file {} from CLASSPATH", propertiesResourceName);
+            logger.debug("read properties file {} from CLASSPATH", propertiesResourceName);
         } finally {
             propertiesInputStream.close();
         }
     } catch (final java.io.IOException e) {
-        logger.warn("unable to read server properties file {} from the CLASSPATH: ", propertiesResourceName, e);
+        logger.warn("unable to read properties file {} from the CLASSPATH: ", propertiesResourceName, e);
     }
     return properties;
 }""" % locals()}
