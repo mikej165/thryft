@@ -568,6 +568,7 @@ if (fieldName.equals("%(field_name)s")) {
 }""" % locals())
         fields = lpad("\n", indent(' ' * 4, ' else '.join(fields)))
         return {'get': """\
+@Override
 public Object get(final String fieldName) {%(fields)s
     throw new IllegalArgumentException(fieldName);
 }""" % locals()}
