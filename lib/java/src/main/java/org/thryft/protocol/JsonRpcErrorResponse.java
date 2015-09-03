@@ -5,16 +5,13 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import org.thryft.CompoundType;
 
 @SuppressWarnings("serial")
-public final class JsonRpcErrorResponse extends RuntimeException implements
-CompoundType {
-    public static JsonRpcErrorResponse read(final InputProtocol iprot)
-            throws InputProtocolException {
+public final class JsonRpcErrorResponse extends RuntimeException implements CompoundType {
+    public static JsonRpcErrorResponse read(final InputProtocol iprot) throws InputProtocolException {
         int code = 0;
         String message = "";
         iprot.readStructBegin();
         while (true) {
-            final org.thryft.protocol.FieldBegin errorFieldBegin = iprot
-                    .readFieldBegin();
+            final org.thryft.protocol.FieldBegin errorFieldBegin = iprot.readFieldBegin();
             if (errorFieldBegin.getType() == org.thryft.protocol.Type.STOP) {
                 break;
             } else if (errorFieldBegin.getName().equalsIgnoreCase("code")) {
@@ -28,8 +25,7 @@ CompoundType {
         return new JsonRpcErrorResponse(code, message);
     }
 
-    public JsonRpcErrorResponse(final Exception cause, final int code,
-            final String message) {
+    public JsonRpcErrorResponse(final Exception cause, final int code, final String message) {
         super(checkNotNull(message), checkNotNull(cause));
         this.code = code;
     }
@@ -63,6 +59,11 @@ CompoundType {
         }
     }
 
+    @Override
+    public Object get(final String fieldName) {
+        throw new UnsupportedOperationException();
+    }
+
     public int getCode() {
         return code;
     }
@@ -73,14 +74,12 @@ CompoundType {
     }
 
     @Override
-    public void writeAsList(final OutputProtocol oprot)
-            throws OutputProtocolException {
+    public void writeAsList(final OutputProtocol oprot) throws OutputProtocolException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void writeAsStruct(final OutputProtocol oprot)
-            throws OutputProtocolException {
+    public void writeAsStruct(final OutputProtocol oprot) throws OutputProtocolException {
         oprot.writeStructBegin("error");
 
         oprot.writeFieldBegin("code", org.thryft.protocol.Type.I32);
@@ -89,8 +88,7 @@ CompoundType {
 
         if (getCause() instanceof org.thryft.Exception) {
             oprot.writeFieldBegin("@class", Type.STRING);
-            oprot.writeString(((org.thryft.Exception) getCause())
-                    .getThriftQualifiedClassName());
+            oprot.writeString(((org.thryft.Exception) getCause()).getThriftQualifiedClassName());
             oprot.writeFieldEnd();
             oprot.writeFieldBegin("data", Type.STRUCT);
             ((CompoundType) getCause()).writeAsStruct(oprot);

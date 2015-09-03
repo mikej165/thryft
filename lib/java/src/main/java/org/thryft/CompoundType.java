@@ -16,6 +16,7 @@ public interface CompoundType {
         public boolean hasId();
 
         public boolean isRequired();
+
     }
 
     public Object get(final String fieldName);

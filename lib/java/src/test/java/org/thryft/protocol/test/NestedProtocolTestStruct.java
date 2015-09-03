@@ -701,58 +701,94 @@ public class NestedProtocolTestStruct implements org.thryft.Struct, java.lang.Co
         private com.google.common.base.Optional<org.thryft.native_.Url> urlField;
     }
 
-    public enum Field {
-        REQUIRED_I32_FIELD(0, true, "required_i32_field"),
-        REQUIRED_STRING_FIELD(0, true, "required_string_field"),
-        BINARY_FIELD(0, false, "binary_field"),
-        BOOL_FIELD(0, false, "bool_field"),
-        BYTE_FIELD(0, false, "byte_field"),
-        DATE_TIME_FIELD(0, false, "date_time_field"),
-        DECIMAL_FIELD(0, false, "decimal_field"),
-        EMAIL_ADDRESS_FIELD(0, false, "email_address_field"),
-        ENUM_FIELD(0, false, "enum_field"),
-        I16_FIELD(0, false, "i16_field"),
-        I32_FIELD(0, false, "i32_field"),
-        I64_FIELD(0, false, "i64_field"),
-        STRING_LIST_FIELD(0, false, "string_list_field"),
-        STRING_STRING_MAP_FIELD(0, false, "string_string_map_field"),
-        STRING_SET_FIELD(0, false, "string_set_field"),
-        STRING_FIELD(0, false, "string_field"),
-        URL_FIELD(0, false, "url_field");
+    public enum Field implements org.thryft.CompoundType.Field {
+        REQUIRED_I32_FIELD(0, org.thryft.protocol.Type.I32, true, "required_i32_field"),
+        REQUIRED_STRING_FIELD(0, org.thryft.protocol.Type.STRING, true, "required_string_field"),
+        BINARY_FIELD(0, org.thryft.protocol.Type.STRING, false, "binary_field"),
+        BOOL_FIELD(0, org.thryft.protocol.Type.BOOL, false, "bool_field"),
+        BYTE_FIELD(0, org.thryft.protocol.Type.BYTE, false, "byte_field"),
+        DATE_TIME_FIELD(0, org.thryft.protocol.Type.I64, false, "date_time_field"),
+        DECIMAL_FIELD(0, org.thryft.protocol.Type.STRING, false, "decimal_field"),
+        EMAIL_ADDRESS_FIELD(0, org.thryft.protocol.Type.STRING, false, "email_address_field"),
+        ENUM_FIELD(0, org.thryft.protocol.Type.STRING, false, "enum_field"),
+        I16_FIELD(0, org.thryft.protocol.Type.I16, false, "i16_field"),
+        I32_FIELD(0, org.thryft.protocol.Type.I32, false, "i32_field"),
+        I64_FIELD(0, org.thryft.protocol.Type.I64, false, "i64_field"),
+        STRING_LIST_FIELD(0, org.thryft.protocol.Type.LIST, false, "string_list_field"),
+        STRING_STRING_MAP_FIELD(0, org.thryft.protocol.Type.MAP, false, "string_string_map_field"),
+        STRING_SET_FIELD(0, org.thryft.protocol.Type.SET, false, "string_set_field"),
+        STRING_FIELD(0, org.thryft.protocol.Type.STRING, false, "string_field"),
+        URL_FIELD(0, org.thryft.protocol.Type.STRING, false, "url_field");
 
+        @Override
         public int getId() {
             return id;
         }
 
+        @Override
         public String getProtocolKey() {
             return protocolKey;
         }
 
+        @Override
+        public org.thryft.protocol.Type getProtocolType() {
+            return protocolType;
+        }
+
+        @Override
         public String getThriftName() {
             return thriftName;
         }
 
+        @Override
         public boolean hasId() {
             return id != org.thryft.protocol.FieldBegin.ABSENT_ID;
         }
 
+        @Override
         public boolean isRequired()  {
             return required;
         }
 
-        private Field(final int id, final boolean required, final String thriftName) {
+        public static Field valueOfThriftName(final String thriftName) {
+            switch (thriftName) {
+            case "required_i32_field": return REQUIRED_I32_FIELD;
+            case "required_string_field": return REQUIRED_STRING_FIELD;
+            case "binary_field": return BINARY_FIELD;
+            case "bool_field": return BOOL_FIELD;
+            case "byte_field": return BYTE_FIELD;
+            case "date_time_field": return DATE_TIME_FIELD;
+            case "decimal_field": return DECIMAL_FIELD;
+            case "email_address_field": return EMAIL_ADDRESS_FIELD;
+            case "enum_field": return ENUM_FIELD;
+            case "i16_field": return I16_FIELD;
+            case "i32_field": return I32_FIELD;
+            case "i64_field": return I64_FIELD;
+            case "string_list_field": return STRING_LIST_FIELD;
+            case "string_string_map_field": return STRING_STRING_MAP_FIELD;
+            case "string_set_field": return STRING_SET_FIELD;
+            case "string_field": return STRING_FIELD;
+            case "url_field": return URL_FIELD;
+            default:
+                throw new IllegalArgumentException(thriftName);
+            }
+        }
+
+        private Field(final int id, final org.thryft.protocol.Type protocolType, final boolean required, final String thriftName) {
             this.id = id;
             if (id != org.thryft.protocol.FieldBegin.ABSENT_ID) {
                 this.protocolKey = Integer.toString(id) + ":" + thriftName;
             } else {
                 this.protocolKey = thriftName;
             }
+            this.protocolType = protocolType;
             this.required = required;
             this.thriftName = thriftName;
         }
 
         private final int id;
         private final String protocolKey;
+        private final org.thryft.protocol.Type protocolType;
         private final boolean required;
         private final String thriftName;
     }
@@ -1210,6 +1246,7 @@ public class NestedProtocolTestStruct implements org.thryft.Struct, java.lang.Co
             getUrlField().equals(other.getUrlField());
     }
 
+    @Override
     public Object get(final String fieldName) {
         if (fieldName.equals("required_i32_field")) {
             return getRequiredI32Field();

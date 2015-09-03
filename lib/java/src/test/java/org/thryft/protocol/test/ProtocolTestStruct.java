@@ -911,64 +911,106 @@ public class ProtocolTestStruct implements org.thryft.Struct, java.lang.Comparab
         private com.google.common.base.Optional<java.lang.Object> variantField;
     }
 
-    public enum Field {
-        REQUIRED_I32_FIELD(1, true, "required_i32_field"),
-        REQUIRED_STRING_FIELD(2, true, "required_string_field"),
-        BINARY_FIELD(3, false, "binary_field"),
-        BOOL_FIELD(4, false, "bool_field"),
-        DATE_TIME_FIELD(5, false, "date_time_field"),
-        DECIMAL_FIELD(6, false, "decimal_field"),
-        EMAIL_ADDRESS_FIELD(7, false, "email_address_field"),
-        ENUM_FIELD(8, false, "enum_field"),
-        FLOAT_FIELD(9, false, "float_field"),
-        I8_FIELD(10, false, "i8_field"),
-        I16_FIELD(11, false, "i16_field"),
-        I32_FIELD(12, false, "i32_field"),
-        I64_FIELD(13, false, "i64_field"),
-        STRING_LIST_FIELD(14, false, "string_list_field"),
-        STRING_STRING_MAP_FIELD(15, false, "string_string_map_field"),
-        STRING_SET_FIELD(16, false, "string_set_field"),
-        STRING_FIELD(17, false, "string_field"),
-        STRUCT_FIELD(18, false, "struct_field"),
-        U32_FIELD(19, false, "u32_field"),
-        U64_FIELD(20, false, "u64_field"),
-        URI_FIELD(21, false, "uri_field"),
-        URL_FIELD(22, false, "url_field"),
-        VARIANT_FIELD(23, false, "variant_field");
+    public enum Field implements org.thryft.CompoundType.Field {
+        REQUIRED_I32_FIELD(1, org.thryft.protocol.Type.I32, true, "required_i32_field"),
+        REQUIRED_STRING_FIELD(2, org.thryft.protocol.Type.STRING, true, "required_string_field"),
+        BINARY_FIELD(3, org.thryft.protocol.Type.STRING, false, "binary_field"),
+        BOOL_FIELD(4, org.thryft.protocol.Type.BOOL, false, "bool_field"),
+        DATE_TIME_FIELD(5, org.thryft.protocol.Type.I64, false, "date_time_field"),
+        DECIMAL_FIELD(6, org.thryft.protocol.Type.STRING, false, "decimal_field"),
+        EMAIL_ADDRESS_FIELD(7, org.thryft.protocol.Type.STRING, false, "email_address_field"),
+        ENUM_FIELD(8, org.thryft.protocol.Type.STRING, false, "enum_field"),
+        FLOAT_FIELD(9, org.thryft.protocol.Type.DOUBLE, false, "float_field"),
+        I8_FIELD(10, org.thryft.protocol.Type.BYTE, false, "i8_field"),
+        I16_FIELD(11, org.thryft.protocol.Type.I16, false, "i16_field"),
+        I32_FIELD(12, org.thryft.protocol.Type.I32, false, "i32_field"),
+        I64_FIELD(13, org.thryft.protocol.Type.I64, false, "i64_field"),
+        STRING_LIST_FIELD(14, org.thryft.protocol.Type.LIST, false, "string_list_field"),
+        STRING_STRING_MAP_FIELD(15, org.thryft.protocol.Type.MAP, false, "string_string_map_field"),
+        STRING_SET_FIELD(16, org.thryft.protocol.Type.SET, false, "string_set_field"),
+        STRING_FIELD(17, org.thryft.protocol.Type.STRING, false, "string_field"),
+        STRUCT_FIELD(18, org.thryft.protocol.Type.STRUCT, false, "struct_field"),
+        U32_FIELD(19, org.thryft.protocol.Type.I32, false, "u32_field"),
+        U64_FIELD(20, org.thryft.protocol.Type.I64, false, "u64_field"),
+        URI_FIELD(21, org.thryft.protocol.Type.STRING, false, "uri_field"),
+        URL_FIELD(22, org.thryft.protocol.Type.STRING, false, "url_field"),
+        VARIANT_FIELD(23, org.thryft.protocol.Type.STRUCT, false, "variant_field");
 
+        @Override
         public int getId() {
             return id;
         }
 
+        @Override
         public String getProtocolKey() {
             return protocolKey;
         }
 
+        @Override
+        public org.thryft.protocol.Type getProtocolType() {
+            return protocolType;
+        }
+
+        @Override
         public String getThriftName() {
             return thriftName;
         }
 
+        @Override
         public boolean hasId() {
             return id != org.thryft.protocol.FieldBegin.ABSENT_ID;
         }
 
+        @Override
         public boolean isRequired()  {
             return required;
         }
 
-        private Field(final int id, final boolean required, final String thriftName) {
+        public static Field valueOfThriftName(final String thriftName) {
+            switch (thriftName) {
+            case "required_i32_field": return REQUIRED_I32_FIELD;
+            case "required_string_field": return REQUIRED_STRING_FIELD;
+            case "binary_field": return BINARY_FIELD;
+            case "bool_field": return BOOL_FIELD;
+            case "date_time_field": return DATE_TIME_FIELD;
+            case "decimal_field": return DECIMAL_FIELD;
+            case "email_address_field": return EMAIL_ADDRESS_FIELD;
+            case "enum_field": return ENUM_FIELD;
+            case "float_field": return FLOAT_FIELD;
+            case "i8_field": return I8_FIELD;
+            case "i16_field": return I16_FIELD;
+            case "i32_field": return I32_FIELD;
+            case "i64_field": return I64_FIELD;
+            case "string_list_field": return STRING_LIST_FIELD;
+            case "string_string_map_field": return STRING_STRING_MAP_FIELD;
+            case "string_set_field": return STRING_SET_FIELD;
+            case "string_field": return STRING_FIELD;
+            case "struct_field": return STRUCT_FIELD;
+            case "u32_field": return U32_FIELD;
+            case "u64_field": return U64_FIELD;
+            case "uri_field": return URI_FIELD;
+            case "url_field": return URL_FIELD;
+            case "variant_field": return VARIANT_FIELD;
+            default:
+                throw new IllegalArgumentException(thriftName);
+            }
+        }
+
+        private Field(final int id, final org.thryft.protocol.Type protocolType, final boolean required, final String thriftName) {
             this.id = id;
             if (id != org.thryft.protocol.FieldBegin.ABSENT_ID) {
                 this.protocolKey = Integer.toString(id) + ":" + thriftName;
             } else {
                 this.protocolKey = thriftName;
             }
+            this.protocolType = protocolType;
             this.required = required;
             this.thriftName = thriftName;
         }
 
         private final int id;
         private final String protocolKey;
+        private final org.thryft.protocol.Type protocolType;
         private final boolean required;
         private final String thriftName;
     }
@@ -1521,6 +1563,7 @@ public class ProtocolTestStruct implements org.thryft.Struct, java.lang.Comparab
             getVariantField().equals(other.getVariantField());
     }
 
+    @Override
     public Object get(final String fieldName) {
         if (fieldName.equals("required_i32_field")) {
             return getRequiredI32Field();
