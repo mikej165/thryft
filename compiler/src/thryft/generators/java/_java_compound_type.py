@@ -366,8 +366,7 @@ public %(name)s(%(parameters)s) {
  */
 public %(name)s(%(parameters)s) {
 %(initializers)s
-}
-""" % locals()
+}""" % locals()
 
     def _java_constructor_total_optional(self):
         if len(self.fields) == 0:
@@ -387,8 +386,7 @@ public %(name)s(%(parameters)s) {
  */
 public %(name)s(%(parameters)s) {
 %(initializers)s
-}
-""" % locals()
+}""" % locals()
 
     def java_default_value(self):
         return 'null'
@@ -701,15 +699,8 @@ public %(compound_type_name)s %(method_name)s(%(field_parameter)s) {
         return setters
 
     def _java_method_to_string(self):
-        add_statements = []
-        for field in self.fields:
-            field_value = field.java_getter_name() + '()'
-            if not field.required:
-                field_value += '.orNull()'
-            add_statements.append(
-                """.add(\"%s\", %s)""" % (field.name, field_value)
-            )
-        add_statements = ''.join(add_statements)
+        add_statements = ''.join(field.java_to_string_helper_add()
+                                 for field in self.fields)
         return {'toString': """\
 @Override
 public String toString() {
@@ -785,8 +776,8 @@ public void writeAsStruct(final org.thryft.protocol.OutputProtocol oprot) throws
         methods.update(self._java_method_write_as_struct())
         return methods
 
-    def java_qname(self, boxed=False):
-        return _JavaNamedConstruct.java_qname(self, name=self.name)
+    def java_qname(self, boxed=False, **kwds):
+        return _JavaNamedConstruct.java_qname(self, name=self.name, **kwds)
 
     def java_read_protocol(self):
         qname = self.java_qname()

@@ -54,7 +54,6 @@ class JavaInclude(Include, _JavaConstruct):
         self.__java_class_name = java_class_name
         self.__java_package = java_package
 
-
     def java_class_name(self):
         return self.__java_class_name
 
