@@ -38,6 +38,9 @@ from thryft.compiler.compile_exception import CompileException
 
 
 class JavaDocument(Document, _JavaNamedConstruct):
+    def _java_file_base_name(self):
+        return self.definitions[0].java_name()
+
     def _java_file_ext(self):
         return '.java'
 
@@ -97,7 +100,7 @@ class JavaDocument(Document, _JavaNamedConstruct):
                 out_dir_relpath = os.path.relpath(out_dir_path, root_out_dir_path)
                 if not out_dir_relpath.endswith(document_relpath):
                     self._logger.warn("Java package %s (relative directory %s) does not match .thrift file path %s (relative directory %s)", java_package, out_dir_relpath, self.path, document_relpath)
-        return self._save_to_file(os.path.join(out_dir_path, self.definitions[0].java_name() + self._java_file_ext()))
+        return self._save_to_file(os.path.join(out_dir_path, self._java_file_base_name() + self._java_file_ext()))
 
     def _save_to_file(self, out_file_path):
         return self._save_to_file_helper(self.java_repr(), out_file_path)

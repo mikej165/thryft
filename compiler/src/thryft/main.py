@@ -38,7 +38,7 @@ import argparse
 from thryft.compiler import Compiler
 from thryft.compiler.compile_exception import CompileException
 from thryft.compiler.scan_exception import ScanException
-from yutil import camelize, decamelize
+from yutil import camelize, decamelize, class_qname
 
 
 MY_DIR_PATH = os.path.dirname(os.path.realpath(__file__))
@@ -191,10 +191,7 @@ class Main(object):
 
                 if compile_task.generator is not None:
                     for document in documents:
-                        if compile_task.out is None or compile_task.out == '-':
-                            print repr(document)
-                        else:
-                            document.save(compile_task.out)
+                        document.save(compile_task.out)
                 break
 
     @property

@@ -37,7 +37,7 @@ class _JavaNamedConstruct(_JavaConstruct):
     def java_name(self, boxed=False):
         return getattr(self, 'name')
 
-    def java_qname(self, name=None, **kwds):
+    def java_qname(self, java_namespace_scope='java', name=None, **kwds):
         if name is None:
             name = self.java_name(**kwds)
         from thryft.generator.document import Document
@@ -47,7 +47,7 @@ class _JavaNamedConstruct(_JavaConstruct):
         if parent_document is None:
             return name
         try:
-            namespace = parent_document.namespace_by_scope('java')
+            namespace = parent_document.namespace_by_scope(java_namespace_scope)
             return namespace.name + '.' + name
         except KeyError:
             return name

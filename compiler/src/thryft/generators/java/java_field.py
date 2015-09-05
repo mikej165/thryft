@@ -98,7 +98,7 @@ if (this.%(name)s.isPresent()) {
         getter_name = self.java_getter_name()
         javadoc = self.java_doc()
         name = self.java_name()
-        type_name = self.__java_type_name()
+        type_name = self._java_type_name()
         return """\
 %(javadoc)spublic %(final)s%(type_name)s %(getter_name)s() {
     return %(name)s;
@@ -174,7 +174,7 @@ if (%s().isPresent()) {
         parameter = []
         if final:
             parameter.append('final')
-        parameter.append(self.__java_type_name(boxed=boxed, nullable=nullable))
+        parameter.append(self._java_type_name(boxed=boxed, nullable=nullable))
         parameter.append(self.java_name())
         return ' '.join(parameter)
 
@@ -266,7 +266,7 @@ if (other.%(getter_name)s().isPresent()) {
         name = self.java_name()
         return_statement = \
             return_type_name != 'void' and "\n    return this;" or ''
-        type_name = self.__java_type_name()
+        type_name = self._java_type_name()
         setters = ["""\
 public %(return_type_name)s %(setter_name)s(final %(type_name)s %(name)s) {
     this.%(name)s = com.google.common.base.Preconditions.checkNotNull(%(name)s);%(return_statement)s
@@ -281,6 +281,20 @@ public %(return_type_name)s %(setter_name)s(@javax.annotation.Nullable final %(t
 
     def java_setter_name(self):
         return 'set' + upper_camelize(self.name)
+
+    def java_to_string_helper_add(self):
+        field_value = self.java_getter_name() + '()'
+        if not self.required:
+            field_value += '.orNull()'
+        return """.add(\"%s\", %s)""" % (self.name, field_value)
+
+    def _java_type_name(self, boxed=None, nullable=False):
+        if self.required:
+            return self.type.java_declaration_name(boxed=boxed)
+        elif nullable:
+            return "@javax.annotation.Nullable %s" % self.type.java_declaration_name(boxed=True)
+        else:
+            return "com.google.common.base.Optional<%s>" % self.type.java_declaration_name(boxed=True)
 
     def java_unsetter(self, return_type_name='void'):
         name = self.java_name()
@@ -298,14 +312,6 @@ public %(return_type_name)s %(unsetter_name)s() {
 
     def java_unsetter_name(self):
         return 'unset' + upper_camelize(self.name)
-
-    def __java_type_name(self, boxed=None, nullable=False):
-        if self.required:
-            return self.type.java_declaration_name(boxed=boxed)
-        elif nullable:
-            return "@javax.annotation.Nullable %s" % self.type.java_declaration_name(boxed=True)
-        else:
-            return "com.google.common.base.Optional<%s>" % self.type.java_declaration_name(boxed=True)
 
     def java_validation(self, boxed=False, check_optional_not_null=True, value=None, nullable=False):
         name = self.java_name()
