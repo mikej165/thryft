@@ -109,14 +109,7 @@ if (this.%(name)s.isPresent()) {
 
     @staticmethod
     def java_getter_name_static(field):
-        getter_name = upper_camelize(field.name)
-        if isinstance(field.type, JavaBoolType) and field.required:
-            if getter_name.startswith('Is'):
-                return 'is' + getter_name[2:]
-            else:
-                return 'is' + getter_name
-        else:
-            return 'get' + getter_name
+        return 'get' + upper_camelize(field.name)
 
     def java_hash_code_update(self):
         hashCode_update = \

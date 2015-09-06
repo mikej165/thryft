@@ -7,6 +7,12 @@ from yutil import indent, lpad, class_qname
 
 class BeanJavaGenerator(JavaGenerator):
     class _Type(object):
+        def java_bean_name(self, **kwds):
+            return self.java_name(**kwds)
+
+        def java_bean_qname(self, **kwds):
+            return self.java_qname(**kwds)
+
         def java_from_immutable(self, value):
             return value
 
@@ -44,7 +50,7 @@ class BeanJavaGenerator(JavaGenerator):
         def __java_interface_qname(self):
             return "java.util.%s<%s>" % (
                    self._java_interface_simple_name(),
-                   self.element_type.java_declaration_name(boxed=True)
+                   self.element_type.java_bean_qname(boxed=True)
                )
 
         def _java_mutable_implementation_qname(self):
@@ -57,6 +63,9 @@ class BeanJavaGenerator(JavaGenerator):
             return self.__java_interface_qname()
 
     class Document(JavaGenerator.Document):  # @UndefinedVariable
+        def _java_file_base_name(self):
+            return self.definitions[0].java_bean_name()
+
         def java_package(self):
             try:
                 return self.namespace_by_scope('bean_java').name
@@ -75,31 +84,31 @@ class BeanJavaGenerator(JavaGenerator):
         pass
 
     class Field(JavaGenerator.Field):  # @UndefinedVariable
-        def java_compare_to(self):
-            name = self.java_name()
-            this_value = 'this.' + name
-            other_value = 'other.' + name
-            type_compare_to = self.type.java_compare_to(this_value, other_value, already_boxed=not self.required)
-            if type_compare_to is None:
-                return None
-            compare_to = """\
-result = %(type_compare_to)s;
-if (result != 0) {
-    return result;
-}""" % locals()
-            if not self.required:
-                compare_to = indent(' ' * 8, compare_to)
-                compare_to = """\
-if (this.%(name)s != null) {
-    if (other.%(name)s != null) {
-%(compare_to)s
-    } else {
-        return 1;
-    }
-} else if (other.%(name)s != null) {
-    return -1;
-}""" % locals()
-            return compare_to
+#         def java_compare_to(self):
+#             name = self.java_name()
+#             this_value = 'this.' + name
+#             other_value = 'other.' + name
+#             type_compare_to = self.type.java_compare_to(this_value, other_value, already_boxed=not self.required)
+#             if type_compare_to is None:
+#                 return None
+#             compare_to = """\
+# result = %(type_compare_to)s;
+# if (result != 0) {
+#     return result;
+# }""" % locals()
+#             if not self.required:
+#                 compare_to = indent(' ' * 8, compare_to)
+#                 compare_to = """\
+# if (this.%(name)s != null) {
+#     if (other.%(name)s != null) {
+# %(compare_to)s
+#     } else {
+#         return 1;
+#     }
+# } else if (other.%(name)s != null) {
+#     return -1;
+# }""" % locals()
+#             return compare_to
 
         def java_default_value(self):
             if self.value is not None:
@@ -113,9 +122,9 @@ if (this.%(name)s != null) {
             getter_name = self.java_getter_name()
             javadoc = self.java_doc()
             name = self.java_name()
-            type_name = self._java_type_name(nullable=True)
+            type_qname = self.type.java_bean_qname(boxed=True)
             return """\
-%(javadoc)spublic %(type_name)s %(getter_name)s() {
+%(javadoc)spublic %(type_qname)s %(getter_name)s() {
     return %(name)s;
 }""" % locals()
 
@@ -133,15 +142,16 @@ if (%s() != null) {
 
         def java_member_declaration(self, **kwds):
             javadoc = self.java_doc()
-            lhs = self.java_parameter(nullable=True)
-            return "%(javadoc)sprivate %(lhs)s;" % locals()
+            name = self.java_name()
+            type_qname = self.type.java_bean_qname(boxed=True)
+            return "%(javadoc)sprivate %(type_qname)s %(name)s;" % locals()
 
         def java_setters(self, return_type_name='void'):
             name = self.java_name()
             setter_name = self.java_setter_name()
-            type_name = self._java_type_name(nullable=True)
+            type_qname = self.type.java_bean_qname(boxed=True)
             return ["""\
-public void %(setter_name)s(final %(type_name)s %(name)s) {
+public void %(setter_name)s(final %(type_qname)s %(name)s) {
     this.%(name)s = %(name)s;
 }""" % locals()]
 
@@ -154,13 +164,24 @@ public void %(setter_name)s(final %(type_name)s %(name)s) {
     class I64Type(JavaGenerator.I64Type, _BaseType):  # @UndefinedVariable
         pass
 
+    class ListType(JavaGenerator.ListType, _SequenceType):  # @UndefinedVariable
+        def _java_interface_simple_name(self):
+            return 'List'
+
+        def _java_mutable_implementation_qname(self):
+            return "java.util.ArrayList<%s>" % \
+                   self.element_type.java_bean_qname(boxed=True)
+
+        def java_qname(self, **kwds):
+            return BeanJavaGenerator._SequenceType.java_qname(self, **kwds)
+
     class SetType(JavaGenerator.SetType, _SequenceType):  # @UndefinedVariable
         def _java_interface_simple_name(self):
             return 'Set'
 
         def _java_mutable_implementation_qname(self):
             return "java.util.LinkedHashSet<%s>" % \
-                   self.element_type.java_declaration_name(boxed=True)
+                   self.element_type.java_bean_qname(boxed=True)
 
         def java_qname(self, **kwds):
             return BeanJavaGenerator._SequenceType.java_qname(self, **kwds)
@@ -170,7 +191,7 @@ public void %(setter_name)s(final %(type_name)s %(name)s) {
 
     class StructType(JavaGenerator.StructType):  # @UndefinedVariable
         def _java_constructor_default(self):
-            name = self.java_name()
+            name = self.java_bean_name()
 
             if len(self.fields) == 0:
                 return """\
@@ -187,7 +208,7 @@ public %(name)s() {%(initializers)s
 }""" % locals()
 
         def _java_constructor_from_immutable(self):
-            name = self.java_name()
+            name = self.java_bean_name()
             immutable_name = JavaGenerator.StructType.java_qname(self)  # @UndefinedVariable
             initializers = []
             for field in self.fields:
@@ -209,52 +230,34 @@ public %(name)s(final %(immutable_name)s other) {%(initializers)s
             for constructor in (
                 self._java_constructor_default(),
                 self._java_constructor_from_immutable(),
-                self._java_constructor_total_nullable()
             ):
                 if constructor is not None:
                     constructors.append(constructor)
             return constructors
 
-        def _java_constructor_total_nullable(self):
-            if len(self.fields) == 0:
-                return None  # Will be covered by default constructor
-            initializers = \
-                "\n".join(indent(' ' * 4,
-                    ("this.%s = %s;" % (field.java_name(), field.java_name())
-                     for field in self.fields)
-                ))
-            name = self.java_name()
-            parameters = \
-                ', '.join(field.java_parameter(final=True, nullable=True)
-                          for field in self.fields)
-            return """\
-public %(name)s(%(parameters)s) {
-%(initializers)s
-}""" % locals()
-
         def java_from_immutable(self, value):
-            qname = self.java_qname()
+            qname = self.java_bean_qname()
             return "new %(qname)s(%(value)s)" % locals()
 
         def _java_methods(self):
             methods = {}
-            methods.update(self._java_method_compare_to())
-            methods.update(self._java_method_equals())
+#             methods.update(self._java_method_compare_to(name=self.java_bean_name()))
+            methods.update(self._java_method_equals(name=self.java_bean_name()))
             methods.update(self._java_method_getters())
             methods.update(self._java_method_hash_code())
             methods.update(self._java_method_setters())
             methods.update(self._java_method_to_string())
             return methods
 
-        def java_name(self, **kwds):
+        def java_bean_name(self, **kwds):
             return _JavaNamedConstruct.java_name(self, **kwds) + 'Bean'
 
-        def java_qname(self, **kwds):
-            return _JavaNamedConstruct.java_qname(self, java_namespace_scope='bean_java', **kwds)
+        def java_bean_qname(self, **kwds):
+            return _JavaNamedConstruct.java_qname(self, java_namespace_scope='bean_java', **kwds) + 'Bean'
 
         def java_repr(self):
             javadoc = self.java_doc()
-            name = self.java_name()
+            name = self.java_bean_name()
             methods = self._java_methods()
             sections = []
             sections.append("\n\n".join(indent(' ' * 4,
@@ -263,8 +266,15 @@ public %(name)s(%(parameters)s) {
             sections.append("\n\n".join(indent(' ' * 4, self._java_member_declarations())))
             sections = lpad("\n", "\n\n".join(section for section in sections if len(section) > 0))
             return """\
-%(javadoc)spublic class %(name)s implements Comparable<%(name)s> {%(sections)s
+%(javadoc)spublic class %(name)s {%(sections)s
 }""" % locals()
+
+    class Typedef(JavaGenerator.Typedef):  # @UndefinedVariable
+        def java_bean_name(self, **kwds):
+            return self.java_name(**kwds)
+
+        def java_bean_qname(self, **kwds):
+            return self.java_qname(**kwds)
 
     def __init__(self, **kwds):
         JavaGenerator.__init__(self, mutable_compound_types=True, **kwds)

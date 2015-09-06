@@ -401,16 +401,20 @@ public %(name)s(%(parameters)s) {
         if len(self.fields) == 0:
             return None
         enumerators = []
+        java_name_cases = []
         thrift_name_cases = []
         for field in self.fields:
             field_id = field.id if field.id is not None else 0
+            field_java_name = field.java_name()
             field_type = field.type.thrift_ttype_name()
             field_required = 'true' if field.required else 'false'
             field_thrift_name = field.name
             enumerator_name = field.name.upper()
             enumerators.append("%(enumerator_name)s(%(field_id)d, org.thryft.protocol.Type.%(field_type)s, %(field_required)s, \"%(field_thrift_name)s\")" % locals())
+            java_name_cases.append("""case "%(field_java_name)s": return %(enumerator_name)s;""" % locals())
             thrift_name_cases.append("""case "%(field_thrift_name)s": return %(enumerator_name)s;""" % locals())
         enumerators = pad("\n", indent(' ' * 4, ",\n".join(enumerators)), ";\n")
+        java_name_cases = lpad("\n", indent(' ' * 8, "\n".join(java_name_cases)))
         thrift_name_cases = lpad("\n", indent(' ' * 8, "\n".join(thrift_name_cases)))
         return """\
 public enum Field implements org.thryft.CompoundType.Field {%(enumerators)s
@@ -442,6 +446,13 @@ public enum Field implements org.thryft.CompoundType.Field {%(enumerators)s
     @Override
     public boolean isRequired()  {
         return required;
+    }
+
+    public static Field valueOfJavaName(final String javaName) {
+        switch (javaName) {%(java_name_cases)s
+        default:
+            throw new IllegalArgumentException(javaName);
+        }
     }
 
     public static Field valueOfThriftName(final String thriftName) {
@@ -494,7 +505,9 @@ public static Builder builder(final %(name)s other) {
     return new Builder(other);
 }""" % locals()}
 
-    def _java_method_compare_to(self):
+    def _java_method_compare_to(self, name=None):
+        if name is None:
+            name = self.java_name()
         field_compare_tos = []
         for field in self.fields:
             field_compare_to = field.java_compare_to()
@@ -504,7 +517,6 @@ public static Builder builder(final %(name)s other) {
             pad("\n\n    int result;\n", "\n\n".join(indent(' ' * 4,
                 field_compare_tos
             )), "\n")
-        name = self.java_name()
         return {'compareTo': """\
 @Override
 public int compareTo(final %(name)s other) {
@@ -514,8 +526,9 @@ public int compareTo(final %(name)s other) {
     return 0;
 }""" % locals()}
 
-    def _java_method_equals(self):
-        name = self.java_name()
+    def _java_method_equals(self, name=None):
+        if name is None:
+            name = self.java_name()
 
         field_equal_tests = []
         for field in self.fields:
