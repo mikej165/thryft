@@ -23,11 +23,11 @@ class PropertiesJavaGenerator(JavaGenerator):
                 return """\
 final %(type_qname)s %(java_name)s;
 {
-    String %(java_name)sString = __properties.getProperty("%(thrift_name)s");
-    if (%(java_name)sString == null) {
+    Object %(java_name)sObject = __properties.remove("%(thrift_name)s");
+    if (!(%(java_name)sObject instanceof String)) {
         %(null_initializer)s
     } else {
-        %(java_name)sString = %(java_name)sString.trim();
+        final String %(java_name)sString = ((String)%(java_name)sObject).trim();
         if (%(java_name)sString.isEmpty()) {
             %(empty_initializer)s
         } else {
@@ -44,11 +44,11 @@ final %(type_qname)s %(java_name)s;
                 return """\
 final com.google.common.base.Optional<%(type_qname)s> %(java_name)s;
 {
-    String %(java_name)sString = __properties.getProperty("%(thrift_name)s");
-    if (%(java_name)sString == null) {
+    Object %(java_name)sObject = __properties.remove("%(thrift_name)s");
+    if (!(%(java_name)sObject instanceof String)) {
         %(null_or_empty_initializer)s;
     } else {
-        %(java_name)sString = %(java_name)sString.trim();
+        final String %(java_name)sString = ((String)%(java_name)sObject).trim();
         if (%(java_name)sString.isEmpty()) {
             %(null_or_empty_initializer)s;
         } else {
@@ -100,6 +100,10 @@ public static %(name)s load(final com.google.common.base.Optional<java.io.File> 
 
 %(field_initializers)s
 
+    for (final java.util.Map.Entry<Object, Object> entry : __properties.entrySet()) {
+        throw new RuntimeException("properties file(s) have unknown property " + entry.getKey().toString());
+    }
+
     return new %(name)s(%(field_values)s);
 }""" % locals()}
 
@@ -107,7 +111,8 @@ public static %(name)s load(final com.google.common.base.Optional<java.io.File> 
             return {'__mergeProperties': '''\
 private static java.util.Properties __mergeProperties(
         final java.util.Properties leftProperties, final java.util.Properties rightProperties) {
-    final java.util.Properties mergedProperties = new java.util.Properties(leftProperties);
+    final java.util.Properties mergedProperties = new java.util.Properties();
+    mergedProperties.putAll(leftProperties);
     for (final java.util.Map.Entry<Object, Object> rightEntry : rightProperties
             .entrySet()) {
         if (!(rightEntry.getKey() instanceof String)) {
