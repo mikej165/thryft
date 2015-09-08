@@ -106,6 +106,6 @@ public static class Messages {
             self._java_message_types_repr(),
             self._java_methods_repr()
         ):
-            if len(section) > 0:
+            if section is not None and len(section) > 0:
                 sections.append(section)
         return sections
