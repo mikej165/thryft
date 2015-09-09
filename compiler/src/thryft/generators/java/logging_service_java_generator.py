@@ -41,7 +41,7 @@ from thryft.compiler.parser import Parser
 class LoggingServiceJavaGenerator(java_generator.JavaGenerator):
     _LOG_LEVELS = ('debug', 'error', 'info', 'trace', 'warn')
 
-    def __init__(self, call_log_level_default='info', exception_log_level_default='error', include_current_user=True, **kwds):
+    def __init__(self, call_log_level_default='info', exception_log_level_default='error', include_current_user=False, **kwds):
         java_generator.JavaGenerator.__init__(self, **kwds)
         self._call_log_level_default = call_log_level_default.lower()
         if not self._call_log_level_default in self._LOG_LEVELS:
@@ -80,8 +80,9 @@ class LoggingServiceJavaGenerator(java_generator.JavaGenerator):
             if self._parent_generator()._include_current_user:
                 log_current_user = lpad("\n\n", """\
     final org.apache.shiro.subject.Subject currentUser = org.apache.shiro.SecurityUtils.getSubject();
-    if (currentUser.getPrincipal() instanceof String) {
-        __logMessageStringBuilder.append((String)currentUser.getPrincipal());
+    if (currentUser.getPrincipal() != null) {
+        org.slf4j.MDC.put("shiro.subject.principal", currentUser.getPrincipal().toString());
+        __logMessageStringBuilder.append(currentUser.getPrincipal().toString());
         __logMessageStringBuilder.append(": " );
     }""" % locals())
             else:
