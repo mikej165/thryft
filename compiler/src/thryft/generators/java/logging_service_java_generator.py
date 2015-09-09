@@ -82,8 +82,6 @@ class LoggingServiceJavaGenerator(java_generator.JavaGenerator):
     final org.apache.shiro.subject.Subject currentUser = org.apache.shiro.SecurityUtils.getSubject();
     if (currentUser.getPrincipal() != null) {
         org.slf4j.MDC.put("shiro.subject.principal", currentUser.getPrincipal().toString());
-        __logMessageStringBuilder.append(currentUser.getPrincipal().toString());
-        __logMessageStringBuilder.append(": " );
     }""" % locals())
             else:
                 log_current_user = ''
