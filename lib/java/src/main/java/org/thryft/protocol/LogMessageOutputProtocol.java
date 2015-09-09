@@ -235,24 +235,21 @@ public final class LogMessageOutputProtocol implements OutputProtocol {
 
     @Override
     public void writeVariant(final Object value) throws OutputProtocolException {
-        if (__writeValueBegin()) {
-            delegate.writeVariant(value);
-        }
+        delegate.writeVariant(value);
     }
 
     private boolean __writeValueBegin() {
-        return true;
-        // if (sizeStack.isEmpty()) {
-        // return true;
-        // } else if (sizeStack.peek() == null) {
-        // // Struct
-        // return true;
-        // } else if (sizeStack.peek() < CONTAINER_SIZE_MAX) {
-        // sizeStack.push(sizeStack.pop() + 1);
-        // return true;
-        // } else {
-        // return false;
-        // }
+        if (sizeStack.isEmpty()) {
+            return true;
+        } else if (sizeStack.peek() == null) {
+            // Struct
+            return true;
+        } else if (sizeStack.peek() < CONTAINER_SIZE_MAX) {
+            sizeStack.push(sizeStack.pop() + 1);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private final JacksonJsonOutputProtocol delegate;
