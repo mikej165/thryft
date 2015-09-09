@@ -106,6 +106,19 @@ protected %(name)s _build(%(field_parameters)s) {
     return new %(name)s(%(all_field_names)s);
 }""" % locals()}
 
+        def _java_method_read_as(self):
+            return {'readAs': '''\
+public Builder readAs(final org.thryft.protocol.InputProtocol iprot, final org.thryft.protocol.Type type) throws org.thryft.protocol.InputProtocolException {
+    switch (type) {
+    case LIST:
+        return readAsList(iprot);
+    case STRUCT:
+        return readAsStruct(iprot);
+    default:
+        throw new IllegalArgumentException("cannot read as " + type);
+    }
+}'''}
+
         def _java_method_read_as_list(self):
             body = indent(' ' * 4, self.__java_compound_type._java_method_read_as_list_body())
             return {'readAsList': """\
@@ -183,6 +196,7 @@ public Builder setIfPresent(final %(name)s other) {
             methods.update(self._java_method_build())
             methods.update(self._java_method__build())
             methods.update(self._java_method_getters())
+            methods.update(self._java_method_read_as())
             methods.update(self._java_method_read_as_list())
             methods.update(self._java_method_read_as_struct())
             methods.update(self._java_method_set_if_present())
@@ -600,6 +614,20 @@ public int hashCode() {
     return hashCode;
 }""" % locals()}
 
+    def _java_method_read_as(self):
+        name = self.java_name()
+        return {'readAs': """\
+public static %(name)s readAs(final org.thryft.protocol.InputProtocol iprot, final org.thryft.protocol.Type type) throws org.thryft.protocol.InputProtocolException {
+    switch (type) {
+    case LIST:
+        return readAsList(iprot);
+    case STRUCT:
+        return readAsStruct(iprot);
+    default:
+        throw new IllegalArgumentException("cannot read as " + type);
+    }
+}""" % locals()}
+
     def _java_method_read_as_list(self):
         body = indent(' ' * 4, self._java_method_read_as_list_body())
         field_declarations = \
@@ -779,6 +807,7 @@ public void writeAsStruct(final org.thryft.protocol.OutputProtocol oprot) throws
         methods.update(self._java_method_get())
         methods.update(self._java_method_getters())
         methods.update(self._java_method_hash_code())
+        methods.update(self._java_method_read_as())
         methods.update(self._java_method_read_as_list())
         methods.update(self._java_method_read_as_struct())
         methods.update(self._java_method_replacers())

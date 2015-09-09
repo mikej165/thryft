@@ -51,16 +51,7 @@ class JsonRpcServletJavaGenerator(_servlet_java_generator._ServletJavaGenerator)
                 read_request = """
     final %(service_qname)s.Messages.%(request_type_name)s serviceRequest;
     try {
-        switch (iprot.getCurrentFieldType()) {
-        case LIST:
-            serviceRequest = %(service_qname)s.Messages.%(request_type_name)s.readAsList(iprot);
-            break;
-        case STRUCT:
-            serviceRequest = %(service_qname)s.Messages.%(request_type_name)s.readAsStruct(iprot);
-            break;
-        default:
-            throw new UnsupportedOperationException("unable to read message as " + iprot.getCurrentFieldType());
-        }
+        serviceRequest = %(service_qname)s.Messages.%(request_type_name)s.readAs(iprot, iprot.getCurrentFieldType());
     } catch (final IllegalArgumentException | org.thryft.protocol.InputProtocolException | NullPointerException e) {
         logger.debug("error deserializing service request: ", e);
         __doPostError(httpServletRequest, httpServletResponse, new org.thryft.protocol.JsonRpcErrorResponse(e, -32602, "invalid JSON-RPC request method parameters: " + String.valueOf(e.getMessage())), jsonRpcRequestId);
