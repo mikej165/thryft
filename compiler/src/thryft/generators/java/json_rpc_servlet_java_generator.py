@@ -88,7 +88,7 @@ try {
             service_call = indent(' ' * 4, service_call)
 
             return """\
-%(annotations)sprivate void __doPost%(upper_camelized_name)s(final javax.servlet.http.HttpServletRequest httpServletRequest, final javax.servlet.http.HttpServletResponse httpServletResponse, final org.thryft.protocol.JsonRpcInputProtocol iprot, final Object jsonRpcRequestId) throws java.io.IOException {%(read_request)s
+%(annotations)spublic void doPost%(upper_camelized_name)s(final javax.servlet.http.HttpServletRequest httpServletRequest, final javax.servlet.http.HttpServletResponse httpServletResponse, final org.thryft.protocol.JsonRpcInputProtocol iprot, final Object jsonRpcRequestId) throws java.io.IOException {%(read_request)s
 %(result_declaration)s%(service_call)s
 
     final String httpServletResponseBody;
@@ -145,7 +145,7 @@ return;
                     indent(' ' * 8, ' else '.join(
                         ["""\
 if (messageBegin.getName().equals("%s")) {
-    __doPost%s(httpServletRequest, httpServletResponse, iprot, messageBegin.getId());
+    doPost%s(httpServletRequest, httpServletResponse, iprot, messageBegin.getId());
 }""" % (function.name, upper_camelize(function.name))
                                    for function in self.functions
                         ] + ['''\
