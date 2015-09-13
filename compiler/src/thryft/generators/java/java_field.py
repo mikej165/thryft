@@ -276,6 +276,9 @@ public %(return_type_name)s %(setter_name)s(@javax.annotation.Nullable final %(t
         return 'set' + upper_camelize(self.name)
 
     def java_to_string_helper_add(self):
+        for annotation in self.annotations:
+            if annotation.name == 'java_exclude_from_to_string':
+                return ''
         field_value = self.java_getter_name() + '()'
         if not self.required:
             field_value += '.orNull()'

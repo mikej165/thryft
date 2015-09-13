@@ -68,13 +68,6 @@ class LoggingServiceJavaGenerator(java_generator.JavaGenerator):
             java_name = self.java_name()
             name = self.name
 
-            local_declarations = []
-            if len(self.parameters) > 0 or self.return_field is not None:
-                local_declarations.append('java.io.StringWriter __logMessageStringWriter;')
-                local_declarations.append('org.thryft.protocol.LogMessageOutputProtocol __logMessageProtocol;')
-            local_declarations.append('final StringBuilder __logMessageStringBuilder = new StringBuilder();')
-            local_declarations = "\n".join(indent(' ' * 4, local_declarations))
-
             marker = 'Markers.' + self.java_marker_variable_name()
 
             if self._parent_generator()._include_current_user:
@@ -97,15 +90,7 @@ class LoggingServiceJavaGenerator(java_generator.JavaGenerator):
 
             if len(self.parameters) > 0:
                 parameters_toString = indent(' ' * 4, """
-try {
-    __logMessageStringWriter = new java.io.StringWriter();
-    __logMessageProtocol = new org.thryft.protocol.LogMessageOutputProtocol(__logMessageStringWriter);
-    new Messages.%(request_type_name)s(%(parameter_names)s).writeAsStruct(__logMessageProtocol);
-    __logMessageProtocol.flush();
-    __logMessageStringBuilder.append(__logMessageStringWriter.toString());
-} catch (final org.thryft.protocol.OutputProtocolException e) {
-    __logMessageStringBuilder.append("(serialization error)");
-}
+__logMessageStringBuilder.append(new Messages.%(request_type_name)s(%(parameter_names)s).toString());
 """ % locals())
             else:
                 parameters_toString = ''
@@ -120,26 +105,10 @@ delegate.%(java_name)s(%(parameter_names)s);
 """ % locals()
             if self.return_field is not None:
                 service_call = self.return_field.type.java_qname(boxed=False) + ' __returnValue = ' + service_call
-                if isinstance(self.return_field.type, _JavaContainerType) or isinstance(self.return_field.type, JavaStructType):
-                    write_response_message = """\
-{
-    final org.thryft.protocol.OutputProtocol oprot = __logMessageProtocol;
-%s
-}""" % indent(' ' * 4, self.return_field.type.java_write_protocol('__returnValue', depth=0))
-                else:
-                    write_response_message = "new Messages.%(response_type_name)s(__returnValue).writeAsStruct(__logMessageProtocol);" % locals()
-                write_response_message = indent(' ' * 4, write_response_message)
                 service_call += """
 __logMessageStringBuilder.append(" -> ");
-try {
-    __logMessageStringWriter = new java.io.StringWriter();
-    __logMessageProtocol = new org.thryft.protocol.LogMessageOutputProtocol(__logMessageStringWriter);
-%(write_response_message)s
-    __logMessageProtocol.flush();
-    __logMessageStringBuilder.append(__logMessageStringWriter.toString());
-} catch (final org.thryft.protocol.OutputProtocolException e) {
-    __logMessageStringBuilder.append("(serialization error)");
-}
+__logMessageStringBuilder.append(new Messages.%(response_type_name)s(__returnValue).toString());
+
 logger.%(call_log_level)s(%(marker)s, __logMessageStringBuilder.toString());
 
 return __returnValue;
@@ -175,7 +144,7 @@ catch (final %s e) {
                 )
             return self._java_delegating_definitions() + ["""\
 public %(return_type_name)s %(java_name)s(%(parameters)s)%(throws)s {
-%(local_declarations)s%(log_current_user)s
+    final StringBuilder __logMessageStringBuilder = new StringBuilder();%(log_current_user)s
 
     __logMessageStringBuilder.append("%(name)s(");%(parameters_toString)s
     __logMessageStringBuilder.append(")");

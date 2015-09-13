@@ -76,6 +76,13 @@ class JavaGenerator(Generator):
         return self.__mutable_compound_types
 
 
+def __parse_java_exclude_from_to_string_annotation(ast_node, name, value, **kwds):
+    if value is not None:
+        raise ValueError("@%(name)s does not take a value" % locals())
+    ast_node.annotations.append(Ast.AnnotationNode(name=name, **kwds))
+Parser.register_annotation(Ast.FieldNode, 'java_exclude_from_to_string', __parse_java_exclude_from_to_string_annotation)
+
+
 def __parse_java_implements(ast_node, name, value, **kwds):
     ast_node.annotations.append(Ast.AnnotationNode(name=name, value=value, **kwds))
 
