@@ -34,7 +34,6 @@ from thryft.generator.document import Document
 from thryft.generator.typedef import Typedef
 from thryft.generators.java._java_named_construct import _JavaNamedConstruct
 import os.path
-from thryft.compiler.compile_exception import CompileException
 
 
 class JavaDocument(Document, _JavaNamedConstruct):
