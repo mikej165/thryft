@@ -154,6 +154,17 @@ public class ProtocolTestStruct implements org.thryft.Struct, java.lang.Comparab
             return variantField;
         }
 
+        public Builder readAs(final org.thryft.protocol.InputProtocol iprot, final org.thryft.protocol.Type type) throws org.thryft.protocol.InputProtocolException {
+            switch (type) {
+            case LIST:
+                return readAsList(iprot);
+            case STRUCT:
+                return readAsStruct(iprot);
+            default:
+                throw new IllegalArgumentException("cannot read as " + type);
+            }
+        }
+
         public Builder readAsList(final org.thryft.protocol.InputProtocol iprot) throws org.thryft.protocol.InputProtocolException {
             final org.thryft.protocol.ListBegin __list = iprot.readListBegin();
             requiredI32Field = iprot.readI32();
@@ -911,44 +922,50 @@ public class ProtocolTestStruct implements org.thryft.Struct, java.lang.Comparab
         private com.google.common.base.Optional<java.lang.Object> variantField;
     }
 
+    @SuppressWarnings("serial")
     public enum Field implements org.thryft.CompoundType.Field {
-        REQUIRED_I32_FIELD(1, org.thryft.protocol.Type.I32, true, "required_i32_field"),
-        REQUIRED_STRING_FIELD(2, org.thryft.protocol.Type.STRING, true, "required_string_field"),
-        BINARY_FIELD(3, org.thryft.protocol.Type.STRING, false, "binary_field"),
-        BOOL_FIELD(4, org.thryft.protocol.Type.BOOL, false, "bool_field"),
-        DATE_TIME_FIELD(5, org.thryft.protocol.Type.I64, false, "date_time_field"),
-        DECIMAL_FIELD(6, org.thryft.protocol.Type.STRING, false, "decimal_field"),
-        EMAIL_ADDRESS_FIELD(7, org.thryft.protocol.Type.STRING, false, "email_address_field"),
-        ENUM_FIELD(8, org.thryft.protocol.Type.STRING, false, "enum_field"),
-        FLOAT_FIELD(9, org.thryft.protocol.Type.DOUBLE, false, "float_field"),
-        I8_FIELD(10, org.thryft.protocol.Type.BYTE, false, "i8_field"),
-        I16_FIELD(11, org.thryft.protocol.Type.I16, false, "i16_field"),
-        I32_FIELD(12, org.thryft.protocol.Type.I32, false, "i32_field"),
-        I64_FIELD(13, org.thryft.protocol.Type.I64, false, "i64_field"),
-        STRING_LIST_FIELD(14, org.thryft.protocol.Type.LIST, false, "string_list_field"),
-        STRING_STRING_MAP_FIELD(15, org.thryft.protocol.Type.MAP, false, "string_string_map_field"),
-        STRING_SET_FIELD(16, org.thryft.protocol.Type.SET, false, "string_set_field"),
-        STRING_FIELD(17, org.thryft.protocol.Type.STRING, false, "string_field"),
-        STRUCT_FIELD(18, org.thryft.protocol.Type.STRUCT, false, "struct_field"),
-        U32_FIELD(19, org.thryft.protocol.Type.I32, false, "u32_field"),
-        U64_FIELD(20, org.thryft.protocol.Type.I64, false, "u64_field"),
-        URI_FIELD(21, org.thryft.protocol.Type.STRING, false, "uri_field"),
-        URL_FIELD(22, org.thryft.protocol.Type.STRING, false, "url_field"),
-        VARIANT_FIELD(23, org.thryft.protocol.Type.STRUCT, false, "variant_field");
+        REQUIRED_I32_FIELD(new com.google.common.reflect.TypeToken<Integer>() {}, true, 1, "required_i32_field", org.thryft.protocol.Type.I32),
+        REQUIRED_STRING_FIELD(new com.google.common.reflect.TypeToken<String>() {}, true, 2, "required_string_field", org.thryft.protocol.Type.STRING),
+        BINARY_FIELD(new com.google.common.reflect.TypeToken<byte[]>() {}, false, 3, "binary_field", org.thryft.protocol.Type.STRING),
+        BOOL_FIELD(new com.google.common.reflect.TypeToken<Boolean>() {}, false, 4, "bool_field", org.thryft.protocol.Type.BOOL),
+        DATE_TIME_FIELD(new com.google.common.reflect.TypeToken<java.util.Date>() {}, false, 5, "date_time_field", org.thryft.protocol.Type.I64),
+        DECIMAL_FIELD(new com.google.common.reflect.TypeToken<java.math.BigDecimal>() {}, false, 6, "decimal_field", org.thryft.protocol.Type.STRING),
+        EMAIL_ADDRESS_FIELD(new com.google.common.reflect.TypeToken<org.thryft.native_.EmailAddress>() {}, false, 7, "email_address_field", org.thryft.protocol.Type.STRING),
+        ENUM_FIELD(new com.google.common.reflect.TypeToken<org.thryft.protocol.test.ProtocolTestEnum>() {}, false, 8, "enum_field", org.thryft.protocol.Type.STRING),
+        FLOAT_FIELD(new com.google.common.reflect.TypeToken<Float>() {}, false, 9, "float_field", org.thryft.protocol.Type.DOUBLE),
+        I8_FIELD(new com.google.common.reflect.TypeToken<Byte>() {}, false, 10, "i8_field", org.thryft.protocol.Type.BYTE),
+        I16_FIELD(new com.google.common.reflect.TypeToken<Short>() {}, false, 11, "i16_field", org.thryft.protocol.Type.I16),
+        I32_FIELD(new com.google.common.reflect.TypeToken<Integer>() {}, false, 12, "i32_field", org.thryft.protocol.Type.I32),
+        I64_FIELD(new com.google.common.reflect.TypeToken<Long>() {}, false, 13, "i64_field", org.thryft.protocol.Type.I64),
+        STRING_LIST_FIELD(new com.google.common.reflect.TypeToken<com.google.common.collect.ImmutableList<String>>() {}, false, 14, "string_list_field", org.thryft.protocol.Type.LIST),
+        STRING_STRING_MAP_FIELD(new com.google.common.reflect.TypeToken<com.google.common.collect.ImmutableMap<String, String>>() {}, false, 15, "string_string_map_field", org.thryft.protocol.Type.MAP),
+        STRING_SET_FIELD(new com.google.common.reflect.TypeToken<com.google.common.collect.ImmutableSet<String>>() {}, false, 16, "string_set_field", org.thryft.protocol.Type.SET),
+        STRING_FIELD(new com.google.common.reflect.TypeToken<String>() {}, false, 17, "string_field", org.thryft.protocol.Type.STRING),
+        STRUCT_FIELD(new com.google.common.reflect.TypeToken<org.thryft.protocol.test.NestedProtocolTestStruct>() {}, false, 18, "struct_field", org.thryft.protocol.Type.STRUCT),
+        U32_FIELD(new com.google.common.reflect.TypeToken<com.google.common.primitives.UnsignedInteger>() {}, false, 19, "u32_field", org.thryft.protocol.Type.I32),
+        U64_FIELD(new com.google.common.reflect.TypeToken<com.google.common.primitives.UnsignedLong>() {}, false, 20, "u64_field", org.thryft.protocol.Type.I64),
+        URI_FIELD(new com.google.common.reflect.TypeToken<org.thryft.native_.Uri>() {}, false, 21, "uri_field", org.thryft.protocol.Type.STRING),
+        URL_FIELD(new com.google.common.reflect.TypeToken<org.thryft.native_.Url>() {}, false, 22, "url_field", org.thryft.protocol.Type.STRING),
+        VARIANT_FIELD(new com.google.common.reflect.TypeToken<java.lang.Object>() {}, false, 23, "variant_field", org.thryft.protocol.Type.STRUCT);
 
         @Override
-        public int getId() {
-            return id;
+        public com.google.common.reflect.TypeToken<?> getJavaType() {
+            return javaType;
         }
 
         @Override
-        public String getProtocolKey() {
-            return protocolKey;
+        public int getThriftId() {
+            return thriftId;
         }
 
         @Override
-        public org.thryft.protocol.Type getProtocolType() {
-            return protocolType;
+        public String getThriftProtocolKey() {
+            return thriftProtocolKey;
+        }
+
+        @Override
+        public org.thryft.protocol.Type getThriftProtocolType() {
+            return thriftProtocolType;
         }
 
         @Override
@@ -957,13 +974,43 @@ public class ProtocolTestStruct implements org.thryft.Struct, java.lang.Comparab
         }
 
         @Override
-        public boolean hasId() {
-            return id != org.thryft.protocol.FieldBegin.ABSENT_ID;
+        public boolean hasThriftId() {
+            return thriftId != org.thryft.protocol.FieldBegin.ABSENT_ID;
         }
 
         @Override
         public boolean isRequired()  {
             return required;
+        }
+
+        public static Field valueOfJavaName(final String javaName) {
+            switch (javaName) {
+            case "requiredI32Field": return REQUIRED_I32_FIELD;
+            case "requiredStringField": return REQUIRED_STRING_FIELD;
+            case "binaryField": return BINARY_FIELD;
+            case "boolField": return BOOL_FIELD;
+            case "dateTimeField": return DATE_TIME_FIELD;
+            case "decimalField": return DECIMAL_FIELD;
+            case "emailAddressField": return EMAIL_ADDRESS_FIELD;
+            case "enumField": return ENUM_FIELD;
+            case "floatField": return FLOAT_FIELD;
+            case "i8Field": return I8_FIELD;
+            case "i16Field": return I16_FIELD;
+            case "i32Field": return I32_FIELD;
+            case "i64Field": return I64_FIELD;
+            case "stringListField": return STRING_LIST_FIELD;
+            case "stringStringMapField": return STRING_STRING_MAP_FIELD;
+            case "stringSetField": return STRING_SET_FIELD;
+            case "stringField": return STRING_FIELD;
+            case "structField": return STRUCT_FIELD;
+            case "u32Field": return U32_FIELD;
+            case "u64Field": return U64_FIELD;
+            case "uriField": return URI_FIELD;
+            case "urlField": return URL_FIELD;
+            case "variantField": return VARIANT_FIELD;
+            default:
+                throw new IllegalArgumentException(javaName);
+            }
         }
 
         public static Field valueOfThriftName(final String thriftName) {
@@ -996,23 +1043,25 @@ public class ProtocolTestStruct implements org.thryft.Struct, java.lang.Comparab
             }
         }
 
-        private Field(final int id, final org.thryft.protocol.Type protocolType, final boolean required, final String thriftName) {
-            this.id = id;
-            if (id != org.thryft.protocol.FieldBegin.ABSENT_ID) {
-                this.protocolKey = Integer.toString(id) + ":" + thriftName;
-            } else {
-                this.protocolKey = thriftName;
-            }
-            this.protocolType = protocolType;
+        private Field(final com.google.common.reflect.TypeToken<?> javaType, final boolean required, final int thriftId, final String thriftName, final org.thryft.protocol.Type thriftProtocolType) {
+            this.javaType = javaType;
             this.required = required;
+            this.thriftId = thriftId;
             this.thriftName = thriftName;
+            if (thriftId != org.thryft.protocol.FieldBegin.ABSENT_ID) {
+                this.thriftProtocolKey = Integer.toString(thriftId) + ":" + thriftName;
+            } else {
+                this.thriftProtocolKey = thriftName;
+            }
+            this.thriftProtocolType = thriftProtocolType;
         }
 
-        private final int id;
-        private final String protocolKey;
-        private final org.thryft.protocol.Type protocolType;
+        private final com.google.common.reflect.TypeToken<?> javaType;
         private final boolean required;
+        private final int thriftId;
         private final String thriftName;
+        private final String thriftProtocolKey;
+        private final org.thryft.protocol.Type thriftProtocolType;
     }
 
     /**
@@ -1776,6 +1825,17 @@ public class ProtocolTestStruct implements org.thryft.Struct, java.lang.Comparab
             hashCode = 31 * hashCode + getVariantField().get().hashCode();
         }
         return hashCode;
+    }
+
+    public static ProtocolTestStruct readAs(final org.thryft.protocol.InputProtocol iprot, final org.thryft.protocol.Type type) throws org.thryft.protocol.InputProtocolException {
+        switch (type) {
+        case LIST:
+            return readAsList(iprot);
+        case STRUCT:
+            return readAsStruct(iprot);
+        default:
+            throw new IllegalArgumentException("cannot read as " + type);
+        }
     }
 
     public static ProtocolTestStruct readAsList(final org.thryft.protocol.InputProtocol iprot) throws org.thryft.protocol.InputProtocolException {

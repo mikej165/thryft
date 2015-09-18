@@ -5,18 +5,19 @@ import org.thryft.protocol.OutputProtocolException;
 
 public interface CompoundType {
     public interface Field {
-        public int getId();
+        public com.google.common.reflect.TypeToken<?> getJavaType();
 
-        public String getProtocolKey();
-
-        public org.thryft.protocol.Type getProtocolType();
+        public int getThriftId();
 
         public String getThriftName();
 
-        public boolean hasId();
+        public String getThriftProtocolKey();
+
+        public org.thryft.protocol.Type getThriftProtocolType();
+
+        public boolean hasThriftId();
 
         public boolean isRequired();
-
     }
 
     public Object get(final String fieldName);
