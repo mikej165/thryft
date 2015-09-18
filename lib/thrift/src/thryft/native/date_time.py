@@ -52,6 +52,9 @@ class DateTime(object):
     def dart_to_core_type(self, value):
         return value + '.millisecondsSinceEpoch'
 
+    def elastic_search_mapping_dict(self):
+        return {'type': 'date'}
+
     def java_compare_to(self, this_value, other_value, **kwds):
         return "%(this_value)s.compareTo(%(other_value)s)" % locals()
 

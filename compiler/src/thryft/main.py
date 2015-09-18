@@ -38,7 +38,7 @@ import argparse
 from thryft.compiler import Compiler
 from thryft.compiler.compile_exception import CompileException
 from thryft.compiler.scan_exception import ScanException
-from yutil import camelize, decamelize, class_qname
+from yutil import camelize, decamelize
 
 
 MY_DIR_PATH = os.path.dirname(os.path.realpath(__file__))

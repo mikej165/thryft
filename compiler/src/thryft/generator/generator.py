@@ -43,6 +43,7 @@ class Generator(object):
     from thryft.generator.i16_type import I16Type  # @UnusedImport
     from thryft.generator.i32_type import I32Type  # @UnusedImport
     from thryft.generator.i64_type import I64Type  # @UnusedImport
+    from thryft.generator.include import Include  # @UnusedImport
     from thryft.generator.list_type import ListType  # @UnusedImport
     from thryft.generator.map_type import MapType  # @UnusedImport
     from thryft.generator.namespace import Namespace  # @UnusedImport
