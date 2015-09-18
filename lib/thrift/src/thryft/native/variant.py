@@ -58,7 +58,7 @@ class Variant(object):
     def java_is_reference(self):
         return True
 
-    def java_qname(self):
+    def java_qname(self, **kwds):
         return 'java.lang.Object'
 
     def java_read_protocol(self):

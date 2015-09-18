@@ -420,31 +420,39 @@ public %(name)s(%(parameters)s) {
         for field in self.fields:
             field_id = field.id if field.id is not None else 0
             field_java_name = field.java_name()
+            field_java_type = field.type.java_qname(boxed=True)
             field_type = field.type.thrift_ttype_name()
             field_required = 'true' if field.required else 'false'
             field_thrift_name = field.name
             enumerator_name = field.name.upper()
-            enumerators.append("%(enumerator_name)s(%(field_id)d, org.thryft.protocol.Type.%(field_type)s, %(field_required)s, \"%(field_thrift_name)s\")" % locals())
+            enumerators.append("%(enumerator_name)s(new com.google.common.reflect.TypeToken<%(field_java_type)s>() {}, %(field_required)s, %(field_id)d, \"%(field_thrift_name)s\", org.thryft.protocol.Type.%(field_type)s)" % locals())
             java_name_cases.append("""case "%(field_java_name)s": return %(enumerator_name)s;""" % locals())
             thrift_name_cases.append("""case "%(field_thrift_name)s": return %(enumerator_name)s;""" % locals())
+
+        class_suppress_warnings = '' if 'serial' in self.__suppress_warnings else "@SuppressWarnings(\"serial\")\n"
         enumerators = pad("\n", indent(' ' * 4, ",\n".join(enumerators)), ";\n")
         java_name_cases = lpad("\n", indent(' ' * 8, "\n".join(java_name_cases)))
         thrift_name_cases = lpad("\n", indent(' ' * 8, "\n".join(thrift_name_cases)))
         return """\
-public enum Field implements org.thryft.CompoundType.Field {%(enumerators)s
+%(class_suppress_warnings)spublic enum Field implements org.thryft.CompoundType.Field {%(enumerators)s
     @Override
-    public int getId() {
-        return id;
+    public com.google.common.reflect.TypeToken<?> getJavaType() {
+        return javaType;
     }
 
     @Override
-    public String getProtocolKey() {
-        return protocolKey;
+    public int getThriftId() {
+        return thriftId;
     }
 
     @Override
-    public org.thryft.protocol.Type getProtocolType() {
-        return protocolType;
+    public String getThriftProtocolKey() {
+        return thriftProtocolKey;
+    }
+
+    @Override
+    public org.thryft.protocol.Type getThriftProtocolType() {
+        return thriftProtocolType;
     }
 
     @Override
@@ -453,8 +461,8 @@ public enum Field implements org.thryft.CompoundType.Field {%(enumerators)s
     }
 
     @Override
-    public boolean hasId() {
-        return id != org.thryft.protocol.FieldBegin.ABSENT_ID;
+    public boolean hasThriftId() {
+        return thriftId != org.thryft.protocol.FieldBegin.ABSENT_ID;
     }
 
     @Override
@@ -476,23 +484,25 @@ public enum Field implements org.thryft.CompoundType.Field {%(enumerators)s
         }
     }
 
-    private Field(final int id, final org.thryft.protocol.Type protocolType, final boolean required, final String thriftName) {
-        this.id = id;
-        if (id != org.thryft.protocol.FieldBegin.ABSENT_ID) {
-            this.protocolKey = Integer.toString(id) + ":" + thriftName;
-        } else {
-            this.protocolKey = thriftName;
-        }
-        this.protocolType = protocolType;
+    private Field(final com.google.common.reflect.TypeToken<?> javaType, final boolean required, final int thriftId, final String thriftName, final org.thryft.protocol.Type thriftProtocolType) {
+        this.javaType = javaType;
         this.required = required;
+        this.thriftId = thriftId;
         this.thriftName = thriftName;
+        if (thriftId != org.thryft.protocol.FieldBegin.ABSENT_ID) {
+            this.thriftProtocolKey = Integer.toString(thriftId) + ":" + thriftName;
+        } else {
+            this.thriftProtocolKey = thriftName;
+        }
+        this.thriftProtocolType = thriftProtocolType;
     }
 
-    private final int id;
-    private final String protocolKey;
-    private final org.thryft.protocol.Type protocolType;
+    private final com.google.common.reflect.TypeToken<?> javaType;
     private final boolean required;
+    private final int thriftId;
     private final String thriftName;
+    private final String thriftProtocolKey;
+    private final org.thryft.protocol.Type thriftProtocolType;
 }""" % locals()
 
     def _java_implements(self):
