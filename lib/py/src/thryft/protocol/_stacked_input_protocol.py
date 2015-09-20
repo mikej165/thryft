@@ -6,6 +6,9 @@ class _StackedInputProtocol(_InputProtocol):
         _InputProtocol.__init__(self)
         self._input_protocol_stack = []
 
+    def read_binary(self):
+        return self._input_protocol_stack[-1].read_binary()
+
     def read_bool(self):
         return self._input_protocol_stack[-1].read_bool()
 
@@ -18,6 +21,9 @@ class _StackedInputProtocol(_InputProtocol):
     def read_decimal(self):
         return self._input_protocol_stack[-1].read_decimal()
 
+    def read_double(self):
+        return self._input_protocol_stack[-1].read_double()
+
     def read_field_begin(self):
         return self._input_protocol_stack[-1].read_field_begin()
 
@@ -26,6 +32,9 @@ class _StackedInputProtocol(_InputProtocol):
 
     def read_field_stop(self):
         return self._input_protocol_stack[-1].read_field_stop()
+
+    def read_float(self):
+        return self._input_protocol_stack[-1].read_float()
 
     def read_i16(self):
         return self._input_protocol_stack[-1].read_i16()
@@ -76,4 +85,5 @@ class _StackedInputProtocol(_InputProtocol):
     def read_u64(self):
         return self._input_protocol_stack[-1].read_u64()
 
-    # Do not include read_variant
+    def read_variant(self):
+        return self._input_protocol_stack[-1].read_variant()

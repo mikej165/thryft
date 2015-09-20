@@ -76,6 +76,9 @@ class Variant(object):
     def py_description(self):
         return 'object'
 
+    def py_imports_check(self, caller_stack=None):
+        return []
+
     def py_imports_definition(self, caller_stack=None):
         return []
 

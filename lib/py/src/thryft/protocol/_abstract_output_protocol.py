@@ -36,6 +36,9 @@ from thryft.protocol._output_protocol import _OutputProtocol
 
 
 class _AbstractOutputProtocol(_OutputProtocol):
+    def write_binary(self, binary):
+        self.write_string(binary)
+
     def write_byte(self, byte):
         self.write_i16(byte)
 
@@ -58,7 +61,7 @@ class _AbstractOutputProtocol(_OutputProtocol):
         self.write_i32(u32)
 
     def write_u64(self, u64):
-        self.write_u64(u64)
+        self.write_i64(u64)
 
     def write_variant(self, object_):
         if object_ is None:
