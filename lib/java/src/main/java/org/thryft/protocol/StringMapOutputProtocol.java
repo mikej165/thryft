@@ -36,59 +36,51 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static org.thryft.Preconditions.checkNotEmpty;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
 
-public class StringMapOutputProtocol extends
-        StackedOutputProtocol<StringMapOutputProtocol.NestedOutputProtocol> {
+public class StringMapOutputProtocol extends StackedOutputProtocol<StringMapOutputProtocol.NestedOutputProtocol> {
     abstract class NestedOutputProtocol extends AbstractOutputProtocol {
         protected NestedOutputProtocol(final String myKey) {
             this.myKey = myKey;
         }
 
         @Override
-        public void writeBinary(final byte[] value)
-                throws OutputProtocolException {
+        public void writeBinary(final byte[] value) throws OutputProtocolException {
             writeString(Base64.encodeBase64String(value));
         }
 
         @Override
-        public final void writeBool(final boolean value)
-                throws OutputProtocolException {
+        public final void writeBool(final boolean value) throws OutputProtocolException {
             writeString(Boolean.toString(value));
         }
 
         @Override
-        public final void writeByte(final byte value)
-                throws OutputProtocolException {
+        public final void writeByte(final byte value) throws OutputProtocolException {
             writeString(Byte.toString(value));
         }
 
         @Override
-        public final void writeDouble(final double value)
-                throws OutputProtocolException {
+        public final void writeDouble(final double value) throws OutputProtocolException {
             writeString(Double.toString(value));
         }
 
         @Override
-        public final void writeI16(final short value)
-                throws OutputProtocolException {
+        public final void writeI16(final short value) throws OutputProtocolException {
             writeString(Short.toString(value));
         }
 
         @Override
-        public final void writeI32(final int value)
-                throws OutputProtocolException {
+        public final void writeI32(final int value) throws OutputProtocolException {
             writeString(Integer.toString(value));
         }
 
         @Override
-        public final void writeI64(final long value)
-                throws OutputProtocolException {
+        public final void writeI64(final long value) throws OutputProtocolException {
             writeString(Long.toString(value));
         }
 
@@ -109,18 +101,14 @@ public class StringMapOutputProtocol extends
         public void writeStructEnd() throws OutputProtocolException {
         }
 
-        protected void _writeListBegin(final String childKey)
-                throws OutputProtocolException {
+        protected void _writeListBegin(final String childKey) throws OutputProtocolException {
             output.put(__joinKeys(myKey, childKey), "");
-            _getOutputProtocolStack().push(
-                    new ListOutputProtocol(__joinKeys(myKey, childKey)));
+            _getOutputProtocolStack().push(new ListOutputProtocol(__joinKeys(myKey, childKey)));
         }
 
-        protected void _writeMapBegin(final String childKey)
-                throws OutputProtocolException {
+        protected void _writeMapBegin(final String childKey) throws OutputProtocolException {
             output.put(__joinKeys(myKey, childKey), "");
-            _getOutputProtocolStack().push(
-                    new MapOutputProtocol(__joinKeys(myKey, childKey)));
+            _getOutputProtocolStack().push(new MapOutputProtocol(__joinKeys(myKey, childKey)));
         }
 
         protected void _writeString(final String childKey, final String value) {
@@ -129,11 +117,9 @@ public class StringMapOutputProtocol extends
             output.put(__joinKeys(myKey, childKey), value);
         }
 
-        protected void _writeStructBegin(final String childKey)
-                throws OutputProtocolException {
+        protected void _writeStructBegin(final String childKey) throws OutputProtocolException {
             output.put(__joinKeys(myKey, childKey), "");
-            _getOutputProtocolStack().push(
-                    new StructOutputProtocol(__joinKeys(myKey, childKey)));
+            _getOutputProtocolStack().push(new StructOutputProtocol(__joinKeys(myKey, childKey)));
         }
 
         private final String myKey;
@@ -145,26 +131,23 @@ public class StringMapOutputProtocol extends
         }
 
         @Override
-        public void writeListBegin(final Type elementType, final int size)
-                throws OutputProtocolException {
+        public void writeListBegin(final Type elementType, final int size) throws OutputProtocolException {
             _writeListBegin(Integer.toString(nextChildKey++));
         }
 
         @Override
-        public void writeMapBegin(final Type keyType, final Type valueType,
-                final int size) throws OutputProtocolException {
+        public void writeMapBegin(final Type keyType, final Type valueType, final int size)
+                throws OutputProtocolException {
             _writeMapBegin(Integer.toString(nextChildKey++));
         }
 
         @Override
-        public void writeString(final String value)
-                throws OutputProtocolException {
+        public void writeString(final String value) throws OutputProtocolException {
             _writeString(Integer.toString(nextChildKey++), value);
         }
 
         @Override
-        public void writeStructBegin(final String name)
-                throws OutputProtocolException {
+        public void writeStructBegin(final String name) throws OutputProtocolException {
             _writeStructBegin(Integer.toString(nextChildKey++));
         }
 
@@ -177,22 +160,20 @@ public class StringMapOutputProtocol extends
         }
 
         @Override
-        public void writeListBegin(final Type elementType, final int size)
-                throws OutputProtocolException {
+        public void writeListBegin(final Type elementType, final int size) throws OutputProtocolException {
             checkState(nextChildKey != null);
             _writeListBegin(nextChildKey);
         }
 
         @Override
-        public void writeMapBegin(final Type keyType, final Type valueType,
-                final int size) throws OutputProtocolException {
+        public void writeMapBegin(final Type keyType, final Type valueType, final int size)
+                throws OutputProtocolException {
             checkState(nextChildKey != null);
             _writeMapBegin(nextChildKey);
         }
 
         @Override
-        public void writeString(final String value)
-                throws OutputProtocolException {
+        public void writeString(final String value) throws OutputProtocolException {
             if (nextChildKey == null) {
                 nextChildKey = value;
             } else {
@@ -202,8 +183,7 @@ public class StringMapOutputProtocol extends
         }
 
         @Override
-        public void writeStructBegin(final String name)
-                throws OutputProtocolException {
+        public void writeStructBegin(final String name) throws OutputProtocolException {
             checkState(nextChildKey != null);
             _writeStructBegin(nextChildKey);
         }
@@ -217,26 +197,23 @@ public class StringMapOutputProtocol extends
         }
 
         @Override
-        public void writeListBegin(final Type elementType, final int size)
-                throws OutputProtocolException {
+        public void writeListBegin(final Type elementType, final int size) throws OutputProtocolException {
             _getOutputProtocolStack().push(new ListOutputProtocol(""));
         }
 
         @Override
-        public void writeMapBegin(final Type keyType, final Type valueType,
-                final int size) throws OutputProtocolException {
+        public void writeMapBegin(final Type keyType, final Type valueType, final int size)
+                throws OutputProtocolException {
             _getOutputProtocolStack().push(new MapOutputProtocol(""));
         }
 
         @Override
-        public void writeString(final String value)
-                throws OutputProtocolException {
+        public void writeString(final String value) throws OutputProtocolException {
             throw new IllegalStateException();
         }
 
         @Override
-        public void writeStructBegin(final String name)
-                throws OutputProtocolException {
+        public void writeStructBegin(final String name) throws OutputProtocolException {
             _getOutputProtocolStack().push(new StructOutputProtocol(""));
         }
     }
@@ -247,8 +224,7 @@ public class StringMapOutputProtocol extends
         }
 
         @Override
-        public void writeFieldBegin(final String name, final Type type,
-                final short id) throws OutputProtocolException {
+        public void writeFieldBegin(final String name, final Type type, final short id) throws OutputProtocolException {
             nextChildKey = name;
         }
 
@@ -261,29 +237,26 @@ public class StringMapOutputProtocol extends
         }
 
         @Override
-        public void writeListBegin(final Type elementType, final int size)
-                throws OutputProtocolException {
+        public void writeListBegin(final Type elementType, final int size) throws OutputProtocolException {
             checkState(nextChildKey != null);
             _writeListBegin(nextChildKey);
         }
 
         @Override
-        public void writeMapBegin(final Type keyType, final Type valueType,
-                final int size) throws OutputProtocolException {
+        public void writeMapBegin(final Type keyType, final Type valueType, final int size)
+                throws OutputProtocolException {
             checkState(nextChildKey != null);
             _writeMapBegin(nextChildKey);
         }
 
         @Override
-        public void writeString(final String value)
-                throws OutputProtocolException {
+        public void writeString(final String value) throws OutputProtocolException {
             checkState(nextChildKey != null);
             _writeString(nextChildKey, value);
         }
 
         @Override
-        public void writeStructBegin(final String name)
-                throws OutputProtocolException {
+        public void writeStructBegin(final String name) throws OutputProtocolException {
             checkState(nextChildKey != null);
             _writeStructBegin(nextChildKey);
         }
@@ -291,8 +264,7 @@ public class StringMapOutputProtocol extends
         private String nextChildKey = null;
     }
 
-    private final static String __joinKeys(final String parentKey,
-            final String childKey) {
+    private final static String __joinKeys(final String parentKey, final String childKey) {
         checkNotEmpty(childKey);
         if (parentKey.isEmpty()) {
             return childKey;
@@ -309,5 +281,5 @@ public class StringMapOutputProtocol extends
         return ImmutableMap.copyOf(output);
     }
 
-    private final Map<String, String> output = Maps.newHashMap();
+    private final Map<String, String> output = new LinkedHashMap<String, String>();
 }
