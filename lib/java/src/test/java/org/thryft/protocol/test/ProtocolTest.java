@@ -63,15 +63,18 @@ public abstract class ProtocolTest {
     }
 
     @Test
+    public void testDouble() throws Exception {
+        _test(ProtocolTestStruct.builder().setDoubleField(12.0));
+    }
+
+    @Test
     public void testEmailAddress() throws Exception {
-        _test(ProtocolTestStruct.builder().setEmailAddressField(
-                new EmailAddress("test@example.com")));
+        _test(ProtocolTestStruct.builder().setEmailAddressField(new EmailAddress("test@example.com")));
     }
 
     @Test
     public void testEnum() throws Exception {
-        _test(ProtocolTestStruct.builder().setEnumField(
-                ProtocolTestEnum.ENUMERATOR2));
+        _test(ProtocolTestStruct.builder().setEnumField(ProtocolTestEnum.ENUMERATOR2));
     }
 
     @Test
@@ -106,82 +109,67 @@ public abstract class ProtocolTest {
 
     @Test
     public void testStringList() throws Exception {
-        _test(ProtocolTestStruct.builder().setStringListField(
-                ImmutableList.of("test")));
+        _test(ProtocolTestStruct.builder().setStringListField(ImmutableList.of("test")));
 
         // Empty list
-        _test(ProtocolTestStruct.builder().setStringListField(
-                ImmutableList.<String> of()));
+        _test(ProtocolTestStruct.builder().setStringListField(ImmutableList.<String> of()));
     }
 
     @Test
     public void testStringListLong() throws Exception {
-        final ImmutableList.Builder<String> stringListBuilder = ImmutableList
-                .builder();
+        final ImmutableList.Builder<String> stringListBuilder = ImmutableList.builder();
         for (int i = 0; i < 32; i++) {
             stringListBuilder.add("test" + i);
         }
-        _test(ProtocolTestStruct.builder().setStringListField(
-                stringListBuilder.build()));
+        _test(ProtocolTestStruct.builder().setStringListField(stringListBuilder.build()));
     }
 
     @Test
     public void testStringSet() throws Exception {
-        _test(ProtocolTestStruct.builder().setStringSetField(
-                ImmutableSet.of("test")));
+        _test(ProtocolTestStruct.builder().setStringSetField(ImmutableSet.of("test")));
 
         // Empty set
-        _test(ProtocolTestStruct.builder().setStringSetField(
-                ImmutableSet.<String> of()));
+        _test(ProtocolTestStruct.builder().setStringSetField(ImmutableSet.<String> of()));
     }
 
     @Test
     public void testStringStringMap() throws Exception {
-        _test(ProtocolTestStruct.builder().setStringStringMapField(
-                ImmutableMap.of("testkey", "testvalue")));
+        _test(ProtocolTestStruct.builder().setStringStringMapField(ImmutableMap.of("testkey", "testvalue")));
 
         // Empty map
-        _test(ProtocolTestStruct.builder().setStringStringMapField(
-                ImmutableMap.<String, String> of()));
+        _test(ProtocolTestStruct.builder().setStringStringMapField(ImmutableMap.<String, String> of()));
     }
 
     @Test
     public void testStruct() throws Exception {
-        _test(ProtocolTestStruct.builder().setStructField(
-                new NestedProtocolTestStruct.Builder().setI32Field(1)
-                        .setRequiredI32Field(1).setRequiredStringField("test")
-                        .build()));
+        _test(ProtocolTestStruct.builder().setStructField(new NestedProtocolTestStruct.Builder().setI32Field(1)
+                .setRequiredI32Field(1).setRequiredStringField("test").build()));
 
         // Empty struct
         _test(ProtocolTestStruct.builder().setStructField(
-                new NestedProtocolTestStruct.Builder().setRequiredI32Field(1)
-                        .setRequiredStringField("test").build()));
+                new NestedProtocolTestStruct.Builder().setRequiredI32Field(1).setRequiredStringField("test").build()));
     }
 
     @Test
     public void testU32() throws Exception {
-        _test(ProtocolTestStruct.builder().setRequiredI32Field(1)
-                .setRequiredStringField("test")
+        _test(ProtocolTestStruct.builder().setRequiredI32Field(1).setRequiredStringField("test")
                 .setU32Field(UnsignedInteger.valueOf(1)).build());
     }
 
     @Test
     public void testU64() throws Exception {
-        _test(ProtocolTestStruct.builder().setRequiredI32Field(1)
-                .setRequiredStringField("test")
+        _test(ProtocolTestStruct.builder().setRequiredI32Field(1).setRequiredStringField("test")
                 .setU64Field(UnsignedLong.valueOf(1)).build());
     }
 
     @Test
     public void testUri() throws Exception {
-        _test(ProtocolTestStruct.builder().setUriField(
-                Uri.parse("urn:test:test")));
+        _test(ProtocolTestStruct.builder().setUriField(Uri.parse("urn:test:test")));
     }
 
     @Test
     public void testUrl() throws Exception {
-        _test(ProtocolTestStruct.builder().setUrlField(
-                Url.parse("http://example.com/test")));
+        _test(ProtocolTestStruct.builder().setUrlField(Url.parse("http://example.com/test")));
     }
 
     @Test
@@ -189,12 +177,9 @@ public abstract class ProtocolTest {
         _test(ProtocolTestStruct.builder().setVariantField("test"));
     }
 
-    protected abstract void _test(final ProtocolTestStruct expected)
-            throws Exception;
+    protected abstract void _test(final ProtocolTestStruct expected) throws Exception;
 
-    protected void _test(final ProtocolTestStruct.Builder expectedBuilder)
-            throws Exception {
-        _test(expectedBuilder.setRequiredI32Field(1)
-                .setRequiredStringField("test").build());
+    protected void _test(final ProtocolTestStruct.Builder expectedBuilder) throws Exception {
+        _test(expectedBuilder.setRequiredI32Field(1).setRequiredStringField("test").build());
     }
 }

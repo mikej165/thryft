@@ -1,10 +1,14 @@
 from thryft.protocol._abstract_output_protocol import _AbstractOutputProtocol
+from thryft.protocol._output_protocol import _OutputProtocol
 
 
-class _StackedOutputProtocol(_AbstractOutputProtocol):
+class _StackedOutputProtocol(_OutputProtocol):
     def __init__(self):
         _AbstractOutputProtocol.__init__(self)
         self._output_protocol_stack = []
+
+    def write_binary(self, value):
+        self._output_protocol_stack[-1].write_binary(value)
 
     def write_bool(self, value):
         self._output_protocol_stack[-1].write_bool(value)
@@ -79,4 +83,5 @@ class _StackedOutputProtocol(_AbstractOutputProtocol):
     def write_u64(self, value):
         self._output_protocol_stack[-1].write_u64(value)
 
-    # Do not include write_variant
+    def write_variant(self, value):
+        self._output_protocol_stack[-1].write_variant(value)

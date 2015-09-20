@@ -44,6 +44,15 @@ class BuiltinsInputProtocol(_StackedInputProtocol):
         def read_bool(self):
             return self._read_value(bool)
 
+        def read_double(self):
+            value = self._read_value()
+            if isinstance(value, (Decimal, float, int, long)):
+                return float(value)
+            elif isinstance(value, basestring):
+                return float(value)
+            else:
+                raise TypeError("expected double, got %s", type(value))
+
         def read_i32(self):
             value = self._read_value()
             if isinstance(value, (Decimal, int, long)):
@@ -91,6 +100,9 @@ class BuiltinsInputProtocol(_StackedInputProtocol):
 
         def _read_value_impl(self):
             raise NotImplementedError
+
+        def read_variant(self):
+            return self._read_value()
 
     class _ListInputProtocol(_InputProtocol):
         def __init__(self, list_, input_protocol_stack):

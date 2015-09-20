@@ -41,6 +41,8 @@ class _AbstractInputProtocol(_InputProtocol):
     def infer_type(cls, value):
         if value is None:
             return Type.VOID_
+        elif isinstance(value, Decimal):
+            return Type.DOUBLE
         elif isinstance(value, dict):
             return Type.MAP
         elif isinstance(value, float):
@@ -60,6 +62,9 @@ class _AbstractInputProtocol(_InputProtocol):
         else:
             raise TypeError(type(value))
 
+    def read_binary(self):
+        return self.read_string()
+
     def read_byte(self):
         return self.read_i16()
 
@@ -68,6 +73,9 @@ class _AbstractInputProtocol(_InputProtocol):
 
     def read_decimal(self):
         return Decimal(self.read_string())
+
+    def read_float(self):
+        return self.read_double()
 
     def read_i16(self):
         return self.read_i32()

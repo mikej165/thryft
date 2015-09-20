@@ -50,7 +50,7 @@ class _PyNamedConstruct(_PyConstruct):
         return imports
 
     def _py_imports_check(self, caller_stack):
-        raise NotImplementedError(class_qname(self) + '._py_imports_definition')
+        raise NotImplementedError(class_qname(self) + '._py_imports_check')
 
     def py_imports_definition(self, caller_stack=None):
         if caller_stack is None:
