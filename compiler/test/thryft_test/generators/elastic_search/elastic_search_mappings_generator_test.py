@@ -7,6 +7,7 @@ class ElasticSearchMappingsGeneratorTest(_generator_test._GeneratorTest):
         _generator_test._GeneratorTest.__init__(
             self,
             generator_class=ElasticSearchMappingsGenerator,
+            generator_kwds={'index_name': 'thryft'},
             repr_method_name='elastic_search_mappings_json',
             *args, **kwds
         )
