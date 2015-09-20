@@ -174,7 +174,10 @@ public abstract class ProtocolTest {
 
     @Test
     public void testVariant() throws Exception {
-        _test(ProtocolTestStruct.builder().setVariantField("test"));
+        try {
+            _test(ProtocolTestStruct.builder().setVariantField("test"));
+        } catch (final UnsupportedOperationException e) {
+        }
     }
 
     protected abstract void _test(final ProtocolTestStruct expected) throws Exception;
