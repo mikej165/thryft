@@ -35,6 +35,9 @@ from thryft.generators.py._py_named_construct import _PyNamedConstruct
 
 
 class PyConst(Const, _PyNamedConstruct):
+    def _py_imports_definition(self, caller_stack):
+        return []
+
     def py_repr(self):
         return "%s = %s" % (self.py_name(), self.py_value())
 

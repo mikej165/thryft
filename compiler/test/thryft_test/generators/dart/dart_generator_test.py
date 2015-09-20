@@ -7,6 +7,7 @@ class DartGeneratorTest(_generator_test._GeneratorTest):
         _generator_test._GeneratorTest.__init__(
             self,
             generator_class=DartGenerator,
+            generator_kwds={'package_name': 'thryft'},
             repr_method_name='dart_repr',
             *args, **kwds
         )

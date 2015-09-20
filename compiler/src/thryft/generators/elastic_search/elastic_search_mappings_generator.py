@@ -43,6 +43,10 @@ class ElasticSearchMappingsGenerator(Generator):
                     out.update(annotation.value)
             return out
 
+    class DoubleType(Generator.DoubleType):  # @UndefinedVariable
+        def elastic_search_mapping_dict(self):
+            return {'type': 'double'}
+
     class I32Type(Generator.I32Type):  # @UndefinedVariable
         def elastic_search_mapping_dict(self):
             return {'type': 'integer'}

@@ -5,11 +5,12 @@ from thryft_test import _test
 class _GeneratorTest(_test._Test):
     def __init__(self, *args, **kwds):
         self.__generator_class = kwds.pop('generator_class', None)
+        self.__generator_kwds = kwds.pop('generator_kwds', {})
         self.__repr_method_name = kwds.pop('repr_method_name', None)
         _test._Test.__init__(self, *args, **kwds)
 
     def _runTest(self, thrift_file_path):
-        documents = Compiler().compile(thrift_file_path, generator=self.__generator_class())
+        documents = Compiler().compile(thrift_file_path, generator=self.__generator_class(**self.__generator_kwds))
         self.assertTrue(isinstance(documents, tuple))
         self.assertEquals(1, len(documents))
 #         import os.path

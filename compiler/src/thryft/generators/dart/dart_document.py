@@ -25,6 +25,11 @@ class DartDocument(Document, _DartNamedConstruct):
                     rpad(self.namespace_by_scope('dart').name.replace('.', '/'), '/') + self.dart_name() + '.dart')]
 
     def dart_repr(self):
+        try:
+            dart_namespace_name = self.namespace_by_scope('dart').name
+        except KeyError:
+            return ''
+
         imports = "\n".join(self.dart_imports_definition())
         definitions = "\n\n".join(definition.dart_repr()
                         for definition in self.definitions)
@@ -32,7 +37,7 @@ class DartDocument(Document, _DartNamedConstruct):
             return ''
 
         sections = []
-        sections.append("library " + rpad(self.namespace_by_scope('dart').name, '.') + self.dart_name() + ';')
+        sections.append("library " + rpad(dart_namespace_name, '.') + self.dart_name() + ';')
         if len(imports) > 0:
             sections.append(imports)
         sections.append(definitions)
