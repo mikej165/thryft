@@ -1,5 +1,5 @@
 from thryft.generators.java.java_generator import JavaGenerator
-from yutil import indent
+from yutil import indent, decamelize
 
 
 class PropertiesJavaGenerator(JavaGenerator):
@@ -71,6 +71,10 @@ final com.google.common.base.Optional<%(type_qname)s> %(java_name)s;
             field_values = ', '.join(field.java_name() for field in self.fields)
             project_name = self._parent_generator()._project_name
             project_name_upper = self._parent_generator()._project_name.upper()
+            properties_file_name = decamelize(self.name)
+            if properties_file_name.endswith('_properties'):
+                properties_file_name = properties_file_name[:-len('_properties')]
+            properties_file_name = properties_file_name + '.properties'
             return {'load': """
 public static %(name)s load() {
     return load(com.google.common.base.Optional.<java.io.File> absent());
@@ -87,12 +91,12 @@ public static %(name)s load(final com.google.common.base.Optional<java.io.File> 
         }
     }
 
-    __properties = __mergeProperties(__properties, __readProperties("server.properties"));
+    __properties = __mergeProperties(__properties, __readProperties("%(properties_file_name)s"));
     __properties = __mergeProperties(__properties, __readProperties(new java.io.File(
             new java.io.File(new java.io.File(System.getProperty("user.home")),
-                    ".%(project_name)s"), "server.properties")));
+                    ".%(project_name)s"), "%(properties_file_name)s")));
     __properties = __mergeProperties(__properties, __readProperties(new java.io.File(
-            "/etc/%(project_name)s/server.properties")));
+            "/etc/%(project_name)s/%(properties_file_name)s")));
     if (commandLinePropertiesFilePath.isPresent()) {
         __properties = __mergeProperties(__properties,
                 __readProperties(commandLinePropertiesFilePath.get()));
