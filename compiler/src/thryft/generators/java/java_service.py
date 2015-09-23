@@ -49,6 +49,28 @@ class JavaService(Service, _JavaNamedConstruct):
                 implements.append(annotation.value)
         return implements
 
+    def __java_function_metadata_enum(self):
+        if len(self.functions) == 0:
+            return None
+        enumerators = []
+        for function in self.functions:
+            function_thrift_name = function.name
+            enumerator_name = function.name.upper()
+            enumerators.append("%(enumerator_name)s(\"%(function_thrift_name)s\")" % locals())
+        enumerators = pad("\n", indent(' ' * 4, ",\n".join(enumerators)), ";\n")
+        return """\
+public enum FunctionMetadata {%(enumerators)s
+    public String getThriftName() {
+        return thriftName;
+    }
+
+    private FunctionMetadata(final String thriftName) {
+        this.thriftName = thriftName;
+    }
+
+    private final String thriftName;
+}""" % locals()
+
     def _java_methods(self):
         methods = []
         for function in self.functions:
@@ -103,6 +125,7 @@ public static class Messages {
     def _java_repr_sections(self):
         sections = []
         for section in (
+            self.__java_function_metadata_enum(),
             self._java_message_types_repr(),
             self._java_methods_repr()
         ):

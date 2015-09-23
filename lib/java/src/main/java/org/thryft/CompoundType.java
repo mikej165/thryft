@@ -4,7 +4,7 @@ import org.thryft.protocol.OutputProtocol;
 import org.thryft.protocol.OutputProtocolException;
 
 public interface CompoundType {
-    public interface Field {
+    public interface FieldMetadata {
         public com.google.common.reflect.TypeToken<?> getJavaType();
 
         public int getThriftId();

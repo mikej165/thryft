@@ -960,7 +960,7 @@ public class ProtocolTestStruct implements org.thryft.Struct, java.lang.Comparab
     }
 
     @SuppressWarnings("serial")
-    public enum Field implements org.thryft.CompoundType.Field {
+    public enum FieldMetadata implements org.thryft.CompoundType.FieldMetadata {
         REQUIRED_I32_FIELD(new com.google.common.reflect.TypeToken<Integer>() {}, true, 1, "required_i32_field", org.thryft.protocol.Type.I32),
         REQUIRED_STRING_FIELD(new com.google.common.reflect.TypeToken<String>() {}, true, 2, "required_string_field", org.thryft.protocol.Type.STRING),
         BINARY_FIELD(new com.google.common.reflect.TypeToken<byte[]>() {}, false, 3, "binary_field", org.thryft.protocol.Type.STRING),
@@ -1021,7 +1021,7 @@ public class ProtocolTestStruct implements org.thryft.Struct, java.lang.Comparab
             return required;
         }
 
-        public static Field valueOfJavaName(final String javaName) {
+        public static FieldMetadata valueOfJavaName(final String javaName) {
             switch (javaName) {
             case "requiredI32Field": return REQUIRED_I32_FIELD;
             case "requiredStringField": return REQUIRED_STRING_FIELD;
@@ -1052,7 +1052,7 @@ public class ProtocolTestStruct implements org.thryft.Struct, java.lang.Comparab
             }
         }
 
-        public static Field valueOfThriftName(final String thriftName) {
+        public static FieldMetadata valueOfThriftName(final String thriftName) {
             switch (thriftName) {
             case "required_i32_field": return REQUIRED_I32_FIELD;
             case "required_string_field": return REQUIRED_STRING_FIELD;
@@ -1083,7 +1083,7 @@ public class ProtocolTestStruct implements org.thryft.Struct, java.lang.Comparab
             }
         }
 
-        private Field(final com.google.common.reflect.TypeToken<?> javaType, final boolean required, final int thriftId, final String thriftName, final org.thryft.protocol.Type thriftProtocolType) {
+        private FieldMetadata(final com.google.common.reflect.TypeToken<?> javaType, final boolean required, final int thriftId, final String thriftName, final org.thryft.protocol.Type thriftProtocolType) {
             this.javaType = javaType;
             this.required = required;
             this.thriftId = thriftId;

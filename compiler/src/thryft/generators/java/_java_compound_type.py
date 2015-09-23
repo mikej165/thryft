@@ -411,7 +411,7 @@ public %(name)s(%(parameters)s) {
     def _java_extends(self):
         return None
 
-    def __java_fields_enum(self):
+    def __java_field_metadata_enum(self):
         if len(self.fields) == 0:
             return None
         enumerators = []
@@ -434,7 +434,7 @@ public %(name)s(%(parameters)s) {
         java_name_cases = lpad("\n", indent(' ' * 8, "\n".join(java_name_cases)))
         thrift_name_cases = lpad("\n", indent(' ' * 8, "\n".join(thrift_name_cases)))
         return """\
-%(class_suppress_warnings)spublic enum Field implements org.thryft.CompoundType.Field {%(enumerators)s
+%(class_suppress_warnings)spublic enum FieldMetadata implements org.thryft.CompoundType.FieldMetadata {%(enumerators)s
     @Override
     public com.google.common.reflect.TypeToken<?> getJavaType() {
         return javaType;
@@ -470,21 +470,21 @@ public %(name)s(%(parameters)s) {
         return required;
     }
 
-    public static Field valueOfJavaName(final String javaName) {
+    public static FieldMetadata valueOfJavaName(final String javaName) {
         switch (javaName) {%(java_name_cases)s
         default:
             throw new IllegalArgumentException(javaName);
         }
     }
 
-    public static Field valueOfThriftName(final String thriftName) {
+    public static FieldMetadata valueOfThriftName(final String thriftName) {
         switch (thriftName) {%(thrift_name_cases)s
         default:
             throw new IllegalArgumentException(thriftName);
         }
     }
 
-    private Field(final com.google.common.reflect.TypeToken<?> javaType, final boolean required, final int thriftId, final String thriftName, final org.thryft.protocol.Type thriftProtocolType) {
+    private FieldMetadata(final com.google.common.reflect.TypeToken<?> javaType, final boolean required, final int thriftId, final String thriftName, final org.thryft.protocol.Type thriftProtocolType) {
         this.javaType = javaType;
         this.required = required;
         this.thriftId = thriftId;
@@ -847,13 +847,13 @@ public void writeAsStruct(final org.thryft.protocol.OutputProtocol oprot) throws
         javadoc = self.java_doc()
         name = self.java_name()
         extends = lpad(' extends ', self._java_extends())
-        fields_enum = self.__java_fields_enum()
+        field_metadata_enum = self.__java_field_metadata_enum()
         implements = lpad(' implements ', ', '.join(self._java_implements()))
         methods = self._java_methods()
         sections = []
         sections.append(indent(' ' * 4, self._JavaBuilder(self).java_repr()))
-        if fields_enum is not None:
-            sections.append(indent(' ' * 4, fields_enum))
+        if field_metadata_enum is not None:
+            sections.append(indent(' ' * 4, field_metadata_enum))
         sections.append("\n\n".join(indent(' ' * 4,
             self._java_constructors() + \
             [methods[key] for key in sorted(methods.iterkeys())])))
