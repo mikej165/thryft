@@ -80,6 +80,9 @@ class u32(object):
     def java_name(self, boxed=False):
         return 'com.google.common.primitives.UnsignedInteger'
 
+    def java_precondition_name(self):
+        return 'UnsignedInteger'
+
     def java_qname(self, boxed=False):
         return 'com.google.common.primitives.UnsignedInteger'
 

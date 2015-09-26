@@ -1038,5 +1038,5 @@ def __split_param_annotation(ast_node, name, value):
     return parameter, value_split[1]
 
 
-for __ast_node_type in (Ast.FieldNode, Ast.FunctionNode):
+for __ast_node_type in (Ast.FieldNode, Ast.FunctionNode, Ast.TypedefNode):
     Parser.register_annotation(__ast_node_type, 'validation', __parse_validation_annotation)

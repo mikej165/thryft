@@ -32,7 +32,6 @@
 
 from thryft.generator.field import Field
 from thryft.generators.java._java_named_construct import _JavaNamedConstruct
-from thryft.generators.java.java_bool_type import JavaBoolType
 from yutil import lower_camelize, upper_camelize, indent, lpad
 
 
@@ -276,9 +275,10 @@ public %(return_type_name)s %(setter_name)s(@javax.annotation.Nullable final %(t
         return 'set' + upper_camelize(self.name)
 
     def java_to_string_helper_add(self):
-        for annotation in self.annotations:
-            if annotation.name == 'java_exclude_from_to_string':
-                return ''
+        for annotations in (self.annotations, self.type.annotations):
+            for annotation in annotations:
+                if annotation.name == 'java_exclude_from_to_string':
+                    return ''
         field_value = self.java_getter_name() + '()'
         if not self.required:
             field_value += '.orNull()'
@@ -326,24 +326,35 @@ public %(return_type_name)s %(unsetter_name)s() {
                 java_validation = """com.google.common.base.Preconditions.checkNotNull(%(java_validation)s, "%(parent_qname)s: missing %(name)s")""" % locals()
 
         validation = {}
-        for annotation in self.annotations:
-            if annotation.name == 'validation':
-                validation = annotation.value.copy()
+        for annotations in (self.annotations, self.type.annotations):
+            for annotation in annotations:
+                if annotation.name == 'validation':
+                    validation = annotation.value.copy()
+                    break
+            if len(validation) > 0:
                 break
         if len(validation) > 0:
             precondition_name = self.type.java_precondition_name()
             if not self.required:
                 precondition_name = 'Optional' + precondition_name
 
+            acceptance = validation.get('acceptance')
+            if acceptance is not None:
+                java_validation = """org.thryft.Preconditions.check%(precondition_name)sTrue(%(java_validation)s, "%(parent_qname)s: %(name)s must be true")""" % locals()
+
+            max_length = validation.get('maxLength')
+            if max_length is not None:
+                java_validation = """org.thryft.Preconditions.check%(precondition_name)sMaxLength(%(java_validation)s, %(max_length)u, "%(parent_qname)s: %(name)s must have a maximum length of %(max_length)u")""" % locals()
+
+            min_ = validation.get('min')
+            if min_ is not None:
+                java_validation = """org.thryft.Preconditions.check%(precondition_name)sMin(%(java_validation)s, %(min_)d, "%(parent_qname)s: %(name)s must be at least %(min_)d")""" % locals()
+
             min_length = validation.get('minLength')
             if min_length == 1:
                 java_validation = """org.thryft.Preconditions.check%(precondition_name)sNotEmpty(%(java_validation)s, "%(parent_qname)s: %(name)s is empty")""" % locals()
             elif min_length is not None:
                 java_validation = """org.thryft.Preconditions.check%(precondition_name)sMinLength(%(java_validation)s, %(min_length)u, "%(parent_qname)s: %(name)s must have a minimum length of %(min_length)u")""" % locals()
-
-            max_length = validation.get('maxLength')
-            if max_length is not None:
-                java_validation = """org.thryft.Preconditions.check%(precondition_name)sMaxLength(%(java_validation)s, %(max_length)u, "%(parent_qname)s: %(name)s must have a maximum length of %(max_length)u")""" % locals()
 
         return java_validation
 
