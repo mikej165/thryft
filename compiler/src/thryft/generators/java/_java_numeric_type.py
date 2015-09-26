@@ -45,9 +45,6 @@ class _JavaNumericType(_JavaBaseType):
         boxed_name = self.java_name(boxed=True)
         return "%(boxed_name)s.parse%(boxed_name)s(%(value)s)" % locals()
 
-    def java_read_protocol_throws_unchecked(self):
-        return ['NumberFormatException']
-
     def java_hash_code(self, value, already_boxed):
         if already_boxed:
             return "%(value)s.hashCode()" % locals()
@@ -56,6 +53,9 @@ class _JavaNumericType(_JavaBaseType):
 
     def java_literal(self, value):
         return "((%s)%s)" % (self.java_name(boxed=False), value)
+
+    def java_read_protocol_throws_unchecked(self):
+        return ['NumberFormatException']
 
     def java_to_string(self, value):
         return "%s.toString(%(value)s)" % (self.java_name(boxed=True), value)
