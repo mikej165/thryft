@@ -506,8 +506,9 @@ public %(name)s(%(parameters)s) {
 }""" % locals()
 
     def _java_implements(self):
-        name = self.java_name()
-        implements = ["java.lang.Comparable<%(name)s>" % locals()]
+#         name = self.java_name()
+#         implements = ["java.lang.Comparable<%(name)s>" % locals()
+        implements = []
         for annotation in self.annotations:
             if annotation.name == 'java_implements':
                 implements.append(annotation.value)
@@ -527,28 +528,32 @@ public static Builder builder() {
 
 public static Builder builder(final %(name)s other) {
     return new Builder(other);
+}
+
+public static Builder builder(final com.google.common.base.Optional<%(name)s> other) {
+    return other.isPresent() ? new Builder(other.get()) : new Builder();
 }""" % locals()}
 
-    def _java_method_compare_to(self, name=None):
-        if name is None:
-            name = self.java_name()
-        field_compare_tos = []
-        for field in self.fields:
-            field_compare_to = field.java_compare_to()
-            if field_compare_to is not None:
-                field_compare_tos.append(field_compare_to)
-        field_compare_tos = \
-            pad("\n\n    int result;\n", "\n\n".join(indent(' ' * 4,
-                field_compare_tos
-            )), "\n")
-        return {'compareTo': """\
-@Override
-public int compareTo(final %(name)s other) {
-    if (other == null) {
-        throw new NullPointerException();
-    }%(field_compare_tos)s
-    return 0;
-}""" % locals()}
+#     def _java_method_compare_to(self, name=None):
+#         if name is None:
+#             name = self.java_name()
+#         field_compare_tos = []
+#         for field in self.fields:
+#             field_compare_to = field.java_compare_to()
+#             if field_compare_to is not None:
+#                 field_compare_tos.append(field_compare_to)
+#         field_compare_tos = \
+#             pad("\n\n    int result;\n", "\n\n".join(indent(' ' * 4,
+#                 field_compare_tos
+#             )), "\n")
+#         return {'compareTo': """\
+# @Override
+# public int compareTo(final %(name)s other) {
+#     if (other == null) {
+#         throw new NullPointerException();
+#     }%(field_compare_tos)s
+#     return 0;
+# }""" % locals()}
 
     def _java_method_equals(self, name=None):
         if name is None:
@@ -812,7 +817,7 @@ public void writeAsStruct(final org.thryft.protocol.OutputProtocol oprot) throws
     def _java_methods(self):
         methods = {}
         methods.update(self._java_method_builder())
-        methods.update(self._java_method_compare_to())
+#         methods.update(self._java_method_compare_to())
         methods.update(self._java_method_equals())
         methods.update(self._java_method_get())
         methods.update(self._java_method_getters())
