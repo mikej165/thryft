@@ -57,6 +57,17 @@ final com.google.common.base.Optional<%(type_qname)s> %(java_name)s;
     }
 }""" % locals()
 
+        def java_to_map_put(self, map_variable):
+            getter_name = self.java_getter_name()
+            name = self.name
+            if self.required:
+                return "%(map_variable)s.put(\"%(name)s\", %(getter_name)s());" % locals();
+            else:
+                return """\
+if (%(getter_name)s().isPresent()) {
+    %(map_variable)s.put(\"%(name)s\", %(getter_name)s().get());
+}""" % locals()
+
     class StructType(JavaGenerator.StructType):
         def _java_member_declarations(self):
             name = self.java_name()
@@ -167,9 +178,20 @@ private static java.util.Properties __readProperties(final String propertiesReso
     return properties;
 }""" % locals()}
 
+        def _java_method_to_map(self):
+            fields_to_map = "\n".join(indent(' ' * 4, (field.java_to_map_put('builder')
+                                             for field in self.fields)))
+            return {'toMap': """\
+public com.google.common.collect.ImmutableMap<String, Object> toMap() {
+    final com.google.common.collect.ImmutableMap.Builder<String, Object> builder = com.google.common.collect.ImmutableMap.builder();
+%(fields_to_map)s
+    return builder.build();
+}""" % locals()}
+
         def _java_methods(self):
             methods = JavaGenerator.StructType._java_methods(self)
             methods.update(self._java_method_load())
             methods.update(self._java_method__merge_properties())
             methods.update(self._java_method__read_properties())
+            methods.update(self._java_method_to_map())
             return methods
