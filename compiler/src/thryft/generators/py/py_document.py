@@ -38,6 +38,9 @@ from yutil import decamelize, rpad
 
 
 class PyDocument(Document, _PyNamedConstruct):
+    def _py_namespace(self):
+        return self.namespace_by_scope('py').name
+
     def py_repr(self):
         sections = []
         imports = []
@@ -80,13 +83,16 @@ class PyDocument(Document, _PyNamedConstruct):
     def _save_to_dir(self, out_dir_path):
         root_out_dir_path = out_dir_path
         try:
-            py_namespace = self.namespace_by_scope('py').name
+            py_namespace = self._py_namespace()
             out_dir_path = os.path.join(out_dir_path, py_namespace.replace('.', os.path.sep))
-            if self.document_root_dir_path is not None:
-                document_relpath = os.path.relpath(os.path.dirname(self.path), self.document_root_dir_path)
-                out_dir_relpath = os.path.relpath(out_dir_path, root_out_dir_path)
-                if out_dir_relpath != document_relpath:
-                    self._logger.warn("Python module %s (relative directory %s) does not match .thrift file path %s (relative directory %s)", py_namespace, out_dir_relpath, self.path, document_relpath)
+            try:
+                if py_namespace == self.namespace_by_scope('py').name and self.document_root_dir_path is not None:
+                    document_relpath = os.path.relpath(os.path.dirname(self.path), self.document_root_dir_path)
+                    out_dir_relpath = os.path.relpath(out_dir_path, root_out_dir_path)
+                    if out_dir_relpath != document_relpath:
+                        self._logger.warn("Python module %s (relative directory %s) does not match .thrift file path %s (relative directory %s)", py_namespace, out_dir_relpath, self.path, document_relpath)
+            except KeyError:
+                pass
         except KeyError:
             pass
 

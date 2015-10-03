@@ -32,6 +32,7 @@
 
 from thryft.generator._base_type import _BaseType
 from thryft.generators.py import py_generator
+from thryft.generators.py.py_document import PyDocument
 from thryft.generators.py.py_function import PyFunction
 from thryft.generators.py.py_service import PyService
 from yutil import indent, decamelize, lpad
@@ -42,6 +43,10 @@ class JsonRpcClientPyGenerator(py_generator.PyGenerator):
         py_generator.PyGenerator.__init__(self)
         self._api_url_default = api_url_default
         self._service_imports_definition = tuple(service_imports_definition) if service_imports_definition is not None else tuple()
+
+    class Document(PyDocument):
+        def _py_namespace(self):
+            return self.namespace_by_scope(('json_rpc_client_py', 'py')).name
 
     class Function(PyFunction):
         def _py_imports_definition(self, caller_stack):
