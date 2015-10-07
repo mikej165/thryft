@@ -83,17 +83,26 @@ class ElasticSearchMappingsGenerator(Generator):
             if document_type is None:
                 document_type = decamelize(self.name)
 
-            field_mappings = OrderedDict()
+            properties = OrderedDict()
             for field in self.fields:
-                field_mappings[field.name] = field.elastic_search_mapping_dict()
+                properties[field.name] = field.elastic_search_mapping_dict()
 
             mappings = {}
             mappings[document_type] = \
                 {
                     '_all': {'enabled': False},
                     'dynamic': 'strict',
-                    'properties': field_mappings
                 }
+            for annotation in self.annotations:
+                if annotation.name == 'elastic_search_mappings_base':
+                    mappings[document_type].update(annotation.value)
+            if 'properties' in mappings[document_type]:
+                updated_properties = OrderedDict()
+                updated_properties.update(mappings[document_type]['properties'])
+                updated_properties.update(properties)
+                properties = updated_properties
+            mappings[document_type]['properties'] = properties
+
             return mappings
 
     def __init__(self, index_name, settings=None, template=None):
@@ -112,6 +121,23 @@ def __parse_elastic_search_document_type_annotation(ast_node, name, value, **kwd
     ast_node.annotations.append(Ast.AnnotationNode(name=name, value=value, **kwds))
 
 Parser.register_annotation(Ast.StructTypeNode, 'elastic_search_document_type', __parse_elastic_search_document_type_annotation)
+
+
+def __parse_elastic_search_mappings_base(ast_node, name, value, **kwds):
+    assert isinstance(ast_node, Ast.StructTypeNode)
+
+    try:
+        value = json.loads(value)
+    except ValueError, e:
+        raise ValueError("@%s contains invalid JSON: '%s', exception: %s" % (name, value, e))
+    if not isinstance(value, dict):
+        raise ValueError("expected @%s to contain a JSON object, found '%s'" % (name, value))
+
+    annotation = Ast.AnnotationNode(name=name, value=value, **kwds)
+
+    ast_node.annotations.append(annotation)
+
+Parser.register_annotation(Ast.StructTypeNode, 'elastic_search_mappings_base', __parse_elastic_search_mappings_base)
 
 
 def __parse_elastic_search_mapping_annotation(ast_node, name, value, **kwds):
