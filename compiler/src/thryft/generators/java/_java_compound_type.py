@@ -807,11 +807,22 @@ public void writeAsMessage(final org.thryft.protocol.OutputProtocol oprot) throw
         return {'writeAsStruct': """\
 @Override
 public void writeAsStruct(final org.thryft.protocol.OutputProtocol oprot) throws org.thryft.protocol.OutputProtocolException {
-    oprot.writeStructBegin("%(qname)s");%(field_write_protocols)s
-
-    oprot.writeFieldStop();
-
+    oprot.writeStructBegin("%(qname)s");
+    writeFields(oprot);
     oprot.writeStructEnd();
+}""" % locals()}
+
+    def _java_method_write_fields(self):
+        field_write_protocols = \
+            pad("\n", "\n\n".join(indent(' ' * 4,
+                (field.java_write_protocol(depth=0, write_field=True)
+                 for field in self.fields)
+            )), "\n")
+        qname = self.java_qname()
+        return {'writeFields': """\
+@Override
+public void writeFields(final org.thryft.protocol.OutputProtocol oprot) throws org.thryft.protocol.OutputProtocolException {%(field_write_protocols)s
+    oprot.writeFieldStop();
 }""" % locals()}
 
     def _java_methods(self):
@@ -831,6 +842,7 @@ public void writeAsStruct(final org.thryft.protocol.OutputProtocol oprot) throws
         methods.update(self._java_method_write_as_list())
         methods.update(self._java_method_write_as_message())
         methods.update(self._java_method_write_as_struct())
+        methods.update(self._java_method_write_fields())
         return methods
 
     def java_qname(self, boxed=False, **kwds):

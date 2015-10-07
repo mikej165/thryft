@@ -81,7 +81,12 @@ public final class JsonRpcErrorResponse extends RuntimeException implements Comp
     @Override
     public void writeAsStruct(final OutputProtocol oprot) throws OutputProtocolException {
         oprot.writeStructBegin("error");
+        writeFields(oprot);
+        oprot.writeStructEnd();
+    }
 
+    @Override
+    public void writeFields(final OutputProtocol oprot) throws OutputProtocolException {
         oprot.writeFieldBegin("code", org.thryft.protocol.Type.I32);
         oprot.writeI32(code);
         oprot.writeFieldEnd();
@@ -98,8 +103,6 @@ public final class JsonRpcErrorResponse extends RuntimeException implements Comp
         oprot.writeFieldBegin("message", org.thryft.protocol.Type.STRING);
         oprot.writeString(getMessage());
         oprot.writeFieldEnd();
-
-        oprot.writeStructEnd();
     }
 
     private final int code;

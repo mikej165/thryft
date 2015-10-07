@@ -1,6 +1,6 @@
 package org.thryft.protocol.test;
 
-public class NestedProtocolTestStruct implements org.thryft.Struct, java.lang.Comparable<NestedProtocolTestStruct> {
+public class NestedProtocolTestStruct implements org.thryft.Struct {
     public static class Builder {
         public Builder() {
             requiredI32Field = 0;
@@ -943,321 +943,8 @@ public class NestedProtocolTestStruct implements org.thryft.Struct, java.lang.Co
         return new Builder(other);
     }
 
-    @Override
-    public int compareTo(final NestedProtocolTestStruct other) {
-        if (other == null) {
-            throw new NullPointerException();
-        }
-
-        int result;
-        result = Integer.compare(this.requiredI32Field, other.requiredI32Field);
-        if (result != 0) {
-            return result;
-        }
-
-        result = this.requiredStringField.compareTo(other.requiredStringField);
-        if (result != 0) {
-            return result;
-        }
-
-        if (this.binaryField.isPresent()) {
-            if (other.binaryField.isPresent()) {
-                result = com.google.common.primitives.SignedBytes.lexicographicalComparator().compare(this.binaryField.get(), other.binaryField.get());
-                if (result != 0) {
-                    return result;
-                }
-            } else {
-                return 1;
-            }
-        } else if (other.binaryField.isPresent()) {
-            return -1;
-        }
-
-        if (this.boolField.isPresent()) {
-            if (other.boolField.isPresent()) {
-                result = this.boolField.get().compareTo(other.boolField.get());
-                if (result != 0) {
-                    return result;
-                }
-            } else {
-                return 1;
-            }
-        } else if (other.boolField.isPresent()) {
-            return -1;
-        }
-
-        if (this.byteField.isPresent()) {
-            if (other.byteField.isPresent()) {
-                result = Byte.compare(this.byteField.get(), other.byteField.get());
-                if (result != 0) {
-                    return result;
-                }
-            } else {
-                return 1;
-            }
-        } else if (other.byteField.isPresent()) {
-            return -1;
-        }
-
-        if (this.dateTimeField.isPresent()) {
-            if (other.dateTimeField.isPresent()) {
-                result = this.dateTimeField.get().compareTo(other.dateTimeField.get());
-                if (result != 0) {
-                    return result;
-                }
-            } else {
-                return 1;
-            }
-        } else if (other.dateTimeField.isPresent()) {
-            return -1;
-        }
-
-        if (this.decimalField.isPresent()) {
-            if (other.decimalField.isPresent()) {
-                result = this.decimalField.get().compareTo(other.decimalField.get());
-                if (result != 0) {
-                    return result;
-                }
-            } else {
-                return 1;
-            }
-        } else if (other.decimalField.isPresent()) {
-            return -1;
-        }
-
-        if (this.emailAddressField.isPresent()) {
-            if (other.emailAddressField.isPresent()) {
-                result = this.emailAddressField.get().compareTo(other.emailAddressField.get());
-                if (result != 0) {
-                    return result;
-                }
-            } else {
-                return 1;
-            }
-        } else if (other.emailAddressField.isPresent()) {
-            return -1;
-        }
-
-        if (this.enumField.isPresent()) {
-            if (other.enumField.isPresent()) {
-                result = this.enumField.get().compareTo(other.enumField.get());
-                if (result != 0) {
-                    return result;
-                }
-            } else {
-                return 1;
-            }
-        } else if (other.enumField.isPresent()) {
-            return -1;
-        }
-
-        if (this.i16Field.isPresent()) {
-            if (other.i16Field.isPresent()) {
-                result = Short.compare(this.i16Field.get(), other.i16Field.get());
-                if (result != 0) {
-                    return result;
-                }
-            } else {
-                return 1;
-            }
-        } else if (other.i16Field.isPresent()) {
-            return -1;
-        }
-
-        if (this.i32Field.isPresent()) {
-            if (other.i32Field.isPresent()) {
-                result = Integer.compare(this.i32Field.get(), other.i32Field.get());
-                if (result != 0) {
-                    return result;
-                }
-            } else {
-                return 1;
-            }
-        } else if (other.i32Field.isPresent()) {
-            return -1;
-        }
-
-        if (this.i64Field.isPresent()) {
-            if (other.i64Field.isPresent()) {
-                result = Long.compare(this.i64Field.get(), other.i64Field.get());
-                if (result != 0) {
-                    return result;
-                }
-            } else {
-                return 1;
-            }
-        } else if (other.i64Field.isPresent()) {
-            return -1;
-        }
-
-        if (this.stringListField.isPresent()) {
-            if (other.stringListField.isPresent()) {
-                result = new java.util.Comparator<com.google.common.collect.ImmutableList<String>>() {
-                    public int compare(final com.google.common.collect.ImmutableList<String> left, final com.google.common.collect.ImmutableList<String> right) {
-                        int result = ((Integer) left.size()).compareTo(right.size());
-                        if (result != 0) {
-                            return result;
-                        }
-
-                        final java.util.List<String> leftSortedList = com.google.common.collect.Lists
-                                .newArrayList(left);
-                        java.util.Collections.sort(leftSortedList);
-                        final java.util.Iterator<String> leftI = leftSortedList.iterator();
-
-                        final java.util.List<String> rightSortedList = com.google.common.collect.Lists
-                                .newArrayList(right);
-                        java.util.Collections.sort(rightSortedList);
-                        final java.util.Iterator<String> rightI = leftSortedList.iterator();
-
-                        while (leftI.hasNext()) {
-                            final String leftElement = leftI.next();
-                            final String rightElement = rightI.next();
-
-                            result =
-                                leftElement.compareTo(rightElement);
-                            if (result != 0) {
-                                return result;
-                            }
-                        }
-
-                        return 0;
-                    }
-                }.compare(this.stringListField.get(), other.stringListField.get());
-                if (result != 0) {
-                    return result;
-                }
-            } else {
-                return 1;
-            }
-        } else if (other.stringListField.isPresent()) {
-            return -1;
-        }
-
-        if (this.stringStringMapField.isPresent()) {
-            if (other.stringStringMapField.isPresent()) {
-                result = new java.util.Comparator<com.google.common.collect.ImmutableMap<String, String>>() {
-                    public int compare(final com.google.common.collect.ImmutableMap<String, String> left, final com.google.common.collect.ImmutableMap<String, String> right) {
-                        int result = ((Integer) left.size()).compareTo(right.size());
-                        if (result != 0) {
-                            return result;
-                        }
-
-                        // Compare keys
-                        final java.util.List<String> leftSortedKeySet = com.google.common.collect.Lists
-                                .newArrayList(left.keySet());
-                        java.util.Collections.sort(leftSortedKeySet);
-                        final java.util.Iterator<String> leftKeyI = leftSortedKeySet.iterator();
-
-                        final java.util.List<String> rightSortedKeySet = com.google.common.collect.Lists
-                                .newArrayList(right.keySet());
-                        java.util.Collections.sort(rightSortedKeySet);
-                        final java.util.Iterator<String> rightKeyI = leftSortedKeySet.iterator();
-
-                        while (leftKeyI.hasNext()) {
-                            final String leftKey = leftKeyI.next();
-                            final String rightKey = rightKeyI.next();
-
-                            result = leftKey.compareTo(rightKey);
-                            if (result != 0) {
-                                return result;
-                            }
-                        }
-
-                        // Compare values
-                        for (final java.util.Map.Entry<String, String> leftEntry : left.entrySet()) {
-                            final String leftValue = leftEntry.getValue();
-                            final String rightValue = right.get(leftEntry.getKey());
-
-                            result =
-                                leftValue.compareTo(rightValue);
-                            if (result != 0) {
-                                return result;
-                            }
-                        }
-
-                        return 0;
-                    }
-                }.compare(this.stringStringMapField.get(), other.stringStringMapField.get());
-                if (result != 0) {
-                    return result;
-                }
-            } else {
-                return 1;
-            }
-        } else if (other.stringStringMapField.isPresent()) {
-            return -1;
-        }
-
-        if (this.stringSetField.isPresent()) {
-            if (other.stringSetField.isPresent()) {
-                result = new java.util.Comparator<com.google.common.collect.ImmutableSet<String>>() {
-                    public int compare(final com.google.common.collect.ImmutableSet<String> left, final com.google.common.collect.ImmutableSet<String> right) {
-                        int result = ((Integer) left.size()).compareTo(right.size());
-                        if (result != 0) {
-                            return result;
-                        }
-
-                        final java.util.List<String> leftSortedList = com.google.common.collect.Lists
-                                .newArrayList(left);
-                        java.util.Collections.sort(leftSortedList);
-                        final java.util.Iterator<String> leftI = leftSortedList.iterator();
-
-                        final java.util.List<String> rightSortedList = com.google.common.collect.Lists
-                                .newArrayList(right);
-                        java.util.Collections.sort(rightSortedList);
-                        final java.util.Iterator<String> rightI = leftSortedList.iterator();
-
-                        while (leftI.hasNext()) {
-                            final String leftElement = leftI.next();
-                            final String rightElement = rightI.next();
-
-                            result =
-                                leftElement.compareTo(rightElement);
-                            if (result != 0) {
-                                return result;
-                            }
-                        }
-
-                        return 0;
-                    }
-                }.compare(this.stringSetField.get(), other.stringSetField.get());
-                if (result != 0) {
-                    return result;
-                }
-            } else {
-                return 1;
-            }
-        } else if (other.stringSetField.isPresent()) {
-            return -1;
-        }
-
-        if (this.stringField.isPresent()) {
-            if (other.stringField.isPresent()) {
-                result = this.stringField.get().compareTo(other.stringField.get());
-                if (result != 0) {
-                    return result;
-                }
-            } else {
-                return 1;
-            }
-        } else if (other.stringField.isPresent()) {
-            return -1;
-        }
-
-        if (this.urlField.isPresent()) {
-            if (other.urlField.isPresent()) {
-                result = this.urlField.get().compareTo(other.urlField.get());
-                if (result != 0) {
-                    return result;
-                }
-            } else {
-                return 1;
-            }
-        } else if (other.urlField.isPresent()) {
-            return -1;
-        }
-
-        return 0;
+    public static Builder builder(final com.google.common.base.Optional<NestedProtocolTestStruct> other) {
+        return other.isPresent() ? new Builder(other.get()) : new Builder();
     }
 
     @Override
@@ -1985,7 +1672,12 @@ public class NestedProtocolTestStruct implements org.thryft.Struct, java.lang.Co
     @Override
     public void writeAsStruct(final org.thryft.protocol.OutputProtocol oprot) throws org.thryft.protocol.OutputProtocolException {
         oprot.writeStructBegin("org.thryft.protocol.test.NestedProtocolTestStruct");
+        writeFields(oprot);
+        oprot.writeStructEnd();
+    }
 
+    @Override
+    public void writeFields(final org.thryft.protocol.OutputProtocol oprot) throws org.thryft.protocol.OutputProtocolException {
         oprot.writeFieldBegin("required_i32_field", org.thryft.protocol.Type.I32, (short)0);
         oprot.writeI32(getRequiredI32Field());
         oprot.writeFieldEnd();
@@ -2098,8 +1790,6 @@ public class NestedProtocolTestStruct implements org.thryft.Struct, java.lang.Co
         }
 
         oprot.writeFieldStop();
-
-        oprot.writeStructEnd();
     }
 
     private final int requiredI32Field;
