@@ -40,6 +40,9 @@ class Decimal(object):
     def cpp_default_value(self):
         return '"0"'
 
+    def elastic_search_mapping_dict(self):
+        return {'index': 'not_analyzed'}
+
     def java_declaration_name(self, boxed=False):
         return 'java.math.BigDecimal'
 
