@@ -41,7 +41,7 @@ class Set final : public ::thryft::Base, public ::std::set<ElementCppT> {
     }
 
     void write(protocol::OutputProtocol& oprot) const override {
-      oprot.write_set_begin(ElementThriftT, this->size());
+      oprot.write_set_begin(ElementThriftT, static_cast<uint32_t>(this->size()));
       for (auto i = this->cbegin(); i != this->cend(); ++i) {
         oprot.write(*i);
       }

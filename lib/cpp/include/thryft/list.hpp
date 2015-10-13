@@ -39,7 +39,7 @@ class List final : public ::thryft::Base, public ::std::vector<ElementCppT> {
     }
 
     void write(protocol::OutputProtocol& oprot) const override {
-      oprot.write_list_begin(ElementThriftT, this->size());
+      oprot.write_list_begin(ElementThriftT, static_cast<uint32_t>(this->size()));
       for (auto i = this->cbegin(); i != this->cend(); ++i) {
         oprot.write(*i);
       }

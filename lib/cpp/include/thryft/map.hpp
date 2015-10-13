@@ -47,7 +47,7 @@ class Map final : public ::thryft::Base, public ::std::map< KeyCppT, ValueCppT >
     }
 
     void write(protocol::OutputProtocol& oprot) const override {
-      oprot.write_map_begin(KeyThriftT, ValueThriftT, this->size());
+      oprot.write_map_begin(KeyThriftT, ValueThriftT, static_cast<uint32_t>(this->size()));
       for (auto i = this->cbegin(); i != this->cend(); ++i) {
         oprot.write(i->first);
         oprot.write(i->second);
