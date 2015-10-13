@@ -112,7 +112,7 @@ class JsFunction(Function, _JsNamedConstruct):
             throw new TypeError(request.validationError);
         }
     }""" % locals()
-            jsonrpc_params = "request.write(new thryft.protocol.BuiltinsProtocol()).freeze()" % locals()
+            jsonrpc_params = "request.toThryftJSON()" % locals()
         else:
             jsonrpc_params = '{}'
             request = ''
@@ -139,7 +139,7 @@ class JsFunction(Function, _JsNamedConstruct):
                     self.return_field.doc is not None and (' ' + self.return_field.doc) or '')
             )
             response_type_qname = self.js_response_type().js_qname()
-            return_value = """%(response_type_qname)s.read(new thryft.protocol.BuiltinsProtocol({return_value:__response.result})).get("returnValue")""" % locals()
+            return_value = """%(response_type_qname)s.fromThryftJSON({return_value:__response.result}).get("returnValue")""" % locals()
         else:
             return_value = 'true'
 

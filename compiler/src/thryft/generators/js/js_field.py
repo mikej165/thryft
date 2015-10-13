@@ -42,20 +42,20 @@ class JsField(Field, _JsNamedConstruct):
             "/** @type %s */\n" % self.type.js_qname() + \
             self.js_name() + ':undefined'  # + self.type.js_default_value()
 
+    def js_from_json(self):
+        from_json = self.type.js_from_json('json[fieldName]')
+        name = self.name
+        js_name = self.js_name()
+        return """\
+if (fieldName == "%(name)s") {
+    fields["%(js_name)s"] = %(from_json)s;
+}""" % locals()
+
     def js_name(self):
         return lower_camelize(self.name)
 
     def js_qname(self):
         return self.parent.js_qname() + '.' + self.js_name()
-
-    def js_read_protocol(self):
-        name = self.name
-        js_name = self.js_name()
-        read_protocol = self.type.js_read_protocol()
-        return """\
-if (field.fname == "%(name)s") {
-    fields["%(js_name)s"] = %(read_protocol)s;
-}""" % locals()
 
     def js_schema(self):
         schema = self.type.js_schema()
@@ -63,6 +63,18 @@ if (field.fname == "%(name)s") {
             schema = schema.copy()
             schema.setdefault('validators', []).append('required')
         return {self.js_name(): schema}
+
+    def js_to_json(self):
+        name = self.name
+        js_name = self.js_name()
+        to_json = """json["%(name)s"] = """ % locals() + self.type.js_to_json("this.get(\"" + self.js_name() + "\")") + ';'
+        if not self.required:
+            to_json = indent(' ' * 4, to_json)
+            to_json = """\
+if (this.has("%(js_name)s")) {
+%(to_json)s
+}""" % locals()
+        return to_json
 
     def js_validation(self):
         validation = {}
@@ -91,19 +103,3 @@ if (typeof attr !== "undefined" && attr !== "null") {
     },
     %(validation)s
 }""" % locals()
-
-    def js_write_protocol(self):
-        name = self.name
-        js_name = self.js_name()
-        write_protocol = self.type.js_write_protocol("this.get(\"" + self.js_name() + "\")")
-        write_protocol = """\
-oprot.writeFieldBegin("%(name)s");
-%(write_protocol)s
-oprot.writeFieldEnd();""" % locals()
-        if not self.required:
-            write_protocol = indent(' ' * 4, write_protocol)
-            write_protocol = """\
-if (this.has("%(js_name)s")) {
-%(write_protocol)s
-}""" % locals()
-        return write_protocol

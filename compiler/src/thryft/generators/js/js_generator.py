@@ -58,6 +58,8 @@ class JsGenerator(Generator):
     from thryft.generators.js.js_set_type import JsSetType as SetType  # @UnusedImport
     from thryft.generators.js.js_string_type import JsStringType as StringType  # @UnusedImport
     from thryft.generators.js.js_struct_type import JsStructType as StructType  # @UnusedImport
+    from thryft.generators.js.js_typedef import JsTypedef as Typedef  # @UnusedImport
+
 
 
 def __parse_js_view_metadata_annotation(ast_node, name, value, **kwds):

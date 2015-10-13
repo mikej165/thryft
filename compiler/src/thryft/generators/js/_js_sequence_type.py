@@ -39,6 +39,21 @@ class _JsSequenceType(_JsContainerType):
     def js_default_value(self):
         return '[]'
 
+    def js_from_json(self, value):
+        class_name_split = decamelize(self.__class__.__name__).split('_')
+        assert len(class_name_split) == 3
+        assert class_name_split[0] == 'js'
+        assert class_name_split[2] == 'type'
+
+        element_from_json = self.element_type.js_from_json('json[i]')
+        if isinstance(self.element_type, _JsCompoundType):
+            element_type_qname = self.element_type.js_qname()
+            return_value = "new Backbone.Collection(sequence, {model: %(element_type_qname)s})" % locals()
+        else:
+            return_value = 'sequence'
+        type_name = class_name_split[1].capitalize()
+        return """function(json) { var sequence = new Array(); for (var i = 0; i < json.length; i++) { sequence.push(%(element_from_json)s); } return %(return_value)s; }(%(value)s)""" % locals()
+
     def js_literal(self, value):
         if isinstance(self.element_type, _JsCompoundType):
             return \
@@ -62,22 +77,6 @@ class _JsSequenceType(_JsContainerType):
         else:
             return "Array.<%s>" % self.element_type.js_qname()
 
-    def js_read_protocol(self):
-        class_name_split = decamelize(self.__class__.__name__).split('_')
-        assert len(class_name_split) == 3
-        assert class_name_split[0] == 'js'
-        assert class_name_split[2] == 'type'
-
-        element_ttype_id = self.element_type.thrift_ttype_id()
-        element_read_protocol = self.element_type.js_read_protocol()
-        if isinstance(self.element_type, _JsCompoundType):
-            element_type_qname = self.element_type.js_qname()
-            return_value = "new Backbone.Collection(sequence, {model: %(element_type_qname)s})" % locals()
-        else:
-            return_value = 'sequence'
-        type_name = class_name_split[1].capitalize()
-        return """function(iprot) { var sequenceBegin = iprot.read%(type_name)sBegin(); var sequence = new Array(); for (var i = 0; i < sequenceBegin.size; i++) { sequence.push(%(element_read_protocol)s); } iprot.read%(type_name)sEnd(); return %(return_value)s; }(iprot)""" % locals()
-
     def js_schema(self):
         element_schema = self.element_type.js_schema()
         schema = {'type': 'List', 'itemType': element_schema['type']}
@@ -85,6 +84,21 @@ class _JsSequenceType(_JsContainerType):
             if key != 'type':
                 schema[key] = value
         return schema
+
+    def js_to_json(self, value, depth=0):
+        class_name_split = decamelize(self.__class__.__name__).split('_')
+        assert len(class_name_split) == 3
+        assert class_name_split[0] == 'js'
+        assert class_name_split[2] == 'type'
+
+        if self.element_type.js_is_model():
+            elements_property = '.models'
+        else:
+            elements_property = ''
+        element_to_json = self.element_type.js_to_json("__inArray%(depth)u[__i%(depth)u]" % locals(), depth=depth + 1)
+        type_name = class_name_split[1].capitalize()
+        return """\
+function (__inArray%(depth)u) { var __outArray%(depth)u = new Array(); for (var __i%(depth)u = 0; __i%(depth)u < __inArray%(depth)u.length; __i%(depth)u++) { __outArray%(depth)u.push(%(element_to_json)s); } return __outArray%(depth)u; }(%(value)s%(elements_property)s)""" % locals()
 
     def js_validation(self, value, value_name, depth=0):
         if isinstance(self.element_type, _JsCompoundType):
@@ -115,25 +129,3 @@ if (!Array.isArray(%(value)s)) {
 for (var __i%(depth)u = 0; __i%(depth)u < %(value)s.length; __i%(depth)u++) {
 %(element_validate)s
 }""" % locals()}
-
-    def js_write_protocol(self, value, depth=0):
-        class_name_split = decamelize(self.__class__.__name__).split('_')
-        assert len(class_name_split) == 3
-        assert class_name_split[0] == 'js'
-        assert class_name_split[2] == 'type'
-
-        element_ttype_id = self.element_type.thrift_ttype_id()
-        if self.element_type.js_is_model():
-            elements_property = '.models'
-        else:
-            elements_property = ''
-        element_write_protocol = \
-            indent(' ' * 4, self.element_type.js_write_protocol("__sequence%(depth)u%(elements_property)s[__i%(depth)u]" % locals(), depth=depth + 1))
-        type_name = class_name_split[1].capitalize()
-        return """\
-var __sequence%(depth)u = %(value)s;
-oprot.write%(type_name)sBegin(%(element_ttype_id)u, __sequence%(depth)u%(elements_property)s.length);
-for (var __i%(depth)u = 0; __i%(depth)u < __sequence%(depth)u%(elements_property)s.length; __i%(depth)u++) {
-%(element_write_protocol)s
-}
-oprot.write%(type_name)sEnd();""" % locals()

@@ -30,15 +30,10 @@
 # OF SUCH DAMAGE.
 # -----------------------------------------------------------------------------
 
-from thryft.generators.js._js_type import _JsType
+from thryft.generator.typedef import Typedef
+from thryft.generators.js._js_named_construct import _JsNamedConstruct
 
 
-class _JsBaseType(_JsType):
-    def js_is_model(self):
-        return False
-
-    def js_from_json(self, value):
-        return value
-
-    def js_to_json(self, value, **kwds):
-        return value
+class JsTypedef(Typedef, _JsNamedConstruct):
+    def js_repr(self):
+        return ''
