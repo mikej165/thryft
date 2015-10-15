@@ -41,9 +41,13 @@ class _JsCompoundType(_JsType):
         return True
 
     def _js_class_properties(self):
-        class_properties = {}
-        class_properties.update(self._js_class_method_from_thryft_json())
-        return [class_properties[method_name] for method_name in sorted(class_properties.iterkeys())]
+        class_properties = []
+        for field in self.fields:
+            class_properties.append(field.js_name_constant())
+        class_methods = {}
+        class_methods.update(self._js_class_method_from_thryft_json())
+        class_properties.extend(class_methods[method_name] for method_name in sorted(class_methods.iterkeys()))
+        return class_properties
 
     def _js_class_method_from_thryft_json(self):
         qname = self.js_qname()
@@ -140,16 +144,9 @@ viewMetadata: %s
 """ % view_metadata}
 
     def js_repr(self):
-        class_properties = []
-        class_properties.append("\n\n".join(indent(' ' * 8, self._js_class_properties())))
-        class_properties = ",\n\n".join(class_properties)
-
-        properties = []
-        properties.append(",\n\n".join(indent(' ' * 8, self._js_properties())))
-        properties = ",\n\n".join(properties)
-
+        class_properties = ",\n\n".join(indent(' ' * 8, self._js_class_properties()))
+        properties = ",\n\n".join(indent(' ' * 8, self._js_properties()))
         qname = self.js_qname()
-
         return """\
 %(qname)s = Backbone.Model.extend(
     {
