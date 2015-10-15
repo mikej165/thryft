@@ -38,7 +38,7 @@ from yutil import upper_camelize
 class PyInclude(Include, _PyConstruct):
     def __init__(self, *args, **kwds):
         Include.__init__(self, *args, **kwds)
-        py_module_qname = self.path.replace('/', '.')
+        py_module_qname = self.relpath.replace('/', '.')
         py_module_qname_split = py_module_qname.rsplit('.', 1)
         if len(py_module_qname_split) == 2:
             py_module_qname, py_module_name = py_module_qname_split

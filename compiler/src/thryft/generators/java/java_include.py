@@ -39,7 +39,7 @@ class JavaInclude(Include, _JavaConstruct):
     def __init__(self, *args, **kwds):
         Include.__init__(self, *args, **kwds)
 
-        java_class_qname = self.path.rsplit('.', 1)[0].replace('/', '.')
+        java_class_qname = self.relpath.rsplit('.', 1)[0].replace('/', '.')
         java_class_qname_split = java_class_qname.rsplit('.', 1)
 
         java_class_name = upper_camelize(java_class_qname_split.pop(-1))

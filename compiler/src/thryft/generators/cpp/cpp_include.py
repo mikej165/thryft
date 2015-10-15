@@ -30,7 +30,6 @@
 # OF SUCH DAMAGE.
 # -----------------------------------------------------------------------------
 
-import os.path
 from thryft.generator.include import Include
 from thryft.generators.cpp._cpp_construct import _CppConstruct
 
