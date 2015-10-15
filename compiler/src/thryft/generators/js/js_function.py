@@ -144,14 +144,14 @@ class JsFunction(Function, _JsNamedConstruct):
         else:
             return_value = 'true'
 
-        if len(self.throws) > 0:
-            jsdoc_lines.extend(
-                "@throws {%s}%s" % (
-                    exception.type.js_qname(),
-                    exception.doc is not None and (' ' + exception.doc) or ''
-                )
-                for exception in self.throws
-            )
+#         if len(self.throws) > 0:
+#             jsdoc_lines.extend(
+#                 "@throws {%s}%s" % (
+#                     exception.type.js_qname(),
+#                     exception.doc is not None and (' ' + exception.doc) or ''
+#                 )
+#                 for exception in self.throws
+#             )
 
         jsdoc_lines = "\n".join(' * ' + jsdoc_line for jsdoc_line in jsdoc_lines)
 
