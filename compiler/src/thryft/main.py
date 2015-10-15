@@ -39,6 +39,7 @@ from thryft.compiler import Compiler
 from thryft.compiler.compile_exception import CompileException
 from thryft.compiler.scan_exception import ScanException
 from yutil import decamelize
+from thryft.generator.generator import Generator
 
 
 MY_DIR_PATH = os.path.dirname(os.path.realpath(__file__))
@@ -48,29 +49,24 @@ ROOT_DIR_PATH = os.path.normpath(os.path.join(MY_DIR_PATH, '..'))
 class Main(object):
     def __init__(
         self,
+        include_dir_paths,
         clean=False,
         debug=False,
-        dry_run=False,
         gen=None,
-        include_dir_paths=None,
         log_filename=None,
         thrift_file_paths=None
     ):
         object.__init__(self)
         self.__clean = clean
         self.__debug = debug
-        self.__dry_run = dry_run
         if gen is None:
             gen = {}
         self.__gen = gen
-        if include_dir_paths is None:
-            include_dir_paths = tuple()
-        else:
-            include_dir_paths_dedup = []
-            for include_dir_path in include_dir_paths:
-                if include_dir_path not in include_dir_paths_dedup:
-                    include_dir_paths_dedup.append(include_dir_path)
-            include_dir_paths = tuple(include_dir_paths_dedup)
+        include_dir_paths_dedup = []
+        for include_dir_path in include_dir_paths:
+            if include_dir_path not in include_dir_paths_dedup:
+                include_dir_paths_dedup.append(include_dir_path)
+        include_dir_paths = tuple(include_dir_paths_dedup)
         self.__compiler = Compiler(include_dir_paths=include_dir_paths)
         self.__log_filename = log_filename
         if thrift_file_paths is None:
@@ -134,9 +130,6 @@ class Main(object):
         raise NotImplementedError(self.__class__.__module__ + '.' + self.__class__.__name__ + '.compile')
 
     def _compile_thrift_file(self, thrift_file_path, document_root_dir_path=None, generator=None, out=None):
-        if generator is None and not self.__dry_run:
-            return
-
         for i in xrange(2):
             if generator is not None:
                 gen = generator.__class__.__name__
@@ -144,6 +137,8 @@ class Main(object):
                 gen = decamelize(gen)
                 if len(self.__gen) > 0 and gen not in self.__gen:
                     return
+            else:
+                generator = Generator()
 
             try:
                 document = \
@@ -206,7 +201,6 @@ class Main(object):
         cls(
             clean=args.clean,
             debug=args.debug,
-            dry_run=args.dry_run,
             gen=parsed_gen,
             log_filename=args.log_filename,
             thrift_file_paths=args.thrift_file_paths,
