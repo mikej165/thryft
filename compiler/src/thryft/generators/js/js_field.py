@@ -46,13 +46,20 @@ class JsField(Field, _JsNamedConstruct):
         from_json = self.type.js_from_json('json[fieldName]')
         name = self.name
         js_name = self.js_name()
+        field_name_tests = ["fieldName == \"%(name)s\"" % locals()]
+        if self.id is not None:
+            id_ = self.id
+            field_name_tests.append("fieldName == \"%(id_)d:%(name)s\"" % locals())
+        field_name_tests = ' || '.join(field_name_tests)
         return """\
-if (fieldName == "%(name)s") {
+if (%(field_name_tests)s) {
     fields["%(js_name)s"] = %(from_json)s;
 }""" % locals()
 
     def js_name(self):
-        return lower_camelize(self.name)
+#         return lower_camelize(self.name)
+        # Per MJ's decision 20151014, use Thrift-style underscore_separated names
+        return self.name
 
     def js_qname(self):
         return self.parent.js_qname() + '.' + self.js_name()
@@ -65,9 +72,11 @@ if (fieldName == "%(name)s") {
         return {self.js_name(): schema}
 
     def js_to_json(self):
-        name = self.name
         js_name = self.js_name()
-        to_json = """json["%(name)s"] = """ % locals() + self.type.js_to_json("this.get(\"" + self.js_name() + "\")") + ';'
+        json_name = self.name
+        if self.id is not None:
+            json_name = str(self.id) + ':' + json_name
+        to_json = """json["%(json_name)s"] = """ % locals() + self.type.js_to_json("this.get(\"%(js_name)s\")" % locals()) + ';'
         if not self.required:
             to_json = indent(' ' * 4, to_json)
             to_json = """\
