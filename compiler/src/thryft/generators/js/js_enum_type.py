@@ -41,12 +41,12 @@ class JsEnumType(EnumType, _JsType):
         else:
             return '0'
 
+    def js_from_json(self, value):
+        qname = self.js_qname()
+        return "%(qname)s[%(value)s]" % locals()
+
     def js_is_model(self):
         return False
-
-    def js_read_protocol(self):
-        name = self.js_qname()
-        return "%(name)s[iprot.readString()]" % locals()
 
     def js_repr(self):
         enumerators = ', '.join("%s: %u" % (enumerator.name, enumerator.value)
@@ -57,6 +57,10 @@ class JsEnumType(EnumType, _JsType):
 
     def js_schema(self):
         return {'type': 'Select', 'options': [enumerator.name for enumerator in self.enumerators]}
+
+    def js_to_json(self, value, **kwds):
+        qname = self.js_qname()
+        return "function(enumerator_value) { for (var enumerator_name in %(qname)s) { if (%(qname)s[enumerator_name] == enumerator_value) { return enumerator_name; } } }(%(value)s)" % locals()
 
     def js_validation(self, value, value_name, **kwds):
         if len(self.enumerators) > 0:
@@ -74,7 +78,3 @@ if (typeof %(value)s !== "number") {
     return "expected %(value_name)s to be a number";
 }%(enumerator_comparisons)s
 """ % locals()}
-
-    def js_write_protocol(self, value, depth=0):
-        name = self.js_qname()
-        return "oprot.writeString(function(enumerator_value) { for (var enumerator_name in %(name)s) { if (%(name)s[enumerator_name] == enumerator_value) { return enumerator_name; } } }(%(value)s));" % locals()

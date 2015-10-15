@@ -39,6 +39,11 @@ class JsMapType(MapType, _JsContainerType):
     def js_default_value(self):
         return '{}'
 
+    def js_from_json(self, value):
+        key_to_from_json = self.key_type.js_from_json('key')
+        value_to_from_json = self.value_type.js_from_json('json[key]')
+        return """function (json) { var map = {}; for (var key in json) { map[%(key_to_from_json)s] = %(value_to_from_json)s; } return map; }(%(value)s)""" % locals()
+
     def js_literal(self, value):
         return "{%s}" % ', '.join(self.key_type.js_literal(key) + ':' + self.value_type.js_literal(value_) for key, value_ in value.iteritems())
 
@@ -47,11 +52,6 @@ class JsMapType(MapType, _JsContainerType):
 
     def js_qname(self):
         return "Object.<%s, %s>" % (self.key_type.js_qname(), self.value_type.js_qname())
-
-    def js_read_protocol(self):
-        key_read_protocol = self.key_type.js_read_protocol()
-        value_read_protocol = self.value_type.js_read_protocol()
-        return """function(iprot) { var map = {}; var mapBegin = iprot.readMapBegin(); for (var i = 0; i < mapBegin.size; i++) { var key = %(key_read_protocol)s; var value = %(value_read_protocol)s; map[key] = value; } iprot.readMapEnd(); return map; }(iprot)""" % locals()
 
     def js_schema(self):
         return {'type': 'Object', 'subSchema': self.value_type.js_schema()}
@@ -84,32 +84,20 @@ for (var __key%(depth)u in %(value)s) {
 }""" % locals()}
 
 
-    def js_write_protocol(self, value, depth=0):
-        key_ttype_id = self.key_type.thrift_ttype_id()
-        key_write_protocol = \
+    def js_to_json(self, value, depth=0):
+        key_to_json = \
             indent(' ' * 4,
-                self.key_type.js_write_protocol(
+                self.key_type.js_to_json(
                     "__key%(depth)u" % locals(),
                     depth=depth + 1
                 )
             )
-        value_ttype_id = self.value_type.thrift_ttype_id()
-        value_write_protocol = \
+        value_to_json = \
             indent(' ' * 4,
-                self.value_type.js_write_protocol(
+                self.value_type.js_to_json(
                     "__map%(depth)u[__key%(depth)u]" % locals(),
                     depth=depth + 1
                 )
             )
         return """\
-var __map%(depth)u = %(value)s;
-var __mapSize%(depth)u = 0;
-for (var __key%(depth)u in __map%(depth)u) {
-    __mapSize%(depth)u++;
-}
-oprot.writeMapBegin(%(key_ttype_id)u, %(value_ttype_id)u, __mapSize%(depth)u);
-for (var __key%(depth)u in __map%(depth)u) {
-%(key_write_protocol)s
-%(value_write_protocol)s
-}
-oprot.writeMapEnd();""" % locals()
+function () { var __inObject%(depth)u = %(value)s; var __outObject%(depth)u = new Object(); for (var __key%(depth)u in __inObject%(depth)u) { __outObject%(depth)u[%(key_to_json)s] = %(value_to_json)s; } return __outObject%(depth)u; }""" % locals()

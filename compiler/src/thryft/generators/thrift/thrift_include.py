@@ -36,4 +36,4 @@ from thryft.generators.thrift._thrift_construct import _ThriftConstruct
 
 class ThriftInclude(Include, _ThriftConstruct):
     def thrift_repr(self):
-        return "include \"%s\"" % self.path
+        return "include \"%s\"" % self.relpath

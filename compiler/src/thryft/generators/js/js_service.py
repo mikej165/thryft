@@ -64,12 +64,7 @@ class JsService(Service, _JsNamedConstruct):
                  for function in self.functions)
             ))
         sections.append("""
-%(qname)s = function(hostname) {
-    if (typeof hostname !== "undefined") {
-        this.hostname = hostname;
-    } else {
-        this.hostname = "";
-    }
+%(qname)s = function() {
 };
 
 %(qname)s.prototype = {

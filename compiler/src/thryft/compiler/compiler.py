@@ -249,14 +249,19 @@ class Compiler(object):
                 include_file_path = os.path.join(include_dir_path, include_file_relpath)
                 if os.path.exists(include_file_path):
                     include_file_path = os.path.abspath(include_file_path)
-                    included_document = self.__compiler.compile((include_file_path,), generator=self.__generator)[0]
+                    included_document = \
+                        self.__compiler.compile(
+                            thrift_file_paths=(include_file_path,),
+                            generator=self.__generator
+                        )[0]
                     include = \
                         self.__construct(
                             'Include',
+                            abspath=include_file_path,
                             annotation_nodes=include_node.annotations,
                             doc=self.__visit_doc_node(include_node.doc),
                             document=included_document,
-                            path=include_file_relpath
+                            relpath=include_file_relpath
                         )
                     for definition in included_document.definitions:
                         if isinstance(definition, _Type):
@@ -394,9 +399,14 @@ class Compiler(object):
     def __call__(self, *args, **kwds):
         return self.compile(*args, **kwds)
 
-    def compile(self, thrift_file_paths, document_root_dir_path=None, generator=None):
+    def compile(self, generator, thrift_file_paths, document_root_dir_path=None):
+        if generator is None:
+            raise ValueError('generator must not be None')
+
         if not isinstance(thrift_file_paths, (list, tuple)):
             thrift_file_paths = (thrift_file_paths,)
+        if len(thrift_file_paths) == 0:
+            return tuple()
 
         documents = []
         for thrift_file_path in thrift_file_paths:
@@ -406,18 +416,15 @@ class Compiler(object):
                 tokens = self.__scanner.tokenize(thrift_file_path)
                 document_node = self.__parser.parse(tokens)
                 self.__parsed_thrift_files_by_path[thrift_file_path] = document_node
-            if generator is not None:
-                ast_visitor = \
-                    self.__AstVisitor(
-                        compiler=self,
-                        document_root_dir_path=document_root_dir_path,
-                        generator=generator,
-                        include_dir_paths=self.__include_dir_paths
-                    )
-                document = document_node.accept(ast_visitor)
-                documents.append(document)
-            else:
-                documents.append(document_node)
+            ast_visitor = \
+                self.__AstVisitor(
+                    compiler=self,
+                    document_root_dir_path=document_root_dir_path,
+                    generator=generator,
+                    include_dir_paths=self.__include_dir_paths
+                )
+            document = document_node.accept(ast_visitor)
+            documents.append(document)
         return tuple(documents)
 
     @property
