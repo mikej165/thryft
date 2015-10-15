@@ -49,10 +49,10 @@ ROOT_DIR_PATH = os.path.normpath(os.path.join(MY_DIR_PATH, '..'))
 class Main(object):
     def __init__(
         self,
-        include_dir_paths,
         clean=False,
         debug=False,
         gen=None,
+        include_dir_paths=None,
         log_filename=None,
         thrift_file_paths=None
     ):
@@ -62,11 +62,14 @@ class Main(object):
         if gen is None:
             gen = {}
         self.__gen = gen
-        include_dir_paths_dedup = []
-        for include_dir_path in include_dir_paths:
-            if include_dir_path not in include_dir_paths_dedup:
-                include_dir_paths_dedup.append(include_dir_path)
-        include_dir_paths = tuple(include_dir_paths_dedup)
+        if include_dir_paths is None:
+            include_dir_paths = tuple()
+        else:
+            include_dir_paths_dedup = []
+            for include_dir_path in include_dir_paths:
+                if include_dir_path not in include_dir_paths_dedup:
+                    include_dir_paths_dedup.append(include_dir_path)
+            include_dir_paths = tuple(include_dir_paths_dedup)
         self.__compiler = Compiler(include_dir_paths=include_dir_paths)
         self.__log_filename = log_filename
         if thrift_file_paths is None:

@@ -50,7 +50,7 @@ from yutil import camelize
 
 
 class Main(thryft.main.Main):
-    def _get_compile_tasks(self):
+    def _compile(self):
         gen = self._gen
 
         generators = {
@@ -104,12 +104,11 @@ class Main(thryft.main.Main):
                 for gen_name in generators.keys() if len(gen) == 0 else gen.keys():
                     for generator in generators[gen_name]:
                         for out_dir_path in out_dir_paths.get(gen_name, []):
-                            yield \
-                                self._CompileTask(
-                                    generator=generator,
-                                    out=out_dir_path,
-                                    **compile_task_kwds
-                                )
+                            self._compile_thrift_file(
+                                generator=generator,
+                                out=out_dir_path,
+                                **compile_task_kwds
+                            )
 
 
 assert __name__ == '__main__'
