@@ -32,7 +32,7 @@
 
 from thryft.generator.field import Field
 from thryft.generators.js._js_named_construct import _JsNamedConstruct
-from yutil import indent, lower_camelize
+from yutil import indent
 import json
 
 
@@ -60,6 +60,9 @@ if (%(field_name_tests)s) {
 #         return lower_camelize(self.name)
         # Per MJ's decision 20151014, use Thrift-style underscore_separated names
         return self.name
+
+    def js_name_constant(self):
+        return '%s: "%s"' % (self.name.upper(), self.name)
 
     def js_qname(self):
         return self.parent.js_qname() + '.' + self.js_name()
