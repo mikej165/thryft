@@ -86,18 +86,14 @@ for (var __key%(depth)u in %(value)s) {
 
     def js_to_json(self, value, depth=0):
         key_to_json = \
-            indent(' ' * 4,
-                self.key_type.js_to_json(
-                    "__key%(depth)u" % locals(),
-                    depth=depth + 1
-                )
+            self.key_type.js_to_json(
+                "__key%(depth)u" % locals(),
+                depth=depth + 1
             )
         value_to_json = \
-            indent(' ' * 4,
-                self.value_type.js_to_json(
-                    "__map%(depth)u[__key%(depth)u]" % locals(),
-                    depth=depth + 1
-                )
+            self.value_type.js_to_json(
+                "json[__key%(depth)u]" % locals(),
+                depth=depth + 1
             )
         return """\
-function () { var __inObject%(depth)u = %(value)s; var __outObject%(depth)u = new Object(); for (var __key%(depth)u in __inObject%(depth)u) { __outObject%(depth)u[%(key_to_json)s] = %(value_to_json)s; } return __outObject%(depth)u; }""" % locals()
+function (json) { var __outObject%(depth)u = new Object(); for (var __key%(depth)u in json) { __outObject%(depth)u[%(key_to_json)s] = %(value_to_json)s; } return __outObject%(depth)u; }(%(value)s)""" % locals()
