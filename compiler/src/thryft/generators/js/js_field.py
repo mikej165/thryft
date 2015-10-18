@@ -56,11 +56,6 @@ if (%(field_name_tests)s) {
     fields["%(js_name)s"] = %(from_json)s;
 }""" % locals()
 
-    def js_name(self):
-#         return lower_camelize(self.name)
-        # Per MJ's decision 20151014, use Thrift-style underscore_separated names
-        return self.name
-
     def js_name_constant(self):
         return '%s: "%s"' % (self.name.upper(), self.name)
 

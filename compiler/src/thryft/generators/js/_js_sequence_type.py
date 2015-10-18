@@ -85,7 +85,7 @@ class _JsSequenceType(_JsContainerType):
                 schema[key] = value
         return schema
 
-    def js_to_json(self, value, depth=0):
+    def js_to_json(self, value):
         class_name_split = decamelize(self.__class__.__name__).split('_')
         assert len(class_name_split) == 3
         assert class_name_split[0] == 'js'
@@ -95,10 +95,10 @@ class _JsSequenceType(_JsContainerType):
             elements_property = '.models'
         else:
             elements_property = ''
-        element_to_json = self.element_type.js_to_json("__inArray%(depth)u[__i%(depth)u]" % locals(), depth=depth + 1)
+        element_to_json = self.element_type.js_to_json("__inArray[__i]" % locals())
         type_name = class_name_split[1].capitalize()
         return """\
-function (__inArray%(depth)u) { var __outArray%(depth)u = new Array(); for (var __i%(depth)u = 0; __i%(depth)u < __inArray%(depth)u.length; __i%(depth)u++) { __outArray%(depth)u.push(%(element_to_json)s); } return __outArray%(depth)u; }(%(value)s%(elements_property)s)""" % locals()
+function (__inArray) { var __outArray = new Array(); for (var __i = 0; __i < __inArray.length; __i++) { __outArray.push(%(element_to_json)s); } return __outArray; }(%(value)s%(elements_property)s)""" % locals()
 
     def js_validation(self, value, value_name, depth=0):
         if isinstance(self.element_type, _JsCompoundType):
