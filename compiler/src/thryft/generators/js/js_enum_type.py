@@ -58,7 +58,7 @@ class JsEnumType(EnumType, _JsType):
     def js_schema(self):
         return {'type': 'Select', 'options': [enumerator.name for enumerator in self.enumerators]}
 
-    def js_to_json(self, value, **kwds):
+    def js_to_json(self, value):
         qname = self.js_qname()
         return "function(enumerator_value) { for (var enumerator_name in %(qname)s) { if (%(qname)s[enumerator_name] == enumerator_value) { return enumerator_name; } } }(%(value)s)" % locals()
 

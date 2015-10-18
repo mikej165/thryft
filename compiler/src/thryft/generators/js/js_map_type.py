@@ -40,9 +40,9 @@ class JsMapType(MapType, _JsContainerType):
         return '{}'
 
     def js_from_json(self, value):
-        key_to_from_json = self.key_type.js_from_json('key')
-        value_to_from_json = self.value_type.js_from_json('json[key]')
-        return """function (json) { var map = {}; for (var key in json) { map[%(key_to_from_json)s] = %(value_to_from_json)s; } return map; }(%(value)s)""" % locals()
+        key_from_json = self.key_type.js_from_json('key')
+        value_from_json = self.value_type.js_from_json('json[key]')
+        return """function (json) { var map = {}; for (var key in json) { map[%(key_from_json)s] = %(value_from_json)s; } return map; }(%(value)s)""" % locals()
 
     def js_literal(self, value):
         return "{%s}" % ', '.join(self.key_type.js_literal(key) + ':' + self.value_type.js_literal(value_) for key, value_ in value.iteritems())
@@ -61,7 +61,7 @@ class JsMapType(MapType, _JsContainerType):
             indent(' ' * 4,
                 self.key_type.js_validation(
                     depth=depth + 1,
-                    value="__key%(depth)u" % locals(),
+                    value="__key" % locals(),
                     value_name=value_name + " key" % locals()
                 )['type']
             )
@@ -69,7 +69,7 @@ class JsMapType(MapType, _JsContainerType):
             indent(' ' * 4,
                 self.value_type.js_validation(
                     depth=depth + 1,
-                    value="__value%(depth)u" % locals(),
+                    value="__value" % locals(),
                     value_name=value_name + " value" % locals()
                 )['type']
             )
@@ -77,23 +77,14 @@ class JsMapType(MapType, _JsContainerType):
 if (typeof %(value)s !== "object") {
     return "expected %(value_name)s to be an object";
 }
-for (var __key%(depth)u in %(value)s) {
-    var __value%(depth)u = %(value)s[__key%(depth)u];
+for (var __key in %(value)s) {
+    var __value = %(value)s[__key];
 %(key_type_validation)s
 %(value_type_validation)s
 }""" % locals()}
 
-
-    def js_to_json(self, value, depth=0):
-        key_to_json = \
-            self.key_type.js_to_json(
-                "__key%(depth)u" % locals(),
-                depth=depth + 1
-            )
-        value_to_json = \
-            self.value_type.js_to_json(
-                "json[__key%(depth)u]" % locals(),
-                depth=depth + 1
-            )
+    def js_to_json(self, value):
+        key_to_json = self.key_type.js_to_json('__key')
+        value_to_json = self.value_type.js_to_json('json[__key]')
         return """\
-function (json) { var __outObject%(depth)u = new Object(); for (var __key%(depth)u in json) { __outObject%(depth)u[%(key_to_json)s] = %(value_to_json)s; } return __outObject%(depth)u; }(%(value)s)""" % locals()
+function (value) { var __outObject = new Object(); for (var __key in value) { __outObject[%(key_to_json)s] = %(value_to_json)s; } return __outObject; }(%(value)s)""" % locals()

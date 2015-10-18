@@ -160,7 +160,7 @@ viewMetadata: %s
     def js_schema(self):
         return {'type': 'NestedModel', 'model': self.js_qname()}
 
-    def js_to_json(self, value, depth=0):
+    def js_to_json(self, value):
         return "%(value)s.toThryftJSON()" % locals()
 
     def js_validation(self, value, value_name, **kwds):
