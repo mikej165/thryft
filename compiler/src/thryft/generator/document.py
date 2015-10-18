@@ -83,7 +83,7 @@ class Document(_NamedConstruct):
                 if namespace.scope == '*':
                     return namespace
 
-        raise KeyError("scope(s) %s in %s" % (scopes, self.path))
+        raise KeyError("scope(s) %s in %s (available: %s)" % (scopes, self.path, [namespace.scope for namespace in self.namespaces]))
 
     @property
     def namespaces(self):
