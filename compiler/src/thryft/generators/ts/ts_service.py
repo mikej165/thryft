@@ -3,4 +3,8 @@ from thryft.generators.ts._ts_named_construct import _TsNamedConstruct
 
 
 class TsService(Service, _TsNamedConstruct):
-    pass
+    def ts_repr(self):
+        name = self.ts_name()
+        return """\
+class %(name)s {
+}""" % locals()

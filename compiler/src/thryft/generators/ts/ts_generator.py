@@ -1,3 +1,5 @@
+import os.path
+
 from thryft.generator.generator import Generator
 
 
@@ -23,3 +25,11 @@ class TsGenerator(Generator):
     from thryft.generators.ts.ts_string_type import TsStringType as StringType  # @UnusedImport
     from thryft.generators.ts.ts_struct_type import TsStructType as StructType  # @UnusedImport
     from thryft.generators.ts.ts_typedef import TsTypedef as Typedef  # @UnusedImport
+
+    def __init__(self, ts_document_root_dir_path, **kwds):
+        Generator.__init__(self, **kwds)
+        self.__ts_document_root_dir_path = os.path.abspath(ts_document_root_dir_path)
+
+    @property
+    def ts_document_root_dir_path(self):
+        return self.__ts_document_root_dir_path

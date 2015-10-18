@@ -3,4 +3,5 @@ from thryft.generators.ts._ts_base_type import _TsBaseType
 
 
 class TsStringType(StringType, _TsBaseType):
-    pass
+    def ts_name(self):
+        return 'string'

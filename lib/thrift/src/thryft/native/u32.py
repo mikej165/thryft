@@ -104,11 +104,8 @@ class u32(object):
     def js_is_model(self):
         return False
 
-    def js_name(self):
-        return 'string'
-
     def js_qname(self):
-        return 'string'
+        return 'number'
 
     def js_read_protocol(self):
         return 'iprot.readU32()'
@@ -149,3 +146,6 @@ if (typeof %(value)s !== "string") {
     def py_write_protocol(self, value, depth=0):
         qname = self.py_qname()
         return "oprot.write_u32(%(value)s)" % locals()
+
+    def ts_qname(self):
+        return 'number'
