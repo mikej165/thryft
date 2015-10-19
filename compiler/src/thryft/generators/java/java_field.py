@@ -275,13 +275,18 @@ public %(return_type_name)s %(setter_name)s(@javax.annotation.Nullable final %(t
         return 'set' + upper_camelize(self.name)
 
     def java_to_string_helper_add(self):
+        escape = False
         for annotations in (self.annotations, self.type.annotations):
             for annotation in annotations:
                 if annotation.name == 'java_exclude_from_to_string':
                     return ''
+                elif annotation.name == 'java_escape_to_string':
+                    escape = True
         field_value = self.java_getter_name() + '()'
         if not self.required:
             field_value += '.orNull()'
+        if escape:
+            field_value = "org.apache.commons.lang3.StringEscapeUtils.escapeJava(%s)" % field_value
         return """.add(\"%s\", %s)""" % (self.name, field_value)
 
     def _java_type_name(self, boxed=None, nullable=False):
