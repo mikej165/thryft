@@ -85,6 +85,6 @@ for (var __key in %(value)s) {
 
     def js_to_json(self, value):
         key_to_json = self.key_type.js_to_json('__key')
-        value_to_json = self.value_type.js_to_json('json[__key]')
+        value_to_json = self.value_type.js_to_json('value[__key]')
         return """\
 function (value) { var __outObject = new Object(); for (var __key in value) { __outObject[%(key_to_json)s] = %(value_to_json)s; } return __outObject; }(%(value)s)""" % locals()
