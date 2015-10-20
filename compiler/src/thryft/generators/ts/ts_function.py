@@ -79,9 +79,9 @@ if (typeof __response.result === "undefined") {
     throw new Error(__response.error);
 }""" % locals())
         async_call_setup = pad("\n", indent(' ' * 4, "\n".join(async_call_setup)), "\n")
-        async_parameters = ', '.join(async_parameters)
+        async_parameters = "kwds: {%s}" % ', '.join(async_parameters)
         sync_call_setup = pad("\n", indent(' ' * 4, "\n".join(sync_call_setup)), "\n")
-        sync_parameters = ', '.join(parameters)
+        sync_parameters = "kwds: {%s}" % ', '.join(parameters) if len(parameters) > 0 else ''
 
         jsonrpc_url = '\'/api/jsonrpc/'
         if self.parent.name.endswith('Service'):
@@ -91,7 +91,7 @@ if (typeof __response.result === "undefined") {
         jsonrpc_url += '\''
 
         return """\
-%(ts_name)sAsync(kwds: {%(async_parameters)s}): void {%(async_call_setup)s
+%(ts_name)sAsync(%(async_parameters)s): void {%(async_call_setup)s
     $.ajax({
         async:true,
         data:JSON.stringify({
@@ -117,7 +117,7 @@ if (typeof __response.result === "undefined") {
     });
 }
 
-%(ts_name)sSync(kwds: {%(sync_parameters)s}): %(sync_return_type_qname)s {%(sync_call_setup)s
+%(ts_name)sSync(%(sync_parameters)s): %(sync_return_type_qname)s {%(sync_call_setup)s
     $.ajax({
         async:false,
         data:JSON.stringify({
