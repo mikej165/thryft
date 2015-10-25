@@ -11,7 +11,7 @@ class TsDocument(Document, _TsNamedConstruct):
         self.__ts_path = None
 
     def _save_to_dir(self, out_dir_path):
-        assert out_dir_path.startswith(self._parent_generator().ts_document_root_dir_path)
+        assert out_dir_path == self._parent_generator().ts_out_dir_path
         return self._save_to_file(self.ts_path())
 
     def _save_to_file(self, out_file_path):
@@ -22,8 +22,7 @@ class TsDocument(Document, _TsNamedConstruct):
         if self.__ts_path is None:
             self.__ts_path = \
                 os.path.join(
-                    self._parent_generator().ts_document_root_dir_path,
-                    'src',
+                    self._parent_generator().ts_out_dir_path,
                     self.namespace_by_scope('ts').name.replace('.', os.path.sep),
                     self.name + '.ts'
                 )

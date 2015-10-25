@@ -60,7 +60,7 @@ toThryftJSON(): any {
         return [methods[method_name] for method_name in sorted(methods.iterkeys())]
 
     def _ts_references_definition(self, caller_file_abspath, caller_stack):
-        references = ["""/// <reference path="%s/backbone/backbone.d.ts" />""" % os.path.relpath(os.path.join(self._parent_generator().ts_document_root_dir_path, 'share', 'DefinitelyTyped'), os.path.dirname(caller_file_abspath)).replace(os.path.sep, '/')]
+        references = ["""/// <reference path="%s/backbone/backbone.d.ts" />""" % os.path.relpath(os.path.join(self._parent_generator().ts_share_dir_path, 'DefinitelyTyped'), os.path.dirname(caller_file_abspath)).replace(os.path.sep, '/')]
         for field in self.fields:
             references.extend(field.ts_references_use(caller_file_abspath=caller_file_abspath, caller_stack=caller_stack))
         return references

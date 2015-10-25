@@ -159,27 +159,23 @@ class JsFunction(Function, _JsNamedConstruct):
 /**
 %(jsdoc_lines)s
  */
-%(js_name)s : function(kwds) {
-    var async = false;
+%(js_name)sAsync : function(kwds) {
     var errorCallback = undefined;
     var params = jQuery.extend({}, kwds);
-    var returnValue = null; // For synchronous requests
     var successCallback = undefined;
 
     for (var key in kwds) {
         if (key === "error") {
-            async = true;
             errorCallback = kwds[key];
             delete params[key];
         } else if (key === "success") {
-            async = true;
             successCallback = kwds[key];
             delete params[key];
         }
     }%(request)s
 
     $.ajax({
-        async:async,
+        async:true,
         data:JSON.stringify({
             jsonrpc:'2.0',
             method:'%(name)s',
@@ -188,33 +184,53 @@ class JsFunction(Function, _JsNamedConstruct):
         }),
         dataType:'json',
         error:function(jqXHR, textStatus, errorThrown) {
-            if (async) {
-                if (typeof errorCallback !== "undefined") {
-                    errorCallback(jqXHR, textStatus, errorThrown);
-                }
-            } else {
-                returnValue = false;
+            if (typeof errorCallback !== "undefined") {
+                errorCallback(jqXHR, textStatus, errorThrown);
             }
         },
         mimeType:'application/json',
         type:'POST',
         success:function(__response) {
             if (typeof __response.result !== "undefined") {
-                if (async) {
-                    if (typeof successCallback !== "undefined") {
-                        successCallback(%(return_value)s);
-                    }
-                } else {
-                    returnValue = %(return_value)s;
+                if (typeof successCallback !== "undefined") {
+                    successCallback(%(return_value)s);
                 }
             } else {
-                if (async) {
-                    if (typeof errorCallback !== "undefined") {
-                        errorCallback(null, __response.error.message, null);
-                    }
-                } else {
-                    throw new Error(__response.error);
+                if (typeof errorCallback !== "undefined") {
+                    errorCallback(null, __response.error.message, null);
                 }
+            }
+        },
+        url:%(jsonrpc_url)s,
+    });
+},
+
+/**
+%(jsdoc_lines)s
+ */
+%(js_name)sSync : function(kwds) {
+    var params = kwds;
+    var returnValue = null;%(request)s
+
+    $.ajax({
+        async:false,
+        data:JSON.stringify({
+            jsonrpc:'2.0',
+            method:'%(name)s',
+            params:%(jsonrpc_params)s,
+            id:'1234'
+        }),
+        dataType:'json',
+        error:function(jqXHR, textStatus, errorThrown) {
+            returnValue = false;
+        },
+        mimeType:'application/json',
+        type:'POST',
+        success:function(__response) {
+            if (typeof __response.result !== "undefined") {
+                returnValue = %(return_value)s;
+            } else {
+                throw new Error(__response.error);
             }
         },
         url:%(jsonrpc_url)s,
