@@ -47,7 +47,7 @@ class JsonOutputProtocol final : public AbstractOutputProtocol {
   public:
     // OutputProtocol
     virtual void write(const void* value, size_t value_len) override {
-      writer_.String(static_cast<const char*>(value), value_len);
+      writer_.String(static_cast<const char*>(value), static_cast< ::rapidjson::SizeType >(value_len));
     }
 
     virtual void write(bool value) override {
@@ -67,7 +67,7 @@ class JsonOutputProtocol final : public AbstractOutputProtocol {
     }
 
     virtual void write(const char* value, size_t value_len) override {
-      writer_.String(value, value_len);
+      writer_.String(value, static_cast< ::rapidjson::SizeType >(value_len));
     }
 
     virtual void write(uint32_t value) override {

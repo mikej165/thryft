@@ -258,7 +258,7 @@ class JsonInputProtocol final : public StackedInputProtocol {
 
       protected:
         const ::rapidjson::Value& read_child_node() override {
-          return node()[next_child_node_index++];
+          return node()[static_cast< ::rapidjson::SizeType >(next_child_node_index++)];
         }
 
       private:
