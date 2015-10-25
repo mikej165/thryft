@@ -14,7 +14,6 @@ import org.thryft.protocol.JacksonJsonOutputProtocol;
 import org.thryft.protocol.JsonRpcErrorResponse;
 import org.thryft.protocol.JsonRpcInputProtocol;
 import org.thryft.protocol.JsonRpcOutputProtocol;
-import org.thryft.protocol.LoggingOutputProtocol;
 import org.thryft.protocol.MessageBegin;
 import org.thryft.protocol.MessageType;
 import org.thryft.protocol.OutputProtocol;

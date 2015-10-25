@@ -30,13 +30,17 @@
  * OF SUCH DAMAGE.
  ******************************************************************************/
 
-package org.thryft.protocol;
+package org.thryft.protocol.test;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.thryft.protocol.MessageType;
+import org.thryft.protocol.OutputProtocol;
+import org.thryft.protocol.OutputProtocolException;
+import org.thryft.protocol.Type;
 
 import com.google.common.annotations.GwtIncompatible;
 import com.google.common.base.MoreObjects;

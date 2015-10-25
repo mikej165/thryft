@@ -112,7 +112,7 @@ class JsFunction(Function, _JsNamedConstruct):
             throw new TypeError(request.validationError);
         }
     }""" % locals()
-            jsonrpc_params = "request.write(new thryft.protocol.BuiltinsProtocol()).freeze()" % locals()
+            jsonrpc_params = "request.toThryftJSON()" % locals()
         else:
             jsonrpc_params = '{}'
             request = ''
@@ -125,7 +125,7 @@ class JsFunction(Function, _JsNamedConstruct):
             for parameter in self.parameters
         )
 
-        jsonrpc_url = 'this.hostname+\'/api/jsonrpc/'
+        jsonrpc_url = '\'/api/jsonrpc/'
         if self.parent.name.endswith('Service'):
             jsonrpc_url += '_'.join(decamelize(self.parent.name).split('_')[:-1])
         else:
@@ -139,18 +139,19 @@ class JsFunction(Function, _JsNamedConstruct):
                     self.return_field.doc is not None and (' ' + self.return_field.doc) or '')
             )
             response_type_qname = self.js_response_type().js_qname()
-            return_value = """%(response_type_qname)s.read(new thryft.protocol.BuiltinsProtocol({return_value:__response.result})).get("returnValue")""" % locals()
+            return_value_js_name = self.return_field.js_name()
+            return_value = """%(response_type_qname)s.fromThryftJSON({return_value:__response.result}).get("%(return_value_js_name)s")""" % locals()
         else:
             return_value = 'true'
 
-        if len(self.throws) > 0:
-            jsdoc_lines.extend(
-                "@throws {%s}%s" % (
-                    exception.type.js_qname(),
-                    exception.doc is not None and (' ' + exception.doc) or ''
-                )
-                for exception in self.throws
-            )
+#         if len(self.throws) > 0:
+#             jsdoc_lines.extend(
+#                 "@throws {%s}%s" % (
+#                     exception.type.js_qname(),
+#                     exception.doc is not None and (' ' + exception.doc) or ''
+#                 )
+#                 for exception in self.throws
+#             )
 
         jsdoc_lines = "\n".join(' * ' + jsdoc_line for jsdoc_line in jsdoc_lines)
 

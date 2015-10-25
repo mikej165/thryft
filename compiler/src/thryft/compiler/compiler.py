@@ -30,6 +30,9 @@
 # OF SUCH DAMAGE.
 # -----------------------------------------------------------------------------
 
+import logging
+import os.path
+
 from thryft.compiler.ast import Ast
 from thryft.compiler.compile_exception import CompileException
 from thryft.compiler.parser import Parser
@@ -37,8 +40,7 @@ from thryft.compiler.scanner import Scanner
 from thryft.generator._type import _Type
 from thryft.generator.document import Document
 from thryft.generator.typedef import Typedef
-import os.path
-from yutil import lower_camelize
+from yutil import lower_camelize, class_qname
 
 
 class Compiler(object):
@@ -50,7 +52,9 @@ class Compiler(object):
             self.__generator = generator
             self.__include_dir_paths = include_dir_paths
             self.__scope_stack = []
-            self.__type_cache = {}
+            self.__type_by_thrift_qname_cache = {}
+            self.__used_include_abspaths = {}
+            self.__visited_includes = []
 
         def __construct(self, class_name, annotation_nodes=None, **kwds):
             if len(self.__scope_stack) > 0:
@@ -71,12 +75,34 @@ class Compiler(object):
                     )
             return construct_class(**kwds)
 
+        def __get_type(self, type_thrift_qname, resolve=True):
+            # e.g., struct_include_file.Struct
+            try:
+                return self.__type_by_thrift_qname_cache[type_thrift_qname]
+            except KeyError:
+                if not resolve:
+                    raise
+                for include in self.__visited_includes:
+                    for definition in include.document.definitions:
+                        if isinstance(definition, _Type) or isinstance(definition, Typedef):
+                            definition_thrift_qname = definition.thrift_qname()
+                            if definition_thrift_qname == type_thrift_qname:
+                                self.__type_by_thrift_qname_cache[definition_thrift_qname] = definition
+                                self.__used_include_abspaths[include.abspath] = True
+                                return definition
+                raise KeyError(type_thrift_qname)
+
+        def __put_type(self, type_thrift_qname, type_):
+            if type_thrift_qname in self.__type_by_thrift_qname_cache:
+                raise CompileException("duplicate type %s" % type_thrift_qname)
+            self.__type_by_thrift_qname_cache[type_thrift_qname] = type_
+
         def visit_base_type_node(self, base_type_node):
             try:
-                return self.__type_cache[base_type_node.name]
-            except:
+                return self.__get_type(base_type_node.name, resolve=False)
+            except KeyError:
                 base_type = getattr(self.__generator, base_type_node.name.capitalize() + 'Type')(name=base_type_node.name)
-                self.__type_cache[base_type_node.name] = base_type
+                self.__put_type(base_type_node.name, base_type)
                 return base_type
 
         def visit_bool_literal_node(self, bool_literal_node):
@@ -94,7 +120,7 @@ class Compiler(object):
 
             # Insert the compound type into the type_map here to allow recursive
             # definitions
-            self.__type_cache[compound_type.thrift_qname()] = compound_type
+            self.__put_type(compound_type.thrift_qname(), compound_type)
 
             if construct_class_name == 'EnumType':
                 enum_type_node = compound_type_node
@@ -187,6 +213,10 @@ class Compiler(object):
 
             self.__scope_stack.pop(-1)
 
+            logger = logging.getLogger(class_qname(Compiler))
+            for include in self.__visited_includes:
+                if not include.abspath in self.__used_include_abspaths:
+                    logger.warn("unused include %s in document %s", include.relpath, document.path)
             return document
 
         def visit_enum_type_node(self, enum_node):
@@ -249,20 +279,21 @@ class Compiler(object):
                 include_file_path = os.path.join(include_dir_path, include_file_relpath)
                 if os.path.exists(include_file_path):
                     include_file_path = os.path.abspath(include_file_path)
-                    included_document = self.__compiler.compile((include_file_path,), generator=self.__generator)[0]
+                    included_document = \
+                        self.__compiler.compile(
+                            thrift_file_paths=(include_file_path,),
+                            generator=self.__generator
+                        )[0]
                     include = \
                         self.__construct(
                             'Include',
+                            abspath=include_file_path,
                             annotation_nodes=include_node.annotations,
                             doc=self.__visit_doc_node(include_node.doc),
                             document=included_document,
-                            path=include_file_relpath
+                            relpath=include_file_relpath
                         )
-                    for definition in included_document.definitions:
-                        if isinstance(definition, _Type):
-                            self.__type_cache[definition.thrift_qname()] = definition
-                        elif isinstance(definition, Typedef):
-                            self.__type_cache[definition.thrift_qname()] = definition
+                    self.__visited_includes.append(include)
                     return include
             raise CompileException("include path not found: %s" % include_file_relpath, ast_node=include_node)
 
@@ -280,10 +311,10 @@ class Compiler(object):
 
         def visit_map_type_node(self, map_type_node):
             try:
-                return self.__type_cache[map_type_node.name]
-            except:
+                return self.__get_type(map_type_node.name, resolve=False)
+            except KeyError:
                 map_type = self.__construct('MapType', key_type=map_type_node.key_type.accept(self), value_type=map_type_node.value_type.accept(self))
-                self.__type_cache[map_type_node.name] = map_type
+                self.__put_type(map_type_node.name, map_type)
                 return map_type
 
         def visit_namespace_node(self, namespace_node):
@@ -298,10 +329,10 @@ class Compiler(object):
 
         def __visit_sequence_type_node(self, construct_class_name, sequence_type_node):
             try:
-                return self.__type_cache[sequence_type_node.name]
-            except:
+                return self.__get_type(sequence_type_node.name, resolve=False)
+            except KeyError:
                 sequence_type = self.__construct(construct_class_name, element_type=sequence_type_node.element_type.accept(self))
-                self.__type_cache[sequence_type_node.name] = sequence_type
+                self.__put_type(sequence_type_node.name, sequence_type)
                 return sequence_type
 
         def visit_service_node(self, service_node):
@@ -337,11 +368,11 @@ class Compiler(object):
         def visit_type_node(self, type_node):
             try:
                 try:
-                    return self.__type_cache[type_node.qname]
+                    return self.__get_type(type_node.qname)
                 except KeyError:
                     if type_node.qname == type_node.name:
                         document = self.__scope_stack[0]
-                        return self.__type_cache[document.name + '.' + type_node.qname]
+                        return self.__get_type(document.name + '.' + type_node.qname)
                     else:
                         raise
             except KeyError:
@@ -357,7 +388,7 @@ class Compiler(object):
                     type=typedef_node.type.accept(self)
                 )
 
-            self.__type_cache[typedef.thrift_qname()] = typedef.type
+            self.__put_type(typedef.thrift_qname(), typedef.type)
 
             return typedef
 
@@ -394,9 +425,14 @@ class Compiler(object):
     def __call__(self, *args, **kwds):
         return self.compile(*args, **kwds)
 
-    def compile(self, thrift_file_paths, document_root_dir_path=None, generator=None):
+    def compile(self, generator, thrift_file_paths, document_root_dir_path=None):
+        if generator is None:
+            raise ValueError('generator must not be None')
+
         if not isinstance(thrift_file_paths, (list, tuple)):
             thrift_file_paths = (thrift_file_paths,)
+        if len(thrift_file_paths) == 0:
+            return tuple()
 
         documents = []
         for thrift_file_path in thrift_file_paths:
@@ -406,18 +442,15 @@ class Compiler(object):
                 tokens = self.__scanner.tokenize(thrift_file_path)
                 document_node = self.__parser.parse(tokens)
                 self.__parsed_thrift_files_by_path[thrift_file_path] = document_node
-            if generator is not None:
-                ast_visitor = \
-                    self.__AstVisitor(
-                        compiler=self,
-                        document_root_dir_path=document_root_dir_path,
-                        generator=generator,
-                        include_dir_paths=self.__include_dir_paths
-                    )
-                document = document_node.accept(ast_visitor)
-                documents.append(document)
-            else:
-                documents.append(document_node)
+            ast_visitor = \
+                self.__AstVisitor(
+                    compiler=self,
+                    document_root_dir_path=document_root_dir_path,
+                    generator=generator,
+                    include_dir_paths=self.__include_dir_paths
+                )
+            document = document_node.accept(ast_visitor)
+            documents.append(document)
         return tuple(documents)
 
     @property

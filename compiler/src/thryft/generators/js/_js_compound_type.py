@@ -40,60 +40,64 @@ class _JsCompoundType(_JsType):
     def js_is_model(self):
         return True
 
-    def js_read_protocol(self):
-        qname = self.js_qname()
-        return "%(qname)s.read(iprot)" % locals()
-
-    def js_write_protocol(self, value, depth=0):
-        return "%(value)s.write(oprot);" % locals()
-
     def _js_class_properties(self):
-        class_properties = {}
-        class_properties.update(self._js_class_method_read())
-        return [class_properties[method_name] for method_name in sorted(class_properties.iterkeys())]
+        class_properties = []
+        for field in self.fields:
+            class_properties.append(field.js_name_constant())
+        class_methods = {}
+        class_methods.update(self._js_class_method_from_thryft_json())
+        class_properties.extend(class_methods[method_name] for method_name in sorted(class_methods.iterkeys()))
+        return class_properties
 
-    def _js_class_method_read(self):
-        field_reads = \
-            lpad(' else ', indent(' ' * 8, ' else '.join(
-                field.js_read_protocol() for field in self.fields
+    def _js_class_method_from_thryft_json(self):
+        qname = self.js_qname()
+        if len(self.fields) == 0:
+            return {'fromThryftJSON': """\
+fromThryftJSON: function(json) {
+    return new %(qname)s({});
+}""" % locals()}
+
+        fields_from_json = \
+            lpad("\n", indent(' ' * 8, ' else '.join(
+                field.js_from_json() for field in self.fields
             )))
-        name = self.js_qname()
-        return {'read': """\
-read: function(iprot) {
+        return {'fromThryftJSON': """\
+fromThryftJSON: function(json) {
     var fields = {};
-    iprot.readStructBegin();
-    while (true) {
-        var field = iprot.readFieldBegin();
-        if (field.fname.length == 0) {
-            break;
-        }%(field_reads)s
-        iprot.readFieldEnd();
+    for (var fieldName in json) {%(fields_from_json)s
     }
-    iprot.readStructEnd();
-    return new %(name)s(fields);
+    return new %(qname)s(fields);
 }""" % locals()}
 
     def js_default_value(self):
         return 'null'
 
-    def _js_method_write(self):
-        field_writes = indent(' ' * 4, "\n".join(field.js_write_protocol() for field in self.fields))
-        name = self.js_name()
-        return {'write': """\
-write: function(oprot) {
-    oprot.writeStructBegin("%(name)s");
-%(field_writes)s
-    oprot.writeStructEnd();
-    return oprot;
+    def js_from_json(self, value):
+        qname = self.js_qname()
+        return "%(qname)s.fromThryftJSON(%(value)s)" % locals()
+
+    def _js_method_to_thryft_json(self):
+        if len(self.fields) == 0:
+            return {'toThryftJSON': """\
+toThryftJSON: function() {
+    return {};
+}""" % locals()}
+
+        fields_to_json = indent(' ' * 4, "\n".join(field.js_to_json() for field in self.fields))
+        return {'toThryftJSON': """\
+toThryftJSON: function() {
+    var json = {};
+%(fields_to_json)s
+    return json;
 }""" % locals()}
 
     def _js_properties(self):
         properties = {}
         # properties.update(self._js_property_defaults())
+        properties.update(self._js_method_to_thryft_json())
         properties.update(self._js_property_schema())
         properties.update(self._js_property_validation())
         properties.update(self._js_property_view_metadata())
-        properties.update(self._js_method_write())
         return [properties[method_name] for method_name in sorted(properties.iterkeys())]
 
 #     def _js_property_defaults(self):
@@ -140,16 +144,9 @@ viewMetadata: %s
 """ % view_metadata}
 
     def js_repr(self):
-        class_properties = []
-        class_properties.append("\n\n".join(indent(' ' * 8, self._js_class_properties())))
-        class_properties = ",\n\n".join(class_properties)
-
-        properties = []
-        properties.append(",\n\n".join(indent(' ' * 8, self._js_properties())))
-        properties = ",\n\n".join(properties)
-
+        class_properties = ",\n\n".join(indent(' ' * 8, self._js_class_properties()))
+        properties = ",\n\n".join(indent(' ' * 8, self._js_properties()))
         qname = self.js_qname()
-
         return """\
 %(qname)s = Backbone.Model.extend(
     {
@@ -162,6 +159,9 @@ viewMetadata: %s
 
     def js_schema(self):
         return {'type': 'NestedModel', 'model': self.js_qname()}
+
+    def js_to_json(self, value):
+        return "%(value)s.toThryftJSON()" % locals()
 
     def js_validation(self, value, value_name, **kwds):
         qname = self.js_qname()

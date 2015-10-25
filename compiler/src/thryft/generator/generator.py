@@ -31,6 +31,7 @@
 # -----------------------------------------------------------------------------
 
 class Generator(object):
+    from thryft.generator.binary_type import BinaryType  # @UnusedImport
     from thryft.generator.bool_type import BoolType  # @UnusedImport
     from thryft.generator.byte_type import ByteType  # @UnusedImport
     from thryft.generator.const import Const  # @UnusedImport

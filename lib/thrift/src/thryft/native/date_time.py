@@ -147,3 +147,6 @@ if (!(%(value)s instanceof Date)) {
 
     def thrift_ttype_name(self):
         return I64Type.THRIFT_TTYPE_NAME
+
+    def ts_qname(self):
+        return 'Date'

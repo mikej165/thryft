@@ -32,7 +32,7 @@
 
 from thryft.generator.field import Field
 from thryft.generators.js._js_named_construct import _JsNamedConstruct
-from yutil import indent, lower_camelize
+from yutil import indent
 import json
 
 
@@ -42,20 +42,25 @@ class JsField(Field, _JsNamedConstruct):
             "/** @type %s */\n" % self.type.js_qname() + \
             self.js_name() + ':undefined'  # + self.type.js_default_value()
 
-    def js_name(self):
-        return lower_camelize(self.name)
+    def js_from_json(self):
+        from_json = self.type.js_from_json('json[fieldName]')
+        name = self.name
+        js_name = self.js_name()
+        field_name_tests = ["fieldName == \"%(name)s\"" % locals()]
+        if self.id is not None:
+            id_ = self.id
+            field_name_tests.append("fieldName == \"%(id_)d:%(name)s\"" % locals())
+        field_name_tests = ' || '.join(field_name_tests)
+        return """\
+if (%(field_name_tests)s) {
+    fields["%(js_name)s"] = %(from_json)s;
+}""" % locals()
+
+    def js_name_constant(self):
+        return '%s: "%s"' % (self.name.upper(), self.name)
 
     def js_qname(self):
         return self.parent.js_qname() + '.' + self.js_name()
-
-    def js_read_protocol(self):
-        name = self.name
-        js_name = self.js_name()
-        read_protocol = self.type.js_read_protocol()
-        return """\
-if (field.fname == "%(name)s") {
-    fields["%(js_name)s"] = %(read_protocol)s;
-}""" % locals()
 
     def js_schema(self):
         schema = self.type.js_schema()
@@ -63,6 +68,20 @@ if (field.fname == "%(name)s") {
             schema = schema.copy()
             schema.setdefault('validators', []).append('required')
         return {self.js_name(): schema}
+
+    def js_to_json(self):
+        js_name = self.js_name()
+        json_name = self.name
+        if self.id is not None:
+            json_name = str(self.id) + ':' + json_name
+        to_json = """json["%(json_name)s"] = """ % locals() + self.type.js_to_json("this.get(\"%(js_name)s\")" % locals()) + ';'
+        if not self.required:
+            to_json = indent(' ' * 4, to_json)
+            to_json = """\
+if (this.has("%(js_name)s")) {
+%(to_json)s
+}""" % locals()
+        return to_json
 
     def js_validation(self):
         validation = {}
@@ -91,19 +110,3 @@ if (typeof attr !== "undefined" && attr !== "null") {
     },
     %(validation)s
 }""" % locals()
-
-    def js_write_protocol(self):
-        name = self.name
-        js_name = self.js_name()
-        write_protocol = self.type.js_write_protocol("this.get(\"" + self.js_name() + "\")")
-        write_protocol = """\
-oprot.writeFieldBegin("%(name)s");
-%(write_protocol)s
-oprot.writeFieldEnd();""" % locals()
-        if not self.required:
-            write_protocol = indent(' ' * 4, write_protocol)
-            write_protocol = """\
-if (this.has("%(js_name)s")) {
-%(write_protocol)s
-}""" % locals()
-        return write_protocol
