@@ -31,8 +31,6 @@
 # -----------------------------------------------------------------------------
 
 from thryft.generators.java import java_generator
-from thryft.generators.java._java_container_type import _JavaContainerType
-from thryft.generators.java.java_struct_type import JavaStructType
 from yutil import indent, lpad, decamelize
 from thryft.compiler.ast import Ast
 from thryft.compiler.parser import Parser
@@ -86,14 +84,14 @@ class LoggingServiceJavaGenerator(java_generator.JavaGenerator):
                                          for parameter in self.parameters])
 
             request_type_name = self.java_request_type().java_name()
-            response_type_name = self.java_response_type().java_name()
 
             if len(self.parameters) > 0:
-                parameters_toString = indent(' ' * 4, """
-__logMessageStringBuilder.append(new Messages.%(request_type_name)s(%(parameter_names)s).toString());
+                log_parameters = indent(' ' * 4, """
+__logMessageStringBuilder.append("{}");
+__logMessageArgs.add(new Messages.%(request_type_name)s(%(parameter_names)s));
 """ % locals())
             else:
-                parameters_toString = ''
+                log_parameters = ''
 
             return_type_name = \
                 self.return_field is not None and \
@@ -106,32 +104,39 @@ delegate.%(java_name)s(%(parameter_names)s);
             if self.return_field is not None:
                 service_call = self.return_field.type.java_qname(boxed=False) + ' __returnValue = ' + service_call
                 service_call += """
-__logMessageStringBuilder.append(" -> ");
-__logMessageStringBuilder.append(new Messages.%(response_type_name)s(__returnValue).toString());
+__logMessageStringBuilder.append(" -> {}");
+__logMessageArgs.add(__returnValue);
 
-logger.%(call_log_level)s(%(marker)s, __logMessageStringBuilder.toString());
+logger.%(call_log_level)s(%(marker)s, __logMessageStringBuilder.toString(), __logMessageArgs.toArray());
 
 return __returnValue;
 """ % locals()
             else:
                 service_call += """
-logger.%(call_log_level)s(%(marker)s, __logMessageStringBuilder.toString());
+logger.%(call_log_level)s(%(marker)s, __logMessageStringBuilder.toString(), __logMessageArgs.toArray());
 """ % locals()
             service_call = indent(' ' * 4, service_call)
             if len(self.throws) > 0:
                 catches = []
                 for throw in self.throws:
                     exception_log_level = self._parent_generator()._exception_log_level_default
-                    for annotation in throw.annotations:
-                        if annotation.name == 'java_log_level':
-                            exception_log_level = annotation.value
-                            break
+                    exception_log_stack_trace = False
+                    exception_type_name = throw.type.java_declaration_name()
+                    for annotations in (throw.annotations, throw.type.annotations):
+                        for annotation in annotations:
+                            if annotation.name == 'java_log_level':
+                                exception_log_level = annotation.value
+                            elif annotation.name == 'java_log_exception_stack_trace':
+                                exception_log_stack_trace = annotation.value
+                    exception_message = '' if exception_log_stack_trace else '{}'
+                    exception_to_string = '' if exception_log_stack_trace else '.toString()'
                     catches.append("""\
-catch (final %s e) {
-        __logMessageStringBuilder.append(" -> ");
-        logger.%s(%s, __logMessageStringBuilder.toString(), e);
+catch (final %(exception_type_name)s e) {
+        __logMessageStringBuilder.append(" -> %(exception_message)s");
+        __logMessageArgs.add(e%(exception_to_string)s);
+        logger.%(exception_log_level)s(%(marker)s, __logMessageStringBuilder.toString(), __logMessageArgs.toArray());
         throw e;
-    }""" % (throw.type.java_declaration_name(), exception_log_level, marker))
+    }""" % locals())
                 service_call = """\
     try {
 %s
@@ -143,10 +148,11 @@ catch (final %s e) {
                                for field in self.throws])
                 )
             return self._java_delegating_definitions() + ["""\
-public %(return_type_name)s %(java_name)s(%(parameters)s)%(throws)s {
-    final StringBuilder __logMessageStringBuilder = new StringBuilder();%(log_current_user)s
+public %(return_type_name)s %(java_name)s(%(parameters)s)%(throws)s {%(log_current_user)s
+    final StringBuilder __logMessageStringBuilder = new StringBuilder();
+    final java.util.List<Object> __logMessageArgs = new java.util.ArrayList<Object>();
 
-    __logMessageStringBuilder.append("%(name)s(");%(parameters_toString)s
+    __logMessageStringBuilder.append("%(name)s(");%(log_parameters)s
     __logMessageStringBuilder.append(")");
 
 %(service_call)s
@@ -233,13 +239,27 @@ public class %(name)s implements %(service_qname)s {
 %(sections)s
 }""" % locals()
 
-def __parse_java_log_level(ast_node, name, value, **kwds):
-    assert isinstance(ast_node, Ast.FieldNode)
 
+def __parse_java_log_exception_stack_trace(ast_node, name, value, **kwds):
+    value = value.lower()
+    if value == 'true':
+        value = True
+    elif value == 'false':
+        value = False
+    else:
+        raise ValueError(value)
+    ast_node.annotations.append(Ast.AnnotationNode(name=name, value=value, **kwds))
+
+for ast_node_type in (Ast.ExceptionTypeNode, Ast.FieldNode):
+    Parser.register_annotation(ast_node_type, 'java_log_exception_stack_trace', __parse_java_log_exception_stack_trace)
+
+
+def __parse_java_log_level(ast_node, name, value, **kwds):
     value_lower = value.lower()
     if not value_lower in LoggingServiceJavaGenerator._LOG_LEVELS:
         raise ValueError("@%s has an invalid log level: '%s', exception: %s" % (name, value))
 
     ast_node.annotations.append(Ast.AnnotationNode(name=name, value=value_lower, **kwds))
 
-Parser.register_annotation(Ast.FieldNode, 'java_log_level', __parse_java_log_level)
+for ast_node_type in (Ast.ExceptionTypeNode, Ast.FieldNode, Ast.FunctionNode):
+    Parser.register_annotation(ast_node_type, 'java_log_level', __parse_java_log_level)
