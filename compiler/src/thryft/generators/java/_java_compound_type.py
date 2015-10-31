@@ -598,19 +598,19 @@ public boolean equals(final Object otherObject) {
 }""" % locals()}
 
     def _java_method_get(self):
-        fields = []
+        field_cases = []
         for field in self.fields:
             field_name = field.name
             field_getter_name = field.java_getter_name()
-            fields.append("""\
-if (fieldName.equals("%(field_name)s")) {
-    return %(field_getter_name)s();
-}""" % locals())
-        fields = lpad("\n", indent(' ' * 4, ' else '.join(fields)))
+            field_cases.append('case "%(field_name)s": return %(field_getter_name)s();' % locals())
+        field_cases = lpad("\n", indent(' ' * 4, "\n".join(field_cases)))
         return {'get': """\
 @Override
-public Object get(final String fieldName) {%(fields)s
-    throw new IllegalArgumentException(fieldName);
+public Object get(final String fieldName) {
+    switch (fieldName) {%(field_cases)s
+    default:
+        throw new IllegalArgumentException(fieldName);
+    }
 }""" % locals()}
 
     def _java_method_getters(self):
