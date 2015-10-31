@@ -598,19 +598,19 @@ public boolean equals(final Object otherObject) {
 }""" % locals()}
 
     def _java_method_get(self):
-        fields = []
+        field_cases = []
         for field in self.fields:
             field_name = field.name
             field_getter_name = field.java_getter_name()
-            fields.append("""\
-if (fieldName.equals("%(field_name)s")) {
-    return %(field_getter_name)s();
-}""" % locals())
-        fields = lpad("\n", indent(' ' * 4, ' else '.join(fields)))
+            field_cases.append('case "%(field_name)s": return %(field_getter_name)s();' % locals())
+        field_cases = lpad("\n", indent(' ' * 4, "\n".join(field_cases)))
         return {'get': """\
 @Override
-public Object get(final String fieldName) {%(fields)s
-    throw new IllegalArgumentException(fieldName);
+public Object get(final String fieldName) {
+    switch (fieldName) {%(field_cases)s
+    default:
+        throw new IllegalArgumentException(fieldName);
+    }
 }""" % locals()}
 
     def _java_method_getters(self):
@@ -703,24 +703,34 @@ public static %(name)s readAsStruct(final org.thryft.protocol.InputProtocol ipro
     def _java_method_read_as_struct_body(self):
         field_protocol_named_initializers = []
         for field in self.fields:
-            field_id_check = (" && (!ifield.hasId() || ifield.getId() == %d)" % field.id) if field.id is not None else ''
             field_name = field.name
-            field_protocol_initializer = indent(' ' * 4, field.java_protocol_initializer())
+            field_named_protocol_initializer = field.java_protocol_initializer()
+            if field.id is not None:
+                field_id = field.id
+                field_named_protocol_initializer = indent(' ' * 4, field_named_protocol_initializer)
+                field_named_protocol_initializer = """\
+if (!ifield.hasId() || ifield.getId() == %(field_id)d) {
+%(field_named_protocol_initializer)s
+}""" % locals()
+            field_named_protocol_initializer = indent(' ' * 4, field_named_protocol_initializer)
             field_protocol_named_initializers.append("""\
-if (ifield.getName().equals("%(field_name)s")%(field_id_check)s) {
-%(field_protocol_initializer)s
+case "%(field_name)s": {
+%(field_named_protocol_initializer)s
+    break;
 }""" % locals())
         field_protocol_named_initializers = \
-            lpad(' else ', indent(' ' * 4, ' else '.join(
+            lpad("\n", indent(' ' * 4,  "\n".join(
                 field_protocol_named_initializers
-            )).lstrip())
+            )))
         return """\
 iprot.readStructBegin();
 while (true) {
     final org.thryft.protocol.FieldBegin ifield = iprot.readFieldBegin();
     if (ifield.getType() == org.thryft.protocol.Type.STOP) {
         break;
-    }%(field_protocol_named_initializers)s
+    }
+    switch (ifield.getName()) {%(field_protocol_named_initializers)s
+    }
     iprot.readFieldEnd();
 }
 iprot.readStructEnd();""" % locals()
