@@ -703,24 +703,34 @@ public static %(name)s readAsStruct(final org.thryft.protocol.InputProtocol ipro
     def _java_method_read_as_struct_body(self):
         field_protocol_named_initializers = []
         for field in self.fields:
-            field_id_check = (" && (!ifield.hasId() || ifield.getId() == %d)" % field.id) if field.id is not None else ''
             field_name = field.name
-            field_protocol_initializer = indent(' ' * 4, field.java_protocol_initializer())
+            field_named_protocol_initializer = field.java_protocol_initializer()
+            if field.id is not None:
+                field_id = field.id
+                field_named_protocol_initializer = indent(' ' * 4, field_named_protocol_initializer)
+                field_named_protocol_initializer = """\
+if (!ifield.hasId() || ifield.getId() == %(field_id)d) {
+%(field_named_protocol_initializer)s
+}""" % locals()
+            field_named_protocol_initializer = indent(' ' * 4, field_named_protocol_initializer)
             field_protocol_named_initializers.append("""\
-if (ifield.getName().equals("%(field_name)s")%(field_id_check)s) {
-%(field_protocol_initializer)s
+case "%(field_name)s": {
+%(field_named_protocol_initializer)s
+    break;
 }""" % locals())
         field_protocol_named_initializers = \
-            lpad(' else ', indent(' ' * 4, ' else '.join(
+            lpad("\n", indent(' ' * 4,  "\n".join(
                 field_protocol_named_initializers
-            )).lstrip())
+            )))
         return """\
 iprot.readStructBegin();
 while (true) {
     final org.thryft.protocol.FieldBegin ifield = iprot.readFieldBegin();
     if (ifield.getType() == org.thryft.protocol.Type.STOP) {
         break;
-    }%(field_protocol_named_initializers)s
+    }
+    switch (ifield.getName()) {%(field_protocol_named_initializers)s
+    }
     iprot.readFieldEnd();
 }
 iprot.readStructEnd();""" % locals()
