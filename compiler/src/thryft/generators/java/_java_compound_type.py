@@ -655,7 +655,11 @@ public static %(name)s readAs(final org.thryft.protocol.InputProtocol iprot, fin
         return {'readAsList': """\
 public static %(name)s readAsList(final org.thryft.protocol.InputProtocol iprot) throws org.thryft.protocol.InputProtocolException {%(field_declarations)s
 %(body)s
-    return new %(name)s(%(field_names)s);
+    try {
+        return new %(name)s(%(field_names)s);
+    } catch (final IllegalArgumentException | NullPointerException e) {
+        throw new org.thryft.protocol.InputProtocolException(e);
+    }
 }""" % locals()}
 
     def _java_method_read_as_list_body(self):
@@ -689,7 +693,11 @@ iprot.readListEnd();""" % locals()
         return {'readAsStruct': """\
 public static %(name)s readAsStruct(final org.thryft.protocol.InputProtocol iprot) throws org.thryft.protocol.InputProtocolException {%(field_declarations)s
 %(body)s
-    return new %(name)s(%(field_names)s);
+    try {
+        return new %(name)s(%(field_names)s);
+    } catch (final IllegalArgumentException | NullPointerException e) {
+        throw new org.thryft.protocol.InputProtocolException(e);
+    }
 }""" % locals()}
 
     def _java_method_read_as_struct_body(self):
