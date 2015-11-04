@@ -335,138 +335,236 @@ public class ProtocolTestStruct implements org.thryft.Struct {
                 final org.thryft.protocol.FieldBegin ifield = iprot.readFieldBegin();
                 if (ifield.getType() == org.thryft.protocol.Type.STOP) {
                     break;
-                } else if (ifield.getName().equals("required_i32_field") && (!ifield.hasId() || ifield.getId() == 1)) {
-                    requiredI32Field = iprot.readI32();
-                } else if (ifield.getName().equals("required_string_field") && (!ifield.hasId() || ifield.getId() == 2)) {
-                    requiredStringField = iprot.readString();
-                } else if (ifield.getName().equals("binary_field") && (!ifield.hasId() || ifield.getId() == 3)) {
-                    binaryField = com.google.common.base.Optional.of(iprot.readBinary());
-                } else if (ifield.getName().equals("bool_field") && (!ifield.hasId() || ifield.getId() == 4)) {
-                    boolField = com.google.common.base.Optional.of(iprot.readBool());
-                } else if (ifield.getName().equals("date_time_field") && (!ifield.hasId() || ifield.getId() == 5)) {
-                    try {
-                        dateTimeField = com.google.common.base.Optional.of(iprot.readDateTime());
-                    } catch (final IllegalArgumentException e) {
+                }
+                switch (ifield.getName()) {
+                case "required_i32_field": {
+                    if (!ifield.hasId() || ifield.getId() == 1) {
+                        requiredI32Field = iprot.readI32();
                     }
-                } else if (ifield.getName().equals("decimal_field") && (!ifield.hasId() || ifield.getId() == 6)) {
-                    try {
-                        decimalField = com.google.common.base.Optional.of(iprot.readDecimal());
-                    } catch (final NumberFormatException e) {
+                    break;
+                }
+                case "required_string_field": {
+                    if (!ifield.hasId() || ifield.getId() == 2) {
+                        requiredStringField = iprot.readString();
                     }
-                } else if (ifield.getName().equals("double_field") && (!ifield.hasId() || ifield.getId() == 7)) {
-                    try {
-                        doubleField = com.google.common.base.Optional.of(iprot.readDouble());
-                    } catch (final NumberFormatException e) {
+                    break;
+                }
+                case "binary_field": {
+                    if (!ifield.hasId() || ifield.getId() == 3) {
+                        binaryField = com.google.common.base.Optional.of(iprot.readBinary());
                     }
-                } else if (ifield.getName().equals("email_address_field") && (!ifield.hasId() || ifield.getId() == 8)) {
-                    emailAddressField = com.google.common.base.Optional.of(new org.thryft.native_.EmailAddress(iprot.readString()));
-                } else if (ifield.getName().equals("enum_field") && (!ifield.hasId() || ifield.getId() == 9)) {
-                    try {
-                        enumField = com.google.common.base.Optional.of(iprot.readEnum(org.thryft.protocol.test.ProtocolTestEnum.class));
-                    } catch (final IllegalArgumentException e) {
+                    break;
+                }
+                case "bool_field": {
+                    if (!ifield.hasId() || ifield.getId() == 4) {
+                        boolField = com.google.common.base.Optional.of(iprot.readBool());
                     }
-                } else if (ifield.getName().equals("float_field") && (!ifield.hasId() || ifield.getId() == 10)) {
-                    try {
-                        floatField = com.google.common.base.Optional.of(((float)iprot.readDouble()));
-                    } catch (final NumberFormatException e) {
-                    }
-                } else if (ifield.getName().equals("i8_field") && (!ifield.hasId() || ifield.getId() == 11)) {
-                    try {
-                        i8Field = com.google.common.base.Optional.of(iprot.readByte());
-                    } catch (final NumberFormatException e) {
-                    }
-                } else if (ifield.getName().equals("i16_field") && (!ifield.hasId() || ifield.getId() == 12)) {
-                    try {
-                        i16Field = com.google.common.base.Optional.of(iprot.readI16());
-                    } catch (final NumberFormatException e) {
-                    }
-                } else if (ifield.getName().equals("i32_field") && (!ifield.hasId() || ifield.getId() == 13)) {
-                    try {
-                        i32Field = com.google.common.base.Optional.of(iprot.readI32());
-                    } catch (final NumberFormatException e) {
-                    }
-                } else if (ifield.getName().equals("i64_field") && (!ifield.hasId() || ifield.getId() == 14)) {
-                    try {
-                        i64Field = com.google.common.base.Optional.of(iprot.readI64());
-                    } catch (final NumberFormatException e) {
-                    }
-                } else if (ifield.getName().equals("string_list_field") && (!ifield.hasId() || ifield.getId() == 15)) {
-                    stringListField = com.google.common.base.Optional.of((new com.google.common.base.Function<org.thryft.protocol.InputProtocol, com.google.common.collect.ImmutableList<String>>() {
-                        @Override
-                        public com.google.common.collect.ImmutableList<String> apply(final org.thryft.protocol.InputProtocol iprot) {
-                            try {
-                                final org.thryft.protocol.ListBegin sequenceBegin = iprot.readListBegin();
-                                final com.google.common.collect.ImmutableList.Builder<String> sequence = com.google.common.collect.ImmutableList.builder();
-                                for (int elementI = 0; elementI < sequenceBegin.getSize(); elementI++) {
-                                    sequence.add(iprot.readString());
-                                }
-                                iprot.readListEnd();
-                                return sequence.build();
-                            } catch (final org.thryft.protocol.InputProtocolException e) {
-                                return com.google.common.collect.ImmutableList.of();
-                            }
+                    break;
+                }
+                case "date_time_field": {
+                    if (!ifield.hasId() || ifield.getId() == 5) {
+                        try {
+                            dateTimeField = com.google.common.base.Optional.of(iprot.readDateTime());
+                        } catch (final IllegalArgumentException e) {
                         }
-                    }).apply(iprot));
-                } else if (ifield.getName().equals("string_string_map_field") && (!ifield.hasId() || ifield.getId() == 16)) {
-                    stringStringMapField = com.google.common.base.Optional.of((new com.google.common.base.Function<org.thryft.protocol.InputProtocol, com.google.common.collect.ImmutableMap<String, String>>() {
-                        @Override
-                        public com.google.common.collect.ImmutableMap<String, String> apply(final org.thryft.protocol.InputProtocol iprot) {
-                            try {
-                                final org.thryft.protocol.MapBegin mapBegin = iprot.readMapBegin();
-                                final com.google.common.collect.ImmutableMap.Builder<String, String> map = com.google.common.collect.ImmutableMap.builder();
-                                for (int entryI = 0; entryI < mapBegin.getSize(); entryI++) {
-                                    map.put(iprot.readString(), iprot.readString());
-                                }
-                                iprot.readMapEnd();
-                                return map.build();
-                            } catch (final org.thryft.protocol.InputProtocolException e) {
-                                return com.google.common.collect.ImmutableMap.of();
-                            }
+                    }
+                    break;
+                }
+                case "decimal_field": {
+                    if (!ifield.hasId() || ifield.getId() == 6) {
+                        try {
+                            decimalField = com.google.common.base.Optional.of(iprot.readDecimal());
+                        } catch (final NumberFormatException e) {
                         }
-                    }).apply(iprot));
-                } else if (ifield.getName().equals("string_set_field") && (!ifield.hasId() || ifield.getId() == 17)) {
-                    stringSetField = com.google.common.base.Optional.of((new com.google.common.base.Function<org.thryft.protocol.InputProtocol, com.google.common.collect.ImmutableSet<String>>() {
-                        @Override
-                        public com.google.common.collect.ImmutableSet<String> apply(final org.thryft.protocol.InputProtocol iprot) {
-                            try {
-                                final org.thryft.protocol.SetBegin sequenceBegin = iprot.readSetBegin();
-                                final com.google.common.collect.ImmutableSet.Builder<String> sequence = com.google.common.collect.ImmutableSet.builder();
-                                for (int elementI = 0; elementI < sequenceBegin.getSize(); elementI++) {
-                                    sequence.add(iprot.readString());
-                                }
-                                iprot.readSetEnd();
-                                return sequence.build();
-                            } catch (final org.thryft.protocol.InputProtocolException e) {
-                                return com.google.common.collect.ImmutableSet.of();
-                            }
+                    }
+                    break;
+                }
+                case "double_field": {
+                    if (!ifield.hasId() || ifield.getId() == 7) {
+                        try {
+                            doubleField = com.google.common.base.Optional.of(iprot.readDouble());
+                        } catch (final NumberFormatException e) {
                         }
-                    }).apply(iprot));
-                } else if (ifield.getName().equals("string_field") && (!ifield.hasId() || ifield.getId() == 18)) {
-                    stringField = com.google.common.base.Optional.of(iprot.readString());
-                } else if (ifield.getName().equals("struct_field") && (!ifield.hasId() || ifield.getId() == 19)) {
-                    structField = com.google.common.base.Optional.of(org.thryft.protocol.test.NestedProtocolTestStruct.readAsStruct(iprot));
-                } else if (ifield.getName().equals("u32_field") && (!ifield.hasId() || ifield.getId() == 20)) {
-                    try {
-                        u32Field = com.google.common.base.Optional.of(iprot.readU32());
-                    } catch (final NumberFormatException e) {
                     }
-                } else if (ifield.getName().equals("u64_field") && (!ifield.hasId() || ifield.getId() == 21)) {
-                    try {
-                        u64Field = com.google.common.base.Optional.of(iprot.readU64());
-                    } catch (final NumberFormatException e) {
+                    break;
+                }
+                case "email_address_field": {
+                    if (!ifield.hasId() || ifield.getId() == 8) {
+                        emailAddressField = com.google.common.base.Optional.of(new org.thryft.native_.EmailAddress(iprot.readString()));
                     }
-                } else if (ifield.getName().equals("uri_field") && (!ifield.hasId() || ifield.getId() == 22)) {
-                    try {
-                        uriField = com.google.common.base.Optional.of(org.thryft.native_.Uri.parse(iprot.readString()));
-                    } catch (final java.lang.IllegalArgumentException e) {
+                    break;
+                }
+                case "enum_field": {
+                    if (!ifield.hasId() || ifield.getId() == 9) {
+                        try {
+                            enumField = com.google.common.base.Optional.of(iprot.readEnum(org.thryft.protocol.test.ProtocolTestEnum.class));
+                        } catch (final IllegalArgumentException e) {
+                        }
                     }
-                } else if (ifield.getName().equals("url_field") && (!ifield.hasId() || ifield.getId() == 23)) {
-                    try {
-                        urlField = com.google.common.base.Optional.of(org.thryft.native_.Url.parse(iprot.readString()));
-                    } catch (final java.lang.IllegalArgumentException e) {
+                    break;
+                }
+                case "float_field": {
+                    if (!ifield.hasId() || ifield.getId() == 10) {
+                        try {
+                            floatField = com.google.common.base.Optional.of(((float)iprot.readDouble()));
+                        } catch (final NumberFormatException e) {
+                        }
                     }
-                } else if (ifield.getName().equals("variant_field") && (!ifield.hasId() || ifield.getId() == 24)) {
-                    variantField = com.google.common.base.Optional.of(iprot.readVariant());
+                    break;
+                }
+                case "i8_field": {
+                    if (!ifield.hasId() || ifield.getId() == 11) {
+                        try {
+                            i8Field = com.google.common.base.Optional.of(iprot.readByte());
+                        } catch (final NumberFormatException e) {
+                        }
+                    }
+                    break;
+                }
+                case "i16_field": {
+                    if (!ifield.hasId() || ifield.getId() == 12) {
+                        try {
+                            i16Field = com.google.common.base.Optional.of(iprot.readI16());
+                        } catch (final NumberFormatException e) {
+                        }
+                    }
+                    break;
+                }
+                case "i32_field": {
+                    if (!ifield.hasId() || ifield.getId() == 13) {
+                        try {
+                            i32Field = com.google.common.base.Optional.of(iprot.readI32());
+                        } catch (final NumberFormatException e) {
+                        }
+                    }
+                    break;
+                }
+                case "i64_field": {
+                    if (!ifield.hasId() || ifield.getId() == 14) {
+                        try {
+                            i64Field = com.google.common.base.Optional.of(iprot.readI64());
+                        } catch (final NumberFormatException e) {
+                        }
+                    }
+                    break;
+                }
+                case "string_list_field": {
+                    if (!ifield.hasId() || ifield.getId() == 15) {
+                        stringListField = com.google.common.base.Optional.of((new com.google.common.base.Function<org.thryft.protocol.InputProtocol, com.google.common.collect.ImmutableList<String>>() {
+                            @Override
+                            public com.google.common.collect.ImmutableList<String> apply(final org.thryft.protocol.InputProtocol iprot) {
+                                try {
+                                    final org.thryft.protocol.ListBegin sequenceBegin = iprot.readListBegin();
+                                    final com.google.common.collect.ImmutableList.Builder<String> sequence = com.google.common.collect.ImmutableList.builder();
+                                    for (int elementI = 0; elementI < sequenceBegin.getSize(); elementI++) {
+                                        sequence.add(iprot.readString());
+                                    }
+                                    iprot.readListEnd();
+                                    return sequence.build();
+                                } catch (final org.thryft.protocol.InputProtocolException e) {
+                                    return com.google.common.collect.ImmutableList.of();
+                                }
+                            }
+                        }).apply(iprot));
+                    }
+                    break;
+                }
+                case "string_string_map_field": {
+                    if (!ifield.hasId() || ifield.getId() == 16) {
+                        stringStringMapField = com.google.common.base.Optional.of((new com.google.common.base.Function<org.thryft.protocol.InputProtocol, com.google.common.collect.ImmutableMap<String, String>>() {
+                            @Override
+                            public com.google.common.collect.ImmutableMap<String, String> apply(final org.thryft.protocol.InputProtocol iprot) {
+                                try {
+                                    final org.thryft.protocol.MapBegin mapBegin = iprot.readMapBegin();
+                                    final com.google.common.collect.ImmutableMap.Builder<String, String> map = com.google.common.collect.ImmutableMap.builder();
+                                    for (int entryI = 0; entryI < mapBegin.getSize(); entryI++) {
+                                        map.put(iprot.readString(), iprot.readString());
+                                    }
+                                    iprot.readMapEnd();
+                                    return map.build();
+                                } catch (final org.thryft.protocol.InputProtocolException e) {
+                                    return com.google.common.collect.ImmutableMap.of();
+                                }
+                            }
+                        }).apply(iprot));
+                    }
+                    break;
+                }
+                case "string_set_field": {
+                    if (!ifield.hasId() || ifield.getId() == 17) {
+                        stringSetField = com.google.common.base.Optional.of((new com.google.common.base.Function<org.thryft.protocol.InputProtocol, com.google.common.collect.ImmutableSet<String>>() {
+                            @Override
+                            public com.google.common.collect.ImmutableSet<String> apply(final org.thryft.protocol.InputProtocol iprot) {
+                                try {
+                                    final org.thryft.protocol.SetBegin sequenceBegin = iprot.readSetBegin();
+                                    final com.google.common.collect.ImmutableSet.Builder<String> sequence = com.google.common.collect.ImmutableSet.builder();
+                                    for (int elementI = 0; elementI < sequenceBegin.getSize(); elementI++) {
+                                        sequence.add(iprot.readString());
+                                    }
+                                    iprot.readSetEnd();
+                                    return sequence.build();
+                                } catch (final org.thryft.protocol.InputProtocolException e) {
+                                    return com.google.common.collect.ImmutableSet.of();
+                                }
+                            }
+                        }).apply(iprot));
+                    }
+                    break;
+                }
+                case "string_field": {
+                    if (!ifield.hasId() || ifield.getId() == 18) {
+                        stringField = com.google.common.base.Optional.of(iprot.readString());
+                    }
+                    break;
+                }
+                case "struct_field": {
+                    if (!ifield.hasId() || ifield.getId() == 19) {
+                        structField = com.google.common.base.Optional.of(org.thryft.protocol.test.NestedProtocolTestStruct.readAsStruct(iprot));
+                    }
+                    break;
+                }
+                case "u32_field": {
+                    if (!ifield.hasId() || ifield.getId() == 20) {
+                        try {
+                            u32Field = com.google.common.base.Optional.of(iprot.readU32());
+                        } catch (final NumberFormatException e) {
+                        }
+                    }
+                    break;
+                }
+                case "u64_field": {
+                    if (!ifield.hasId() || ifield.getId() == 21) {
+                        try {
+                            u64Field = com.google.common.base.Optional.of(iprot.readU64());
+                        } catch (final NumberFormatException e) {
+                        }
+                    }
+                    break;
+                }
+                case "uri_field": {
+                    if (!ifield.hasId() || ifield.getId() == 22) {
+                        try {
+                            uriField = com.google.common.base.Optional.of(org.thryft.native_.Uri.parse(iprot.readString()));
+                        } catch (final java.lang.IllegalArgumentException e) {
+                        }
+                    }
+                    break;
+                }
+                case "url_field": {
+                    if (!ifield.hasId() || ifield.getId() == 23) {
+                        try {
+                            urlField = com.google.common.base.Optional.of(org.thryft.native_.Url.parse(iprot.readString()));
+                        } catch (final java.lang.IllegalArgumentException e) {
+                        }
+                    }
+                    break;
+                }
+                case "variant_field": {
+                    if (!ifield.hasId() || ifield.getId() == 24) {
+                        variantField = com.google.common.base.Optional.of(iprot.readVariant());
+                    }
+                    break;
+                }
                 }
                 iprot.readFieldEnd();
             }
@@ -780,7 +878,7 @@ public class ProtocolTestStruct implements org.thryft.Struct {
         }
 
         @SuppressWarnings({"unchecked"})
-        public Builder set(final String name, @javax.annotation.Nullable final Object value) {
+        public Builder set(final String name, @javax.annotation.Nullable final java.lang.Object value) {
             com.google.common.base.Preconditions.checkNotNull(name);
 
             switch (name.toLowerCase()) {
@@ -961,30 +1059,35 @@ public class ProtocolTestStruct implements org.thryft.Struct {
 
     @SuppressWarnings("serial")
     public enum FieldMetadata implements org.thryft.CompoundType.FieldMetadata {
-        REQUIRED_I32_FIELD(new com.google.common.reflect.TypeToken<Integer>() {}, true, 1, "required_i32_field", org.thryft.protocol.Type.I32),
-        REQUIRED_STRING_FIELD(new com.google.common.reflect.TypeToken<String>() {}, true, 2, "required_string_field", org.thryft.protocol.Type.STRING),
-        BINARY_FIELD(new com.google.common.reflect.TypeToken<byte[]>() {}, false, 3, "binary_field", org.thryft.protocol.Type.STRING),
-        BOOL_FIELD(new com.google.common.reflect.TypeToken<Boolean>() {}, false, 4, "bool_field", org.thryft.protocol.Type.BOOL),
-        DATE_TIME_FIELD(new com.google.common.reflect.TypeToken<java.util.Date>() {}, false, 5, "date_time_field", org.thryft.protocol.Type.I64),
-        DECIMAL_FIELD(new com.google.common.reflect.TypeToken<java.math.BigDecimal>() {}, false, 6, "decimal_field", org.thryft.protocol.Type.STRING),
-        DOUBLE_FIELD(new com.google.common.reflect.TypeToken<Double>() {}, false, 7, "double_field", org.thryft.protocol.Type.DOUBLE),
-        EMAIL_ADDRESS_FIELD(new com.google.common.reflect.TypeToken<org.thryft.native_.EmailAddress>() {}, false, 8, "email_address_field", org.thryft.protocol.Type.STRING),
-        ENUM_FIELD(new com.google.common.reflect.TypeToken<org.thryft.protocol.test.ProtocolTestEnum>() {}, false, 9, "enum_field", org.thryft.protocol.Type.STRING),
-        FLOAT_FIELD(new com.google.common.reflect.TypeToken<Float>() {}, false, 10, "float_field", org.thryft.protocol.Type.DOUBLE),
-        I8_FIELD(new com.google.common.reflect.TypeToken<Byte>() {}, false, 11, "i8_field", org.thryft.protocol.Type.BYTE),
-        I16_FIELD(new com.google.common.reflect.TypeToken<Short>() {}, false, 12, "i16_field", org.thryft.protocol.Type.I16),
-        I32_FIELD(new com.google.common.reflect.TypeToken<Integer>() {}, false, 13, "i32_field", org.thryft.protocol.Type.I32),
-        I64_FIELD(new com.google.common.reflect.TypeToken<Long>() {}, false, 14, "i64_field", org.thryft.protocol.Type.I64),
-        STRING_LIST_FIELD(new com.google.common.reflect.TypeToken<com.google.common.collect.ImmutableList<String>>() {}, false, 15, "string_list_field", org.thryft.protocol.Type.LIST),
-        STRING_STRING_MAP_FIELD(new com.google.common.reflect.TypeToken<com.google.common.collect.ImmutableMap<String, String>>() {}, false, 16, "string_string_map_field", org.thryft.protocol.Type.MAP),
-        STRING_SET_FIELD(new com.google.common.reflect.TypeToken<com.google.common.collect.ImmutableSet<String>>() {}, false, 17, "string_set_field", org.thryft.protocol.Type.SET),
-        STRING_FIELD(new com.google.common.reflect.TypeToken<String>() {}, false, 18, "string_field", org.thryft.protocol.Type.STRING),
-        STRUCT_FIELD(new com.google.common.reflect.TypeToken<org.thryft.protocol.test.NestedProtocolTestStruct>() {}, false, 19, "struct_field", org.thryft.protocol.Type.STRUCT),
-        U32_FIELD(new com.google.common.reflect.TypeToken<com.google.common.primitives.UnsignedInteger>() {}, false, 20, "u32_field", org.thryft.protocol.Type.I32),
-        U64_FIELD(new com.google.common.reflect.TypeToken<com.google.common.primitives.UnsignedLong>() {}, false, 21, "u64_field", org.thryft.protocol.Type.I64),
-        URI_FIELD(new com.google.common.reflect.TypeToken<org.thryft.native_.Uri>() {}, false, 22, "uri_field", org.thryft.protocol.Type.STRING),
-        URL_FIELD(new com.google.common.reflect.TypeToken<org.thryft.native_.Url>() {}, false, 23, "url_field", org.thryft.protocol.Type.STRING),
-        VARIANT_FIELD(new com.google.common.reflect.TypeToken<java.lang.Object>() {}, false, 24, "variant_field", org.thryft.protocol.Type.STRUCT);
+        REQUIRED_I32_FIELD("requiredI32Field", new com.google.common.reflect.TypeToken<Integer>() {}, true, 1, "required_i32_field", org.thryft.protocol.Type.I32),
+        REQUIRED_STRING_FIELD("requiredStringField", new com.google.common.reflect.TypeToken<String>() {}, true, 2, "required_string_field", org.thryft.protocol.Type.STRING),
+        BINARY_FIELD("binaryField", new com.google.common.reflect.TypeToken<byte[]>() {}, false, 3, "binary_field", org.thryft.protocol.Type.STRING),
+        BOOL_FIELD("boolField", new com.google.common.reflect.TypeToken<Boolean>() {}, false, 4, "bool_field", org.thryft.protocol.Type.BOOL),
+        DATE_TIME_FIELD("dateTimeField", new com.google.common.reflect.TypeToken<java.util.Date>() {}, false, 5, "date_time_field", org.thryft.protocol.Type.I64),
+        DECIMAL_FIELD("decimalField", new com.google.common.reflect.TypeToken<java.math.BigDecimal>() {}, false, 6, "decimal_field", org.thryft.protocol.Type.STRING),
+        DOUBLE_FIELD("doubleField", new com.google.common.reflect.TypeToken<Double>() {}, false, 7, "double_field", org.thryft.protocol.Type.DOUBLE),
+        EMAIL_ADDRESS_FIELD("emailAddressField", new com.google.common.reflect.TypeToken<org.thryft.native_.EmailAddress>() {}, false, 8, "email_address_field", org.thryft.protocol.Type.STRING),
+        ENUM_FIELD("enumField", new com.google.common.reflect.TypeToken<org.thryft.protocol.test.ProtocolTestEnum>() {}, false, 9, "enum_field", org.thryft.protocol.Type.STRING),
+        FLOAT_FIELD("floatField", new com.google.common.reflect.TypeToken<Float>() {}, false, 10, "float_field", org.thryft.protocol.Type.DOUBLE),
+        I8_FIELD("i8Field", new com.google.common.reflect.TypeToken<Byte>() {}, false, 11, "i8_field", org.thryft.protocol.Type.BYTE),
+        I16_FIELD("i16Field", new com.google.common.reflect.TypeToken<Short>() {}, false, 12, "i16_field", org.thryft.protocol.Type.I16),
+        I32_FIELD("i32Field", new com.google.common.reflect.TypeToken<Integer>() {}, false, 13, "i32_field", org.thryft.protocol.Type.I32),
+        I64_FIELD("i64Field", new com.google.common.reflect.TypeToken<Long>() {}, false, 14, "i64_field", org.thryft.protocol.Type.I64),
+        STRING_LIST_FIELD("stringListField", new com.google.common.reflect.TypeToken<com.google.common.collect.ImmutableList<String>>() {}, false, 15, "string_list_field", org.thryft.protocol.Type.LIST),
+        STRING_STRING_MAP_FIELD("stringStringMapField", new com.google.common.reflect.TypeToken<com.google.common.collect.ImmutableMap<String, String>>() {}, false, 16, "string_string_map_field", org.thryft.protocol.Type.MAP),
+        STRING_SET_FIELD("stringSetField", new com.google.common.reflect.TypeToken<com.google.common.collect.ImmutableSet<String>>() {}, false, 17, "string_set_field", org.thryft.protocol.Type.SET),
+        STRING_FIELD("stringField", new com.google.common.reflect.TypeToken<String>() {}, false, 18, "string_field", org.thryft.protocol.Type.STRING),
+        STRUCT_FIELD("structField", new com.google.common.reflect.TypeToken<org.thryft.protocol.test.NestedProtocolTestStruct>() {}, false, 19, "struct_field", org.thryft.protocol.Type.STRUCT),
+        U32_FIELD("u32Field", new com.google.common.reflect.TypeToken<com.google.common.primitives.UnsignedInteger>() {}, false, 20, "u32_field", org.thryft.protocol.Type.I32),
+        U64_FIELD("u64Field", new com.google.common.reflect.TypeToken<com.google.common.primitives.UnsignedLong>() {}, false, 21, "u64_field", org.thryft.protocol.Type.I64),
+        URI_FIELD("uriField", new com.google.common.reflect.TypeToken<org.thryft.native_.Uri>() {}, false, 22, "uri_field", org.thryft.protocol.Type.STRING),
+        URL_FIELD("urlField", new com.google.common.reflect.TypeToken<org.thryft.native_.Url>() {}, false, 23, "url_field", org.thryft.protocol.Type.STRING),
+        VARIANT_FIELD("variantField", new com.google.common.reflect.TypeToken<java.lang.Object>() {}, false, 24, "variant_field", org.thryft.protocol.Type.STRUCT);
+
+        @Override
+        public String getJavaName() {
+            return javaName;
+        }
 
         @Override
         public com.google.common.reflect.TypeToken<?> getJavaType() {
@@ -1083,7 +1186,8 @@ public class ProtocolTestStruct implements org.thryft.Struct {
             }
         }
 
-        private FieldMetadata(final com.google.common.reflect.TypeToken<?> javaType, final boolean required, final int thriftId, final String thriftName, final org.thryft.protocol.Type thriftProtocolType) {
+        private FieldMetadata(final String javaName, final com.google.common.reflect.TypeToken<?> javaType, final boolean required, final int thriftId, final String thriftName, final org.thryft.protocol.Type thriftProtocolType) {
+            this.javaName = javaName;
             this.javaType = javaType;
             this.required = required;
             this.thriftId = thriftId;
@@ -1096,6 +1200,7 @@ public class ProtocolTestStruct implements org.thryft.Struct {
             this.thriftProtocolType = thriftProtocolType;
         }
 
+        private final String javaName;
         private final com.google.common.reflect.TypeToken<?> javaType;
         private final boolean required;
         private final int thriftId;
@@ -1244,7 +1349,7 @@ public class ProtocolTestStruct implements org.thryft.Struct {
     }
 
     @Override
-    public boolean equals(final Object otherObject) {
+    public boolean equals(final java.lang.Object otherObject) {
         if (otherObject == this) {
             return true;
         } else if (!(otherObject instanceof ProtocolTestStruct)) {
@@ -1280,57 +1385,35 @@ public class ProtocolTestStruct implements org.thryft.Struct {
     }
 
     @Override
-    public Object get(final String fieldName) {
-        if (fieldName.equals("required_i32_field")) {
-            return getRequiredI32Field();
-        } else if (fieldName.equals("required_string_field")) {
-            return getRequiredStringField();
-        } else if (fieldName.equals("binary_field")) {
-            return getBinaryField();
-        } else if (fieldName.equals("bool_field")) {
-            return getBoolField();
-        } else if (fieldName.equals("date_time_field")) {
-            return getDateTimeField();
-        } else if (fieldName.equals("decimal_field")) {
-            return getDecimalField();
-        } else if (fieldName.equals("double_field")) {
-            return getDoubleField();
-        } else if (fieldName.equals("email_address_field")) {
-            return getEmailAddressField();
-        } else if (fieldName.equals("enum_field")) {
-            return getEnumField();
-        } else if (fieldName.equals("float_field")) {
-            return getFloatField();
-        } else if (fieldName.equals("i8_field")) {
-            return getI8Field();
-        } else if (fieldName.equals("i16_field")) {
-            return getI16Field();
-        } else if (fieldName.equals("i32_field")) {
-            return getI32Field();
-        } else if (fieldName.equals("i64_field")) {
-            return getI64Field();
-        } else if (fieldName.equals("string_list_field")) {
-            return getStringListField();
-        } else if (fieldName.equals("string_string_map_field")) {
-            return getStringStringMapField();
-        } else if (fieldName.equals("string_set_field")) {
-            return getStringSetField();
-        } else if (fieldName.equals("string_field")) {
-            return getStringField();
-        } else if (fieldName.equals("struct_field")) {
-            return getStructField();
-        } else if (fieldName.equals("u32_field")) {
-            return getU32Field();
-        } else if (fieldName.equals("u64_field")) {
-            return getU64Field();
-        } else if (fieldName.equals("uri_field")) {
-            return getUriField();
-        } else if (fieldName.equals("url_field")) {
-            return getUrlField();
-        } else if (fieldName.equals("variant_field")) {
-            return getVariantField();
+    public java.lang.Object get(final String fieldName) {
+        switch (fieldName) {
+        case "required_i32_field": return getRequiredI32Field();
+        case "required_string_field": return getRequiredStringField();
+        case "binary_field": return getBinaryField();
+        case "bool_field": return getBoolField();
+        case "date_time_field": return getDateTimeField();
+        case "decimal_field": return getDecimalField();
+        case "double_field": return getDoubleField();
+        case "email_address_field": return getEmailAddressField();
+        case "enum_field": return getEnumField();
+        case "float_field": return getFloatField();
+        case "i8_field": return getI8Field();
+        case "i16_field": return getI16Field();
+        case "i32_field": return getI32Field();
+        case "i64_field": return getI64Field();
+        case "string_list_field": return getStringListField();
+        case "string_string_map_field": return getStringStringMapField();
+        case "string_set_field": return getStringSetField();
+        case "string_field": return getStringField();
+        case "struct_field": return getStructField();
+        case "u32_field": return getU32Field();
+        case "u64_field": return getU64Field();
+        case "uri_field": return getUriField();
+        case "url_field": return getUrlField();
+        case "variant_field": return getVariantField();
+        default:
+            throw new IllegalArgumentException(fieldName);
         }
-        throw new IllegalArgumentException(fieldName);
     }
 
     public final com.google.common.base.Optional<byte[]> getBinaryField() {
@@ -1694,7 +1777,11 @@ public class ProtocolTestStruct implements org.thryft.Struct {
             variantField = com.google.common.base.Optional.of(iprot.readVariant());
         }
         iprot.readListEnd();
-        return new ProtocolTestStruct(requiredI32Field, requiredStringField, binaryField, boolField, dateTimeField, decimalField, doubleField, emailAddressField, enumField, floatField, i8Field, i16Field, i32Field, i64Field, stringListField, stringStringMapField, stringSetField, stringField, structField, u32Field, u64Field, uriField, urlField, variantField);
+        try {
+            return new ProtocolTestStruct(requiredI32Field, requiredStringField, binaryField, boolField, dateTimeField, decimalField, doubleField, emailAddressField, enumField, floatField, i8Field, i16Field, i32Field, i64Field, stringListField, stringStringMapField, stringSetField, stringField, structField, u32Field, u64Field, uriField, urlField, variantField);
+        } catch (final IllegalArgumentException | NullPointerException e) {
+            throw new org.thryft.protocol.InputProtocolException(e);
+        }
     }
 
     public static ProtocolTestStruct readAsStruct(final org.thryft.protocol.InputProtocol iprot) throws org.thryft.protocol.InputProtocolException {
@@ -1728,143 +1815,245 @@ public class ProtocolTestStruct implements org.thryft.Struct {
             final org.thryft.protocol.FieldBegin ifield = iprot.readFieldBegin();
             if (ifield.getType() == org.thryft.protocol.Type.STOP) {
                 break;
-            } else if (ifield.getName().equals("required_i32_field") && (!ifield.hasId() || ifield.getId() == 1)) {
-                requiredI32Field = iprot.readI32();
-            } else if (ifield.getName().equals("required_string_field") && (!ifield.hasId() || ifield.getId() == 2)) {
-                requiredStringField = iprot.readString();
-            } else if (ifield.getName().equals("binary_field") && (!ifield.hasId() || ifield.getId() == 3)) {
-                binaryField = com.google.common.base.Optional.of(iprot.readBinary());
-            } else if (ifield.getName().equals("bool_field") && (!ifield.hasId() || ifield.getId() == 4)) {
-                boolField = com.google.common.base.Optional.of(iprot.readBool());
-            } else if (ifield.getName().equals("date_time_field") && (!ifield.hasId() || ifield.getId() == 5)) {
-                try {
-                    dateTimeField = com.google.common.base.Optional.of(iprot.readDateTime());
-                } catch (final IllegalArgumentException e) {
+            }
+            switch (ifield.getName()) {
+            case "required_i32_field": {
+                if (!ifield.hasId() || ifield.getId() == 1) {
+                    requiredI32Field = iprot.readI32();
                 }
-            } else if (ifield.getName().equals("decimal_field") && (!ifield.hasId() || ifield.getId() == 6)) {
-                try {
-                    decimalField = com.google.common.base.Optional.of(iprot.readDecimal());
-                } catch (final NumberFormatException e) {
+                break;
+            }
+            case "required_string_field": {
+                if (!ifield.hasId() || ifield.getId() == 2) {
+                    requiredStringField = iprot.readString();
                 }
-            } else if (ifield.getName().equals("double_field") && (!ifield.hasId() || ifield.getId() == 7)) {
-                try {
-                    doubleField = com.google.common.base.Optional.of(iprot.readDouble());
-                } catch (final NumberFormatException e) {
+                break;
+            }
+            case "binary_field": {
+                if (!ifield.hasId() || ifield.getId() == 3) {
+                    binaryField = com.google.common.base.Optional.of(iprot.readBinary());
                 }
-            } else if (ifield.getName().equals("email_address_field") && (!ifield.hasId() || ifield.getId() == 8)) {
-                emailAddressField = com.google.common.base.Optional.of(new org.thryft.native_.EmailAddress(iprot.readString()));
-            } else if (ifield.getName().equals("enum_field") && (!ifield.hasId() || ifield.getId() == 9)) {
-                try {
-                    enumField = com.google.common.base.Optional.of(iprot.readEnum(org.thryft.protocol.test.ProtocolTestEnum.class));
-                } catch (final IllegalArgumentException e) {
+                break;
+            }
+            case "bool_field": {
+                if (!ifield.hasId() || ifield.getId() == 4) {
+                    boolField = com.google.common.base.Optional.of(iprot.readBool());
                 }
-            } else if (ifield.getName().equals("float_field") && (!ifield.hasId() || ifield.getId() == 10)) {
-                try {
-                    floatField = com.google.common.base.Optional.of(((float)iprot.readDouble()));
-                } catch (final NumberFormatException e) {
-                }
-            } else if (ifield.getName().equals("i8_field") && (!ifield.hasId() || ifield.getId() == 11)) {
-                try {
-                    i8Field = com.google.common.base.Optional.of(iprot.readByte());
-                } catch (final NumberFormatException e) {
-                }
-            } else if (ifield.getName().equals("i16_field") && (!ifield.hasId() || ifield.getId() == 12)) {
-                try {
-                    i16Field = com.google.common.base.Optional.of(iprot.readI16());
-                } catch (final NumberFormatException e) {
-                }
-            } else if (ifield.getName().equals("i32_field") && (!ifield.hasId() || ifield.getId() == 13)) {
-                try {
-                    i32Field = com.google.common.base.Optional.of(iprot.readI32());
-                } catch (final NumberFormatException e) {
-                }
-            } else if (ifield.getName().equals("i64_field") && (!ifield.hasId() || ifield.getId() == 14)) {
-                try {
-                    i64Field = com.google.common.base.Optional.of(iprot.readI64());
-                } catch (final NumberFormatException e) {
-                }
-            } else if (ifield.getName().equals("string_list_field") && (!ifield.hasId() || ifield.getId() == 15)) {
-                stringListField = com.google.common.base.Optional.of((new com.google.common.base.Function<org.thryft.protocol.InputProtocol, com.google.common.collect.ImmutableList<String>>() {
-                    @Override
-                    public com.google.common.collect.ImmutableList<String> apply(final org.thryft.protocol.InputProtocol iprot) {
-                        try {
-                            final org.thryft.protocol.ListBegin sequenceBegin = iprot.readListBegin();
-                            final com.google.common.collect.ImmutableList.Builder<String> sequence = com.google.common.collect.ImmutableList.builder();
-                            for (int elementI = 0; elementI < sequenceBegin.getSize(); elementI++) {
-                                sequence.add(iprot.readString());
-                            }
-                            iprot.readListEnd();
-                            return sequence.build();
-                        } catch (final org.thryft.protocol.InputProtocolException e) {
-                            return com.google.common.collect.ImmutableList.of();
-                        }
+                break;
+            }
+            case "date_time_field": {
+                if (!ifield.hasId() || ifield.getId() == 5) {
+                    try {
+                        dateTimeField = com.google.common.base.Optional.of(iprot.readDateTime());
+                    } catch (final IllegalArgumentException e) {
                     }
-                }).apply(iprot));
-            } else if (ifield.getName().equals("string_string_map_field") && (!ifield.hasId() || ifield.getId() == 16)) {
-                stringStringMapField = com.google.common.base.Optional.of((new com.google.common.base.Function<org.thryft.protocol.InputProtocol, com.google.common.collect.ImmutableMap<String, String>>() {
-                    @Override
-                    public com.google.common.collect.ImmutableMap<String, String> apply(final org.thryft.protocol.InputProtocol iprot) {
-                        try {
-                            final org.thryft.protocol.MapBegin mapBegin = iprot.readMapBegin();
-                            final com.google.common.collect.ImmutableMap.Builder<String, String> map = com.google.common.collect.ImmutableMap.builder();
-                            for (int entryI = 0; entryI < mapBegin.getSize(); entryI++) {
-                                map.put(iprot.readString(), iprot.readString());
-                            }
-                            iprot.readMapEnd();
-                            return map.build();
-                        } catch (final org.thryft.protocol.InputProtocolException e) {
-                            return com.google.common.collect.ImmutableMap.of();
-                        }
+                }
+                break;
+            }
+            case "decimal_field": {
+                if (!ifield.hasId() || ifield.getId() == 6) {
+                    try {
+                        decimalField = com.google.common.base.Optional.of(iprot.readDecimal());
+                    } catch (final NumberFormatException e) {
                     }
-                }).apply(iprot));
-            } else if (ifield.getName().equals("string_set_field") && (!ifield.hasId() || ifield.getId() == 17)) {
-                stringSetField = com.google.common.base.Optional.of((new com.google.common.base.Function<org.thryft.protocol.InputProtocol, com.google.common.collect.ImmutableSet<String>>() {
-                    @Override
-                    public com.google.common.collect.ImmutableSet<String> apply(final org.thryft.protocol.InputProtocol iprot) {
-                        try {
-                            final org.thryft.protocol.SetBegin sequenceBegin = iprot.readSetBegin();
-                            final com.google.common.collect.ImmutableSet.Builder<String> sequence = com.google.common.collect.ImmutableSet.builder();
-                            for (int elementI = 0; elementI < sequenceBegin.getSize(); elementI++) {
-                                sequence.add(iprot.readString());
-                            }
-                            iprot.readSetEnd();
-                            return sequence.build();
-                        } catch (final org.thryft.protocol.InputProtocolException e) {
-                            return com.google.common.collect.ImmutableSet.of();
-                        }
+                }
+                break;
+            }
+            case "double_field": {
+                if (!ifield.hasId() || ifield.getId() == 7) {
+                    try {
+                        doubleField = com.google.common.base.Optional.of(iprot.readDouble());
+                    } catch (final NumberFormatException e) {
                     }
-                }).apply(iprot));
-            } else if (ifield.getName().equals("string_field") && (!ifield.hasId() || ifield.getId() == 18)) {
-                stringField = com.google.common.base.Optional.of(iprot.readString());
-            } else if (ifield.getName().equals("struct_field") && (!ifield.hasId() || ifield.getId() == 19)) {
-                structField = com.google.common.base.Optional.of(org.thryft.protocol.test.NestedProtocolTestStruct.readAsStruct(iprot));
-            } else if (ifield.getName().equals("u32_field") && (!ifield.hasId() || ifield.getId() == 20)) {
-                try {
-                    u32Field = com.google.common.base.Optional.of(iprot.readU32());
-                } catch (final NumberFormatException e) {
                 }
-            } else if (ifield.getName().equals("u64_field") && (!ifield.hasId() || ifield.getId() == 21)) {
-                try {
-                    u64Field = com.google.common.base.Optional.of(iprot.readU64());
-                } catch (final NumberFormatException e) {
+                break;
+            }
+            case "email_address_field": {
+                if (!ifield.hasId() || ifield.getId() == 8) {
+                    emailAddressField = com.google.common.base.Optional.of(new org.thryft.native_.EmailAddress(iprot.readString()));
                 }
-            } else if (ifield.getName().equals("uri_field") && (!ifield.hasId() || ifield.getId() == 22)) {
-                try {
-                    uriField = com.google.common.base.Optional.of(org.thryft.native_.Uri.parse(iprot.readString()));
-                } catch (final java.lang.IllegalArgumentException e) {
+                break;
+            }
+            case "enum_field": {
+                if (!ifield.hasId() || ifield.getId() == 9) {
+                    try {
+                        enumField = com.google.common.base.Optional.of(iprot.readEnum(org.thryft.protocol.test.ProtocolTestEnum.class));
+                    } catch (final IllegalArgumentException e) {
+                    }
                 }
-            } else if (ifield.getName().equals("url_field") && (!ifield.hasId() || ifield.getId() == 23)) {
-                try {
-                    urlField = com.google.common.base.Optional.of(org.thryft.native_.Url.parse(iprot.readString()));
-                } catch (final java.lang.IllegalArgumentException e) {
+                break;
+            }
+            case "float_field": {
+                if (!ifield.hasId() || ifield.getId() == 10) {
+                    try {
+                        floatField = com.google.common.base.Optional.of(((float)iprot.readDouble()));
+                    } catch (final NumberFormatException e) {
+                    }
                 }
-            } else if (ifield.getName().equals("variant_field") && (!ifield.hasId() || ifield.getId() == 24)) {
-                variantField = com.google.common.base.Optional.of(iprot.readVariant());
+                break;
+            }
+            case "i8_field": {
+                if (!ifield.hasId() || ifield.getId() == 11) {
+                    try {
+                        i8Field = com.google.common.base.Optional.of(iprot.readByte());
+                    } catch (final NumberFormatException e) {
+                    }
+                }
+                break;
+            }
+            case "i16_field": {
+                if (!ifield.hasId() || ifield.getId() == 12) {
+                    try {
+                        i16Field = com.google.common.base.Optional.of(iprot.readI16());
+                    } catch (final NumberFormatException e) {
+                    }
+                }
+                break;
+            }
+            case "i32_field": {
+                if (!ifield.hasId() || ifield.getId() == 13) {
+                    try {
+                        i32Field = com.google.common.base.Optional.of(iprot.readI32());
+                    } catch (final NumberFormatException e) {
+                    }
+                }
+                break;
+            }
+            case "i64_field": {
+                if (!ifield.hasId() || ifield.getId() == 14) {
+                    try {
+                        i64Field = com.google.common.base.Optional.of(iprot.readI64());
+                    } catch (final NumberFormatException e) {
+                    }
+                }
+                break;
+            }
+            case "string_list_field": {
+                if (!ifield.hasId() || ifield.getId() == 15) {
+                    stringListField = com.google.common.base.Optional.of((new com.google.common.base.Function<org.thryft.protocol.InputProtocol, com.google.common.collect.ImmutableList<String>>() {
+                        @Override
+                        public com.google.common.collect.ImmutableList<String> apply(final org.thryft.protocol.InputProtocol iprot) {
+                            try {
+                                final org.thryft.protocol.ListBegin sequenceBegin = iprot.readListBegin();
+                                final com.google.common.collect.ImmutableList.Builder<String> sequence = com.google.common.collect.ImmutableList.builder();
+                                for (int elementI = 0; elementI < sequenceBegin.getSize(); elementI++) {
+                                    sequence.add(iprot.readString());
+                                }
+                                iprot.readListEnd();
+                                return sequence.build();
+                            } catch (final org.thryft.protocol.InputProtocolException e) {
+                                return com.google.common.collect.ImmutableList.of();
+                            }
+                        }
+                    }).apply(iprot));
+                }
+                break;
+            }
+            case "string_string_map_field": {
+                if (!ifield.hasId() || ifield.getId() == 16) {
+                    stringStringMapField = com.google.common.base.Optional.of((new com.google.common.base.Function<org.thryft.protocol.InputProtocol, com.google.common.collect.ImmutableMap<String, String>>() {
+                        @Override
+                        public com.google.common.collect.ImmutableMap<String, String> apply(final org.thryft.protocol.InputProtocol iprot) {
+                            try {
+                                final org.thryft.protocol.MapBegin mapBegin = iprot.readMapBegin();
+                                final com.google.common.collect.ImmutableMap.Builder<String, String> map = com.google.common.collect.ImmutableMap.builder();
+                                for (int entryI = 0; entryI < mapBegin.getSize(); entryI++) {
+                                    map.put(iprot.readString(), iprot.readString());
+                                }
+                                iprot.readMapEnd();
+                                return map.build();
+                            } catch (final org.thryft.protocol.InputProtocolException e) {
+                                return com.google.common.collect.ImmutableMap.of();
+                            }
+                        }
+                    }).apply(iprot));
+                }
+                break;
+            }
+            case "string_set_field": {
+                if (!ifield.hasId() || ifield.getId() == 17) {
+                    stringSetField = com.google.common.base.Optional.of((new com.google.common.base.Function<org.thryft.protocol.InputProtocol, com.google.common.collect.ImmutableSet<String>>() {
+                        @Override
+                        public com.google.common.collect.ImmutableSet<String> apply(final org.thryft.protocol.InputProtocol iprot) {
+                            try {
+                                final org.thryft.protocol.SetBegin sequenceBegin = iprot.readSetBegin();
+                                final com.google.common.collect.ImmutableSet.Builder<String> sequence = com.google.common.collect.ImmutableSet.builder();
+                                for (int elementI = 0; elementI < sequenceBegin.getSize(); elementI++) {
+                                    sequence.add(iprot.readString());
+                                }
+                                iprot.readSetEnd();
+                                return sequence.build();
+                            } catch (final org.thryft.protocol.InputProtocolException e) {
+                                return com.google.common.collect.ImmutableSet.of();
+                            }
+                        }
+                    }).apply(iprot));
+                }
+                break;
+            }
+            case "string_field": {
+                if (!ifield.hasId() || ifield.getId() == 18) {
+                    stringField = com.google.common.base.Optional.of(iprot.readString());
+                }
+                break;
+            }
+            case "struct_field": {
+                if (!ifield.hasId() || ifield.getId() == 19) {
+                    structField = com.google.common.base.Optional.of(org.thryft.protocol.test.NestedProtocolTestStruct.readAsStruct(iprot));
+                }
+                break;
+            }
+            case "u32_field": {
+                if (!ifield.hasId() || ifield.getId() == 20) {
+                    try {
+                        u32Field = com.google.common.base.Optional.of(iprot.readU32());
+                    } catch (final NumberFormatException e) {
+                    }
+                }
+                break;
+            }
+            case "u64_field": {
+                if (!ifield.hasId() || ifield.getId() == 21) {
+                    try {
+                        u64Field = com.google.common.base.Optional.of(iprot.readU64());
+                    } catch (final NumberFormatException e) {
+                    }
+                }
+                break;
+            }
+            case "uri_field": {
+                if (!ifield.hasId() || ifield.getId() == 22) {
+                    try {
+                        uriField = com.google.common.base.Optional.of(org.thryft.native_.Uri.parse(iprot.readString()));
+                    } catch (final java.lang.IllegalArgumentException e) {
+                    }
+                }
+                break;
+            }
+            case "url_field": {
+                if (!ifield.hasId() || ifield.getId() == 23) {
+                    try {
+                        urlField = com.google.common.base.Optional.of(org.thryft.native_.Url.parse(iprot.readString()));
+                    } catch (final java.lang.IllegalArgumentException e) {
+                    }
+                }
+                break;
+            }
+            case "variant_field": {
+                if (!ifield.hasId() || ifield.getId() == 24) {
+                    variantField = com.google.common.base.Optional.of(iprot.readVariant());
+                }
+                break;
+            }
             }
             iprot.readFieldEnd();
         }
         iprot.readStructEnd();
-        return new ProtocolTestStruct(requiredI32Field, requiredStringField, binaryField, boolField, dateTimeField, decimalField, doubleField, emailAddressField, enumField, floatField, i8Field, i16Field, i32Field, i64Field, stringListField, stringStringMapField, stringSetField, stringField, structField, u32Field, u64Field, uriField, urlField, variantField);
+        try {
+            return new ProtocolTestStruct(requiredI32Field, requiredStringField, binaryField, boolField, dateTimeField, decimalField, doubleField, emailAddressField, enumField, floatField, i8Field, i16Field, i32Field, i64Field, stringListField, stringStringMapField, stringSetField, stringField, structField, u32Field, u64Field, uriField, urlField, variantField);
+        } catch (final IllegalArgumentException | NullPointerException e) {
+            throw new org.thryft.protocol.InputProtocolException(e);
+        }
     }
 
     public ProtocolTestStruct replaceBinaryField(final com.google.common.base.Optional<byte[]> binaryField) {

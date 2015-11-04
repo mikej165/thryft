@@ -169,7 +169,7 @@ public Builder setIfPresent(final %(name)s other) {
                                                                      for suppress_warning in suppress_warnings), "})\n")
             cases = lpad("\n", "\n".join(indent(' ' * 4, cases)))
             return {'set_name_value': """\
-%(suppress_warnings)spublic Builder set(final String name, @javax.annotation.Nullable final Object value) {
+%(suppress_warnings)spublic Builder set(final String name, @javax.annotation.Nullable final java.lang.Object value) {
     com.google.common.base.Preconditions.checkNotNull(name);
 
     switch (name.toLowerCase()) {%(cases)s
@@ -425,7 +425,7 @@ public %(name)s(%(parameters)s) {
             field_required = 'true' if field.required else 'false'
             field_thrift_name = field.name
             enumerator_name = field.name.upper()
-            enumerators.append("%(enumerator_name)s(new com.google.common.reflect.TypeToken<%(field_java_type)s>() {}, %(field_required)s, %(field_id)d, \"%(field_thrift_name)s\", org.thryft.protocol.Type.%(field_type)s)" % locals())
+            enumerators.append("%(enumerator_name)s(\"%(field_java_name)s\", new com.google.common.reflect.TypeToken<%(field_java_type)s>() {}, %(field_required)s, %(field_id)d, \"%(field_thrift_name)s\", org.thryft.protocol.Type.%(field_type)s)" % locals())
             java_name_cases.append("""case "%(field_java_name)s": return %(enumerator_name)s;""" % locals())
             thrift_name_cases.append("""case "%(field_thrift_name)s": return %(enumerator_name)s;""" % locals())
 
@@ -435,6 +435,11 @@ public %(name)s(%(parameters)s) {
         thrift_name_cases = lpad("\n", indent(' ' * 8, "\n".join(thrift_name_cases)))
         return """\
 %(class_suppress_warnings)spublic enum FieldMetadata implements org.thryft.CompoundType.FieldMetadata {%(enumerators)s
+    @Override
+    public String getJavaName() {
+        return javaName;
+    }
+
     @Override
     public com.google.common.reflect.TypeToken<?> getJavaType() {
         return javaType;
@@ -484,7 +489,8 @@ public %(name)s(%(parameters)s) {
         }
     }
 
-    private FieldMetadata(final com.google.common.reflect.TypeToken<?> javaType, final boolean required, final int thriftId, final String thriftName, final org.thryft.protocol.Type thriftProtocolType) {
+    private FieldMetadata(final String javaName, final com.google.common.reflect.TypeToken<?> javaType, final boolean required, final int thriftId, final String thriftName, final org.thryft.protocol.Type thriftProtocolType) {
+        this.javaName = javaName;
         this.javaType = javaType;
         this.required = required;
         this.thriftId = thriftId;
@@ -497,6 +503,7 @@ public %(name)s(%(parameters)s) {
         this.thriftProtocolType = thriftProtocolType;
     }
 
+    private final String javaName;
     private final com.google.common.reflect.TypeToken<?> javaType;
     private final boolean required;
     private final int thriftId;
@@ -591,7 +598,7 @@ if (!(otherObject instanceof %(name)s)) {
 
         return {'equals': """\
 @Override
-public boolean equals(final Object otherObject) {
+public boolean equals(final java.lang.Object otherObject) {
 %(struct_equal_tests)s
 
     %(field_equal_tests)s;
@@ -606,7 +613,7 @@ public boolean equals(final Object otherObject) {
         field_cases = lpad("\n", indent(' ' * 4, "\n".join(field_cases)))
         return {'get': """\
 @Override
-public Object get(final String fieldName) {
+public java.lang.Object get(final String fieldName) {
     switch (fieldName) {%(field_cases)s
     default:
         throw new IllegalArgumentException(fieldName);
