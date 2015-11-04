@@ -43,7 +43,6 @@ except ImportError:
 from thryft.compiler import Compiler
 from thryft.generators.cpp.cpp_generator import CppGenerator
 from thryft.generators.java.java_generator import JavaGenerator
-from thryft.generators.js.js_generator import JsGenerator
 from thryft.generators.py.py_generator import PyGenerator
 import thryft.main
 from yutil import camelize
@@ -51,12 +50,9 @@ from yutil import camelize
 
 class Main(thryft.main.Main):
     def _compile(self):
-        gen = self._gen
-
         generators = {
             'cpp': (CppGenerator(),),
             'java': (JavaGenerator(),),
-            'js': (JsGenerator(),),
             'py': (PyGenerator(),),
         }
 
@@ -74,7 +70,6 @@ class Main(thryft.main.Main):
                       'java': (
                           os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'java', 'src', 'test', 'java'),
                        ),
-                      'js': (os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'js', 'test'),),
                       'py': (os.path.join(THRYFT_ROOT_DIR_PATH, 'lib', 'py', 'test'),),
                   },
              ),
@@ -89,26 +84,24 @@ class Main(thryft.main.Main):
                   },
              ),
         ):
-            gen = self._gen
             for thrift_file_path in self._get_thrift_file_paths(in_dir_path):
                 if os.path.splitext(os.path.split(thrift_file_path)[1])[0] in ('float', 'i8', 'u32', 'u64', 'variant'):
                     continue
 
-                compile_task_kwds = {
+                compile_kwds = {
                     'document_root_dir_path': in_dir_path,
                     'thrift_file_path': thrift_file_path
                 }
 
-                yield self._CompileTask(generator=None, out=None, **compile_task_kwds)
+                self._compile_thrift_file(generator=None, out=None, **compile_kwds)
 
-                for gen_name in generators.keys() if len(gen) == 0 else gen.keys():
-                    for generator in generators[gen_name]:
-                        for out_dir_path in out_dir_paths.get(gen_name, []):
-                            self._compile_thrift_file(
-                                generator=generator,
-                                out=out_dir_path,
-                                **compile_task_kwds
-                            )
+                for gen_name, generator in generators.iteritems():
+                    for out_dir_path in out_dir_paths.get(gen_name, []):
+                        self._compile_thrift_file(
+                            generator=generator[0],
+                            out=out_dir_path,
+                            **compile_kwds
+                        )
 
 
 assert __name__ == '__main__'
