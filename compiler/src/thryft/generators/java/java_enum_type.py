@@ -32,7 +32,7 @@
 
 from thryft.generator.enum_type import EnumType
 from thryft.generators.java._java_type import _JavaType
-from yutil import indent
+from yutil import indent, lpad
 
 
 class JavaEnumType(EnumType, _JavaType):
@@ -41,6 +41,13 @@ class JavaEnumType(EnumType, _JavaType):
 
     def java_hash_code(self, value, **kwds):
         return "%(value)s.ordinal()" % locals()
+
+    def _java_implements(self):
+        implements = []
+        for annotation in self.annotations:
+            if annotation.name == 'java_implements':
+                implements.append(annotation.value)
+        return implements
 
     def java_is_reference(self):
         return True
@@ -71,10 +78,11 @@ class JavaEnumType(EnumType, _JavaType):
             enumerators.append(
                 "%s(%u)" % (enumerator.name, enumerator.value)
             )
+        implements = lpad(' implements ', ', '.join(self._java_implements()))
         valueOf_cases = "\n".join(indent(' ' * 8, valueOf_cases))
         enumerators = ",\n".join(indent(' ' * 4, enumerators))
         return """\
-%(javadoc)spublic enum %(name)s {
+%(javadoc)spublic enum %(name)s%(implements)s {
 %(enumerators)s;
 
     private %(name)s(int value) {

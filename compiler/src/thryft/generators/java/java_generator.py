@@ -93,5 +93,5 @@ Parser.register_annotation(Ast.FieldNode, 'java_exclude_from_to_string', __parse
 def __parse_java_implements(ast_node, name, value, **kwds):
     ast_node.annotations.append(Ast.AnnotationNode(name=name, value=value, **kwds))
 
-for ast_node_type in (Ast.ExceptionTypeNode, Ast.ServiceNode, Ast.StructTypeNode):
+for ast_node_type in (Ast.EnumTypeNode, Ast.ExceptionTypeNode, Ast.ServiceNode, Ast.StructTypeNode):
     Parser.register_annotation(ast_node_type, 'java_implements', __parse_java_implements)
