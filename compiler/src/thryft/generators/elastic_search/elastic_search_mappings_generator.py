@@ -85,7 +85,10 @@ class ElasticSearchMappingsGenerator(Generator):
 
             properties = OrderedDict()
             for field in self.fields:
-                properties[field.name] = field.elastic_search_mapping_dict()
+                field_name = field.name
+                if field.id is not None:
+                    field_name = "%d:%s" % (field.id, field_name)
+                properties[field_name] = field.elastic_search_mapping_dict()
 
             mappings = {}
             mappings[document_type] = \
