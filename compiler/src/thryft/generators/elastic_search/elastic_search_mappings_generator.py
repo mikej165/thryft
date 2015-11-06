@@ -35,6 +35,12 @@ class ElasticSearchMappingsGenerator(Generator):
             return {'index': 'not_analyzed', 'type': 'string'}
 
     class Field(Generator.Field):  # @UndefinedVariable
+        def elastic_search_name(self):
+            name = self.name
+            if self.id is not None:
+                name = "%d:%s" % (self.id, name)
+            return name
+
         def elastic_search_mapping_dict(self):
             out = {}
             out.update(self.type.elastic_search_mapping_dict())
@@ -71,7 +77,7 @@ class ElasticSearchMappingsGenerator(Generator):
         def elastic_search_mapping_dict(self):
             field_mappings = OrderedDict()
             for field in self.fields:
-                field_mappings[field.name] = field.elastic_search_mapping_dict()
+                field_mappings[field.elastic_search_name()] = field.elastic_search_mapping_dict()
             return {'type': 'nested', 'properties': field_mappings}
 
         def elastic_search_mappings_dict(self):
@@ -85,10 +91,7 @@ class ElasticSearchMappingsGenerator(Generator):
 
             properties = OrderedDict()
             for field in self.fields:
-                field_name = field.name
-                if field.id is not None:
-                    field_name = "%d:%s" % (field.id, field_name)
-                properties[field_name] = field.elastic_search_mapping_dict()
+                properties[field.elastic_search_name()] = field.elastic_search_mapping_dict()
 
             mappings = {}
             mappings[document_type] = \
