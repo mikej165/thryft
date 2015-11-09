@@ -99,22 +99,17 @@ class JsFunction(Function, _JsNamedConstruct):
         request_type_qname = self.js_request_type().js_qname()
 
         if len(self.parameters) > 0:
+            params_declaration = "\n    var params = kwds;"
             request = """
 
     var request = new %(request_type_qname)s(params);
     if (!request.isValid(true)) {
-        if (async) {
-            if (typeof errorCallback !== "undefined") {
-                errorCallback(null, request.validationError, null);
-            }
-            return;
-        } else {
-            throw new TypeError(request.validationError);
-        }
+        throw new TypeError(request.validationError);
     }""" % locals()
             jsonrpc_params = "request.toThryftJSON()" % locals()
         else:
             jsonrpc_params = '{}'
+            params_declaration = ''
             request = ''
 
         jsdoc_lines.extend(
@@ -201,15 +196,14 @@ class JsFunction(Function, _JsNamedConstruct):
                 }
             }
         },
-        url:%(jsonrpc_url)s,
+        url:%(jsonrpc_url)s
     });
 },
 
 /**
 %(jsdoc_lines)s
  */
-%(js_name)sSync : function(kwds) {
-    var params = kwds;
+%(js_name)sSync : function(kwds) {%(params_declaration)s
     var returnValue = null;%(request)s
 
     $.ajax({
