@@ -49,17 +49,20 @@ public abstract class AbstractInputProtocol implements InputProtocol {
 
     @Override
     public BigDecimal readDecimal() throws InputProtocolException {
-        return new BigDecimal(readString());
+        try {
+            return new BigDecimal(readString());
+        } catch (final IllegalArgumentException e) {
+            throw new InputProtocolException(e);
+        }
     }
 
     @GwtIncompatible("")
     @Override
     @SuppressWarnings("unchecked")
-    public <E extends Enum<E>> E readEnum(final Class<E> enumClass)
-            throws InputProtocolException {
+    public <E extends Enum<E>> E readEnum(final Class<E> enumClass) throws InputProtocolException {
         final String enumStringValue = readString().trim().toUpperCase();
         if (enumStringValue.isEmpty()) {
-            throw new IllegalArgumentException("empty string");
+            throw new InputProtocolException("empty string");
         }
 
         try {
@@ -69,26 +72,20 @@ public abstract class AbstractInputProtocol implements InputProtocol {
             try {
                 enumIntValue = Integer.parseInt(enumStringValue);
             } catch (final NumberFormatException e1) {
-                throw e;
+                throw new InputProtocolException(e1);
             }
 
             final Method valueOfMethod;
             try {
                 valueOfMethod = enumClass.getMethod("valueOf", Integer.class);
-            } catch (final SecurityException e1) {
-                throw e;
-            } catch (final NoSuchMethodException e1) {
-                throw e;
+            } catch (final NoSuchMethodException | SecurityException e1) {
+                throw new InputProtocolException(e1);
             }
 
             try {
                 return (E) valueOfMethod.invoke(null, enumIntValue);
-            } catch (final IllegalArgumentException e1) {
-                throw e;
-            } catch (final IllegalAccessException e1) {
-                throw e;
-            } catch (final InvocationTargetException e1) {
-                throw e;
+            } catch (final IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {
+                throw new InputProtocolException(e1);
             }
         }
     }
