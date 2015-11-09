@@ -36,55 +36,55 @@ from yutil import indent
 
 
 class JavaMapType(MapType, _JavaContainerType):
-    def java_compare_to(self, this_value, other_value, **kwds):
-        qname = self.java_qname()
-        key_type_qname = self.key_type.java_declaration_name(boxed=True)
-        value_type_qname = self.value_type.java_declaration_name(boxed=True)
-        value_compare = indent(' ' * 16, self.value_type.java_compare_to(this_value='leftValue', other_value='rightValue', already_boxed=True))
-        return """\
-new java.util.Comparator<%(qname)s>() {
-    public int compare(final %(qname)s left, final %(qname)s right) {
-        int result = ((Integer) left.size()).compareTo(right.size());
-        if (result != 0) {
-            return result;
-        }
-
-        // Compare keys
-        final java.util.List<%(key_type_qname)s> leftSortedKeySet = com.google.common.collect.Lists
-                .newArrayList(left.keySet());
-        java.util.Collections.sort(leftSortedKeySet);
-        final java.util.Iterator<%(key_type_qname)s> leftKeyI = leftSortedKeySet.iterator();
-
-        final java.util.List<%(key_type_qname)s> rightSortedKeySet = com.google.common.collect.Lists
-                .newArrayList(right.keySet());
-        java.util.Collections.sort(rightSortedKeySet);
-        final java.util.Iterator<%(key_type_qname)s> rightKeyI = leftSortedKeySet.iterator();
-
-        while (leftKeyI.hasNext()) {
-            final %(key_type_qname)s leftKey = leftKeyI.next();
-            final %(key_type_qname)s rightKey = rightKeyI.next();
-
-            result = leftKey.compareTo(rightKey);
-            if (result != 0) {
-                return result;
-            }
-        }
-
-        // Compare values
-        for (final java.util.Map.Entry<%(key_type_qname)s, %(value_type_qname)s> leftEntry : left.entrySet()) {
-            final %(value_type_qname)s leftValue = leftEntry.getValue();
-            final %(value_type_qname)s rightValue = right.get(leftEntry.getKey());
-
-            result =
-%(value_compare)s;
-            if (result != 0) {
-                return result;
-            }
-        }
-
-        return 0;
-    }
-}.compare(%(this_value)s, %(other_value)s)""" % locals()
+#     def java_compare_to(self, this_value, other_value, **kwds):
+#         qname = self.java_qname()
+#         key_type_qname = self.key_type.java_declaration_name(boxed=True)
+#         value_type_qname = self.value_type.java_declaration_name(boxed=True)
+#         value_compare = indent(' ' * 16, self.value_type.java_compare_to(this_value='leftValue', other_value='rightValue', already_boxed=True))
+#         return """\
+# new java.util.Comparator<%(qname)s>() {
+#     public int compare(final %(qname)s left, final %(qname)s right) {
+#         int result = ((Integer) left.size()).compareTo(right.size());
+#         if (result != 0) {
+#             return result;
+#         }
+#
+#         // Compare keys
+#         final java.util.List<%(key_type_qname)s> leftSortedKeySet = com.google.common.collect.Lists
+#                 .newArrayList(left.keySet());
+#         java.util.Collections.sort(leftSortedKeySet);
+#         final java.util.Iterator<%(key_type_qname)s> leftKeyI = leftSortedKeySet.iterator();
+#
+#         final java.util.List<%(key_type_qname)s> rightSortedKeySet = com.google.common.collect.Lists
+#                 .newArrayList(right.keySet());
+#         java.util.Collections.sort(rightSortedKeySet);
+#         final java.util.Iterator<%(key_type_qname)s> rightKeyI = leftSortedKeySet.iterator();
+#
+#         while (leftKeyI.hasNext()) {
+#             final %(key_type_qname)s leftKey = leftKeyI.next();
+#             final %(key_type_qname)s rightKey = rightKeyI.next();
+#
+#             result = leftKey.compareTo(rightKey);
+#             if (result != 0) {
+#                 return result;
+#             }
+#         }
+#
+#         // Compare values
+#         for (final java.util.Map.Entry<%(key_type_qname)s, %(value_type_qname)s> leftEntry : left.entrySet()) {
+#             final %(value_type_qname)s leftValue = leftEntry.getValue();
+#             final %(value_type_qname)s rightValue = right.get(leftEntry.getKey());
+#
+#             result =
+# %(value_compare)s;
+#             if (result != 0) {
+#                 return result;
+#             }
+#         }
+#
+#         return 0;
+#     }
+# }.compare(%(this_value)s, %(other_value)s)""" % locals()
 
     def java_literal(self, value):
         return "com.google.common.collect.ImmutableMap.<%s, %s> of(%s)" % (
@@ -106,9 +106,33 @@ new java.util.Comparator<%(qname)s>() {
                )
 
     def java_read_protocol(self):
-        key_read_protocol = self.key_type.java_read_protocol()
+        def try_catch(statement, throws):
+            if len(throws) == 0:
+                return statement
+            statement = indent(' ' * 4, statement)
+            return """\
+try {
+%s
+}%s
+""" % (statement, ''.join("""\
+ catch (final %(exception_type_name)s e) {
+     throw new org.thryft.protocol.UncheckedInputProtocolException(e);
+}""" % locals()
+                     for exception_type_name in throws))
+
+        key_read_protocol = \
+            indent(' ' * 16, try_catch(
+                'key = ' + self.key_type.java_read_protocol() + ';',
+                self.key_type.java_read_protocol_throws_checked() + self.key_type.java_read_protocol_throws_unchecked()
+            ))
         key_type_name = self.key_type.java_declaration_name(boxed=True)
-        value_read_protocol = self.value_type.java_read_protocol()
+
+        value_read_protocol = \
+            indent(' ' * 16, try_catch(
+                'value = ' + self.value_type.java_read_protocol() + ';',
+                self.value_type.java_read_protocol_throws_checked() + self.value_type.java_read_protocol_throws_unchecked()
+            ))
+
         value_type_name = self.value_type.java_declaration_name(boxed=True)
         return """\
 (new com.google.common.base.Function<org.thryft.protocol.InputProtocol, com.google.common.collect.ImmutableMap<%(key_type_name)s, %(value_type_name)s>>() {
@@ -118,7 +142,11 @@ new java.util.Comparator<%(qname)s>() {
             final org.thryft.protocol.MapBegin mapBegin = iprot.readMapBegin();
             final com.google.common.collect.ImmutableMap.Builder<%(key_type_name)s, %(value_type_name)s> map = com.google.common.collect.ImmutableMap.builder();
             for (int entryI = 0; entryI < mapBegin.getSize(); entryI++) {
-                map.put(%(key_read_protocol)s, %(value_read_protocol)s);
+                final %(key_type_name)s key;
+%(key_read_protocol)s
+                final %(value_type_name)s value;
+%(value_read_protocol)s
+                map.put(key, value);
             }
             iprot.readMapEnd();
             return map.build();
@@ -127,6 +155,9 @@ new java.util.Comparator<%(qname)s>() {
         }
     }
 }).apply(iprot)""" % locals()
+
+    def java_read_protocol_throws_unchecked(self):
+        return ['org.thryft.protocol.UncheckedInputProtocolException']
 
     def java_write_protocol(self, value, depth=0):
         key_ttype = self.key_type.thrift_ttype_name()

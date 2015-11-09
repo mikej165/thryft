@@ -205,7 +205,7 @@ if (%s().isPresent()) {
                 read_protocol_throws = \
                     ''.join("""\
  catch (final %(exception_type_name)s e) {
-     throw new IllegalArgumentException(e);
+     throw new org.thryft.protocol.InputProtocolException(e);
 }""" % locals()
                          for exception_type_name in read_protocol_throws)
             else:

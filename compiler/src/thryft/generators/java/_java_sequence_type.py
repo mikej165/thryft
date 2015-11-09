@@ -35,42 +35,42 @@ from yutil import decamelize, indent
 
 
 class _JavaSequenceType(_JavaContainerType):
-    def java_compare_to(self, this_value, other_value, **kwds):
-        qname = self.java_qname()
-        element_type_qname = self.element_type.java_declaration_name(boxed=True)
-        element_compare = indent(' ' * 16, self.element_type.java_compare_to(this_value='leftElement', other_value='rightElement', already_boxed=True))
-        return """\
-new java.util.Comparator<%(qname)s>() {
-    public int compare(final %(qname)s left, final %(qname)s right) {
-        int result = ((Integer) left.size()).compareTo(right.size());
-        if (result != 0) {
-            return result;
-        }
-
-        final java.util.List<%(element_type_qname)s> leftSortedList = com.google.common.collect.Lists
-                .newArrayList(left);
-        java.util.Collections.sort(leftSortedList);
-        final java.util.Iterator<%(element_type_qname)s> leftI = leftSortedList.iterator();
-
-        final java.util.List<%(element_type_qname)s> rightSortedList = com.google.common.collect.Lists
-                .newArrayList(right);
-        java.util.Collections.sort(rightSortedList);
-        final java.util.Iterator<%(element_type_qname)s> rightI = leftSortedList.iterator();
-
-        while (leftI.hasNext()) {
-            final %(element_type_qname)s leftElement = leftI.next();
-            final %(element_type_qname)s rightElement = rightI.next();
-
-            result =
-%(element_compare)s;
-            if (result != 0) {
-                return result;
-            }
-        }
-
-        return 0;
-    }
-}.compare(%(this_value)s, %(other_value)s)""" % locals()
+#     def java_compare_to(self, this_value, other_value, **kwds):
+#         qname = self.java_qname()
+#         element_type_qname = self.element_type.java_declaration_name(boxed=True)
+#         element_compare = indent(' ' * 16, self.element_type.java_compare_to(this_value='leftElement', other_value='rightElement', already_boxed=True))
+#         return """\
+# new java.util.Comparator<%(qname)s>() {
+#     public int compare(final %(qname)s left, final %(qname)s right) {
+#         int result = ((Integer) left.size()).compareTo(right.size());
+#         if (result != 0) {
+#             return result;
+#         }
+#
+#         final java.util.List<%(element_type_qname)s> leftSortedList = com.google.common.collect.Lists
+#                 .newArrayList(left);
+#         java.util.Collections.sort(leftSortedList);
+#         final java.util.Iterator<%(element_type_qname)s> leftI = leftSortedList.iterator();
+#
+#         final java.util.List<%(element_type_qname)s> rightSortedList = com.google.common.collect.Lists
+#                 .newArrayList(right);
+#         java.util.Collections.sort(rightSortedList);
+#         final java.util.Iterator<%(element_type_qname)s> rightI = leftSortedList.iterator();
+#
+#         while (leftI.hasNext()) {
+#             final %(element_type_qname)s leftElement = leftI.next();
+#             final %(element_type_qname)s rightElement = rightI.next();
+#
+#             result =
+# %(element_compare)s;
+#             if (result != 0) {
+#                 return result;
+#             }
+#         }
+#
+#         return 0;
+#     }
+# }.compare(%(this_value)s, %(other_value)s)""" % locals()
 
     def java_name(self, boxed=False):
         return self.java_qname(boxed=boxed)
@@ -101,7 +101,7 @@ new java.util.Comparator<%(qname)s>() {
     def java_read_protocol(self):
         element_read_protocol = self.element_type.java_read_protocol()
         add_element = "sequence.add(%(element_read_protocol)s);" % locals()
-        element_read_protocol_throws = self.element_type.java_read_protocol_throws_checked()
+        element_read_protocol_throws = self.element_type.java_read_protocol_throws_checked() + self.element_type.java_read_protocol_throws_unchecked()
         if len(element_read_protocol_throws) > 0:
             add_element = indent(' ' * 4, add_element)
             add_element = """\
@@ -109,8 +109,8 @@ try {
 %s
 }%s
 """ % (add_element, ''.join("""\
- catch (%(exception_type_name)s e) {
-     throw new IllegalArgumentException(e);
+ catch (final %(exception_type_name)s e) {
+     throw new org.thryft.protocol.UncheckedInputProtocolException(e);
 }""" % locals()
                      for exception_type_name in element_read_protocol_throws))
         add_element = indent(' ' * 16, add_element)
@@ -131,10 +131,13 @@ try {
             iprot.read%(interface_simple_name)sEnd();
             return sequence.build();
         } catch (final org.thryft.protocol.InputProtocolException e) {
-            return com.google.common.collect.Immutable%(interface_simple_name)s.of();
+            throw new org.thryft.protocol.UncheckedInputProtocolException(e);
         }
     }
 }).apply(iprot)""" % locals()
+
+    def java_read_protocol_throws_unchecked(self):
+        return ['org.thryft.protocol.UncheckedInputProtocolException']
 
     def java_write_protocol(self, value, depth=0):
         element_ttype = self.element_type.thrift_ttype_name()
