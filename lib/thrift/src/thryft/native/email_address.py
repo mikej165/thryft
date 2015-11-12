@@ -44,6 +44,9 @@ class EmailAddress(object):
     def java_default_value(self):
         return 'null'
 
+    def java_literal(self, value):
+        return "new org.thryft.native_.EmailAddress(\"%s\")" % value
+
     def java_name(self, boxed=False):
         return 'org.thryft.native_.EmailAddress'
 
