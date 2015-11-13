@@ -125,7 +125,7 @@ public abstract class AbstractOutputProtocol implements OutputProtocol {
 
     @Override
     public void writeEnum(final Enum<?> value) throws OutputProtocolException {
-        writeString(value.toString().toUpperCase());
+        writeString(value.name());
     }
 
     @Override
