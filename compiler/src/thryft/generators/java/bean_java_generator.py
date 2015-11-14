@@ -236,6 +236,10 @@ public void %(setter_name)s(final %(type_qname)s %(name)s) {
         pass
 
     class StructType(JavaGenerator.StructType):  # @UndefinedVariable
+        class _JavaFieldMetadataEnum(JavaGenerator.StructType._JavaFieldMetadataEnum):  # @UndefinedVariable
+            def _java_field_java_type(self, field):
+                return field.type.java_bean_qname()
+
         def _java_constructor_default(self):
             name = self.java_bean_name()
 
@@ -306,6 +310,7 @@ public %(name)s(final %(immutable_name)s other) {%(initializers)s
             name = self.java_bean_name()
             methods = self._java_methods()
             sections = []
+            sections.append(indent(' ' * 4, self._java_field_metadata_enum()))
             sections.append("\n\n".join(indent(' ' * 4,
                 self._java_constructors() + \
                 [methods[key] for key in sorted(methods.iterkeys())])))

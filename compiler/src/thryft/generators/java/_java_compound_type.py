@@ -218,6 +218,113 @@ public Builder setIfPresent(final %(name)s other) {
 public static class Builder {%(sections)s
 }""" % locals()
 
+    class _JavaFieldMetadataEnum(object):
+        def __init__(self, java_compound_type):
+            object.__init__(self)
+            assert len(java_compound_type.fields) > 0
+            self.__java_compound_type = java_compound_type
+
+        def _java_field_java_type(self, field):
+            return field.type.java_qname(boxed=True)
+
+        def java_repr(self):
+            enumerators = []
+            java_name_cases = []
+            thrift_name_cases = []
+            for field in self.__java_compound_type.fields:
+                field_id = field.id if field.id is not None else 0
+                field_java_name = field.java_name()
+                field_java_type = self._java_field_java_type(field)
+                field_type = field.type.thrift_ttype_name()
+                field_required = 'true' if field.required else 'false'
+                field_thrift_name = field.name
+                enumerator_name = field.name.upper()
+                enumerators.append("%(enumerator_name)s(\"%(field_java_name)s\", new com.google.common.reflect.TypeToken<%(field_java_type)s>() {}, %(field_required)s, %(field_id)d, \"%(field_thrift_name)s\", org.thryft.protocol.Type.%(field_type)s)" % locals())
+                java_name_cases.append("""case "%(field_java_name)s": return %(enumerator_name)s;""" % locals())
+                thrift_name_cases.append("""case "%(field_thrift_name)s": return %(enumerator_name)s;""" % locals())
+            class_suppress_warnings = '' if 'serial' in self.__java_compound_type._suppress_warnings else "@SuppressWarnings(\"serial\")\n"
+            enumerators = pad("\n", indent(' ' * 4, ",\n".join(enumerators)), ";\n")
+            java_name_cases = lpad("\n", indent(' ' * 8, "\n".join(java_name_cases)))
+            thrift_name_cases = lpad("\n", indent(' ' * 8, "\n".join(thrift_name_cases)))
+            return """\
+%(class_suppress_warnings)spublic enum FieldMetadata implements org.thryft.CompoundType.FieldMetadata {%(enumerators)s
+    @Override
+    public String getJavaName() {
+        return javaName;
+    }
+
+    @Override
+    public com.google.common.reflect.TypeToken<?> getJavaType() {
+        return javaType;
+    }
+
+    @Override
+    public int getThriftId() {
+        return thriftId;
+    }
+
+    @Override
+    public String getThriftProtocolKey() {
+        return thriftProtocolKey;
+    }
+
+    @Override
+    public org.thryft.protocol.Type getThriftProtocolType() {
+        return thriftProtocolType;
+    }
+
+    @Override
+    public String getThriftName() {
+        return thriftName;
+    }
+
+    @Override
+    public boolean hasThriftId() {
+        return thriftId != org.thryft.protocol.FieldBegin.ABSENT_ID;
+    }
+
+    @Override
+    public boolean isRequired()  {
+        return required;
+    }
+
+    public static FieldMetadata valueOfJavaName(final String javaName) {
+        switch (javaName) {%(java_name_cases)s
+        default:
+            throw new IllegalArgumentException(javaName);
+        }
+    }
+
+    public static FieldMetadata valueOfThriftName(final String thriftName) {
+        switch (thriftName) {%(thrift_name_cases)s
+        default:
+            throw new IllegalArgumentException(thriftName);
+        }
+    }
+
+    private FieldMetadata(final String javaName, final com.google.common.reflect.TypeToken<?> javaType, final boolean required, final int thriftId, final String thriftName, final org.thryft.protocol.Type thriftProtocolType) {
+        this.javaName = javaName;
+        this.javaType = javaType;
+        this.required = required;
+        this.thriftId = thriftId;
+        this.thriftName = thriftName;
+        if (thriftId != org.thryft.protocol.FieldBegin.ABSENT_ID) {
+            this.thriftProtocolKey = Integer.toString(thriftId) + ":" + thriftName;
+        } else {
+            this.thriftProtocolKey = thriftName;
+        }
+        this.thriftProtocolType = thriftProtocolType;
+    }
+
+    private final String javaName;
+    private final com.google.common.reflect.TypeToken<?> javaType;
+    private final boolean required;
+    private final int thriftId;
+    private final String thriftName;
+    private final String thriftProtocolKey;
+    private final org.thryft.protocol.Type thriftProtocolType;
+}""" % locals()
+
     def __init__(
         self,
         java_class_modifiers=None,
@@ -236,9 +343,9 @@ public static class Builder {%(sections)s
         self.__message_type = message_type
 
         if java_suppress_warnings is None:
-            self.__suppress_warnings = tuple()
+            self._suppress_warnings = tuple()
         else:
-            self.__suppress_warnings = tuple(java_suppress_warnings)
+            self._suppress_warnings = tuple(java_suppress_warnings)
 
     def _java_constructor_default(self):
         name = self.java_name()
@@ -411,106 +518,10 @@ public %(name)s(%(parameters)s) {
     def _java_extends(self):
         return None
 
-    def __java_field_metadata_enum(self):
+    def _java_field_metadata_enum(self):
         if len(self.fields) == 0:
             return None
-        enumerators = []
-        java_name_cases = []
-        thrift_name_cases = []
-        for field in self.fields:
-            field_id = field.id if field.id is not None else 0
-            field_java_name = field.java_name()
-            field_java_type = field.type.java_qname(boxed=True)
-            field_type = field.type.thrift_ttype_name()
-            field_required = 'true' if field.required else 'false'
-            field_thrift_name = field.name
-            enumerator_name = field.name.upper()
-            enumerators.append("%(enumerator_name)s(\"%(field_java_name)s\", new com.google.common.reflect.TypeToken<%(field_java_type)s>() {}, %(field_required)s, %(field_id)d, \"%(field_thrift_name)s\", org.thryft.protocol.Type.%(field_type)s)" % locals())
-            java_name_cases.append("""case "%(field_java_name)s": return %(enumerator_name)s;""" % locals())
-            thrift_name_cases.append("""case "%(field_thrift_name)s": return %(enumerator_name)s;""" % locals())
-
-        class_suppress_warnings = '' if 'serial' in self.__suppress_warnings else "@SuppressWarnings(\"serial\")\n"
-        enumerators = pad("\n", indent(' ' * 4, ",\n".join(enumerators)), ";\n")
-        java_name_cases = lpad("\n", indent(' ' * 8, "\n".join(java_name_cases)))
-        thrift_name_cases = lpad("\n", indent(' ' * 8, "\n".join(thrift_name_cases)))
-        return """\
-%(class_suppress_warnings)spublic enum FieldMetadata implements org.thryft.CompoundType.FieldMetadata {%(enumerators)s
-    @Override
-    public String getJavaName() {
-        return javaName;
-    }
-
-    @Override
-    public com.google.common.reflect.TypeToken<?> getJavaType() {
-        return javaType;
-    }
-
-    @Override
-    public int getThriftId() {
-        return thriftId;
-    }
-
-    @Override
-    public String getThriftProtocolKey() {
-        return thriftProtocolKey;
-    }
-
-    @Override
-    public org.thryft.protocol.Type getThriftProtocolType() {
-        return thriftProtocolType;
-    }
-
-    @Override
-    public String getThriftName() {
-        return thriftName;
-    }
-
-    @Override
-    public boolean hasThriftId() {
-        return thriftId != org.thryft.protocol.FieldBegin.ABSENT_ID;
-    }
-
-    @Override
-    public boolean isRequired()  {
-        return required;
-    }
-
-    public static FieldMetadata valueOfJavaName(final String javaName) {
-        switch (javaName) {%(java_name_cases)s
-        default:
-            throw new IllegalArgumentException(javaName);
-        }
-    }
-
-    public static FieldMetadata valueOfThriftName(final String thriftName) {
-        switch (thriftName) {%(thrift_name_cases)s
-        default:
-            throw new IllegalArgumentException(thriftName);
-        }
-    }
-
-    private FieldMetadata(final String javaName, final com.google.common.reflect.TypeToken<?> javaType, final boolean required, final int thriftId, final String thriftName, final org.thryft.protocol.Type thriftProtocolType) {
-        this.javaName = javaName;
-        this.javaType = javaType;
-        this.required = required;
-        this.thriftId = thriftId;
-        this.thriftName = thriftName;
-        if (thriftId != org.thryft.protocol.FieldBegin.ABSENT_ID) {
-            this.thriftProtocolKey = Integer.toString(thriftId) + ":" + thriftName;
-        } else {
-            this.thriftProtocolKey = thriftName;
-        }
-        this.thriftProtocolType = thriftProtocolType;
-    }
-
-    private final String javaName;
-    private final com.google.common.reflect.TypeToken<?> javaType;
-    private final boolean required;
-    private final int thriftId;
-    private final String thriftName;
-    private final String thriftProtocolKey;
-    private final org.thryft.protocol.Type thriftProtocolType;
-}""" % locals()
+        return self._JavaFieldMetadataEnum(self).java_repr()
 
     def _java_implements(self):
 #         name = self.java_name()
@@ -879,17 +890,17 @@ public void writeFields(final org.thryft.protocol.OutputProtocol oprot) throws o
 
     def java_repr(self):
         class_annotations = []
-        if len(self.__suppress_warnings) > 0:
+        if len(self._suppress_warnings) > 0:
             class_annotations.append(
                 "@SuppressWarnings({%s})" % \
                     ', '.join('"' + warning + '"'
-                               for warning in sorted(self.__suppress_warnings)))
+                               for warning in sorted(self._suppress_warnings)))
         class_annotations = rpad("\n".join(class_annotations), "\n")
         class_modifiers = rpad(' '.join(self.__class_modifiers), ' ')
         javadoc = self.java_doc()
         name = self.java_name()
         extends = lpad(' extends ', self._java_extends())
-        field_metadata_enum = self.__java_field_metadata_enum()
+        field_metadata_enum = self._java_field_metadata_enum()
         implements = lpad(' implements ', ', '.join(self._java_implements()))
         methods = self._java_methods()
         sections = []
