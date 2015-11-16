@@ -238,7 +238,7 @@ public void %(setter_name)s(final %(type_qname)s %(name)s) {
     class StructType(JavaGenerator.StructType):  # @UndefinedVariable
         class _JavaFieldMetadataEnum(JavaGenerator.StructType._JavaFieldMetadataEnum):  # @UndefinedVariable
             def _java_field_java_type(self, field):
-                return field.type.java_bean_qname()
+                return field.type.java_bean_qname(boxed=True)
 
         def _java_constructor_default(self):
             name = self.java_bean_name()
