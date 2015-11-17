@@ -121,13 +121,13 @@ if (!(%(value)s instanceof Date)) {
     def py_description(self):
         return 'datetime'
 
+    def py_imports_check(self, caller_stack=None):
+        return ['from datetime import datetime']
+
     def py_imports_definition(self, caller_stack=None):
         return []
 
     def py_imports_use(self, caller_stack=None):
-#         import traceback
-#         for line in traceback.format_stack():
-#             print line
         return ['from datetime import datetime']
 
     def py_read_protocol(self):
