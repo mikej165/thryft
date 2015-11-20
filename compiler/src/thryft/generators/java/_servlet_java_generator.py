@@ -34,7 +34,6 @@ from thryft.generators.java import java_generator
 from thryft.generators.java.java_document import JavaDocument
 from thryft.generators.java.java_function import JavaFunction
 from thryft.generators.java.java_service import JavaService
-from yutil import lpad
 
 
 class _ServletJavaGenerator(java_generator.JavaGenerator):
@@ -63,7 +62,7 @@ class _ServletJavaGenerator(java_generator.JavaGenerator):
             return self.parent._java_write_http_servlet_response_body(**kwds)
 
     class _Service(JavaService):
-        def _java_write_http_servlet_response_body(self, content_type='application/json', variable_name_prefix=''):
+        def _java_write_http_servlet_response_body(self, content_type='application/json; charset=utf-8', variable_name_prefix=''):
             return """\
 %(variable_name_prefix)shttpServletResponse.setContentType("%(content_type)s");
 
@@ -113,7 +112,7 @@ if (%(variable_name_prefix)shttpServletResponseBody.length() >= 128) {
                 byte[] compressedHttpServletResponseBody = null;
                 try {
                     try {
-                        compressingOutputStream.write(%(variable_name_prefix)shttpServletResponseBody.getBytes());
+                        compressingOutputStream.write(%(variable_name_prefix)shttpServletResponseBody.getBytes("UTF-8"));
                         compressingOutputStream.finish();
                         compressedHttpServletResponseBody = byteArrayOutputStream.toByteArray();
                     } finally {
@@ -132,7 +131,7 @@ if (%(variable_name_prefix)shttpServletResponseBody.length() >= 128) {
     }
 }
 
-%(variable_name_prefix)shttpServletResponse.getWriter().write(%(variable_name_prefix)shttpServletResponseBody);""" % locals()
+%(variable_name_prefix)shttpServletResponse.getOutputStream().write(%(variable_name_prefix)shttpServletResponseBody.getBytes("UTF-8"));""" % locals()
 
         def _java_read_http_servlet_request_body(self, variable_name_prefix=''):
             return """\
