@@ -133,35 +133,39 @@ class Main(object):
         raise NotImplementedError(self.__class__.__module__ + '.' + self.__class__.__name__ + '.compile')
 
     def _compile_thrift_file(self, thrift_file_path, document_root_dir_path=None, generator=None, out=None):
-        for i in xrange(2):
-            if generator is not None:
-                gen = generator.__class__.__name__
-                gen = gen[:gen.index('Generator')]
-                gen = decamelize(gen)
-                if len(self.__gen) > 0 and gen not in self.__gen:
-                    return
-            else:
-                generator = Generator()
-
-            try:
-                document = \
-                    self.__compiler(
-                        document_root_dir_path=document_root_dir_path,
-                        generator=generator,
-                        thrift_file_paths=thrift_file_path,
-                    )[0]
-            except (ScanException, CompileException):
-                if self.__debug:
-                    raise
-                if i == 0:
-                    logging.basicConfig(level=logging.DEBUG)
-                    continue  # Try again with debugging on
+        try:
+            for i in xrange(2):
+                if generator is not None:
+                    gen = generator.__class__.__name__
+                    gen = gen[:gen.index('Generator')]
+                    gen = decamelize(gen)
+                    if len(self.__gen) > 0 and gen not in self.__gen:
+                        return
                 else:
-                    raise
+                    generator = Generator()
 
-            if out is not None:
-                document.save(out)
-            return document
+                try:
+                    document = \
+                        self.__compiler(
+                            document_root_dir_path=document_root_dir_path,
+                            generator=generator,
+                            thrift_file_paths=thrift_file_path,
+                        )[0]
+                except (ScanException, CompileException):
+                    if self.__debug:
+                        raise
+                    if i == 0:
+                        logging.basicConfig(level=logging.DEBUG)
+                        continue  # Try again with debugging on
+                    else:
+                        raise
+
+                if out is not None:
+                    document.save(out)
+                return document
+        except:
+            logging.error("exception compiling %s", thrift_file_path)
+            raise
 
     def _get_thrift_file_paths(self, thrift_dir_path):
         thrift_file_paths = self.__thrift_file_paths
