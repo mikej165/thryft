@@ -1,3 +1,5 @@
+namespace * thryft
+
 // const comment
 const double DOUBLE_CONSTANT = 0.0;
 // const comment

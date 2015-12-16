@@ -1,3 +1,5 @@
+namespace * thryft
+
 // exception comment
 exception TestException {
 }

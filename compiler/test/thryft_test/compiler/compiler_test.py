@@ -45,7 +45,11 @@ class CompilerTest(_test._Test):
         compiler = Compiler()
         generator = ThriftGenerator()
         try:
-            documents = compiler((thrift_file_path,), generator=generator)
+            documents = \
+                compiler(
+                    generator=generator,
+                    thrift_file_paths=(thrift_file_path,)
+                )
             self.assertEquals(1, len(documents))
             document_repr = documents[0].thrift_repr()  # @UnusedVariable
         except:

@@ -1,3 +1,5 @@
+namespace * thryft
+
 // const comment
 const i32 CONSTANT1 = 1;
 // const comment

@@ -1,3 +1,5 @@
+namespace * thryft
+
 // struct comment
 struct TestStruct {
     // ifield comment

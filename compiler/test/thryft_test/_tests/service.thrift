@@ -1,3 +1,5 @@
+namespace * thryft
+
 include "exception_type.thrift"
 
 // service comment

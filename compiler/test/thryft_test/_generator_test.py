@@ -10,7 +10,11 @@ class _GeneratorTest(_test._Test):
         _test._Test.__init__(self, *args, **kwds)
 
     def _runTest(self, thrift_file_path):
-        documents = Compiler().compile(thrift_file_path, generator=self.__generator_class(**self.__generator_kwds))
+        documents =\
+            Compiler().compile(
+                generator=self.__generator_class(**self.__generator_kwds),
+                thrift_file_paths=thrift_file_path
+            )
         self.assertTrue(isinstance(documents, tuple))
         self.assertEquals(1, len(documents))
 #         import os.path

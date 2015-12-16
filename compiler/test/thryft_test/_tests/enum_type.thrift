@@ -1,3 +1,5 @@
+namespace * thryft
+
 // enum comment
 enum TestEnum {
     // enumerator1 comment
