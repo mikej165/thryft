@@ -229,6 +229,10 @@ class Compiler(object):
             return self.__visit_compound_type_node('ExceptionType', exception_type_node)
 
         def visit_field_node(self, field_node):
+            if field_node.value is not None:
+                value = field_node.value.accept(self)
+            else:
+                value = None
             return \
                 self.__construct(
                     'Field',
@@ -238,7 +242,7 @@ class Compiler(object):
                     name=field_node.name,
                     required=field_node.required,
                     type=field_node.type.accept(self),
-                    value=field_node.value
+                    value=value
                 )
 
         def visit_float_literal_node(self, float_literal_node):
@@ -310,7 +314,7 @@ class Compiler(object):
             return self.__visit_sequence_type_node('ListType', list_type_node)
 
         def visit_map_literal_node(self, map_literal_node):
-            return dict((key_value.accept(self), value_value.accept(self)) for key_value, value_value in map_literal_node.value.iteritems())
+            return tuple((key_value.accept(self), value_value.accept(self)) for key_value, value_value in map_literal_node.value)
 
         def visit_map_type_node(self, map_type_node):
             try:

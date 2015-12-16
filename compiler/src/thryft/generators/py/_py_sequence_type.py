@@ -35,6 +35,11 @@ from yutil import indent
 
 
 class _PySequenceType(_PyContainerType):
+    def py_from_string(self, value):
+        element_from_string = self.element_type.py_from_string('e')
+        name = self._py_name()
+        return "%(name)s(%(element_from_string)s for e in %(value)s.split(','))" % locals()
+
 #     def _py_imports_definition(self, caller_stack):
 #         return self.element_type.py_imports_definition(caller_stack=caller_stack) + \
 #                ['from itertools import ifilterfalse']

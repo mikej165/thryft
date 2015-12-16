@@ -72,6 +72,22 @@ class _JavaSequenceType(_JavaContainerType):
 #     }
 # }.compare(%(this_value)s, %(other_value)s)""" % locals()
 
+    def java_from_string(self, value):
+        element_from_string = self.element_type.java_from_string('elementString')
+        element_type_name = self.element_type.java_declaration_name(boxed=True)
+        interface_simple_name = self._java_interface_simple_name()
+        return """\
+(new com.google.common.base.Function<String, com.google.common.collect.Immutable%(interface_simple_name)s<%(element_type_name)s>>() {
+    @Override
+    public com.google.common.collect.Immutable%(interface_simple_name)s<%(element_type_name)s> apply(final String value) {
+        final com.google.common.collect.Immutable%(interface_simple_name)s.Builder<%(element_type_name)s> sequenceBuilder = com.google.common.collect.Immutable%(interface_simple_name)s.builder();
+        for (final String elementString : value.split(",")) {
+            sequenceBuilder.add(%(element_from_string)s);
+        }
+        return sequenceBuilder.build();
+    }
+}).apply(%(value)s.toString())""" % locals()
+
     def java_name(self, boxed=False):
         return self.java_qname(boxed=boxed)
 
@@ -100,7 +116,7 @@ class _JavaSequenceType(_JavaContainerType):
 
     def java_read_protocol(self):
         element_read_protocol = self.element_type.java_read_protocol()
-        add_element = "sequence.add(%(element_read_protocol)s);" % locals()
+        add_element = "sequenceBuilder.add(%(element_read_protocol)s);" % locals()
         element_read_protocol_throws = self.element_type.java_read_protocol_throws_checked() + self.element_type.java_read_protocol_throws_unchecked()
         if len(element_read_protocol_throws) > 0:
             add_element = indent(' ' * 4, add_element)
@@ -124,12 +140,12 @@ try {
     public com.google.common.collect.Immutable%(interface_simple_name)s<%(element_type_name)s> apply(final org.thryft.protocol.InputProtocol iprot) {
         try {
             final org.thryft.protocol.%(interface_simple_name)sBegin sequenceBegin = iprot.read%(interface_simple_name)sBegin();
-            final com.google.common.collect.Immutable%(interface_simple_name)s.Builder<%(element_type_name)s> sequence = com.google.common.collect.Immutable%(interface_simple_name)s.builder();
+            final com.google.common.collect.Immutable%(interface_simple_name)s.Builder<%(element_type_name)s> sequenceBuilder = com.google.common.collect.Immutable%(interface_simple_name)s.builder();
             for (int elementI = 0; elementI < sequenceBegin.getSize(); elementI++) {
 %(add_element)s
             }
             iprot.read%(interface_simple_name)sEnd();
-            return sequence.build();
+            return sequenceBuilder.build();
         } catch (final org.thryft.protocol.InputProtocolException e) {
             throw new org.thryft.protocol.UncheckedInputProtocolException(e);
         }

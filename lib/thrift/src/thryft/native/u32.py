@@ -69,7 +69,7 @@ class u32(object):
         return True
 
     def java_literal(self, value):
-        assert isinstance(value, (int, long))
+        assert isinstance(value, (int, long)), type(value)
         if value == 0:
             return 'com.google.common.primitives.UnsignedInteger.ZERO'
         elif value == 1:

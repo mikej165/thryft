@@ -90,7 +90,7 @@ class JavaMapType(MapType, _JavaContainerType):
         return "com.google.common.collect.ImmutableMap.<%s, %s> of(%s)" % (
             self.key_type.java_qname(boxed=True),
             self.value_type.java_qname(boxed=True),
-            ', '.join(self.key_type.java_literal(key) + ', ' + self.value_type.java_literal(value_) for key, value_ in value.iteritems())
+            ', '.join(self.key_type.java_literal(key) + ', ' + self.value_type.java_literal(value_) for key, value_ in value)
         )
 
     def java_name(self, boxed=False):

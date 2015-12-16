@@ -112,7 +112,7 @@ class Document(_NamedConstruct):
         raise NotImplementedError(class_qname(self))
 
     def _save_to_file_helper(self, out_file_contents, out_file_path):
-        if len(out_file_contents) == 0:
+        if out_file_contents is None or len(out_file_contents) == 0:
             return
 
         out_dir_path = os.path.split(out_file_path)[0]

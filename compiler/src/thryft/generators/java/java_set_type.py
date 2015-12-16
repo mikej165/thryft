@@ -35,4 +35,5 @@ from thryft.generators.java._java_sequence_type import _JavaSequenceType
 
 
 class JavaSetType(SetType, _JavaSequenceType):
-    pass
+    def java_repr(self):
+        return ''

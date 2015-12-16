@@ -428,7 +428,7 @@ class Ast(object):
     class ListLiteralNode(_LiteralNode):
         def __init__(self, **kwds):
             Ast._LiteralNode.__init__(self, **kwds)
-            assert isinstance(self.value, tuple)
+            assert isinstance(self.value, tuple), type(self.value)
 
     class ListTypeNode(_SequenceTypeNode):
         def __init__(self, element_type, **kwds):
@@ -437,7 +437,10 @@ class Ast(object):
     class MapLiteralNode(_LiteralNode):
         def __init__(self, **kwds):
             Ast._LiteralNode.__init__(self, **kwds)
-            assert isinstance(self.value, dict)
+            assert isinstance(self.value, tuple), type(self.value)
+            for item in self.value:
+                assert isinstance(item, tuple), type(item)
+                assert len(item) == 2, len(item)
 
     class MapTypeNode(TypeNode):
         def __init__(self, key_type, value_type, **kwds):

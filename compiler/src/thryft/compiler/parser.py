@@ -416,7 +416,7 @@ class Parser(GenericParser):
             if id_ <= 0:
                 raise ParseException("expected positive int for field id '%d'" % id_, token=start_token)
         if args[-1] is not None:
-            value = args[-1].value
+            value = args[-1]
         return \
             Ast.FieldNode(
                 id_=id_,
@@ -667,7 +667,10 @@ class Parser(GenericParser):
         return self.__dispatch(self.__p_list_literal, args)
 
     def __p_list_literal(self, args):
-        return Ast.ListLiteralNode(start_token=args[0], stop_token=args[-1], value=args[1])
+        value = args[1]
+        if not isinstance(value, tuple):
+            value = (value,)
+        return Ast.ListLiteralNode(start_token=args[0], stop_token=args[-1], value=value)
 
     def p_list_literal_body(self, args):
         '''
@@ -732,7 +735,10 @@ class Parser(GenericParser):
         return self.__dispatch(self.__p_map_literal, args)
 
     def __p_map_literal(self, args):
-        return Ast.MapLiteralNode(start_token=args[0], stop_token=args[-1], value=args[1])
+        value = args[1]
+        if len(value) == 2 and not isinstance(value[0], tuple) and not isinstance(value[1], tuple):
+            value = (value,)
+        return Ast.MapLiteralNode(start_token=args[0], stop_token=args[-1], value=value)
 
     def p_map_literal_item(self, args):
         '''
@@ -754,7 +760,7 @@ class Parser(GenericParser):
         if len(args) == 1:
             return args[0]
         else:
-            return dict(args[i] for i in xrange(0, len(args), 2))
+            return tuple(args[i] for i in xrange(0, len(args), 2))
 
     def p_map_type(self, args):
         '''
