@@ -52,9 +52,12 @@ public abstract class ProtocolTest {
         _test(ProtocolTestStruct.builder().setBoolField(true));
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void testDateTime() throws Exception {
         _test(ProtocolTestStruct.builder().setDateTimeField(new Date()));
+        final Date oldDate = new Date(-21, 1, 1);
+        _test(ProtocolTestStruct.builder().setDateTimeField(oldDate));
     }
 
     @Test
