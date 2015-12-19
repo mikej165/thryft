@@ -52,6 +52,7 @@ class _ProtocolTest(unittest.TestCase):
 
     def test_date_time(self):
         self._test(ProtocolTestStruct(date_time_field=datetime.now().replace(microsecond=0), **self.__REQUIRED_FIELDS))
+        self._test(ProtocolTestStruct(date_time_field=datetime(year=1879, month=1, day=1), **self.__REQUIRED_FIELDS))
 
     def test_decimal(self):
         self._test(ProtocolTestStruct(decimal_field=Decimal(100), **self.__REQUIRED_FIELDS))
