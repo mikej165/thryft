@@ -36,10 +36,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.text.DateFormat;
 import java.util.Date;
 
 import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import com.google.common.annotations.GwtIncompatible;
 
 @GwtIncompatible("")
@@ -73,7 +73,7 @@ public class JacksonJsonOutputProtocol extends JsonOutputProtocol {
                 if (value.getTime() >= 0) {
                     delegate.writeNumber(value.getTime());
                 } else {
-                    delegate.writeString(DateFormat.getDateTimeInstance().format(value));
+                    delegate.writeString(new ISO8601DateFormat().format(value));
                 }
             } catch (final IOException e) {
                 throw new OutputProtocolException(e);

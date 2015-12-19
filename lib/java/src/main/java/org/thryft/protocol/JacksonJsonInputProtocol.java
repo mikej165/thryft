@@ -39,7 +39,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.Iterator;
@@ -50,6 +49,7 @@ import org.apache.commons.codec.binary.Base64;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.TextNode;
+import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import com.google.common.annotations.GwtIncompatible;
 
 @GwtIncompatible("")
@@ -72,7 +72,7 @@ public class JacksonJsonInputProtocol extends JsonInputProtocol<JacksonJsonInput
                 return new Date(childNode.asLong());
             } else if (childNode.isTextual()) {
                 try {
-                    return DateFormat.getDateTimeInstance().parse(childNode.asText());
+                    return new ISO8601DateFormat().parse(childNode.asText());
                 } catch (final ParseException e) {
                     throw new InputProtocolException(e);
                 }
