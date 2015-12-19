@@ -44,7 +44,7 @@ class JsonOutputProtocol(BuiltinsOutputProtocol):
         def write_date_time(self, value):
             try:
                 self._write_value(long(mktime(value.timetuple())) * 1000l)
-            except ValueError:
+            except (OverflowError, ValueError):
                 self._write_value(value.isoformat())
 
     class _ListOutputProtocol(BuiltinsOutputProtocol._ListOutputProtocol, _JsonOutputProtocol):
