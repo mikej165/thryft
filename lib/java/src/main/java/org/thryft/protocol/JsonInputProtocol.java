@@ -1,7 +1,7 @@
 package org.thryft.protocol;
 
 public abstract class JsonInputProtocol<InputProtocolT extends JsonInputProtocol<?>.NestedInputProtocol>
-extends StackedInputProtocol<InputProtocolT> {
+        extends StackedInputProtocol<InputProtocolT> {
     public abstract class NestedInputProtocol extends AbstractInputProtocol {
         public abstract Type getType();
 

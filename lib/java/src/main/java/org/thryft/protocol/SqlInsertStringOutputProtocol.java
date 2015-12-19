@@ -3,6 +3,7 @@ package org.thryft.protocol;
 import static org.thryft.Preconditions.checkNotEmpty;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import com.google.common.annotations.GwtIncompatible;
@@ -15,8 +16,7 @@ public final class SqlInsertStringOutputProtocol extends AbstractOutputProtocol 
         this(tableName, ImmutableList.<String> of());
     }
 
-    public SqlInsertStringOutputProtocol(final String tableName,
-            final Collection<String> extraColumnNames) {
+    public SqlInsertStringOutputProtocol(final String tableName, final Collection<String> extraColumnNames) {
         columnNames.addAll(extraColumnNames);
         this.tableName = checkNotEmpty(tableName);
     }
@@ -61,12 +61,15 @@ public final class SqlInsertStringOutputProtocol extends AbstractOutputProtocol 
     }
 
     @Override
+    public void writeDateTime(final Date value) throws OutputProtocolException {
+    }
+
+    @Override
     public void writeDouble(final double value) throws OutputProtocolException {
     }
 
     @Override
-    public void writeFieldBegin(final String name, final Type type,
-            final short id) throws OutputProtocolException {
+    public void writeFieldBegin(final String name, final Type type, final short id) throws OutputProtocolException {
         if (depth == 1) {
             switch (type) {
             case LIST:
@@ -101,8 +104,7 @@ public final class SqlInsertStringOutputProtocol extends AbstractOutputProtocol 
     }
 
     @Override
-    public void writeListBegin(final Type elementType, final int size)
-            throws OutputProtocolException {
+    public void writeListBegin(final Type elementType, final int size) throws OutputProtocolException {
         depth++;
     }
 
@@ -112,8 +114,7 @@ public final class SqlInsertStringOutputProtocol extends AbstractOutputProtocol 
     }
 
     @Override
-    public void writeMapBegin(final Type keyType, final Type valueType,
-            final int size) throws OutputProtocolException {
+    public void writeMapBegin(final Type keyType, final Type valueType, final int size) throws OutputProtocolException {
         depth++;
     }
 
@@ -131,8 +132,7 @@ public final class SqlInsertStringOutputProtocol extends AbstractOutputProtocol 
     }
 
     @Override
-    public void writeStructBegin(final String name)
-            throws OutputProtocolException {
+    public void writeStructBegin(final String name) throws OutputProtocolException {
         depth++;
     }
 

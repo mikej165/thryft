@@ -37,6 +37,7 @@ import static org.thryft.Preconditions.checkNotEmpty;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -88,6 +89,11 @@ public class StringMapInputProtocol extends StackedInputProtocol<StringMapInputP
         @Override
         public final byte readByte() throws InputProtocolException {
             return Byte.parseByte(readString());
+        }
+
+        @Override
+        public Date readDateTime() throws InputProtocolException {
+            return new Date(readI64());
         }
 
         @Override

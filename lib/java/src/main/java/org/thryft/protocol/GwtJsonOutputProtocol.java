@@ -35,6 +35,8 @@ package org.thryft.protocol;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
+import java.util.Date;
+
 import org.thryft.protocol.GwtJsonOutputProtocol.NestedOutputProtocol;
 
 import com.google.gwt.json.client.JSONArray;
@@ -46,21 +48,17 @@ import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
 import com.googlecode.gwt.crypto.bouncycastle.util.encoders.Base64;
 
-public class GwtJsonOutputProtocol extends
-StackedOutputProtocol<NestedOutputProtocol> {
-    protected abstract class NestedOutputProtocol extends
-    AbstractOutputProtocol {
+public class GwtJsonOutputProtocol extends StackedOutputProtocol<NestedOutputProtocol> {
+    protected abstract class NestedOutputProtocol extends AbstractOutputProtocol {
         public abstract JSONValue getJsonValue();
 
         @Override
-        public void writeBinary(final byte[] value)
-                throws OutputProtocolException {
+        public void writeBinary(final byte[] value) throws OutputProtocolException {
             writeString(new String(Base64.encode(value)));
         }
 
         @Override
-        public void writeBool(final boolean value)
-                throws OutputProtocolException {
+        public void writeBool(final boolean value) throws OutputProtocolException {
             _write(JSONBoolean.getInstance(value));
         }
 
@@ -70,8 +68,16 @@ StackedOutputProtocol<NestedOutputProtocol> {
         }
 
         @Override
-        public void writeDouble(final double value)
-                throws OutputProtocolException {
+        public void writeDateTime(final Date value) throws OutputProtocolException {
+            if (value.getTime() >= 0l) {
+                _write(new JSONNumber(value.getTime()));
+            } else {
+                throw new UnsupportedOperationException();
+            }
+        }
+
+        @Override
+        public void writeDouble(final double value) throws OutputProtocolException {
             _write(new JSONNumber(value));
         }
 
@@ -91,8 +97,7 @@ StackedOutputProtocol<NestedOutputProtocol> {
         }
 
         @Override
-        public void writeListBegin(final Type elementType, final int size)
-                throws OutputProtocolException {
+        public void writeListBegin(final Type elementType, final int size) throws OutputProtocolException {
             final JSONArray array = new JSONArray();
             _write(array);
             _getOutputProtocolStack().push(__createArrayOutputProtocol(array));
@@ -103,12 +108,11 @@ StackedOutputProtocol<NestedOutputProtocol> {
         }
 
         @Override
-        public void writeMapBegin(final Type keyType, final Type valueType,
-                final int size) throws OutputProtocolException {
+        public void writeMapBegin(final Type keyType, final Type valueType, final int size)
+                throws OutputProtocolException {
             final JSONObject object = new JSONObject();
             _write(object);
-            _getOutputProtocolStack().push(
-                    __createMapObjectOutputProtocol(object));
+            _getOutputProtocolStack().push(__createMapObjectOutputProtocol(object));
         }
 
         @Override
@@ -121,18 +125,15 @@ StackedOutputProtocol<NestedOutputProtocol> {
         }
 
         @Override
-        public void writeString(final String value)
-                throws OutputProtocolException {
+        public void writeString(final String value) throws OutputProtocolException {
             _write(new JSONString(value));
         }
 
         @Override
-        public void writeStructBegin(final String name)
-                throws OutputProtocolException {
+        public void writeStructBegin(final String name) throws OutputProtocolException {
             final JSONObject object = new JSONObject();
             _write(object);
-            _getOutputProtocolStack().push(
-                    __createStructObjectOutputProtocol(object));
+            _getOutputProtocolStack().push(__createStructObjectOutputProtocol(object));
         }
 
         @Override
@@ -171,8 +172,7 @@ StackedOutputProtocol<NestedOutputProtocol> {
         }
 
         @Override
-        public void writeBool(final boolean value)
-                throws OutputProtocolException {
+        public void writeBool(final boolean value) throws OutputProtocolException {
             if (nextKey == null) {
                 writeString(Boolean.toString(value));
             } else {
@@ -190,8 +190,7 @@ StackedOutputProtocol<NestedOutputProtocol> {
         }
 
         @Override
-        public void writeDouble(final double value)
-                throws OutputProtocolException {
+        public void writeDouble(final double value) throws OutputProtocolException {
             if (nextKey == null) {
                 writeString(Double.toString(value));
             } else {
@@ -227,8 +226,7 @@ StackedOutputProtocol<NestedOutputProtocol> {
         }
 
         @Override
-        public void writeListBegin(final Type elementType, final int size)
-                throws OutputProtocolException {
+        public void writeListBegin(final Type elementType, final int size) throws OutputProtocolException {
             if (nextKey == null) {
                 throw new UnsupportedOperationException();
             } else {
@@ -237,8 +235,8 @@ StackedOutputProtocol<NestedOutputProtocol> {
         }
 
         @Override
-        public void writeMapBegin(final Type keyType, final Type valueType,
-                final int size) throws OutputProtocolException {
+        public void writeMapBegin(final Type keyType, final Type valueType, final int size)
+                throws OutputProtocolException {
             if (nextKey == null) {
                 throw new UnsupportedOperationException();
             } else {
@@ -256,8 +254,7 @@ StackedOutputProtocol<NestedOutputProtocol> {
         }
 
         @Override
-        public void writeString(final String value)
-                throws OutputProtocolException {
+        public void writeString(final String value) throws OutputProtocolException {
             if (nextKey == null) {
                 nextKey = value;
             } else {
@@ -266,8 +263,7 @@ StackedOutputProtocol<NestedOutputProtocol> {
         }
 
         @Override
-        public void writeStructBegin(final String name)
-                throws OutputProtocolException {
+        public void writeStructBegin(final String name) throws OutputProtocolException {
             if (nextKey == null) {
                 throw new UnsupportedOperationException();
             } else {
@@ -302,8 +298,7 @@ StackedOutputProtocol<NestedOutputProtocol> {
 
         @Override
         protected void _write(final JSONValue value) {
-            checkState(value instanceof JSONArray
-                    || value instanceof JSONObject);
+            checkState(value instanceof JSONArray || value instanceof JSONObject);
             this.value = value;
         }
 
@@ -321,8 +316,7 @@ StackedOutputProtocol<NestedOutputProtocol> {
         }
 
         @Override
-        public void writeFieldBegin(final String name, final Type type,
-                final short id) throws OutputProtocolException {
+        public void writeFieldBegin(final String name, final Type type, final short id) throws OutputProtocolException {
             nextFieldName = name;
         }
 
@@ -361,13 +355,11 @@ StackedOutputProtocol<NestedOutputProtocol> {
         }
     }
 
-    private ArrayOutputProtocol __createArrayOutputProtocol(
-            final JSONArray array) {
+    private ArrayOutputProtocol __createArrayOutputProtocol(final JSONArray array) {
         return new ArrayOutputProtocol(array);
     }
 
-    private MapObjectOutputProtocol __createMapObjectOutputProtocol(
-            final JSONObject object) {
+    private MapObjectOutputProtocol __createMapObjectOutputProtocol(final JSONObject object) {
         return new MapObjectOutputProtocol(object);
     }
 
@@ -375,8 +367,7 @@ StackedOutputProtocol<NestedOutputProtocol> {
         return new RootOutputProtocol();
     }
 
-    private StructObjectOutputProtocol __createStructObjectOutputProtocol(
-            final JSONObject object) {
+    private StructObjectOutputProtocol __createStructObjectOutputProtocol(final JSONObject object) {
         return new StructObjectOutputProtocol(object);
     }
 }

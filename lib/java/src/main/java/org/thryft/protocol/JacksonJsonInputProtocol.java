@@ -39,6 +39,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Stack;
 
@@ -50,11 +53,9 @@ import com.fasterxml.jackson.databind.node.TextNode;
 import com.google.common.annotations.GwtIncompatible;
 
 @GwtIncompatible("")
-public class JacksonJsonInputProtocol extends
-        JsonInputProtocol<JacksonJsonInputProtocol.NestedInputProtocol> {
+public class JacksonJsonInputProtocol extends JsonInputProtocol<JacksonJsonInputProtocol.NestedInputProtocol> {
     public abstract class NestedInputProtocol
-    extends
-    JsonInputProtocol<JacksonJsonInputProtocol.NestedInputProtocol>.NestedInputProtocol {
+            extends JsonInputProtocol<JacksonJsonInputProtocol.NestedInputProtocol>.NestedInputProtocol {
         private NestedInputProtocol(final JsonNode node) {
             myNode = node;
         }
@@ -62,6 +63,22 @@ public class JacksonJsonInputProtocol extends
         @Override
         public boolean readBool() throws InputProtocolException {
             return _readChildNode().asBoolean();
+        }
+
+        @Override
+        public Date readDateTime() throws InputProtocolException {
+            final JsonNode childNode = _readChildNode();
+            if (childNode.isNumber()) {
+                return new Date(childNode.asLong());
+            } else if (childNode.isTextual()) {
+                try {
+                    return DateFormat.getDateTimeInstance().parse(childNode.asText());
+                } catch (final ParseException e) {
+                    throw new InputProtocolException(e);
+                }
+            } else {
+                throw new InputProtocolException("expected JSON number or string");
+            }
         }
 
         @Override
@@ -167,8 +184,7 @@ public class JacksonJsonInputProtocol extends
     private final class MapObjectInputProtocol extends NestedInputProtocol {
         public MapObjectInputProtocol(final JsonNode node) {
             super(node);
-            for (final Iterator<String> fieldName = node.fieldNames(); fieldName
-                    .hasNext();) {
+            for (final Iterator<String> fieldName = node.fieldNames(); fieldName.hasNext();) {
                 fieldNameStack.add(fieldName.next());
             }
         }
@@ -212,8 +228,7 @@ public class JacksonJsonInputProtocol extends
     private final class StructObjectInputProtocol extends NestedInputProtocol {
         public StructObjectInputProtocol(final JsonNode node) {
             super(node);
-            for (final Iterator<String> fieldName = node.fieldNames(); fieldName
-                    .hasNext();) {
+            for (final Iterator<String> fieldName = node.fieldNames(); fieldName.hasNext();) {
                 fieldNameStack.add(fieldName.next());
             }
         }
@@ -274,8 +289,7 @@ public class JacksonJsonInputProtocol extends
         private final Stack<String> fieldNameStack = new Stack<String>();
     }
 
-    private static JsonNode __readTree(final Reader reader)
-            throws InputProtocolException {
+    private static JsonNode __readTree(final Reader reader) throws InputProtocolException {
         try {
             return new ObjectMapper().readTree(reader);
         } catch (final IOException e) {
@@ -283,8 +297,7 @@ public class JacksonJsonInputProtocol extends
         }
     }
 
-    public JacksonJsonInputProtocol(final InputStream inputStream)
-            throws InputProtocolException {
+    public JacksonJsonInputProtocol(final InputStream inputStream) throws InputProtocolException {
         this(new InputStreamReader(inputStream));
     }
 
@@ -293,13 +306,11 @@ public class JacksonJsonInputProtocol extends
         _getInputProtocolStack().push(new RootInputProtocol(rootNode));
     }
 
-    public JacksonJsonInputProtocol(final Reader reader)
-            throws InputProtocolException {
+    public JacksonJsonInputProtocol(final Reader reader) throws InputProtocolException {
         this(__readTree(reader));
     }
 
-    public JacksonJsonInputProtocol(final String json)
-            throws InputProtocolException {
+    public JacksonJsonInputProtocol(final String json) throws InputProtocolException {
         this(new StringReader(json));
     }
 

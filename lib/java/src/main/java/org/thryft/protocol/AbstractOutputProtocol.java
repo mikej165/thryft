@@ -114,11 +114,6 @@ public abstract class AbstractOutputProtocol implements OutputProtocol {
     }
 
     @Override
-    public void writeDateTime(final Date value) throws OutputProtocolException {
-        writeI64(value.getTime());
-    }
-
-    @Override
     public void writeDecimal(final BigDecimal value) throws OutputProtocolException {
         writeString(value.toString());
     }

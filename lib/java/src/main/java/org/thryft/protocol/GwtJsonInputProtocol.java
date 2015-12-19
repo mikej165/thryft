@@ -35,6 +35,7 @@ package org.thryft.protocol;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.Stack;
 
 import org.thryft.protocol.GwtJsonInputProtocol.NestedInputProtocol;
@@ -48,11 +49,9 @@ import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
 import com.googlecode.gwt.crypto.bouncycastle.util.encoders.Base64;
 
-public class GwtJsonInputProtocol extends
-        JsonInputProtocol<NestedInputProtocol<?>> {
+public class GwtJsonInputProtocol extends JsonInputProtocol<NestedInputProtocol<?>> {
     abstract class NestedInputProtocol<JSONValueT extends JSONValue>
-            extends
-            JsonInputProtocol<NestedInputProtocol<JSONValueT>>.NestedInputProtocol {
+            extends JsonInputProtocol<NestedInputProtocol<JSONValueT>>.NestedInputProtocol {
         protected NestedInputProtocol(final JSONValueT node) {
             myNode = node;
         }
@@ -60,6 +59,18 @@ public class GwtJsonInputProtocol extends
         @Override
         public boolean readBool() throws InputProtocolException {
             return _readChildNode().isBoolean().booleanValue();
+        }
+
+        @Override
+        public Date readDateTime() throws InputProtocolException {
+            final JSONValue childNode = _readChildNode();
+            if (childNode.isNumber() != null) {
+                return new Date((long) childNode.isNumber().doubleValue());
+            } else if (childNode.isString() != null) {
+                throw new UnsupportedOperationException();
+            } else {
+                throw new InputProtocolException("expected JSON number or string");
+            }
         }
 
         @Override
@@ -140,8 +151,7 @@ public class GwtJsonInputProtocol extends
         private final JSONValueT myNode;
     }
 
-    private final class ArrayInputProtocol extends
-            NestedInputProtocol<JSONArray> {
+    private final class ArrayInputProtocol extends NestedInputProtocol<JSONArray> {
         public ArrayInputProtocol(final JSONArray node) {
             super(node);
         }
@@ -159,8 +169,7 @@ public class GwtJsonInputProtocol extends
         private int nextValueIndex = 0;
     }
 
-    private final class MapObjectInputProtocol extends
-            NestedInputProtocol<JSONObject> {
+    private final class MapObjectInputProtocol extends NestedInputProtocol<JSONObject> {
         public MapObjectInputProtocol(final JSONObject node) {
             super(node);
             fieldNameStack.addAll(node.keySet());
@@ -186,8 +195,7 @@ public class GwtJsonInputProtocol extends
         private boolean nextReadIsKey = true;
     }
 
-    private final class RootInputProtocol extends
-            NestedInputProtocol<JSONValue> {
+    private final class RootInputProtocol extends NestedInputProtocol<JSONValue> {
         protected RootInputProtocol(final JSONValue node) {
             super(node);
         }
@@ -203,8 +211,7 @@ public class GwtJsonInputProtocol extends
         }
     }
 
-    private final class StructObjectInputProtocol extends
-            NestedInputProtocol<JSONObject> {
+    private final class StructObjectInputProtocol extends NestedInputProtocol<JSONObject> {
         public StructObjectInputProtocol(final JSONObject node) {
             super(node);
             fieldNameStack.addAll(node.keySet());

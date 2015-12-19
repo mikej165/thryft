@@ -35,18 +35,12 @@ package org.thryft.protocol;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
-import java.util.Date;
 
 import com.google.common.annotations.GwtIncompatible;
 import com.google.common.primitives.UnsignedInteger;
 import com.google.common.primitives.UnsignedLong;
 
 public abstract class AbstractInputProtocol implements InputProtocol {
-    @Override
-    public Date readDateTime() throws InputProtocolException {
-        return new Date(readI64());
-    }
-
     @Override
     public BigDecimal readDecimal() throws InputProtocolException {
         try {

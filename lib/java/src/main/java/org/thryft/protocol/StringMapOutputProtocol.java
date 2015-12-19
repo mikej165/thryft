@@ -36,6 +36,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static org.thryft.Preconditions.checkNotEmpty;
 
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -62,6 +63,11 @@ public class StringMapOutputProtocol extends StackedOutputProtocol<StringMapOutp
         @Override
         public final void writeByte(final byte value) throws OutputProtocolException {
             writeString(Byte.toString(value));
+        }
+
+        @Override
+        public void writeDateTime(final Date value) throws OutputProtocolException {
+            writeI64(value.getTime());
         }
 
         @Override

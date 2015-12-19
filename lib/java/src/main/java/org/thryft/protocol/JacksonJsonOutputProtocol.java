@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.text.DateFormat;
 import java.util.Date;
 
 import com.fasterxml.jackson.core.JsonFactory;
@@ -44,8 +45,7 @@ import com.google.common.annotations.GwtIncompatible;
 @GwtIncompatible("")
 public class JacksonJsonOutputProtocol extends JsonOutputProtocol {
     private final static class JacksonJsonGenerator implements JsonGenerator {
-        private JacksonJsonGenerator(
-                final com.fasterxml.jackson.core.JsonGenerator delegate) {
+        private JacksonJsonGenerator(final com.fasterxml.jackson.core.JsonGenerator delegate) {
             this.delegate = delegate;
         }
 
@@ -59,8 +59,7 @@ public class JacksonJsonOutputProtocol extends JsonOutputProtocol {
         }
 
         @Override
-        public void writeBoolean(final boolean value)
-                throws OutputProtocolException {
+        public void writeBoolean(final boolean value) throws OutputProtocolException {
             try {
                 delegate.writeBoolean(value);
             } catch (final IOException e) {
@@ -69,10 +68,13 @@ public class JacksonJsonOutputProtocol extends JsonOutputProtocol {
         }
 
         @Override
-        public void writeDateTime(final Date value)
-                throws OutputProtocolException {
+        public void writeDateTime(final Date value) throws OutputProtocolException {
             try {
-                delegate.writeNumber(value.getTime());
+                if (value.getTime() >= 0) {
+                    delegate.writeNumber(value.getTime());
+                } else {
+                    delegate.writeString(DateFormat.getDateTimeInstance().format(value));
+                }
             } catch (final IOException e) {
                 throw new OutputProtocolException(e);
             }
@@ -97,8 +99,7 @@ public class JacksonJsonOutputProtocol extends JsonOutputProtocol {
         }
 
         @Override
-        public void writeFieldName(final String value)
-                throws OutputProtocolException {
+        public void writeFieldName(final String value) throws OutputProtocolException {
             try {
                 delegate.writeFieldName(value);
             } catch (final IOException e) {
@@ -116,8 +117,7 @@ public class JacksonJsonOutputProtocol extends JsonOutputProtocol {
         }
 
         @Override
-        public void writeNumber(final double value)
-                throws OutputProtocolException {
+        public void writeNumber(final double value) throws OutputProtocolException {
             try {
                 delegate.writeNumber(value);
             } catch (final IOException e) {
@@ -135,8 +135,7 @@ public class JacksonJsonOutputProtocol extends JsonOutputProtocol {
         }
 
         @Override
-        public void writeNumber(final long value)
-                throws OutputProtocolException {
+        public void writeNumber(final long value) throws OutputProtocolException {
             try {
                 delegate.writeNumber(value);
             } catch (final IOException e) {
@@ -163,8 +162,7 @@ public class JacksonJsonOutputProtocol extends JsonOutputProtocol {
         }
 
         @Override
-        public void writeString(final String value)
-                throws OutputProtocolException {
+        public void writeString(final String value) throws OutputProtocolException {
             try {
                 delegate.writeString(value);
             } catch (final IOException e) {
@@ -175,11 +173,9 @@ public class JacksonJsonOutputProtocol extends JsonOutputProtocol {
         private final com.fasterxml.jackson.core.JsonGenerator delegate;
     }
 
-    private static JsonGenerator __createJsonGenerator(final Writer writer)
-            throws OutputProtocolException {
+    private static JsonGenerator __createJsonGenerator(final Writer writer) throws OutputProtocolException {
         try {
-            return new JacksonJsonGenerator(
-                    new JsonFactory().createGenerator(writer));
+            return new JacksonJsonGenerator(new JsonFactory().createGenerator(writer));
         } catch (final IOException e) {
             throw new OutputProtocolException(e);
         }
@@ -189,13 +185,11 @@ public class JacksonJsonOutputProtocol extends JsonOutputProtocol {
         super(generator);
     }
 
-    public JacksonJsonOutputProtocol(final OutputStream outputStream)
-            throws OutputProtocolException {
+    public JacksonJsonOutputProtocol(final OutputStream outputStream) throws OutputProtocolException {
         this(new OutputStreamWriter(outputStream));
     }
 
-    public JacksonJsonOutputProtocol(final Writer writer)
-            throws OutputProtocolException {
+    public JacksonJsonOutputProtocol(final Writer writer) throws OutputProtocolException {
         this(__createJsonGenerator(writer));
     }
 }
