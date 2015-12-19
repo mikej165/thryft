@@ -82,7 +82,7 @@ class JsonRpcClientPyGenerator(py_generator.PyGenerator):
                 parameter_writes = ''.join(parameter.py_write_protocol(value=parameter.py_name())
                                              for parameter in self.parameters)
                 construct_params = indent(' ' * 4, """
-oprot = thryft.protocol.builtins_output_protocol.BuiltinsOutputProtocol()
+oprot = thryft.protocol.json_output_protocol.JsonOutputProtocol()
 oprot.write_struct_begin()
 %(parameter_writes)soprot.write_struct_end()
 
@@ -102,8 +102,8 @@ def _%(name)s(
         def py_imports_definition(self, caller_stack=None):
             imports = [
                     'import ' + PyService.py_qname(self).rsplit('.', 1)[0],
-                    'import thryft.protocol.builtins_input_protocol',
-                    'import thryft.protocol.builtins_output_protocol',
+                    'import thryft.protocol.json_input_protocol',
+                    'import thryft.protocol.json_output_protocol',
                     'from urlparse import urlparse',
                     'import base64',
                     'import json',
@@ -242,7 +242,7 @@ def __request(self, method, params, headers=None):
             if exception_class is not None and issubclass(exception_class, Exception):
                 data = error.get('data')
                 if isinstance(data, dict):
-                    data_iprot = thryft.protocol.builtins_input_protocol.BuiltinsInputProtocol(data)
+                    data_iprot = thryft.protocol.json_input_protocol.JsonInputProtocol(data)
                     exception_ = exception_class.read(data_iprot)
                     raise exception_
                 else:
