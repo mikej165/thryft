@@ -185,6 +185,23 @@ public Builder setIfPresent(final %(name)s other) {
                     setters[field.java_setter_name() + str(field_setter_i)] = field_setter
             return setters
 
+        def _java_method_unset_name(self):
+            cases = []
+            for field in self.fields:
+                field_name = field.name
+                field_name_upper_camelized = upper_camelize(field_name)
+                cases.append('case "%(field_name)s": return unset%(field_name_upper_camelized)s();' % locals())
+            cases = lpad("\n", "\n".join(indent(' ' * 4, cases)))
+            return {'unset_name': """\
+public Builder unset(final String name) {
+    com.google.common.base.Preconditions.checkNotNull(name);
+
+    switch (name.toLowerCase()) {%(cases)s
+    default:
+        throw new IllegalArgumentException(name);
+    }
+}""" % locals()}
+
         def _java_method_unsetters(self):
             unsetters = {}
             for field in self.fields:
@@ -202,6 +219,7 @@ public Builder setIfPresent(final %(name)s other) {
             methods.update(self._java_method_set_if_present())
             methods.update(self._java_method_set_name_value())
             methods.update(self._java_method_setters())
+            methods.update(self._java_method_unset_name())
             methods.update(self._java_method_unsetters())
             return methods
 
@@ -573,7 +591,7 @@ public static Builder builder(final com.google.common.base.Optional<%(name)s> ot
 #     return 0;
 # }""" % locals()}
 
-    def _java_method_equals(self, name=None):
+    def _java_method_equals(self, name=None, nullable=False):
         if name is None:
             name = self.java_name()
 
@@ -581,7 +599,7 @@ public static Builder builder(final com.google.common.base.Optional<%(name)s> ot
         for field in self.fields:
             field_equal_tests.append(
                 field.java_equals(field.java_getter_name() + '()',
-                                  'other.' + field.java_getter_name() + '()')
+                                  'other.' + field.java_getter_name() + '()', nullable=nullable)
             )
         if len(field_equal_tests) > 0:
             field_equal_tests = \

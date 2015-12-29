@@ -86,9 +86,12 @@ if (this.%(name)s.isPresent()) {
         else:
             return self.type.java_default_value()
 
-    def java_equals(self, this_value, other_value):
+    def java_equals(self, this_value, other_value, nullable=False):
         if not self.required:
-            return "%(this_value)s.equals(%(other_value)s)" % locals()
+            if nullable:
+                return "(%(this_value)s != null ? %(this_value)s.equals(%(other_value)s) : %(other_value)s == null)" % locals()
+            else:
+                return "%(this_value)s.equals(%(other_value)s)" % locals()
         else:
             return self.type.java_equals(this_value, other_value)
 
