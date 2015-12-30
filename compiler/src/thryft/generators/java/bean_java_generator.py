@@ -291,8 +291,8 @@ public %(name)s(final %(immutable_name)s other) {%(initializers)s
 
         def _java_methods(self):
             methods = {}
-#             methods.update(self._java_method_compare_to(name=self.java_bean_name()))
             methods.update(self._java_method_equals(name=self.java_bean_name(), nullable=True))
+            methods.update(self._java_method_get())
             methods.update(self._java_method_getters())
             methods.update(self._java_method_hash_code())
             methods.update(self._java_method_setters())
@@ -317,7 +317,7 @@ public %(name)s(final %(immutable_name)s other) {%(initializers)s
             sections.append("\n\n".join(indent(' ' * 4, self._java_member_declarations())))
             sections = lpad("\n", "\n\n".join(section for section in sections if len(section) > 0))
             return """\
-%(javadoc)spublic class %(name)s {%(sections)s
+%(javadoc)spublic class %(name)s implements org.thryft.StructBean {%(sections)s
 }""" % locals()
 
     class Typedef(JavaGenerator.Typedef):  # @UndefinedVariable
