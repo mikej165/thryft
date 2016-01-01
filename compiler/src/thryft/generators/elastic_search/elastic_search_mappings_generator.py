@@ -25,7 +25,7 @@ class ElasticSearchMappingsGenerator(Generator):
             if self._parent_generator()._settings is not None:
                 out['settings'] = self._parent_generator()._settings
             out['mappings'] = self.definitions[0].elastic_search_mappings_dict()
-            return json.dumps({self._parent_generator()._index_name: out}, indent=2).replace("\r\n", "\n")
+            return json.dumps(out, indent=2).replace("\r\n", "\n")
 
         def _save_to_file(self, out_file_path):
             return self._save_to_file_helper(self.elastic_search_mappings_json(), out_file_path)
@@ -111,9 +111,8 @@ class ElasticSearchMappingsGenerator(Generator):
 
             return mappings
 
-    def __init__(self, index_name, settings=None, template=None):
+    def __init__(self, settings=None, template=None):
         Generator.__init__(self)
-        self._index_name = index_name
         if settings is not None and not isinstance(settings, dict):
             raise TypeError('settings must be a dict')
         self._settings = settings
