@@ -634,18 +634,42 @@ public boolean equals(final java.lang.Object otherObject) {
 }""" % locals()}
 
     def _java_method_get(self):
+        if len(self.fields) == 0:
+            return {'get': """\
+@Override
+public java.lang.Object get(final String fieldThriftName) {
+    throw new IllegalArgumentException(fieldThriftName);
+}
+
+@Override
+public java.lang.Object get(final org.thryft.CompoundType.FieldMetadata fieldMetadata) {
+    throw new IllegalArgumentException();
+}"""}
+
         field_cases = []
         for field in self.fields:
-            field_name = field.name
+            field_name_upper = field.name.upper()
             field_getter_name = field.java_getter_name()
-            field_cases.append('case "%(field_name)s": return %(field_getter_name)s();' % locals())
+            field_cases.append('case %(field_name_upper)s: return %(field_getter_name)s();' % locals())
         field_cases = lpad("\n", indent(' ' * 4, "\n".join(field_cases)))
         return {'get': """\
 @Override
-public java.lang.Object get(final String fieldName) {
-    switch (fieldName) {%(field_cases)s
+public java.lang.Object get(final String fieldThriftName) {
+    return get(FieldMetadata.valueOfThriftName(fieldThriftName));
+}
+
+@Override
+public java.lang.Object get(final org.thryft.CompoundType.FieldMetadata fieldMetadata) {
+    if (!(fieldMetadata instanceof FieldMetadata)) {
+        throw new IllegalArgumentException();
+    }
+    return get((FieldMetadata)fieldMetadata);
+}
+
+public java.lang.Object get(final FieldMetadata fieldMetadata) {
+    switch (fieldMetadata) {%(field_cases)s
     default:
-        throw new IllegalArgumentException(fieldName);
+        throw new IllegalStateException();
     }
 }""" % locals()}
 

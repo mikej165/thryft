@@ -22,7 +22,9 @@ public interface CompoundType {
         public boolean isRequired();
     }
 
-    public Object get(final String fieldName);
+    public Object get(final FieldMetadata fieldMetadata);
+
+    public Object get(final String fieldThriftName);
 
     public void writeAsList(OutputProtocol oprot) throws OutputProtocolException;
 
