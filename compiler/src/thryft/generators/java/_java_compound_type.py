@@ -698,7 +698,7 @@ public int hashCode() {
                     break
                 field_clauses.append(field.java_is_absent())
             assert len(field_clauses) > 0
-            field_clauses = ' || '.join(field_clauses)
+            field_clauses = ' && '.join(field_clauses)
         else:
             field_clauses = 'true'
         return {'isEmpty': """\
