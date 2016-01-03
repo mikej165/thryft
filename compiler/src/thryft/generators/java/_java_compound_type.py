@@ -942,6 +942,9 @@ public void writeFields(final org.thryft.protocol.OutputProtocol oprot) throws o
         methods.update(self._java_method_write_fields())
         return methods
 
+    def java_precondition_name(self):
+        return 'CompoundType'
+
     def java_qname(self, boxed=False, **kwds):
         return _JavaNamedConstruct.java_qname(self, name=self.name, **kwds)
 

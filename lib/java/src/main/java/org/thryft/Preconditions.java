@@ -96,6 +96,24 @@ public final class Preconditions {
         return collection;
     }
 
+    public static <CompoundTypeT extends CompoundType> CompoundTypeT checkCompoundTypeNotEmpty(
+            final CompoundTypeT compoundType) {
+        return checkCompoundTypeNotEmpty(compoundType, null);
+    }
+
+    public static <CompoundTypeT extends CompoundType> CompoundTypeT checkCompoundTypeNotEmpty(
+            final CompoundTypeT compoundType, @Nullable final Object errorMessage) {
+        checkNotNull(compoundType, errorMessage);
+        if (compoundType.isEmpty()) {
+            if (errorMessage != null) {
+                throw new IllegalArgumentException(String.valueOf(errorMessage));
+            } else {
+                throw new IllegalArgumentException();
+            }
+        }
+        return compoundType;
+    }
+
     public static <MapT extends Map<?, ?>> MapT checkMapNotEmpty(final MapT map) {
         return checkMapNotEmpty(map, null);
     }
@@ -246,6 +264,19 @@ public final class Preconditions {
             checkCollectionNotEmpty(collection.get(), errorMessage);
         }
         return collection;
+    }
+
+    public static <CompoundTypeT extends CompoundType> Optional<CompoundTypeT> checkOptionalCompoundTypeNotEmpty(
+            final Optional<CompoundTypeT> compoundType) {
+        return checkOptionalCompoundTypeNotEmpty(compoundType, null);
+    }
+
+    public static <CompoundTypeT extends CompoundType> Optional<CompoundTypeT> checkOptionalCompoundTypeNotEmpty(
+            final Optional<CompoundTypeT> compoundType, @Nullable final Object errorMessage) {
+        if (compoundType.isPresent()) {
+            checkCompoundTypeNotEmpty(compoundType.get(), errorMessage);
+        }
+        return compoundType;
     }
 
     public static <MapT extends Map<?, ?>> Optional<MapT> checkOptionalMapNotEmpty(final Optional<MapT> map) {
