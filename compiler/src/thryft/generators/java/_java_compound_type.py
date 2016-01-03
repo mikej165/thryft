@@ -634,18 +634,42 @@ public boolean equals(final java.lang.Object otherObject) {
 }""" % locals()}
 
     def _java_method_get(self):
+        if len(self.fields) == 0:
+            return {'get': """\
+@Override
+public java.lang.Object get(final String fieldThriftName) {
+    throw new IllegalArgumentException(fieldThriftName);
+}
+
+@Override
+public java.lang.Object get(final org.thryft.CompoundType.FieldMetadata fieldMetadata) {
+    throw new IllegalArgumentException();
+}"""}
+
         field_cases = []
         for field in self.fields:
-            field_name = field.name
+            field_name_upper = field.name.upper()
             field_getter_name = field.java_getter_name()
-            field_cases.append('case "%(field_name)s": return %(field_getter_name)s();' % locals())
+            field_cases.append('case %(field_name_upper)s: return %(field_getter_name)s();' % locals())
         field_cases = lpad("\n", indent(' ' * 4, "\n".join(field_cases)))
         return {'get': """\
 @Override
-public java.lang.Object get(final String fieldName) {
-    switch (fieldName) {%(field_cases)s
+public java.lang.Object get(final String fieldThriftName) {
+    return get(FieldMetadata.valueOfThriftName(fieldThriftName));
+}
+
+@Override
+public java.lang.Object get(final org.thryft.CompoundType.FieldMetadata fieldMetadata) {
+    if (!(fieldMetadata instanceof FieldMetadata)) {
+        throw new IllegalArgumentException();
+    }
+    return get((FieldMetadata)fieldMetadata);
+}
+
+public java.lang.Object get(final FieldMetadata fieldMetadata) {
+    switch (fieldMetadata) {%(field_cases)s
     default:
-        throw new IllegalArgumentException(fieldName);
+        throw new IllegalStateException();
     }
 }""" % locals()}
 
@@ -663,6 +687,24 @@ public java.lang.Object get(final String fieldName) {
 public int hashCode() {
 %(statements)s
     return hashCode;
+}""" % locals()}
+
+    def _java_method_is_empty(self):
+        if len(self.fields) > 0:
+            field_clauses = []
+            for field in self.fields:
+                if field.required:
+                    field_clauses = ['false']
+                    break
+                field_clauses.append(field.java_is_absent())
+            assert len(field_clauses) > 0
+            field_clauses = ' && '.join(field_clauses)
+        else:
+            field_clauses = 'true'
+        return {'isEmpty': """\
+@Override
+public boolean isEmpty() {
+    return %(field_clauses)s;
 }""" % locals()}
 
     def _java_method_read_as(self):
@@ -887,6 +929,7 @@ public void writeFields(final org.thryft.protocol.OutputProtocol oprot) throws o
         methods.update(self._java_method_get())
         methods.update(self._java_method_getters())
         methods.update(self._java_method_hash_code())
+        methods.update(self._java_method_is_empty())
         methods.update(self._java_method_read_as())
         methods.update(self._java_method_read_as_list())
         methods.update(self._java_method_read_as_struct())
@@ -898,6 +941,9 @@ public void writeFields(final org.thryft.protocol.OutputProtocol oprot) throws o
         methods.update(self._java_method_write_as_struct())
         methods.update(self._java_method_write_fields())
         return methods
+
+    def java_precondition_name(self):
+        return 'CompoundType'
 
     def java_qname(self, boxed=False, **kwds):
         return _JavaNamedConstruct.java_qname(self, name=self.name, **kwds)

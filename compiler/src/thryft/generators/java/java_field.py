@@ -128,6 +128,10 @@ if (%s().isPresent()) {
     def java_initializer(self, **kwds):
         return 'this.' + self.java_name() + ' = ' + self.java_validation(**kwds) + ';'
 
+    def java_is_absent(self):
+        assert not self.required
+        return "!%s().isPresent()" % self.java_getter_name()
+
     def java_local_declaration(self, boxed=None, final=False):
         if self.value is not None:
             lhs = self.java_parameter(boxed=boxed)

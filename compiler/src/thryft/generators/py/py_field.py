@@ -30,6 +30,7 @@
 # OF SUCH DAMAGE.
 # -----------------------------------------------------------------------------
 
+from thryft.generator._compound_type import _CompoundType
 from thryft.generator.field import Field
 from thryft.generators.py._py_named_construct import _PyNamedConstruct
 from yutil import quote, indent
@@ -53,7 +54,7 @@ if not %(type_check)s:
                 validation = annotation.value.copy()
                 break
         min_length = validation.get('minLength')
-        if min_length is not None:
+        if min_length is not None and not isinstance(self.type, _CompoundType):
             check.append("""\
 if len(%(name)s) < %(min_length)d:
     raise ValueError("expected len(%(name)s) to be >= %(min_length)d, was %%d" %% len(%(name)s))""" % locals())
