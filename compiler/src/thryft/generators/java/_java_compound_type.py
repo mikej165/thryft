@@ -689,6 +689,24 @@ public int hashCode() {
     return hashCode;
 }""" % locals()}
 
+    def _java_method_is_empty(self):
+        if len(self.fields) > 0:
+            field_clauses = []
+            for field in self.fields:
+                if field.required:
+                    field_clauses = ['false']
+                    break
+                field_clauses.append(field.java_is_absent())
+            assert len(field_clauses) > 0
+            field_clauses = ' || '.join(field_clauses)
+        else:
+            field_clauses = 'true'
+        return {'isEmpty': """\
+@Override
+public boolean isEmpty() {
+    return %(field_clauses)s;
+}""" % locals()}
+
     def _java_method_read_as(self):
         name = self.java_name()
         return {'readAs': """\
@@ -911,6 +929,7 @@ public void writeFields(final org.thryft.protocol.OutputProtocol oprot) throws o
         methods.update(self._java_method_get())
         methods.update(self._java_method_getters())
         methods.update(self._java_method_hash_code())
+        methods.update(self._java_method_is_empty())
         methods.update(self._java_method_read_as())
         methods.update(self._java_method_read_as_list())
         methods.update(self._java_method_read_as_struct())

@@ -144,6 +144,10 @@ if (%s() != null) {
 }""" % (self.java_getter_name(), hashCode_update)
             return hashCode_update
 
+        def java_is_absent(self):
+            assert not self.required
+            return "%s() == null" % self.java_getter_name()
+
         def java_member_declaration(self, **kwds):
             javadoc = self.java_doc()
             name = self.java_name()
@@ -295,6 +299,7 @@ public %(name)s(final %(immutable_name)s other) {%(initializers)s
             methods.update(self._java_method_get())
             methods.update(self._java_method_getters())
             methods.update(self._java_method_hash_code())
+            methods.update(self._java_method_is_empty())
             methods.update(self._java_method_setters())
             methods.update(self._java_method_to_string())
             return methods

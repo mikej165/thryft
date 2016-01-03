@@ -60,6 +60,11 @@ public final class JsonRpcErrorResponse extends RuntimeException implements Comp
     }
 
     @Override
+    public Object get(final FieldMetadata fieldMetadata) {
+        throw new IllegalArgumentException();
+    }
+
+    @Override
     public Object get(final String fieldName) {
         throw new UnsupportedOperationException();
     }
@@ -71,6 +76,11 @@ public final class JsonRpcErrorResponse extends RuntimeException implements Comp
     @Override
     public int hashCode() {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return false;
     }
 
     @Override
