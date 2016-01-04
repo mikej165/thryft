@@ -151,7 +151,9 @@ public %(name)s(final org.thryft.protocol.InputProtocol iprot) throws org.thryft
         for parameter_i, parameter in enumerate(self.parameters):
             if parameter.required:
                 delegate_values.append(parameter.java_name())
-            elif parameter_i <= len(parameters):
+            elif parameter_i < len(parameters):
+                delegate_values.append(parameter.java_name())
+            else:
                 delegate_values.append(parameter.java_absent_value())
         delegate_values = ', '.join(delegate_values)
         parameters = ', '.join(parameters)
