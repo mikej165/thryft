@@ -66,20 +66,20 @@ public abstract class AbstractInputProtocol implements InputProtocol {
             try {
                 enumIntValue = Integer.parseInt(enumStringValue);
             } catch (final NumberFormatException e1) {
-                throw new InputProtocolException(e1);
+                throw e;
             }
 
             final Method valueOfMethod;
             try {
                 valueOfMethod = enumClass.getMethod("valueOf", Integer.class);
             } catch (final NoSuchMethodException | SecurityException e1) {
-                throw new InputProtocolException(e1);
+                throw e;
             }
 
             try {
                 return (E) valueOfMethod.invoke(null, enumIntValue);
             } catch (final IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {
-                throw new InputProtocolException(e1);
+                throw e;
             }
         }
     }
