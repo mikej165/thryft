@@ -65,6 +65,10 @@ class ElasticSearchMappingsGenerator(Generator):
         def elastic_search_mapping_dict(self):
             return self.element_type.elastic_search_mapping_dict()
 
+    class MapType(Generator.MapType):  # @UndefinedVariable
+        def elastic_search_mapping_dict(self):
+            return {'type': 'nested', 'dynamic': True}
+
     class StringType(Generator.StringType):  # @UndefinedVariable
         def elastic_search_mapping_dict(self):
             return {'type': 'string'}
