@@ -47,6 +47,8 @@ class ElasticSearchMappingsGenerator(Generator):
             for annotation in self.annotations:
                 if annotation.name == 'elastic_search_mapping':
                     out.update(annotation.value)
+            if out.get('index') == 'not_analyzed':
+                out.pop('analyzer', None)
             return out
 
     class DoubleType(Generator.DoubleType):  # @UndefinedVariable
