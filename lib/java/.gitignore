@@ -1,6 +1,5 @@
 *.class
 *.ear
-*.jar
 *.pyc
 store.properties
 store.properties.test
