@@ -1,5 +1,7 @@
 package org.thryft;
 
+import org.thryft.protocol.FieldBegin;
+import org.thryft.protocol.InputProtocolException;
 import org.thryft.protocol.OutputProtocol;
 import org.thryft.protocol.OutputProtocolException;
 
@@ -20,6 +22,10 @@ public interface CompoundType {
         public boolean hasThriftId();
 
         public boolean isRequired();
+    }
+
+    public interface UnknownFieldCallback {
+        public void apply(final FieldBegin field) throws InputProtocolException;
     }
 
     public Object get(final FieldMetadata fieldMetadata);

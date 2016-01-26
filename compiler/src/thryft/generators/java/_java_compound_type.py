@@ -131,6 +131,10 @@ public Builder readAsList(final org.thryft.protocol.InputProtocol iprot) throws 
             body = indent(' ' * 4, self.__java_compound_type._java_method_read_as_struct_body())
             return {'readAsStruct': """\
 public Builder readAsStruct(final org.thryft.protocol.InputProtocol iprot) throws org.thryft.protocol.InputProtocolException {
+    return readAsStruct(iprot, com.google.common.base.Optional.<UnknownFieldCallback> absent());
+}
+
+public Builder readAsStruct(final org.thryft.protocol.InputProtocol iprot, final com.google.common.base.Optional<UnknownFieldCallback> unknownFieldCallback) throws org.thryft.protocol.InputProtocolException {
 %(body)s
     return this;
 }""" % locals()}
@@ -769,7 +773,11 @@ iprot.readListEnd();""" % locals()
         field_names = ', '.join(field.java_name() for field in self.fields)
         name = self.java_name()
         return {'readAsStruct': """\
-public static %(name)s readAsStruct(final org.thryft.protocol.InputProtocol iprot) throws org.thryft.protocol.InputProtocolException {%(field_declarations)s
+public static %(name)s readAsStruct(final org.thryft.protocol.InputProtocol iprot) throws org.thryft.protocol.InputProtocolException {
+    return readAsStruct(iprot, com.google.common.base.Optional.<UnknownFieldCallback> absent());
+}
+
+public static %(name)s readAsStruct(final org.thryft.protocol.InputProtocol iprot, final com.google.common.base.Optional<UnknownFieldCallback> unknownFieldCallback) throws org.thryft.protocol.InputProtocolException {%(field_declarations)s
 %(body)s
     try {
         return new %(name)s(%(field_names)s);
@@ -808,6 +816,11 @@ while (true) {
         break;
     }
     switch (ifield.getName()) {%(field_protocol_named_initializers)s
+    default:
+        if (unknownFieldCallback.isPresent()) {
+            unknownFieldCallback.get().apply(ifield);
+        }
+        break;
     }
     iprot.readFieldEnd();
 }
