@@ -36,4 +36,7 @@ class SqlField(Field, _SqlNamedConstruct):
         return False
 
     def sql_name(self):
-        return self.name
+        name = self.name
+        if self.id is not None:
+            name = name + '_' + str(self.id)
+        return name
