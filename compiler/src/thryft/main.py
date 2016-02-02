@@ -146,11 +146,11 @@ class Main(object):
 
                 try:
                     document = \
-                        self.__compiler(
+                        self.__compiler.compile(
                             document_root_dir_path=document_root_dir_path,
                             generator=generator,
-                            thrift_file_paths=thrift_file_path,
-                        )[0]
+                            thrift_file_path=thrift_file_path,
+                        )
                 except (ScanException, CompileException):
                     if self.__debug:
                         raise
