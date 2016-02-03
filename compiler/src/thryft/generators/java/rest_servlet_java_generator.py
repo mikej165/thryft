@@ -62,7 +62,7 @@ class RestServletJavaGenerator(_servlet_java_generator._ServletJavaGenerator):
             for parameter in self.parameters:
                 variable_declarations.append(parameter.java_local_declaration(final=False))
             if self.return_field is not None:
-                variable_declarations.append(self.return_field.type.java_declaration_name() + " __return_value;")
+                variable_declarations.append(self.return_field.type.java_qname() + " __return_value;")
             if len(variable_declarations) > 0:
                 sections.append("\n".join(indent(' ' * 4, variable_declarations)))
 

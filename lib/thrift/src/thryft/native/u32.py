@@ -50,9 +50,6 @@ class u32(object):
     def java_compare_to(self, this_value, other_value, **kwds):
         return "%(this_value)s.compareTo(%(other_value)s)" % locals()
 
-    def java_declaration_name(self, boxed=False):
-        return 'com.google.common.primitives.UnsignedInteger'
-
     def java_default_value(self):
         return 'com.google.common.primitives.UnsignedInteger.ZERO'
 

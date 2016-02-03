@@ -108,13 +108,13 @@ public %(name)s(final org.thryft.protocol.InputProtocol iprot) throws org.thryft
         javadoc = self.java_doc()
         name = self.java_name()
         if self.return_field is not None:
-            return_type_name = self.return_field.type.java_declaration_name()
+            return_type_name = self.return_field.type.java_qname()
         else:
             return_type_name = 'void'
         throws = \
             lpad(
                 ' throws ',
-                ', '.join(field.type.java_declaration_name()
+                ', '.join(field.type.java_qname()
                            for field in self.throws)
             )
 
@@ -135,14 +135,14 @@ public %(name)s(final org.thryft.protocol.InputProtocol iprot) throws org.thryft
         name = self.java_name()
         if self.return_field is not None:
             return_prefix = 'return '
-            return_type_name = self.return_field.type.java_declaration_name()
+            return_type_name = self.return_field.type.java_qname()
         else:
             return_prefix = ''
             return_type_name = 'void'
         throws = \
             lpad(
                 ' throws ',
-                ', '.join(field.type.java_declaration_name()
+                ', '.join(field.type.java_qname()
                            for field in self.throws)
             )
 

@@ -45,7 +45,7 @@ class GwtRpcClientAsyncJavaGenerator(GwtRpcClientJavaGenerator):
 
             parameters = [parameter.java_parameter(final=True) for parameter in self.parameters]
             if self.return_field is not None:
-                return_type_name = self.return_field.type.java_declaration_name(boxed=True)
+                return_type_name = self.return_field.type.java_qname(boxed=True)
             else:
                 return_type_name = 'Void'
             parameters.append("final com.google.gwt.user.client.rpc.AsyncCallback<%s> callback" % return_type_name)

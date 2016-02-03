@@ -49,9 +49,6 @@ class Variant(object):
     def java_compare_to(self, this_value, other_value, **kwds):
         return None
 
-    def java_declaration_name(self, boxed=True):
-        return 'java.lang.Object'
-
     def java_default_value(self):
         return 'null'
 

@@ -450,8 +450,8 @@ public %(name)s(%(parameters)s) {%(initializers)s
 
         for field in self.fields:
             if field.required and \
-               (field.type.java_declaration_name(boxed=True) != \
-                field.type.java_declaration_name(boxed=False)):
+               (field.type.java_qname(boxed=True) != \
+                field.type.java_qname(boxed=False)):
                 initializers = \
                     "\n".join(indent(' ' * 4,
                         (field.java_initializer(boxed=True)
@@ -846,7 +846,7 @@ public %(compound_type_name)s %(method_name)s(%(field_parameter)s) {
     return new %(compound_type_name)s(%(all_field_names)s);
 }""" % locals()
             if not field.required:
-                field_parameter = 'final ' + field.type.java_declaration_name() + ' ' + field.java_name()
+                field_parameter = 'final ' + field.type.java_qname() + ' ' + field.java_name()
                 methods[method_name + 'Ex'] = """\
 public %(compound_type_name)s %(method_name)s(%(field_parameter)s) {
     return %(method_name)s(com.google.common.base.Optional.fromNullable(%(field_name)s));

@@ -38,7 +38,7 @@ from yutil import lower_camelize, upper_camelize, indent, lpad
 class JavaField(Field, _JavaNamedConstruct):
     def java_absent_value(self):
         assert not self.required
-        return "com.google.common.base.Optional.<%s> absent()" % self.type.java_declaration_name(boxed=True)
+        return "com.google.common.base.Optional.<%s> absent()" % self.type.java_qname(boxed=True)
 
     def java_compare_to(self):
         name = self.java_name()
@@ -235,7 +235,7 @@ try {
     def java_set_cases(self):
         name = self.name
         setter_name = self.java_setter_name()
-        type_name = self.type.java_declaration_name(boxed=not self.required)
+        type_name = self.type.java_qname(boxed=not self.required)
         value = 'value'
         if type_name != 'java.lang.Object':
             value = "(%(type_name)s)%(value)s" % locals()
@@ -271,7 +271,7 @@ public %(return_type_name)s %(setter_name)s(final %(type_name)s %(name)s) {
     this.%(name)s = com.google.common.base.Preconditions.checkNotNull(%(name)s);%(return_statement)s
 }""" % locals()]
         if not self.required:
-            type_name = self.type.java_declaration_name(boxed=True)
+            type_name = self.type.java_qname(boxed=True)
             setters.append("""\
 public %(return_type_name)s %(setter_name)s(@javax.annotation.Nullable final %(type_name)s %(name)s) {
     this.%(name)s = com.google.common.base.Optional.fromNullable(%(name)s);%(return_statement)s
@@ -298,11 +298,11 @@ public %(return_type_name)s %(setter_name)s(@javax.annotation.Nullable final %(t
 
     def _java_type_name(self, boxed=None, nullable=False):
         if self.required:
-            return self.type.java_declaration_name(boxed=boxed)
+            return self.type.java_qname(boxed=boxed)
         elif nullable:
-            return "@javax.annotation.Nullable %s" % self.type.java_declaration_name(boxed=True)
+            return "@javax.annotation.Nullable %s" % self.type.java_qname(boxed=True)
         else:
-            return "com.google.common.base.Optional<%s>" % self.type.java_declaration_name(boxed=True)
+            return "com.google.common.base.Optional<%s>" % self.type.java_qname(boxed=True)
 
     def java_unsetter(self, return_type_name='void'):
         name = self.java_name()

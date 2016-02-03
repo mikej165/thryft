@@ -34,11 +34,11 @@ class BeanJavaGenerator(JavaGenerator):
             element_from_immutable = self.element_type.java_from_immutable('element')
             if element_from_immutable == 'element':
                 return "new %(mutable_implementation_qname)s(%(value)s)" % locals()
-            element_type_name = self.element_type.java_declaration_name(boxed=True)
+            element_type_name = self.element_type.java_qname(boxed=True)
             immutable_qname = \
                 "com.google.common.collect.Immutable%s<%s>" % (
                        self._java_interface_simple_name(),
-                       self.element_type.java_declaration_name(boxed=True)
+                       self.element_type.java_qname(boxed=True)
                    )
             interface_qname = self.__java_interface_qname()
             return """\
@@ -196,16 +196,15 @@ public void %(setter_name)s(final %(type_qname)s %(name)s) {
             value_from_immutable = self.value_type.java_from_immutable('entry.getValue()')
             if key_from_immutable == 'entry.getKey()' and value_from_immutable == 'entry.getValue()':
                 return "new %(mutable_implementation_qname)s(%(value)s)" % locals()
-            element_type_name = self.element_type.java_declaration_name(boxed=True)
-            immutable_key_type_qname = self.key_type.java_declaration_name(boxed=True)
-            immutable_value_type_qname = self.value_type.java_declaration_name(boxed=True)
+            immutable_key_type_qname = self.key_type.java_qname(boxed=True)
+            immutable_value_type_qname = self.value_type.java_qname(boxed=True)
             immutable_implementation_qname = \
                 "com.google.common.collect.ImmutableMap<%(immutable_key_type_qname)s, %(immutable_value_type_qname)s>" % locals()
             interface_qname = self.__java_interface_qname()
             return """\
-(new com.google.common.base.Function<%(immutable_qname)s, %(interface_qname)s>() {
+(new com.google.common.base.Function<%(immutable_implementation_qname)s, %(interface_qname)s>() {
     @Override
-    public %(interface_qname)s apply(final %(immutable_qname)s other) {
+    public %(interface_qname)s apply(final %(immutable_implementation_qname)s other) {
         final %(interface_qname)s copy = new %(mutable_implementation_qname)s();
         for (final java.util.Map.Entry<%(immutable_key_type_qname)s, %(immutable_value_type_qname)s> entry : other.entrySet()) {
             copy.put(%(key_from_immutable)s, %(value_from_immutable)s);

@@ -95,7 +95,7 @@ __logMessageArgs.add(new Messages.%(request_type_name)s(%(parameter_names)s));
 
             return_type_name = \
                 self.return_field is not None and \
-                    self.return_field.type.java_declaration_name() or \
+                    self.return_field.type.java_qname() or \
                     'void'
 
             service_call = """\
@@ -121,7 +121,7 @@ logger.%(call_log_level)s(%(marker)s, __logMessageStringBuilder.toString(), __lo
                 for throw in self.throws:
                     exception_log_level = self._parent_generator()._exception_log_level_default
                     exception_log_stack_trace = False
-                    exception_type_name = throw.type.java_declaration_name()
+                    exception_type_name = throw.type.java_qname()
                     for annotations in (throw.annotations, throw.type.annotations):
                         for annotation in annotations:
                             if annotation.name == 'java_log_level':
@@ -144,7 +144,7 @@ catch (final %(exception_type_name)s e) {
             throws = \
                 lpad(
                     ' throws ',
-                    ', '.join([field.type.java_declaration_name()
+                    ', '.join([field.type.java_qname()
                                for field in self.throws])
                 )
             return self._java_delegating_definitions() + ["""\

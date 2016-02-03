@@ -52,9 +52,6 @@ class Uri(object):
     def dart_to_core_type(self, value):
         return value + '.toString()'
 
-    def java_declaration_name(self, boxed=False):
-        return 'org.thryft.native_.Uri'
-
     def java_default_value(self):
         return 'null'
 

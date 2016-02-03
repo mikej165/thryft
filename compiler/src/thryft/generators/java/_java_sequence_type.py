@@ -37,7 +37,7 @@ from yutil import decamelize, indent
 class _JavaSequenceType(_JavaContainerType):
 #     def java_compare_to(self, this_value, other_value, **kwds):
 #         qname = self.java_qname()
-#         element_type_qname = self.element_type.java_declaration_name(boxed=True)
+#         element_type_qname = self.element_type.java_qname(boxed=True)
 #         element_compare = indent(' ' * 16, self.element_type.java_compare_to(this_value='leftElement', other_value='rightElement', already_boxed=True))
 #         return """\
 # new java.util.Comparator<%(qname)s>() {
@@ -74,7 +74,7 @@ class _JavaSequenceType(_JavaContainerType):
 
     def java_from_string(self, value):
         element_from_string = self.element_type.java_from_string('elementString')
-        element_type_name = self.element_type.java_declaration_name(boxed=True)
+        element_type_name = self.element_type.java_qname(boxed=True)
         interface_simple_name = self._java_interface_simple_name()
         return """\
 (new com.google.common.base.Function<String, com.google.common.collect.Immutable%(interface_simple_name)s<%(element_type_name)s>>() {
@@ -97,7 +97,7 @@ class _JavaSequenceType(_JavaContainerType):
     def java_qname(self, boxed=False):
         return "com.google.common.collect.Immutable%s<%s>" % (
                    self._java_interface_simple_name(),
-                   self.element_type.java_declaration_name(boxed=True)
+                   self.element_type.java_qname(boxed=True)
                )
 
     def _java_interface_simple_name(self):
@@ -131,7 +131,7 @@ try {
                      for exception_type_name in element_read_protocol_throws))
         add_element = indent(' ' * 16, add_element)
 
-        element_type_name = self.element_type.java_declaration_name(boxed=True)
+        element_type_name = self.element_type.java_qname(boxed=True)
         interface_simple_name = self._java_interface_simple_name()
 
         return """\
@@ -157,7 +157,7 @@ try {
 
     def java_write_protocol(self, value, depth=0):
         element_ttype = self.element_type.thrift_ttype_name()
-        element_type_name = self.element_type.java_declaration_name(boxed=True)
+        element_type_name = self.element_type.java_qname(boxed=True)
         element_write_protocol = \
             indent(' ' * 4,
                 self.element_type.java_write_protocol(

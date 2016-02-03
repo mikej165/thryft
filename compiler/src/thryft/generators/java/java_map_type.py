@@ -38,8 +38,8 @@ from yutil import indent
 class JavaMapType(MapType, _JavaContainerType):
 #     def java_compare_to(self, this_value, other_value, **kwds):
 #         qname = self.java_qname()
-#         key_type_qname = self.key_type.java_declaration_name(boxed=True)
-#         value_type_qname = self.value_type.java_declaration_name(boxed=True)
+#         key_type_qname = self.key_type.java_qname(boxed=True)
+#         value_type_qname = self.value_type.java_qname(boxed=True)
 #         value_compare = indent(' ' * 16, self.value_type.java_compare_to(this_value='leftValue', other_value='rightValue', already_boxed=True))
 #         return """\
 # new java.util.Comparator<%(qname)s>() {
@@ -101,8 +101,8 @@ class JavaMapType(MapType, _JavaContainerType):
 
     def java_qname(self, boxed=False):
         return "com.google.common.collect.ImmutableMap<%s, %s>" % (
-                   self.key_type.java_declaration_name(boxed=True),
-                   self.value_type.java_declaration_name(boxed=True)
+                   self.key_type.java_qname(boxed=True),
+                   self.value_type.java_qname(boxed=True)
                )
 
     def java_read_protocol(self):
@@ -125,7 +125,7 @@ try {
                 'key = ' + self.key_type.java_read_protocol() + ';',
                 self.key_type.java_read_protocol_throws_checked() + self.key_type.java_read_protocol_throws_unchecked()
             ))
-        key_type_name = self.key_type.java_declaration_name(boxed=True)
+        key_type_name = self.key_type.java_qname(boxed=True)
 
         value_read_protocol = \
             indent(' ' * 16, try_catch(
@@ -133,7 +133,7 @@ try {
                 self.value_type.java_read_protocol_throws_checked() + self.value_type.java_read_protocol_throws_unchecked()
             ))
 
-        value_type_name = self.value_type.java_declaration_name(boxed=True)
+        value_type_name = self.value_type.java_qname(boxed=True)
         return """\
 (new com.google.common.base.Function<org.thryft.protocol.InputProtocol, com.google.common.collect.ImmutableMap<%(key_type_name)s, %(value_type_name)s>>() {
     @Override
@@ -161,7 +161,7 @@ try {
 
     def java_write_protocol(self, value, depth=0):
         key_ttype = self.key_type.thrift_ttype_name()
-        key_type_name = self.key_type.java_declaration_name(boxed=True)
+        key_type_name = self.key_type.java_qname(boxed=True)
         key_write_protocol = \
             indent(' ' * 4,
                 self.key_type.java_write_protocol(
@@ -170,7 +170,7 @@ try {
                 )
             )
         value_ttype = self.value_type.thrift_ttype_name()
-        value_type_name = self.value_type.java_declaration_name(boxed=True)
+        value_type_name = self.value_type.java_qname(boxed=True)
         value_write_protocol = \
             indent(' ' * 4,
                 self.value_type.java_write_protocol(

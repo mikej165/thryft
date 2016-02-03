@@ -54,9 +54,6 @@ class float(object):
             boxed_name = self.java_name(boxed=True)
             return "((%(boxed_name)s)%(this_value)s).compareTo(%(other_value)s)" % locals()
 
-    def java_declaration_name(self, boxed=False):
-        return 'Float' if boxed else 'float'
-
     def java_name(self, boxed=False):
         return 'Float' if boxed else 'float'
 

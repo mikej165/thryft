@@ -39,9 +39,6 @@ class Url(Uri):
     def elastic_search_mapping_dict(self):
         return {'analyzer': 'email_and_url', 'type': 'string'}
 
-    def java_declaration_name(self, boxed=False):
-        return 'org.thryft.native_.Url'
-
     def java_from_string(self, value):
         return "org.thryft.native_.Url.parse(%(value)s)" % locals()
 

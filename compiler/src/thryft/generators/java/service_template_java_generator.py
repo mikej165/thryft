@@ -50,14 +50,14 @@ class ServiceTemplateJavaGenerator(java_generator.JavaGenerator):
             parameters = ', '.join(parameters)
             if self.return_field is not None:
                 return_statement = lpad("\n", "    return %s;" % self.return_field.type.java_default_value())
-                return_type_name = self.return_field.type.java_declaration_name()
+                return_type_name = self.return_field.type.java_qname()
             else:
                 return_statement = ''
                 return_type_name = 'void'
             throws = \
                 lpad(
                     ' throws ',
-                    ', '.join(field.type.java_declaration_name()
+                    ', '.join(field.type.java_qname()
                                for field in self.throws)
                 )
 

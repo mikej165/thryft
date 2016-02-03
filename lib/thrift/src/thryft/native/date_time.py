@@ -58,9 +58,6 @@ class DateTime(object):
     def java_compare_to(self, this_value, other_value, **kwds):
         return "%(this_value)s.compareTo(%(other_value)s)" % locals()
 
-    def java_declaration_name(self, boxed=False):
-        return 'java.util.Date'
-
     def java_default_value(self):
         return 'null'
 

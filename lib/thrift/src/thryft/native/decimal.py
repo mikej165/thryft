@@ -43,9 +43,6 @@ class Decimal(object):
     def elastic_search_mapping_dict(self):
         return {'index': 'not_analyzed'}
 
-    def java_declaration_name(self, boxed=False):
-        return 'java.math.BigDecimal'
-
     def java_name(self, boxed=False):
         return 'java.math.BigDecimal'
 

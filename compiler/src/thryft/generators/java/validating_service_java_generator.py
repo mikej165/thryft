@@ -71,13 +71,13 @@ protected void %(validate_method_name)s(%(public_parameters)s) {
                 "delegate.%s(%s)" % (name, ', '.join(parameter.java_name() for parameter in self.parameters))
             if self.return_field is not None:
                 delegation = 'return ' + self.return_field.java_validation(value=delegation)
-                return_type_name = self.return_field.type.java_declaration_name()
+                return_type_name = self.return_field.type.java_qname()
             else:
                 return_type_name = 'void'
             throws = \
                 lpad(
                     ' throws ',
-                    ', '.join(field.type.java_declaration_name()
+                    ', '.join(field.type.java_qname()
                                for field in self.throws)
                 )
 

@@ -35,9 +35,6 @@ from yutil import class_qname
 
 
 class _JavaType(_JavaNamedConstruct):
-    def java_declaration_name(self, boxed=False):
-        return self.java_qname(boxed=boxed)
-
     def java_default_value(self):
         raise NotImplementedError(class_qname(self) + '.java_default_value')
 

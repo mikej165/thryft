@@ -55,7 +55,7 @@ class GwtRpcServerJavaGenerator(JavaGenerator):
 
             if self.return_field is not None:
                 return_ = 'return '
-                return_type_name = self.return_field.type.java_declaration_name()
+                return_type_name = self.return_field.type.java_qname()
             else:
                 return_ = ''
                 return_type_name = 'void'
@@ -65,7 +65,7 @@ class GwtRpcServerJavaGenerator(JavaGenerator):
             throws = \
                 lpad(
                     ' throws ',
-                    ', '.join(field.type.java_declaration_name()
+                    ', '.join(field.type.java_qname()
                                for field in self.throws)
                 )
 
