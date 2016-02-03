@@ -47,7 +47,7 @@ class JavaStringType(StringType, _JavaBaseType):
     def java_literal(self, value):
         return "\"%s\"" % value
 
-    def java_name(self, boxed=False):
+    def java_name(self):
         return 'String'
 
     def java_to_string(self, value):

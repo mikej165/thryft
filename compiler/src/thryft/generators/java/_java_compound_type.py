@@ -247,7 +247,7 @@ public static class Builder {%(sections)s
             self.__java_compound_type = java_compound_type
 
         def _java_field_java_type(self, field):
-            return field.type.java_qname(boxed=True)
+            return field.type.java_boxed_qname()
 
         def java_repr(self):
             enumerators = []
@@ -450,8 +450,8 @@ public %(name)s(%(parameters)s) {%(initializers)s
 
         for field in self.fields:
             if field.required and \
-               (field.type.java_qname(boxed=True) != \
-                field.type.java_qname(boxed=False)):
+               (field.type.java_boxed_qname() != \
+                field.type.java_qname()):
                 initializers = \
                     "\n".join(indent(' ' * 4,
                         (field.java_initializer(boxed=True)
@@ -958,7 +958,7 @@ public void writeFields(final org.thryft.protocol.OutputProtocol oprot) throws o
     def java_precondition_name(self):
         return 'CompoundType'
 
-    def java_qname(self, boxed=False, **kwds):
+    def java_qname(self, **kwds):
         return _JavaNamedConstruct.java_qname(self, name=self.name, **kwds)
 
     def java_read_protocol(self):

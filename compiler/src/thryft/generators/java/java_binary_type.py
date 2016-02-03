@@ -56,7 +56,7 @@ class JavaBinaryType(BinaryType, _JavaBaseType):
     def java_precondition_name(self):
         return "ByteArray"
 
-    def java_name(self, boxed=False):
+    def java_name(self):
         return 'byte[]'
 
     def java_to_string(self, value):

@@ -35,6 +35,9 @@ from thryft.generators.java._java_numeric_type import _JavaNumericType
 
 
 class JavaI32Type(I32Type, _JavaNumericType):
+    def java_boxed_name(self):
+        return 'Integer'
+
     def java_default_value(self):
         return '0'
 
@@ -43,9 +46,6 @@ class JavaI32Type(I32Type, _JavaNumericType):
 
     def java_literal(self, value):
         return "((int)%s)" % value
-
-    def java_name(self, boxed=False):
-        return boxed and 'Integer' or 'int'
 
     def java_to_string(self, value):
         return "Integer.toString(%(value)s)" % locals()

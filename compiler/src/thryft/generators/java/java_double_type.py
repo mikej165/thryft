@@ -35,6 +35,9 @@ from thryft.generators.java._java_numeric_type import _JavaNumericType
 
 
 class JavaDoubleType(DoubleType, _JavaNumericType):
+    def java_boxed_name(self):
+        return 'Double'
+
     def java_default_value(self):
         return '0.0'
 
@@ -44,5 +47,5 @@ class JavaDoubleType(DoubleType, _JavaNumericType):
     def java_literal(self, value):
         return str(value)
 
-    def java_name(self, boxed=False):
-        return boxed and 'Double' or 'double'
+    def java_name(self):
+        return 'double'

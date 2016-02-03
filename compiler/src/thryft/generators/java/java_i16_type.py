@@ -35,5 +35,8 @@ from thryft.generators.java._java_numeric_type import _JavaNumericType
 
 
 class JavaI16Type(I16Type, _JavaNumericType):
-    def java_name(self, boxed=False):
-        return boxed and 'Short' or 'short'
+    def java_boxed_name(self):
+        return 'Short'
+
+    def java_name(self):
+        return 'short'

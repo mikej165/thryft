@@ -57,7 +57,7 @@ public void %(name)s() {
             return 'test' + upper_camelize(self.name)
 
     class Service(JavaService):
-        def java_name(self, boxed=False):
+        def java_name(self):
             return JavaService.java_name(self) + 'Test'
 
         def _java_constructor(self):

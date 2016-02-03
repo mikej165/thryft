@@ -31,18 +31,22 @@
 # -----------------------------------------------------------------------------
 
 from thryft.generators.java._java_base_type import _JavaBaseType
+from yutil import class_qname
 
 
 class _JavaNumericType(_JavaBaseType):
+    def java_boxed_name(self):
+        raise NotImplementedError(class_qname(self) + '.java_boxed_name')
+
     def java_compare_to(self, this_value, other_value, **kwds):
-        boxed_name = self.java_name(boxed=True)
+        boxed_name = self.java_boxed_name()
         return "%(boxed_name)s.compare(%(this_value)s, %(other_value)s)" % locals()
 
     def java_default_value(self):
-        return "((%s)0)" % self.java_name(boxed=False)
+        return "((%s)0)" % self.java_name()
 
     def java_from_string(self, value):
-        boxed_name = self.java_name(boxed=True)
+        boxed_name = self.java_boxed_name()
         return "%(boxed_name)s.parse%(boxed_name)s(%(value)s)" % locals()
 
     def java_hash_code(self, value, already_boxed):
@@ -52,10 +56,10 @@ class _JavaNumericType(_JavaBaseType):
             return value
 
     def java_literal(self, value):
-        return "((%s)%s)" % (self.java_name(boxed=False), value)
+        return "((%s)%s)" % (self.java_name(), value)
 
     def java_read_protocol_throws_unchecked(self):
         return ['NumberFormatException']
 
     def java_to_string(self, value):
-        return "%s.toString(%(value)s)" % (self.java_name(boxed=True), value)
+        return "%s.toString(%(value)s)" % (self.java_boxed_name(), value)

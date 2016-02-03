@@ -67,7 +67,7 @@ protected %(return_type_name)s _%(name)s(%(parameters)s)%(throws)s {%(return_sta
 }""" % locals()
 
     class Service(JavaService):
-        def java_name(self, boxed=False):
+        def java_name(self):
             return JavaService.java_name(self) + 'Impl'
 
         def _java_methods(self):

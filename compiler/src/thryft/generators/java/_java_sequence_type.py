@@ -88,16 +88,16 @@ class _JavaSequenceType(_JavaContainerType):
     }
 }).apply(%(value)s.toString())""" % locals()
 
-    def java_name(self, boxed=False):
-        return self.java_qname(boxed=boxed)
+    def java_name(self):
+        return self.java_qname()
 
     def java_precondition_name(self):
         return 'Collection'
 
-    def java_qname(self, boxed=False):
+    def java_qname(self):
         return "com.google.common.collect.Immutable%s<%s>" % (
                    self._java_interface_simple_name(),
-                   self.element_type.java_qname(boxed=True)
+                   self.element_type.java_boxed_qname()
                )
 
     def _java_interface_simple_name(self):
@@ -110,7 +110,7 @@ class _JavaSequenceType(_JavaContainerType):
     def java_literal(self, value):
         return "com.google.common.collect.Immutable%s.<%s> of(%s)" % (
             self._java_interface_simple_name(),
-            self.element_type.java_qname(boxed=True),
+            self.element_type.java_boxed_qname(),
             ', '.join(self.element_type.java_literal(element_value) for element_value in value)
         )
 
@@ -131,7 +131,7 @@ try {
                      for exception_type_name in element_read_protocol_throws))
         add_element = indent(' ' * 16, add_element)
 
-        element_type_name = self.element_type.java_qname(boxed=True)
+        element_type_name = self.element_type.java_boxed_qname()
         interface_simple_name = self._java_interface_simple_name()
 
         return """\
@@ -157,7 +157,7 @@ try {
 
     def java_write_protocol(self, value, depth=0):
         element_ttype = self.element_type.thrift_ttype_name()
-        element_type_name = self.element_type.java_qname(boxed=True)
+        element_type_name = self.element_type.java_boxed_qname()
         element_write_protocol = \
             indent(' ' * 4,
                 self.element_type.java_write_protocol(

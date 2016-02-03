@@ -88,21 +88,21 @@ class JavaMapType(MapType, _JavaContainerType):
 
     def java_literal(self, value):
         return "com.google.common.collect.ImmutableMap.<%s, %s> of(%s)" % (
-            self.key_type.java_qname(boxed=True),
-            self.value_type.java_qname(boxed=True),
+            self.key_type.java_boxed_qname(),
+            self.value_type.java_boxed_qname(),
             ', '.join(self.key_type.java_literal(key) + ', ' + self.value_type.java_literal(value_) for key, value_ in value)
         )
 
-    def java_name(self, boxed=False):
-        return self.java_qname(boxed=boxed)
+    def java_name(self):
+        return self.java_qname()
 
     def java_precondition_name(self):
         return 'Map'
 
-    def java_qname(self, boxed=False):
+    def java_qname(self):
         return "com.google.common.collect.ImmutableMap<%s, %s>" % (
-                   self.key_type.java_qname(boxed=True),
-                   self.value_type.java_qname(boxed=True)
+                   self.key_type.java_boxed_qname(),
+                   self.value_type.java_boxed_qname()
                )
 
     def java_read_protocol(self):
@@ -125,7 +125,7 @@ try {
                 'key = ' + self.key_type.java_read_protocol() + ';',
                 self.key_type.java_read_protocol_throws_checked() + self.key_type.java_read_protocol_throws_unchecked()
             ))
-        key_type_name = self.key_type.java_qname(boxed=True)
+        key_type_name = self.key_type.java_boxed_qname()
 
         value_read_protocol = \
             indent(' ' * 16, try_catch(
@@ -133,7 +133,7 @@ try {
                 self.value_type.java_read_protocol_throws_checked() + self.value_type.java_read_protocol_throws_unchecked()
             ))
 
-        value_type_name = self.value_type.java_qname(boxed=True)
+        value_type_name = self.value_type.java_boxed_qname()
         return """\
 (new com.google.common.base.Function<org.thryft.protocol.InputProtocol, com.google.common.collect.ImmutableMap<%(key_type_name)s, %(value_type_name)s>>() {
     @Override
@@ -161,7 +161,7 @@ try {
 
     def java_write_protocol(self, value, depth=0):
         key_ttype = self.key_type.thrift_ttype_name()
-        key_type_name = self.key_type.java_qname(boxed=True)
+        key_type_name = self.key_type.java_boxed_qname()
         key_write_protocol = \
             indent(' ' * 4,
                 self.key_type.java_write_protocol(
@@ -170,7 +170,7 @@ try {
                 )
             )
         value_ttype = self.value_type.thrift_ttype_name()
-        value_type_name = self.value_type.java_qname(boxed=True)
+        value_type_name = self.value_type.java_boxed_qname()
         value_write_protocol = \
             indent(' ' * 4,
                 self.value_type.java_write_protocol(

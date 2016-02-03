@@ -50,7 +50,7 @@ class GwtJsonRpcClientJavaGenerator(java_generator.JavaGenerator):
             java_name = self.java_name()
             parameters = [parameter.java_parameter(final=True) for parameter in self.parameters]
             if self.return_field is not None:
-                return_type_name = self.return_field.type.java_qname(boxed=True)
+                return_type_name = self.return_field.type.java_boxed_qname()
             else:
                 return_type_name = 'Void'
             parameters.append("final com.google.gwt.user.client.rpc.AsyncCallback<%s> callback" % return_type_name)
@@ -127,7 +127,7 @@ public final void %(java_name)s(%(parameters)s) {
 """ % locals()
 
     class Service(java_generator.JavaGenerator.Service):
-        def java_name(self, boxed=False):
+        def java_name(self):
             return 'GwtJsonRpcClient' + java_generator.JavaGenerator.Service.java_name(self)
 
         def _java_constructor(self):

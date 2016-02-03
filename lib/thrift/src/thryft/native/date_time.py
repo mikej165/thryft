@@ -67,10 +67,10 @@ class DateTime(object):
     def java_hash_code(self, value, **kwds):
         return "%(value)s.hashCode()" % locals()
 
-    def java_name(self, boxed=False):
+    def java_name(self):
         return 'java.util.Date'
 
-    def java_qname(self, boxed=False):
+    def java_qname(self):
         return 'java.util.Date'
 
     def java_is_reference(self):

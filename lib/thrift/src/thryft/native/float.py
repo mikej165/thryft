@@ -47,18 +47,18 @@ class float(object):
     def cpp_read_protocol(self, value, optional=False):
         return "%(value)s = static_cast<float>(iprot.read_double());" % locals()
 
+    def java_boxed_name(self):
+        return 'Float'
+
     def java_compare_to(self, this_value, other_value, already_boxed):
         if already_boxed:
             return "%(this_value)s.compareTo(%(other_value)s)" % locals()
         else:
-            boxed_name = self.java_name(boxed=True)
+            boxed_name = self.java_boxed_name()
             return "((%(boxed_name)s)%(this_value)s).compareTo(%(other_value)s)" % locals()
 
-    def java_name(self, boxed=False):
-        return 'Float' if boxed else 'float'
-
-    def java_qname(self, boxed=False):
-        return 'Float' if boxed else 'float'
+    def java_name(self):
+        return 'float'
 
     def java_read_protocol(self):
         return '((float)iprot.readDouble())'

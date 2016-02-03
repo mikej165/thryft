@@ -43,7 +43,7 @@ class _JavaBaseType(_JavaType):
         return "iprot.read%(name)s()" % locals()
 
     def java_precondition_name(self):
-        return self.java_name(boxed=True)
+        return self.java_boxed_name()
 
     def java_repr(self):
         return self.java_name()

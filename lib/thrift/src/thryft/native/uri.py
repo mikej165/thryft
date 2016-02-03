@@ -58,10 +58,10 @@ class Uri(object):
     def java_is_reference(self):
         return True
 
-    def java_name(self, boxed=False):
+    def java_name(self):
         return 'org.thryft.native_.Uri'
 
-    def java_qname(self, boxed=False):
+    def java_qname(self):
         return 'org.thryft.native_.Uri'
 
     def java_read_protocol(self):

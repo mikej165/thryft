@@ -89,7 +89,7 @@ public final %(return_type_name)s %(name)s(%(public_parameters)s)%(throws)s {%(v
 """ % locals()] + self._java_delegating_definitions()
 
     class Service(JavaService):
-        def java_name(self, boxed=False):
+        def java_name(self):
             return 'Validating' + JavaService.java_name(self)
 
         def _java_methods(self):

@@ -99,10 +99,10 @@ public static class Messages {
 %(message_types)s
 }""" % locals()
 
-    def java_name(self, boxed=False):
+    def java_name(self):
         return self.name
 
-    def java_qname(self, boxed=False):
+    def java_qname(self):
         return _JavaNamedConstruct.java_qname(self, name=self.name)
 
     def java_repr(self):

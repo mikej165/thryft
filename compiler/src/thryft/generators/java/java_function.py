@@ -205,7 +205,7 @@ public %(default)s%(return_type_name)s %(name)s(%(parameters)s)%(throws)s {
             message_types.append(self.java_response_type())
         return message_types
 
-    def java_name(self, boxed=False):
+    def java_name(self):
         return lower_camelize(self.name)
 
     def _java_overload_parameter_lists(self):
@@ -225,7 +225,7 @@ public %(default)s%(return_type_name)s %(name)s(%(parameters)s)%(throws)s {
             overload_parameter_lists.append(tuple(self.parameters[:optional_parameter_i]))
         return overload_parameter_lists
 
-    def java_qname(self, boxed=False):
+    def java_qname(self):
         return self.parent.java_qname() + '.' + self.java_name()
 
     def java_request_type(self, **kwds):

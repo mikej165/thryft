@@ -47,10 +47,10 @@ class EmailAddress(object):
     def java_literal(self, value):
         return "new org.thryft.native_.EmailAddress(\"%s\")" % value
 
-    def java_name(self, boxed=False):
+    def java_name(self):
         return 'org.thryft.native_.EmailAddress'
 
-    def java_qname(self, boxed=False):
+    def java_qname(self):
         return 'org.thryft.native_.EmailAddress'
 
     def java_read_protocol(self):

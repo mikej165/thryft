@@ -35,5 +35,8 @@ from thryft.generators.java._java_numeric_type import _JavaNumericType
 
 
 class JavaByteType(ByteType, _JavaNumericType):
-    def java_name(self, boxed=False):
-        return boxed and 'Byte' or 'byte'
+    def java_boxed_name(self):
+        return 'Byte'
+
+    def java_name(self):
+        return 'byte'

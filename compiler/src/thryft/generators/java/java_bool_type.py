@@ -35,6 +35,9 @@ from thryft.generators.java._java_base_type import _JavaBaseType
 
 
 class JavaBoolType(BoolType, _JavaBaseType):
+    def java_boxed_name(self):
+        return 'Boolean'
+
     def java_default_value(self):
         return 'false'
 
@@ -53,8 +56,8 @@ class JavaBoolType(BoolType, _JavaBaseType):
     def java_literal(self, value):
         return value and 'true' or 'false'
 
-    def java_name(self, boxed=False):
-        return boxed and 'Boolean' or 'boolean'
+    def java_name(self):
+        return 'boolean'
 
     def java_to_string(self, value):
         return "Boolean.toString(%(value)s)" % locals()

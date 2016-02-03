@@ -35,6 +35,12 @@ from yutil import class_qname
 
 
 class _JavaType(_JavaNamedConstruct):
+    def java_boxed_name(self):
+        return self.java_name()
+
+    def java_boxed_qname(self):
+        return self.java_qname()
+
     def java_default_value(self):
         raise NotImplementedError(class_qname(self) + '.java_default_value')
 
@@ -65,7 +71,7 @@ class _JavaType(_JavaNamedConstruct):
     def java_literal(self, value):
         raise NotImplementedError(class_qname(self) + '.java_literal')
 
-    def java_name(self, boxed=False):
+    def java_name(self):
         return _JavaNamedConstruct.java_name(self)
 
     def java_precondition_name(self):

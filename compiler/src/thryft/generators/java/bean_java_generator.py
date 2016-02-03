@@ -7,11 +7,17 @@ from yutil import indent, lpad, class_qname
 
 class BeanJavaGenerator(JavaGenerator):
     class _Type(object):
-        def java_bean_name(self, **kwds):
-            return self.java_name(**kwds)
+        def java_bean_boxed_name(self):
+            return self.java_bean_name()
 
-        def java_bean_qname(self, **kwds):
-            return self.java_qname(**kwds)
+        def java_bean_boxed_qname(self):
+            return self.java_bean_qname()
+
+        def java_bean_name(self):
+            return self.java_name()
+
+        def java_bean_qname(self):
+            return self.java_qname()
 
         def java_from_immutable(self, value):
             return value
@@ -26,7 +32,7 @@ class BeanJavaGenerator(JavaGenerator):
         pass
 
     class _SequenceType(_Type):
-        def java_bean_qname(self, **kwds):
+        def java_bean_qname(self):
             return self.__java_interface_qname()
 
         def java_from_immutable(self, value):
@@ -34,11 +40,11 @@ class BeanJavaGenerator(JavaGenerator):
             element_from_immutable = self.element_type.java_from_immutable('element')
             if element_from_immutable == 'element':
                 return "new %(mutable_implementation_qname)s(%(value)s)" % locals()
-            element_type_name = self.element_type.java_qname(boxed=True)
+            element_type_name = self.element_type.java_boxed_qname()
             immutable_qname = \
                 "com.google.common.collect.Immutable%s<%s>" % (
                        self._java_interface_simple_name(),
-                       self.element_type.java_qname(boxed=True)
+                       self.element_type.java_boxed_qname()
                    )
             interface_qname = self.__java_interface_qname()
             return """\
@@ -56,14 +62,14 @@ class BeanJavaGenerator(JavaGenerator):
         def __java_interface_qname(self):
             return "java.util.%s<%s>" % (
                    self._java_interface_simple_name(),
-                   self.element_type.java_bean_qname(boxed=True)
+                   self.element_type.java_bean_boxed_qname()
                )
 
         def _java_mutable_implementation_qname(self):
             raise NotImplementedError(class_qname(self))
 
         # Necessary for typedefs
-        def java_qname(self, **kwds):
+        def java_qname(self):
             return self.__java_interface_qname()
 
     class Document(JavaGenerator.Document):  # @UndefinedVariable
@@ -151,13 +157,13 @@ if (%s() != null) {
         def java_member_declaration(self, **kwds):
             javadoc = self.java_doc()
             name = self.java_name()
-            type_qname = self.type.java_bean_qname(boxed=True)
+            type_qname = self.type.java_bean_boxed_qname()
             return "%(javadoc)sprivate %(type_qname)s %(name)s;" % locals()
 
         def java_setters(self, return_type_name='void'):
             name = self.java_name()
             setter_name = self.java_setter_name()
-            type_qname = self.type.java_bean_qname(boxed=True)
+            type_qname = self.type.java_bean_boxed_qname()
             return ["""\
 public void %(setter_name)s(final %(type_qname)s %(name)s) {
     this.%(name)s = %(name)s;
@@ -178,14 +184,14 @@ public void %(setter_name)s(final %(type_qname)s %(name)s) {
 
         def _java_mutable_implementation_qname(self):
             return "java.util.ArrayList<%s>" % \
-                   self.element_type.java_bean_qname(boxed=True)
+                   self.element_type.java_bean_boxed_qname()
 
         # Necessary for typedefs
-        def java_qname(self, **kwds):
-            return BeanJavaGenerator._SequenceType.java_qname(self, **kwds)
+        def java_qname(self):
+            return BeanJavaGenerator._SequenceType.java_qname(self)
 
     class MapType(JavaGenerator.MapType, _Type):  # @UndefinedVariable
-        def java_bean_qname(self, **kwds):
+        def java_bean_qname(self):
             return self.__java_interface_qname()
 
         def java_from_immutable(self, value):
@@ -220,7 +226,7 @@ public void %(setter_name)s(final %(type_qname)s %(name)s) {
                )
 
         # Necessary for typedefs
-        def java_qname(self, **kwds):
+        def java_qname(self):
             return self.__java_interface_qname()
 
     class SetType(JavaGenerator.SetType, _SequenceType):  # @UndefinedVariable
@@ -232,8 +238,8 @@ public void %(setter_name)s(final %(type_qname)s %(name)s) {
                    self.element_type.java_bean_qname(boxed=True)
 
         # Necessary for typedefs
-        def java_qname(self, **kwds):
-            return BeanJavaGenerator._SequenceType.java_qname(self, **kwds)
+        def java_qname(self):
+            return BeanJavaGenerator._SequenceType.java_qname(self)
 
     class StringType(JavaGenerator.StringType, _BaseType):  # @UndefinedVariable
         pass
@@ -303,10 +309,10 @@ public %(name)s(final %(immutable_name)s other) {%(initializers)s
             methods.update(self._java_method_to_string())
             return methods
 
-        def java_bean_name(self, **kwds):
-            return _JavaNamedConstruct.java_name(self, **kwds) + 'Bean'
+        def java_bean_name(self):
+            return _JavaNamedConstruct.java_name(self) + 'Bean'
 
-        def java_bean_qname(self, **kwds):
+        def java_bean_qname(self):
             return _JavaNamedConstruct.java_qname(self, java_namespace_scope='bean_java', **kwds) + 'Bean'
 
         def java_repr(self):

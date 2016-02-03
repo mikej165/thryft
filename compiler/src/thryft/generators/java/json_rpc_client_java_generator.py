@@ -117,7 +117,7 @@ public final %(return_type_qname)s %(java_name)s(%(parameters)s) {
 """ % locals()
 
     class Service(java_generator.JavaGenerator.Service):
-        def java_name(self, boxed=False):
+        def java_name(self):
             return 'JsonRpcClient' + java_generator.JavaGenerator.Service.java_name(self)
 
         def _java_constructor(self):

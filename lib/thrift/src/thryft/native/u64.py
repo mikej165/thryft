@@ -73,10 +73,10 @@ class u64(object):
         else:
             return "com.google.common.primitives.UnsignedLong.valueOf(%s)" % value
 
-    def java_name(self, boxed=False):
+    def java_name(self):
         return 'com.google.common.primitives.UnsignedLong'
 
-    def java_qname(self, boxed=False):
+    def java_qname(self):
         return 'com.google.common.primitives.UnsignedLong'
 
     def java_is_reference(self):

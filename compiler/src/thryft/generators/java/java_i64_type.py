@@ -35,8 +35,11 @@ from thryft.generators.java._java_numeric_type import _JavaNumericType
 
 
 class JavaI64Type(I64Type, _JavaNumericType):
+    def java_boxed_name(self):
+        return 'Long'
+
     def java_hash_code(self, value, **kwds):
         return "((int)(%(value)s ^ (%(value)s >>> 32)))" % locals()
 
     def java_name(self, boxed=False):
-        return boxed and 'Long' or 'long'
+        return 'long'

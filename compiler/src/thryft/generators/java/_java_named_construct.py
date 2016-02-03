@@ -34,7 +34,7 @@ from thryft.generators.java._java_construct import _JavaConstruct
 
 
 class _JavaNamedConstruct(_JavaConstruct):
-    def java_name(self, boxed=False):
+    def java_name(self):
         return getattr(self, 'name')
 
     def java_qname(self, java_namespace_scope='java', name=None, **kwds):

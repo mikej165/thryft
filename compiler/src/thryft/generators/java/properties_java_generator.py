@@ -12,7 +12,7 @@ class PropertiesJavaGenerator(JavaGenerator):
             java_name = self.java_name()
             thrift_name = self.name
             from_string = self.type.java_from_string("%(java_name)sString" % locals())
-            type_qname = self.type.java_qname(boxed=True)
+            type_qname = self.type.java_boxed_qname()
             if self.required:
                 if self.value is not None:
                     java_value = self.java_value()

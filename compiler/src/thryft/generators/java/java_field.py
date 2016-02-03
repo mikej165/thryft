@@ -38,7 +38,7 @@ from yutil import lower_camelize, upper_camelize, indent, lpad
 class JavaField(Field, _JavaNamedConstruct):
     def java_absent_value(self):
         assert not self.required
-        return "com.google.common.base.Optional.<%s> absent()" % self.type.java_qname(boxed=True)
+        return "com.google.common.base.Optional.<%s> absent()" % self.type.java_boxed_qname()
 
     def java_compare_to(self):
         name = self.java_name()
@@ -164,7 +164,7 @@ if (%s().isPresent()) {
         rhs = lpad(' = ', rhs)
         return "%(javadoc)sprivate %(lhs)s%(rhs)s;" % locals()
 
-    def java_name(self, boxed=False):
+    def java_name(self):
         return lower_camelize(self.name)
 
     def java_parameter(self, boxed=None, final=False, nullable=False):
@@ -235,7 +235,7 @@ try {
     def java_set_cases(self):
         name = self.name
         setter_name = self.java_setter_name()
-        type_name = self.type.java_qname(boxed=not self.required)
+        type_name = self.type.java_qname() if self.required else self.type.java_boxed_qname()
         value = 'value'
         if type_name != 'java.lang.Object':
             value = "(%(type_name)s)%(value)s" % locals()
@@ -271,7 +271,7 @@ public %(return_type_name)s %(setter_name)s(final %(type_name)s %(name)s) {
     this.%(name)s = com.google.common.base.Preconditions.checkNotNull(%(name)s);%(return_statement)s
 }""" % locals()]
         if not self.required:
-            type_name = self.type.java_qname(boxed=True)
+            type_name = self.type.java_boxed_qname()
             setters.append("""\
 public %(return_type_name)s %(setter_name)s(@javax.annotation.Nullable final %(type_name)s %(name)s) {
     this.%(name)s = com.google.common.base.Optional.fromNullable(%(name)s);%(return_statement)s
@@ -298,11 +298,14 @@ public %(return_type_name)s %(setter_name)s(@javax.annotation.Nullable final %(t
 
     def _java_type_name(self, boxed=None, nullable=False):
         if self.required:
-            return self.type.java_qname(boxed=boxed)
+            if boxed:
+                return self.type.java_boxed_qname()
+            else:
+                return self.type.java_qname()
         elif nullable:
-            return "@javax.annotation.Nullable %s" % self.type.java_qname(boxed=True)
+            return "@javax.annotation.Nullable %s" % self.type.java_boxed_qname()
         else:
-            return "com.google.common.base.Optional<%s>" % self.type.java_qname(boxed=True)
+            return "com.google.common.base.Optional<%s>" % self.type.java_boxed_qname()
 
     def java_unsetter(self, return_type_name='void'):
         name = self.java_name()

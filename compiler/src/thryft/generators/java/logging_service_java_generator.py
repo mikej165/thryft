@@ -102,7 +102,7 @@ __logMessageArgs.add(new Messages.%(request_type_name)s(%(parameter_names)s));
 delegate.%(java_name)s(%(parameter_names)s);
 """ % locals()
             if self.return_field is not None:
-                service_call = self.return_field.type.java_qname(boxed=False) + ' __returnValue = ' + service_call
+                service_call = self.return_field.type.java_qname() + ' __returnValue = ' + service_call
                 service_call += """
 __logMessageStringBuilder.append(" -> {}");
 __logMessageArgs.add(__returnValue);
@@ -169,7 +169,7 @@ public %(return_type_name)s %(java_name)s(%(parameters)s)%(throws)s {%(log_curre
         def __java_delegate_name(self):
             return "%s.%s.delegate" % (self._parent_document().java_package(), self.java_name())
 
-        def java_name(self, boxed=False):
+        def java_name(self):
             return 'Logging' + java_generator.JavaGenerator.Service.java_name(self)
 
         def _java_constructor(self):

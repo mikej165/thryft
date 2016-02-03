@@ -267,7 +267,7 @@ try {
                 return 'GET'
 
     class Service(_servlet_java_generator._ServletJavaGenerator._Service):
-        def java_name(self, boxed=False):
+        def java_name(self):
             return _servlet_java_generator._ServletJavaGenerator._Service.java_name(self) + 'RestServlet'
 
         def _java_constructor(self):

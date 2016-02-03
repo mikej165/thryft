@@ -43,10 +43,10 @@ class Decimal(object):
     def elastic_search_mapping_dict(self):
         return {'index': 'not_analyzed'}
 
-    def java_name(self, boxed=False):
+    def java_name(self):
         return 'java.math.BigDecimal'
 
-    def java_qname(self, boxed=False):
+    def java_qname(self):
         return 'java.math.BigDecimal'
 
     def java_is_reference(self):

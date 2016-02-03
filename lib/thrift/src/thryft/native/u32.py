@@ -74,13 +74,13 @@ class u32(object):
         else:
             return "com.google.common.primitives.UnsignedInteger.valueOf(%s)" % value
 
-    def java_name(self, boxed=False):
+    def java_name(self):
         return 'com.google.common.primitives.UnsignedInteger'
 
     def java_precondition_name(self):
         return 'UnsignedInteger'
 
-    def java_qname(self, boxed=False):
+    def java_qname(self):
         return 'com.google.common.primitives.UnsignedInteger'
 
     def java_is_reference(self):

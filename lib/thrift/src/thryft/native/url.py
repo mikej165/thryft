@@ -45,10 +45,10 @@ class Url(Uri):
     def java_literal(self, value):
         return "org.thryft.native_.Url.parse(\"%s\")" % value
 
-    def java_name(self, boxed=False):
+    def java_name(self):
         return 'org.thryft.native_.Url'
 
-    def java_qname(self, boxed=False):
+    def java_qname(self):
         return 'org.thryft.native_.Url'
 
     def java_read_protocol(self):
