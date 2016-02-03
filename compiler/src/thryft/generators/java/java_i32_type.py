@@ -47,5 +47,8 @@ class JavaI32Type(I32Type, _JavaNumericType):
     def java_literal(self, value):
         return "((int)%s)" % value
 
+    def java_name(self):
+        return 'int'
+
     def java_to_string(self, value):
         return "Integer.toString(%(value)s)" % locals()

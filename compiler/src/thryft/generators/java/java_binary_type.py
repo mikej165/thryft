@@ -35,6 +35,9 @@ from thryft.generators.java._java_base_type import _JavaBaseType
 
 
 class JavaBinaryType(BinaryType, _JavaBaseType):
+    def java_boxed_name(self):
+        return self.java_name()
+
     def java_compare_to(self, this_value, other_value, **kwds):
         return "com.google.common.primitives.SignedBytes.lexicographicalComparator().compare(%(this_value)s, %(other_value)s)" % locals()
 
