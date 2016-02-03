@@ -38,6 +38,9 @@ class _JavaType(_JavaNamedConstruct):
     def java_boxed_name(self):
         return self.java_name()
 
+    def java_boxed_immutable_qname(self):
+        return self.java_qname()
+
     def java_boxed_qname(self):
         return self.java_qname()
 

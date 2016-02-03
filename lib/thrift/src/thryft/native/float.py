@@ -50,6 +50,9 @@ class float(object):
     def java_boxed_name(self):
         return 'Float'
 
+    def java_boxed_qname(self):
+        return self.java_boxed_name()
+
     def java_compare_to(self, this_value, other_value, already_boxed):
         if already_boxed:
             return "%(this_value)s.compareTo(%(other_value)s)" % locals()
@@ -58,6 +61,9 @@ class float(object):
             return "((%(boxed_name)s)%(this_value)s).compareTo(%(other_value)s)" % locals()
 
     def java_name(self):
+        return 'float'
+
+    def java_qname(self):
         return 'float'
 
     def java_read_protocol(self):

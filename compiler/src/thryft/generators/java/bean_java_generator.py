@@ -206,8 +206,8 @@ public void %(setter_name)s(final %(type_qname)s %(name)s) {
             value_from_immutable = self.value_type.java_from_immutable('entry.getValue()')
             if key_from_immutable == 'entry.getKey()' and value_from_immutable == 'entry.getValue()':
                 return "new %(mutable_implementation_qname)s(%(value)s)" % locals()
-            immutable_key_type_qname = self.key_type.java_boxed_qname()
-            immutable_value_type_qname = self.value_type.java_boxed_qname()
+            immutable_key_type_qname = self.key_type.java_boxed_immutable_qname()
+            immutable_value_type_qname = self.value_type.java_boxed_immutable_qname()
             immutable_implementation_qname = \
                 "com.google.common.collect.ImmutableMap<%(immutable_key_type_qname)s, %(immutable_value_type_qname)s>" % locals()
             interface_qname = self.__java_interface_qname()

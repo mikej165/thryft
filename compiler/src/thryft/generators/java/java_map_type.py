@@ -86,6 +86,9 @@ class JavaMapType(MapType, _JavaContainerType):
 #     }
 # }.compare(%(this_value)s, %(other_value)s)""" % locals()
 
+    def java_boxed_immutable_qname(self):
+        return self.__java_qname()
+
     def java_literal(self, value):
         return "com.google.common.collect.ImmutableMap.<%s, %s> of(%s)" % (
             self.key_type.java_boxed_qname(),
@@ -99,11 +102,14 @@ class JavaMapType(MapType, _JavaContainerType):
     def java_precondition_name(self):
         return 'Map'
 
-    def java_qname(self):
+    def __java_qname(self):
         return "com.google.common.collect.ImmutableMap<%s, %s>" % (
                    self.key_type.java_boxed_qname(),
                    self.value_type.java_boxed_qname()
                )
+
+    def java_qname(self):
+        return self.__java_qname()
 
     def java_read_protocol(self):
         def try_catch(statement, throws):

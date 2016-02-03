@@ -72,6 +72,9 @@ class _JavaSequenceType(_JavaContainerType):
 #     }
 # }.compare(%(this_value)s, %(other_value)s)""" % locals()
 
+    def java_boxed_immutable_qname(self):
+        return self.__java_qname()
+
     def java_from_string(self, value):
         element_from_string = self.element_type.java_from_string('elementString')
         element_type_name = self.element_type.java_boxed_qname()
@@ -94,11 +97,14 @@ class _JavaSequenceType(_JavaContainerType):
     def java_precondition_name(self):
         return 'Collection'
 
-    def java_qname(self):
+    def __java_qname(self):
         return "com.google.common.collect.Immutable%s<%s>" % (
                    self._java_interface_simple_name(),
                    self.element_type.java_boxed_qname()
                )
+
+    def java_qname(self):
+        return self.__java_qname()
 
     def _java_interface_simple_name(self):
         class_name_split = decamelize(self.__class__.__name__).split('_')
