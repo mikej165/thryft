@@ -41,5 +41,5 @@ class JavaI64Type(I64Type, _JavaNumericType):
     def java_hash_code(self, value, **kwds):
         return "((int)(%(value)s ^ (%(value)s >>> 32)))" % locals()
 
-    def java_name(self, boxed=False):
+    def java_name(self):
         return 'long'

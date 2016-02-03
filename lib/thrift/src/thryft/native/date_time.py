@@ -55,6 +55,12 @@ class DateTime(object):
     def elastic_search_mapping_dict(self):
         return {'type': 'date'}
 
+    def java_boxed_name(self):
+        return self.java_qname()
+
+    def java_boxed_qname(self):
+        return self.java_qname()
+
     def java_compare_to(self, this_value, other_value, **kwds):
         return "%(this_value)s.compareTo(%(other_value)s)" % locals()
 
@@ -68,7 +74,7 @@ class DateTime(object):
         return "%(value)s.hashCode()" % locals()
 
     def java_name(self):
-        return 'java.util.Date'
+        return self.java_qname()
 
     def java_qname(self):
         return 'java.util.Date'

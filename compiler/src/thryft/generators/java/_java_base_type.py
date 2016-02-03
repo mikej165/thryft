@@ -31,10 +31,16 @@
 # -----------------------------------------------------------------------------
 
 from thryft.generators.java._java_type import _JavaType
-from yutil import upper_camelize
+from yutil import upper_camelize, class_qname
 
 
 class _JavaBaseType(_JavaType):
+    def java_boxed_name(self):
+        raise NotImplementedError(class_qname(self) + '.java_boxed_name')
+
+    def java_boxed_qname(self):
+        return self.java_boxed_name()
+
     def java_is_reference(self):
         return False
 
@@ -44,6 +50,9 @@ class _JavaBaseType(_JavaType):
 
     def java_precondition_name(self):
         return self.java_boxed_name()
+
+    def java_qname(self):
+        return self.java_name()
 
     def java_repr(self):
         return self.java_name()

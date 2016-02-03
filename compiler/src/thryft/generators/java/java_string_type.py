@@ -35,6 +35,9 @@ from thryft.generators.java._java_base_type import _JavaBaseType
 
 
 class JavaStringType(StringType, _JavaBaseType):
+    def java_boxed_name(self):
+        return self.java_name()
+
     def java_default_value(self):
         return 'null'
 

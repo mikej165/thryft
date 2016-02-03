@@ -49,6 +49,12 @@ class u64(object):
     def cpp_read_protocol(self, value, optional=False):
         return "%(value)s = iprot.read_u64();" % locals()
 
+    def java_boxed_name(self):
+        return self.java_qname()
+
+    def java_boxed_qname(self):
+        return self.java_qname()
+
     def java_compare_to(self, this_value, other_value, **kwds):
         return "%(this_value)s.compareTo(%(other_value)s)" % locals()
 
@@ -74,7 +80,7 @@ class u64(object):
             return "com.google.common.primitives.UnsignedLong.valueOf(%s)" % value
 
     def java_name(self):
-        return 'com.google.common.primitives.UnsignedLong'
+        return self.java_qname()
 
     def java_qname(self):
         return 'com.google.common.primitives.UnsignedLong'

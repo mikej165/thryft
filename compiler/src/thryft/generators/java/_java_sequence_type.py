@@ -74,7 +74,7 @@ class _JavaSequenceType(_JavaContainerType):
 
     def java_from_string(self, value):
         element_from_string = self.element_type.java_from_string('elementString')
-        element_type_name = self.element_type.java_qname(boxed=True)
+        element_type_name = self.element_type.java_boxed_qname()
         interface_simple_name = self._java_interface_simple_name()
         return """\
 (new com.google.common.base.Function<String, com.google.common.collect.Immutable%(interface_simple_name)s<%(element_type_name)s>>() {

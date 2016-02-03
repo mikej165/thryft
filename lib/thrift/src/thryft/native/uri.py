@@ -52,6 +52,12 @@ class Uri(object):
     def dart_to_core_type(self, value):
         return value + '.toString()'
 
+    def java_boxed_name(self):
+        return self.java_qname()
+
+    def java_boxed_qname(self):
+        return self.java_qname()
+
     def java_default_value(self):
         return 'null'
 
@@ -59,7 +65,7 @@ class Uri(object):
         return True
 
     def java_name(self):
-        return 'org.thryft.native_.Uri'
+        return self.java_qname()
 
     def java_qname(self):
         return 'org.thryft.native_.Uri'

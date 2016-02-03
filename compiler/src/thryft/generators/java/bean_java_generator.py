@@ -29,7 +29,11 @@ class BeanJavaGenerator(JavaGenerator):
         pass
 
     class BoolType(JavaGenerator.BoolType, _BaseType):  # @UndefinedVariable
-        pass
+        def java_bean_boxed_name(self):
+            return 'Boolean'
+
+        def java_bean_boxed_qname(self):
+            return 'Boolean'
 
     class _SequenceType(_Type):
         def java_bean_qname(self):
@@ -132,7 +136,7 @@ class BeanJavaGenerator(JavaGenerator):
             getter_name = self.java_getter_name()
             javadoc = self.java_doc()
             name = self.java_name()
-            type_qname = self.type.java_bean_qname(boxed=True)
+            type_qname = self.type.java_bean_boxed_qname()
             return """\
 %(javadoc)spublic %(type_qname)s %(getter_name)s() {
     return %(name)s;
@@ -195,15 +199,15 @@ public void %(setter_name)s(final %(type_qname)s %(name)s) {
             return self.__java_interface_qname()
 
         def java_from_immutable(self, value):
-            mutable_key_type_qname = self.key_type.java_bean_qname(boxed=True)
-            mutable_value_type_qname = self.value_type.java_bean_qname(boxed=True)
+            mutable_key_type_qname = self.key_type.java_bean_boxed_qname()
+            mutable_value_type_qname = self.value_type.java_bean_boxed_qname()
             mutable_implementation_qname = "java.util.HashMap<%(mutable_key_type_qname)s, %(mutable_value_type_qname)s>" % locals()
             key_from_immutable = self.key_type.java_from_immutable('entry.getKey()')
             value_from_immutable = self.value_type.java_from_immutable('entry.getValue()')
             if key_from_immutable == 'entry.getKey()' and value_from_immutable == 'entry.getValue()':
                 return "new %(mutable_implementation_qname)s(%(value)s)" % locals()
-            immutable_key_type_qname = self.key_type.java_qname(boxed=True)
-            immutable_value_type_qname = self.value_type.java_qname(boxed=True)
+            immutable_key_type_qname = self.key_type.java_boxed_qname()
+            immutable_value_type_qname = self.value_type.java_boxed_qname()
             immutable_implementation_qname = \
                 "com.google.common.collect.ImmutableMap<%(immutable_key_type_qname)s, %(immutable_value_type_qname)s>" % locals()
             interface_qname = self.__java_interface_qname()
@@ -221,8 +225,8 @@ public void %(setter_name)s(final %(type_qname)s %(name)s) {
 
         def __java_interface_qname(self):
             return "java.util.Map<%s, %s>" % (
-                   self.key_type.java_bean_qname(boxed=True),
-                   self.value_type.java_bean_qname(boxed=True),
+                   self.key_type.java_bean_boxed_qname(),
+                   self.value_type.java_bean_boxed_qname(),
                )
 
         # Necessary for typedefs
@@ -235,7 +239,7 @@ public void %(setter_name)s(final %(type_qname)s %(name)s) {
 
         def _java_mutable_implementation_qname(self):
             return "java.util.LinkedHashSet<%s>" % \
-                   self.element_type.java_bean_qname(boxed=True)
+                   self.element_type.java_bean_boxed_qname()
 
         # Necessary for typedefs
         def java_qname(self):
@@ -244,10 +248,10 @@ public void %(setter_name)s(final %(type_qname)s %(name)s) {
     class StringType(JavaGenerator.StringType, _BaseType):  # @UndefinedVariable
         pass
 
-    class StructType(JavaGenerator.StructType):  # @UndefinedVariable
+    class StructType(JavaGenerator.StructType, _Type):  # @UndefinedVariable
         class _JavaFieldMetadataEnum(JavaGenerator.StructType._JavaFieldMetadataEnum):  # @UndefinedVariable
             def _java_field_java_type(self, field):
-                return field.type.java_bean_qname(boxed=True)
+                return field.type.java_bean_boxed_qname()
 
         def _java_constructor_default(self):
             name = self.java_bean_name()
@@ -313,7 +317,7 @@ public %(name)s(final %(immutable_name)s other) {%(initializers)s
             return _JavaNamedConstruct.java_name(self) + 'Bean'
 
         def java_bean_qname(self):
-            return _JavaNamedConstruct.java_qname(self, java_namespace_scope='bean_java', **kwds) + 'Bean'
+            return _JavaNamedConstruct.java_qname(self, java_namespace_scope='bean_java') + 'Bean'
 
         def java_repr(self):
             javadoc = self.java_doc()
@@ -331,11 +335,17 @@ public %(name)s(final %(immutable_name)s other) {%(initializers)s
 }""" % locals()
 
     class Typedef(JavaGenerator.Typedef):  # @UndefinedVariable
-        def java_bean_name(self, **kwds):
-            return self.java_name(**kwds)
+        def java_bean_boxed_name(self):
+            return self.java_bean_name()
 
-        def java_bean_qname(self, **kwds):
-            return self.java_qname(**kwds)
+        def java_bean_boxed_qname(self):
+            return self.java_bean_qname()
+
+        def java_bean_name(self):
+            return self.java_name()
+
+        def java_bean_qname(self):
+            return self.java_qname()
 
     def __init__(self, **kwds):
         JavaGenerator.__init__(self, mutable_compound_types=True, **kwds)

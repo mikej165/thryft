@@ -31,13 +31,9 @@
 # -----------------------------------------------------------------------------
 
 from thryft.generators.java._java_base_type import _JavaBaseType
-from yutil import class_qname
 
 
 class _JavaNumericType(_JavaBaseType):
-    def java_boxed_name(self):
-        raise NotImplementedError(class_qname(self) + '.java_boxed_name')
-
     def java_compare_to(self, this_value, other_value, **kwds):
         boxed_name = self.java_boxed_name()
         return "%(boxed_name)s.compare(%(this_value)s, %(other_value)s)" % locals()

@@ -39,6 +39,12 @@ class Url(Uri):
     def elastic_search_mapping_dict(self):
         return {'analyzer': 'email_and_url', 'type': 'string'}
 
+    def java_boxed_name(self):
+        return self.java_qname()
+
+    def java_boxed_qname(self):
+        return self.java_qname()
+
     def java_from_string(self, value):
         return "org.thryft.native_.Url.parse(%(value)s)" % locals()
 
@@ -46,7 +52,7 @@ class Url(Uri):
         return "org.thryft.native_.Url.parse(\"%s\")" % value
 
     def java_name(self):
-        return 'org.thryft.native_.Url'
+        return self.java_qname()
 
     def java_qname(self):
         return 'org.thryft.native_.Url'

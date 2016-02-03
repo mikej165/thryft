@@ -38,6 +38,12 @@ class EmailAddress(object):
     def elastic_search_mapping_dict(self):
         return {'analyzer': 'email_and_url', 'type': 'string'}
 
+    def java_boxed_name(self):
+        return self.java_qname()
+
+    def java_boxed_qname(self):
+        return self.java_qname()
+
     def java_default_value(self):
         return 'null'
 
@@ -48,7 +54,7 @@ class EmailAddress(object):
         return "new org.thryft.native_.EmailAddress(\"%s\")" % value
 
     def java_name(self):
-        return 'org.thryft.native_.EmailAddress'
+        return self.java_qname()
 
     def java_qname(self):
         return 'org.thryft.native_.EmailAddress'
