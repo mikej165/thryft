@@ -87,6 +87,7 @@ class IsHiddenTest(TestCase):
 class ListFilesTest(TestCase):
     def runTest(self):
         files = list(list_files('files'))
+        files.sort()
         assert len(files) == 3
         for i in xrange(len(files)):
             assert files[i] == join('files', 'file' + str(i) + '.txt'), files[i]
