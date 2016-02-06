@@ -45,13 +45,12 @@ class CompilerTest(_test._Test):
         compiler = Compiler()
         generator = ThriftGenerator()
         try:
-            documents = \
+            document = \
                 compiler(
                     generator=generator,
-                    thrift_file_paths=(thrift_file_path,)
+                    thrift_file_path=thrift_file_path
                 )
-            self.assertEquals(1, len(documents))
-            document_repr = documents[0].thrift_repr()  # @UnusedVariable
+            document_repr = document.thrift_repr()  # @UnusedVariable
         except:
             print >> sys.stderr, 'Error parsing', thrift_file_path
             traceback.print_exc()
