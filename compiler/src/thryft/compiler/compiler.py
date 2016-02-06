@@ -51,6 +51,7 @@ class Compiler(object):
             self.__document_root_dir_path = document_root_dir_path
             self.__generator = generator
             self.__include_dir_paths = include_dir_paths
+            self.__logger = logging.getLogger(class_qname(Compiler))
             self.__scope_stack = []
             self.__type_by_thrift_qname_cache = {}
             self.__used_include_abspaths = {}
@@ -152,17 +153,31 @@ class Compiler(object):
                         )
                     )
             else:
-                field_names = []
+                optional_field_names = []
+                required_field_names = []
+                field_name_variations = []
                 id_count = 0
                 for field_node in compound_type_node.fields:
                     field_name = field_node.name
-                    if field_name in field_names:
-                        raise CompileException("compound type %s has a duplicate field %s" % (compound_type_node.name, field_name), ast_node=field_node)
-                    field_name_lower_camelized = lower_camelize(field_name)
-                    if field_name_lower_camelized in field_names:
-                        raise CompileException("compound type %s has a duplicate field %s" % (compound_type_node.name, field_name), ast_node=field_node)
+                    field_names = required_field_names if field_node.required else optional_field_names
+                    if field_name not in ('start', 'end'):
+                        if len(field_names) > 0 and cmp(field_name, field_names[-1]) < 0:
+                            self.__logger.warn("field %s in %s is out of lexicographic order (< %s)", field_name, self.__scope_stack[0].path, field_names[-1])
                     field_names.append(field_name)
-                    field_names.append(field_name_lower_camelized)
+                    if field_name in field_name_variations:
+                        raise CompileException("compound type %s has a duplicate field %s" % (compound_type_node.name, field_name), ast_node=field_node)
+
+                    field_name_lower = field_name.lower()
+                    if field_name_lower in field_name_variations:
+                        raise CompileException("compound type %s has a duplicate field %s" % (compound_type_node.name, field_name), ast_node=field_node)
+
+                    field_name_lower_camelized = lower_camelize(field_name)
+                    if field_name_lower_camelized in field_name_variations:
+                        raise CompileException("compound type %s has a duplicate field %s" % (compound_type_node.name, field_name), ast_node=field_node)
+
+                    field_name_variations.append(field_name)
+                    field_name_variations.append(field_name_lower)
+                    field_name_variations.append(field_name_lower_camelized)
 
                     field = field_node.accept(self)
                     if field.required:
@@ -216,10 +231,9 @@ class Compiler(object):
 
             self.__scope_stack.pop(-1)
 
-            logger = logging.getLogger(class_qname(Compiler))
             for include in self.__visited_includes:
                 if not include.abspath in self.__used_include_abspaths:
-                    logger.warn("unused include %s in document %s", include.relpath, document.path)
+                    self.__logger.warn("unused include %s in document %s", include.relpath, document.path)
             return document
 
         def visit_enum_type_node(self, enum_node):
@@ -352,6 +366,7 @@ class Compiler(object):
                 )
             self.__scope_stack.append(service)
 
+            function_names = []
             function_names_lower = []
             for function_node in service_node.functions:
                 function = function_node.accept(self)
@@ -359,6 +374,10 @@ class Compiler(object):
                 if function_name_lower in function_names_lower:
                     raise CompileException("duplicate (case-insensitive) function name '%s'" % function.name, ast_node=function_node)
                 function_names_lower.append(function_name_lower)
+                if len(function_names) > 0 and cmp(function.name, function_names[-1]) < 0:
+                    self.__logger.warn("function %s in %s is out of lexicographic order (< %s)", function.name, self.__scope_stack[0].path, function_names[-1])
+                function_names.append(function.name)
+
                 service.functions.append(function)
             self.__scope_stack.pop(-1)
 
