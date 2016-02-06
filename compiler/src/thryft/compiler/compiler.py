@@ -162,7 +162,13 @@ class Compiler(object):
                     field_names = required_field_names if field_node.required else optional_field_names
                     if field_name not in ('start', 'end'):
                         if len(field_names) > 0 and cmp(field_name, field_names[-1]) < 0:
-                            self.__logger.warn("field %s in %s is out of lexicographic order (< %s)", field_name, self.__scope_stack[0].path, field_names[-1])
+                            after_field_name = ''
+                            for field_name_i in xrange(len(field_names) - 1, -1, -1):
+                                test_field_name = field_names[field_name_i]
+                                if cmp(field_name, test_field_name) >= 0:
+                                    after_field_name = test_field_name
+                                    break
+                            self.__logger.warn("field %s in %s is out of lexicographic order (should be right after %s)", field_name, self.__scope_stack[0].path, after_field_name)
                     field_names.append(field_name)
                     if field_name in field_name_variations:
                         raise CompileException("compound type %s has a duplicate field %s" % (compound_type_node.name, field_name), ast_node=field_node)
@@ -375,7 +381,13 @@ class Compiler(object):
                     raise CompileException("duplicate (case-insensitive) function name '%s'" % function.name, ast_node=function_node)
                 function_names_lower.append(function_name_lower)
                 if len(function_names) > 0 and cmp(function.name, function_names[-1]) < 0:
-                    self.__logger.warn("function %s in %s is out of lexicographic order (< %s)", function.name, self.__scope_stack[0].path, function_names[-1])
+                    after_function_name = ''
+                    for function_name_i in xrange(len(function_names) - 1, -1, -1):
+                        test_function_name = function_names[function_name_i]
+                        if cmp(function.name, test_function_name) >= 0:
+                            after_function_name = test_function_name
+                            break
+                    self.__logger.warn("function %s in %s is out of lexicographic order (should be after %s)", function.name, self.__scope_stack[0].path, after_function_name)
                 function_names.append(function.name)
 
                 service.functions.append(function)
