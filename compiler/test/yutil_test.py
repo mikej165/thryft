@@ -89,7 +89,7 @@ class ListFilesTest(TestCase):
         files = list(list_files('files'))
         assert len(files) == 3
         for i in xrange(len(files)):
-            assert files[i] == join('files', 'file' + str(i) + '.txt')
+            assert files[i] == join('files', 'file' + str(i) + '.txt'), files[i]
 
     def setUp(self):
         self.tearDown()

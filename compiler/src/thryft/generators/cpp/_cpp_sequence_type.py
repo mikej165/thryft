@@ -38,7 +38,10 @@ class _CppSequenceType(_CppContainerType):
     def cpp_includes_use(self):
         includes = ['<thryft.hpp>']
         includes.extend(self.element_type.cpp_includes_use())
-        return includes 
+        return includes
+
+    def cpp_literal(self, value):
+        return self.cpp_qname() + '()'
 
     def cpp_qname(self):
         return \

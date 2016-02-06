@@ -42,6 +42,9 @@ class CppMapType(MapType, _CppContainerType):
         includes.extend(self.value_type.cpp_includes_use())
         return includes
 
+    def cpp_literal(self, value):
+        return self.cpp_qname() + '()'
+
     def cpp_qname(self):
         return \
             "::thryft::Map< %s, ::thryft::protocol::Type::%s, %s, ::thryft::protocol::Type::%s >" % (
@@ -67,8 +70,8 @@ class CppMapType(MapType, _CppContainerType):
                        oss=oss,
                        value="i%(depth)u->second" % locals()
                     )
-            )            
-            
+            )
+
         qname = self.cpp_qname()
         return """\
 oss << "{";

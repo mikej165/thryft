@@ -45,7 +45,7 @@ class JsMapType(MapType, _JsContainerType):
         return """function (json) { var map = {}; for (var key in json) { map[%(key_from_json)s] = %(value_from_json)s; } return map; }(%(value)s)""" % locals()
 
     def js_literal(self, value):
-        return "{%s}" % ', '.join(self.key_type.js_literal(key) + ':' + self.value_type.js_literal(value_) for key, value_ in value.iteritems())
+        return "{%s}" % ', '.join(self.key_type.js_literal(key) + ':' + self.value_type.js_literal(value_) for key, value_ in value)
 
     def js_name(self):
         return "Object.<%s, %s>" % (self.key_type.js_qname(), self.value_type.js_qname())

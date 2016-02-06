@@ -29,7 +29,7 @@ class DartMapType(MapType, _DartContainerType):
                 self.key_type.dart_name(),
                 self.value_type.dart_name(),
                 ', '.join("%s: %s" % (self.key_type.dart_literal(key), self.value_type.dart_literal(value))
-                                      for key, value in value.iteritems())
+                                      for key, value in value)
             )
 
     def dart_name(self):
