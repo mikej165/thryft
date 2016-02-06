@@ -352,9 +352,14 @@ class Compiler(object):
                 )
             self.__scope_stack.append(service)
 
+            function_names_lower = []
             for function_node in service_node.functions:
-                service.functions.append(function_node.accept(self))
-
+                function = function_node.accept(self)
+                function_name_lower = function.name.lower()
+                if function_name_lower in function_names_lower:
+                    raise CompileException("duplicate (case-insensitive) function name '%s'" % function.name, ast_node=function_node)
+                function_names_lower.append(function_name_lower)
+                service.functions.append(function)
             self.__scope_stack.pop(-1)
 
             return service
