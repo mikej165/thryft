@@ -50,6 +50,9 @@ class _PySequenceType(_PyContainerType):
     def _py_imports_use(self, caller_stack):
         return []
 
+    def py_name(self):
+        return self._py_name()
+
     def _py_name(self):
         raise NotImplementedError
 

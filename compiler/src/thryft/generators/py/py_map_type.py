@@ -64,7 +64,7 @@ class PyMapType(MapType, _PyContainerType):
         return []
 
     def py_literal(self, value):
-        return "{%s}" % ', '.join(self.key_type.py_literal(key) + ':' + self.value_type.py_literal(value_) for key, value_ in value.iteritems())
+        return "{%s}" % ', '.join(self.key_type.py_literal(key) + ':' + self.value_type.py_literal(value_) for key, value_ in value)
 
     def py_name(self):
         return 'dict'
