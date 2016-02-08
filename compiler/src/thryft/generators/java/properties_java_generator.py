@@ -104,10 +104,10 @@ public static %(name)s load(final com.google.common.base.Optional<java.io.File> 
 
     __properties = __mergeProperties(__properties, __readProperties("%(properties_file_name)s"));
     __properties = __mergeProperties(__properties, __readProperties(new java.io.File(
+            "/etc/%(project_name)s/%(properties_file_name)s")));
+    __properties = __mergeProperties(__properties, __readProperties(new java.io.File(
             new java.io.File(new java.io.File(System.getProperty("user.home")),
                     ".%(project_name)s"), "%(properties_file_name)s")));
-    __properties = __mergeProperties(__properties, __readProperties(new java.io.File(
-            "/etc/%(project_name)s/%(properties_file_name)s")));
     if (commandLinePropertiesFilePath.isPresent()) {
         __properties = __mergeProperties(__properties,
                 __readProperties(commandLinePropertiesFilePath.get()));
