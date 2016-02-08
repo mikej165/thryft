@@ -192,7 +192,11 @@ class JsFunction(Function, _JsNamedConstruct):
                 }
             } else {
                 if (typeof errorCallback !== "undefined") {
-                    errorCallback(null, __response.error.message, null);
+                    if (typeof __response.error.data !== "undefined" && typeof __response.error["@class"] !== "undefined") {
+                        errorCallback(null, __response.error.message, eval(__response.error["@class"].split(".").slice(0, -2).concat(__response.error["@class"].split(".").slice(-1)).join(".")).fromThryftJSON(__response.error.data));
+                    } else {
+                        errorCallback(null, __response.error.message, null);
+                    }
                 }
             }
         },
@@ -216,15 +220,17 @@ class JsFunction(Function, _JsNamedConstruct):
         }),
         dataType:'json',
         error:function(jqXHR, textStatus, errorThrown) {
-            returnValue = false;
+            throw errorThrown;
         },
         mimeType:'application/json',
         type:'POST',
         success:function(__response) {
             if (typeof __response.result !== "undefined") {
                 returnValue = %(return_value)s;
+            } else if (typeof __response.error.data !== "undefined" && typeof __response.error["@class"] !== "undefined") {
+                throw new eval(__response.error["@class"].split(".").slice(0, -2).concat(__response.error["@class"].split(".").slice(-1)).join(".")).fromThryftJSON(__response.error.data);
             } else {
-                throw new Error(__response.error);
+                throw new Error(__response.error.message);
             }
         },
         url:%(jsonrpc_url)s,

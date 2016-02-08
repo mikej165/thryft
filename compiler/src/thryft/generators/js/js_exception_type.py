@@ -35,5 +35,4 @@ from thryft.generators.js._js_compound_type import _JsCompoundType
 
 
 class JsExceptionType(ExceptionType, _JsCompoundType):
-    def js_repr(self):
-        return ''
+    pass
