@@ -228,7 +228,7 @@ class JsFunction(Function, _JsNamedConstruct):
             if (typeof __response.result !== "undefined") {
                 returnValue = %(return_value)s;
             } else if (typeof __response.error.data !== "undefined" && typeof __response.error["@class"] !== "undefined") {
-                throw new eval(__response.error["@class"].split(".").slice(0, -2).concat(__response.error["@class"].split(".").slice(-1)).join(".")).fromThryftJSON(__response.error.data);
+                throw eval(__response.error["@class"].split(".").slice(0, -2).concat(__response.error["@class"].split(".").slice(-1)).join(".")).fromThryftJSON(__response.error.data);
             } else {
                 throw new Error(__response.error.message);
             }
