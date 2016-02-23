@@ -87,13 +87,14 @@ if (this.%(name)s.isPresent()) {
             return self.type.java_default_value()
 
     def java_equals(self, this_value, other_value, nullable=False):
-        if not self.required:
-            if nullable:
-                return "(%(this_value)s != null ? %(this_value)s.equals(%(other_value)s) : %(other_value)s == null)" % locals()
-            else:
-                return "%(this_value)s.equals(%(other_value)s)" % locals()
+        type_equals = self.type.java_equals(this_value, other_value)
+        if self.required:
+            return type_equals
+        if nullable:
+            return "((%(this_value)s != null && %(other_value)s != null) ? (%(type_equals)s) : (%(this_value)s == null && %(other_value)s == null))" % locals()
         else:
-            return self.type.java_equals(this_value, other_value)
+            type_equals = self.type.java_equals(this_value + '.get()', other_value + '.get()')
+            return "((%(this_value)s.isPresent() && %(other_value)s.isPresent()) ? (%(type_equals)s) : (!%(this_value)s.isPresent() && !%(other_value)s.isPresent()))" % locals()
 
     def java_getter(self, final=True):
         final = final and 'final ' or ''
