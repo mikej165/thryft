@@ -120,7 +120,7 @@ class Document(_NamedConstruct):
             os.makedirs(out_dir_path)
 
         with open(out_file_path, 'w+b') as out_file:
-            out_file.write(out_file_contents)
+            out_file.write(out_file_contents.replace("\r\n", "\n").replace("\r", "\n"))
             self._logger.info('wrote ' + out_file_path)
 
         return out_file_path
