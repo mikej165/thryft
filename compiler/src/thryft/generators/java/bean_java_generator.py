@@ -23,17 +23,17 @@ class BeanJavaGenerator(JavaGenerator):
             return value
 
     class _BaseType(_Type):
-        pass
+        def java_bean_boxed_name(self):
+            return self.java_boxed_name()
+
+        def java_bean_boxed_qname(self):
+            return self.java_boxed_qname()
 
     class BinaryType(JavaGenerator.BinaryType, _BaseType):  # @UndefinedVariable
         pass
 
     class BoolType(JavaGenerator.BoolType, _BaseType):  # @UndefinedVariable
-        def java_bean_boxed_name(self):
-            return 'Boolean'
-
-        def java_bean_boxed_qname(self):
-            return 'Boolean'
+        pass
 
     class _SequenceType(_Type):
         def java_bean_qname(self):
@@ -93,6 +93,9 @@ class BeanJavaGenerator(JavaGenerator):
                 logging.debug('no bean_java namespace set')
                 return
             JavaGenerator.Document.save(self, *args, **kwds)  # @UndefinedVariable
+
+    class DoubleType(JavaGenerator.DoubleType, _BaseType):  # @UndefinedVariable
+        pass
 
     class EnumType(JavaGenerator.EnumType, _Type):  # @UndefinedVariable
         pass
