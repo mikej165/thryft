@@ -39,6 +39,9 @@ class JavaEnumType(EnumType, _JavaType):
     def java_default_value(self):
         return 'null'
 
+    def java_from_string(self, value):
+        return self.java_literal(value)
+
     def java_hash_code(self, value, **kwds):
         return "%(value)s.ordinal()" % locals()
 
