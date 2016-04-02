@@ -41,7 +41,7 @@ class Decimal(object):
         return '"0"'
 
     def elastic_search_mapping_dict(self):
-        return {'index': 'not_analyzed'}
+        return {'index': 'not_analyzed', 'type': 'string'}
 
     def java_boxed_name(self):
         return self.java_qname()
