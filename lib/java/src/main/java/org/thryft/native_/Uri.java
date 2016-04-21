@@ -7,8 +7,8 @@ import com.google.common.base.Optional;
 
 public abstract class Uri implements Comparable<Uri> {
     public final static class Authority {
-        Authority(final String authority, final String host,
-                final Optional<Integer> port, final Optional<String> userInfo) {
+        Authority(final String authority, final String host, final Optional<Integer> port,
+                final Optional<String> userInfo) {
             this.authority = checkNotEmpty(authority);
             this.host = checkNotEmpty(host);
 
@@ -25,6 +25,33 @@ public abstract class Uri implements Comparable<Uri> {
             } else {
                 this.userInfo = Optional.absent();
             }
+        }
+
+        @Override
+        public boolean equals(final Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final Authority other = (Authority) obj;
+            if (!authority.equals(other.authority)) {
+                return false;
+            }
+            if (!host.equals(other.host)) {
+                return false;
+            }
+            if (!port.equals(other.port)) {
+                return false;
+            }
+            if (!userInfo.equals(other.userInfo)) {
+                return false;
+            }
+            return true;
         }
 
         public String getAuthority() {
@@ -44,6 +71,17 @@ public abstract class Uri implements Comparable<Uri> {
         }
 
         @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + authority.hashCode();
+            result = prime * result + host.hashCode();
+            result = prime * result + port.hashCode();
+            result = prime * result + userInfo.hashCode();
+            return result;
+        }
+
+        @Override
         public String toString() {
             return authority;
         }
@@ -58,8 +96,7 @@ public abstract class Uri implements Comparable<Uri> {
         return UriParser.parseUri(uri);
     }
 
-    protected static Optional<String> _checkOptionalString(
-            final Optional<String> string) {
+    protected static Optional<String> _checkOptionalString(final Optional<String> string) {
         checkNotNull(string);
         if (string.isPresent() && !string.get().isEmpty()) {
             return string;
