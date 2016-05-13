@@ -233,15 +233,15 @@ try {
     def java_repr(self):
         return self.java_parameter()
 
-    def java_set_cases(self):
-        name = self.name
+    def java_set_case(self):
+        name_upper = self.name.upper()
         setter_name = self.java_setter_name()
         type_name = self.type.java_qname() if self.required else self.type.java_boxed_qname()
         value = 'value'
         if type_name != 'java.lang.Object':
             value = "(%(type_name)s)%(value)s" % locals()
-        return ("""\
-case "%(name)s": %(setter_name)s(%(value)s); return this;""" % locals(),)
+        return """\
+case %(name_upper)s: %(setter_name)s(%(value)s); return this;""" % locals(),
 
     def java_set_if_present(self):
         getter_name = self.java_getter_name()

@@ -143,6 +143,48 @@ public Builder readAsStruct(final org.thryft.protocol.InputProtocol iprot, final
             return dict((field.java_getter_name(), field.java_getter())
                         for field in self.fields)
 
+        def _java_method_set(self):
+            if len(self.fields) == 0:
+                return {'set': """\
+public Builder set(final String fieldThriftName, @javax.annotation.Nullable final java.lang.Object value) {
+    throw new IllegalArgumentException();
+}
+
+public Builder set(final org.thryft.Struct.FieldMetadata fieldMetadata, @javax.annotation.Nullable final java.lang.Object value) {
+    throw new IllegalArgumentException();
+}"""}
+
+            cases = []
+            suppress_warnings = []
+            for field in self.fields:
+                cases.extend(field.java_set_case())
+                for suppress_warning in field.java_set_suppress_warnings():
+                    if not suppress_warning in suppress_warnings:
+                        suppress_warnings.append(suppress_warning)
+            suppress_warnings = pad("@SuppressWarnings({", ', '.join('"%s"' % suppress_warning
+                                                                     for suppress_warning in suppress_warnings), "})\n")
+            cases = lpad("\n", "\n".join(indent(' ' * 4, cases)))
+            return {'set': """\
+public Builder set(final String fieldThriftName, @javax.annotation.Nullable final java.lang.Object value) {
+    return set(FieldMetadata.valueOfThriftName(fieldThriftName), value);
+}
+
+public Builder set(final org.thryft.Struct.FieldMetadata fieldMetadata, @javax.annotation.Nullable final java.lang.Object value) {
+    if (!(fieldMetadata instanceof FieldMetadata)) {
+        throw new IllegalArgumentException();
+    }
+    return set((FieldMetadata)fieldMetadata, value);
+}
+
+%(suppress_warnings)spublic Builder set(final FieldMetadata fieldMetadata, @javax.annotation.Nullable final java.lang.Object value) {
+    com.google.common.base.Preconditions.checkNotNull(fieldMetadata);
+
+    switch (fieldMetadata) {%(cases)s
+    default:
+        throw new IllegalStateException();
+    }
+}""" % locals()}
+
         def _java_method_set_if_present(self):
             sets = []
             for field in self.fields:
@@ -158,30 +200,6 @@ public Builder setIfPresent(final %(name)s other) {
     return this;
 }""" % locals()}
 
-        def _java_method_set_name_value(self):
-            cases = []
-            suppress_warnings = []
-            for field in self.fields:
-                field_cases = field.java_set_cases()
-                if len(field_cases) == 0:
-                    continue
-                cases.extend(field_cases)
-                for suppress_warning in field.java_set_suppress_warnings():
-                    if not suppress_warning in suppress_warnings:
-                        suppress_warnings.append(suppress_warning)
-            suppress_warnings = pad("@SuppressWarnings({", ', '.join('"%s"' % suppress_warning
-                                                                     for suppress_warning in suppress_warnings), "})\n")
-            cases = lpad("\n", "\n".join(indent(' ' * 4, cases)))
-            return {'set_name_value': """\
-%(suppress_warnings)spublic Builder set(final String name, @javax.annotation.Nullable final java.lang.Object value) {
-    com.google.common.base.Preconditions.checkNotNull(name);
-
-    switch (name.toLowerCase()) {%(cases)s
-    default:
-        throw new IllegalArgumentException(name);
-    }
-}""" % locals()}
-
         def _java_method_setters(self):
             setters = {}
             for field in self.fields:
@@ -189,20 +207,41 @@ public Builder setIfPresent(final %(name)s other) {
                     setters[field.java_setter_name() + str(field_setter_i)] = field_setter
             return setters
 
-        def _java_method_unset_name(self):
+        def _java_method_unset(self):
+            if len(self.fields) == 0:
+                return {'unset': """\
+public Builder unset(final String fieldThriftName) {
+    throw new IllegalArgumentException();
+}
+
+public Builder unset(final org.thryft.Struct.FieldMetadata fieldMetadata) {
+    throw new IllegalArgumentException();
+}"""}
+
             cases = []
             for field in self.fields:
-                field_name = field.name
-                field_name_upper_camelized = upper_camelize(field_name)
-                cases.append('case "%(field_name)s": return unset%(field_name_upper_camelized)s();' % locals())
+                field_name_upper = field.name.upper()
+                field_name_upper_camelized = upper_camelize(field.name)
+                cases.append('case %(field_name_upper)s: return unset%(field_name_upper_camelized)s();' % locals())
             cases = lpad("\n", "\n".join(indent(' ' * 4, cases)))
-            return {'unset_name': """\
-public Builder unset(final String name) {
-    com.google.common.base.Preconditions.checkNotNull(name);
+            return {'unset': """\
+public Builder unset(final String fieldThriftName) {
+    return unset(FieldMetadata.valueOfThriftName(fieldThriftName));
+}
 
-    switch (name.toLowerCase()) {%(cases)s
+public Builder unset(final org.thryft.Struct.FieldMetadata fieldMetadata) {
+    if (!(fieldMetadata instanceof FieldMetadata)) {
+        throw new IllegalArgumentException();
+    }
+    return unset((FieldMetadata)fieldMetadata);
+}
+
+public Builder unset(final FieldMetadata fieldMetadata) {
+    com.google.common.base.Preconditions.checkNotNull(fieldMetadata);
+
+    switch (fieldMetadata) {%(cases)s
     default:
-        throw new IllegalArgumentException(name);
+        throw new IllegalStateException();
     }
 }""" % locals()}
 
@@ -220,10 +259,10 @@ public Builder unset(final String name) {
             methods.update(self._java_method_read_as())
             methods.update(self._java_method_read_as_list())
             methods.update(self._java_method_read_as_struct())
+            methods.update(self._java_method_set())
             methods.update(self._java_method_set_if_present())
-            methods.update(self._java_method_set_name_value())
             methods.update(self._java_method_setters())
-            methods.update(self._java_method_unset_name())
+            methods.update(self._java_method_unset())
             methods.update(self._java_method_unsetters())
             return methods
 
