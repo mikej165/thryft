@@ -36,6 +36,8 @@ from yutil import decamelize
 
 class Ast(object):
     class Node(object):
+        _DECAMELIZED_CLASS_NAME_CACHE = {}
+
         class __Annotations(object):
             def __init__(self):
                 object.__init__(self)
@@ -75,7 +77,12 @@ class Ast(object):
             self.__stop_token = stop_token
 
         def accept(self, visitor):
-            return getattr(visitor, 'visit_' + decamelize(self.__class__.__name__))(self)
+            try:
+                decamelized_class_name = self._DECAMELIZED_CLASS_NAME_CACHE[self.__class__.__name__]
+            except KeyError:
+                decamelized_class_name = decamelize(self.__class__.__name__)
+                self._DECAMELIZED_CLASS_NAME_CACHE[self.__class__.__name__] = decamelized_class_name
+            return getattr(visitor, 'visit_' + decamelized_class_name)(self)
 
         @property
         def annotations(self):
