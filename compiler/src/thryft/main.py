@@ -38,8 +38,9 @@ import argparse
 from thryft.compiler import Compiler
 from thryft.compiler.compile_exception import CompileException
 from thryft.compiler.scan_exception import ScanException
-from yutil import decamelize
 from thryft.generator.generator import Generator
+from thryft.generators.lint.lint_generator import LintGenerator
+from yutil import decamelize
 
 
 MY_DIR_PATH = os.path.dirname(os.path.realpath(__file__))
@@ -162,6 +163,9 @@ class Main(object):
 
                 if out is not None:
                     document.save(out)
+                elif isinstance(generator, LintGenerator):
+                    document.lint()
+
                 return document
         except:
             logging.error("exception compiling %s", thrift_file_path)

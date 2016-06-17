@@ -7,6 +7,7 @@ class LintGeneratorTest(_generator_test._GeneratorTest):
         _generator_test._GeneratorTest.__init__(
             self,
             generator_class=LintGenerator,
+            repr_method_name='lint',
             *args, **kwds
         )
 
