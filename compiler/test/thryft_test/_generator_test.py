@@ -19,4 +19,5 @@ class _GeneratorTest(_test._Test):
 #         thrift_file_name = os.path.split(thrift_file_path)[1]
 #         if thrift_file_name.endswith('_type.thrift') and not 'struct' in thrift_file_name and not 'enum' in thrift_file_name and not 'exception' in thrift_file_name:
 #             print repr(documents[0])
-        return getattr(document, self.__repr_method_name)()
+        if self.__repr_method_name is not None:
+            return getattr(document, self.__repr_method_name)()
