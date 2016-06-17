@@ -54,7 +54,7 @@ class JsonRpcServletJavaGenerator(java_generator.JavaGenerator):
                 read_request = """
     final %(service_qname)s.Messages.%(request_type_name)s serviceRequest;
     try {
-        serviceRequest = %(service_qname)s.Messages.%(request_type_name)s.readAs(iprot, iprot.getCurrentFieldType());
+        serviceRequest = %(service_qname)s.Messages.%(request_type_name)s.readAs(iprot, iprot.getCurrentFieldType(), unknownFieldCallback);
     } catch (final IllegalArgumentException | org.thryft.protocol.InputProtocolException | NullPointerException e) {
         logger.debug("error deserializing service request: ", e);
         __doPostError(httpServletRequest, httpServletResponse, new org.thryft.protocol.JsonRpcErrorResponse(e, -32602, "invalid JSON-RPC request method parameters: " + String.valueOf(e.getMessage())), jsonRpcRequestId);
@@ -138,6 +138,7 @@ public %(name)s(final %(service_qname)s service) {
             service_qname = java_generator.JavaGenerator.Service.java_qname(self)  # @UndefinedVariable
             return [
                 "private final static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(%(name)s.class);" % locals(),
+                "private final static com.google.common.base.Optional<org.thryft.CompoundType.UnknownFieldCallback> unknownFieldCallback = com.google.common.base.Optional.of(new org.thryft.CompoundType.UnknownFieldCallback() { public void apply(final org.thryft.protocol.FieldBegin field) throws org.thryft.protocol.InputProtocolException { throw new org.thryft.protocol.InputProtocolException(\"unknown field \" + field); } });",
                 "private final %(service_qname)s service;" % locals()
             ]
 
