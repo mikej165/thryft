@@ -135,4 +135,12 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
+    <licenses>
+      <license>
+        <name>Simplified BSD license</name>
+        <url>https://opensource.org/licenses/BSD-2-Clause</url>
+        <distribution>repo</distribution>
+      </license>
+    </licenses>
 </project>
