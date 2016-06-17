@@ -43,6 +43,7 @@ except ImportError:
 from thryft.compiler import Compiler
 from thryft.generators.cpp.cpp_generator import CppGenerator
 from thryft.generators.java.java_generator import JavaGenerator
+from thryft.generators.lint.lint_generator import LintGenerator
 from thryft.generators.py.py_generator import PyGenerator
 import thryft.main
 from yutil import camelize
@@ -93,7 +94,10 @@ class Main(thryft.main.Main):
                     'thrift_file_path': thrift_file_path
                 }
 
-                self._compile_thrift_file(generator=None, out=None, **compile_kwds)
+                self._compile_thrift_file(
+                    generator=LintGenerator(),
+                    **compile_kwds
+                )
 
                 for gen_name, generator in generators.iteritems():
                     for out_dir_path in out_dir_paths.get(gen_name, []):

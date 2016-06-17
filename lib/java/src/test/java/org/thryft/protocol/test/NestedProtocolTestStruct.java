@@ -438,6 +438,44 @@ public class NestedProtocolTestStruct implements org.thryft.Struct {
             return this;
         }
 
+        public Builder set(final String fieldThriftName, @javax.annotation.Nullable final java.lang.Object value) {
+            return set(FieldMetadata.valueOfThriftName(fieldThriftName), value);
+        }
+
+        public Builder set(final org.thryft.Struct.FieldMetadata fieldMetadata, @javax.annotation.Nullable final java.lang.Object value) {
+            if (!(fieldMetadata instanceof FieldMetadata)) {
+                throw new IllegalArgumentException();
+            }
+            return set((FieldMetadata)fieldMetadata, value);
+        }
+
+        @SuppressWarnings({"unchecked"})
+        public Builder set(final FieldMetadata fieldMetadata, @javax.annotation.Nullable final java.lang.Object value) {
+            com.google.common.base.Preconditions.checkNotNull(fieldMetadata);
+
+            switch (fieldMetadata) {
+            case REQUIRED_I32_FIELD: setRequiredI32Field((int)value); return this;
+            case REQUIRED_STRING_FIELD: setRequiredStringField((String)value); return this;
+            case BINARY_FIELD: setBinaryField((byte[])value); return this;
+            case BOOL_FIELD: setBoolField((Boolean)value); return this;
+            case BYTE_FIELD: setByteField((Byte)value); return this;
+            case DATE_TIME_FIELD: setDateTimeField((java.util.Date)value); return this;
+            case DECIMAL_FIELD: setDecimalField((java.math.BigDecimal)value); return this;
+            case EMAIL_ADDRESS_FIELD: setEmailAddressField((org.thryft.native_.EmailAddress)value); return this;
+            case ENUM_FIELD: setEnumField((org.thryft.protocol.test.ProtocolTestEnum)value); return this;
+            case I16_FIELD: setI16Field((Short)value); return this;
+            case I32_FIELD: setI32Field((Integer)value); return this;
+            case I64_FIELD: setI64Field((Long)value); return this;
+            case STRING_LIST_FIELD: setStringListField((com.google.common.collect.ImmutableList<String>)value); return this;
+            case STRING_STRING_MAP_FIELD: setStringStringMapField((com.google.common.collect.ImmutableMap<String, String>)value); return this;
+            case STRING_SET_FIELD: setStringSetField((com.google.common.collect.ImmutableSet<String>)value); return this;
+            case STRING_FIELD: setStringField((String)value); return this;
+            case URL_FIELD: setUrlField((org.thryft.native_.Url)value); return this;
+            default:
+                throw new IllegalStateException();
+            }
+        }
+
         public Builder setBinaryField(final com.google.common.base.Optional<byte[]> binaryField) {
             this.binaryField = com.google.common.base.Preconditions.checkNotNull(binaryField);
             return this;
@@ -652,30 +690,40 @@ public class NestedProtocolTestStruct implements org.thryft.Struct {
             return this;
         }
 
-        @SuppressWarnings({"unchecked"})
-        public Builder set(final String name, @javax.annotation.Nullable final java.lang.Object value) {
-            com.google.common.base.Preconditions.checkNotNull(name);
+        public Builder unset(final String fieldThriftName) {
+            return unset(FieldMetadata.valueOfThriftName(fieldThriftName));
+        }
 
-            switch (name.toLowerCase()) {
-            case "required_i32_field": setRequiredI32Field((int)value); return this;
-            case "required_string_field": setRequiredStringField((String)value); return this;
-            case "binary_field": setBinaryField((byte[])value); return this;
-            case "bool_field": setBoolField((Boolean)value); return this;
-            case "byte_field": setByteField((Byte)value); return this;
-            case "date_time_field": setDateTimeField((java.util.Date)value); return this;
-            case "decimal_field": setDecimalField((java.math.BigDecimal)value); return this;
-            case "email_address_field": setEmailAddressField((org.thryft.native_.EmailAddress)value); return this;
-            case "enum_field": setEnumField((org.thryft.protocol.test.ProtocolTestEnum)value); return this;
-            case "i16_field": setI16Field((Short)value); return this;
-            case "i32_field": setI32Field((Integer)value); return this;
-            case "i64_field": setI64Field((Long)value); return this;
-            case "string_list_field": setStringListField((com.google.common.collect.ImmutableList<String>)value); return this;
-            case "string_string_map_field": setStringStringMapField((com.google.common.collect.ImmutableMap<String, String>)value); return this;
-            case "string_set_field": setStringSetField((com.google.common.collect.ImmutableSet<String>)value); return this;
-            case "string_field": setStringField((String)value); return this;
-            case "url_field": setUrlField((org.thryft.native_.Url)value); return this;
+        public Builder unset(final org.thryft.Struct.FieldMetadata fieldMetadata) {
+            if (!(fieldMetadata instanceof FieldMetadata)) {
+                throw new IllegalArgumentException();
+            }
+            return unset((FieldMetadata)fieldMetadata);
+        }
+
+        public Builder unset(final FieldMetadata fieldMetadata) {
+            com.google.common.base.Preconditions.checkNotNull(fieldMetadata);
+
+            switch (fieldMetadata) {
+            case REQUIRED_I32_FIELD: return unsetRequiredI32Field();
+            case REQUIRED_STRING_FIELD: return unsetRequiredStringField();
+            case BINARY_FIELD: return unsetBinaryField();
+            case BOOL_FIELD: return unsetBoolField();
+            case BYTE_FIELD: return unsetByteField();
+            case DATE_TIME_FIELD: return unsetDateTimeField();
+            case DECIMAL_FIELD: return unsetDecimalField();
+            case EMAIL_ADDRESS_FIELD: return unsetEmailAddressField();
+            case ENUM_FIELD: return unsetEnumField();
+            case I16_FIELD: return unsetI16Field();
+            case I32_FIELD: return unsetI32Field();
+            case I64_FIELD: return unsetI64Field();
+            case STRING_LIST_FIELD: return unsetStringListField();
+            case STRING_STRING_MAP_FIELD: return unsetStringStringMapField();
+            case STRING_SET_FIELD: return unsetStringSetField();
+            case STRING_FIELD: return unsetStringField();
+            case URL_FIELD: return unsetUrlField();
             default:
-                throw new IllegalArgumentException(name);
+                throw new IllegalStateException();
             }
         }
 
@@ -762,32 +810,6 @@ public class NestedProtocolTestStruct implements org.thryft.Struct {
         public Builder unsetUrlField() {
             this.urlField = com.google.common.base.Optional.absent();
             return this;
-        }
-
-        public Builder unset(final String name) {
-            com.google.common.base.Preconditions.checkNotNull(name);
-
-            switch (name.toLowerCase()) {
-            case "required_i32_field": return unsetRequiredI32Field();
-            case "required_string_field": return unsetRequiredStringField();
-            case "binary_field": return unsetBinaryField();
-            case "bool_field": return unsetBoolField();
-            case "byte_field": return unsetByteField();
-            case "date_time_field": return unsetDateTimeField();
-            case "decimal_field": return unsetDecimalField();
-            case "email_address_field": return unsetEmailAddressField();
-            case "enum_field": return unsetEnumField();
-            case "i16_field": return unsetI16Field();
-            case "i32_field": return unsetI32Field();
-            case "i64_field": return unsetI64Field();
-            case "string_list_field": return unsetStringListField();
-            case "string_string_map_field": return unsetStringStringMapField();
-            case "string_set_field": return unsetStringSetField();
-            case "string_field": return unsetStringField();
-            case "url_field": return unsetUrlField();
-            default:
-                throw new IllegalArgumentException(name);
-            }
         }
 
         private Integer requiredI32Field;
@@ -1063,21 +1085,21 @@ public class NestedProtocolTestStruct implements org.thryft.Struct {
         return
             getRequiredI32Field() == other.getRequiredI32Field() &&
             getRequiredStringField().equals(other.getRequiredStringField()) &&
-            getBinaryField().equals(other.getBinaryField()) &&
-            getBoolField().equals(other.getBoolField()) &&
-            getByteField().equals(other.getByteField()) &&
-            getDateTimeField().equals(other.getDateTimeField()) &&
-            getDecimalField().equals(other.getDecimalField()) &&
-            getEmailAddressField().equals(other.getEmailAddressField()) &&
-            getEnumField().equals(other.getEnumField()) &&
-            getI16Field().equals(other.getI16Field()) &&
-            getI32Field().equals(other.getI32Field()) &&
-            getI64Field().equals(other.getI64Field()) &&
-            getStringListField().equals(other.getStringListField()) &&
-            getStringStringMapField().equals(other.getStringStringMapField()) &&
-            getStringSetField().equals(other.getStringSetField()) &&
-            getStringField().equals(other.getStringField()) &&
-            getUrlField().equals(other.getUrlField());
+            ((getBinaryField().isPresent() && other.getBinaryField().isPresent()) ? (java.util.Arrays.equals(getBinaryField().get(), other.getBinaryField().get())) : (!getBinaryField().isPresent() && !other.getBinaryField().isPresent())) &&
+            ((getBoolField().isPresent() && other.getBoolField().isPresent()) ? (getBoolField().get() == other.getBoolField().get()) : (!getBoolField().isPresent() && !other.getBoolField().isPresent())) &&
+            ((getByteField().isPresent() && other.getByteField().isPresent()) ? (getByteField().get() == other.getByteField().get()) : (!getByteField().isPresent() && !other.getByteField().isPresent())) &&
+            ((getDateTimeField().isPresent() && other.getDateTimeField().isPresent()) ? (getDateTimeField().get().equals(other.getDateTimeField().get())) : (!getDateTimeField().isPresent() && !other.getDateTimeField().isPresent())) &&
+            ((getDecimalField().isPresent() && other.getDecimalField().isPresent()) ? (getDecimalField().get().equals(other.getDecimalField().get())) : (!getDecimalField().isPresent() && !other.getDecimalField().isPresent())) &&
+            ((getEmailAddressField().isPresent() && other.getEmailAddressField().isPresent()) ? (getEmailAddressField().get().equals(other.getEmailAddressField().get())) : (!getEmailAddressField().isPresent() && !other.getEmailAddressField().isPresent())) &&
+            ((getEnumField().isPresent() && other.getEnumField().isPresent()) ? (getEnumField().get().equals(other.getEnumField().get())) : (!getEnumField().isPresent() && !other.getEnumField().isPresent())) &&
+            ((getI16Field().isPresent() && other.getI16Field().isPresent()) ? (getI16Field().get() == other.getI16Field().get()) : (!getI16Field().isPresent() && !other.getI16Field().isPresent())) &&
+            ((getI32Field().isPresent() && other.getI32Field().isPresent()) ? (getI32Field().get() == other.getI32Field().get()) : (!getI32Field().isPresent() && !other.getI32Field().isPresent())) &&
+            ((getI64Field().isPresent() && other.getI64Field().isPresent()) ? (getI64Field().get() == other.getI64Field().get()) : (!getI64Field().isPresent() && !other.getI64Field().isPresent())) &&
+            ((getStringListField().isPresent() && other.getStringListField().isPresent()) ? (getStringListField().get().equals(other.getStringListField().get())) : (!getStringListField().isPresent() && !other.getStringListField().isPresent())) &&
+            ((getStringStringMapField().isPresent() && other.getStringStringMapField().isPresent()) ? (getStringStringMapField().get().equals(other.getStringStringMapField().get())) : (!getStringStringMapField().isPresent() && !other.getStringStringMapField().isPresent())) &&
+            ((getStringSetField().isPresent() && other.getStringSetField().isPresent()) ? (getStringSetField().get().equals(other.getStringSetField().get())) : (!getStringSetField().isPresent() && !other.getStringSetField().isPresent())) &&
+            ((getStringField().isPresent() && other.getStringField().isPresent()) ? (getStringField().get().equals(other.getStringField().get())) : (!getStringField().isPresent() && !other.getStringField().isPresent())) &&
+            ((getUrlField().isPresent() && other.getUrlField().isPresent()) ? (getUrlField().get().equals(other.getUrlField().get())) : (!getUrlField().isPresent() && !other.getUrlField().isPresent()));
     }
 
     @Override
