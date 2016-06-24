@@ -135,6 +135,9 @@ class BeanJavaGenerator(JavaGenerator):
             else:
                 return self.type.java_default_value()
 
+        def _java_field_metadata_java_type_qname(self):
+            return self.type.java_bean_boxed_qname()
+
         def java_getter(self, **kwds):
             getter_name = self.java_getter_name()
             javadoc = self.java_doc()
@@ -252,10 +255,6 @@ public void %(setter_name)s(final %(type_qname)s %(name)s) {
         pass
 
     class StructType(JavaGenerator.StructType, _Type):  # @UndefinedVariable
-        class _JavaFieldMetadataEnum(JavaGenerator.StructType._JavaFieldMetadataEnum):  # @UndefinedVariable
-            def _java_field_java_type(self, field):
-                return field.type.java_bean_boxed_qname()
-
         def _java_constructor_default(self):
             name = self.java_bean_name()
 

@@ -289,24 +289,14 @@ public static class Builder {%(sections)s
             assert len(java_compound_type.fields) > 0
             self.__java_compound_type = java_compound_type
 
-        def _java_field_java_type(self, field):
-            return field.type.java_boxed_qname()
-
         def java_repr(self):
             enumerators = []
             java_name_cases = []
             thrift_name_cases = []
             for field in self.__java_compound_type.fields:
-                field_id = field.id if field.id is not None else 0
-                field_java_name = field.java_name()
-                field_java_type = self._java_field_java_type(field)
-                field_type = field.type.thrift_ttype_name()
-                field_required = 'true' if field.required else 'false'
-                field_thrift_name = field.name
-                enumerator_name = field.name.upper()
-                enumerators.append("%(enumerator_name)s(\"%(field_java_name)s\", new com.google.common.reflect.TypeToken<%(field_java_type)s>() {}, %(field_required)s, %(field_id)d, \"%(field_thrift_name)s\", org.thryft.protocol.Type.%(field_type)s)" % locals())
-                java_name_cases.append("""case "%(field_java_name)s": return %(enumerator_name)s;""" % locals())
-                thrift_name_cases.append("""case "%(field_thrift_name)s": return %(enumerator_name)s;""" % locals())
+                enumerators.append(field.java_field_metadata_enumerator_declaration())
+                java_name_cases.append(field.java_field_metadata_value_of_java_name_case())
+                thrift_name_cases.append(field.java_field_metadata_value_of_thrift_name_case())
             class_suppress_warnings = '' if 'serial' in self.__java_compound_type._suppress_warnings else "@SuppressWarnings(\"serial\")\n"
             enumerators = pad("\n", indent(' ' * 4, ",\n".join(enumerators)), ";\n")
             java_name_cases = lpad("\n", indent(' ' * 8, "\n".join(java_name_cases)))

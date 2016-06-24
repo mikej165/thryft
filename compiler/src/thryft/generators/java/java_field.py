@@ -96,14 +96,42 @@ if (this.%(name)s.isPresent()) {
             type_equals = self.type.java_equals(this_value + '.get()', other_value + '.get()')
             return "((%(this_value)s.isPresent() && %(other_value)s.isPresent()) ? (%(type_equals)s) : (!%(this_value)s.isPresent() && !%(other_value)s.isPresent()))" % locals()
 
+    def java_field_metadata_enumerator_declaration(self):
+        deprecated = '@Deprecated ' if self.deprecated else ''
+        enumerator_name = self.java_field_metadata_enumerator_name()
+        id = self.id if self.id is not None else 0  # @ReservedAssignment
+        java_name = self.java_name()
+        java_type = self._java_field_metadata_java_type_qname()
+        type = self.type.thrift_ttype_name()  # @ReservedAssignment
+        required = 'true' if self.required else 'false'
+        thrift_name = self.name
+        return "%(deprecated)s%(enumerator_name)s(\"%(java_name)s\", new com.google.common.reflect.TypeToken<%(java_type)s>() {}, %(required)s, %(id)d, \"%(thrift_name)s\", org.thryft.protocol.Type.%(type)s)" % locals()
+
+    def java_field_metadata_enumerator_name(self):
+        return self.name.upper()
+
+    def _java_field_metadata_java_type_qname(self):
+        return self.type.java_boxed_qname()
+
+    def java_field_metadata_value_of_java_name_case(self):
+        enumerator_name = self.java_field_metadata_enumerator_name()
+        java_name = self.java_name()
+        return """case "%(java_name)s": return %(enumerator_name)s;""" % locals()
+
+    def java_field_metadata_value_of_thrift_name_case(self):
+        enumerator_name = self.java_field_metadata_enumerator_name()
+        thrift_name = self.name
+        return """case "%(thrift_name)s": return %(enumerator_name)s;""" % locals()
+
     def java_getter(self, final=True):
+        deprecated = '@Deprecated\n' if self.deprecated else ''
         final = final and 'final ' or ''
         getter_name = self.java_getter_name()
         javadoc = self.java_doc()
         name = self.java_name()
         type_name = self._java_type_name()
         return """\
-%(javadoc)spublic %(final)s%(type_name)s %(getter_name)s() {
+%(javadoc)s%(deprecated)spublic %(final)s%(type_name)s %(getter_name)s() {
     return %(name)s;
 }""" % locals()
 
@@ -262,19 +290,20 @@ if (other.%(getter_name)s().isPresent()) {
             return tuple()
 
     def java_setters(self, return_type_name='void'):
+        deprecated = '@Deprecated\n' if self.deprecated else ''
         setter_name = self.java_setter_name()
         name = self.java_name()
         return_statement = \
             return_type_name != 'void' and "\n    return this;" or ''
         type_name = self._java_type_name()
         setters = ["""\
-public %(return_type_name)s %(setter_name)s(final %(type_name)s %(name)s) {
+%(deprecated)spublic %(return_type_name)s %(setter_name)s(final %(type_name)s %(name)s) {
     this.%(name)s = com.google.common.base.Preconditions.checkNotNull(%(name)s);%(return_statement)s
 }""" % locals()]
         if not self.required:
             type_name = self.type.java_boxed_qname()
             setters.append("""\
-public %(return_type_name)s %(setter_name)s(@javax.annotation.Nullable final %(type_name)s %(name)s) {
+%(deprecated)spublic %(return_type_name)s %(setter_name)s(@javax.annotation.Nullable final %(type_name)s %(name)s) {
     this.%(name)s = com.google.common.base.Optional.fromNullable(%(name)s);%(return_statement)s
 }""" % locals())
         return setters
@@ -309,6 +338,7 @@ public %(return_type_name)s %(setter_name)s(@javax.annotation.Nullable final %(t
             return "com.google.common.base.Optional<%s>" % self.type.java_boxed_qname()
 
     def java_unsetter(self, return_type_name='void'):
+        deprecated = '@Deprecated\n' if self.deprecated else ''
         name = self.java_name()
         return_statement = \
             return_type_name != 'void' and "\n    return this;" or ''
@@ -318,7 +348,7 @@ public %(return_type_name)s %(setter_name)s(@javax.annotation.Nullable final %(t
         else:
             unset = "this.%s = com.google.common.base.Optional.absent();" % name
         return """\
-public %(return_type_name)s %(unsetter_name)s() {
+%(deprecated)spublic %(return_type_name)s %(unsetter_name)s() {
     %(unset)s%(return_statement)s
 }""" % locals()
 
