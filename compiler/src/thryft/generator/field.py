@@ -49,6 +49,13 @@ class Field(_NamedConstruct):
         self.__value = value
 
     @property
+    def deprecated(self):
+        for annotation in self.annotations:
+            if annotation.name == 'deprecated':
+                return True
+        return False
+
+    @property
     def id(self):  # @ReservedAssignment
         return self.__id
 

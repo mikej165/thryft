@@ -75,12 +75,6 @@ class JavaGenerator(Generator):
     def mutable_compound_types(self):
         return self.__mutable_compound_types
 
-def __parse_java_deprecated_annotation(ast_node, name, value, **kwds):
-    if value is not None:
-        raise ValueError("@%(name)s does not take a value" % locals())
-    ast_node.annotations.append(Ast.AnnotationNode(name=name, **kwds))
-Parser.register_annotation(Ast.EnumeratorNode, 'java_deprecated', __parse_java_deprecated_annotation)
-
 
 def __parse_java_escape_to_string_annotation(ast_node, name, value, **kwds):
     if value is not None:

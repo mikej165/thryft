@@ -78,11 +78,7 @@ class JavaEnumType(EnumType, _JavaType):
         for enumerator in self.enumerators:
             valueOf_cases.append(
 "case %u: return %s;" % (enumerator.value, enumerator.name))
-            enumerator_deprecated = ''
-            for annotation in enumerator.annotations:
-                if annotation.name == 'java_deprecated':
-                    enumerator_deprecated = '@Deprecated '
-                    break
+            enumerator_deprecated = '@Deprecated ' if enumerator.deprecated else ''
             enumerators.append(
                 "%s%s(%u)" % (enumerator_deprecated, enumerator.name, enumerator.value)
             )

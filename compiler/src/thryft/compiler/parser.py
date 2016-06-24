@@ -929,12 +929,20 @@ class Parser(GenericParser):
         return token.type
 
 
+def __parse_deprecated_annotation(ast_node, name, value, **kwds):
+    if value is not None:
+        raise ValueError("@%(name)s does not take a value" % locals())
+    ast_node.annotations.append(Ast.AnnotationNode(name=name, **kwds))
+for __ast_node_type in (Ast.EnumeratorNode, Ast.FieldNode):
+    Parser.register_annotation(__ast_node_type, 'deprecated', __parse_deprecated_annotation)
+
+
 def __parse_native_annotation(ast_node, name, value, **kwds):
     if value is not None:
         raise ValueError("@%(name)s does not take a value" % locals())
     ast_node.annotations.append(Ast.AnnotationNode(name=name, **kwds))
-Parser.register_annotation(Ast.StructTypeNode, 'native', __parse_native_annotation)
-Parser.register_annotation(Ast.TypedefNode, 'native', __parse_native_annotation)
+for __ast_node_type in (Ast.StructTypeNode, Ast.TypedefNode):
+    Parser.register_annotation(__ast_node_type, 'native', __parse_native_annotation)
 
 
 def __parse_param_annotation(ast_node, name, value, **kwds):
@@ -1019,7 +1027,6 @@ def __parse_validation_annotation(ast_node, name, value, **kwds):
     else:
         ast_node.annotations.append(annotation)
 
-
 def __split_param_annotation(ast_node, name, value):
     assert isinstance(ast_node, Ast.FunctionNode)
 
@@ -1042,7 +1049,6 @@ def __split_param_annotation(ast_node, name, value):
             raise ValueError("unknown parameter '%s'" % param_name)
 
     return parameter, value_split[1]
-
 
 for __ast_node_type in (Ast.FieldNode, Ast.FunctionNode, Ast.TypedefNode):
     Parser.register_annotation(__ast_node_type, 'validation', __parse_validation_annotation)
