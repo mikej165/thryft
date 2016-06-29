@@ -55,6 +55,12 @@ class DateTime(object):
     def elastic_search_mapping_dict(self):
         return {'type': 'date'}
 
+    def java_bean_boxed_name(self):
+        return self.java_qname()
+
+    def java_bean_boxed_qname(self):
+        return self.java_qname()
+
     def java_boxed_name(self):
         return self.java_qname()
 

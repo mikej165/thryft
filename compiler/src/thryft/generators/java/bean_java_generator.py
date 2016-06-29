@@ -8,10 +8,10 @@ from yutil import indent, lpad, class_qname
 class BeanJavaGenerator(JavaGenerator):
     class _Type(object):
         def java_bean_boxed_name(self):
-            return self.java_bean_name()
+            return self.java_boxed_name()
 
         def java_bean_boxed_qname(self):
-            return self.java_bean_qname()
+            return self.java_boxed_qname()
 
         def java_bean_name(self):
             return self.java_name()
@@ -315,6 +315,12 @@ public %(name)s(final %(immutable_name)s other) {%(initializers)s
             methods.update(self._java_method_to_string())
             return methods
 
+        def java_bean_boxed_name(self):
+            return self.java_bean_name()
+
+        def java_bean_boxed_qname(self):
+            return self.java_bean_qname()
+
         def java_bean_name(self):
             return _JavaNamedConstruct.java_name(self) + 'Bean'
 
@@ -335,19 +341,6 @@ public %(name)s(final %(immutable_name)s other) {%(initializers)s
             return """\
 %(javadoc)spublic class %(name)s implements org.thryft.StructBean {%(sections)s
 }""" % locals()
-
-    class Typedef(JavaGenerator.Typedef):  # @UndefinedVariable
-        def java_bean_boxed_name(self):
-            return self.java_bean_name()
-
-        def java_bean_boxed_qname(self):
-            return self.java_bean_qname()
-
-        def java_bean_name(self):
-            return self.java_name()
-
-        def java_bean_qname(self):
-            return self.java_qname()
 
     def __init__(self, **kwds):
         JavaGenerator.__init__(self, mutable_compound_types=True, **kwds)

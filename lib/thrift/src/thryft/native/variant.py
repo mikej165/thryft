@@ -46,6 +46,12 @@ class Variant(object):
     def cpp_qname(self):
         return '::thryft::native::Variant'
 
+    def java_bean_boxed_name(self):
+        return self.java_qname()
+
+    def java_bean_boxed_qname(self):
+        return self.java_qname()
+
     def java_boxed_name(self):
         return self.java_qname()
 

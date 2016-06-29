@@ -49,6 +49,12 @@ class u64(object):
     def cpp_read_protocol(self, value, optional=False):
         return "%(value)s = iprot.read_u64();" % locals()
 
+    def java_bean_boxed_name(self):
+        return self.java_qname()
+
+    def java_bean_boxed_qname(self):
+        return self.java_qname()
+
     def java_boxed_name(self):
         return self.java_qname()
 

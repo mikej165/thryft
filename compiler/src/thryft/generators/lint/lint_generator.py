@@ -52,6 +52,9 @@ class LintGenerator(Generator):
     class _SequenceType(_ContainerType):
         pass
 
+    class BinaryType(Generator.BinaryType, _Type):  # @UndefinedVariable
+        pass
+
     class Const(Generator.Const, _NamedConstruct):  # @UndefinedVariable
         pass
 

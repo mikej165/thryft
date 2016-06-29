@@ -52,6 +52,12 @@ class Uri(object):
     def dart_to_core_type(self, value):
         return value + '.toString()'
 
+    def java_bean_boxed_name(self):
+        return self.java_qname()
+
+    def java_bean_boxed_qname(self):
+        return self.java_qname()
+
     def java_boxed_name(self):
         return self.java_qname()
 
