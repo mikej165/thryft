@@ -119,11 +119,15 @@ public class NestedProtocolTestStruct implements org.thryft.Struct {
         }
 
         public Builder readAs(final org.thryft.protocol.InputProtocol iprot, final org.thryft.protocol.Type type) throws org.thryft.protocol.InputProtocolException {
+            return readAs(iprot, type, com.google.common.base.Optional.<UnknownFieldCallback> absent());
+        }
+
+        public Builder readAs(final org.thryft.protocol.InputProtocol iprot, final org.thryft.protocol.Type type, final com.google.common.base.Optional<UnknownFieldCallback> unknownFieldCallback) throws org.thryft.protocol.InputProtocolException {
             switch (type) {
             case LIST:
                 return readAsList(iprot);
             case STRUCT:
-                return readAsStruct(iprot);
+                return readAsStruct(iprot, unknownFieldCallback);
             default:
                 throw new IllegalArgumentException("cannot read as " + type);
             }
@@ -1266,11 +1270,15 @@ public class NestedProtocolTestStruct implements org.thryft.Struct {
     }
 
     public static NestedProtocolTestStruct readAs(final org.thryft.protocol.InputProtocol iprot, final org.thryft.protocol.Type type) throws org.thryft.protocol.InputProtocolException {
+        return readAs(iprot, type, com.google.common.base.Optional.<UnknownFieldCallback> absent());
+    }
+
+    public static NestedProtocolTestStruct readAs(final org.thryft.protocol.InputProtocol iprot, final org.thryft.protocol.Type type, final com.google.common.base.Optional<UnknownFieldCallback> unknownFieldCallback) throws org.thryft.protocol.InputProtocolException {
         switch (type) {
         case LIST:
             return readAsList(iprot);
         case STRUCT:
-            return readAsStruct(iprot);
+            return readAsStruct(iprot, unknownFieldCallback);
         default:
             throw new IllegalArgumentException("cannot read as " + type);
         }
