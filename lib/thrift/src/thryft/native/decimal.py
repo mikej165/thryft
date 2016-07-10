@@ -121,9 +121,6 @@ if (typeof %(value)s !== "string") {
     def py_read_protocol_throws(self):
         return ['decimal.InvalidOperation', 'TypeError']
 
-    def py_qname(self):
-        return 'Decimal'
-
     def py_runtime_repr(self, value):
         return "repr(%(value)s)" % locals()
 

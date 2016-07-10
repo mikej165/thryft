@@ -43,3 +43,9 @@ class i8(object):
 
     def cpp_qname(self):
         return 'int8_t'
+
+    def py_name(self):
+        return 'int'
+
+    def py_qname(self):
+        return 'int'

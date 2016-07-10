@@ -78,6 +78,9 @@ class float(object):
     def py_description(self):
         return 'float'
 
+    def py_name(self):
+        return 'float'
+
     def py_qname(self):
         return 'float'
 

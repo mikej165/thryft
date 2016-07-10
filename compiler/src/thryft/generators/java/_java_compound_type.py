@@ -1014,11 +1014,11 @@ public void writeFields(final org.thryft.protocol.OutputProtocol oprot) throws o
         javadoc = self.java_doc()
         name = self.java_name()
         extends = lpad(' extends ', self._java_extends())
-        field_metadata_enum = self._java_field_metadata_enum()
         implements = lpad(' implements ', ', '.join(self._java_implements()))
         methods = self._java_methods()
         sections = []
         sections.append(indent(' ' * 4, self._JavaBuilder(self).java_repr()))
+        field_metadata_enum = self._java_field_metadata_enum()
         if field_metadata_enum is not None:
             sections.append(indent(' ' * 4, field_metadata_enum))
         sections.append("\n\n".join(indent(' ' * 4,

@@ -1,7 +1,7 @@
 from __future__ import absolute_import; import decimal
-from datetime import datetime
 from itertools import ifilterfalse
 import __builtin__
+import datetime
 import thryft_test.protocol.test.nested_protocol_test_struct
 import thryft_test.protocol.test.protocol_test_enum
 
@@ -40,7 +40,7 @@ class ProtocolTestStruct(object):
             :type required_string_field: str
             :type binary_field: str or None
             :type bool_field: bool or None
-            :type date_time_field: datetime or None
+            :type date_time_field: datetime.datetime or None
             :type decimal_field: Decimal or None
             :type double_field: float or None
             :type email_address_field: str or None
@@ -109,7 +109,7 @@ class ProtocolTestStruct(object):
         @property
         def date_time_field(self):
             '''
-            :rtype: datetime
+            :rtype: datetime.datetime
             '''
 
             return self.__date_time_field
@@ -220,7 +220,7 @@ class ProtocolTestStruct(object):
 
         def set_date_time_field(self, date_time_field):
             '''
-            :type date_time_field: datetime or None
+            :type date_time_field: datetime.datetime or None
             '''
 
             self.__date_time_field = date_time_field
@@ -456,7 +456,7 @@ class ProtocolTestStruct(object):
             :type required_string_field: str
             :type binary_field: str or None
             :type bool_field: bool or None
-            :type date_time_field: datetime or None
+            :type date_time_field: datetime.datetime or None
             :type decimal_field: Decimal or None
             :type double_field: float or None
             :type email_address_field: str or None
@@ -553,7 +553,7 @@ class ProtocolTestStruct(object):
         @date_time_field.setter
         def date_time_field(self, date_time_field):
             '''
-            :type date_time_field: datetime or None
+            :type date_time_field: datetime.datetime or None
             '''
 
             self.set_date_time_field(date_time_field)
@@ -726,6 +726,73 @@ class ProtocolTestStruct(object):
 
             self.set_variant_field(variant_field)
 
+    class FieldMetadata(object):
+        REQUIRED_I32_FIELD = None
+        REQUIRED_STRING_FIELD = None
+        BINARY_FIELD = None
+        BOOL_FIELD = None
+        DATE_TIME_FIELD = None
+        DECIMAL_FIELD = None
+        DOUBLE_FIELD = None
+        EMAIL_ADDRESS_FIELD = None
+        ENUM_FIELD = None
+        FLOAT_FIELD = None
+        I8_FIELD = None
+        I16_FIELD = None
+        I32_FIELD = None
+        I64_FIELD = None
+        STRING_LIST_FIELD = None
+        STRING_STRING_MAP_FIELD = None
+        STRING_SET_FIELD = None
+        STRING_FIELD = None
+        STRUCT_FIELD = None
+        U32_FIELD = None
+        U64_FIELD = None
+        URI_FIELD = None
+        URL_FIELD = None
+        VARIANT_FIELD = None
+
+        def __init__(self, name, type_):
+            object.__init__(self)
+            self.__name = name
+            self.__type = type_
+
+        def __repr__(self):
+            return self.__name
+
+        @property
+        def type(self):
+            return self.__type
+
+        @classmethod
+        def values(cls):
+            return (cls.REQUIRED_I32_FIELD, cls.REQUIRED_STRING_FIELD, cls.BINARY_FIELD, cls.BOOL_FIELD, cls.DATE_TIME_FIELD, cls.DECIMAL_FIELD, cls.DOUBLE_FIELD, cls.EMAIL_ADDRESS_FIELD, cls.ENUM_FIELD, cls.FLOAT_FIELD, cls.I8_FIELD, cls.I16_FIELD, cls.I32_FIELD, cls.I64_FIELD, cls.STRING_LIST_FIELD, cls.STRING_STRING_MAP_FIELD, cls.STRING_SET_FIELD, cls.STRING_FIELD, cls.STRUCT_FIELD, cls.U32_FIELD, cls.U64_FIELD, cls.URI_FIELD, cls.URL_FIELD, cls.VARIANT_FIELD,)
+
+    FieldMetadata.REQUIRED_I32_FIELD = FieldMetadata('required_i32_field', int)
+    FieldMetadata.REQUIRED_STRING_FIELD = FieldMetadata('required_string_field', str)
+    FieldMetadata.BINARY_FIELD = FieldMetadata('binary_field', str)
+    FieldMetadata.BOOL_FIELD = FieldMetadata('bool_field', bool)
+    FieldMetadata.DATE_TIME_FIELD = FieldMetadata('date_time_field', datetime.datetime)
+    FieldMetadata.DECIMAL_FIELD = FieldMetadata('decimal_field', decimal.Decimal)
+    FieldMetadata.DOUBLE_FIELD = FieldMetadata('double_field', float)
+    FieldMetadata.EMAIL_ADDRESS_FIELD = FieldMetadata('email_address_field', str)
+    FieldMetadata.ENUM_FIELD = FieldMetadata('enum_field', thryft_test.protocol.test.protocol_test_enum.ProtocolTestEnum)
+    FieldMetadata.FLOAT_FIELD = FieldMetadata('float_field', float)
+    FieldMetadata.I8_FIELD = FieldMetadata('i8_field', int)
+    FieldMetadata.I16_FIELD = FieldMetadata('i16_field', int)
+    FieldMetadata.I32_FIELD = FieldMetadata('i32_field', int)
+    FieldMetadata.I64_FIELD = FieldMetadata('i64_field', long)
+    FieldMetadata.STRING_LIST_FIELD = FieldMetadata('string_list_field', tuple)
+    FieldMetadata.STRING_STRING_MAP_FIELD = FieldMetadata('string_string_map_field', dict)
+    FieldMetadata.STRING_SET_FIELD = FieldMetadata('string_set_field', frozenset)
+    FieldMetadata.STRING_FIELD = FieldMetadata('string_field', str)
+    FieldMetadata.STRUCT_FIELD = FieldMetadata('struct_field', thryft_test.protocol.test.nested_protocol_test_struct.NestedProtocolTestStruct)
+    FieldMetadata.U32_FIELD = FieldMetadata('u32_field', int)
+    FieldMetadata.U64_FIELD = FieldMetadata('u64_field', long)
+    FieldMetadata.URI_FIELD = FieldMetadata('uri_field', str)
+    FieldMetadata.URL_FIELD = FieldMetadata('url_field', str)
+    FieldMetadata.VARIANT_FIELD = FieldMetadata('variant_field', object)
+
     def __init__(
         self,
         required_i32_field,
@@ -758,7 +825,7 @@ class ProtocolTestStruct(object):
         :type required_string_field: str
         :type binary_field: str or None
         :type bool_field: bool or None
-        :type date_time_field: datetime or None
+        :type date_time_field: datetime.datetime or None
         :type decimal_field: Decimal or None
         :type double_field: float or None
         :type email_address_field: str or None
@@ -805,8 +872,8 @@ class ProtocolTestStruct(object):
         self.__bool_field = bool_field
 
         if date_time_field is not None:
-            if not isinstance(date_time_field, datetime):
-                raise TypeError("expected date_time_field to be a datetime but it is a %s" % getattr(__builtin__, 'type')(date_time_field))
+            if not isinstance(date_time_field, datetime.datetime):
+                raise TypeError("expected date_time_field to be a datetime.datetime but it is a %s" % getattr(__builtin__, 'type')(date_time_field))
         self.__date_time_field = date_time_field
 
         if decimal_field is not None:
@@ -1103,7 +1170,7 @@ class ProtocolTestStruct(object):
     @property
     def date_time_field(self):
         '''
-        :rtype: datetime
+        :rtype: datetime.datetime
         '''
 
         return self.__date_time_field
@@ -1334,7 +1401,7 @@ class ProtocolTestStruct(object):
         :type required_string_field: str or None
         :type binary_field: str or None
         :type bool_field: bool or None
-        :type date_time_field: datetime or None
+        :type date_time_field: datetime.datetime or None
         :type decimal_field: Decimal or None
         :type double_field: float or None
         :type email_address_field: str or None

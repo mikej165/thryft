@@ -143,6 +143,9 @@ if (typeof %(value)s !== "string") {
     def py_name(self):
         return 'int'
 
+    def py_qname(self):
+        return 'int'
+
     def py_read_protocol(self):
         return 'iprot.read_u32()'
 

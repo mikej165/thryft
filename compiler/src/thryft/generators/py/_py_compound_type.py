@@ -31,7 +31,7 @@
 # -----------------------------------------------------------------------------
 
 from thryft.generators.py._py_type import _PyType
-from yutil import decamelize, indent, lpad
+from yutil import decamelize, indent, lpad, pad
 
 
 class _PyCompoundType(_PyType):
@@ -154,6 +154,48 @@ def update(self, %(other_name)s):
 class Builder(object):%(sections)s
 """ % locals()
 
+    class _PyFieldMetadataEnum(object):
+        def __init__(self, py_compound_type):
+            object.__init__(self)
+            assert len(py_compound_type.fields) > 0
+            self.__py_compound_type = py_compound_type
+
+        def py_repr(self):
+            enumerators = []
+            enumerator_placeholders = []
+            enumerator_qnames = []
+            for field in self.__py_compound_type.fields:
+                field_name = field.name
+                field_type = field.type.py_qname()
+                enumerator_name = field.name.upper()
+                enumerator_placeholders.append("%(enumerator_name)s = None" % locals())
+                enumerators.append("FieldMetadata.%(enumerator_name)s = FieldMetadata('%(field_name)s', %(field_type)s)" % locals())
+                enumerator_qnames.append("cls.%(enumerator_name)s" % locals())
+            enumerators = \
+                lpad("\n\n", "\n".join(enumerators))
+            enumerator_qnames = ', '.join(enumerator_qnames)
+            enumerator_placeholders = \
+                pad("\n", "\n".join(indent(' ' * 4,
+                    enumerator_placeholders
+                )), "\n")
+            return """\
+class FieldMetadata(object):%(enumerator_placeholders)s
+    def __init__(self, name, type_):
+        object.__init__(self)
+        self.__name = name
+        self.__type = type_
+
+    def __repr__(self):
+        return self.__name
+
+    @property
+    def type(self):
+        return self.__type
+
+    @classmethod
+    def values(cls):
+        return (%(enumerator_qnames)s,)%(enumerators)s""" % locals()
+
     def _py_builder(self):
         return self._PyBuilder(self).py_repr()
 
@@ -193,6 +235,11 @@ def __init__(
 
     def _py_extends(self):
         return ['object']
+
+    def _py_field_metadata_enum(self):
+        if len(self.fields) == 0:
+            return None
+        return self._PyFieldMetadataEnum(self).py_repr()
 
     def _py_imports_check(self, caller_stack):
         return self._py_imports_use(caller_stack)
@@ -466,6 +513,9 @@ def write(self, oprot):
         builder = self._py_builder()
         if builder is not None:
             sections.append(indent(' ' * 4, builder))
+        field_metadata_enum = self._py_field_metadata_enum()
+        if field_metadata_enum is not None:
+            sections.append(indent(' ' * 4, field_metadata_enum))
         sections.append(indent(' ' * 4, "\n".join(self._py_methods())))
         sections = "\n\n".join(sections)
         name = self.py_name()

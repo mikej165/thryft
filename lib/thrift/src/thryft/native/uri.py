@@ -94,6 +94,12 @@ if (typeof %(value)s !== "string") {
     return "expected %(value_name)s to be a string";
 }""" % locals()}
 
+    def py_name(self):
+        return 'str'
+
+    def py_qname(self):
+        return 'str'
+
     def thrift_ttype_id(self):
         return StringType.THRIFT_TTYPE_ID
 

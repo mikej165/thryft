@@ -142,14 +142,14 @@ if (typeof %(value)s !== "string") {
     def py_name(self):
         return 'long'
 
+    def py_qname(self):
+        return 'long'
+
     def py_read_protocol(self):
         return 'iprot.read_u64()'
 
     def py_read_protocol_throws(self):
         return ['TypeError']
-
-    def py_qname(self):
-        return 'long'
 
     def py_write_protocol(self, value, depth=0):
         qname = self.py_qname()

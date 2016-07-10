@@ -98,5 +98,11 @@ if (typeof %(value)s !== "string") {
     def js_write_protocol(self, value, depth=0):
         return """oprot.writeString(%(value)s);""" % locals()
 
+    def py_name(self):
+        return 'str'
+
+    def py_qname(self):
+        return 'str'
+
     def py_write_protocol(self, value, depth=0):
         return "oprot.write_string(%(value)s)" % locals()

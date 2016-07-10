@@ -125,19 +125,25 @@ if (!(%(value)s instanceof Date)) {
         return "oprot.writeDateTime(%(value)s);" % locals()
 
     def py_check(self, value):
-        return "isinstance(%(value)s, datetime)" % locals()
+        return "isinstance(%(value)s, datetime.datetime)" % locals()
 
     def py_description(self):
-        return 'datetime'
+        return 'datetime.datetime'
 
     def py_imports_check(self, caller_stack=None):
-        return ['from datetime import datetime']
+        return ['import datetime']
 
     def py_imports_definition(self, caller_stack=None):
         return []
 
     def py_imports_use(self, caller_stack=None):
-        return ['from datetime import datetime']
+        return ['import datetime']
+
+    def py_name(self):
+        return 'datetime'
+
+    def py_qname(self):
+        return 'datetime.datetime'
 
     def py_read_protocol(self):
         return 'iprot.read_date_time()'

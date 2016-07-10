@@ -94,6 +94,12 @@ class Variant(object):
     def py_imports_use(self, caller_stack=None):
         return []
 
+    def py_name(self):
+        return 'object'
+
+    def py_qname(self):
+        return 'object'
+
     def py_read_protocol(self):
         return 'iprot.read_variant()'
 
