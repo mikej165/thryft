@@ -28,7 +28,6 @@ Thryft does have a number of features that are not present in Apache Thrift:
     * Backbone.Forms and Backbone.Validation properties
 * A Java runtime library that provides:
     * Model marshalling protocols: CSV; JSON; string maps
-    * Model stores: file system; JDBC; memory; Redis; S3; SimpleDB; DynamoDB
 
 ## Installation
 
@@ -44,6 +43,25 @@ However, it's generally easier to write a simple Python script that uses the gen
 An example script that generates test code can be found in
 
         thryft/lib/thrift/devbin/generate_src.py
+
+## Software architecture / source overview
+
+The compiler (`compiler.py`) is the heart of Thryft. The compiler:
+* accepts files in .thrift at its entry point (`compile`), along with an instance of `Generator` (`generator.py`), such as `JavaGenerator` (`java_generator.py`)
+* lexes and parses them with SPARK (`parser.py`)
+* creates an Abstract Syntax Tree (AST, classes in `ast.py`) representing the constructs in the .thrift, such as the root document, struct types, fields, et al.
+* for every node in the AST, creates a corresponding instance of the class in the Generator e.g., JavaGenerator.Document
+* tells the root of the generator instance tree (`JavaGenerator.Document`, in this case) to save itself to files using the `Document.save` method
+
+## Coding conventions
+
+PEP8, with a few additions:
+* All of the logic is part of a class method; there are no freestanding functions, except the ancient utility functions in `yutil.py`.
+* There is one class per file, and the file is the underscore_separated version of the CamelCase class name.
+* Protected methods are prefixed with `_`. Private methods are prefixed with `__`.
+* Methods, members, and parameters are listed in alphabetical order where feasible (i.e., not interdependent nested classes), ignoring leading underscores. The exception is `__init__`, which is always the first method listed. Nested classes and class constants come before all methods.
+
+The repository uses the [nvie.com branching model](http://nvie.com/posts/a-successful-git-branching-model/).
 
 ## License
 2-clause BSD
