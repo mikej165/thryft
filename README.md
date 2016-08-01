@@ -11,7 +11,7 @@ Thryft accepts Apache Thrift interface definitions and generates:
 Thryft is written in Python using a SPARK parser and syntax-directed translation.
 
 Thryft does not share any code with Apache Thrift, and it is not intended to be a complete rewrite of the latter.
-Among other things, Thryft does not currently a number of secondary IDL features such as senums. Thryft's runtime library is also quite different from Apache Thrift's and e.g., does not support field numbering.
+Among other things, Thryft does not currently a number of secondary IDL features such as senums. Thryft's runtime library is also quite different from Apache Thrift's.
 
 Thryft does have a number of features that are not present in Apache Thrift:
 
