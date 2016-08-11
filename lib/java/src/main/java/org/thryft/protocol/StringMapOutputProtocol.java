@@ -100,7 +100,7 @@ public class StringMapOutputProtocol extends StackedOutputProtocol<StringMapOutp
 
         @Override
         public void writeNull() throws OutputProtocolException {
-            throw new UnsupportedOperationException();
+            throw new OutputProtocolException("nulls not supported");
         }
 
         @Override
@@ -287,5 +287,5 @@ public class StringMapOutputProtocol extends StackedOutputProtocol<StringMapOutp
         return ImmutableMap.copyOf(output);
     }
 
-    private final Map<String, String> output = new LinkedHashMap<String, String>();
+    private final Map<String, String> output = new LinkedHashMap<>();
 }

@@ -145,7 +145,7 @@ public class JacksonJsonInputProtocol extends JsonInputProtocol<JacksonJsonInput
             } else if (value.isTextual()) {
                 return value.asText();
             } else {
-                throw new UnsupportedOperationException();
+                throw new InputProtocolException("unsupported variant type " + value);
             }
         }
 
@@ -205,7 +205,7 @@ public class JacksonJsonInputProtocol extends JsonInputProtocol<JacksonJsonInput
             }
         }
 
-        private final Stack<String> fieldNameStack = new Stack<String>();
+        private final Stack<String> fieldNameStack = new Stack<>();
         private boolean nextReadIsKey = true;
     }
 
@@ -286,7 +286,7 @@ public class JacksonJsonInputProtocol extends JsonInputProtocol<JacksonJsonInput
             return _getMyNode().get(fieldNameStack.peek());
         }
 
-        private final Stack<String> fieldNameStack = new Stack<String>();
+        private final Stack<String> fieldNameStack = new Stack<>();
     }
 
     private static JsonNode __readTree(final Reader reader) throws InputProtocolException {

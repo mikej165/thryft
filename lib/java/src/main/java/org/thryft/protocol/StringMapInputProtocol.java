@@ -69,7 +69,7 @@ public class StringMapInputProtocol extends StackedInputProtocol<StringMapInputP
                     }
                 }
             }
-            final List<String> childKeyList = new ArrayList<String>(childKeySet);
+            final List<String> childKeyList = new ArrayList<>(childKeySet);
             Collections.reverse(childKeyList);
             // The stack should be popped in the order in which the keys
             // appeared
@@ -118,7 +118,7 @@ public class StringMapInputProtocol extends StackedInputProtocol<StringMapInputP
 
         @Override
         public Object readVariant() throws InputProtocolException {
-            throw new UnsupportedOperationException();
+            throw new InputProtocolException("unsupported operation");
         }
 
         protected final Stack<String> _getChildKeyStack() {
@@ -155,7 +155,7 @@ public class StringMapInputProtocol extends StackedInputProtocol<StringMapInputP
 
         private final ImmutableMap<String, String> input;
 
-        private final Stack<String> childKeyStack = new Stack<String>();
+        private final Stack<String> childKeyStack = new Stack<>();
     }
 
     private final class ListInputProtocol extends NestedInputProtocol {

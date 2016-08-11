@@ -67,7 +67,7 @@ public class GwtJsonInputProtocol extends JsonInputProtocol<NestedInputProtocol<
             if (childNode.isNumber() != null) {
                 return new Date((long) childNode.isNumber().doubleValue());
             } else if (childNode.isString() != null) {
-                throw new UnsupportedOperationException();
+                throw new InputProtocolException("JSON date-time string parsing unsupported");
             } else {
                 throw new InputProtocolException("expected JSON number or string");
             }
@@ -133,7 +133,7 @@ public class GwtJsonInputProtocol extends JsonInputProtocol<NestedInputProtocol<
             } else if (node.isString() != null) {
                 return ((JSONString) node).stringValue();
             } else {
-                throw new UnsupportedOperationException();
+                throw new InputProtocolException("unsupported variant type " + node);
             }
         }
 
@@ -191,7 +191,7 @@ public class GwtJsonInputProtocol extends JsonInputProtocol<NestedInputProtocol<
             }
         }
 
-        private final Stack<String> fieldNameStack = new Stack<String>();
+        private final Stack<String> fieldNameStack = new Stack<>();
         private boolean nextReadIsKey = true;
     }
 
@@ -241,7 +241,7 @@ public class GwtJsonInputProtocol extends JsonInputProtocol<NestedInputProtocol<
             return _getMyNode().get(fieldNameStack.peek());
         }
 
-        private final Stack<String> fieldNameStack = new Stack<String>();
+        private final Stack<String> fieldNameStack = new Stack<>();
     }
 
     public GwtJsonInputProtocol(final JSONValue rootNode) {

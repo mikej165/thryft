@@ -72,7 +72,7 @@ public class GwtJsonOutputProtocol extends StackedOutputProtocol<NestedOutputPro
             if (value.getTime() >= 0l) {
                 _write(new JSONNumber(value.getTime()));
             } else {
-                throw new UnsupportedOperationException();
+                throw new OutputProtocolException("negative Date");
             }
         }
 
@@ -228,29 +228,26 @@ public class GwtJsonOutputProtocol extends StackedOutputProtocol<NestedOutputPro
         @Override
         public void writeListBegin(final Type elementType, final int size) throws OutputProtocolException {
             if (nextKey == null) {
-                throw new UnsupportedOperationException();
-            } else {
-                super.writeListBegin(elementType, size);
+                throw new OutputProtocolException("nextKey == null");
             }
+            super.writeListBegin(elementType, size);
         }
 
         @Override
         public void writeMapBegin(final Type keyType, final Type valueType, final int size)
                 throws OutputProtocolException {
             if (nextKey == null) {
-                throw new UnsupportedOperationException();
-            } else {
-                super.writeMapBegin(keyType, valueType, size);
+                throw new OutputProtocolException("nextKey == null");
             }
+            super.writeMapBegin(keyType, valueType, size);
         }
 
         @Override
         public void writeNull() throws OutputProtocolException {
             if (nextKey == null) {
-                throw new UnsupportedOperationException();
-            } else {
-                super.writeNull();
+                throw new OutputProtocolException("nextKey == null");
             }
+            super.writeNull();
         }
 
         @Override
@@ -265,10 +262,9 @@ public class GwtJsonOutputProtocol extends StackedOutputProtocol<NestedOutputPro
         @Override
         public void writeStructBegin(final String name) throws OutputProtocolException {
             if (nextKey == null) {
-                throw new UnsupportedOperationException();
-            } else {
-                super.writeStructBegin(name);
+                throw new OutputProtocolException("nextKey == null");
             }
+            super.writeStructBegin(name);
         }
 
         @Override

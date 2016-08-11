@@ -4,8 +4,7 @@ import java.util.Date;
 
 import org.apache.commons.codec.binary.Base64;
 
-public abstract class JsonOutputProtocol extends
-StackedOutputProtocol<JsonOutputProtocol.NestedOutputProtocol> {
+public abstract class JsonOutputProtocol extends StackedOutputProtocol<JsonOutputProtocol.NestedOutputProtocol> {
     protected interface JsonGenerator {
         public void flush() throws OutputProtocolException;
 
@@ -34,17 +33,14 @@ StackedOutputProtocol<JsonOutputProtocol.NestedOutputProtocol> {
         public void writeString(String value) throws OutputProtocolException;
     }
 
-    protected abstract class NestedOutputProtocol extends
-    AbstractOutputProtocol {
+    protected abstract class NestedOutputProtocol extends AbstractOutputProtocol {
         @Override
-        public void writeBinary(final byte[] value)
-                throws OutputProtocolException {
+        public void writeBinary(final byte[] value) throws OutputProtocolException {
             writeString(Base64.encodeBase64String(value));
         }
 
         @Override
-        public void writeBool(final boolean value)
-                throws OutputProtocolException {
+        public void writeBool(final boolean value) throws OutputProtocolException {
             generator.writeBoolean(value);
         }
 
@@ -54,14 +50,12 @@ StackedOutputProtocol<JsonOutputProtocol.NestedOutputProtocol> {
         }
 
         @Override
-        public void writeDateTime(final Date value)
-                throws OutputProtocolException {
+        public void writeDateTime(final Date value) throws OutputProtocolException {
             generator.writeDateTime(value);
         }
 
         @Override
-        public void writeDouble(final double value)
-                throws OutputProtocolException {
+        public void writeDouble(final double value) throws OutputProtocolException {
             generator.writeNumber(value);
         }
 
@@ -81,8 +75,7 @@ StackedOutputProtocol<JsonOutputProtocol.NestedOutputProtocol> {
         }
 
         @Override
-        public void writeListBegin(final Type elementType, final int size)
-                throws OutputProtocolException {
+        public void writeListBegin(final Type elementType, final int size) throws OutputProtocolException {
             generator.writeStartArray();
             _getOutputProtocolStack().push(_createArrayOutputProtocol());
         }
@@ -93,8 +86,8 @@ StackedOutputProtocol<JsonOutputProtocol.NestedOutputProtocol> {
         }
 
         @Override
-        public void writeMapBegin(final Type keyType, final Type valueType,
-                final int size) throws OutputProtocolException {
+        public void writeMapBegin(final Type keyType, final Type valueType, final int size)
+                throws OutputProtocolException {
             generator.writeStartObject();
             _getOutputProtocolStack().push(_createMapObjectOutputProtocol());
         }
@@ -110,14 +103,12 @@ StackedOutputProtocol<JsonOutputProtocol.NestedOutputProtocol> {
         }
 
         @Override
-        public void writeString(final String value)
-                throws OutputProtocolException {
+        public void writeString(final String value) throws OutputProtocolException {
             generator.writeString(value);
         }
 
         @Override
-        public void writeStructBegin(final String name)
-                throws OutputProtocolException {
+        public void writeStructBegin(final String name) throws OutputProtocolException {
             generator.writeStartObject();
             _getOutputProtocolStack().push(_createStructObjectOutputProtocol());
         }
@@ -140,8 +131,7 @@ StackedOutputProtocol<JsonOutputProtocol.NestedOutputProtocol> {
 
     protected class StructObjectOutputProtocol extends NestedOutputProtocol {
         @Override
-        public void writeFieldBegin(final String name, final Type type,
-                final short id) throws OutputProtocolException {
+        public void writeFieldBegin(final String name, final Type type, final short id) throws OutputProtocolException {
             if (id != FieldBegin.ABSENT_ID) {
                 generator.writeFieldName(id + ":" + name);
             } else {
@@ -163,8 +153,7 @@ StackedOutputProtocol<JsonOutputProtocol.NestedOutputProtocol> {
 
     private class MapObjectOutputProtocol extends NestedOutputProtocol {
         @Override
-        public final void writeBool(final boolean value)
-                throws OutputProtocolException {
+        public final void writeBool(final boolean value) throws OutputProtocolException {
             if (nextWriteIsKey) {
                 writeString(Boolean.toString(value));
             } else {
@@ -184,8 +173,7 @@ StackedOutputProtocol<JsonOutputProtocol.NestedOutputProtocol> {
         }
 
         @Override
-        public void writeDouble(final double value)
-                throws OutputProtocolException {
+        public void writeDouble(final double value) throws OutputProtocolException {
             if (nextWriteIsKey) {
                 writeString(Double.toString(value));
             } else {
@@ -225,10 +213,9 @@ StackedOutputProtocol<JsonOutputProtocol.NestedOutputProtocol> {
         }
 
         @Override
-        public void writeListBegin(final Type elementType, final int size)
-                throws OutputProtocolException {
+        public void writeListBegin(final Type elementType, final int size) throws OutputProtocolException {
             if (nextWriteIsKey) {
-                throw new UnsupportedOperationException();
+                throw new OutputProtocolException("expected value");
             } else {
                 nextWriteIsKey = true;
                 super.writeListBegin(elementType, size);
@@ -236,10 +223,10 @@ StackedOutputProtocol<JsonOutputProtocol.NestedOutputProtocol> {
         }
 
         @Override
-        public void writeMapBegin(final Type keyType, final Type valueType,
-                final int size) throws OutputProtocolException {
+        public void writeMapBegin(final Type keyType, final Type valueType, final int size)
+                throws OutputProtocolException {
             if (nextWriteIsKey) {
-                throw new UnsupportedOperationException();
+                throw new OutputProtocolException("expected value");
             } else {
                 nextWriteIsKey = true;
                 super.writeMapBegin(keyType, valueType, size);
@@ -249,7 +236,7 @@ StackedOutputProtocol<JsonOutputProtocol.NestedOutputProtocol> {
         @Override
         public void writeNull() throws OutputProtocolException {
             if (nextWriteIsKey) {
-                throw new UnsupportedOperationException();
+                throw new OutputProtocolException("expected value");
             } else {
                 nextWriteIsKey = true;
                 super.writeNull();
@@ -257,8 +244,7 @@ StackedOutputProtocol<JsonOutputProtocol.NestedOutputProtocol> {
         }
 
         @Override
-        public void writeString(final String value)
-                throws OutputProtocolException {
+        public void writeString(final String value) throws OutputProtocolException {
             if (nextWriteIsKey) {
                 nextWriteIsKey = false;
                 generator.writeFieldName(value);
@@ -269,10 +255,9 @@ StackedOutputProtocol<JsonOutputProtocol.NestedOutputProtocol> {
         }
 
         @Override
-        public void writeStructBegin(final String name)
-                throws OutputProtocolException {
+        public void writeStructBegin(final String name) throws OutputProtocolException {
             if (nextWriteIsKey) {
-                throw new UnsupportedOperationException();
+                throw new OutputProtocolException("expected value");
             } else {
                 nextWriteIsKey = true;
                 super.writeStructBegin(name);

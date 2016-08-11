@@ -10,8 +10,8 @@ public final class JsonRpcOutputProtocol extends ForwardingOutputProtocol {
     }
 
     @Override
-    public void writeMessageBegin(final String name, final MessageType type,
-            @Nullable final Object id) throws OutputProtocolException {
+    public void writeMessageBegin(final String name, final MessageType type, @Nullable final Object id)
+            throws OutputProtocolException {
         writeStructBegin("JSON-RPC");
 
         writeFieldBegin("jsonrpc", org.thryft.protocol.Type.STRING);
@@ -57,7 +57,7 @@ public final class JsonRpcOutputProtocol extends ForwardingOutputProtocol {
             break;
 
         default:
-            throw new UnsupportedOperationException();
+            throw new OutputProtocolException("unsupported type " + type);
         }
     }
 
