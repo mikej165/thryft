@@ -388,6 +388,10 @@ if (other.%(getter_name)s().isPresent()) {
             if acceptance is not None:
                 java_validation = """org.thryft.Preconditions.check%(precondition_name)sTrue(%(java_validation)s, "%(parent_qname)s: %(name)s must be true")""" % locals()
 
+            max_ = validation.get('max')
+            if max_ is not None:
+                java_validation = """org.thryft.Preconditions.check%(precondition_name)sMax(%(java_validation)s, %(max_)d, "%(parent_qname)s: %(name)s must be at most %(max_)d")""" % locals()
+
             max_length = validation.get('maxLength')
             if max_length is not None:
                 java_validation = """org.thryft.Preconditions.check%(precondition_name)sMaxLength(%(java_validation)s, %(max_length)u, "%(parent_qname)s: %(name)s must have a maximum length of %(max_length)u")""" % locals()

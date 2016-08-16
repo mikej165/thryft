@@ -114,6 +114,21 @@ public final class Preconditions {
         return compoundType;
     }
 
+    public static int checkIntegerMax(final int integer, final int max) {
+        return checkIntegerMax(integer, max, null);
+    }
+
+    public static int checkIntegerMax(final int integer, final long max, @Nullable final Object errorMessage) {
+        if (integer > max) {
+            if (errorMessage != null) {
+                throw new IllegalArgumentException(String.valueOf(errorMessage));
+            } else {
+                throw new IllegalArgumentException();
+            }
+        }
+        return integer;
+    }
+
     public static <MapT extends Map<?, ?>> MapT checkMapNotEmpty(final MapT map) {
         return checkMapNotEmpty(map, null);
     }
