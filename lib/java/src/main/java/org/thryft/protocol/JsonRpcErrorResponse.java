@@ -79,11 +79,6 @@ public final class JsonRpcErrorResponse extends RuntimeException implements Comp
     }
 
     @Override
-    public boolean isEmpty() {
-        return false;
-    }
-
-    @Override
     public void writeAsList(final OutputProtocol oprot) throws OutputProtocolException {
         throw new UnsupportedOperationException();
     }
