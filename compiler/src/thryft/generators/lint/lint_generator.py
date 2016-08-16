@@ -1,7 +1,9 @@
 import logging
 
+from thryft.compiler.ast import Ast
 from thryft.generator.generator import Generator
-from yutil import class_qname, lower_camelize
+from yutil import class_qname
+from thryft.compiler.parser import Parser
 
 
 class LintGenerator(Generator):
@@ -25,6 +27,10 @@ class LintGenerator(Generator):
 
     class _CompoundType(_Type):
         def lint(self):
+            for annotation in self.annotations:
+                if annotation.name == 'lint_suppress':
+                    return
+
             optional_field_names = []
             required_field_names = []
             for field in self.fields:
@@ -35,15 +41,14 @@ class LintGenerator(Generator):
                     self._logger.warn("field %s in %s not lower camelized", field_name, self._parent_document().path)
 
                 field_names = required_field_names if field.required else optional_field_names
-                if field_name not in ('start', 'end'):
-                    if len(field_names) > 0 and cmp(field_name, field_names[-1]) < 0:
-                        after_field_name = ''
-                        for field_name_i in xrange(len(field_names) - 1, -1, -1):
-                            test_field_name = field_names[field_name_i]
-                            if cmp(field_name, test_field_name) >= 0:
-                                after_field_name = test_field_name
-                                break
-                        self._logger.warn("field %s in %s is out of lexicographic order (should be right after %s)", field_name, self._parent_document().path, after_field_name)
+                if len(field_names) > 0 and cmp(field_name, field_names[-1]) < 0:
+                    after_field_name = ''
+                    for field_name_i in xrange(len(field_names) - 1, -1, -1):
+                        test_field_name = field_names[field_name_i]
+                        if cmp(field_name, test_field_name) >= 0:
+                            after_field_name = test_field_name
+                            break
+                    self._logger.warn("field %s in %s is out of lexicographic order (should be right after %s)", field_name, self._parent_document().path, after_field_name)
                 field_names.append(field_name)
 
     class _ContainerType(_Type):
@@ -102,3 +107,9 @@ class LintGenerator(Generator):
 
     class StructType(Generator.StructType, _CompoundType):  # @UndefinedVariable
         pass
+
+def __parse_lint_suppress(ast_node, name, value, **kwds):
+    ast_node.annotations.append(Ast.AnnotationNode(name=name, value=value, **kwds))
+
+for ast_node_type in (Ast.EnumTypeNode, Ast.ExceptionTypeNode, Ast.ServiceNode, Ast.StructTypeNode):
+    Parser.register_annotation(ast_node_type, 'lint_suppress', __parse_lint_suppress)
