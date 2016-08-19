@@ -43,8 +43,9 @@ class PyField(Field, _PyNamedConstruct):
         check = []
 
         type_check = self.type.py_check(name)
-        type_description = self.type.py_description()
-        check.append("""\
+        if type_check != 'True':
+            type_description = self.type.py_description()
+            check.append("""\
 if not %(type_check)s:
     raise TypeError("expected %(name)s to be a %(type_description)s but it is a %%s" %% getattr(__builtin__, 'type')(%(name)s))""" % locals())
 
@@ -72,6 +73,8 @@ if %(name)s is None:
     raise ValueError('%(name)s is required')
 %(check)s""" % locals()
         else:
+            if len(check) == 0:
+                return ''
             check = indent(' ' * 4, check)
             return """\
 if %(name)s is not None:
@@ -172,6 +175,7 @@ if ifield_name == '%(name)s'%(id_check)s:
         return self.py_parameter()
 
     def py_setter(self, return_type_name='void'):
+        check = indent(' ' * 4, self.py_check())
         doc = self.py_sphinx_doc()
         setter_name = self.py_setter_name()
         name = self.py_name()
@@ -182,6 +186,7 @@ def %(setter_name)s(self, %(name)s):%(suppress_warnings)s
     %(doc)s
     '''
 
+%(check)s
     self.__%(name)s = %(name)s
     return self
 """ % locals()
