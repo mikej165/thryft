@@ -30,6 +30,8 @@
 # OF SUCH DAMAGE.
 # -----------------------------------------------------------------------------
 
+from pprint import pformat
+
 from thryft.generators.py._py_type import _PyType
 from yutil import decamelize, indent, lpad, pad
 
@@ -167,9 +169,14 @@ class Builder(object):%(sections)s
             for field in self.__py_compound_type.fields:
                 field_name = field.name
                 field_type = field.type.py_qname()
+                field_validation = None
+                for annotation in field.annotations:
+                    if annotation.name == 'validation':
+                        field_validation = pformat(annotation.value)
+                        break
                 enumerator_name = field.name.upper()
                 enumerator_placeholders.append("%(enumerator_name)s = None" % locals())
-                enumerators.append("FieldMetadata.%(enumerator_name)s = FieldMetadata('%(field_name)s', %(field_type)s)" % locals())
+                enumerators.append("FieldMetadata.%(enumerator_name)s = FieldMetadata('%(field_name)s', %(field_type)s, %(field_validation)s)" % locals())
                 enumerator_qnames.append("cls.%(enumerator_name)s" % locals())
             enumerators = \
                 lpad("\n\n", "\n".join(enumerators))
@@ -180,10 +187,11 @@ class Builder(object):%(sections)s
                 )), "\n")
             return """\
 class FieldMetadata(object):%(enumerator_placeholders)s
-    def __init__(self, name, type_):
+    def __init__(self, name, type_, validation):
         object.__init__(self)
         self.__name = name
         self.__type = type_
+        self.__validation = validation
 
     def __repr__(self):
         return self.__name
@@ -191,6 +199,10 @@ class FieldMetadata(object):%(enumerator_placeholders)s
     @property
     def type(self):
         return self.__type
+
+    @property
+    def validation(self):
+        return self.__validation
 
     @classmethod
     def values(cls):

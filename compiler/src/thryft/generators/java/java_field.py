@@ -384,23 +384,23 @@ if (other.%(getter_name)s().isPresent()) {
             if not self.required:
                 precondition_name = 'Optional' + precondition_name
 
-            acceptance = validation.get('acceptance')
+            acceptance = validation.pop('acceptance', None)
             if acceptance is not None:
                 java_validation = """org.thryft.Preconditions.check%(precondition_name)sTrue(%(java_validation)s, "%(parent_qname)s: %(name)s must be true")""" % locals()
 
-            max_ = validation.get('max')
+            max_ = validation.pop('max', None)
             if max_ is not None:
                 java_validation = """org.thryft.Preconditions.check%(precondition_name)sMax(%(java_validation)s, %(max_)d, "%(parent_qname)s: %(name)s must be at most %(max_)d")""" % locals()
 
-            max_length = validation.get('maxLength')
+            max_length = validation.pop('maxLength', None)
             if max_length is not None:
                 java_validation = """org.thryft.Preconditions.check%(precondition_name)sMaxLength(%(java_validation)s, %(max_length)u, "%(parent_qname)s: %(name)s must have a maximum length of %(max_length)u")""" % locals()
 
-            min_ = validation.get('min')
+            min_ = validation.pop('min', None)
             if min_ is not None:
                 java_validation = """org.thryft.Preconditions.check%(precondition_name)sMin(%(java_validation)s, %(min_)d, "%(parent_qname)s: %(name)s must be at least %(min_)d")""" % locals()
 
-            min_length = validation.get('minLength')
+            min_length = validation.pop('minLength', None)
             if min_length == 1:
                 java_validation = """org.thryft.Preconditions.check%(precondition_name)sNotEmpty(%(java_validation)s, "%(parent_qname)s: %(name)s is empty")""" % locals()
             elif min_length is not None:

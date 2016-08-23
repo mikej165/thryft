@@ -30,7 +30,6 @@
 # OF SUCH DAMAGE.
 # -----------------------------------------------------------------------------
 
-from thryft.generator._compound_type import _CompoundType
 from thryft.generator.field import Field
 from thryft.generators.py._py_named_construct import _PyNamedConstruct
 from yutil import quote, indent
@@ -54,16 +53,32 @@ if not %(type_check)s:
             if annotation.name == 'validation':
                 validation = annotation.value.copy()
                 break
-        min_length = validation.get('minLength')
-        if min_length is not None and not isinstance(self.type, _CompoundType):
+
+        min_exclusive = validation.pop('minExclusive', None)
+        if min_exclusive is not None:
+            check.append("""\
+if %(name)s <= %(min_exclusive)s:
+    raise ValueError("expected %(name)s to be > %(min_exclusive)s, was %%s" %% %(name)s)""" % locals())
+
+        min_length = validation.pop('minLength', None)
+        if min_length is not None:
             check.append("""\
 if len(%(name)s) < %(min_length)d:
     raise ValueError("expected len(%(name)s) to be >= %(min_length)d, was %%d" %% len(%(name)s))""" % locals())
-        max_length = validation.get('maxLength')
+        max_length = validation.pop('maxLength', None)
         if max_length is not None:
             check.append("""\
 if len(%(name)s) > %(max_length)d:
     raise ValueError("expected len(%(name)s) to be <= %(min_length)d, was %%d" %% len(%(name)s))""" % locals())
+        blank = validation.pop('blank', None)
+        if blank is not None:
+            assert blank is False
+            check.append("""\
+if %(name)s.isspace():
+    raise ValueError("expected %(name)s not to be blank")""" % locals())
+
+        if len(validation) > 0:
+            self._logger.warn("unhandled validation: %s", validation)
 
         check = "\n".join(check)
 
