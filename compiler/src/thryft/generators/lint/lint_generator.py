@@ -68,6 +68,18 @@ class LintGenerator(Generator):
             for definition in self.definitions:
                 definition.lint()
 
+            include_relpaths = []
+            for include in self.includes:
+                if len(include_relpaths) > 0 and cmp(include.relpath, include_relpaths[-1]) < 0:
+                    after_include_relpath = ''
+                    for include_relpath_i in xrange(len(include_relpaths) - 1, -1, -1):
+                        test_include_relpath = include_relpaths[include_relpath_i]
+                        if cmp(include.relpath, test_include_relpath) >= 0:
+                            after_include_relpath = test_include_relpath
+                            break
+                    self._logger.warn("include %s in %s is out of lexicographic order (should be right after %s)", include.relpath, self._parent_document().path, after_include_relpath)
+                include_relpaths.append(include.relpath)
+
     class ExceptionType(Generator.ExceptionType, _CompoundType):  # @UndefinedVariable
         pass
 
