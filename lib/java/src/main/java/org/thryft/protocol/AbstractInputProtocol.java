@@ -86,12 +86,12 @@ public abstract class AbstractInputProtocol implements InputProtocol {
 
     @Override
     public FieldBegin readFieldBegin() throws InputProtocolException {
-        throw new InputProtocolException("unsupported operation");
+        throw new InputProtocolException("unsupported operation readFieldBegin in " + getClass().getCanonicalName());
     }
 
     @Override
     public void readFieldEnd() throws InputProtocolException {
-        throw new InputProtocolException("unsupported operation");
+        throw new InputProtocolException("unsupported operation readFieldEnd in " + getClass().getCanonicalName());
     }
 
     @Override
@@ -104,7 +104,7 @@ public abstract class AbstractInputProtocol implements InputProtocol {
 
     @Override
     public MessageBegin readMessageBegin() throws InputProtocolException {
-        throw new InputProtocolException("unsupported operation");
+        throw new InputProtocolException("unsupported operation readMessageBegin in " + getClass().getCanonicalName());
     }
 
     @Override
