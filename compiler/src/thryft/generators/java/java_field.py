@@ -242,7 +242,7 @@ if (%s().isPresent()) {
                 if exception_type_name == 'org.thryft.protocol.UncheckedInputProtocolException':
                     read_protocol_catches.append("""\
  catch (final %(exception_type_name)s e) {
-     throw (org.thryft.protocol.InputProtocolException)e.getCause();
+     throw e.getCause();
 }""" % locals())
                 elif self.required:
                     read_protocol_catches.append("""\

@@ -207,7 +207,7 @@ public class NestedProtocolTestStruct implements org.thryft.Struct {
                         }
                     }).apply(iprot));
                 } catch (final org.thryft.protocol.UncheckedInputProtocolException e) {
-                     throw (org.thryft.protocol.InputProtocolException)e.getCause();
+                     throw e.getCause();
                 }
             }
             if (__list.getSize() > 13) {
@@ -233,7 +233,7 @@ public class NestedProtocolTestStruct implements org.thryft.Struct {
                         }
                     }).apply(iprot));
                 } catch (final org.thryft.protocol.UncheckedInputProtocolException e) {
-                     throw (org.thryft.protocol.InputProtocolException)e.getCause();
+                     throw e.getCause();
                 }
             }
             if (__list.getSize() > 14) {
@@ -255,7 +255,7 @@ public class NestedProtocolTestStruct implements org.thryft.Struct {
                         }
                     }).apply(iprot));
                 } catch (final org.thryft.protocol.UncheckedInputProtocolException e) {
-                     throw (org.thryft.protocol.InputProtocolException)e.getCause();
+                     throw e.getCause();
                 }
             }
             if (__list.getSize() > 15) {
@@ -371,7 +371,7 @@ public class NestedProtocolTestStruct implements org.thryft.Struct {
                             }
                         }).apply(iprot));
                     } catch (final org.thryft.protocol.UncheckedInputProtocolException e) {
-                         throw (org.thryft.protocol.InputProtocolException)e.getCause();
+                         throw e.getCause();
                     }
                     break;
                 }
@@ -398,7 +398,7 @@ public class NestedProtocolTestStruct implements org.thryft.Struct {
                             }
                         }).apply(iprot));
                     } catch (final org.thryft.protocol.UncheckedInputProtocolException e) {
-                         throw (org.thryft.protocol.InputProtocolException)e.getCause();
+                         throw e.getCause();
                     }
                     break;
                 }
@@ -421,7 +421,7 @@ public class NestedProtocolTestStruct implements org.thryft.Struct {
                             }
                         }).apply(iprot));
                     } catch (final org.thryft.protocol.UncheckedInputProtocolException e) {
-                         throw (org.thryft.protocol.InputProtocolException)e.getCause();
+                         throw e.getCause();
                     }
                     break;
                 }
@@ -1377,7 +1377,7 @@ public class NestedProtocolTestStruct implements org.thryft.Struct {
                     }
                 }).apply(iprot));
             } catch (final org.thryft.protocol.UncheckedInputProtocolException e) {
-                 throw (org.thryft.protocol.InputProtocolException)e.getCause();
+                 throw e.getCause();
             }
         }
         if (__list.getSize() > 13) {
@@ -1403,7 +1403,7 @@ public class NestedProtocolTestStruct implements org.thryft.Struct {
                     }
                 }).apply(iprot));
             } catch (final org.thryft.protocol.UncheckedInputProtocolException e) {
-                 throw (org.thryft.protocol.InputProtocolException)e.getCause();
+                 throw e.getCause();
             }
         }
         if (__list.getSize() > 14) {
@@ -1425,7 +1425,7 @@ public class NestedProtocolTestStruct implements org.thryft.Struct {
                     }
                 }).apply(iprot));
             } catch (final org.thryft.protocol.UncheckedInputProtocolException e) {
-                 throw (org.thryft.protocol.InputProtocolException)e.getCause();
+                 throw e.getCause();
             }
         }
         if (__list.getSize() > 15) {
@@ -1563,7 +1563,7 @@ public class NestedProtocolTestStruct implements org.thryft.Struct {
                         }
                     }).apply(iprot));
                 } catch (final org.thryft.protocol.UncheckedInputProtocolException e) {
-                     throw (org.thryft.protocol.InputProtocolException)e.getCause();
+                     throw e.getCause();
                 }
                 break;
             }
@@ -1590,7 +1590,7 @@ public class NestedProtocolTestStruct implements org.thryft.Struct {
                         }
                     }).apply(iprot));
                 } catch (final org.thryft.protocol.UncheckedInputProtocolException e) {
-                     throw (org.thryft.protocol.InputProtocolException)e.getCause();
+                     throw e.getCause();
                 }
                 break;
             }
@@ -1613,7 +1613,7 @@ public class NestedProtocolTestStruct implements org.thryft.Struct {
                         }
                     }).apply(iprot));
                 } catch (final org.thryft.protocol.UncheckedInputProtocolException e) {
-                     throw (org.thryft.protocol.InputProtocolException)e.getCause();
+                     throw e.getCause();
                 }
                 break;
             }
