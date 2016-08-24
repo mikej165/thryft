@@ -105,7 +105,8 @@ public abstract class AbstractOutputProtocol implements OutputProtocol {
         } else if (value instanceof CompoundType) {
             ((CompoundType) value).writeAsStruct(oprot);
         } else {
-            throw new OutputProtocolException("unsupported value type " + value.getClass().getCanonicalName());
+            throw new UnsupportedOperationOutputProtocolException(
+                    "unsupported value type " + value.getClass().getCanonicalName());
         }
     }
 
@@ -130,29 +131,28 @@ public abstract class AbstractOutputProtocol implements OutputProtocol {
 
     @Override
     public void writeFieldBegin(final String name, final Type type, final short id) throws OutputProtocolException {
-        throw new OutputProtocolException("unsupported operation writeFieldBegin in " + getClass().getCanonicalName());
+        throw new UnsupportedOperationOutputProtocolException("writeFieldBegin in " + getClass().getCanonicalName());
     }
 
     @Override
     public void writeFieldEnd() throws OutputProtocolException {
-        throw new OutputProtocolException("unsupported operation writeFieldEnd in " + getClass().getCanonicalName());
+        throw new UnsupportedOperationOutputProtocolException("writeFieldEnd in " + getClass().getCanonicalName());
     }
 
     @Override
     public void writeFieldStop() throws OutputProtocolException {
-        throw new OutputProtocolException("unsupported operation writeFieldStop in " + getClass().getCanonicalName());
+        throw new UnsupportedOperationOutputProtocolException("writeFieldStop in " + getClass().getCanonicalName());
     }
 
     @Override
     public void writeMessageBegin(final String name, final MessageType type, @Nullable final Object id)
             throws OutputProtocolException {
-        throw new OutputProtocolException(
-                "unsupported operation writeMessageBegin in " + getClass().getCanonicalName());
+        throw new UnsupportedOperationOutputProtocolException("writeMessageBegin in " + getClass().getCanonicalName());
     }
 
     @Override
     public void writeMessageEnd() throws OutputProtocolException {
-        throw new OutputProtocolException("unsupported operation writeMessageEnd in " + getClass().getCanonicalName());
+        throw new UnsupportedOperationOutputProtocolException("writeMessageEnd in " + getClass().getCanonicalName());
     }
 
     @Override
