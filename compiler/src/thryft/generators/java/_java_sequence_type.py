@@ -132,7 +132,7 @@ try {
 }%s
 """ % (add_element, ''.join("""\
  catch (final %(exception_type_name)s e) {
-     throw new org.thryft.protocol.UncheckedInputProtocolException(e);
+     throw new org.thryft.protocol.InputProtocolException(e);
 }""" % locals()
                      for exception_type_name in element_read_protocol_throws))
         add_element = indent(' ' * 16, add_element)

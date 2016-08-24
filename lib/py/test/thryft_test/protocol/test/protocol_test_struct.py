@@ -207,6 +207,9 @@ class ProtocolTestStruct(object):
             :type binary_field: str or None
             '''
 
+            if binary_field is not None:
+                if not isinstance(binary_field, basestring):
+                    raise TypeError("expected binary_field to be a str but it is a %s" % getattr(__builtin__, 'type')(binary_field))
             self.__binary_field = binary_field
             return self
 
@@ -215,6 +218,9 @@ class ProtocolTestStruct(object):
             :type bool_field: bool or None
             '''
 
+            if bool_field is not None:
+                if not isinstance(bool_field, bool):
+                    raise TypeError("expected bool_field to be a bool but it is a %s" % getattr(__builtin__, 'type')(bool_field))
             self.__bool_field = bool_field
             return self
 
@@ -223,6 +229,9 @@ class ProtocolTestStruct(object):
             :type date_time_field: datetime.datetime or None
             '''
 
+            if date_time_field is not None:
+                if not isinstance(date_time_field, datetime.datetime):
+                    raise TypeError("expected date_time_field to be a datetime.datetime but it is a %s" % getattr(__builtin__, 'type')(date_time_field))
             self.__date_time_field = date_time_field
             return self
 
@@ -231,6 +240,9 @@ class ProtocolTestStruct(object):
             :type decimal_field: Decimal or None
             '''
 
+            if decimal_field is not None:
+                if not isinstance(decimal_field, decimal.Decimal):
+                    raise TypeError("expected decimal_field to be a Decimal but it is a %s" % getattr(__builtin__, 'type')(decimal_field))
             self.__decimal_field = decimal_field
             return self
 
@@ -239,6 +251,9 @@ class ProtocolTestStruct(object):
             :type double_field: float or None
             '''
 
+            if double_field is not None:
+                if not isinstance(double_field, float):
+                    raise TypeError("expected double_field to be a float but it is a %s" % getattr(__builtin__, 'type')(double_field))
             self.__double_field = double_field
             return self
 
@@ -247,6 +262,9 @@ class ProtocolTestStruct(object):
             :type email_address_field: str or None
             '''
 
+            if email_address_field is not None:
+                if not isinstance(email_address_field, basestring):
+                    raise TypeError("expected email_address_field to be a str but it is a %s" % getattr(__builtin__, 'type')(email_address_field))
             self.__email_address_field = email_address_field
             return self
 
@@ -255,6 +273,9 @@ class ProtocolTestStruct(object):
             :type enum_field: thryft_test.protocol.test.protocol_test_enum.ProtocolTestEnum or None
             '''
 
+            if enum_field is not None:
+                if not isinstance(enum_field, thryft_test.protocol.test.protocol_test_enum.ProtocolTestEnum):
+                    raise TypeError("expected enum_field to be a thryft_test.protocol.test.protocol_test_enum.ProtocolTestEnum but it is a %s" % getattr(__builtin__, 'type')(enum_field))
             self.__enum_field = enum_field
             return self
 
@@ -263,6 +284,9 @@ class ProtocolTestStruct(object):
             :type float_field: float or None
             '''
 
+            if float_field is not None:
+                if not isinstance(float_field, float):
+                    raise TypeError("expected float_field to be a float but it is a %s" % getattr(__builtin__, 'type')(float_field))
             self.__float_field = float_field
             return self
 
@@ -271,6 +295,9 @@ class ProtocolTestStruct(object):
             :type i16_field: int or None
             '''
 
+            if i16_field is not None:
+                if not isinstance(i16_field, int):
+                    raise TypeError("expected i16_field to be a int but it is a %s" % getattr(__builtin__, 'type')(i16_field))
             self.__i16_field = i16_field
             return self
 
@@ -279,6 +306,9 @@ class ProtocolTestStruct(object):
             :type i32_field: int or None
             '''
 
+            if i32_field is not None:
+                if not isinstance(i32_field, int):
+                    raise TypeError("expected i32_field to be a int but it is a %s" % getattr(__builtin__, 'type')(i32_field))
             self.__i32_field = i32_field
             return self
 
@@ -287,6 +317,9 @@ class ProtocolTestStruct(object):
             :type i64_field: int or long or None
             '''
 
+            if i64_field is not None:
+                if not isinstance(i64_field, (int, long)):
+                    raise TypeError("expected i64_field to be a int or long but it is a %s" % getattr(__builtin__, 'type')(i64_field))
             self.__i64_field = i64_field
             return self
 
@@ -295,6 +328,9 @@ class ProtocolTestStruct(object):
             :type i8_field: int or None
             '''
 
+            if i8_field is not None:
+                if not isinstance(i8_field, int):
+                    raise TypeError("expected i8_field to be a int but it is a %s" % getattr(__builtin__, 'type')(i8_field))
             self.__i8_field = i8_field
             return self
 
@@ -303,6 +339,10 @@ class ProtocolTestStruct(object):
             :type required_i32_field: int
             '''
 
+            if required_i32_field is None:
+                raise ValueError('required_i32_field is required')
+            if not isinstance(required_i32_field, int):
+                raise TypeError("expected required_i32_field to be a int but it is a %s" % getattr(__builtin__, 'type')(required_i32_field))
             self.__required_i32_field = required_i32_field
             return self
 
@@ -311,6 +351,12 @@ class ProtocolTestStruct(object):
             :type required_string_field: str
             '''
 
+            if required_string_field is None:
+                raise ValueError('required_string_field is required')
+            if not isinstance(required_string_field, basestring):
+                raise TypeError("expected required_string_field to be a str but it is a %s" % getattr(__builtin__, 'type')(required_string_field))
+            if len(required_string_field) < 1:
+                raise ValueError("expected len(required_string_field) to be >= 1, was %d" % len(required_string_field))
             self.__required_string_field = required_string_field
             return self
 
@@ -319,6 +365,11 @@ class ProtocolTestStruct(object):
             :type string_field: str or None
             '''
 
+            if string_field is not None:
+                if not isinstance(string_field, basestring):
+                    raise TypeError("expected string_field to be a str but it is a %s" % getattr(__builtin__, 'type')(string_field))
+                if len(string_field) < 1:
+                    raise ValueError("expected len(string_field) to be >= 1, was %d" % len(string_field))
             self.__string_field = string_field
             return self
 
@@ -327,6 +378,9 @@ class ProtocolTestStruct(object):
             :type string_list_field: tuple(str) or None
             '''
 
+            if string_list_field is not None:
+                if not (isinstance(string_list_field, tuple) and len(list(ifilterfalse(lambda _: isinstance(_, basestring), string_list_field))) == 0):
+                    raise TypeError("expected string_list_field to be a tuple(str) but it is a %s" % getattr(__builtin__, 'type')(string_list_field))
             self.__string_list_field = string_list_field
             return self
 
@@ -335,6 +389,9 @@ class ProtocolTestStruct(object):
             :type string_set_field: frozenset(str) or None
             '''
 
+            if string_set_field is not None:
+                if not (isinstance(string_set_field, frozenset) and len(list(ifilterfalse(lambda _: isinstance(_, basestring), string_set_field))) == 0):
+                    raise TypeError("expected string_set_field to be a frozenset(str) but it is a %s" % getattr(__builtin__, 'type')(string_set_field))
             self.__string_set_field = string_set_field
             return self
 
@@ -343,6 +400,9 @@ class ProtocolTestStruct(object):
             :type string_string_map_field: dict(str: str) or None
             '''
 
+            if string_string_map_field is not None:
+                if not (isinstance(string_string_map_field, dict) and len(list(ifilterfalse(lambda __item: isinstance(__item[0], basestring) and isinstance(__item[1], basestring), string_string_map_field.iteritems()))) == 0):
+                    raise TypeError("expected string_string_map_field to be a dict(str: str) but it is a %s" % getattr(__builtin__, 'type')(string_string_map_field))
             self.__string_string_map_field = string_string_map_field
             return self
 
@@ -351,6 +411,9 @@ class ProtocolTestStruct(object):
             :type struct_field: thryft_test.protocol.test.nested_protocol_test_struct.NestedProtocolTestStruct or None
             '''
 
+            if struct_field is not None:
+                if not isinstance(struct_field, thryft_test.protocol.test.nested_protocol_test_struct.NestedProtocolTestStruct):
+                    raise TypeError("expected struct_field to be a thryft_test.protocol.test.nested_protocol_test_struct.NestedProtocolTestStruct but it is a %s" % getattr(__builtin__, 'type')(struct_field))
             self.__struct_field = struct_field
             return self
 
@@ -359,6 +422,9 @@ class ProtocolTestStruct(object):
             :type u32_field: int or None
             '''
 
+            if u32_field is not None:
+                if not isinstance(u32_field, (int, long)) and u32_field >= 0:
+                    raise TypeError("expected u32_field to be a int but it is a %s" % getattr(__builtin__, 'type')(u32_field))
             self.__u32_field = u32_field
             return self
 
@@ -367,6 +433,9 @@ class ProtocolTestStruct(object):
             :type u64_field: int or long or None
             '''
 
+            if u64_field is not None:
+                if not isinstance(u64_field, (int, long)) and u64_field >= 0:
+                    raise TypeError("expected u64_field to be a int or long but it is a %s" % getattr(__builtin__, 'type')(u64_field))
             self.__u64_field = u64_field
             return self
 
@@ -375,6 +444,9 @@ class ProtocolTestStruct(object):
             :type uri_field: str or None
             '''
 
+            if uri_field is not None:
+                if not isinstance(uri_field, basestring):
+                    raise TypeError("expected uri_field to be a str but it is a %s" % getattr(__builtin__, 'type')(uri_field))
             self.__uri_field = uri_field
             return self
 
@@ -383,6 +455,9 @@ class ProtocolTestStruct(object):
             :type url_field: str or None
             '''
 
+            if url_field is not None:
+                if not isinstance(url_field, basestring):
+                    raise TypeError("expected url_field to be a str but it is a %s" % getattr(__builtin__, 'type')(url_field))
             self.__url_field = url_field
             return self
 
@@ -390,6 +465,7 @@ class ProtocolTestStruct(object):
             '''
             :type variant_field: object or None
             '''
+
 
             self.__variant_field = variant_field
             return self
@@ -752,10 +828,11 @@ class ProtocolTestStruct(object):
         URL_FIELD = None
         VARIANT_FIELD = None
 
-        def __init__(self, name, type_):
+        def __init__(self, name, type_, validation):
             object.__init__(self)
             self.__name = name
             self.__type = type_
+            self.__validation = validation
 
         def __repr__(self):
             return self.__name
@@ -764,34 +841,38 @@ class ProtocolTestStruct(object):
         def type(self):
             return self.__type
 
+        @property
+        def validation(self):
+            return self.__validation
+
         @classmethod
         def values(cls):
             return (cls.REQUIRED_I32_FIELD, cls.REQUIRED_STRING_FIELD, cls.BINARY_FIELD, cls.BOOL_FIELD, cls.DATE_TIME_FIELD, cls.DECIMAL_FIELD, cls.DOUBLE_FIELD, cls.EMAIL_ADDRESS_FIELD, cls.ENUM_FIELD, cls.FLOAT_FIELD, cls.I8_FIELD, cls.I16_FIELD, cls.I32_FIELD, cls.I64_FIELD, cls.STRING_LIST_FIELD, cls.STRING_STRING_MAP_FIELD, cls.STRING_SET_FIELD, cls.STRING_FIELD, cls.STRUCT_FIELD, cls.U32_FIELD, cls.U64_FIELD, cls.URI_FIELD, cls.URL_FIELD, cls.VARIANT_FIELD,)
 
-    FieldMetadata.REQUIRED_I32_FIELD = FieldMetadata('required_i32_field', int)
-    FieldMetadata.REQUIRED_STRING_FIELD = FieldMetadata('required_string_field', str)
-    FieldMetadata.BINARY_FIELD = FieldMetadata('binary_field', str)
-    FieldMetadata.BOOL_FIELD = FieldMetadata('bool_field', bool)
-    FieldMetadata.DATE_TIME_FIELD = FieldMetadata('date_time_field', datetime.datetime)
-    FieldMetadata.DECIMAL_FIELD = FieldMetadata('decimal_field', decimal.Decimal)
-    FieldMetadata.DOUBLE_FIELD = FieldMetadata('double_field', float)
-    FieldMetadata.EMAIL_ADDRESS_FIELD = FieldMetadata('email_address_field', str)
-    FieldMetadata.ENUM_FIELD = FieldMetadata('enum_field', thryft_test.protocol.test.protocol_test_enum.ProtocolTestEnum)
-    FieldMetadata.FLOAT_FIELD = FieldMetadata('float_field', float)
-    FieldMetadata.I8_FIELD = FieldMetadata('i8_field', int)
-    FieldMetadata.I16_FIELD = FieldMetadata('i16_field', int)
-    FieldMetadata.I32_FIELD = FieldMetadata('i32_field', int)
-    FieldMetadata.I64_FIELD = FieldMetadata('i64_field', long)
-    FieldMetadata.STRING_LIST_FIELD = FieldMetadata('string_list_field', tuple)
-    FieldMetadata.STRING_STRING_MAP_FIELD = FieldMetadata('string_string_map_field', dict)
-    FieldMetadata.STRING_SET_FIELD = FieldMetadata('string_set_field', frozenset)
-    FieldMetadata.STRING_FIELD = FieldMetadata('string_field', str)
-    FieldMetadata.STRUCT_FIELD = FieldMetadata('struct_field', thryft_test.protocol.test.nested_protocol_test_struct.NestedProtocolTestStruct)
-    FieldMetadata.U32_FIELD = FieldMetadata('u32_field', int)
-    FieldMetadata.U64_FIELD = FieldMetadata('u64_field', long)
-    FieldMetadata.URI_FIELD = FieldMetadata('uri_field', str)
-    FieldMetadata.URL_FIELD = FieldMetadata('url_field', str)
-    FieldMetadata.VARIANT_FIELD = FieldMetadata('variant_field', object)
+    FieldMetadata.REQUIRED_I32_FIELD = FieldMetadata('required_i32_field', int, None)
+    FieldMetadata.REQUIRED_STRING_FIELD = FieldMetadata('required_string_field', str, {u'minLength': 1})
+    FieldMetadata.BINARY_FIELD = FieldMetadata('binary_field', str, None)
+    FieldMetadata.BOOL_FIELD = FieldMetadata('bool_field', bool, None)
+    FieldMetadata.DATE_TIME_FIELD = FieldMetadata('date_time_field', datetime.datetime, None)
+    FieldMetadata.DECIMAL_FIELD = FieldMetadata('decimal_field', decimal.Decimal, None)
+    FieldMetadata.DOUBLE_FIELD = FieldMetadata('double_field', float, None)
+    FieldMetadata.EMAIL_ADDRESS_FIELD = FieldMetadata('email_address_field', str, None)
+    FieldMetadata.ENUM_FIELD = FieldMetadata('enum_field', thryft_test.protocol.test.protocol_test_enum.ProtocolTestEnum, None)
+    FieldMetadata.FLOAT_FIELD = FieldMetadata('float_field', float, None)
+    FieldMetadata.I8_FIELD = FieldMetadata('i8_field', int, None)
+    FieldMetadata.I16_FIELD = FieldMetadata('i16_field', int, None)
+    FieldMetadata.I32_FIELD = FieldMetadata('i32_field', int, None)
+    FieldMetadata.I64_FIELD = FieldMetadata('i64_field', long, None)
+    FieldMetadata.STRING_LIST_FIELD = FieldMetadata('string_list_field', tuple, None)
+    FieldMetadata.STRING_STRING_MAP_FIELD = FieldMetadata('string_string_map_field', dict, None)
+    FieldMetadata.STRING_SET_FIELD = FieldMetadata('string_set_field', frozenset, None)
+    FieldMetadata.STRING_FIELD = FieldMetadata('string_field', str, {u'minLength': 1})
+    FieldMetadata.STRUCT_FIELD = FieldMetadata('struct_field', thryft_test.protocol.test.nested_protocol_test_struct.NestedProtocolTestStruct, None)
+    FieldMetadata.U32_FIELD = FieldMetadata('u32_field', int, None)
+    FieldMetadata.U64_FIELD = FieldMetadata('u64_field', long, None)
+    FieldMetadata.URI_FIELD = FieldMetadata('uri_field', str, None)
+    FieldMetadata.URL_FIELD = FieldMetadata('url_field', str, None)
+    FieldMetadata.VARIANT_FIELD = FieldMetadata('variant_field', object, None)
 
     def __init__(
         self,
@@ -968,9 +1049,7 @@ class ProtocolTestStruct(object):
                 raise TypeError("expected url_field to be a str but it is a %s" % getattr(__builtin__, 'type')(url_field))
         self.__url_field = url_field
 
-        if variant_field is not None:
-            if not True:
-                raise TypeError("expected variant_field to be a object but it is a %s" % getattr(__builtin__, 'type')(variant_field))
+
         self.__variant_field = variant_field
 
     def __eq__(self, other):

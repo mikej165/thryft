@@ -237,24 +237,28 @@ if (%s().isPresent()) {
                 self.type.java_read_protocol_throws_checked() + \
                 self.type.java_read_protocol_throws_unchecked()
         if len(read_protocol_throws) > 0:
-            if self.required:
-                read_protocol_throws = \
-                    ''.join("""\
+            read_protocol_catches = []
+            for exception_type_name in read_protocol_throws:
+                if exception_type_name == 'org.thryft.protocol.UncheckedInputProtocolException':
+                    read_protocol_catches.append("""\
+ catch (final %(exception_type_name)s e) {
+     throw (org.thryft.protocol.InputProtocolException)e.getCause();
+}""" % locals())
+                elif self.required:
+                    read_protocol_catches.append("""\
  catch (final %(exception_type_name)s e) {
      throw new org.thryft.protocol.InputProtocolException(e);
-}""" % locals()
-                         for exception_type_name in read_protocol_throws)
-            else:
-                read_protocol_throws = \
-                    ''.join("""\
+}""" % locals())
+                else:
+                    read_protocol_catches.append("""\
  catch (final %(exception_type_name)s e) {
-}""" % locals()
-                         for exception_type_name in read_protocol_throws)
+}""" % locals())
             read_protocol = indent(' ' * 4, read_protocol)
+            read_protocol_catches = ''.join(read_protocol_catches)
             read_protocol = """\
 try {
 %(read_protocol)s
-}%(read_protocol_throws)s""" % locals()
+}%(read_protocol_catches)s""" % locals()
 
         return read_protocol
 

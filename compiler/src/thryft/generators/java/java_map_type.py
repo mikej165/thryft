@@ -122,7 +122,7 @@ try {
 }%s
 """ % (statement, ''.join("""\
  catch (final %(exception_type_name)s e) {
-     throw new org.thryft.protocol.UncheckedInputProtocolException(e);
+     throw new org.thryft.protocol.InputProtocolException(e);
 }""" % locals()
                      for exception_type_name in throws))
 

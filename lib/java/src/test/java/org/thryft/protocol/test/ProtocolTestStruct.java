@@ -261,6 +261,7 @@ public class ProtocolTestStruct implements org.thryft.Struct {
                         }
                     }).apply(iprot));
                 } catch (final org.thryft.protocol.UncheckedInputProtocolException e) {
+                     throw (org.thryft.protocol.InputProtocolException)e.getCause();
                 }
             }
             if (__list.getSize() > 15) {
@@ -286,6 +287,7 @@ public class ProtocolTestStruct implements org.thryft.Struct {
                         }
                     }).apply(iprot));
                 } catch (final org.thryft.protocol.UncheckedInputProtocolException e) {
+                     throw (org.thryft.protocol.InputProtocolException)e.getCause();
                 }
             }
             if (__list.getSize() > 16) {
@@ -307,6 +309,7 @@ public class ProtocolTestStruct implements org.thryft.Struct {
                         }
                     }).apply(iprot));
                 } catch (final org.thryft.protocol.UncheckedInputProtocolException e) {
+                     throw (org.thryft.protocol.InputProtocolException)e.getCause();
                 }
             }
             if (__list.getSize() > 17) {
@@ -489,6 +492,7 @@ public class ProtocolTestStruct implements org.thryft.Struct {
                                 }
                             }).apply(iprot));
                         } catch (final org.thryft.protocol.UncheckedInputProtocolException e) {
+                             throw (org.thryft.protocol.InputProtocolException)e.getCause();
                         }
                     }
                     break;
@@ -517,6 +521,7 @@ public class ProtocolTestStruct implements org.thryft.Struct {
                                 }
                             }).apply(iprot));
                         } catch (final org.thryft.protocol.UncheckedInputProtocolException e) {
+                             throw (org.thryft.protocol.InputProtocolException)e.getCause();
                         }
                     }
                     break;
@@ -541,6 +546,7 @@ public class ProtocolTestStruct implements org.thryft.Struct {
                                 }
                             }).apply(iprot));
                         } catch (final org.thryft.protocol.UncheckedInputProtocolException e) {
+                             throw (org.thryft.protocol.InputProtocolException)e.getCause();
                         }
                     }
                     break;
@@ -1818,6 +1824,7 @@ public class ProtocolTestStruct implements org.thryft.Struct {
                     }
                 }).apply(iprot));
             } catch (final org.thryft.protocol.UncheckedInputProtocolException e) {
+                 throw (org.thryft.protocol.InputProtocolException)e.getCause();
             }
         }
         if (__list.getSize() > 15) {
@@ -1843,6 +1850,7 @@ public class ProtocolTestStruct implements org.thryft.Struct {
                     }
                 }).apply(iprot));
             } catch (final org.thryft.protocol.UncheckedInputProtocolException e) {
+                 throw (org.thryft.protocol.InputProtocolException)e.getCause();
             }
         }
         if (__list.getSize() > 16) {
@@ -1864,6 +1872,7 @@ public class ProtocolTestStruct implements org.thryft.Struct {
                     }
                 }).apply(iprot));
             } catch (final org.thryft.protocol.UncheckedInputProtocolException e) {
+                 throw (org.thryft.protocol.InputProtocolException)e.getCause();
             }
         }
         if (__list.getSize() > 17) {
@@ -2075,6 +2084,7 @@ public class ProtocolTestStruct implements org.thryft.Struct {
                             }
                         }).apply(iprot));
                     } catch (final org.thryft.protocol.UncheckedInputProtocolException e) {
+                         throw (org.thryft.protocol.InputProtocolException)e.getCause();
                     }
                 }
                 break;
@@ -2103,6 +2113,7 @@ public class ProtocolTestStruct implements org.thryft.Struct {
                             }
                         }).apply(iprot));
                     } catch (final org.thryft.protocol.UncheckedInputProtocolException e) {
+                         throw (org.thryft.protocol.InputProtocolException)e.getCause();
                     }
                 }
                 break;
@@ -2127,6 +2138,7 @@ public class ProtocolTestStruct implements org.thryft.Struct {
                             }
                         }).apply(iprot));
                     } catch (final org.thryft.protocol.UncheckedInputProtocolException e) {
+                         throw (org.thryft.protocol.InputProtocolException)e.getCause();
                     }
                 }
                 break;
