@@ -32,8 +32,6 @@
 
 package org.thryft.protocol.test;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.StringReader;
 import java.io.StringWriter;
 
@@ -44,7 +42,7 @@ import org.thryft.protocol.OutputProtocol;
 
 public final class JacksonJsonProtocolTest extends ProtocolTest {
     @Override
-    protected void _test(final ProtocolTestStruct expected) throws Exception {
+    protected ProtocolTestStruct _writeRead(final ProtocolTestStruct expected) throws Exception {
         final StringWriter writer = new StringWriter();
         final OutputProtocol oprot = new JacksonJsonOutputProtocol(writer);
         expected.writeAsStruct(oprot);
@@ -54,8 +52,6 @@ public final class JacksonJsonProtocolTest extends ProtocolTest {
 
         final StringReader reader = new StringReader(ostring);
         final InputProtocol iprot = new JacksonJsonInputProtocol(reader);
-        final ProtocolTestStruct actual = ProtocolTestStruct
-                .readAsStruct(iprot);
-        assertEquals(expected, actual);
+        return ProtocolTestStruct.readAsStruct(iprot);
     }
 }

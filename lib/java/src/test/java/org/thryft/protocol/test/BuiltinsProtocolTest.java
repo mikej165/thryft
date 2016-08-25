@@ -1,7 +1,6 @@
 package org.thryft.protocol.test;
 
 import static org.hamcrest.Matchers.instanceOf;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThat;
 
@@ -12,14 +11,13 @@ import org.thryft.protocol.BuiltinsOutputProtocol;
 
 public final class BuiltinsProtocolTest extends ProtocolTest {
     @Override
-    protected void _test(final ProtocolTestStruct expected) throws Exception {
+    protected ProtocolTestStruct _writeRead(final ProtocolTestStruct expected) throws Exception {
         final BuiltinsOutputProtocol oprot = new BuiltinsOutputProtocol();
         expected.writeAsStruct(oprot);
         assertNotEquals(null, oprot.getValue());
         assertThat(oprot.getValue(), instanceOf(Map.class));
 
         final BuiltinsInputProtocol iprot = new BuiltinsInputProtocol(oprot.getValue());
-        final ProtocolTestStruct actual = ProtocolTestStruct.readAsStruct(iprot);
-        assertEquals(expected, actual);
+        return ProtocolTestStruct.readAsStruct(iprot);
     }
 }

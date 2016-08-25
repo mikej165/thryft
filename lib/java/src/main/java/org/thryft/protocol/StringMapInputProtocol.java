@@ -118,7 +118,7 @@ public class StringMapInputProtocol extends StackedInputProtocol<StringMapInputP
 
         @Override
         public Object readVariant() throws InputProtocolException {
-            throw new InputProtocolException("unsupported operation");
+            throw new UnsupportedOperationInputProtocolException("readVariant in " + getClass().getCanonicalName());
         }
 
         protected final Stack<String> _getChildKeyStack() {
