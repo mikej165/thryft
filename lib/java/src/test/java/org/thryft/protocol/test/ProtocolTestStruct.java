@@ -1157,6 +1157,35 @@ public class ProtocolTestStruct implements org.thryft.Struct {
         private com.google.common.base.Optional<java.lang.Object> variantField;
     }
 
+    public final static class Factory implements org.thryft.CompoundType.Factory<ProtocolTestStruct> {
+        @Override
+        public ProtocolTestStruct readAs(final org.thryft.protocol.InputProtocol iprot, final org.thryft.protocol.Type type) throws org.thryft.protocol.InputProtocolException {
+            return ProtocolTestStruct.readAs(iprot, type);
+        }
+
+        @Override
+        public ProtocolTestStruct readAs(final org.thryft.protocol.InputProtocol iprot, final org.thryft.protocol.Type type,
+                final com.google.common.base.Optional<org.thryft.CompoundType.UnknownFieldCallback> unknownFieldCallback) throws org.thryft.protocol.InputProtocolException {
+            return ProtocolTestStruct.readAs(iprot, type, unknownFieldCallback);
+        }
+
+        @Override
+        public ProtocolTestStruct readAsList(final org.thryft.protocol.InputProtocol iprot) throws org.thryft.protocol.InputProtocolException {
+            return ProtocolTestStruct.readAsList(iprot);
+        }
+
+        @Override
+        public ProtocolTestStruct readAsStruct(final org.thryft.protocol.InputProtocol iprot) throws org.thryft.protocol.InputProtocolException {
+            return ProtocolTestStruct.readAsStruct(iprot);
+        }
+
+        @Override
+        public ProtocolTestStruct readAsStruct(final org.thryft.protocol.InputProtocol iprot,
+                final com.google.common.base.Optional<org.thryft.CompoundType.UnknownFieldCallback> unknownFieldCallback) throws org.thryft.protocol.InputProtocolException {
+            return ProtocolTestStruct.readAsStruct(iprot, unknownFieldCallback);
+        }
+    }
+
     @SuppressWarnings("serial")
     public enum FieldMetadata implements org.thryft.CompoundType.FieldMetadata {
         REQUIRED_I32_FIELD("requiredI32Field", new com.google.common.reflect.TypeToken<Integer>() {}, true, 1, "required_i32_field", org.thryft.protocol.Type.I32),

@@ -841,6 +841,35 @@ public class NestedProtocolTestStruct implements org.thryft.Struct {
         private com.google.common.base.Optional<org.thryft.native_.Url> urlField;
     }
 
+    public final static class Factory implements org.thryft.CompoundType.Factory<NestedProtocolTestStruct> {
+        @Override
+        public NestedProtocolTestStruct readAs(final org.thryft.protocol.InputProtocol iprot, final org.thryft.protocol.Type type) throws org.thryft.protocol.InputProtocolException {
+            return NestedProtocolTestStruct.readAs(iprot, type);
+        }
+
+        @Override
+        public NestedProtocolTestStruct readAs(final org.thryft.protocol.InputProtocol iprot, final org.thryft.protocol.Type type,
+                final com.google.common.base.Optional<org.thryft.CompoundType.UnknownFieldCallback> unknownFieldCallback) throws org.thryft.protocol.InputProtocolException {
+            return NestedProtocolTestStruct.readAs(iprot, type, unknownFieldCallback);
+        }
+
+        @Override
+        public NestedProtocolTestStruct readAsList(final org.thryft.protocol.InputProtocol iprot) throws org.thryft.protocol.InputProtocolException {
+            return NestedProtocolTestStruct.readAsList(iprot);
+        }
+
+        @Override
+        public NestedProtocolTestStruct readAsStruct(final org.thryft.protocol.InputProtocol iprot) throws org.thryft.protocol.InputProtocolException {
+            return NestedProtocolTestStruct.readAsStruct(iprot);
+        }
+
+        @Override
+        public NestedProtocolTestStruct readAsStruct(final org.thryft.protocol.InputProtocol iprot,
+                final com.google.common.base.Optional<org.thryft.CompoundType.UnknownFieldCallback> unknownFieldCallback) throws org.thryft.protocol.InputProtocolException {
+            return NestedProtocolTestStruct.readAsStruct(iprot, unknownFieldCallback);
+        }
+    }
+
     @SuppressWarnings("serial")
     public enum FieldMetadata implements org.thryft.CompoundType.FieldMetadata {
         REQUIRED_I32_FIELD("requiredI32Field", new com.google.common.reflect.TypeToken<Integer>() {}, true, 0, "required_i32_field", org.thryft.protocol.Type.I32),
