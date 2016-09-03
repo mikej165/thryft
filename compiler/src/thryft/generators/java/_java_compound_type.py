@@ -283,6 +283,43 @@ public Builder unset(final FieldMetadata fieldMetadata) {
 public static class Builder {%(sections)s
 }""" % locals()
 
+    class _JavaFactory(object):
+        def __init__(self, java_compound_type):
+            object.__init__(self)
+            self.__java_compound_type = java_compound_type
+
+        def java_repr(self):
+            compound_type_name = self.__java_compound_type.java_name()
+            return """\
+public final static class Factory implements org.thryft.CompoundType.Factory<%(compound_type_name)s> {
+    @Override
+    public %(compound_type_name)s readAs(final org.thryft.protocol.InputProtocol iprot, final org.thryft.protocol.Type type) throws org.thryft.protocol.InputProtocolException {
+        return %(compound_type_name)s.readAs(iprot, type);
+    }
+
+    @Override
+    public %(compound_type_name)s readAs(final org.thryft.protocol.InputProtocol iprot, final org.thryft.protocol.Type type,
+            final com.google.common.base.Optional<org.thryft.CompoundType.UnknownFieldCallback> unknownFieldCallback) throws org.thryft.protocol.InputProtocolException {
+        return %(compound_type_name)s.readAs(iprot, type, unknownFieldCallback);
+    }
+
+    @Override
+    public %(compound_type_name)s readAsList(final org.thryft.protocol.InputProtocol iprot) throws org.thryft.protocol.InputProtocolException {
+        return %(compound_type_name)s.readAsList(iprot);
+    }
+
+    @Override
+    public %(compound_type_name)s readAsStruct(final org.thryft.protocol.InputProtocol iprot) throws org.thryft.protocol.InputProtocolException {
+        return %(compound_type_name)s.readAsStruct(iprot);
+    }
+
+    @Override
+    public %(compound_type_name)s readAsStruct(final org.thryft.protocol.InputProtocol iprot,
+            final com.google.common.base.Optional<org.thryft.CompoundType.UnknownFieldCallback> unknownFieldCallback) throws org.thryft.protocol.InputProtocolException {
+        return %(compound_type_name)s.readAsStruct(iprot, unknownFieldCallback);
+    }
+}""" % locals()
+
     class _JavaFieldMetadataEnum(object):
         def __init__(self, java_compound_type):
             object.__init__(self)
@@ -999,6 +1036,7 @@ public void writeFields(final org.thryft.protocol.OutputProtocol oprot) throws o
         methods = self._java_methods()
         sections = []
         sections.append(indent(' ' * 4, self._JavaBuilder(self).java_repr()))
+        sections.append(indent(' ' * 4, self._JavaFactory(self).java_repr()))
         field_metadata_enum = self._java_field_metadata_enum()
         if field_metadata_enum is not None:
             sections.append(indent(' ' * 4, field_metadata_enum))
