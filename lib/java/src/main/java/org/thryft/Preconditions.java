@@ -111,6 +111,21 @@ public final class Preconditions {
         return integer;
     }
 
+    public static int checkIntegerMin(final int integer, final int min) {
+        return checkIntegerMin(integer, min, null);
+    }
+
+    public static int checkIntegerMin(final int integer, final int min, @Nullable final Object errorMessage) {
+        if (integer < min) {
+            if (errorMessage != null) {
+                throw new IllegalArgumentException(String.valueOf(errorMessage));
+            } else {
+                throw new IllegalArgumentException();
+            }
+        }
+        return integer;
+    }
+
     public static <MapT extends Map<?, ?>> MapT checkMapNotEmpty(final MapT map) {
         return checkMapNotEmpty(map, null);
     }
