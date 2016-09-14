@@ -30,33 +30,33 @@
 # OF SUCH DAMAGE.
 # -----------------------------------------------------------------------------
 
-from thryft.generators.java import java_generator
-from yutil import indent, lpad, decamelize
-from thryft.compiler.ast import Ast
 from thryft.compiler.parser import Parser
+from thryft.generators.java import java_generator
+from thryft.generators.java.java_log_exception_stack_trace_annotation_parser import JavaLogExceptionStackTraceAnnotationParser
+from thryft.generators.java.java_log_level_annotation_parser import JavaLogLevelAnnotationParser
+from thryft.generators.java.java_log_levels import JAVA_LOG_LEVELS
+from yutil import indent, lpad, decamelize
 
 
 class LoggingServiceJavaGenerator(java_generator.JavaGenerator):
-    _LOG_LEVELS = ('debug', 'error', 'info', 'trace', 'warn')
-
     def __init__(self, call_log_level_default='info', exception_log_level_default='error', include_current_user=False, **kwds):
         java_generator.JavaGenerator.__init__(self, **kwds)
         self._call_log_level_default = call_log_level_default.lower()
-        if not self._call_log_level_default in self._LOG_LEVELS:
+        if not self._call_log_level_default in JAVA_LOG_LEVELS:
             raise ValueError("call log level default is not a valid log level: '%s'" % self._call_log_level_default)
         self._exception_log_level_default = exception_log_level_default.lower()
-        if not self._exception_log_level_default in self._LOG_LEVELS:
+        if not self._exception_log_level_default in JAVA_LOG_LEVELS:
             raise ValueError("exception log level default is not a valid log level: '%s'" % self._exception_log_level_default)
         self._include_current_user = include_current_user
 
-    class Document(java_generator.JavaGenerator.Document):
+    class Document(java_generator.JavaGenerator.Document):  # @UndefinedVariable
         def java_package(self):
             try:
                 return self.namespace_by_scope(('logging_service_java', 'java')).name
             except KeyError:
                 return None
 
-    class Function(java_generator.JavaGenerator.Function):
+    class Function(java_generator.JavaGenerator.Function):  # @UndefinedVariable
         def java_definitions(self):
             call_log_level = self._parent_generator()._call_log_level_default
             for annotation in self.annotations:
@@ -165,17 +165,17 @@ public %(return_type_name)s %(java_name)s(%(parameters)s)%(throws)s {%(log_curre
         def java_marker_variable_name(self):
             return self.name.upper()
 
-    class Service(java_generator.JavaGenerator.Service):
+    class Service(java_generator.JavaGenerator.Service):  # @UndefinedVariable
         def __java_delegate_name(self):
             return "%s.%s.delegate" % (self._parent_document().java_package(), self.java_name())
 
         def java_name(self):
-            return 'Logging' + java_generator.JavaGenerator.Service.java_name(self)
+            return 'Logging' + java_generator.JavaGenerator.Service.java_name(self)  # @UndefinedVariable
 
         def _java_constructor(self):
             delegate_name = self.__java_delegate_name()
             name = self.java_name()
-            service_qname = java_generator.JavaGenerator.Service.java_qname(self)
+            service_qname = java_generator.JavaGenerator.Service.java_qname(self)  # @UndefinedVariable
             return """\
 @com.google.inject.Inject
 public %(name)s(@com.google.inject.name.Named("%(delegate_name)s") final %(service_qname)s delegate) {
@@ -208,7 +208,7 @@ public static class Markers {
 
         def _java_member_declarations(self):
             name = self.java_name()
-            service_qname = java_generator.JavaGenerator.Service.java_qname(self)
+            service_qname = java_generator.JavaGenerator.Service.java_qname(self)  # @UndefinedVariable
             return [
                 "private final static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(%(name)s.class);" % locals(),
                 "private final %(service_qname)s delegate;" % locals()
@@ -231,7 +231,7 @@ public static class Markers {
             sections.append("\n".join(self._java_member_declarations()))
             sections = "\n\n".join(indent(' ' * 4, sections))
 
-            service_qname = java_generator.JavaGenerator.Service.java_qname(self)
+            service_qname = java_generator.JavaGenerator.Service.java_qname(self)  # @UndefinedVariable
 
             return """\
 @com.google.inject.Singleton
@@ -240,26 +240,5 @@ public class %(name)s implements %(service_qname)s {
 }""" % locals()
 
 
-def __parse_java_log_exception_stack_trace(ast_node, name, value, **kwds):
-    value = value.lower()
-    if value == 'true':
-        value = True
-    elif value == 'false':
-        value = False
-    else:
-        raise ValueError(value)
-    ast_node.annotations.append(Ast.AnnotationNode(name=name, value=value, **kwds))
-
-for ast_node_type in (Ast.ExceptionTypeNode, Ast.FieldNode):
-    Parser.register_annotation(ast_node_type, 'java_log_exception_stack_trace', __parse_java_log_exception_stack_trace)
-
-
-def __parse_java_log_level(ast_node, name, value, **kwds):
-    value_lower = value.lower()
-    if not value_lower in LoggingServiceJavaGenerator._LOG_LEVELS:
-        raise ValueError("@%s has an invalid log level: '%s', exception: %s" % (name, value))
-
-    ast_node.annotations.append(Ast.AnnotationNode(name=name, value=value_lower, **kwds))
-
-for ast_node_type in (Ast.ExceptionTypeNode, Ast.FieldNode, Ast.FunctionNode):
-    Parser.register_annotation(ast_node_type, 'java_log_level', __parse_java_log_level)
+Parser.register_annotation_parser(JavaLogExceptionStackTraceAnnotationParser())
+Parser.register_annotation_parser(JavaLogLevelAnnotationParser())

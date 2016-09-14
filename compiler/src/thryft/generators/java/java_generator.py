@@ -30,8 +30,7 @@
 # OF SUCH DAMAGE.
 # -----------------------------------------------------------------------------
 
-from thryft.compiler.annotation_parser import _AnnotationParser, \
-    AnnotationParser
+from thryft.compiler.annotation_parser import AnnotationParser
 from thryft.compiler.ast import Ast
 from thryft.compiler.parser import Parser
 from thryft.compiler.valueless_annotation_parser import ValuelessAnnotationParser

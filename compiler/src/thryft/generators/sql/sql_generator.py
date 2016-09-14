@@ -1,6 +1,9 @@
+from thryft.compiler.annotation_parser import AnnotationParser
 from thryft.compiler.ast import Ast
 from thryft.compiler.parser import Parser
+from thryft.compiler.valueless_annotation_parser import ValuelessAnnotationParser
 from thryft.generator.generator import Generator
+from thryft.generators.sql.sql_foreign_key_annotation_parser import SqlForeignKeyAnnotationParser
 
 
 class SqlGenerator(Generator):
@@ -27,23 +30,6 @@ class SqlGenerator(Generator):
     from thryft.generators.sql.sql_typedef import SqlTypedef as Typedef  # @UnusedImport
 
 
-def __parse_sql_column_annotation(ast_node, name, value, **kwds):
-    ast_node.annotations.append(Ast.AnnotationNode(name=name, value=value, **kwds))
-Parser.register_annotation(Ast.StructTypeNode, 'sql_column', __parse_sql_column_annotation)
-
-def __parse_sql_foreign_key_annotation(ast_node, name, value, **kwds):
-    value_parts = value.split('.')
-    if len(value_parts) != 2:
-        raise ValueError("@%s must be specify table.column: '%s'" % (name, value))
-    table_name, column_name = value_parts
-    if len(table_name) == 0 or len(column_name) == 0:
-        raise ValueError("@%s must be specify a table.column: '%s'" % (name, value))
-    ast_node.annotations.append(Ast.AnnotationNode(name=name, value=(table_name, column_name), **kwds))
-for ast_node_type in (Ast.FieldNode, Ast.StructTypeNode):
-    Parser.register_annotation(ast_node_type, 'sql_foreign_key', __parse_sql_foreign_key_annotation)
-
-def __parse_sql_unique_annotation(ast_node, name, value, **kwds):
-    if value is not None:
-        raise ValueError("@%(name)s does not take a value" % locals())
-    ast_node.annotations.append(Ast.AnnotationNode(name=name, **kwds))
-Parser.register_annotation(Ast.FieldNode, 'sql_unique', __parse_sql_unique_annotation)
+Parser.register_annotation_parser(AnnotationParser('sql_column', Ast.StructTypeNode))
+Parser.register_annotation_parser(SqlForeignKeyAnnotationParser())
+Parser.register_annotation_parser(ValuelessAnnotationParser('sql_unique', Ast.StructTypeNode))

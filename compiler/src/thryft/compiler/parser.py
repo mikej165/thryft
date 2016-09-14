@@ -30,12 +30,21 @@
 # OF SUCH DAMAGE.
 # -----------------------------------------------------------------------------
 
+import logging
+
 from spark import GenericParser
+from thryft.compiler.annotation_parsers.deprecated_annotation_parser import DeprecatedAnnotationParser
+from thryft.compiler.annotation_parsers.native_annotation_parser import NativeAnnotationParser
+from thryft.compiler.annotation_parsers.param_annotation_parser import ParamAnnotationParser
+from thryft.compiler.annotation_parsers.requires_annotation_parser import RequiresAnnotationParser
+from thryft.compiler.annotation_parsers.requires_set_annotation_parser import RequiresSetAnnotationParser
+from thryft.compiler.annotation_parsers.return_annotation_parser import ReturnAnnotationParser
+from thryft.compiler.annotation_parsers.throw_annotation_parser import ThrowAnnotationParser
+from thryft.compiler.annotation_parsers.validation_annotation_parser import ValidationAnnotationParser
 from thryft.compiler.ast import Ast
 from thryft.compiler.parse_exception import ParseException
 from thryft.compiler.token import Token
 from yutil import class_qname
-import logging
 
 
 class Parser(GenericParser):
@@ -924,3 +933,13 @@ class Parser(GenericParser):
 
     def typestring(self, token):
         return token.type
+
+
+Parser.register_annotation_parser(DeprecatedAnnotationParser())
+Parser.register_annotation_parser(NativeAnnotationParser())
+Parser.register_annotation_parser(ParamAnnotationParser())
+Parser.register_annotation_parser(RequiresAnnotationParser())
+Parser.register_annotation_parser(RequiresSetAnnotationParser())
+Parser.register_annotation_parser(ReturnAnnotationParser())
+Parser.register_annotation_parser(ThrowAnnotationParser())
+Parser.register_annotation_parser(ValidationAnnotationParser())

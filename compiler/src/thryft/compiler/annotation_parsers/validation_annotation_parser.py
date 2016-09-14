@@ -6,7 +6,7 @@ from thryft.compiler.ast import Ast
 
 class ValidationAnnotationParser(AnnotationParser):
     def __init__(self):
-        AnnotationParser.__init__('validation', (Ast.FieldNode, Ast.FunctionNode, Ast.TypedefNode))
+        AnnotationParser.__init__(self, 'validation', (Ast.FieldNode, Ast.FunctionNode, Ast.TypedefNode))
 
     def parse_annotation(self, ast_node, name, value, **kwds):
         if isinstance(ast_node, Ast.FunctionNode):

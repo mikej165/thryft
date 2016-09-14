@@ -1,9 +1,10 @@
 import logging
 
 from thryft.compiler.ast import Ast
+from thryft.compiler.parser import Parser
+from thryft.compiler.valueless_annotation_parser import ValuelessAnnotationParser
 from thryft.generator.generator import Generator
 from yutil import class_qname
-from thryft.compiler.parser import Parser
 
 
 class LintGenerator(Generator):
@@ -120,8 +121,4 @@ class LintGenerator(Generator):
     class StructType(Generator.StructType, _CompoundType):  # @UndefinedVariable
         pass
 
-def __parse_lint_suppress(ast_node, name, value, **kwds):
-    ast_node.annotations.append(Ast.AnnotationNode(name=name, value=value, **kwds))
-
-for ast_node_type in (Ast.EnumTypeNode, Ast.ExceptionTypeNode, Ast.ServiceNode, Ast.StructTypeNode):
-    Parser.register_annotation(ast_node_type, 'lint_suppress', __parse_lint_suppress)
+Parser.register_annotation_parser(ValuelessAnnotationParser('lint_suppress', (Ast.EnumTypeNode, Ast.ExceptionTypeNode, Ast.ServiceNode, Ast.StructTypeNode)))
