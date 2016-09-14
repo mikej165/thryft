@@ -1,9 +1,9 @@
-from thryft.compiler._annotation_parser import _AnnotationParser
+from thryft.compiler.annotation_parser import AnnotationParser
 from thryft.compiler.ast import Ast
 from thryft.compiler.parser import Parser
 
 
-class ReturnAnnotationParser(_AnnotationParser):
+class ReturnAnnotationParser(AnnotationParser):
     def parse_annotation(self, ast_node, name, value, **kwds):
         if value is None:
             raise ValueError("@%(name)s requires a value" % locals())

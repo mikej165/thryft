@@ -1,10 +1,11 @@
+from collections import OrderedDict
 import json
 
+from thryft.compiler.annotation_parser import _AnnotationParser
 from thryft.compiler.ast import Ast
 from thryft.compiler.parser import Parser
 from thryft.generator.generator import Generator
 from yutil import decamelize
-from collections import OrderedDict
 
 
 class ElasticSearchMappingsGenerator(Generator):
@@ -127,42 +128,55 @@ class ElasticSearchMappingsGenerator(Generator):
         self._template = template
 
 
-def __parse_elastic_search_document_type_annotation(ast_node, name, value, **kwds):
-    assert isinstance(ast_node, Ast.StructTypeNode)
-    ast_node.annotations.append(Ast.AnnotationNode(name=name, value=value, **kwds))
+class ElasticSearchDocumentTypeAnnotationParser(_AnnotationParser):
+    def parse_annotation(self, ast_node, name, value, **kwds):
+        assert isinstance(ast_node, Ast.StructTypeNode)
+        ast_node.annotations.append(Ast.AnnotationNode(name=name, value=value, **kwds))
 
-Parser.register_annotation(Ast.StructTypeNode, 'elastic_search_document_type', __parse_elastic_search_document_type_annotation)
-
-
-def __parse_elastic_search_mappings_base(ast_node, name, value, **kwds):
-    assert isinstance(ast_node, Ast.StructTypeNode)
-
-    try:
-        value = json.loads(value)
-    except ValueError, e:
-        raise ValueError("@%s contains invalid JSON: '%s', exception: %s" % (name, value, e))
-    if not isinstance(value, dict):
-        raise ValueError("expected @%s to contain a JSON object, found '%s'" % (name, value))
-
-    annotation = Ast.AnnotationNode(name=name, value=value, **kwds)
-
-    ast_node.annotations.append(annotation)
-
-Parser.register_annotation(Ast.StructTypeNode, 'elastic_search_mappings_base', __parse_elastic_search_mappings_base)
+    @classmethod
+    def register(cls):
+        Parser.register_annotation_parser(Ast.StructTypeNode, 'elastic_search_document_type', cls())
+ElasticSearchDocumentTypeAnnotationParser.register()
 
 
-def __parse_elastic_search_mapping_annotation(ast_node, name, value, **kwds):
-    assert isinstance(ast_node, Ast.FieldNode)
+class ElasticSearchMappingsBaseAnnotationParser(_AnnotationParser):
+    def parse_annotation(self, ast_node, name, value, **kwds):
+        assert isinstance(ast_node, Ast.StructTypeNode)
 
-    try:
-        value = json.loads(value)
-    except ValueError, e:
-        raise ValueError("@%s contains invalid JSON: '%s', exception: %s" % (name, value, e))
-    if not isinstance(value, dict):
-        raise ValueError("expected @%s to contain a JSON object, found '%s'" % (name, value))
+        try:
+            value = json.loads(value)
+        except ValueError, e:
+            raise ValueError("@%s contains invalid JSON: '%s', exception: %s" % (name, value, e))
+        if not isinstance(value, dict):
+            raise ValueError("expected @%s to contain a JSON object, found '%s'" % (name, value))
 
-    annotation = Ast.AnnotationNode(name=name, value=value, **kwds)
+        annotation = Ast.AnnotationNode(name=name, value=value, **kwds)
 
-    ast_node.annotations.append(annotation)
+        ast_node.annotations.append(annotation)
 
-Parser.register_annotation(Ast.FieldNode, 'elastic_search_mapping', __parse_elastic_search_mapping_annotation)
+    @classmethod
+    def register(cls):
+        Parser.register_annotation_parser(Ast.StructTypeNode, 'elastic_search_mappings_base', cls())
+ElasticSearchMappingsBaseAnnotationParser.register()
+
+
+class ElasticSearchMappingAnnotationParser(_AnnotationParser):
+    def parse_annotation(self, ast_node, name, value, **kwds):
+        assert isinstance(ast_node, Ast.FieldNode)
+
+        try:
+            value = json.loads(value)
+        except ValueError, e:
+            raise ValueError("@%s contains invalid JSON: '%s', exception: %s" % (name, value, e))
+        if not isinstance(value, dict):
+            raise ValueError("expected @%s to contain a JSON object, found '%s'" % (name, value))
+
+        annotation = Ast.AnnotationNode(name=name, value=value, **kwds)
+
+        ast_node.annotations.append(annotation)
+
+    @classmethod
+    def register(cls):
+        Parser.register_annotation_parser(Ast.FieldNode, 'elastic_search_mapping', cls())
+ElasticSearchMappingAnnotationParser.register()
+

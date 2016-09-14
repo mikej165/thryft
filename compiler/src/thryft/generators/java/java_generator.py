@@ -30,9 +30,12 @@
 # OF SUCH DAMAGE.
 # -----------------------------------------------------------------------------
 
-from thryft.generator.generator import Generator
+from thryft.compiler.annotation_parser import _AnnotationParser, \
+    AnnotationParser
 from thryft.compiler.ast import Ast
 from thryft.compiler.parser import Parser
+from thryft.compiler.valueless_annotation_parser import ValuelessAnnotationParser
+from thryft.generator.generator import Generator
 
 
 class JavaGenerator(Generator):
@@ -76,22 +79,6 @@ class JavaGenerator(Generator):
         return self.__mutable_compound_types
 
 
-def __parse_java_escape_to_string_annotation(ast_node, name, value, **kwds):
-    if value is not None:
-        raise ValueError("@%(name)s does not take a value" % locals())
-    ast_node.annotations.append(Ast.AnnotationNode(name=name, **kwds))
-Parser.register_annotation(Ast.FieldNode, 'java_escape_to_string', __parse_java_escape_to_string_annotation)
-
-
-def __parse_java_exclude_from_to_string_annotation(ast_node, name, value, **kwds):
-    if value is not None:
-        raise ValueError("@%(name)s does not take a value" % locals())
-    ast_node.annotations.append(Ast.AnnotationNode(name=name, **kwds))
-Parser.register_annotation(Ast.FieldNode, 'java_exclude_from_to_string', __parse_java_exclude_from_to_string_annotation)
-
-
-def __parse_java_implements(ast_node, name, value, **kwds):
-    ast_node.annotations.append(Ast.AnnotationNode(name=name, value=value, **kwds))
-
-for ast_node_type in (Ast.EnumTypeNode, Ast.ExceptionTypeNode, Ast.ServiceNode, Ast.StructTypeNode):
-    Parser.register_annotation(ast_node_type, 'java_implements', __parse_java_implements)
+Parser.register_annotation_parser(AnnotationParser('java_implements', (Ast.EnumTypeNode, Ast.ExceptionTypeNode, Ast.ServiceNode, Ast.StructTypeNode)))
+Parser.register_annotation_parser(ValuelessAnnotationParser('java_escape_to_string', Ast.FieldNode))
+Parser.register_annotation_parser(ValuelessAnnotationParser('java_exclude_from_to_string', Ast.FieldNode))

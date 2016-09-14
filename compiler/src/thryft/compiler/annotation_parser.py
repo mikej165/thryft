@@ -1,14 +1,30 @@
 from thryft.compiler.ast import Ast
-from yutil import class_qname
 
 
-class _AnnotationParser(object):
+class AnnotationParser(object):
+    def __init__(self, annotation_names, ast_node_types):
+        if not isinstance(annotation_names, tuple):
+            annotation_names = (annotation_names,)
+        for annotation_name in annotation_names:
+            assert isinstance(annotation_name, str)
+        self.__annotation_names = annotation_names
+
+        if not isinstance(ast_node_types, tuple):
+            ast_node_types = (ast_node_types,)
+        for ast_node_type in ast_node_types:
+            assert issubclass(ast_node_type, Ast.Node)
+        self.__ast_node_types = ast_node_types
+
+    @property
+    def annotation_names(self):
+        return self.__annotation_names
+
+    @property
+    def ast_node_types(self):
+        return self.__ast_node_types
+
     def parse_annotation(self, ast_node, name, value, **kwds):
-        raise NotImplementedError(class_qname(self))
-
-    @classmethod
-    def register(cls):
-        raise NotImplementedError(class_qname(cls))
+        ast_node.annotations.append(Ast.AnnotationNode(name=name, value=value, **kwds))
 
     @staticmethod
     def _split_param_annotation(ast_node, name, value):

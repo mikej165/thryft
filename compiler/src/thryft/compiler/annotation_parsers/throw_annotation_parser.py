@@ -1,9 +1,11 @@
-from thryft.compiler._annotation_parser import _AnnotationParser
+from thryft.compiler.annotation_parser import AnnotationParser
 from thryft.compiler.ast import Ast
-from thryft.compiler.parser import Parser
 
 
-class ThrowAnnotationParser(_AnnotationParser):
+class ThrowAnnotationParser(AnnotationParser):
+    def __init__(self):
+        AnnotationParser.__init__(self, ('throw', 'throws'), Ast.FunctionNode)
+
     def parse_annotation(self, ast_node, name, value, **kwds):
         if value is None:
             raise ValueError("@%(name)s requires a value" % locals())
@@ -17,8 +19,3 @@ class ThrowAnnotationParser(_AnnotationParser):
         except KeyError:
             raise ValueError("'%s' refers to unknown exception type '%s'" % (value, exception_type_name))
         throw.doc = Ast.DocNode(text=value, **kwds)
-
-    @classmethod
-    def register(cls):
-        for __name in ('throw', 'throws'):
-            Parser.register_annotation_parser(Ast.FunctionNode, __name, cls())

@@ -35,7 +35,6 @@ from thryft.compiler.ast import Ast
 from thryft.compiler.parse_exception import ParseException
 from thryft.compiler.token import Token
 from yutil import class_qname
-import json
 import logging
 
 
@@ -61,7 +60,7 @@ class Parser(GenericParser):
                         continue
 
                     try:
-                        annotation_parser(
+                        annotation_parser.parse_annotation(
                             ast_node=ast_node,
                             name=tag_name,
                             start_token=ast_node.doc.start_token,
@@ -915,13 +914,13 @@ class Parser(GenericParser):
             )
 
     @classmethod
-    def register_annotation_parser(cls, annotation_name, annotation_parser, ast_node_type):
-        assert issubclass(ast_node_type, Ast.Node)
-
-        try:
-            cls.__annotation_parsers[ast_node_type][annotation_name] = annotation_parser
-        except KeyError:
-            cls.__annotation_parsers[ast_node_type] = {annotation_name: annotation_parser}
+    def register_annotation_parser(cls, annotation_parser):
+        for ast_node_type in annotation_parser.ast_node_types:
+            for annotation_name in annotation_parser.annotation_names:
+                try:
+                    cls.__annotation_parsers[ast_node_type][annotation_name] = annotation_parser
+                except KeyError:
+                    cls.__annotation_parsers[ast_node_type] = {annotation_name: annotation_parser}
 
     def typestring(self, token):
         return token.type

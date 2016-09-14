@@ -1,11 +1,13 @@
 import json
 
-from thryft.compiler._annotation_parser import _AnnotationParser
+from thryft.compiler.annotation_parser import AnnotationParser
 from thryft.compiler.ast import Ast
-from thryft.compiler.parser import Parser
 
 
-class ValidationAnnotationParser(_AnnotationParser):
+class ValidationAnnotationParser(AnnotationParser):
+    def __init__(self):
+        AnnotationParser.__init__('validation', (Ast.FieldNode, Ast.FunctionNode, Ast.TypedefNode))
+
     def parse_annotation(self, ast_node, name, value, **kwds):
         if isinstance(ast_node, Ast.FunctionNode):
             parameter, value = self._split_param_annotation(ast_node=ast_node, name=name, value=value)
@@ -34,8 +36,3 @@ class ValidationAnnotationParser(_AnnotationParser):
             parameter.annotations.append(annotation)
         else:
             ast_node.annotations.append(annotation)
-
-    @classmethod
-    def register(cls):
-        for __ast_node_type in (Ast.FieldNode, Ast.FunctionNode, Ast.TypedefNode):
-            Parser.register_annotation_parser(__ast_node_type, 'validation', cls())
