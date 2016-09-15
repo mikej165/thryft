@@ -119,7 +119,7 @@ public static %(name)s load(final com.google.common.base.Optional<java.io.File> 
         throw new RuntimeException("properties file(s) have unknown property " + entry.getKey().toString());
     }
 
-    return new %(name)s(%(field_values)s);
+    return %(name)s.create(%(field_values)s);
 }""" % locals()}
 
         def _java_method__merge_properties(self):

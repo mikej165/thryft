@@ -77,9 +77,6 @@ class _JavaType(_JavaNamedConstruct):
     def java_name(self):
         return _JavaNamedConstruct.java_name(self)
 
-    def java_precondition_name(self):
-        raise NotImplementedError(class_qname(self) + '.java_precondition_name')
-
     def java_read_protocol(self):
         raise NotImplementedError(class_qname(self) + '.java_read_protocol')
 

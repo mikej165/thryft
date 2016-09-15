@@ -136,7 +136,6 @@ public %(name)s(@com.google.inject.name.Named("%(name_lower_camelized)sUrl") fin
                 # "private final static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(%(name)s.class);" % locals(),
             ]
 
-
         def _java_methods(self):
             methods = []
             methods.append(self._java_constructor())

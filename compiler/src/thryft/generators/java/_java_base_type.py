@@ -48,9 +48,6 @@ class _JavaBaseType(_JavaType):
         name = upper_camelize(getattr(self, 'name'))
         return "iprot.read%(name)s()" % locals()
 
-    def java_precondition_name(self):
-        return self.java_boxed_name()
-
     def java_qname(self):
         return self.java_name()
 

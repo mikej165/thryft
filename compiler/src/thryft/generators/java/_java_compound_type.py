@@ -83,12 +83,8 @@ public Builder() {%(initializers)s
                     for field in self.fields]
 
         def _java_method_build(self):
-            fields = []
             qname = self.java_qname()
-            for field in self.fields:
-                field_name = field.java_name()
-                fields.append("""com.google.common.base.Preconditions.checkNotNull(%(field_name)s, "%(qname)s: missing %(field_name)s")""" % locals())
-            fields = ', '.join(fields)
+            fields = ', '.join(field.java_name() for field in self.fields)
             name = self.java_name()
             return {'build': """\
 public %(name)s build() {
@@ -96,14 +92,18 @@ public %(name)s build() {
 }""" % locals()}
 
         def _java_method__build(self):
-            all_field_names = \
-                ', '.join(field.java_name() for field in self.fields)
+            if len(self.fields) > 0:
+                field_delegation = \
+                    ', '.join([field.java_name() for field in self.fields] + \
+                              ['DefaultConstructionValidator.getInstance()'])
+            else:
+                field_delegation = ''
             field_parameters = \
                 ', '.join(field.java_parameter(final=True) for field in self.fields)
             name = self.java_name()
             return {'_build': """\
 protected %(name)s _build(%(field_parameters)s) {
-    return new %(name)s(%(all_field_names)s);
+    return new %(name)s(%(field_delegation)s);
 }""" % locals()}
 
         def _java_method_read_as(self):
@@ -543,13 +543,17 @@ public %(name)s() {%(initializers)s
 
     def _java_constructor_copy(self):
         name = self.java_name()
-        this_call = \
-            indent(' ' * 4,
-                pad("\nthis(",
-                    ', '.join('other.' + field.java_getter_name() + '()'
-                               for field in self.fields),
-                ");\n")
-            )
+        if len(self.fields) > 0:
+            this_call = \
+                indent(' ' * 4,
+                    pad("\nthis(",
+                        ', '.join(['other.' + field.java_getter_name() + '()'
+                                   for field in self.fields] + \
+                                   ['NopConstructionValidator.getInstance()']),
+                    ");\n")
+                )
+        else:
+            this_call = ''
         return """\
 /**
  * Copy constructor
@@ -565,9 +569,11 @@ public %(name)s(final %(name)s other) {%(this_call)s
         parameters = []
         for field in self.fields:
             field_name = field.java_name()
-            initializers.append("this.%(field_name)s = %(field_name)s;" % locals())
+            field_validate_method_name = field.java_validate_method_name()
+            initializers.append("this.%(field_name)s = validator.%(field_validate_method_name)s(%(field_name)s);" % locals())
             parameters.append(field.java_parameter(final=True))
         initializers = lpad("\n", "\n".join(indent(' ' * 4, initializers)))
+        parameters.append('ConstructionValidator validator')
         parameters = ", ".join(parameters)
         return """\
 protected %(name)s(%(parameters)s) {%(initializers)s
@@ -697,10 +703,11 @@ public static %(name)s create() {
         for field in self.fields:
             if field.required and field.value is None:
                 parameters.append(field.java_parameter(final=True))
-                parameter_delegation.append(field.java_preconditions_expression())
+                parameter_delegation.append(field.java_name())
             else:
                 parameter_delegation.append(field.java_default_value())
         parameters = ", ".join(parameters)
+        parameter_delegation.append('DefaultConstructionValidator.getInstance()')
         parameter_delegation = ', '.join(parameter_delegation)
         return """\
 /**
@@ -722,7 +729,8 @@ public static %(name)s create(%(parameters)s) {
                 name = self.java_name()
                 parameters = ', '.join(field.java_parameter(boxed=True)
                                         for field in self.fields)
-                parameter_delegation = ', '.join(field.java_preconditions_expression(boxed=True) for field in self.fields)
+                parameter_delegation = ', '.join([field.java_name() for field in self.fields] + \
+                                                 ['DefaultConstructionValidator.getInstance()'])
                 return """\
 /**
  * Total boxed factory method
@@ -747,7 +755,14 @@ public static %(name)s create(%(parameters)s) {
         parameters = \
             ', '.join(field.java_parameter(final=True, nullable=True)
                       for field in self.fields)
-        parameter_delegation = ', '.join(field.java_preconditions_expression(nullable=True) for field in self.fields)
+        parameter_delegation = []
+        for field in self.fields:
+            if field.required:
+                parameter_delegation.append(field.java_name())
+            else:
+                parameter_delegation.append("com.google.common.base.Optional.fromNullable(%s)" % field.java_name())
+        parameter_delegation.append('DefaultConstructionValidator.getInstance()')
+        parameter_delegation = ', '.join(parameter_delegation)
         return """\
 /**
  * Total Nullable factory method
@@ -763,7 +778,8 @@ public static %(name)s create(%(parameters)s) {
         name = self.java_name()
         parameters = ', '.join(field.java_parameter(final=True, nullable=False)
                                 for field in self.fields)
-        parameter_delegation = ', '.join(field.java_preconditions_expression(nullable=False) for field in self.fields)
+        parameter_delegation = ', '.join([field.java_name() for field in self.fields] + \
+                                         ['DefaultConstructionValidator.getInstance()'])
         return """\
 /**
  * Optional factory method
@@ -890,21 +906,20 @@ public static %(name)s readAs(final org.thryft.protocol.InputProtocol iprot, fin
 
     def _java_method_read_as_list(self):
         body = indent(' ' * 4, self._java_method_read_as_list_body())
+        constructor_parameters = ', '.join(["DefaultReadValidator.getInstance().%s(%s)" % (field.java_validate_method_name(), field.java_name())
+                                            for field in self.fields] + \
+                                           ['NopConstructionValidator.getInstance()'])\
+                                 if len(self.fields) > 0 else ''
         field_declarations = \
             pad("\n", indent(' ' * 4, "\n".join(
                 field.java_local_declaration(final=False)
                 for field in self.fields
             )), "\n")
-        field_names = ', '.join(field.java_name() for field in self.fields)
         name = self.java_name()
         return {'readAsList': """\
 public static %(name)s readAsList(final org.thryft.protocol.InputProtocol iprot) throws org.thryft.protocol.InputProtocolException {%(field_declarations)s
 %(body)s
-    try {
-        return new %(name)s(%(field_names)s);
-    } catch (final IllegalArgumentException | NullPointerException e) {
-        throw new org.thryft.protocol.InputProtocolException(e);
-    }
+    return new %(name)s(%(constructor_parameters)s);
 }""" % locals()}
 
     def _java_method_read_as_list_body(self):
@@ -928,12 +943,15 @@ iprot.readListEnd();""" % locals()
 
     def _java_method_read_as_struct(self):
         body = indent(' ' * 4, self._java_method_read_as_struct_body())
+        constructor_parameters = ', '.join(["DefaultReadValidator.getInstance().%s(%s)" % (field.java_validate_method_name(), field.java_name())
+                                            for field in self.fields] + \
+                                           ['NopConstructionValidator.getInstance()']) \
+                                 if len(self.fields) > 0 else ''
         field_declarations = \
             pad("\n", indent(' ' * 4, "\n".join(
                 field.java_local_declaration(final=False)
                 for field in self.fields
             )), "\n")
-        field_names = ', '.join(field.java_name() for field in self.fields)
         name = self.java_name()
         return {'readAsStruct': """\
 public static %(name)s readAsStruct(final org.thryft.protocol.InputProtocol iprot) throws org.thryft.protocol.InputProtocolException {
@@ -942,11 +960,7 @@ public static %(name)s readAsStruct(final org.thryft.protocol.InputProtocol ipro
 
 public static %(name)s readAsStruct(final org.thryft.protocol.InputProtocol iprot, final com.google.common.base.Optional<UnknownFieldCallback> unknownFieldCallback) throws org.thryft.protocol.InputProtocolException {%(field_declarations)s
 %(body)s
-    try {
-        return new %(name)s(%(field_names)s);
-    } catch (final IllegalArgumentException | NullPointerException e) {
-        throw new org.thryft.protocol.InputProtocolException(e);
-    }
+    return new %(name)s(%(constructor_parameters)s);
 }""" % locals()}
 
     def _java_method_read_as_struct_body(self):
@@ -992,21 +1006,21 @@ iprot.readStructEnd();""" % locals()
     def _java_method_replacers(self):
         methods = {}
         compound_type_name = self.java_name()
-        all_field_names = [field.java_name() for field in self.fields]
         for field_i, field in enumerate(self.fields):
             field_name = field.java_name()
             field_parameter = field.java_parameter(final=True)
-            all_field_names = []
+            constructor_parameters = []
             for other_field_i, other_field in enumerate(self.fields):
                 if field_i == other_field_i:
-                    all_field_names.append(field.java_name())
+                    constructor_parameters.append("DefaultConstructionValidator.getInstance().%s(%s)" % (field.java_validate_method_name(), field.java_name()))
                 else:
-                    all_field_names.append('this.' + other_field.java_name())
-            all_field_names = ', '.join(all_field_names)
+                    constructor_parameters.append('this.' + other_field.java_name())
+            constructor_parameters.append('NopConstructionValidator.getInstance()')
+            constructor_parameters = ', '.join(constructor_parameters)
             method_name = 'replace' + upper_camelize(field.name)
             methods[method_name] = """\
 public %(compound_type_name)s %(method_name)s(%(field_parameter)s) {
-    return new %(compound_type_name)s(%(all_field_names)s);
+    return new %(compound_type_name)s(%(constructor_parameters)s);
 }""" % locals()
             if not field.required:
                 field_parameter = 'final ' + field.type.java_qname() + ' ' + field.java_name()
@@ -1117,9 +1131,6 @@ public void writeFields(final org.thryft.protocol.OutputProtocol oprot) throws o
         methods.update(self._java_method_write_as_struct())
         methods.update(self._java_method_write_fields())
         return methods
-
-    def java_precondition_name(self):
-        return 'CompoundType'
 
     def java_qname(self, **kwds):
         return _JavaNamedConstruct.java_qname(self, name=self.name, **kwds)

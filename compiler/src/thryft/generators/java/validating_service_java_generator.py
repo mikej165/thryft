@@ -52,10 +52,12 @@ class ValidatingServiceJavaGenerator(java_generator.JavaGenerator):
                 ', '.join(parameter.java_parameter(final=True) for parameter in self.parameters)
             public_parameter_names = ', '.join(parameter.java_name() for parameter in self.parameters)
             parameter_validations = []
+            request_type_name = self.java_request_type().java_name()
+            service_qname = JavaService.java_qname(self.parent)
             for parameter in self.parameters:
-                parameter_validation = parameter.java_preconditions_expression()
-                if parameter_validation != parameter.java_name():
-                    parameter_validations.append(parameter_validation + ';')
+                parameter_name = parameter.java_name()
+                parameter_validate_method_name = parameter.java_validate_method_name()
+                parameter_validations.append("%(service_qname)s.Messages.%(request_type_name)s.DefaultConstructionValidator.getInstance().%(parameter_validate_method_name)s(%(parameter_name)s);" % locals())
             if len(parameter_validations) > 0:
                 parameter_validations = \
                     "\n".join(indent(' ' * 4, parameter_validations))
@@ -70,7 +72,9 @@ protected void %(validate_method_name)s(%(public_parameters)s) {
             delegation = \
                 "delegate.%s(%s)" % (name, ', '.join(parameter.java_name() for parameter in self.parameters))
             if self.return_field is not None:
-                delegation = 'return ' + self.return_field.java_preconditions_expression(value=delegation)
+                response_type_name = self.java_response_type().java_name()
+                return_field_validate_method_name = self.return_field.java_validate_method_name()
+                delegation = "return %(service_qname)s.Messages.%(response_type_name)s.DefaultConstructionValidator.getInstance().%(return_field_validate_method_name)s(%(delegation)s)" % locals()
                 return_type_name = self.return_field.type.java_qname()
             else:
                 return_type_name = 'void'

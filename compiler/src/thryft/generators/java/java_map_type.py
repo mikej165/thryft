@@ -99,9 +99,6 @@ class JavaMapType(MapType, _JavaContainerType):
     def java_name(self):
         return self.java_qname()
 
-    def java_precondition_name(self):
-        return 'Map'
-
     def __java_qname(self):
         return "com.google.common.collect.ImmutableMap<%s, %s>" % (
                    self.key_type.java_boxed_qname(),

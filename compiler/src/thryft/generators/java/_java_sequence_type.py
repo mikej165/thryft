@@ -94,9 +94,6 @@ class _JavaSequenceType(_JavaContainerType):
     def java_name(self):
         return self.java_qname()
 
-    def java_precondition_name(self):
-        return 'Collection'
-
     def __java_qname(self):
         return "com.google.common.collect.Immutable%s<%s>" % (
                    self._java_interface_simple_name(),

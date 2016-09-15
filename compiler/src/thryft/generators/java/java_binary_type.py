@@ -59,9 +59,6 @@ class JavaBinaryType(BinaryType, _JavaBaseType):
     def java_is_reference(self):
         return True
 
-    def java_precondition_name(self):
-        return "ByteArray"
-
     def java_name(self):
         return 'byte[]'
 
