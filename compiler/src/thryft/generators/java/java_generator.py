@@ -35,6 +35,7 @@ from thryft.compiler.ast import Ast
 from thryft.compiler.parser import Parser
 from thryft.compiler.valueless_annotation_parser import ValuelessAnnotationParser
 from thryft.generator.generator import Generator
+from thryft.generators.java.java_final_annotation_parser import JavaFinalAnnotationParser
 
 
 class JavaGenerator(Generator):
@@ -78,6 +79,7 @@ class JavaGenerator(Generator):
         return self.__mutable_compound_types
 
 
+Parser.register_annotation_parser(JavaFinalAnnotationParser())
 Parser.register_annotation_parser(AnnotationParser('java_implements', (Ast.EnumTypeNode, Ast.ExceptionTypeNode, Ast.ServiceNode, Ast.StructTypeNode)))
 Parser.register_annotation_parser(ValuelessAnnotationParser('java_escape_to_string', Ast.FieldNode))
 Parser.register_annotation_parser(ValuelessAnnotationParser('java_exclude_from_to_string', Ast.FieldNode))

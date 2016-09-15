@@ -271,6 +271,7 @@ public Builder unset(final FieldMetadata fieldMetadata) {
             return methods
 
         def java_repr(self):
+            final = 'final ' if self.__java_compound_type._java_is_final() else ''
             name = self.java_name()
             methods = self._java_methods()
             sections = []
@@ -280,7 +281,7 @@ public Builder unset(final FieldMetadata fieldMetadata) {
             sections.append("\n".join(indent(' ' * 4, self._java_member_declarations())))
             sections = lpad("\n", "\n\n".join(section for section in sections if len(section) > 0))
             return """\
-public static class Builder {%(sections)s
+public %(final)sstatic class Builder {%(sections)s
 }""" % locals()
 
     class _JavaFactory(object):
@@ -425,7 +426,10 @@ public final static class Factory implements org.thryft.CompoundType.Factory<%(c
         **kwds
     ):
         if java_class_modifiers is None:
-            java_class_modifiers = ('public',)
+            java_class_modifiers = ['public']
+            if self._java_is_final():
+                java_class_modifiers.append('final')
+            java_class_modifiers = tuple(java_class_modifiers)
         elif isinstance(java_class_modifiers, str):
             java_class_modifiers = tuple(java_class_modifiers.split())
         else:
@@ -528,6 +532,12 @@ protected %(name)s(%(parameters)s) {%(initializers)s
             if annotation.name == 'java_implements':
                 implements.append(annotation.value)
         return implements
+
+    def _java_is_final(self):
+        for annotation in self.annotations:
+            if annotation.name == 'java_final':
+                return annotation.value
+        return True
 
     def _java_member_declarations(self):
         mutable = self._parent_generator().mutable_compound_types
@@ -951,6 +961,19 @@ public String toString() {
     return com.google.common.base.MoreObjects.toStringHelper(this).omitNullValues()%(add_statements)s.toString();
 }""" % locals()}
 
+    def _java_method_validate(self):
+        if self._java_is_final():
+            return {}
+        precondition_statements = []
+        for field in self.fields:
+            preconditions_expression = field.java_preconditions_expression()
+            if preconditions_expression != field.java_name():
+                precondition_statements.append(preconditions_expression + ';')
+        precondition_statements = lpad("\n", "\n".join(indent(' ' * 4, precondition_statements)))
+        return {'_validate': """\
+protected void _validate() {%(precondition_statements)s
+}""" % locals()}
+
     def _java_method_write_as_list(self):
         field_count = len(self.fields)
         field_value_write_protocols = \
@@ -1028,6 +1051,7 @@ public void writeFields(final org.thryft.protocol.OutputProtocol oprot) throws o
         methods.update(self._java_method_replacers())
         methods.update(self._java_method_setters())
         methods.update(self._java_method_to_string())
+        methods.update(self._java_method_validate())
         methods.update(self._java_method_write_as_list())
         methods.update(self._java_method_write_as_message())
         methods.update(self._java_method_write_as_struct())
