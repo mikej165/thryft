@@ -1,7 +1,7 @@
 package org.thryft.protocol.test;
 
-public class NestedProtocolTestStruct implements org.thryft.Struct {
-    public static class Builder {
+public final class NestedProtocolTestStruct implements org.thryft.Struct {
+    public final static class Builder {
         public Builder() {
             requiredI32Field = 0;
             requiredStringField = null;
@@ -999,6 +999,442 @@ public class NestedProtocolTestStruct implements org.thryft.Struct {
         private final String thriftName;
         private final String thriftProtocolKey;
         private final org.thryft.protocol.Type thriftProtocolType;
+    }
+
+    public interface Validator<ExceptionT extends Exception> {
+        public int validateRequiredI32Field(final int requiredI32Field) throws ExceptionT;
+
+        public String validateRequiredStringField(final String requiredStringField) throws ExceptionT;
+
+        public com.google.common.base.Optional<byte[]> validateBinaryField(final com.google.common.base.Optional<byte[]> binaryField) throws ExceptionT;
+
+        public com.google.common.base.Optional<Boolean> validateBoolField(final com.google.common.base.Optional<Boolean> boolField) throws ExceptionT;
+
+        public com.google.common.base.Optional<Byte> validateByteField(final com.google.common.base.Optional<Byte> byteField) throws ExceptionT;
+
+        public com.google.common.base.Optional<java.util.Date> validateDateTimeField(final com.google.common.base.Optional<java.util.Date> dateTimeField) throws ExceptionT;
+
+        public com.google.common.base.Optional<java.math.BigDecimal> validateDecimalField(final com.google.common.base.Optional<java.math.BigDecimal> decimalField) throws ExceptionT;
+
+        public com.google.common.base.Optional<org.thryft.native_.EmailAddress> validateEmailAddressField(final com.google.common.base.Optional<org.thryft.native_.EmailAddress> emailAddressField) throws ExceptionT;
+
+        public com.google.common.base.Optional<org.thryft.protocol.test.ProtocolTestEnum> validateEnumField(final com.google.common.base.Optional<org.thryft.protocol.test.ProtocolTestEnum> enumField) throws ExceptionT;
+
+        public com.google.common.base.Optional<Short> validateI16Field(final com.google.common.base.Optional<Short> i16Field) throws ExceptionT;
+
+        public com.google.common.base.Optional<Integer> validateI32Field(final com.google.common.base.Optional<Integer> i32Field) throws ExceptionT;
+
+        public com.google.common.base.Optional<Long> validateI64Field(final com.google.common.base.Optional<Long> i64Field) throws ExceptionT;
+
+        public com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> validateStringListField(final com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> stringListField) throws ExceptionT;
+
+        public com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> validateStringStringMapField(final com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> stringStringMapField) throws ExceptionT;
+
+        public com.google.common.base.Optional<com.google.common.collect.ImmutableSet<String>> validateStringSetField(final com.google.common.base.Optional<com.google.common.collect.ImmutableSet<String>> stringSetField) throws ExceptionT;
+
+        public com.google.common.base.Optional<String> validateStringField(final com.google.common.base.Optional<String> stringField) throws ExceptionT;
+
+        public com.google.common.base.Optional<org.thryft.native_.Url> validateUrlField(final com.google.common.base.Optional<org.thryft.native_.Url> urlField) throws ExceptionT;
+    }
+
+    public interface ConstructionValidator extends Validator<RuntimeException> {
+    }
+
+    public static class DefaultConstructionValidator implements ConstructionValidator {
+        public static DefaultConstructionValidator getInstance() {
+            return instance;
+        }
+
+        public DefaultConstructionValidator() {
+        }
+
+        public int validateRequiredI32Field(final int requiredI32Field) throws RuntimeException {
+            return requiredI32Field;
+        }
+
+        public String validateRequiredStringField(final String requiredStringField) throws RuntimeException {
+            if (requiredStringField == null) {
+                throw new NullPointerException("org.thryft.protocol.test.NestedProtocolTestStruct: requiredStringField is null");
+            }
+            if (requiredStringField.isEmpty()) {
+                throw new IllegalArgumentException("org.thryft.protocol.test.NestedProtocolTestStruct: requiredStringField is less than min length 1");
+            }
+            return requiredStringField;
+        }
+
+        public com.google.common.base.Optional<byte[]> validateBinaryField(final com.google.common.base.Optional<byte[]> binaryField) throws RuntimeException {
+            if (binaryField == null) {
+                throw new NullPointerException("org.thryft.protocol.test.NestedProtocolTestStruct: binaryField is null");
+            }
+            return binaryField;
+        }
+
+        public com.google.common.base.Optional<Boolean> validateBoolField(final com.google.common.base.Optional<Boolean> boolField) throws RuntimeException {
+            return boolField;
+        }
+
+        public com.google.common.base.Optional<Byte> validateByteField(final com.google.common.base.Optional<Byte> byteField) throws RuntimeException {
+            return byteField;
+        }
+
+        public com.google.common.base.Optional<java.util.Date> validateDateTimeField(final com.google.common.base.Optional<java.util.Date> dateTimeField) throws RuntimeException {
+            if (dateTimeField == null) {
+                throw new NullPointerException("org.thryft.protocol.test.NestedProtocolTestStruct: dateTimeField is null");
+            }
+            return dateTimeField;
+        }
+
+        public com.google.common.base.Optional<java.math.BigDecimal> validateDecimalField(final com.google.common.base.Optional<java.math.BigDecimal> decimalField) throws RuntimeException {
+            if (decimalField == null) {
+                throw new NullPointerException("org.thryft.protocol.test.NestedProtocolTestStruct: decimalField is null");
+            }
+            return decimalField;
+        }
+
+        public com.google.common.base.Optional<org.thryft.native_.EmailAddress> validateEmailAddressField(final com.google.common.base.Optional<org.thryft.native_.EmailAddress> emailAddressField) throws RuntimeException {
+            if (emailAddressField == null) {
+                throw new NullPointerException("org.thryft.protocol.test.NestedProtocolTestStruct: emailAddressField is null");
+            }
+            return emailAddressField;
+        }
+
+        public com.google.common.base.Optional<org.thryft.protocol.test.ProtocolTestEnum> validateEnumField(final com.google.common.base.Optional<org.thryft.protocol.test.ProtocolTestEnum> enumField) throws RuntimeException {
+            if (enumField == null) {
+                throw new NullPointerException("org.thryft.protocol.test.NestedProtocolTestStruct: enumField is null");
+            }
+            return enumField;
+        }
+
+        public com.google.common.base.Optional<Short> validateI16Field(final com.google.common.base.Optional<Short> i16Field) throws RuntimeException {
+            return i16Field;
+        }
+
+        public com.google.common.base.Optional<Integer> validateI32Field(final com.google.common.base.Optional<Integer> i32Field) throws RuntimeException {
+            return i32Field;
+        }
+
+        public com.google.common.base.Optional<Long> validateI64Field(final com.google.common.base.Optional<Long> i64Field) throws RuntimeException {
+            return i64Field;
+        }
+
+        public com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> validateStringListField(final com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> stringListField) throws RuntimeException {
+            if (stringListField == null) {
+                throw new NullPointerException("org.thryft.protocol.test.NestedProtocolTestStruct: stringListField is null");
+            }
+            return stringListField;
+        }
+
+        public com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> validateStringStringMapField(final com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> stringStringMapField) throws RuntimeException {
+            if (stringStringMapField == null) {
+                throw new NullPointerException("org.thryft.protocol.test.NestedProtocolTestStruct: stringStringMapField is null");
+            }
+            return stringStringMapField;
+        }
+
+        public com.google.common.base.Optional<com.google.common.collect.ImmutableSet<String>> validateStringSetField(final com.google.common.base.Optional<com.google.common.collect.ImmutableSet<String>> stringSetField) throws RuntimeException {
+            if (stringSetField == null) {
+                throw new NullPointerException("org.thryft.protocol.test.NestedProtocolTestStruct: stringSetField is null");
+            }
+            return stringSetField;
+        }
+
+        public com.google.common.base.Optional<String> validateStringField(final com.google.common.base.Optional<String> stringField) throws RuntimeException {
+            if (stringField == null) {
+                throw new NullPointerException("org.thryft.protocol.test.NestedProtocolTestStruct: stringField is null");
+            }
+            if (stringField.get().isEmpty()) {
+                throw new IllegalArgumentException("org.thryft.protocol.test.NestedProtocolTestStruct: stringField is less than min length 1");
+            }
+            return stringField;
+        }
+
+        public com.google.common.base.Optional<org.thryft.native_.Url> validateUrlField(final com.google.common.base.Optional<org.thryft.native_.Url> urlField) throws RuntimeException {
+            if (urlField == null) {
+                throw new NullPointerException("org.thryft.protocol.test.NestedProtocolTestStruct: urlField is null");
+            }
+            return urlField;
+        }
+
+        private final static DefaultConstructionValidator instance = new DefaultConstructionValidator();
+    }
+
+    public static class NopConstructionValidator implements ConstructionValidator {
+        public static NopConstructionValidator getInstance() {
+            return instance;
+        }
+
+        public NopConstructionValidator() {
+        }
+
+        public int validateRequiredI32Field(final int requiredI32Field) {
+            return requiredI32Field;
+        }
+
+        public String validateRequiredStringField(final String requiredStringField) {
+            return requiredStringField;
+        }
+
+        public com.google.common.base.Optional<byte[]> validateBinaryField(final com.google.common.base.Optional<byte[]> binaryField) {
+            return binaryField;
+        }
+
+        public com.google.common.base.Optional<Boolean> validateBoolField(final com.google.common.base.Optional<Boolean> boolField) {
+            return boolField;
+        }
+
+        public com.google.common.base.Optional<Byte> validateByteField(final com.google.common.base.Optional<Byte> byteField) {
+            return byteField;
+        }
+
+        public com.google.common.base.Optional<java.util.Date> validateDateTimeField(final com.google.common.base.Optional<java.util.Date> dateTimeField) {
+            return dateTimeField;
+        }
+
+        public com.google.common.base.Optional<java.math.BigDecimal> validateDecimalField(final com.google.common.base.Optional<java.math.BigDecimal> decimalField) {
+            return decimalField;
+        }
+
+        public com.google.common.base.Optional<org.thryft.native_.EmailAddress> validateEmailAddressField(final com.google.common.base.Optional<org.thryft.native_.EmailAddress> emailAddressField) {
+            return emailAddressField;
+        }
+
+        public com.google.common.base.Optional<org.thryft.protocol.test.ProtocolTestEnum> validateEnumField(final com.google.common.base.Optional<org.thryft.protocol.test.ProtocolTestEnum> enumField) {
+            return enumField;
+        }
+
+        public com.google.common.base.Optional<Short> validateI16Field(final com.google.common.base.Optional<Short> i16Field) {
+            return i16Field;
+        }
+
+        public com.google.common.base.Optional<Integer> validateI32Field(final com.google.common.base.Optional<Integer> i32Field) {
+            return i32Field;
+        }
+
+        public com.google.common.base.Optional<Long> validateI64Field(final com.google.common.base.Optional<Long> i64Field) {
+            return i64Field;
+        }
+
+        public com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> validateStringListField(final com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> stringListField) {
+            return stringListField;
+        }
+
+        public com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> validateStringStringMapField(final com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> stringStringMapField) {
+            return stringStringMapField;
+        }
+
+        public com.google.common.base.Optional<com.google.common.collect.ImmutableSet<String>> validateStringSetField(final com.google.common.base.Optional<com.google.common.collect.ImmutableSet<String>> stringSetField) {
+            return stringSetField;
+        }
+
+        public com.google.common.base.Optional<String> validateStringField(final com.google.common.base.Optional<String> stringField) {
+            return stringField;
+        }
+
+        public com.google.common.base.Optional<org.thryft.native_.Url> validateUrlField(final com.google.common.base.Optional<org.thryft.native_.Url> urlField) {
+            return urlField;
+        }
+
+        private final static NopConstructionValidator instance = new NopConstructionValidator();
+    }
+
+    public interface ReadValidator extends Validator<org.thryft.protocol.InputProtocolException> {
+    }
+
+    public static class DefaultReadValidator implements ReadValidator {
+        public static DefaultReadValidator getInstance() {
+            return instance;
+        }
+
+        public DefaultReadValidator() {
+        }
+
+        public int validateRequiredI32Field(final int requiredI32Field) throws org.thryft.protocol.InputProtocolException {
+            return requiredI32Field;
+        }
+
+        public String validateRequiredStringField(final String requiredStringField) throws org.thryft.protocol.InputProtocolException {
+            if (requiredStringField == null) {
+                throw new org.thryft.protocol.MissingFieldInputProtocolException(FieldMetadata.REQUIRED_STRING_FIELD, "org.thryft.protocol.test.NestedProtocolTestStruct: requiredStringField is null");
+            }
+            if (requiredStringField.isEmpty()) {
+                throw new org.thryft.protocol.InvalidFieldInputProtocolException(FieldMetadata.REQUIRED_STRING_FIELD, "org.thryft.protocol.test.NestedProtocolTestStruct: requiredStringField is less than min length 1");
+            }
+            return requiredStringField;
+        }
+
+        public com.google.common.base.Optional<byte[]> validateBinaryField(final com.google.common.base.Optional<byte[]> binaryField) throws org.thryft.protocol.InputProtocolException {
+            if (binaryField == null) {
+                throw new org.thryft.protocol.MissingFieldInputProtocolException(FieldMetadata.BINARY_FIELD, "org.thryft.protocol.test.NestedProtocolTestStruct: binaryField is null");
+            }
+            return binaryField;
+        }
+
+        public com.google.common.base.Optional<Boolean> validateBoolField(final com.google.common.base.Optional<Boolean> boolField) throws org.thryft.protocol.InputProtocolException {
+            return boolField;
+        }
+
+        public com.google.common.base.Optional<Byte> validateByteField(final com.google.common.base.Optional<Byte> byteField) throws org.thryft.protocol.InputProtocolException {
+            return byteField;
+        }
+
+        public com.google.common.base.Optional<java.util.Date> validateDateTimeField(final com.google.common.base.Optional<java.util.Date> dateTimeField) throws org.thryft.protocol.InputProtocolException {
+            if (dateTimeField == null) {
+                throw new org.thryft.protocol.MissingFieldInputProtocolException(FieldMetadata.DATE_TIME_FIELD, "org.thryft.protocol.test.NestedProtocolTestStruct: dateTimeField is null");
+            }
+            return dateTimeField;
+        }
+
+        public com.google.common.base.Optional<java.math.BigDecimal> validateDecimalField(final com.google.common.base.Optional<java.math.BigDecimal> decimalField) throws org.thryft.protocol.InputProtocolException {
+            if (decimalField == null) {
+                throw new org.thryft.protocol.MissingFieldInputProtocolException(FieldMetadata.DECIMAL_FIELD, "org.thryft.protocol.test.NestedProtocolTestStruct: decimalField is null");
+            }
+            return decimalField;
+        }
+
+        public com.google.common.base.Optional<org.thryft.native_.EmailAddress> validateEmailAddressField(final com.google.common.base.Optional<org.thryft.native_.EmailAddress> emailAddressField) throws org.thryft.protocol.InputProtocolException {
+            if (emailAddressField == null) {
+                throw new org.thryft.protocol.MissingFieldInputProtocolException(FieldMetadata.EMAIL_ADDRESS_FIELD, "org.thryft.protocol.test.NestedProtocolTestStruct: emailAddressField is null");
+            }
+            return emailAddressField;
+        }
+
+        public com.google.common.base.Optional<org.thryft.protocol.test.ProtocolTestEnum> validateEnumField(final com.google.common.base.Optional<org.thryft.protocol.test.ProtocolTestEnum> enumField) throws org.thryft.protocol.InputProtocolException {
+            if (enumField == null) {
+                throw new org.thryft.protocol.MissingFieldInputProtocolException(FieldMetadata.ENUM_FIELD, "org.thryft.protocol.test.NestedProtocolTestStruct: enumField is null");
+            }
+            return enumField;
+        }
+
+        public com.google.common.base.Optional<Short> validateI16Field(final com.google.common.base.Optional<Short> i16Field) throws org.thryft.protocol.InputProtocolException {
+            return i16Field;
+        }
+
+        public com.google.common.base.Optional<Integer> validateI32Field(final com.google.common.base.Optional<Integer> i32Field) throws org.thryft.protocol.InputProtocolException {
+            return i32Field;
+        }
+
+        public com.google.common.base.Optional<Long> validateI64Field(final com.google.common.base.Optional<Long> i64Field) throws org.thryft.protocol.InputProtocolException {
+            return i64Field;
+        }
+
+        public com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> validateStringListField(final com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> stringListField) throws org.thryft.protocol.InputProtocolException {
+            if (stringListField == null) {
+                throw new org.thryft.protocol.MissingFieldInputProtocolException(FieldMetadata.STRING_LIST_FIELD, "org.thryft.protocol.test.NestedProtocolTestStruct: stringListField is null");
+            }
+            return stringListField;
+        }
+
+        public com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> validateStringStringMapField(final com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> stringStringMapField) throws org.thryft.protocol.InputProtocolException {
+            if (stringStringMapField == null) {
+                throw new org.thryft.protocol.MissingFieldInputProtocolException(FieldMetadata.STRING_STRING_MAP_FIELD, "org.thryft.protocol.test.NestedProtocolTestStruct: stringStringMapField is null");
+            }
+            return stringStringMapField;
+        }
+
+        public com.google.common.base.Optional<com.google.common.collect.ImmutableSet<String>> validateStringSetField(final com.google.common.base.Optional<com.google.common.collect.ImmutableSet<String>> stringSetField) throws org.thryft.protocol.InputProtocolException {
+            if (stringSetField == null) {
+                throw new org.thryft.protocol.MissingFieldInputProtocolException(FieldMetadata.STRING_SET_FIELD, "org.thryft.protocol.test.NestedProtocolTestStruct: stringSetField is null");
+            }
+            return stringSetField;
+        }
+
+        public com.google.common.base.Optional<String> validateStringField(final com.google.common.base.Optional<String> stringField) throws org.thryft.protocol.InputProtocolException {
+            if (stringField == null) {
+                throw new org.thryft.protocol.MissingFieldInputProtocolException(FieldMetadata.STRING_FIELD, "org.thryft.protocol.test.NestedProtocolTestStruct: stringField is null");
+            }
+            if (stringField.get().isEmpty()) {
+                throw new org.thryft.protocol.InvalidFieldInputProtocolException(FieldMetadata.STRING_FIELD, "org.thryft.protocol.test.NestedProtocolTestStruct: stringField is less than min length 1");
+            }
+            return stringField;
+        }
+
+        public com.google.common.base.Optional<org.thryft.native_.Url> validateUrlField(final com.google.common.base.Optional<org.thryft.native_.Url> urlField) throws org.thryft.protocol.InputProtocolException {
+            if (urlField == null) {
+                throw new org.thryft.protocol.MissingFieldInputProtocolException(FieldMetadata.URL_FIELD, "org.thryft.protocol.test.NestedProtocolTestStruct: urlField is null");
+            }
+            return urlField;
+        }
+
+        private final static DefaultReadValidator instance = new DefaultReadValidator();
+    }
+
+    public static class NopReadValidator implements ReadValidator {
+        public static NopReadValidator getInstance() {
+            return instance;
+        }
+
+        public NopReadValidator() {
+        }
+
+        public int validateRequiredI32Field(final int requiredI32Field) {
+            return requiredI32Field;
+        }
+
+        public String validateRequiredStringField(final String requiredStringField) {
+            return requiredStringField;
+        }
+
+        public com.google.common.base.Optional<byte[]> validateBinaryField(final com.google.common.base.Optional<byte[]> binaryField) {
+            return binaryField;
+        }
+
+        public com.google.common.base.Optional<Boolean> validateBoolField(final com.google.common.base.Optional<Boolean> boolField) {
+            return boolField;
+        }
+
+        public com.google.common.base.Optional<Byte> validateByteField(final com.google.common.base.Optional<Byte> byteField) {
+            return byteField;
+        }
+
+        public com.google.common.base.Optional<java.util.Date> validateDateTimeField(final com.google.common.base.Optional<java.util.Date> dateTimeField) {
+            return dateTimeField;
+        }
+
+        public com.google.common.base.Optional<java.math.BigDecimal> validateDecimalField(final com.google.common.base.Optional<java.math.BigDecimal> decimalField) {
+            return decimalField;
+        }
+
+        public com.google.common.base.Optional<org.thryft.native_.EmailAddress> validateEmailAddressField(final com.google.common.base.Optional<org.thryft.native_.EmailAddress> emailAddressField) {
+            return emailAddressField;
+        }
+
+        public com.google.common.base.Optional<org.thryft.protocol.test.ProtocolTestEnum> validateEnumField(final com.google.common.base.Optional<org.thryft.protocol.test.ProtocolTestEnum> enumField) {
+            return enumField;
+        }
+
+        public com.google.common.base.Optional<Short> validateI16Field(final com.google.common.base.Optional<Short> i16Field) {
+            return i16Field;
+        }
+
+        public com.google.common.base.Optional<Integer> validateI32Field(final com.google.common.base.Optional<Integer> i32Field) {
+            return i32Field;
+        }
+
+        public com.google.common.base.Optional<Long> validateI64Field(final com.google.common.base.Optional<Long> i64Field) {
+            return i64Field;
+        }
+
+        public com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> validateStringListField(final com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> stringListField) {
+            return stringListField;
+        }
+
+        public com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> validateStringStringMapField(final com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> stringStringMapField) {
+            return stringStringMapField;
+        }
+
+        public com.google.common.base.Optional<com.google.common.collect.ImmutableSet<String>> validateStringSetField(final com.google.common.base.Optional<com.google.common.collect.ImmutableSet<String>> stringSetField) {
+            return stringSetField;
+        }
+
+        public com.google.common.base.Optional<String> validateStringField(final com.google.common.base.Optional<String> stringField) {
+            return stringField;
+        }
+
+        public com.google.common.base.Optional<org.thryft.native_.Url> validateUrlField(final com.google.common.base.Optional<org.thryft.native_.Url> urlField) {
+            return urlField;
+        }
+
+        private final static NopReadValidator instance = new NopReadValidator();
     }
 
     /**

@@ -9,8 +9,8 @@ import com.google.common.base.MoreObjects;
 
 @SuppressWarnings("serial")
 public final class MissingFieldInputProtocolException extends InputProtocolException {
-    public MissingFieldInputProtocolException(final CompoundType.FieldMetadata field) {
-        super("missing " + field.getJavaName());
+    public MissingFieldInputProtocolException(final CompoundType.FieldMetadata field, final String message) {
+        super(message);
         this.field = checkNotNull(field);
     }
 

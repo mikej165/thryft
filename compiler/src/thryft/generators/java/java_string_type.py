@@ -44,6 +44,9 @@ class JavaStringType(StringType, _JavaBaseType):
     def java_from_string(self, value):
         return value
 
+    def java_is_empty(self, value):
+        return value + '.isEmpty()'
+
     def java_is_reference(self):
         return True
 
@@ -52,6 +55,9 @@ class JavaStringType(StringType, _JavaBaseType):
 
     def java_name(self):
         return 'String'
+
+    def java_size(self, value):
+        return value + '.length()'
 
     def java_to_string(self, value):
         return value

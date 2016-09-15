@@ -412,6 +412,102 @@ if (other.%(getter_name)s().isPresent()) {
     def java_unsetter_name(self):
         return 'unset' + upper_camelize(self.name)
 
+    def java_validate_method_declaration(self, exception_type_name):
+        name = self.java_name()
+        throws = " throws %(exception_type_name)s" % locals() if exception_type_name is not None else ''
+        type_name = self._java_type_name()
+        validate_method_name = self.java_validate_method_name()
+        return """\
+public %(type_name)s %(validate_method_name)s(final %(type_name)s %(name)s)%(throws)s;""" % locals()
+
+    def java_validate_method_implementation(self, compound_type_qname, construction=False, nop=False, read=False):
+        assert construction ^ nop ^ read
+        field_metadata_enumerator = 'FieldMetadata.' + self.java_field_metadata_enumerator_name()
+        field_name = self.java_name()
+        checks = []
+        if not nop:
+            if self.type.java_is_reference():
+                # Null check
+                message = "\"%(compound_type_qname)s: %(field_name)s is null\"" % locals()
+                if construction:
+                    npe = """NullPointerException(%(message)s)""" % locals()
+                else:
+                    npe = """org.thryft.protocol.MissingFieldInputProtocolException(%(field_metadata_enumerator)s, %(message)s)""" % locals()
+                checks.append("""\
+if (%(field_name)s == null) {
+    throw new %(npe)s;
+}""" % locals())
+            # Validation checks
+            validation = {}
+            for annotations in (self.annotations, self.type.annotations):
+                for annotation in annotations:
+                    if annotation.name == 'validation':
+                        validation = annotation.value.copy()
+                        break
+                if len(validation) > 0:
+                    break
+            if len(validation) > 0:
+                field_value = field_name if self.required else (field_name + '.get()')
+                for validation_name, validation_value in validation.iteritems():
+                    exception_prefix = "IllegalArgumentException(" if construction else ("org.thryft.protocol.InvalidFieldInputProtocolException(" + field_metadata_enumerator + ', ')
+                    message_prefix = "%(compound_type_qname)s: %(field_name)s is " % locals()
+                    if validation_name == 'acceptance':
+                        check = ('!' + field_value) if validation_value else field_value
+                        message = message_prefix + 'not ' + str(validation_value).lower()
+                    elif validation_name == 'blank':
+                        checks.append("""\
+{
+    final int __strLen = %(field_value)s.length();
+    boolean __blank = true;
+    for (int i = 0; i < __strLen; i++) {
+        if (!Character.isWhitespace(%(field_value)s.charAt(i))) {
+            __blank = false;
+            break;
+        }
+    }
+    if (__blank) {
+        throw new %(exception_prefix)s\"%(message_prefix)s is blank\");
+    }
+}""" % locals())
+                    elif validation_name == 'max':
+                        check = "%s > 0" % self.type.java_compare_to(field_value, self.type.java_literal(validation_value))
+                        message = message_prefix + "greater than max " + str(validation_value)
+                    elif validation_name == 'maxLength':
+                        check = "%s > %s" % (self.type.java_size(field_value), validation_value)
+                        message = message_prefix + "greater than max length " + str(validation_value)
+                    elif validation_name == 'min':
+                        check = "%s < 0" % self.type.java_compare_to(field_value, self.type.java_literal(validation_value))
+                        message = message_prefix + "less than min " + str(validation_value)
+                    elif validation_name == 'minLength':
+                        if validation_value == 1:
+                            check = self.type.java_is_empty(field_value)
+                        else:
+                            check = "%s < %s" % (self.type.java_size(field_value), validation_value)
+                        message = message_prefix + "less than min length " + str(validation_value)
+                    else:
+                        self._logger.warn('unsupported validation %s', validation_name)
+                        continue
+                    checks.append("""\
+if (%(check)s) {
+    throw new %(exception_prefix)s\"%(message)s\");
+}""" % locals())
+
+        checks = lpad("\n", "\n".join(indent(' ' * 4, checks)))
+        if construction:
+            exception_type_name = 'RuntimeException'
+        elif nop:
+            exception_type_name = None
+        elif read:
+            exception_type_name = 'org.thryft.protocol.InputProtocolException'
+        declaration = self.java_validate_method_declaration(exception_type_name=exception_type_name).rstrip(';')
+        return """\
+%(declaration)s {%(checks)s
+    return %(field_name)s;
+}""" % locals()
+
+    def java_validate_method_name(self):
+        return 'validate' + upper_camelize(self.name)
+
     def java_value(self):
         assert self.value is not None
         return self.type.java_literal(self.value)

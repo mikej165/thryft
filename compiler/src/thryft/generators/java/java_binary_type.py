@@ -53,6 +53,9 @@ class JavaBinaryType(BinaryType, _JavaBaseType):
     def java_hash_code(self, value, **kwds):
         return "java.util.Arrays.hashCode(%(value)s)" % locals()
 
+    def java_is_empty(self, value):
+        return value + '.length == 0'
+
     def java_is_reference(self):
         return True
 
@@ -61,6 +64,9 @@ class JavaBinaryType(BinaryType, _JavaBaseType):
 
     def java_name(self):
         return 'byte[]'
+
+    def java_size(self, value):
+        return value + '.length'
 
     def java_to_string(self, value):
         return "java.util.Arrays.toString(%(value)s)" % locals()

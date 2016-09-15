@@ -418,6 +418,80 @@ public final static class Factory implements org.thryft.CompoundType.Factory<%(c
     private final org.thryft.protocol.Type thriftProtocolType;
 }""" % locals()
 
+    class _JavaValidator(object):
+        def __init__(self, java_compound_type):
+            object.__init__(self)
+            self.__java_compound_type = java_compound_type
+
+        def java_repr(self):
+            compound_type_qname = self.__java_compound_type.java_qname()
+            default_construction_validate_methods = []
+            default_read_validate_methods =[]
+            nop_validate_methods = []
+            validate_method_declarations = []
+            for field in self.__java_compound_type.fields:
+                default_construction_validate_methods.append(field.java_validate_method_implementation(compound_type_qname=compound_type_qname, construction=True))
+                default_read_validate_methods.append(field.java_validate_method_implementation(compound_type_qname=compound_type_qname, read=True))
+                nop_validate_methods.append(field.java_validate_method_implementation(compound_type_qname=compound_type_qname, nop=True))
+                validate_method_declarations.append(field.java_validate_method_declaration('ExceptionT'))
+            default_construction_validate_methods = lpad("\n\n", "\n\n".join(indent(' ' * 4, default_construction_validate_methods)))
+            default_read_validate_methods = lpad("\n\n", "\n\n".join(indent(' ' * 4, default_read_validate_methods)))
+            nop_validate_methods = lpad("\n\n", "\n\n".join(indent(' ' * 4, nop_validate_methods)))
+            validate_method_declarations = lpad("\n", "\n\n".join(indent(' ' * 4, validate_method_declarations)))
+            return """\
+public interface Validator<ExceptionT extends Exception> {%(validate_method_declarations)s
+}
+
+public interface ConstructionValidator extends Validator<RuntimeException> {
+}
+
+public static class DefaultConstructionValidator implements ConstructionValidator {
+    public static DefaultConstructionValidator getInstance() {
+        return instance;
+    }
+
+    public DefaultConstructionValidator() {
+    }%(default_construction_validate_methods)s
+
+    private final static DefaultConstructionValidator instance = new DefaultConstructionValidator();
+}
+
+public static class NopConstructionValidator implements ConstructionValidator {
+    public static NopConstructionValidator getInstance() {
+        return instance;
+    }
+
+    public NopConstructionValidator() {
+    }%(nop_validate_methods)s
+
+    private final static NopConstructionValidator instance = new NopConstructionValidator();
+}
+
+public interface ReadValidator extends Validator<org.thryft.protocol.InputProtocolException> {
+}
+
+public static class DefaultReadValidator implements ReadValidator {
+    public static DefaultReadValidator getInstance() {
+        return instance;
+    }
+
+    public DefaultReadValidator() {
+    }%(default_read_validate_methods)s
+
+    private final static DefaultReadValidator instance = new DefaultReadValidator();
+}
+
+public static class NopReadValidator implements ReadValidator {
+    public static NopReadValidator getInstance() {
+        return instance;
+    }
+
+    public NopReadValidator() {
+    }%(nop_validate_methods)s
+
+    private final static NopReadValidator instance = new NopReadValidator();
+}""" % locals()
+
     def __init__(
         self,
         java_class_modifiers=None,
@@ -961,19 +1035,6 @@ public String toString() {
     return com.google.common.base.MoreObjects.toStringHelper(this).omitNullValues()%(add_statements)s.toString();
 }""" % locals()}
 
-    def _java_method_validate(self):
-        if self._java_is_final():
-            return {}
-        precondition_statements = []
-        for field in self.fields:
-            preconditions_expression = field.java_preconditions_expression()
-            if preconditions_expression != field.java_name():
-                precondition_statements.append(preconditions_expression + ';')
-        precondition_statements = lpad("\n", "\n".join(indent(' ' * 4, precondition_statements)))
-        return {'_validate': """\
-protected void _validate() {%(precondition_statements)s
-}""" % locals()}
-
     def _java_method_write_as_list(self):
         field_count = len(self.fields)
         field_value_write_protocols = \
@@ -1051,7 +1112,6 @@ public void writeFields(final org.thryft.protocol.OutputProtocol oprot) throws o
         methods.update(self._java_method_replacers())
         methods.update(self._java_method_setters())
         methods.update(self._java_method_to_string())
-        methods.update(self._java_method_validate())
         methods.update(self._java_method_write_as_list())
         methods.update(self._java_method_write_as_message())
         methods.update(self._java_method_write_as_struct())
@@ -1088,6 +1148,7 @@ public void writeFields(final org.thryft.protocol.OutputProtocol oprot) throws o
         field_metadata_enum = self._java_field_metadata_enum()
         if field_metadata_enum is not None:
             sections.append(indent(' ' * 4, field_metadata_enum))
+        sections.append(indent(' ' * 4, self._JavaValidator(self).java_repr()))
         sections.append("\n\n".join(indent(' ' * 4,
             self._java_constructors() + \
             [methods[key] for key in sorted(methods.iterkeys())])))
