@@ -479,127 +479,32 @@ public %(name)s() {%(initializers)s
 public %(name)s(final %(name)s other) {%(this_call)s
 }""" % locals()
 
-    def _java_constructor_required(self):
+    def _java_constructor_protected(self):
         if len(self.fields) == 0:
-            return None  # Will be covered by default constructor
-        else:
-            optional_field_count = 0
-            required_field_count = 0
-            for field in self.fields:
-                if field.required and field.value is None:
-                    required_field_count += 1
-                else:
-                    optional_field_count += 1
-            if optional_field_count == len(self.fields):
-                return None  # Will be covered by total constructor
-            elif required_field_count == len(self.fields):
-                return None  # Will be covered by total constructor
-
-        initializers = []
+            return None # Will be covered by default constructor
         name = self.java_name()
+        initializers = []
         parameters = []
         for field in self.fields:
-            if field.required and field.value is None:
-                initializers.append(field.java_initializer())
-                parameters.append(field.java_parameter(final=True))
-            else:
-                initializers.append('this.' + field.java_default_initializer())
-        initializers = \
-            lpad("\n", "\n".join(indent(' ' * 4, initializers)))
+            field_name = field.java_name()
+            initializers.append("this.%(field_name)s = %(field_name)s;" % locals())
+            parameters.append(field.java_parameter(final=True))
+        initializers = lpad("\n", "\n".join(indent(' ' * 4, initializers)))
         parameters = ", ".join(parameters)
         return """\
-/**
- * Required constructor
- */
-public %(name)s(%(parameters)s) {%(initializers)s
+protected %(name)s(%(parameters)s) {%(initializers)s
 }""" % locals()
-
-    def _java_constructor_total_boxed(self):
-        if len(self.fields) == 0:
-            return None  # Will be covered by default constructor
-
-        for field in self.fields:
-            if field.required and \
-               (field.type.java_boxed_qname() != \
-                field.type.java_qname()):
-                initializers = \
-                    "\n".join(indent(' ' * 4,
-                        (field.java_initializer(boxed=True)
-                         for field in self.fields)
-                    ))
-                name = self.java_name()
-                parameters = ', '.join(field.java_parameter(boxed=True, final=True)
-                                        for field in self.fields)
-                return """\
-/**
- * Total boxed constructor
- */
-public %(name)s(%(parameters)s) {
-%(initializers)s
-}""" % locals()
-            # else will be covered by total_optional constructor
 
     def _java_constructors(self):
         constructors = []
         for constructor in (
             self._java_constructor_default(),
             self._java_constructor_copy(),
-            self._java_constructor_required(),
-            self._java_constructor_total_boxed(),
-            self._java_constructor_total_nullable(),
-            self._java_constructor_total_optional(),
+            self._java_constructor_protected(),
         ):
             if constructor is not None:
                 constructors.append(constructor)
         return constructors
-
-    def _java_constructor_total_nullable(self):
-        if len(self.fields) == 0:
-            return None  # Will be covered by default constructor
-        has_optional_field = False
-        for field in self.fields:
-            if not field.required:
-                has_optional_field = True
-                break
-        if not has_optional_field:
-            return None  # Will be covered by total_optional constructor
-
-        initializers = \
-            "\n".join(indent(' ' * 4,
-                (field.java_initializer(nullable=True)
-                 for field in self.fields)
-            ))
-        name = self.java_name()
-        parameters = \
-            ', '.join(field.java_parameter(final=True, nullable=True)
-                      for field in self.fields)
-        return """\
-/**
- * Total Nullable constructor
- */
-public %(name)s(%(parameters)s) {
-%(initializers)s
-}""" % locals()
-
-    def _java_constructor_total_optional(self):
-        if len(self.fields) == 0:
-            return None  # Will be covered by default constructor
-
-        initializers = \
-            "\n".join(indent(' ' * 4,
-                (field.java_initializer(nullable=False)
-                 for field in self.fields)
-            ))
-        name = self.java_name()
-        parameters = ', '.join(field.java_parameter(final=True, nullable=False)
-                                for field in self.fields)
-        return """\
-/**
- * Optional constructor
- */
-public %(name)s(%(parameters)s) {
-%(initializers)s
-}""" % locals()
 
     def java_default_value(self):
         return 'null'
@@ -664,6 +569,124 @@ public static Builder builder(final com.google.common.base.Optional<%(name)s> ot
 #     }%(field_compare_tos)s
 #     return 0;
 # }""" % locals()}
+
+    def _java_method_create(self):
+        overloads = []
+        for overload in (
+            self._java_method_create_default(),
+            self._java_method_create_required(),
+            self._java_method_create_total_boxed(),
+            self._java_method_create_total_nullable(),
+            self._java_method_create_total_optional(),
+        ):
+            if overload is not None:
+                overloads.append(overload)
+        return {'create': "\n\n".join(overloads)}
+
+    def _java_method_create_default(self):
+        name = self.java_name()
+        if self._java_constructor_default() is not None:
+            return """\
+public static %(name)s create() {
+    return new %(name)s();
+}""" % locals()
+
+    def _java_method_create_required(self):
+        if len(self.fields) == 0:
+            return None  # Will be covered by default constructor
+        else:
+            optional_field_count = 0
+            required_field_count = 0
+            for field in self.fields:
+                if field.required and field.value is None:
+                    required_field_count += 1
+                else:
+                    optional_field_count += 1
+            if optional_field_count == len(self.fields):
+                return None  # Will be covered by total constructor
+            elif required_field_count == len(self.fields):
+                return None  # Will be covered by total constructor
+
+        name = self.java_name()
+        parameters = []
+        parameter_delegation = []
+        for field in self.fields:
+            if field.required and field.value is None:
+                parameters.append(field.java_parameter(final=True))
+                parameter_delegation.append(field.java_preconditions_expression())
+            else:
+                parameter_delegation.append(field.java_default_value())
+        parameters = ", ".join(parameters)
+        parameter_delegation = ', '.join(parameter_delegation)
+        return """\
+/**
+ * Required factory method
+ */
+public static %(name)s create(%(parameters)s) {
+    return new %(name)s(%(parameter_delegation)s);
+}""" % locals()
+
+    def _java_method_create_total_boxed(self):
+        if len(self.fields) == 0:
+            return None  # Will be covered by default constructor
+
+        for field in self.fields:
+            if field.required and \
+               (field.type.java_boxed_qname() != \
+                field.type.java_qname()):
+
+                name = self.java_name()
+                parameters = ', '.join(field.java_parameter(boxed=True)
+                                        for field in self.fields)
+                parameter_delegation = ', '.join(field.java_preconditions_expression(boxed=True) for field in self.fields)
+                return """\
+/**
+ * Total boxed factory method
+ */
+public static %(name)s create(%(parameters)s) {
+    return new %(name)s(%(parameter_delegation)s);
+}""" % locals()
+            # else will be covered by total_optional constructor
+
+    def _java_method_create_total_nullable(self):
+        if len(self.fields) == 0:
+            return None  # Will be covered by default constructor
+        has_optional_field = False
+        for field in self.fields:
+            if not field.required:
+                has_optional_field = True
+                break
+        if not has_optional_field:
+            return None  # Will be covered by total_optional constructor
+
+        name = self.java_name()
+        parameters = \
+            ', '.join(field.java_parameter(final=True, nullable=True)
+                      for field in self.fields)
+        parameter_delegation = ', '.join(field.java_preconditions_expression(nullable=True) for field in self.fields)
+        return """\
+/**
+ * Total Nullable factory method
+ */
+public static %(name)s create(%(parameters)s) {
+    return new %(name)s(%(parameter_delegation)s);
+}""" % locals()
+
+    def _java_method_create_total_optional(self):
+        if len(self.fields) == 0:
+            return None  # Will be covered by default constructor
+
+        name = self.java_name()
+        parameters = ', '.join(field.java_parameter(final=True, nullable=False)
+                                for field in self.fields)
+        parameter_delegation = ', '.join(field.java_preconditions_expression(nullable=False) for field in self.fields)
+        return """\
+/**
+ * Optional factory method
+ */
+public static %(name)s create(%(parameters)s) {
+    return new %(name)s(%(parameter_delegation)s);
+}""" % locals()
 
     def _java_method_equals(self, name=None, nullable=False):
         if name is None:
@@ -994,6 +1017,7 @@ public void writeFields(final org.thryft.protocol.OutputProtocol oprot) throws o
         methods = {}
         methods.update(self._java_method_builder())
 #         methods.update(self._java_method_compare_to())
+        methods.update(self._java_method_create())
         methods.update(self._java_method_equals())
         methods.update(self._java_method_get())
         methods.update(self._java_method_getters())

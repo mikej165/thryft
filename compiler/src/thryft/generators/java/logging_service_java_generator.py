@@ -88,7 +88,7 @@ class LoggingServiceJavaGenerator(java_generator.JavaGenerator):
             if len(self.parameters) > 0:
                 log_parameters = indent(' ' * 4, """
 __logMessageStringBuilder.append("{}");
-__logMessageArgs.add(new Messages.%(request_type_name)s(%(parameter_names)s));
+__logMessageArgs.add(Messages.%(request_type_name)s.create(%(parameter_names)s));
 """ % locals())
             else:
                 log_parameters = ''

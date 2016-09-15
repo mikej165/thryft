@@ -40,7 +40,7 @@ from thryft.compiler.scanner import Scanner
 from thryft.generator._type import _Type
 from thryft.generator.document import Document
 from thryft.generator.typedef import Typedef
-from yutil import lower_camelize, class_qname
+from yutil import lower_camelize, class_qname, upper_camelize
 
 
 class Compiler(object):
@@ -65,15 +65,20 @@ class Compiler(object):
             kwds['parent'] = parent
             construct_class = getattr(self.__generator, class_name)
             if annotation_nodes is not None and len(annotation_nodes) > 0:
-                annotation_class = getattr(construct_class, 'Annotation')
-                kwds['annotations'] = \
-                    tuple(
+                annotations = []
+                for annotation_node in annotation_nodes:
+                    try:
+                        annotation_class_name = upper_camelize(annotation_node.name) + 'Annotation'
+                        annotation_class = getattr(construct_class, annotation_class_name)
+                    except AttributeError:
+                        annotation_class = getattr(construct_class, 'Annotation')
+                    annotations.append(
                         annotation_class(
                             name=annotation_node.name,
                             value=annotation_node.value
                         )
-                        for annotation_node in annotation_nodes
                     )
+                kwds['annotations'] = tuple(annotations)
             return construct_class(**kwds)
 
         def __get_type(self, type_thrift_qname, resolve=True):

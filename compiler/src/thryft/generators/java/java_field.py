@@ -82,7 +82,7 @@ if (this.%(name)s.isPresent()) {
             else:
                 return "com.google.common.base.Optional.of(%s)" % self.java_value()
         elif not self.required:
-            return 'com.google.common.base.Optional.absent()'
+            return self.java_absent_value()
         else:
             return self.type.java_default_value()
 
@@ -154,8 +154,8 @@ if (%s().isPresent()) {
 }""" % (self.java_getter_name(), hashCode_update)
         return hashCode_update
 
-    def java_initializer(self, **kwds):
-        return 'this.' + self.java_name() + ' = ' + self.java_validation(**kwds) + ';'
+#     def java_initializer(self, **kwds):
+#         return 'this.' + self.java_name() + ' = ' + self.java_preconditions_expression(**kwds) + ';'
 
     def java_is_absent(self):
         assert not self.required
@@ -173,7 +173,7 @@ if (%s().isPresent()) {
             if boxed is False or self.required:
                 rhs = self.type.java_default_value()
             else:
-                rhs = "com.google.common.base.Optional.absent()"
+                rhs = self.java_absent_value()
         else:
             return self.java_parameter(boxed=boxed, final=final)
         return "%(lhs)s = %(rhs)s;" % locals()
@@ -187,7 +187,7 @@ if (%s().isPresent()) {
             else:
                 rhs = "com.google.common.base.Optional.of(%s);" % self.java_value()
         elif not self.required and not final and assign_value:
-            rhs = 'com.google.common.base.Optional.absent()'
+            rhs = self.java_absent_value()
         else:
             rhs = ''
         rhs = lpad(' = ', rhs)
@@ -219,9 +219,62 @@ if (%s().isPresent()) {
             else:
                 return "com.google.common.base.Optional.of(%s);" % self.java_value()
         elif not self.required:
-            return 'com.google.common.base.Optional.absent()'
+            return self.java_absent_value()
         else:
             return 'null'
+
+    def java_preconditions_expression(self, boxed=False, value=None, nullable=False):
+        name = self.java_name()
+        parent_qname = self.parent.java_qname()
+        if value is None:
+            value = self.java_name()
+
+        java_preconditions_expression = value
+        if self.required:
+            if boxed or self.type.java_is_reference():
+                java_preconditions_expression = """com.google.common.base.Preconditions.checkNotNull(%(java_preconditions_expression)s, "%(parent_qname)s: missing %(name)s")""" % locals()
+        else:
+            if nullable:
+                java_preconditions_expression = "com.google.common.base.Optional.fromNullable(%(java_preconditions_expression)s)" % locals()
+            else:
+                java_preconditions_expression = """com.google.common.base.Preconditions.checkNotNull(%(java_preconditions_expression)s, "%(parent_qname)s: missing %(name)s")""" % locals()
+
+        validation = {}
+        for annotations in (self.annotations, self.type.annotations):
+            for annotation in annotations:
+                if annotation.name == 'validation':
+                    validation = annotation.value.copy()
+                    break
+            if len(validation) > 0:
+                break
+        if len(validation) > 0:
+            precondition_name = self.type.java_precondition_name()
+            if not self.required:
+                precondition_name = 'Optional' + precondition_name
+
+            acceptance = validation.pop('acceptance', None)
+            if acceptance is not None:
+                java_preconditions_expression = """org.thryft.Preconditions.check%(precondition_name)sTrue(%(java_preconditions_expression)s, "%(parent_qname)s: %(name)s must be true")""" % locals()
+
+            max_ = validation.pop('max', None)
+            if max_ is not None:
+                java_preconditions_expression = """org.thryft.Preconditions.check%(precondition_name)sMax(%(java_preconditions_expression)s, %(max_)d, "%(parent_qname)s: %(name)s must be at most %(max_)d")""" % locals()
+
+            max_length = validation.pop('maxLength', None)
+            if max_length is not None:
+                java_preconditions_expression = """org.thryft.Preconditions.check%(precondition_name)sMaxLength(%(java_preconditions_expression)s, %(max_length)u, "%(parent_qname)s: %(name)s must have a maximum length of %(max_length)u")""" % locals()
+
+            min_ = validation.pop('min', None)
+            if min_ is not None:
+                java_preconditions_expression = """org.thryft.Preconditions.check%(precondition_name)sMin(%(java_preconditions_expression)s, %(min_)d, "%(parent_qname)s: %(name)s must be at least %(min_)d")""" % locals()
+
+            min_length = validation.pop('minLength', None)
+            if min_length == 1:
+                java_preconditions_expression = """org.thryft.Preconditions.check%(precondition_name)sNotEmpty(%(java_preconditions_expression)s, "%(parent_qname)s: %(name)s is empty")""" % locals()
+            elif min_length is not None:
+                java_preconditions_expression = """org.thryft.Preconditions.check%(precondition_name)sMinLength(%(java_preconditions_expression)s, %(min_length)u, "%(parent_qname)s: %(name)s must have a minimum length of %(min_length)u")""" % locals()
+
+        return java_preconditions_expression
 
     def java_protocol_initializer(self):
         read_protocol_lhs = self.java_name()
@@ -350,7 +403,7 @@ if (other.%(getter_name)s().isPresent()) {
         if self.required:
             unset = "this.%s = %s;" % (name, self.java_default_value())
         else:
-            unset = "this.%s = com.google.common.base.Optional.absent();" % name
+            unset = "this.%s = %s;" % (name, self.java_absent_value())
         return """\
 %(deprecated)spublic %(return_type_name)s %(unsetter_name)s() {
     %(unset)s%(return_statement)s
@@ -358,59 +411,6 @@ if (other.%(getter_name)s().isPresent()) {
 
     def java_unsetter_name(self):
         return 'unset' + upper_camelize(self.name)
-
-    def java_validation(self, boxed=False, check_optional_not_null=True, value=None, nullable=False):
-        name = self.java_name()
-        parent_qname = self.parent.java_qname()
-        if value is None:
-            value = self.java_name()
-
-        java_validation = value
-        if self.required:
-            if boxed or self.type.java_is_reference():
-                java_validation = """com.google.common.base.Preconditions.checkNotNull(%(java_validation)s, "%(parent_qname)s: missing %(name)s")""" % locals()
-        else:
-            if nullable:
-                java_validation = "com.google.common.base.Optional.fromNullable(%(java_validation)s)" % locals()
-            elif check_optional_not_null:
-                java_validation = """com.google.common.base.Preconditions.checkNotNull(%(java_validation)s, "%(parent_qname)s: missing %(name)s")""" % locals()
-
-        validation = {}
-        for annotations in (self.annotations, self.type.annotations):
-            for annotation in annotations:
-                if annotation.name == 'validation':
-                    validation = annotation.value.copy()
-                    break
-            if len(validation) > 0:
-                break
-        if len(validation) > 0:
-            precondition_name = self.type.java_precondition_name()
-            if not self.required:
-                precondition_name = 'Optional' + precondition_name
-
-            acceptance = validation.pop('acceptance', None)
-            if acceptance is not None:
-                java_validation = """org.thryft.Preconditions.check%(precondition_name)sTrue(%(java_validation)s, "%(parent_qname)s: %(name)s must be true")""" % locals()
-
-            max_ = validation.pop('max', None)
-            if max_ is not None:
-                java_validation = """org.thryft.Preconditions.check%(precondition_name)sMax(%(java_validation)s, %(max_)d, "%(parent_qname)s: %(name)s must be at most %(max_)d")""" % locals()
-
-            max_length = validation.pop('maxLength', None)
-            if max_length is not None:
-                java_validation = """org.thryft.Preconditions.check%(precondition_name)sMaxLength(%(java_validation)s, %(max_length)u, "%(parent_qname)s: %(name)s must have a maximum length of %(max_length)u")""" % locals()
-
-            min_ = validation.pop('min', None)
-            if min_ is not None:
-                java_validation = """org.thryft.Preconditions.check%(precondition_name)sMin(%(java_validation)s, %(min_)d, "%(parent_qname)s: %(name)s must be at least %(min_)d")""" % locals()
-
-            min_length = validation.pop('minLength', None)
-            if min_length == 1:
-                java_validation = """org.thryft.Preconditions.check%(precondition_name)sNotEmpty(%(java_validation)s, "%(parent_qname)s: %(name)s is empty")""" % locals()
-            elif min_length is not None:
-                java_validation = """org.thryft.Preconditions.check%(precondition_name)sMinLength(%(java_validation)s, %(min_length)u, "%(parent_qname)s: %(name)s must have a minimum length of %(min_length)u")""" % locals()
-
-        return java_validation
 
     def java_value(self):
         assert self.value is not None

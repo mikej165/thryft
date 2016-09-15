@@ -53,7 +53,7 @@ class ValidatingServiceJavaGenerator(java_generator.JavaGenerator):
             public_parameter_names = ', '.join(parameter.java_name() for parameter in self.parameters)
             parameter_validations = []
             for parameter in self.parameters:
-                parameter_validation = parameter.java_validation()
+                parameter_validation = parameter.java_preconditions_expression()
                 if parameter_validation != parameter.java_name():
                     parameter_validations.append(parameter_validation + ';')
             if len(parameter_validations) > 0:
@@ -70,7 +70,7 @@ protected void %(validate_method_name)s(%(public_parameters)s) {
             delegation = \
                 "delegate.%s(%s)" % (name, ', '.join(parameter.java_name() for parameter in self.parameters))
             if self.return_field is not None:
-                delegation = 'return ' + self.return_field.java_validation(value=delegation)
+                delegation = 'return ' + self.return_field.java_preconditions_expression(value=delegation)
                 return_type_name = self.return_field.type.java_qname()
             else:
                 return_type_name = 'void'
