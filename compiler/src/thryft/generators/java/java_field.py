@@ -421,6 +421,7 @@ if (!%(field_name)s.isPresent()) {
         throw new %(exception_prefix)s\"%(message_prefix)s is blank\");
     }
 }""" % locals())
+                        continue
                     elif validation_name == 'max':
                         check = "%s > 0" % self.type.java_compare_to(field_value, self.type.java_literal(validation_value))
                         message = message_prefix + "greater than max " + str(validation_value)

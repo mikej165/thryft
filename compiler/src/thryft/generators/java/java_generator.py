@@ -80,6 +80,7 @@ class JavaGenerator(Generator):
 
 
 Parser.register_annotation_parser(JavaFinalAnnotationParser())
+Parser.register_annotation_parser(AnnotationParser('java_extends', (Ast.ExceptionTypeNode, Ast.StructTypeNode)))
 Parser.register_annotation_parser(AnnotationParser('java_implements', (Ast.EnumTypeNode, Ast.ExceptionTypeNode, Ast.ServiceNode, Ast.StructTypeNode)))
 Parser.register_annotation_parser(ValuelessAnnotationParser('java_escape_to_string', Ast.FieldNode))
 Parser.register_annotation_parser(ValuelessAnnotationParser('java_exclude_from_to_string', Ast.FieldNode))

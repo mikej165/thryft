@@ -40,7 +40,11 @@ class JavaExceptionType(ExceptionType, _JavaCompoundType):
         _JavaCompoundType.__init__(self, message_type='EXCEPTION', java_suppress_warnings=('serial',), **kwds)
 
     def _java_extends(self):
-        return 'org.thryft.Exception'
+        extends = _JavaCompoundType._java_extends(self)
+        if extends is not None:
+            return extends
+        else:
+            return 'org.thryft.Exception'
 
     def _java_method_get_message(self):
         return {'getMessage': '''\

@@ -597,7 +597,9 @@ protected %(name)s(%(parameters)s) {%(initializers)s
         return True
 
     def _java_extends(self):
-        return None
+        for annotation in self.annotations:
+            if annotation.name == 'java_extends':
+                return annotation.value
 
     def _java_field_metadata_enum(self):
         if len(self.fields) == 0:
