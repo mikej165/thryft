@@ -234,10 +234,11 @@ if (%s().isPresent()) {
             field_metadata_enumerator = 'FieldMetadata.' + self.java_field_metadata_enumerator_name()
             read_protocol_catches = []
             for exception_type_name in read_protocol_throws:
+                assert exception_type_name != 'org.thryft.protocol.InputProtocolException'
                 if exception_type_name == 'org.thryft.protocol.UncheckedInputProtocolException':
                     read_protocol_catches.append("""\
  catch (final %(exception_type_name)s e) {
-     throw e.getCause();
+     throw new org.thryft.protocol.InvalidFieldInputProtocolException(%(field_metadata_enumerator)s, e.getCause());
 }""" % locals())
                 elif self.required:
                     read_protocol_catches.append("""\

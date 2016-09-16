@@ -938,10 +938,14 @@ if (__list.getSize() > %(field_i)u) {
                 read_list = "final org.thryft.protocol.ListBegin __list = "
             field_protocol_positional_initializers.append(field_protocol_initializer)
         field_protocol_positional_initializers = \
-            lpad("\n", "\n".join(field_protocol_positional_initializers))
+            lpad("\n", "\n".join(indent(' ' * 4, field_protocol_positional_initializers)))
         return """\
-%(read_list)siprot.readListBegin();%(field_protocol_positional_initializers)s
-iprot.readListEnd();""" % locals()
+try {
+    %(read_list)siprot.readListBegin();%(field_protocol_positional_initializers)s
+    iprot.readListEnd();
+} catch (final RuntimeException e) {
+    throw new IllegalStateException(e);
+}""" % locals()
 
     def _java_method_read_as_struct(self):
         body = indent(' ' * 4, self._java_method_read_as_struct_body())
@@ -984,26 +988,30 @@ case "%(field_name)s": {
     break;
 }""" % locals())
         field_protocol_named_initializers = \
-            lpad("\n", indent(' ' * 4,  "\n".join(
+            lpad("\n", indent(' ' * 8,  "\n".join(
                 field_protocol_named_initializers
             )))
         return """\
-iprot.readStructBegin();
-while (true) {
-    final org.thryft.protocol.FieldBegin ifield = iprot.readFieldBegin();
-    if (ifield.getType() == org.thryft.protocol.Type.STOP) {
-        break;
-    }
-    switch (ifield.getName()) {%(field_protocol_named_initializers)s
-    default:
-        if (unknownFieldCallback.isPresent()) {
-            unknownFieldCallback.get().apply(ifield);
+try {
+    iprot.readStructBegin();
+    while (true) {
+        final org.thryft.protocol.FieldBegin ifield = iprot.readFieldBegin();
+        if (ifield.getType() == org.thryft.protocol.Type.STOP) {
+            break;
         }
-        break;
+        switch (ifield.getName()) {%(field_protocol_named_initializers)s
+        default:
+            if (unknownFieldCallback.isPresent()) {
+                unknownFieldCallback.get().apply(ifield);
+            }
+            break;
+        }
+        iprot.readFieldEnd();
     }
-    iprot.readFieldEnd();
-}
-iprot.readStructEnd();""" % locals()
+    iprot.readStructEnd();
+} catch (final RuntimeException e) {
+    throw new IllegalStateException(e);
+}""" % locals()
 
     def _java_method_replacers(self):
         methods = {}
