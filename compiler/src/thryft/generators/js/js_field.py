@@ -89,6 +89,7 @@ if (this.has("%(js_name)s")) {
             if annotation.name == 'validation':
                 validation = annotation.value.copy()
                 break
+        validation.pop('blank', None)
         validation['required'] = self.required
         name = self.js_name()
         qname = self.js_qname()
