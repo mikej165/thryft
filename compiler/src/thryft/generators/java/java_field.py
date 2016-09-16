@@ -227,13 +227,11 @@ if (%s().isPresent()) {
             read_protocol_rhs = "com.google.common.base.Optional.of(%s)" % read_protocol_rhs
         read_protocol = read_protocol_lhs + ' = ' + read_protocol_rhs + ';'
 
-        if self.required:
-            read_protocol_throws = self.type.java_read_protocol_throws_checked()
-        else:
-            read_protocol_throws = \
-                self.type.java_read_protocol_throws_checked() + \
-                self.type.java_read_protocol_throws_unchecked()
+        read_protocol_throws = \
+            self.type.java_read_protocol_throws_checked() + \
+            self.type.java_read_protocol_throws_unchecked()
         if len(read_protocol_throws) > 0:
+            field_metadata_enumerator = 'FieldMetadata.' + self.java_field_metadata_enumerator_name()
             read_protocol_catches = []
             for exception_type_name in read_protocol_throws:
                 if exception_type_name == 'org.thryft.protocol.UncheckedInputProtocolException':
@@ -244,7 +242,7 @@ if (%s().isPresent()) {
                 elif self.required:
                     read_protocol_catches.append("""\
  catch (final %(exception_type_name)s e) {
-     throw new org.thryft.protocol.InputProtocolException(e);
+     throw new org.thryft.protocol.InvalidFieldInputProtocolException(%(field_metadata_enumerator)s, e);
 }""" % locals())
                 else:
                     read_protocol_catches.append("""\

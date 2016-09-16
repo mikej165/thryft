@@ -63,9 +63,6 @@ class JavaEnumType(EnumType, _JavaType):
         qname = self.java_qname()
         return "iprot.readEnum(%(qname)s.class)" % locals()
 
-    def java_read_protocol_throws_unchecked(self):
-        return ['IllegalArgumentException']
-
     def java_repr(self):
         javadoc = self.java_doc()
         name = self.java_name()

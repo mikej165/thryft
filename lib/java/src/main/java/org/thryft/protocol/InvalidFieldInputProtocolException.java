@@ -14,6 +14,11 @@ public final class InvalidFieldInputProtocolException extends InputProtocolExcep
         this.field = checkNotNull(field);
     }
 
+    public InvalidFieldInputProtocolException(final CompoundType.FieldMetadata field, final Throwable cause) {
+        super(cause);
+        this.field = checkNotNull(field);
+    }
+
     public final FieldMetadata getField() {
         return field;
     }

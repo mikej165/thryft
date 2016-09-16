@@ -2,7 +2,7 @@ package org.thryft.protocol;
 
 @SuppressWarnings("serial")
 public abstract class ProtocolException extends Exception {
-    public ProtocolException(final Exception cause) {
+    public ProtocolException(final Throwable cause) {
         super(cause);
     }
 
