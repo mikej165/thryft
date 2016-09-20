@@ -50,7 +50,7 @@ class _JsNumberType(_JsBaseType):
         return {'type': 'Number'}
 
     def js_validation(self, value, value_name, **kwds):
-        return {'type': """\
+        return {'pattern': 'number', 'type': """\
 if (typeof %(value)s !== "number") {
     return "expected %(value_name)s to be a number";
 }""" % locals()}
