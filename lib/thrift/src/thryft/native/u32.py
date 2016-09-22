@@ -59,8 +59,8 @@ class u32(object):
     def java_boxed_qname(self):
         return self.java_qname()
 
-    def java_compare_to(self, this_value, other_value, **kwds):
-        return "%(this_value)s.compareTo(%(other_value)s)" % locals()
+    def java_compare(self, this_value, operator, other_value, **kwds):
+        return "%(this_value)s.compareTo(%(other_value)s) %(operator)s 0" % locals()
 
     def java_default_value(self):
         return 'com.google.common.primitives.UnsignedInteger.ZERO'

@@ -59,12 +59,12 @@ class JavaField(Field, _JavaNamedConstruct):
 
     def java_equals(self, this_value, other_value, nullable=False):
         if self.required:
-            return self.type.java_equals(this_value, other_value, already_boxed=False)
+            return self.type.java_equals(this_value, other_value, boxed=False)
         elif nullable:
-            type_equals = self.type.java_equals(this_value, other_value, already_boxed=True)
+            type_equals = self.type.java_equals(this_value, other_value, boxed=True)
             return "((%(this_value)s != null && %(other_value)s != null) ? (%(type_equals)s) : (%(this_value)s == null && %(other_value)s == null))" % locals()
         else:
-            type_equals = self.type.java_equals(this_value + '.get()', other_value + '.get()', already_boxed=True)
+            type_equals = self.type.java_equals(this_value + '.get()', other_value + '.get()', boxed=True)
             return "((%(this_value)s.isPresent() && %(other_value)s.isPresent()) ? (%(type_equals)s) : (!%(this_value)s.isPresent() && !%(other_value)s.isPresent()))" % locals()
 
     def java_field_metadata_enumerator_declaration(self):
@@ -116,7 +116,7 @@ class JavaField(Field, _JavaNamedConstruct):
     def java_hash_code_update(self):
         hashCode_update = \
             'hashCode = 31 * hashCode + ' + \
-                self.type.java_hash_code(self.java_getter_name() + (self.required and '()' or '().get()'), already_boxed=not self.required) + \
+                self.type.java_hash_code(self.java_getter_name() + (self.required and '()' or '().get()'), boxed=not self.required) + \
             ';'
         if not self.required:
             hashCode_update = """\
@@ -393,13 +393,13 @@ if (!%(field_name)s.isPresent()) {
 }""" % locals())
                         continue
                     elif validation_name == 'max':
-                        check = "%s > 0" % self.type.java_compare_to(field_value, self.type.java_literal(validation_value), already_boxed=not self.required)
+                        check = self.type.java_compare(field_value, '>', self.type.java_literal(validation_value), boxed=not self.required)
                         message = message_prefix + "greater than max " + str(validation_value)
                     elif validation_name == 'maxLength':
                         check = "%s > %s" % (self.type.java_size(field_value), validation_value)
                         message = message_prefix + "greater than max length " + str(validation_value)
                     elif validation_name == 'min':
-                        check = "%s < 0" % self.type.java_compare_to(field_value, self.type.java_literal(validation_value), already_boxed=not self.required)
+                        check = self.type.java_compare(field_value, '<', self.type.java_literal(validation_value), boxed=not self.required)
                         message = message_prefix + "less than min " + str(validation_value)
                     elif validation_name == 'minLength':
                         if validation_value == 1:

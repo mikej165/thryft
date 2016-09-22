@@ -41,8 +41,8 @@ class JavaBoolType(BoolType, _JavaBaseType):
     def java_default_value(self):
         return 'false'
 
-    def java_equals(self, this_value, other_value, already_boxed):
-        if already_boxed:
+    def java_equals(self, this_value, other_value, boxed):
+        if boxed:
             return "%(this_value)s.booleanValue() == %(other_value)s.booleanValue()" % locals()
         else:
             return "%(this_value)s == %(other_value)s" % locals()

@@ -125,7 +125,7 @@ class BeanJavaGenerator(JavaGenerator):
         def java_hash_code_update(self):
             hashCode_update = \
                 'hashCode = 31 * hashCode + ' + \
-                    self.type.java_hash_code(self.java_getter_name() + '()', already_boxed=not self.required) + \
+                    self.type.java_hash_code(self.java_getter_name() + '()', boxed=not self.required) + \
                 ';'
             if not self.required:
                 hashCode_update = """\

@@ -59,12 +59,16 @@ class float(object):
     def java_boxed_qname(self):
         return self.java_boxed_name()
 
-    def java_compare_to(self, this_value, other_value, already_boxed):
-        if already_boxed:
-            return "%(this_value)s.compareTo(%(other_value)s)" % locals()
-        else:
-            boxed_name = self.java_boxed_name()
-            return "((%(boxed_name)s)%(this_value)s).compareTo(%(other_value)s)" % locals()
+    def java_compare(self, this_value, operator, other_value, boxed):
+        if boxed:
+            this_value = this_value + '.floatValue()'
+        return "%(this_value)s %(operator)s %(other_value)s" % locals()
+
+    def java_equals(self, this_value, other_value, boxed):
+        if boxed:
+            this_value = this_value + '.floatValue()'
+            other_value = other_value + '.floatValue()'
+        return "%(this_value)s == %(other_value)s" % locals()
 
     def java_name(self):
         return 'float'

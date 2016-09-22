@@ -47,7 +47,7 @@ class _JavaType(_JavaNamedConstruct):
     def java_default_value(self):
         raise NotImplementedError(class_qname(self) + '.java_default_value')
 
-    def java_equals(self, this_value, other_value, already_boxed):
+    def java_equals(self, this_value, other_value, boxed):
         raise NotImplementedError(class_qname(self) + '.java_equals')
 
     def java_from_string(self, value):

@@ -29,6 +29,7 @@ struct ProtocolTestStruct {
     10: optional float.float float_field;
     11: optional i8.i8 i8_field;
     12: optional i16 i16_field;
+    // @validation {"max": 100, "min": 1}
     13: optional i32 i32_field;
     14: optional i64 i64_field;
     15: optional list<string> string_list_field;
@@ -37,7 +38,9 @@ struct ProtocolTestStruct {
     // @validation {"minLength": 1}
     18: optional string string_field;
     19: optional nested_protocol_test_struct.NestedProtocolTestStruct struct_field;
+    // @validation {"max": 100, "min": 1}
     20: optional u32.u32 u32_field;
+    // @validation {"max": 100, "min": 1}
     21: optional u64.u64 u64_field;
     22: optional uri.Uri uri_field;
     23: optional url.Url url_field;
