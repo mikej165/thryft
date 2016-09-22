@@ -67,13 +67,10 @@ class DateTime(object):
     def java_boxed_qname(self):
         return self.java_qname()
 
-    def java_compare_to(self, this_value, other_value, **kwds):
-        return "%(this_value)s.compareTo(%(other_value)s)" % locals()
-
     def java_default_value(self):
         return 'null'
 
-    def java_equals(self, this_value, other_value):
+    def java_equals(self, this_value, other_value, **kwds):
         return "%(this_value)s.equals(%(other_value)s)" % locals()
 
     def java_hash_code(self, value, **kwds):

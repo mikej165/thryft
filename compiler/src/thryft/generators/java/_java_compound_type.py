@@ -593,6 +593,9 @@ protected %(name)s(%(parameters)s) {%(initializers)s
     def java_default_value(self):
         return 'null'
 
+    def java_equals(self, this_value, other_value, **kwds):
+        return "%(this_value)s.equals(%(other_value)s)" % locals()
+
     def java_is_reference(self):
         return True
 
@@ -640,27 +643,6 @@ public static Builder builder(final %(name)s other) {
 public static Builder builder(final com.google.common.base.Optional<%(name)s> other) {
     return other.isPresent() ? new Builder(other.get()) : new Builder();
 }""" % locals()}
-
-#     def _java_method_compare_to(self, name=None):
-#         if name is None:
-#             name = self.java_name()
-#         field_compare_tos = []
-#         for field in self.fields:
-#             field_compare_to = field.java_compare_to()
-#             if field_compare_to is not None:
-#                 field_compare_tos.append(field_compare_to)
-#         field_compare_tos = \
-#             pad("\n\n    int result;\n", "\n\n".join(indent(' ' * 4,
-#                 field_compare_tos
-#             )), "\n")
-#         return {'compareTo': """\
-# @Override
-# public int compareTo(final %(name)s other) {
-#     if (other == null) {
-#         throw new NullPointerException();
-#     }%(field_compare_tos)s
-#     return 0;
-# }""" % locals()}
 
     def _java_method_create(self):
         overloads = []
@@ -794,42 +776,36 @@ public static %(name)s create(%(parameters)s) {
         if name is None:
             name = self.java_name()
 
-        field_equal_tests = []
-        for field in self.fields:
-            field_equal_tests.append(
-                field.java_equals(field.java_getter_name() + '()',
-                                  'other.' + field.java_getter_name() + '()', nullable=nullable)
-            )
-        if len(field_equal_tests) > 0:
-            field_equal_tests = \
-                "final %(name)s other = (%(name)s)otherObject;\n" % \
-                     locals() + \
-                ' ' * 4 + "return\n" + \
-                    indent(' ' * 8,
-                           " && \n".join(field_equal_tests))
-        else:
-            field_equal_tests = 'return true'
-
-        struct_equal_tests = []
-        struct_equal_tests.append('''\
-if (otherObject == this) {
-    return true;
-}''')
-        struct_equal_tests.append("""\
-if (!(otherObject instanceof %(name)s)) {
+        if len(self.fields) > 0:
+            field_equal_tests = []
+            for field in self.fields:
+                field_equal_test = \
+                    field.java_equals(field.java_getter_name() + '()',
+                                      'other.' + field.java_getter_name() + '()', nullable=nullable)
+                field_equal_tests.append("""\
+if (!(%(field_equal_test)s)) {
     return false;
 }""" % locals())
-        struct_equal_tests = \
-            indent(' ' * 4,
-                ' else '.join(struct_equal_tests)
-            )
+            field_equal_tests = "\n\n".join(indent(' ' * 4, field_equal_tests))
+            field_equal_tests = """
+
+    final %(name)s other = (%(name)s)otherObject;
+
+%(field_equal_tests)s""" % locals()
+        else:
+            field_equal_tests = ''
 
         return {'equals': """\
 @Override
 public boolean equals(final java.lang.Object otherObject) {
-%(struct_equal_tests)s
+    if (otherObject == this) {
+        return true;
+    }
+    if (!(otherObject instanceof %(name)s)) {
+        return false;
+    }%(field_equal_tests)s
 
-    %(field_equal_tests)s;
+    return true;
 }""" % locals()}
 
     def _java_method_get(self):

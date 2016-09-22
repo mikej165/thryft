@@ -101,32 +101,6 @@ class BeanJavaGenerator(JavaGenerator):
         pass
 
     class Field(JavaGenerator.Field):  # @UndefinedVariable
-#         def java_compare_to(self):
-#             name = self.java_name()
-#             this_value = 'this.' + name
-#             other_value = 'other.' + name
-#             type_compare_to = self.type.java_compare_to(this_value, other_value, already_boxed=not self.required)
-#             if type_compare_to is None:
-#                 return None
-#             compare_to = """\
-# result = %(type_compare_to)s;
-# if (result != 0) {
-#     return result;
-# }""" % locals()
-#             if not self.required:
-#                 compare_to = indent(' ' * 8, compare_to)
-#                 compare_to = """\
-# if (this.%(name)s != null) {
-#     if (other.%(name)s != null) {
-# %(compare_to)s
-#     } else {
-#         return 1;
-#     }
-# } else if (other.%(name)s != null) {
-#     return -1;
-# }""" % locals()
-#             return compare_to
-
         def java_default_value(self):
             if self.value is not None:
                 return self.java_value()

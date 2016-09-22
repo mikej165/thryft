@@ -47,17 +47,8 @@ class _JavaType(_JavaNamedConstruct):
     def java_default_value(self):
         raise NotImplementedError(class_qname(self) + '.java_default_value')
 
-    def java_compare_to(self, this_value, other_value, already_boxed):
-        if self.java_is_reference():
-            return "%(this_value)s.compareTo(%(other_value)s)" % locals()
-        else:
-            raise NotImplementedError(class_qname(self) + '.java_compare_to')
-
-    def java_equals(self, this_value, other_value):
-        if self.java_is_reference():
-            return "%(this_value)s.equals(%(other_value)s)" % locals()
-        else:
-            return "%(this_value)s == %(other_value)s" % locals()
+    def java_equals(self, this_value, other_value, already_boxed):
+        raise NotImplementedError(class_qname(self) + '.java_equals')
 
     def java_from_string(self, value):
         raise NotImplementedError(class_qname(self) + '.java_from_string')

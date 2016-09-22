@@ -35,43 +35,6 @@ from yutil import decamelize, indent
 
 
 class _JavaSequenceType(_JavaContainerType):
-#     def java_compare_to(self, this_value, other_value, **kwds):
-#         qname = self.java_qname()
-#         element_type_qname = self.element_type.java_qname(boxed=True)
-#         element_compare = indent(' ' * 16, self.element_type.java_compare_to(this_value='leftElement', other_value='rightElement', already_boxed=True))
-#         return """\
-# new java.util.Comparator<%(qname)s>() {
-#     public int compare(final %(qname)s left, final %(qname)s right) {
-#         int result = ((Integer) left.size()).compareTo(right.size());
-#         if (result != 0) {
-#             return result;
-#         }
-#
-#         final java.util.List<%(element_type_qname)s> leftSortedList = com.google.common.collect.Lists
-#                 .newArrayList(left);
-#         java.util.Collections.sort(leftSortedList);
-#         final java.util.Iterator<%(element_type_qname)s> leftI = leftSortedList.iterator();
-#
-#         final java.util.List<%(element_type_qname)s> rightSortedList = com.google.common.collect.Lists
-#                 .newArrayList(right);
-#         java.util.Collections.sort(rightSortedList);
-#         final java.util.Iterator<%(element_type_qname)s> rightI = leftSortedList.iterator();
-#
-#         while (leftI.hasNext()) {
-#             final %(element_type_qname)s leftElement = leftI.next();
-#             final %(element_type_qname)s rightElement = rightI.next();
-#
-#             result =
-# %(element_compare)s;
-#             if (result != 0) {
-#                 return result;
-#             }
-#         }
-#
-#         return 0;
-#     }
-# }.compare(%(this_value)s, %(other_value)s)""" % locals()
-
     def java_boxed_immutable_qname(self):
         return self.__java_qname()
 

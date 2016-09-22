@@ -67,7 +67,7 @@ class u64(object):
     def java_default_value(self):
         return 'com.google.common.primitives.UnsignedLong.ZERO'
 
-    def java_equals(self, this_value, other_value):
+    def java_equals(self, this_value, other_value, **kwds):
         return "%(this_value)s.equals(%(other_value)s)" % locals()
 
     def java_from_string(self, value):

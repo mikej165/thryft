@@ -38,13 +38,10 @@ class JavaBinaryType(BinaryType, _JavaBaseType):
     def java_boxed_name(self):
         return self.java_name()
 
-    def java_compare_to(self, this_value, other_value, **kwds):
-        return "com.google.common.primitives.SignedBytes.lexicographicalComparator().compare(%(this_value)s, %(other_value)s)" % locals()
-
     def java_default_value(self):
         return 'null'
 
-    def java_equals(self, this_value, other_value):
+    def java_equals(self, this_value, other_value, **kwds):
         return "java.util.Arrays.equals(%(this_value)s, %(other_value)s)" % locals()
 
     def java_from_string(self, value):

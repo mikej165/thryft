@@ -34,12 +34,22 @@ from thryft.generators.java._java_base_type import _JavaBaseType
 
 
 class _JavaNumericType(_JavaBaseType):
-    def java_compare_to(self, this_value, other_value, **kwds):
-        boxed_name = self.java_boxed_name()
-        return "%(boxed_name)s.compare(%(this_value)s, %(other_value)s)" % locals()
+    def java_compare_to(self, this_value, other_value, already_boxed):
+        if already_boxed:
+            return "%(this_value)s.compareTo(%(other_value)s)" % locals()
+        else:
+            boxed_name = self.java_boxed_name()
+            return "%(boxed_name)s.compare(%(this_value)s, %(other_value)s)" % locals()
 
     def java_default_value(self):
         return "((%s)0)" % self.java_name()
+
+    def java_equals(self, this_value, other_value, already_boxed):
+        if already_boxed:
+            name = self.java_name()
+            return "%(this_value)s.%(name)sValue() == %(other_value)s.%(name)sValue()" % locals()
+        else:
+            return "%(this_value)s == %(other_value)s" % locals()
 
     def java_from_string(self, value):
         boxed_name = self.java_boxed_name()

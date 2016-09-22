@@ -37,6 +37,9 @@ class _JavaContainerType(_JavaType):
     def java_default_value(self):
         return 'null'
 
+    def java_equals(self, this_value, other_value, **kwds):
+        return "%(this_value)s.equals(%(other_value)s)" % locals()
+
     def java_is_empty(self, value):
         return value + '.isEmpty()'
 

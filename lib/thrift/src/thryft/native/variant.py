@@ -58,9 +58,6 @@ class Variant(object):
     def java_boxed_qname(self):
         return self.java_qname()
 
-    def java_compare_to(self, this_value, other_value, **kwds):
-        return None
-
     def java_default_value(self):
         return 'null'
 

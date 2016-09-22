@@ -40,35 +40,6 @@ class JavaField(Field, _JavaNamedConstruct):
         assert not self.required
         return "com.google.common.base.Optional.<%s> absent()" % self.type.java_boxed_qname()
 
-    def java_compare_to(self):
-        name = self.java_name()
-        this_value = 'this.' + name
-        other_value = 'other.' + name
-        if not self.required:
-            this_value += '.get()'
-            other_value += '.get()'
-        type_compare_to = self.type.java_compare_to(this_value, other_value, already_boxed=not self.required)
-        if type_compare_to is None:
-            return None
-        compare_to = """\
-result = %(type_compare_to)s;
-if (result != 0) {
-    return result;
-}""" % locals()
-        if not self.required:
-            compare_to = indent(' ' * 8, compare_to)
-            compare_to = """\
-if (this.%(name)s.isPresent()) {
-    if (other.%(name)s.isPresent()) {
-%(compare_to)s
-    } else {
-        return 1;
-    }
-} else if (other.%(name)s.isPresent()) {
-    return -1;
-}""" % locals()
-        return compare_to
-
     def java_default_initializer(self):
         default_value = self.java_default_value()
         name = self.java_name()
@@ -87,13 +58,13 @@ if (this.%(name)s.isPresent()) {
             return self.type.java_default_value()
 
     def java_equals(self, this_value, other_value, nullable=False):
-        type_equals = self.type.java_equals(this_value, other_value)
         if self.required:
-            return type_equals
-        if nullable:
+            return self.type.java_equals(this_value, other_value, already_boxed=False)
+        elif nullable:
+            type_equals = self.type.java_equals(this_value, other_value, already_boxed=True)
             return "((%(this_value)s != null && %(other_value)s != null) ? (%(type_equals)s) : (%(this_value)s == null && %(other_value)s == null))" % locals()
         else:
-            type_equals = self.type.java_equals(this_value + '.get()', other_value + '.get()')
+            type_equals = self.type.java_equals(this_value + '.get()', other_value + '.get()', already_boxed=True)
             return "((%(this_value)s.isPresent() && %(other_value)s.isPresent()) ? (%(type_equals)s) : (!%(this_value)s.isPresent() && !%(other_value)s.isPresent()))" % locals()
 
     def java_field_metadata_enumerator_declaration(self):
@@ -422,13 +393,13 @@ if (!%(field_name)s.isPresent()) {
 }""" % locals())
                         continue
                     elif validation_name == 'max':
-                        check = "%s > 0" % self.type.java_compare_to(field_value, self.type.java_literal(validation_value))
+                        check = "%s > 0" % self.type.java_compare_to(field_value, self.type.java_literal(validation_value), already_boxed=not self.required)
                         message = message_prefix + "greater than max " + str(validation_value)
                     elif validation_name == 'maxLength':
                         check = "%s > %s" % (self.type.java_size(field_value), validation_value)
                         message = message_prefix + "greater than max length " + str(validation_value)
                     elif validation_name == 'min':
-                        check = "%s < 0" % self.type.java_compare_to(field_value, self.type.java_literal(validation_value))
+                        check = "%s < 0" % self.type.java_compare_to(field_value, self.type.java_literal(validation_value), already_boxed=not self.required)
                         message = message_prefix + "less than min " + str(validation_value)
                     elif validation_name == 'minLength':
                         if validation_value == 1:
