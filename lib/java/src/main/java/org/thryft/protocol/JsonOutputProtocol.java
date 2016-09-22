@@ -1,8 +1,7 @@
 package org.thryft.protocol;
 
+import java.util.Base64;
 import java.util.Date;
-
-import org.apache.commons.codec.binary.Base64;
 
 public abstract class JsonOutputProtocol extends StackedOutputProtocol<JsonOutputProtocol.NestedOutputProtocol> {
     protected interface JsonGenerator {
@@ -36,7 +35,7 @@ public abstract class JsonOutputProtocol extends StackedOutputProtocol<JsonOutpu
     protected abstract class NestedOutputProtocol extends AbstractOutputProtocol {
         @Override
         public void writeBinary(final byte[] value) throws OutputProtocolException {
-            writeString(Base64.encodeBase64String(value));
+            writeString(Base64.getEncoder().encodeToString(value));
         }
 
         @Override

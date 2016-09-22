@@ -36,14 +36,13 @@ import static com.google.common.base.Preconditions.checkState;
 import static org.thryft.Preconditions.checkNotEmpty;
 
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
-
-import org.apache.commons.codec.binary.Base64;
 
 import com.google.common.annotations.GwtIncompatible;
 import com.google.common.collect.ImmutableMap;
@@ -78,7 +77,7 @@ public class StringMapInputProtocol extends StackedInputProtocol<StringMapInputP
 
         @Override
         public byte[] readBinary() throws InputProtocolException {
-            return Base64.decodeBase64(readString());
+            return Base64.getDecoder().decode(readString());
         }
 
         @Override

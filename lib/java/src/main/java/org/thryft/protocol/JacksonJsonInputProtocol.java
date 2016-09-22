@@ -40,11 +40,10 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.text.ParseException;
+import java.util.Base64;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Stack;
-
-import org.apache.commons.codec.binary.Base64;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -151,7 +150,7 @@ public class JacksonJsonInputProtocol extends JsonInputProtocol<JacksonJsonInput
 
         @Override
         protected final byte[] _decodeBase64(final String base64String) {
-            return Base64.decodeBase64(base64String);
+            return Base64.getDecoder().decode(base64String);
         }
 
         protected JsonNode _getMyNode() {

@@ -36,11 +36,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static org.thryft.Preconditions.checkNotEmpty;
 
+import java.util.Base64;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
-import org.apache.commons.codec.binary.Base64;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -52,7 +51,7 @@ public class StringMapOutputProtocol extends StackedOutputProtocol<StringMapOutp
 
         @Override
         public void writeBinary(final byte[] value) throws OutputProtocolException {
-            writeString(Base64.encodeBase64String(value));
+            writeString(Base64.getEncoder().encodeToString(value));
         }
 
         @Override
