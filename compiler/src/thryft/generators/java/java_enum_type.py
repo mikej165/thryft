@@ -43,7 +43,8 @@ class JavaEnumType(EnumType, _JavaType):
         return "%(this_value)s.equals(%(other_value)s)" % locals()
 
     def java_from_string(self, value):
-        return self.java_literal(value)
+        qname = self.java_qname()
+        return "%(qname)s.valueOf(%(value)s)" % locals()
 
     def java_hash_code(self, value, **kwds):
         return "%(value)s.ordinal()" % locals()

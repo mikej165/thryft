@@ -1,8 +1,8 @@
 import logging
 
-from thryft.generators.java.java_generator import JavaGenerator
 from thryft.generators.java._java_named_construct import _JavaNamedConstruct
-from yutil import indent, lpad, class_qname
+from thryft.generators.java.java_generator import JavaGenerator
+from yutil import indent, lpad, class_qname, rpad
 
 
 class BeanJavaGenerator(JavaGenerator):
@@ -247,10 +247,13 @@ public %(name)s() {%(initializers)s
 }""" % locals()
 
         def _java_constructor_from_immutable(self):
+            annotations = []
             name = self.java_bean_name()
             immutable_name = JavaGenerator.StructType.java_qname(self)  # @UndefinedVariable
             initializers = []
             for field in self.fields:
+                if field.deprecated:
+                    annotations.append("@SuppressWarnings(\"deprecation\")")
                 lhs = "this." + field.java_name()
                 field_getter_call = 'other.' + field.java_getter_name() + '()'
                 if field.required:
@@ -259,9 +262,10 @@ public %(name)s() {%(initializers)s
                     field_conversion = field.type.java_from_immutable("%(field_getter_call)s.get()" % locals())
                     rhs = "%(field_getter_call)s.isPresent() ? %(field_conversion)s : null" % locals()
                 initializers.append("%(lhs)s = %(rhs)s;" % locals())
+            annotations = rpad("\n".join(set(annotations)), "\n")
             initializers = lpad("\n", "\n".join(indent(' ' * 4, initializers)))
             return """\
-public %(name)s(final %(immutable_name)s other) {%(initializers)s
+%(annotations)spublic %(name)s(final %(immutable_name)s other) {%(initializers)s
 }""" % locals()
 
         def _java_constructors(self):

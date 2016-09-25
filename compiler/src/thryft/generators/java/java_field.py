@@ -388,7 +388,7 @@ if (!%(field_name)s.isPresent()) {
         }
     }
     if (__blank) {
-        throw new %(exception_prefix)s\"%(message_prefix)s is blank\");
+        throw new %(exception_prefix)sString.format(\"%(message_prefix)sblank: '%%s' (length=%%d)\", %(field_value)s, __strLen));
     }
 }""" % locals())
                         continue
