@@ -7,11 +7,14 @@ class JavaLogExceptionStackTraceAnnotationParser(AnnotationParser):
         AnnotationParser.__init__(self, 'java_log_exception_stack_trace', (Ast.ExceptionTypeNode, Ast.FieldNode))
 
     def parse_annotation(self, ast_node, name, value, **kwds):
-        value = value.lower()
-        if value == 'true':
+        if value is None:
             value = True
-        elif value == 'false':
-            value = False
         else:
-            raise ValueError(value)
+            value = value.lower()
+            if value == 'true':
+                value = True
+            elif value == 'false':
+                value = False
+            else:
+                raise ValueError(value)
         ast_node.annotations.append(Ast.AnnotationNode(name=name, value=value, **kwds))
