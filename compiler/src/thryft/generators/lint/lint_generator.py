@@ -111,6 +111,7 @@ class LintGenerator(Generator):
                             after_function_name = test_function_name
                             break
                     self._logger.warn("function %s in %s is out of lexicographic order (should be after %s)", function.name, self._parent_document().path, after_function_name)
+                function_names.append(function.name)
 
     class SetType(Generator.SetType, _SequenceType):  # @UndefinedVariable
         pass
