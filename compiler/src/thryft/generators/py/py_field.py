@@ -224,6 +224,18 @@ def %(setter_name)s(self, %(name)s):%(suppress_warnings)s
     def py_sphinx_doc(self):
         return ":type %s: %s%s" % (self.py_name(), self.type.py_description(), ' or None' if not self.required else '')
 
+    def py_to_builtins(self, out_dict):
+        getter_call = self.py_getter_call()
+        name = self.py_name()
+        to_builtins = self.type.py_to_builtins('self.' + getter_call)
+        to_builtins = """\
+%(out_dict)s['%(name)s'] = %(to_builtins)s""" % locals()
+        if not self.required:
+            to_builtins = indent(' ' * 4, to_builtins)
+            to_builtins = """\
+if self.%(getter_call)s is not None:
+%(to_builtins)s""" % locals()
+
     def py_write_protocol(self, depth=0, value=None):
         if value is None:
             value = 'self.' + self.py_getter_call()

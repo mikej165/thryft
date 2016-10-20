@@ -442,6 +442,24 @@ def %(method_name)s(self):
     def _py_method_str(self):
         return self._py_method_repr('__str__')
 
+    def py_method_to_builtins(self):
+        if len(self.fields) > 0:
+            fields_to_builtins = "\n".join(field.py_to_builtins('out')
+                                           for field in self.fields)
+            body = """\
+out = {}
+%(fields_to_builtins)s
+return out
+""" % locals()
+        else:
+            body = """\
+return {}"""
+        body = indent(' ' * 4, body)
+        return {'to_builtins': """\
+def to_builtins(self):
+%(body)s
+""" % locals()}
+
     def _py_method_write_protocol(self):
         field_write_protocols = \
             lpad("\n\n", "\n\n".join(indent(' ' * 4,

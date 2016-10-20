@@ -309,6 +309,8 @@ class ProtocolTestStruct(object):
             if i32_field is not None:
                 if not isinstance(i32_field, int):
                     raise TypeError("expected i32_field to be a int but it is a %s" % getattr(__builtin__, 'type')(i32_field))
+                if i32_field < 1:
+                    raise ValueError("expected i32_field to be >= 1, was %s" % i32_field)
             self.__i32_field = i32_field
             return self
 
@@ -425,6 +427,8 @@ class ProtocolTestStruct(object):
             if u32_field is not None:
                 if not isinstance(u32_field, (int, long)) and u32_field >= 0:
                     raise TypeError("expected u32_field to be a int but it is a %s" % getattr(__builtin__, 'type')(u32_field))
+                if u32_field < 1:
+                    raise ValueError("expected u32_field to be >= 1, was %s" % u32_field)
             self.__u32_field = u32_field
             return self
 
@@ -436,6 +440,8 @@ class ProtocolTestStruct(object):
             if u64_field is not None:
                 if not isinstance(u64_field, (int, long)) and u64_field >= 0:
                     raise TypeError("expected u64_field to be a int or long but it is a %s" % getattr(__builtin__, 'type')(u64_field))
+                if u64_field < 1:
+                    raise ValueError("expected u64_field to be >= 1, was %s" % u64_field)
             self.__u64_field = u64_field
             return self
 
@@ -995,6 +1001,8 @@ class ProtocolTestStruct(object):
         if i32_field is not None:
             if not isinstance(i32_field, int):
                 raise TypeError("expected i32_field to be a int but it is a %s" % getattr(__builtin__, 'type')(i32_field))
+            if i32_field < 1:
+                raise ValueError("expected i32_field to be >= 1, was %s" % i32_field)
         self.__i32_field = i32_field
 
         if i64_field is not None:
@@ -1032,11 +1040,15 @@ class ProtocolTestStruct(object):
         if u32_field is not None:
             if not isinstance(u32_field, (int, long)) and u32_field >= 0:
                 raise TypeError("expected u32_field to be a int but it is a %s" % getattr(__builtin__, 'type')(u32_field))
+            if u32_field < 1:
+                raise ValueError("expected u32_field to be >= 1, was %s" % u32_field)
         self.__u32_field = u32_field
 
         if u64_field is not None:
             if not isinstance(u64_field, (int, long)) and u64_field >= 0:
                 raise TypeError("expected u64_field to be a int or long but it is a %s" % getattr(__builtin__, 'type')(u64_field))
+            if u64_field < 1:
+                raise ValueError("expected u64_field to be >= 1, was %s" % u64_field)
         self.__u64_field = u64_field
 
         if uri_field is not None:
@@ -1107,7 +1119,7 @@ class ProtocolTestStruct(object):
         return hash((self.required_i32_field,self.required_string_field,self.binary_field,self.bool_field,self.date_time_field,self.decimal_field,self.double_field,self.email_address_field,self.enum_field,self.float_field,self.i8_field,self.i16_field,self.i32_field,self.i64_field,self.string_list_field,self.string_string_map_field,self.string_set_field,self.string_field,self.struct_field,self.u32_field,self.u64_field,self.uri_field,self.url_field,self.variant_field,))
 
     def __iter__(self):
-        return iter(self.as_tuple())
+        return iter((self.required_i32_field, self.required_string_field, self.binary_field, self.bool_field, self.date_time_field, self.decimal_field, self.double_field, self.email_address_field, self.enum_field, self.float_field, self.i8_field, self.i16_field, self.i32_field, self.i64_field, self.string_list_field, self.string_string_map_field, self.string_set_field, self.string_field, self.struct_field, self.u32_field, self.u64_field, self.uri_field, self.url_field, self.variant_field,))
 
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -1211,24 +1223,6 @@ class ProtocolTestStruct(object):
         if self.variant_field is not None:
             field_reprs.append('variant_field=' + repr(self.variant_field))
         return 'ProtocolTestStruct(' + ', '.join(field_reprs) + ')'
-
-    def as_dict(self):
-        '''
-        Return the fields of this object as a dictionary.
-
-        :rtype: dict
-        '''
-
-        return {'required_i32_field': self.required_i32_field, 'required_string_field': self.required_string_field, 'binary_field': self.binary_field, 'bool_field': self.bool_field, 'date_time_field': self.date_time_field, 'decimal_field': self.decimal_field, 'double_field': self.double_field, 'email_address_field': self.email_address_field, 'enum_field': self.enum_field, 'float_field': self.float_field, 'i8_field': self.i8_field, 'i16_field': self.i16_field, 'i32_field': self.i32_field, 'i64_field': self.i64_field, 'string_list_field': self.string_list_field, 'string_string_map_field': self.string_string_map_field, 'string_set_field': self.string_set_field, 'string_field': self.string_field, 'struct_field': self.struct_field, 'u32_field': self.u32_field, 'u64_field': self.u64_field, 'uri_field': self.uri_field, 'url_field': self.url_field, 'variant_field': self.variant_field}
-
-    def as_tuple(self):
-        '''
-        Return the fields of this object in declaration order as a tuple.
-
-        :rtype: tuple
-        '''
-
-        return (self.required_i32_field, self.required_string_field, self.binary_field, self.bool_field, self.date_time_field, self.decimal_field, self.double_field, self.email_address_field, self.enum_field, self.float_field, self.i8_field, self.i16_field, self.i32_field, self.i64_field, self.string_list_field, self.string_string_map_field, self.string_set_field, self.string_field, self.struct_field, self.u32_field, self.u64_field, self.uri_field, self.url_field, self.variant_field,)
 
     @property
     def binary_field(self):

@@ -809,7 +809,7 @@ class NestedProtocolTestStruct(object):
         return hash((self.required_i32_field,self.required_string_field,self.binary_field,self.bool_field,self.byte_field,self.date_time_field,self.decimal_field,self.email_address_field,self.enum_field,self.i16_field,self.i32_field,self.i64_field,self.string_list_field,self.string_string_map_field,self.string_set_field,self.string_field,self.url_field,))
 
     def __iter__(self):
-        return iter(self.as_tuple())
+        return iter((self.required_i32_field, self.required_string_field, self.binary_field, self.bool_field, self.byte_field, self.date_time_field, self.decimal_field, self.email_address_field, self.enum_field, self.i16_field, self.i32_field, self.i64_field, self.string_list_field, self.string_string_map_field, self.string_set_field, self.string_field, self.url_field,))
 
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -885,24 +885,6 @@ class NestedProtocolTestStruct(object):
         if self.url_field is not None:
             field_reprs.append('url_field=' + "'" + self.url_field.encode('ascii', 'replace') + "'")
         return 'NestedProtocolTestStruct(' + ', '.join(field_reprs) + ')'
-
-    def as_dict(self):
-        '''
-        Return the fields of this object as a dictionary.
-
-        :rtype: dict
-        '''
-
-        return {'required_i32_field': self.required_i32_field, 'required_string_field': self.required_string_field, 'binary_field': self.binary_field, 'bool_field': self.bool_field, 'byte_field': self.byte_field, 'date_time_field': self.date_time_field, 'decimal_field': self.decimal_field, 'email_address_field': self.email_address_field, 'enum_field': self.enum_field, 'i16_field': self.i16_field, 'i32_field': self.i32_field, 'i64_field': self.i64_field, 'string_list_field': self.string_list_field, 'string_string_map_field': self.string_string_map_field, 'string_set_field': self.string_set_field, 'string_field': self.string_field, 'url_field': self.url_field}
-
-    def as_tuple(self):
-        '''
-        Return the fields of this object in declaration order as a tuple.
-
-        :rtype: tuple
-        '''
-
-        return (self.required_i32_field, self.required_string_field, self.binary_field, self.bool_field, self.byte_field, self.date_time_field, self.decimal_field, self.email_address_field, self.enum_field, self.i16_field, self.i32_field, self.i64_field, self.string_list_field, self.string_string_map_field, self.string_set_field, self.string_field, self.url_field,)
 
     @property
     def binary_field(self):
