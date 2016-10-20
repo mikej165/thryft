@@ -60,6 +60,12 @@ if not %(type_check)s:
 if %(name)s is not %(acceptance)s:
     raise ValueError("expected %(name)s to be %(acceptance)s, was %%s" %% %(name)s)""" % locals())
 
+        min_ = validation.pop('min', None)
+        if min_ is not None:
+            check.append("""\
+if %(name)s < %(min_)s:
+    raise ValueError("expected %(name)s to be >= %(min_)s, was %%s" %% %(name)s)""" % locals())
+
         min_exclusive = validation.pop('minExclusive', None)
         if min_exclusive is not None:
             check.append("""\
