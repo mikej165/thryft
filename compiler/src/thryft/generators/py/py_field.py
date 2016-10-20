@@ -54,6 +54,12 @@ if not %(type_check)s:
                 validation = annotation.value.copy()
                 break
 
+        acceptance = validation.pop('acceptance', None)
+        if acceptance is not None:
+            check.append("""\
+if %(name)s is not %(acceptance)s:
+    raise ValueError("expected %(name)s to be %(acceptance)s, was %%s" %% %(name)s)""" % locals())
+
         min_exclusive = validation.pop('minExclusive', None)
         if min_exclusive is not None:
             check.append("""\
