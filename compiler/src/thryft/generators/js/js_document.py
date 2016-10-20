@@ -45,7 +45,7 @@ class JsDocument(Document, _JsNamedConstruct):
 
         sections = []
         try:
-            js_namespace = self.namespace_by_scope('js').name
+            js_namespace = self.namespace_by_scope(('js', '*')).name
         except KeyError:
             js_namespace = None
         if js_namespace is not None:
@@ -65,7 +65,7 @@ if (typeof %(js_namespace_prefix)s === "undefined") {
 
     def _save_to_dir(self, out_dir_path):
         try:
-            out_dir_path = os.path.join(out_dir_path, self.namespace_by_scope('js').name.replace('.', os.path.sep))
+            out_dir_path = os.path.join(out_dir_path, self.namespace_by_scope(('js', '*')).name.replace('.', os.path.sep))
         except KeyError:
             pass
         return self._save_to_file(os.path.join(out_dir_path, self.name + '.js'))

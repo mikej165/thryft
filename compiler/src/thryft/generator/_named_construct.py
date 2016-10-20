@@ -141,7 +141,7 @@ class _NamedConstruct(_Construct):
         parent_document = self._parent_document()
         qname = []
         try:
-            qname.append(parent_document.namespace_by_scope(scope).name)
+            qname.append(parent_document.namespace_by_scope((scope, '*')).name)
         except KeyError:
             pass
         if include_parent_document_name:

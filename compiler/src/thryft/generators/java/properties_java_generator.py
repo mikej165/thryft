@@ -3,8 +3,8 @@ from yutil import indent, decamelize
 
 
 class PropertiesJavaGenerator(JavaGenerator):
-    def __init__(self, project_name):
-        JavaGenerator.__init__(self)
+    def __init__(self, project_name, **kwds):
+        JavaGenerator.__init__(self, **kwds)
         self._project_name = project_name
 
     class Field(JavaGenerator.Field):

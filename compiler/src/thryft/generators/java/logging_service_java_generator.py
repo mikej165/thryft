@@ -52,9 +52,9 @@ class LoggingServiceJavaGenerator(java_generator.JavaGenerator):
     class Document(java_generator.JavaGenerator.Document):  # @UndefinedVariable
         def java_package(self):
             try:
-                return self.namespace_by_scope(('logging_service_java', 'java')).name
+                return self.namespace_by_scope('logging_service_java').name
             except KeyError:
-                return None
+                return java_generator.JavaGenerator.Document.java_package(self)  # @UndefinedVariable
 
     class Function(java_generator.JavaGenerator.Function):  # @UndefinedVariable
         def java_definitions(self):
@@ -122,7 +122,7 @@ logger.%(call_log_level)s(%(marker)s, __logMessageStringBuilder.toString(), __lo
                     exception_log_level = self._parent_generator()._exception_log_level_default
                     exception_log_stack_trace = False
                     exception_type_name = throw.type.java_qname()
-                    for annotations in (throw.annotations, throw.type.annotations):
+                    for annotations in (throw.type.annotations, throw.annotations):
                         for annotation in annotations:
                             if annotation.name == 'java_log_level':
                                 exception_log_level = annotation.value

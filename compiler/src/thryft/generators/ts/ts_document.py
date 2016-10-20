@@ -23,7 +23,7 @@ class TsDocument(Document, _TsNamedConstruct):
             self.__ts_path = \
                 os.path.join(
                     self._parent_generator().ts_out_dir_path,
-                    self.namespace_by_scope('ts').name.replace('.', os.path.sep),
+                    self.namespace_by_scope(('ts', '*')).name.replace('.', os.path.sep),
                     self.name + '.ts'
                 )
         return self.__ts_path
@@ -48,7 +48,7 @@ class TsDocument(Document, _TsNamedConstruct):
             sections.append(references)
 
         try:
-            module_qname = self.namespace_by_scope('ts').name
+            module_qname = self.namespace_by_scope(('ts', '*')).name
             definitions = indent(' ' * 4, definitions)
             definitions = """\
 module %(module_qname)s {

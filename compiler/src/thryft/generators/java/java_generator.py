@@ -60,11 +60,12 @@ class JavaGenerator(Generator):
     from thryft.generators.java.java_string_type import JavaStringType as StringType  # @UnusedImport
     from thryft.generators.java.java_struct_type import JavaStructType as StructType  # @UnusedImport
 
-    def __init__(self, default_methods=False, function_overloads=False, mutable_compound_types=False, **kwds):
+    def __init__(self, default_methods=False, function_overloads=False, mutable_compound_types=False, namespace_prefix=None, **kwds):
         Generator.__init__(self, **kwds)
         self.__default_methods = default_methods
         self.__function_overloads = function_overloads
         self.__mutable_compound_types = mutable_compound_types
+        self.__namespace_prefix = namespace_prefix
 
     @property
     def default_methods(self):
@@ -77,6 +78,10 @@ class JavaGenerator(Generator):
     @property
     def mutable_compound_types(self):
         return self.__mutable_compound_types
+
+    @property
+    def namespace_prefix(self):
+        return self.__namespace_prefix
 
 
 Parser.register_annotation_parser(JavaFinalAnnotationParser())

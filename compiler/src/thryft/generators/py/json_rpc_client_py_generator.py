@@ -46,7 +46,7 @@ class JsonRpcClientPyGenerator(py_generator.PyGenerator):
 
     class Document(PyDocument):
         def _py_namespace(self):
-            return self.namespace_by_scope(('json_rpc_client_py', 'py')).name
+            return self.namespace_by_scope(('json_rpc_client_py', 'py', '*')).name
 
     class Function(PyFunction):
         def _py_imports_definition(self, caller_stack):

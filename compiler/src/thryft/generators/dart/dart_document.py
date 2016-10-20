@@ -22,11 +22,11 @@ class DartDocument(Document, _DartNamedConstruct):
     def _dart_imports_use(self, caller_stack):
         return ["import 'package:%s/%s';" % (
                     self.__package_name,
-                    rpad(self.namespace_by_scope('dart').name.replace('.', '/'), '/') + self.dart_name() + '.dart')]
+                    rpad(self.namespace_by_scope(('dart', '*')).name.replace('.', '/'), '/') + self.dart_name() + '.dart')]
 
     def dart_repr(self):
         try:
-            dart_namespace_name = self.namespace_by_scope('dart').name
+            dart_namespace_name = self.namespace_by_scope(('dart', '*')).name
         except KeyError:
             return ''
 
@@ -46,7 +46,7 @@ class DartDocument(Document, _DartNamedConstruct):
 
     def _save_to_dir(self, out_dir_path):
         try:
-            out_dir_path = os.path.join(out_dir_path, self.namespace_by_scope('dart').name.replace('.', os.path.sep))
+            out_dir_path = os.path.join(out_dir_path, self.namespace_by_scope(('dart', '*')).name.replace('.', os.path.sep))
         except KeyError:
             pass
         return self._save_to_file(os.path.join(out_dir_path, self.dart_name() + '.dart'))

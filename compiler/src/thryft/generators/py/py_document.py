@@ -39,7 +39,7 @@ from yutil import decamelize, rpad
 
 class PyDocument(Document, _PyNamedConstruct):
     def _py_namespace(self):
-        return self.namespace_by_scope('py').name
+        return self.namespace_by_scope(('py', '*')).name
 
     def py_repr(self):
         sections = []

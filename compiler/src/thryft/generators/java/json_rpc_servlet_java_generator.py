@@ -38,9 +38,9 @@ class JsonRpcServletJavaGenerator(java_generator.JavaGenerator):
     class Document(java_generator.JavaGenerator.Document):  # @UndefinedVariable
         def java_package(self):
             try:
-                return self.namespace_by_scope(('json_rpc_servlet_java', 'servlet_java', 'java')).name
+                return self.namespace_by_scope(('json_rpc_servlet_java', 'servlet_java')).name
             except KeyError:
-                return None
+                return java_generator.JavaGenerator.Document.java_package(self)
 
     class Function(java_generator.JavaGenerator.Function):  # @UndefinedVariable
         def java_definition(self):

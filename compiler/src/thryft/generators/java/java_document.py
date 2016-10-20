@@ -47,10 +47,19 @@ class JavaDocument(Document, _JavaNamedConstruct):
         return []
 
     def java_package(self):
-        try:
-            return self.namespace_by_scope('java').name
-        except KeyError:
-            return None
+        for namespace in self.namespaces:
+            if namespace.scope == 'java':
+                return namespace.name
+
+        for namespace in self.namespaces:
+            if namespace.scope == '*':
+                package = namespace.name
+                namespace_prefix = self._parent_generator().namespace_prefix
+                if namespace_prefix is not None:
+                    package = namespace_prefix + package
+                return package
+
+        return None
 
     def java_package_declaration(self):
         package = self.java_package()
@@ -88,17 +97,6 @@ class JavaDocument(Document, _JavaNamedConstruct):
         java_package = self.java_package()
         if java_package is not None:
             out_dir_path = os.path.join(out_dir_path, java_package.replace('.', os.path.sep))
-
-        try:
-            basic_java_package = self.namespace_by_scope('java').name
-        except KeyError:
-            basic_java_package = None
-        if basic_java_package is not None and basic_java_package == java_package:
-            if self.document_root_dir_path is not None:
-                document_relpath = os.path.relpath(os.path.dirname(self.path), self.document_root_dir_path)
-                out_dir_relpath = os.path.relpath(out_dir_path, root_out_dir_path)
-                if not out_dir_relpath.endswith(document_relpath):
-                    self._logger.warn("Java package %s (relative directory %s) does not match .thrift file path %s (relative directory %s)", java_package, out_dir_relpath, self.path, document_relpath)
         return self._save_to_file(os.path.join(out_dir_path, self._java_file_base_name() + self._java_file_ext()))
 
     def _save_to_file(self, out_file_path):

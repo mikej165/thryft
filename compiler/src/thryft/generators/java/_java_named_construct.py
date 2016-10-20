@@ -48,6 +48,10 @@ class _JavaNamedConstruct(_JavaConstruct):
             return name
         try:
             namespace = parent_document.namespace_by_scope(java_namespace_scope)
-            return namespace.name + '.' + name
+            qname = namespace.name + '.' + name
+            namespace_prefix = self._parent_generator().namespace_prefix
+            if namespace_prefix is not None:
+                qname = namespace_prefix + qname
+            return qname
         except KeyError:
             return name

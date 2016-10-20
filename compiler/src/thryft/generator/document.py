@@ -78,10 +78,6 @@ class Document(_NamedConstruct):
             for namespace in self.namespaces:
                 if namespace.scope == scope:
                     return namespace
-        if '*' not in scopes:
-            for namespace in self.namespaces:
-                if namespace.scope == '*':
-                    return namespace
 
         raise KeyError("scope(s) %s in %s (available: %s)" % (scopes, self.path, [namespace.scope for namespace in self.namespaces]))
 

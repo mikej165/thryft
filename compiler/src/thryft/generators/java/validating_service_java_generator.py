@@ -37,12 +37,12 @@ from yutil import indent, lpad, upper_camelize
 
 
 class ValidatingServiceJavaGenerator(java_generator.JavaGenerator):
-    class Document(java_generator.JavaGenerator.Document):
+    class Document(java_generator.JavaGenerator.Document):  # @UndefinedVariable
         def java_package(self):
             try:
-                return self.namespace_by_scope(('validating_service_java', 'java')).name
+                return self.namespace_by_scope('validating_service_java').name
             except KeyError:
-                return None
+                return java_generator.JavaGenerator.Document.java_package(self)  # @UndefinedVariable
 
     class Function(JavaFunction):
         def java_definitions(self):

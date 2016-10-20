@@ -38,9 +38,9 @@ class JsonRpcClientJavaGenerator(java_generator.JavaGenerator):
     class Document(java_generator.JavaGenerator.Document):
         def java_package(self):
             try:
-                return self.namespace_by_scope(('json_rpc_client_java', 'java')).name
+                return self.namespace_by_scope('json_rpc_client_java').name
             except KeyError:
-                return None
+                return java_generator.JavaGenerator.Document.java_package(self)
 
     class Function(java_generator.JavaGenerator.Function):
         def java_repr(self):
