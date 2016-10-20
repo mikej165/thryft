@@ -32,4 +32,4 @@ class SqlGenerator(Generator):
 
 Parser.register_annotation_parser(AnnotationParser('sql_column', Ast.StructTypeNode))
 Parser.register_annotation_parser(SqlForeignKeyAnnotationParser())
-Parser.register_annotation_parser(ValuelessAnnotationParser('sql_unique', Ast.StructTypeNode))
+Parser.register_annotation_parser(ValuelessAnnotationParser('sql_unique', Ast.FieldNode))
