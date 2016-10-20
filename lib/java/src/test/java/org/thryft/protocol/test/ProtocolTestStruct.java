@@ -13,14 +13,14 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
             emailAddressField = com.google.common.base.Optional.<org.thryft.native_.EmailAddress> absent();
             enumField = com.google.common.base.Optional.<org.thryft.protocol.test.ProtocolTestEnum> absent();
             floatField = com.google.common.base.Optional.<Float> absent();
-            i8Field = com.google.common.base.Optional.<Byte> absent();
             i16Field = com.google.common.base.Optional.<Short> absent();
             i32Field = com.google.common.base.Optional.<Integer> absent();
             i64Field = com.google.common.base.Optional.<Long> absent();
-            stringListField = com.google.common.base.Optional.<com.google.common.collect.ImmutableList<String>> absent();
-            stringStringMapField = com.google.common.base.Optional.<com.google.common.collect.ImmutableMap<String, String>> absent();
-            stringSetField = com.google.common.base.Optional.<com.google.common.collect.ImmutableSet<String>> absent();
+            i8Field = com.google.common.base.Optional.<Byte> absent();
             stringField = com.google.common.base.Optional.<String> absent();
+            stringListField = com.google.common.base.Optional.<com.google.common.collect.ImmutableList<String>> absent();
+            stringSetField = com.google.common.base.Optional.<com.google.common.collect.ImmutableSet<String>> absent();
+            stringStringMapField = com.google.common.base.Optional.<com.google.common.collect.ImmutableMap<String, String>> absent();
             structField = com.google.common.base.Optional.<org.thryft.protocol.test.NestedProtocolTestStruct> absent();
             u32Field = com.google.common.base.Optional.<com.google.common.primitives.UnsignedInteger> absent();
             u64Field = com.google.common.base.Optional.<com.google.common.primitives.UnsignedLong> absent();
@@ -40,14 +40,14 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
             this.emailAddressField = other.getEmailAddressField();
             this.enumField = other.getEnumField();
             this.floatField = other.getFloatField();
-            this.i8Field = other.getI8Field();
             this.i16Field = other.getI16Field();
             this.i32Field = other.getI32Field();
             this.i64Field = other.getI64Field();
-            this.stringListField = other.getStringListField();
-            this.stringStringMapField = other.getStringStringMapField();
-            this.stringSetField = other.getStringSetField();
+            this.i8Field = other.getI8Field();
             this.stringField = other.getStringField();
+            this.stringListField = other.getStringListField();
+            this.stringSetField = other.getStringSetField();
+            this.stringStringMapField = other.getStringStringMapField();
             this.structField = other.getStructField();
             this.u32Field = other.getU32Field();
             this.u64Field = other.getU64Field();
@@ -56,12 +56,12 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
             this.variantField = other.getVariantField();
         }
 
-        protected ProtocolTestStruct _build(final int requiredI32Field, final String requiredStringField, final com.google.common.base.Optional<byte[]> binaryField, final com.google.common.base.Optional<Boolean> boolField, final com.google.common.base.Optional<java.util.Date> dateTimeField, final com.google.common.base.Optional<java.math.BigDecimal> decimalField, final com.google.common.base.Optional<Double> doubleField, final com.google.common.base.Optional<org.thryft.native_.EmailAddress> emailAddressField, final com.google.common.base.Optional<org.thryft.protocol.test.ProtocolTestEnum> enumField, final com.google.common.base.Optional<Float> floatField, final com.google.common.base.Optional<Byte> i8Field, final com.google.common.base.Optional<Short> i16Field, final com.google.common.base.Optional<Integer> i32Field, final com.google.common.base.Optional<Long> i64Field, final com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> stringListField, final com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> stringStringMapField, final com.google.common.base.Optional<com.google.common.collect.ImmutableSet<String>> stringSetField, final com.google.common.base.Optional<String> stringField, final com.google.common.base.Optional<org.thryft.protocol.test.NestedProtocolTestStruct> structField, final com.google.common.base.Optional<com.google.common.primitives.UnsignedInteger> u32Field, final com.google.common.base.Optional<com.google.common.primitives.UnsignedLong> u64Field, final com.google.common.base.Optional<org.thryft.native_.Uri> uriField, final com.google.common.base.Optional<org.thryft.native_.Url> urlField, final com.google.common.base.Optional<java.lang.Object> variantField) {
-            return new ProtocolTestStruct(requiredI32Field, requiredStringField, binaryField, boolField, dateTimeField, decimalField, doubleField, emailAddressField, enumField, floatField, i8Field, i16Field, i32Field, i64Field, stringListField, stringStringMapField, stringSetField, stringField, structField, u32Field, u64Field, uriField, urlField, variantField, DefaultConstructionValidator.getInstance());
+        protected ProtocolTestStruct _build(final int requiredI32Field, final String requiredStringField, final com.google.common.base.Optional<byte[]> binaryField, final com.google.common.base.Optional<Boolean> boolField, final com.google.common.base.Optional<java.util.Date> dateTimeField, final com.google.common.base.Optional<java.math.BigDecimal> decimalField, final com.google.common.base.Optional<Double> doubleField, final com.google.common.base.Optional<org.thryft.native_.EmailAddress> emailAddressField, final com.google.common.base.Optional<org.thryft.protocol.test.ProtocolTestEnum> enumField, final com.google.common.base.Optional<Float> floatField, final com.google.common.base.Optional<Short> i16Field, final com.google.common.base.Optional<Integer> i32Field, final com.google.common.base.Optional<Long> i64Field, final com.google.common.base.Optional<Byte> i8Field, final com.google.common.base.Optional<String> stringField, final com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> stringListField, final com.google.common.base.Optional<com.google.common.collect.ImmutableSet<String>> stringSetField, final com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> stringStringMapField, final com.google.common.base.Optional<org.thryft.protocol.test.NestedProtocolTestStruct> structField, final com.google.common.base.Optional<com.google.common.primitives.UnsignedInteger> u32Field, final com.google.common.base.Optional<com.google.common.primitives.UnsignedLong> u64Field, final com.google.common.base.Optional<org.thryft.native_.Uri> uriField, final com.google.common.base.Optional<org.thryft.native_.Url> urlField, final com.google.common.base.Optional<java.lang.Object> variantField) {
+            return new ProtocolTestStruct(requiredI32Field, requiredStringField, binaryField, boolField, dateTimeField, decimalField, doubleField, emailAddressField, enumField, floatField, i16Field, i32Field, i64Field, i8Field, stringField, stringListField, stringSetField, stringStringMapField, structField, u32Field, u64Field, uriField, urlField, variantField, DefaultConstructionValidator.getInstance());
         }
 
         public ProtocolTestStruct build() {
-            return _build(requiredI32Field, requiredStringField, binaryField, boolField, dateTimeField, decimalField, doubleField, emailAddressField, enumField, floatField, i8Field, i16Field, i32Field, i64Field, stringListField, stringStringMapField, stringSetField, stringField, structField, u32Field, u64Field, uriField, urlField, variantField);
+            return _build(requiredI32Field, requiredStringField, binaryField, boolField, dateTimeField, decimalField, doubleField, emailAddressField, enumField, floatField, i16Field, i32Field, i64Field, i8Field, stringField, stringListField, stringSetField, stringStringMapField, structField, u32Field, u64Field, uriField, urlField, variantField);
         }
 
         public final com.google.common.base.Optional<byte[]> getBinaryField() {
@@ -222,29 +222,32 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
                 }
                 if (__list.getSize() > 10) {
                     try {
-                        i8Field = com.google.common.base.Optional.of(iprot.readByte());
+                        i16Field = com.google.common.base.Optional.of(iprot.readI16());
                     } catch (final NumberFormatException e) {
                     }
                 }
                 if (__list.getSize() > 11) {
                     try {
-                        i16Field = com.google.common.base.Optional.of(iprot.readI16());
+                        i32Field = com.google.common.base.Optional.of(iprot.readI32());
                     } catch (final NumberFormatException e) {
                     }
                 }
                 if (__list.getSize() > 12) {
                     try {
-                        i32Field = com.google.common.base.Optional.of(iprot.readI32());
+                        i64Field = com.google.common.base.Optional.of(iprot.readI64());
                     } catch (final NumberFormatException e) {
                     }
                 }
                 if (__list.getSize() > 13) {
                     try {
-                        i64Field = com.google.common.base.Optional.of(iprot.readI64());
+                        i8Field = com.google.common.base.Optional.of(iprot.readByte());
                     } catch (final NumberFormatException e) {
                     }
                 }
                 if (__list.getSize() > 14) {
+                    stringField = com.google.common.base.Optional.of(iprot.readString());
+                }
+                if (__list.getSize() > 15) {
                     try {
                         stringListField = com.google.common.base.Optional.of((new com.google.common.base.Function<org.thryft.protocol.InputProtocol, com.google.common.collect.ImmutableList<String>>() {
                             @Override
@@ -264,32 +267,6 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
                         }).apply(iprot));
                     } catch (final org.thryft.protocol.UncheckedInputProtocolException e) {
                          throw new org.thryft.protocol.InvalidFieldInputProtocolException(FieldMetadata.STRING_LIST_FIELD, e.getCause());
-                    }
-                }
-                if (__list.getSize() > 15) {
-                    try {
-                        stringStringMapField = com.google.common.base.Optional.of((new com.google.common.base.Function<org.thryft.protocol.InputProtocol, com.google.common.collect.ImmutableMap<String, String>>() {
-                            @Override
-                            public com.google.common.collect.ImmutableMap<String, String> apply(final org.thryft.protocol.InputProtocol iprot) {
-                                try {
-                                    final org.thryft.protocol.MapBegin mapBegin = iprot.readMapBegin();
-                                    final com.google.common.collect.ImmutableMap.Builder<String, String> map = com.google.common.collect.ImmutableMap.builder();
-                                    for (int entryI = 0; entryI < mapBegin.getSize(); entryI++) {
-                                        final String key;
-                                        key = iprot.readString();
-                                        final String value;
-                                        value = iprot.readString();
-                                        map.put(key, value);
-                                    }
-                                    iprot.readMapEnd();
-                                    return map.build();
-                                } catch (final org.thryft.protocol.InputProtocolException e) {
-                                    throw new org.thryft.protocol.UncheckedInputProtocolException(e);
-                                }
-                            }
-                        }).apply(iprot));
-                    } catch (final org.thryft.protocol.UncheckedInputProtocolException e) {
-                         throw new org.thryft.protocol.InvalidFieldInputProtocolException(FieldMetadata.STRING_STRING_MAP_FIELD, e.getCause());
                     }
                 }
                 if (__list.getSize() > 16) {
@@ -315,7 +292,30 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
                     }
                 }
                 if (__list.getSize() > 17) {
-                    stringField = com.google.common.base.Optional.of(iprot.readString());
+                    try {
+                        stringStringMapField = com.google.common.base.Optional.of((new com.google.common.base.Function<org.thryft.protocol.InputProtocol, com.google.common.collect.ImmutableMap<String, String>>() {
+                            @Override
+                            public com.google.common.collect.ImmutableMap<String, String> apply(final org.thryft.protocol.InputProtocol iprot) {
+                                try {
+                                    final org.thryft.protocol.MapBegin mapBegin = iprot.readMapBegin();
+                                    final com.google.common.collect.ImmutableMap.Builder<String, String> map = com.google.common.collect.ImmutableMap.builder();
+                                    for (int entryI = 0; entryI < mapBegin.getSize(); entryI++) {
+                                        final String key;
+                                        key = iprot.readString();
+                                        final String value;
+                                        value = iprot.readString();
+                                        map.put(key, value);
+                                    }
+                                    iprot.readMapEnd();
+                                    return map.build();
+                                } catch (final org.thryft.protocol.InputProtocolException e) {
+                                    throw new org.thryft.protocol.UncheckedInputProtocolException(e);
+                                }
+                            }
+                        }).apply(iprot));
+                    } catch (final org.thryft.protocol.UncheckedInputProtocolException e) {
+                         throw new org.thryft.protocol.InvalidFieldInputProtocolException(FieldMetadata.STRING_STRING_MAP_FIELD, e.getCause());
+                    }
                 }
                 if (__list.getSize() > 18) {
                     structField = com.google.common.base.Optional.of(org.thryft.protocol.test.NestedProtocolTestStruct.readAsStruct(iprot));
@@ -443,15 +443,6 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
                         }
                         break;
                     }
-                    case "i8_field": {
-                        if (!ifield.hasId() || ifield.getId() == 11) {
-                            try {
-                                i8Field = com.google.common.base.Optional.of(iprot.readByte());
-                            } catch (final NumberFormatException e) {
-                            }
-                        }
-                        break;
-                    }
                     case "i16_field": {
                         if (!ifield.hasId() || ifield.getId() == 12) {
                             try {
@@ -479,6 +470,21 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
                         }
                         break;
                     }
+                    case "i8_field": {
+                        if (!ifield.hasId() || ifield.getId() == 11) {
+                            try {
+                                i8Field = com.google.common.base.Optional.of(iprot.readByte());
+                            } catch (final NumberFormatException e) {
+                            }
+                        }
+                        break;
+                    }
+                    case "string_field": {
+                        if (!ifield.hasId() || ifield.getId() == 18) {
+                            stringField = com.google.common.base.Optional.of(iprot.readString());
+                        }
+                        break;
+                    }
                     case "string_list_field": {
                         if (!ifield.hasId() || ifield.getId() == 15) {
                             try {
@@ -500,6 +506,31 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
                                 }).apply(iprot));
                             } catch (final org.thryft.protocol.UncheckedInputProtocolException e) {
                                  throw new org.thryft.protocol.InvalidFieldInputProtocolException(FieldMetadata.STRING_LIST_FIELD, e.getCause());
+                            }
+                        }
+                        break;
+                    }
+                    case "string_set_field": {
+                        if (!ifield.hasId() || ifield.getId() == 17) {
+                            try {
+                                stringSetField = com.google.common.base.Optional.of((new com.google.common.base.Function<org.thryft.protocol.InputProtocol, com.google.common.collect.ImmutableSet<String>>() {
+                                    @Override
+                                    public com.google.common.collect.ImmutableSet<String> apply(final org.thryft.protocol.InputProtocol iprot) {
+                                        try {
+                                            final org.thryft.protocol.SetBegin sequenceBegin = iprot.readSetBegin();
+                                            final com.google.common.collect.ImmutableSet.Builder<String> sequenceBuilder = com.google.common.collect.ImmutableSet.builder();
+                                            for (int elementI = 0; elementI < sequenceBegin.getSize(); elementI++) {
+                                                sequenceBuilder.add(iprot.readString());
+                                            }
+                                            iprot.readSetEnd();
+                                            return sequenceBuilder.build();
+                                        } catch (final org.thryft.protocol.InputProtocolException e) {
+                                            throw new org.thryft.protocol.UncheckedInputProtocolException(e);
+                                        }
+                                    }
+                                }).apply(iprot));
+                            } catch (final org.thryft.protocol.UncheckedInputProtocolException e) {
+                                 throw new org.thryft.protocol.InvalidFieldInputProtocolException(FieldMetadata.STRING_SET_FIELD, e.getCause());
                             }
                         }
                         break;
@@ -530,37 +561,6 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
                             } catch (final org.thryft.protocol.UncheckedInputProtocolException e) {
                                  throw new org.thryft.protocol.InvalidFieldInputProtocolException(FieldMetadata.STRING_STRING_MAP_FIELD, e.getCause());
                             }
-                        }
-                        break;
-                    }
-                    case "string_set_field": {
-                        if (!ifield.hasId() || ifield.getId() == 17) {
-                            try {
-                                stringSetField = com.google.common.base.Optional.of((new com.google.common.base.Function<org.thryft.protocol.InputProtocol, com.google.common.collect.ImmutableSet<String>>() {
-                                    @Override
-                                    public com.google.common.collect.ImmutableSet<String> apply(final org.thryft.protocol.InputProtocol iprot) {
-                                        try {
-                                            final org.thryft.protocol.SetBegin sequenceBegin = iprot.readSetBegin();
-                                            final com.google.common.collect.ImmutableSet.Builder<String> sequenceBuilder = com.google.common.collect.ImmutableSet.builder();
-                                            for (int elementI = 0; elementI < sequenceBegin.getSize(); elementI++) {
-                                                sequenceBuilder.add(iprot.readString());
-                                            }
-                                            iprot.readSetEnd();
-                                            return sequenceBuilder.build();
-                                        } catch (final org.thryft.protocol.InputProtocolException e) {
-                                            throw new org.thryft.protocol.UncheckedInputProtocolException(e);
-                                        }
-                                    }
-                                }).apply(iprot));
-                            } catch (final org.thryft.protocol.UncheckedInputProtocolException e) {
-                                 throw new org.thryft.protocol.InvalidFieldInputProtocolException(FieldMetadata.STRING_SET_FIELD, e.getCause());
-                            }
-                        }
-                        break;
-                    }
-                    case "string_field": {
-                        if (!ifield.hasId() || ifield.getId() == 18) {
-                            stringField = com.google.common.base.Optional.of(iprot.readString());
                         }
                         break;
                     }
@@ -653,14 +653,14 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
             case EMAIL_ADDRESS_FIELD: setEmailAddressField((org.thryft.native_.EmailAddress)value); return this;
             case ENUM_FIELD: setEnumField((org.thryft.protocol.test.ProtocolTestEnum)value); return this;
             case FLOAT_FIELD: setFloatField((Float)value); return this;
-            case I8_FIELD: setI8Field((Byte)value); return this;
             case I16_FIELD: setI16Field((Short)value); return this;
             case I32_FIELD: setI32Field((Integer)value); return this;
             case I64_FIELD: setI64Field((Long)value); return this;
-            case STRING_LIST_FIELD: setStringListField((com.google.common.collect.ImmutableList<String>)value); return this;
-            case STRING_STRING_MAP_FIELD: setStringStringMapField((com.google.common.collect.ImmutableMap<String, String>)value); return this;
-            case STRING_SET_FIELD: setStringSetField((com.google.common.collect.ImmutableSet<String>)value); return this;
+            case I8_FIELD: setI8Field((Byte)value); return this;
             case STRING_FIELD: setStringField((String)value); return this;
+            case STRING_LIST_FIELD: setStringListField((com.google.common.collect.ImmutableList<String>)value); return this;
+            case STRING_SET_FIELD: setStringSetField((com.google.common.collect.ImmutableSet<String>)value); return this;
+            case STRING_STRING_MAP_FIELD: setStringStringMapField((com.google.common.collect.ImmutableMap<String, String>)value); return this;
             case STRUCT_FIELD: setStructField((org.thryft.protocol.test.NestedProtocolTestStruct)value); return this;
             case U32_FIELD: setU32Field((com.google.common.primitives.UnsignedInteger)value); return this;
             case U64_FIELD: setU64Field((com.google.common.primitives.UnsignedLong)value); return this;
@@ -809,9 +809,6 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
             if (other.getFloatField().isPresent()) {
                 setFloatField(other.getFloatField());
             }
-            if (other.getI8Field().isPresent()) {
-                setI8Field(other.getI8Field());
-            }
             if (other.getI16Field().isPresent()) {
                 setI16Field(other.getI16Field());
             }
@@ -821,17 +818,20 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
             if (other.getI64Field().isPresent()) {
                 setI64Field(other.getI64Field());
             }
+            if (other.getI8Field().isPresent()) {
+                setI8Field(other.getI8Field());
+            }
+            if (other.getStringField().isPresent()) {
+                setStringField(other.getStringField());
+            }
             if (other.getStringListField().isPresent()) {
                 setStringListField(other.getStringListField());
-            }
-            if (other.getStringStringMapField().isPresent()) {
-                setStringStringMapField(other.getStringStringMapField());
             }
             if (other.getStringSetField().isPresent()) {
                 setStringSetField(other.getStringSetField());
             }
-            if (other.getStringField().isPresent()) {
-                setStringField(other.getStringField());
+            if (other.getStringStringMapField().isPresent()) {
+                setStringStringMapField(other.getStringStringMapField());
             }
             if (other.getStructField().isPresent()) {
                 setStructField(other.getStructField());
@@ -980,14 +980,14 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
             case EMAIL_ADDRESS_FIELD: return unsetEmailAddressField();
             case ENUM_FIELD: return unsetEnumField();
             case FLOAT_FIELD: return unsetFloatField();
-            case I8_FIELD: return unsetI8Field();
             case I16_FIELD: return unsetI16Field();
             case I32_FIELD: return unsetI32Field();
             case I64_FIELD: return unsetI64Field();
-            case STRING_LIST_FIELD: return unsetStringListField();
-            case STRING_STRING_MAP_FIELD: return unsetStringStringMapField();
-            case STRING_SET_FIELD: return unsetStringSetField();
+            case I8_FIELD: return unsetI8Field();
             case STRING_FIELD: return unsetStringField();
+            case STRING_LIST_FIELD: return unsetStringListField();
+            case STRING_SET_FIELD: return unsetStringSetField();
+            case STRING_STRING_MAP_FIELD: return unsetStringStringMapField();
             case STRUCT_FIELD: return unsetStructField();
             case U32_FIELD: return unsetU32Field();
             case U64_FIELD: return unsetU64Field();
@@ -1129,14 +1129,14 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
         private com.google.common.base.Optional<org.thryft.native_.EmailAddress> emailAddressField;
         private com.google.common.base.Optional<org.thryft.protocol.test.ProtocolTestEnum> enumField;
         private com.google.common.base.Optional<Float> floatField;
-        private com.google.common.base.Optional<Byte> i8Field;
         private com.google.common.base.Optional<Short> i16Field;
         private com.google.common.base.Optional<Integer> i32Field;
         private com.google.common.base.Optional<Long> i64Field;
-        private com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> stringListField;
-        private com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> stringStringMapField;
-        private com.google.common.base.Optional<com.google.common.collect.ImmutableSet<String>> stringSetField;
+        private com.google.common.base.Optional<Byte> i8Field;
         private com.google.common.base.Optional<String> stringField;
+        private com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> stringListField;
+        private com.google.common.base.Optional<com.google.common.collect.ImmutableSet<String>> stringSetField;
+        private com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> stringStringMapField;
         private com.google.common.base.Optional<org.thryft.protocol.test.NestedProtocolTestStruct> structField;
         private com.google.common.base.Optional<com.google.common.primitives.UnsignedInteger> u32Field;
         private com.google.common.base.Optional<com.google.common.primitives.UnsignedLong> u64Field;
@@ -1186,14 +1186,14 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
         EMAIL_ADDRESS_FIELD("emailAddressField", new com.google.common.reflect.TypeToken<org.thryft.native_.EmailAddress>() {}, false, 8, "email_address_field", org.thryft.protocol.Type.STRING),
         ENUM_FIELD("enumField", new com.google.common.reflect.TypeToken<org.thryft.protocol.test.ProtocolTestEnum>() {}, false, 9, "enum_field", org.thryft.protocol.Type.STRING),
         FLOAT_FIELD("floatField", new com.google.common.reflect.TypeToken<Float>() {}, false, 10, "float_field", org.thryft.protocol.Type.DOUBLE),
-        I8_FIELD("i8Field", new com.google.common.reflect.TypeToken<Byte>() {}, false, 11, "i8_field", org.thryft.protocol.Type.BYTE),
         I16_FIELD("i16Field", new com.google.common.reflect.TypeToken<Short>() {}, false, 12, "i16_field", org.thryft.protocol.Type.I16),
         I32_FIELD("i32Field", new com.google.common.reflect.TypeToken<Integer>() {}, false, 13, "i32_field", org.thryft.protocol.Type.I32),
         I64_FIELD("i64Field", new com.google.common.reflect.TypeToken<Long>() {}, false, 14, "i64_field", org.thryft.protocol.Type.I64),
-        STRING_LIST_FIELD("stringListField", new com.google.common.reflect.TypeToken<com.google.common.collect.ImmutableList<String>>() {}, false, 15, "string_list_field", org.thryft.protocol.Type.LIST),
-        STRING_STRING_MAP_FIELD("stringStringMapField", new com.google.common.reflect.TypeToken<com.google.common.collect.ImmutableMap<String, String>>() {}, false, 16, "string_string_map_field", org.thryft.protocol.Type.MAP),
-        STRING_SET_FIELD("stringSetField", new com.google.common.reflect.TypeToken<com.google.common.collect.ImmutableSet<String>>() {}, false, 17, "string_set_field", org.thryft.protocol.Type.SET),
+        I8_FIELD("i8Field", new com.google.common.reflect.TypeToken<Byte>() {}, false, 11, "i8_field", org.thryft.protocol.Type.BYTE),
         STRING_FIELD("stringField", new com.google.common.reflect.TypeToken<String>() {}, false, 18, "string_field", org.thryft.protocol.Type.STRING),
+        STRING_LIST_FIELD("stringListField", new com.google.common.reflect.TypeToken<com.google.common.collect.ImmutableList<String>>() {}, false, 15, "string_list_field", org.thryft.protocol.Type.LIST),
+        STRING_SET_FIELD("stringSetField", new com.google.common.reflect.TypeToken<com.google.common.collect.ImmutableSet<String>>() {}, false, 17, "string_set_field", org.thryft.protocol.Type.SET),
+        STRING_STRING_MAP_FIELD("stringStringMapField", new com.google.common.reflect.TypeToken<com.google.common.collect.ImmutableMap<String, String>>() {}, false, 16, "string_string_map_field", org.thryft.protocol.Type.MAP),
         STRUCT_FIELD("structField", new com.google.common.reflect.TypeToken<org.thryft.protocol.test.NestedProtocolTestStruct>() {}, false, 19, "struct_field", org.thryft.protocol.Type.STRUCT),
         U32_FIELD("u32Field", new com.google.common.reflect.TypeToken<com.google.common.primitives.UnsignedInteger>() {}, false, 20, "u32_field", org.thryft.protocol.Type.I32),
         U64_FIELD("u64Field", new com.google.common.reflect.TypeToken<com.google.common.primitives.UnsignedLong>() {}, false, 21, "u64_field", org.thryft.protocol.Type.I64),
@@ -1253,14 +1253,14 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
             case "emailAddressField": return EMAIL_ADDRESS_FIELD;
             case "enumField": return ENUM_FIELD;
             case "floatField": return FLOAT_FIELD;
-            case "i8Field": return I8_FIELD;
             case "i16Field": return I16_FIELD;
             case "i32Field": return I32_FIELD;
             case "i64Field": return I64_FIELD;
-            case "stringListField": return STRING_LIST_FIELD;
-            case "stringStringMapField": return STRING_STRING_MAP_FIELD;
-            case "stringSetField": return STRING_SET_FIELD;
+            case "i8Field": return I8_FIELD;
             case "stringField": return STRING_FIELD;
+            case "stringListField": return STRING_LIST_FIELD;
+            case "stringSetField": return STRING_SET_FIELD;
+            case "stringStringMapField": return STRING_STRING_MAP_FIELD;
             case "structField": return STRUCT_FIELD;
             case "u32Field": return U32_FIELD;
             case "u64Field": return U64_FIELD;
@@ -1284,14 +1284,14 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
             case "email_address_field": return EMAIL_ADDRESS_FIELD;
             case "enum_field": return ENUM_FIELD;
             case "float_field": return FLOAT_FIELD;
-            case "i8_field": return I8_FIELD;
             case "i16_field": return I16_FIELD;
             case "i32_field": return I32_FIELD;
             case "i64_field": return I64_FIELD;
-            case "string_list_field": return STRING_LIST_FIELD;
-            case "string_string_map_field": return STRING_STRING_MAP_FIELD;
-            case "string_set_field": return STRING_SET_FIELD;
+            case "i8_field": return I8_FIELD;
             case "string_field": return STRING_FIELD;
+            case "string_list_field": return STRING_LIST_FIELD;
+            case "string_set_field": return STRING_SET_FIELD;
+            case "string_string_map_field": return STRING_STRING_MAP_FIELD;
             case "struct_field": return STRUCT_FIELD;
             case "u32_field": return U32_FIELD;
             case "u64_field": return U64_FIELD;
@@ -1347,21 +1347,21 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
 
         public com.google.common.base.Optional<Float> validateFloatField(final com.google.common.base.Optional<Float> floatField) throws ExceptionT;
 
-        public com.google.common.base.Optional<Byte> validateI8Field(final com.google.common.base.Optional<Byte> i8Field) throws ExceptionT;
-
         public com.google.common.base.Optional<Short> validateI16Field(final com.google.common.base.Optional<Short> i16Field) throws ExceptionT;
 
         public com.google.common.base.Optional<Integer> validateI32Field(final com.google.common.base.Optional<Integer> i32Field) throws ExceptionT;
 
         public com.google.common.base.Optional<Long> validateI64Field(final com.google.common.base.Optional<Long> i64Field) throws ExceptionT;
 
-        public com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> validateStringListField(final com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> stringListField) throws ExceptionT;
+        public com.google.common.base.Optional<Byte> validateI8Field(final com.google.common.base.Optional<Byte> i8Field) throws ExceptionT;
 
-        public com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> validateStringStringMapField(final com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> stringStringMapField) throws ExceptionT;
+        public com.google.common.base.Optional<String> validateStringField(final com.google.common.base.Optional<String> stringField) throws ExceptionT;
+
+        public com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> validateStringListField(final com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> stringListField) throws ExceptionT;
 
         public com.google.common.base.Optional<com.google.common.collect.ImmutableSet<String>> validateStringSetField(final com.google.common.base.Optional<com.google.common.collect.ImmutableSet<String>> stringSetField) throws ExceptionT;
 
-        public com.google.common.base.Optional<String> validateStringField(final com.google.common.base.Optional<String> stringField) throws ExceptionT;
+        public com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> validateStringStringMapField(final com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> stringStringMapField) throws ExceptionT;
 
         public com.google.common.base.Optional<org.thryft.protocol.test.NestedProtocolTestStruct> validateStructField(final com.google.common.base.Optional<org.thryft.protocol.test.NestedProtocolTestStruct> structField) throws ExceptionT;
 
@@ -1483,17 +1483,15 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
         }
 
         @Override
-        public com.google.common.base.Optional<Byte> validateI8Field(final com.google.common.base.Optional<Byte> i8Field) throws RuntimeException {
-            if (!i8Field.isPresent()) {
-                return i8Field;
-            }
-            return i8Field;
-        }
-
-        @Override
         public com.google.common.base.Optional<Short> validateI16Field(final com.google.common.base.Optional<Short> i16Field) throws RuntimeException {
             if (!i16Field.isPresent()) {
                 return i16Field;
+            }
+            if (i16Field.get().shortValue() > ((short)100)) {
+                throw new IllegalArgumentException("org.thryft.protocol.test.ProtocolTestStruct: i16Field is greater than max 100");
+            }
+            if (i16Field.get().shortValue() < ((short)1)) {
+                throw new IllegalArgumentException("org.thryft.protocol.test.ProtocolTestStruct: i16Field is less than min 1");
             }
             return i16Field;
         }
@@ -1502,12 +1500,6 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
         public com.google.common.base.Optional<Integer> validateI32Field(final com.google.common.base.Optional<Integer> i32Field) throws RuntimeException {
             if (!i32Field.isPresent()) {
                 return i32Field;
-            }
-            if (i32Field.get().intValue() > ((int)100)) {
-                throw new IllegalArgumentException("org.thryft.protocol.test.ProtocolTestStruct: i32Field is greater than max 100");
-            }
-            if (i32Field.get().intValue() < ((int)1)) {
-                throw new IllegalArgumentException("org.thryft.protocol.test.ProtocolTestStruct: i32Field is less than min 1");
             }
             return i32Field;
         }
@@ -1521,36 +1513,11 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
         }
 
         @Override
-        public com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> validateStringListField(final com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> stringListField) throws RuntimeException {
-            if (stringListField == null) {
-                throw new NullPointerException("org.thryft.protocol.test.ProtocolTestStruct: stringListField is null");
+        public com.google.common.base.Optional<Byte> validateI8Field(final com.google.common.base.Optional<Byte> i8Field) throws RuntimeException {
+            if (!i8Field.isPresent()) {
+                return i8Field;
             }
-            if (!stringListField.isPresent()) {
-                return stringListField;
-            }
-            return stringListField;
-        }
-
-        @Override
-        public com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> validateStringStringMapField(final com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> stringStringMapField) throws RuntimeException {
-            if (stringStringMapField == null) {
-                throw new NullPointerException("org.thryft.protocol.test.ProtocolTestStruct: stringStringMapField is null");
-            }
-            if (!stringStringMapField.isPresent()) {
-                return stringStringMapField;
-            }
-            return stringStringMapField;
-        }
-
-        @Override
-        public com.google.common.base.Optional<com.google.common.collect.ImmutableSet<String>> validateStringSetField(final com.google.common.base.Optional<com.google.common.collect.ImmutableSet<String>> stringSetField) throws RuntimeException {
-            if (stringSetField == null) {
-                throw new NullPointerException("org.thryft.protocol.test.ProtocolTestStruct: stringSetField is null");
-            }
-            if (!stringSetField.isPresent()) {
-                return stringSetField;
-            }
-            return stringSetField;
+            return i8Field;
         }
 
         @Override
@@ -1565,6 +1532,39 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
                 throw new IllegalArgumentException("org.thryft.protocol.test.ProtocolTestStruct: stringField is less than min length 1");
             }
             return stringField;
+        }
+
+        @Override
+        public com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> validateStringListField(final com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> stringListField) throws RuntimeException {
+            if (stringListField == null) {
+                throw new NullPointerException("org.thryft.protocol.test.ProtocolTestStruct: stringListField is null");
+            }
+            if (!stringListField.isPresent()) {
+                return stringListField;
+            }
+            return stringListField;
+        }
+
+        @Override
+        public com.google.common.base.Optional<com.google.common.collect.ImmutableSet<String>> validateStringSetField(final com.google.common.base.Optional<com.google.common.collect.ImmutableSet<String>> stringSetField) throws RuntimeException {
+            if (stringSetField == null) {
+                throw new NullPointerException("org.thryft.protocol.test.ProtocolTestStruct: stringSetField is null");
+            }
+            if (!stringSetField.isPresent()) {
+                return stringSetField;
+            }
+            return stringSetField;
+        }
+
+        @Override
+        public com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> validateStringStringMapField(final com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> stringStringMapField) throws RuntimeException {
+            if (stringStringMapField == null) {
+                throw new NullPointerException("org.thryft.protocol.test.ProtocolTestStruct: stringStringMapField is null");
+            }
+            if (!stringStringMapField.isPresent()) {
+                return stringStringMapField;
+            }
+            return stringStringMapField;
         }
 
         @Override
@@ -1707,11 +1707,6 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
         }
 
         @Override
-        public com.google.common.base.Optional<Byte> validateI8Field(final com.google.common.base.Optional<Byte> i8Field) {
-            return i8Field;
-        }
-
-        @Override
         public com.google.common.base.Optional<Short> validateI16Field(final com.google.common.base.Optional<Short> i16Field) {
             return i16Field;
         }
@@ -1727,13 +1722,18 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
         }
 
         @Override
-        public com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> validateStringListField(final com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> stringListField) {
-            return stringListField;
+        public com.google.common.base.Optional<Byte> validateI8Field(final com.google.common.base.Optional<Byte> i8Field) {
+            return i8Field;
         }
 
         @Override
-        public com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> validateStringStringMapField(final com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> stringStringMapField) {
-            return stringStringMapField;
+        public com.google.common.base.Optional<String> validateStringField(final com.google.common.base.Optional<String> stringField) {
+            return stringField;
+        }
+
+        @Override
+        public com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> validateStringListField(final com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> stringListField) {
+            return stringListField;
         }
 
         @Override
@@ -1742,8 +1742,8 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
         }
 
         @Override
-        public com.google.common.base.Optional<String> validateStringField(final com.google.common.base.Optional<String> stringField) {
-            return stringField;
+        public com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> validateStringStringMapField(final com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> stringStringMapField) {
+            return stringStringMapField;
         }
 
         @Override
@@ -1886,17 +1886,15 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
         }
 
         @Override
-        public com.google.common.base.Optional<Byte> validateI8Field(final com.google.common.base.Optional<Byte> i8Field) throws org.thryft.protocol.InputProtocolException {
-            if (!i8Field.isPresent()) {
-                return i8Field;
-            }
-            return i8Field;
-        }
-
-        @Override
         public com.google.common.base.Optional<Short> validateI16Field(final com.google.common.base.Optional<Short> i16Field) throws org.thryft.protocol.InputProtocolException {
             if (!i16Field.isPresent()) {
                 return i16Field;
+            }
+            if (i16Field.get().shortValue() > ((short)100)) {
+                throw new org.thryft.protocol.InvalidFieldInputProtocolException(FieldMetadata.I16_FIELD, "org.thryft.protocol.test.ProtocolTestStruct: i16Field is greater than max 100");
+            }
+            if (i16Field.get().shortValue() < ((short)1)) {
+                throw new org.thryft.protocol.InvalidFieldInputProtocolException(FieldMetadata.I16_FIELD, "org.thryft.protocol.test.ProtocolTestStruct: i16Field is less than min 1");
             }
             return i16Field;
         }
@@ -1905,12 +1903,6 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
         public com.google.common.base.Optional<Integer> validateI32Field(final com.google.common.base.Optional<Integer> i32Field) throws org.thryft.protocol.InputProtocolException {
             if (!i32Field.isPresent()) {
                 return i32Field;
-            }
-            if (i32Field.get().intValue() > ((int)100)) {
-                throw new org.thryft.protocol.InvalidFieldInputProtocolException(FieldMetadata.I32_FIELD, "org.thryft.protocol.test.ProtocolTestStruct: i32Field is greater than max 100");
-            }
-            if (i32Field.get().intValue() < ((int)1)) {
-                throw new org.thryft.protocol.InvalidFieldInputProtocolException(FieldMetadata.I32_FIELD, "org.thryft.protocol.test.ProtocolTestStruct: i32Field is less than min 1");
             }
             return i32Field;
         }
@@ -1924,36 +1916,11 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
         }
 
         @Override
-        public com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> validateStringListField(final com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> stringListField) throws org.thryft.protocol.InputProtocolException {
-            if (stringListField == null) {
-                throw new org.thryft.protocol.MissingFieldInputProtocolException(FieldMetadata.STRING_LIST_FIELD, "org.thryft.protocol.test.ProtocolTestStruct: stringListField is null");
+        public com.google.common.base.Optional<Byte> validateI8Field(final com.google.common.base.Optional<Byte> i8Field) throws org.thryft.protocol.InputProtocolException {
+            if (!i8Field.isPresent()) {
+                return i8Field;
             }
-            if (!stringListField.isPresent()) {
-                return stringListField;
-            }
-            return stringListField;
-        }
-
-        @Override
-        public com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> validateStringStringMapField(final com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> stringStringMapField) throws org.thryft.protocol.InputProtocolException {
-            if (stringStringMapField == null) {
-                throw new org.thryft.protocol.MissingFieldInputProtocolException(FieldMetadata.STRING_STRING_MAP_FIELD, "org.thryft.protocol.test.ProtocolTestStruct: stringStringMapField is null");
-            }
-            if (!stringStringMapField.isPresent()) {
-                return stringStringMapField;
-            }
-            return stringStringMapField;
-        }
-
-        @Override
-        public com.google.common.base.Optional<com.google.common.collect.ImmutableSet<String>> validateStringSetField(final com.google.common.base.Optional<com.google.common.collect.ImmutableSet<String>> stringSetField) throws org.thryft.protocol.InputProtocolException {
-            if (stringSetField == null) {
-                throw new org.thryft.protocol.MissingFieldInputProtocolException(FieldMetadata.STRING_SET_FIELD, "org.thryft.protocol.test.ProtocolTestStruct: stringSetField is null");
-            }
-            if (!stringSetField.isPresent()) {
-                return stringSetField;
-            }
-            return stringSetField;
+            return i8Field;
         }
 
         @Override
@@ -1968,6 +1935,39 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
                 throw new org.thryft.protocol.InvalidFieldInputProtocolException(FieldMetadata.STRING_FIELD, "org.thryft.protocol.test.ProtocolTestStruct: stringField is less than min length 1");
             }
             return stringField;
+        }
+
+        @Override
+        public com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> validateStringListField(final com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> stringListField) throws org.thryft.protocol.InputProtocolException {
+            if (stringListField == null) {
+                throw new org.thryft.protocol.MissingFieldInputProtocolException(FieldMetadata.STRING_LIST_FIELD, "org.thryft.protocol.test.ProtocolTestStruct: stringListField is null");
+            }
+            if (!stringListField.isPresent()) {
+                return stringListField;
+            }
+            return stringListField;
+        }
+
+        @Override
+        public com.google.common.base.Optional<com.google.common.collect.ImmutableSet<String>> validateStringSetField(final com.google.common.base.Optional<com.google.common.collect.ImmutableSet<String>> stringSetField) throws org.thryft.protocol.InputProtocolException {
+            if (stringSetField == null) {
+                throw new org.thryft.protocol.MissingFieldInputProtocolException(FieldMetadata.STRING_SET_FIELD, "org.thryft.protocol.test.ProtocolTestStruct: stringSetField is null");
+            }
+            if (!stringSetField.isPresent()) {
+                return stringSetField;
+            }
+            return stringSetField;
+        }
+
+        @Override
+        public com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> validateStringStringMapField(final com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> stringStringMapField) throws org.thryft.protocol.InputProtocolException {
+            if (stringStringMapField == null) {
+                throw new org.thryft.protocol.MissingFieldInputProtocolException(FieldMetadata.STRING_STRING_MAP_FIELD, "org.thryft.protocol.test.ProtocolTestStruct: stringStringMapField is null");
+            }
+            if (!stringStringMapField.isPresent()) {
+                return stringStringMapField;
+            }
+            return stringStringMapField;
         }
 
         @Override
@@ -2110,11 +2110,6 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
         }
 
         @Override
-        public com.google.common.base.Optional<Byte> validateI8Field(final com.google.common.base.Optional<Byte> i8Field) {
-            return i8Field;
-        }
-
-        @Override
         public com.google.common.base.Optional<Short> validateI16Field(final com.google.common.base.Optional<Short> i16Field) {
             return i16Field;
         }
@@ -2130,13 +2125,18 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
         }
 
         @Override
-        public com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> validateStringListField(final com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> stringListField) {
-            return stringListField;
+        public com.google.common.base.Optional<Byte> validateI8Field(final com.google.common.base.Optional<Byte> i8Field) {
+            return i8Field;
         }
 
         @Override
-        public com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> validateStringStringMapField(final com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> stringStringMapField) {
-            return stringStringMapField;
+        public com.google.common.base.Optional<String> validateStringField(final com.google.common.base.Optional<String> stringField) {
+            return stringField;
+        }
+
+        @Override
+        public com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> validateStringListField(final com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> stringListField) {
+            return stringListField;
         }
 
         @Override
@@ -2145,8 +2145,8 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
         }
 
         @Override
-        public com.google.common.base.Optional<String> validateStringField(final com.google.common.base.Optional<String> stringField) {
-            return stringField;
+        public com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> validateStringStringMapField(final com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> stringStringMapField) {
+            return stringStringMapField;
         }
 
         @Override
@@ -2186,10 +2186,10 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
      * Copy constructor
      */
     public ProtocolTestStruct(final ProtocolTestStruct other) {
-        this(other.getRequiredI32Field(), other.getRequiredStringField(), other.getBinaryField(), other.getBoolField(), other.getDateTimeField(), other.getDecimalField(), other.getDoubleField(), other.getEmailAddressField(), other.getEnumField(), other.getFloatField(), other.getI8Field(), other.getI16Field(), other.getI32Field(), other.getI64Field(), other.getStringListField(), other.getStringStringMapField(), other.getStringSetField(), other.getStringField(), other.getStructField(), other.getU32Field(), other.getU64Field(), other.getUriField(), other.getUrlField(), other.getVariantField(), NopConstructionValidator.getInstance());
+        this(other.getRequiredI32Field(), other.getRequiredStringField(), other.getBinaryField(), other.getBoolField(), other.getDateTimeField(), other.getDecimalField(), other.getDoubleField(), other.getEmailAddressField(), other.getEnumField(), other.getFloatField(), other.getI16Field(), other.getI32Field(), other.getI64Field(), other.getI8Field(), other.getStringField(), other.getStringListField(), other.getStringSetField(), other.getStringStringMapField(), other.getStructField(), other.getU32Field(), other.getU64Field(), other.getUriField(), other.getUrlField(), other.getVariantField(), NopConstructionValidator.getInstance());
     }
 
-    protected ProtocolTestStruct(final int requiredI32Field, final String requiredStringField, final com.google.common.base.Optional<byte[]> binaryField, final com.google.common.base.Optional<Boolean> boolField, final com.google.common.base.Optional<java.util.Date> dateTimeField, final com.google.common.base.Optional<java.math.BigDecimal> decimalField, final com.google.common.base.Optional<Double> doubleField, final com.google.common.base.Optional<org.thryft.native_.EmailAddress> emailAddressField, final com.google.common.base.Optional<org.thryft.protocol.test.ProtocolTestEnum> enumField, final com.google.common.base.Optional<Float> floatField, final com.google.common.base.Optional<Byte> i8Field, final com.google.common.base.Optional<Short> i16Field, final com.google.common.base.Optional<Integer> i32Field, final com.google.common.base.Optional<Long> i64Field, final com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> stringListField, final com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> stringStringMapField, final com.google.common.base.Optional<com.google.common.collect.ImmutableSet<String>> stringSetField, final com.google.common.base.Optional<String> stringField, final com.google.common.base.Optional<org.thryft.protocol.test.NestedProtocolTestStruct> structField, final com.google.common.base.Optional<com.google.common.primitives.UnsignedInteger> u32Field, final com.google.common.base.Optional<com.google.common.primitives.UnsignedLong> u64Field, final com.google.common.base.Optional<org.thryft.native_.Uri> uriField, final com.google.common.base.Optional<org.thryft.native_.Url> urlField, final com.google.common.base.Optional<java.lang.Object> variantField, ConstructionValidator validator) {
+    protected ProtocolTestStruct(final int requiredI32Field, final String requiredStringField, final com.google.common.base.Optional<byte[]> binaryField, final com.google.common.base.Optional<Boolean> boolField, final com.google.common.base.Optional<java.util.Date> dateTimeField, final com.google.common.base.Optional<java.math.BigDecimal> decimalField, final com.google.common.base.Optional<Double> doubleField, final com.google.common.base.Optional<org.thryft.native_.EmailAddress> emailAddressField, final com.google.common.base.Optional<org.thryft.protocol.test.ProtocolTestEnum> enumField, final com.google.common.base.Optional<Float> floatField, final com.google.common.base.Optional<Short> i16Field, final com.google.common.base.Optional<Integer> i32Field, final com.google.common.base.Optional<Long> i64Field, final com.google.common.base.Optional<Byte> i8Field, final com.google.common.base.Optional<String> stringField, final com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> stringListField, final com.google.common.base.Optional<com.google.common.collect.ImmutableSet<String>> stringSetField, final com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> stringStringMapField, final com.google.common.base.Optional<org.thryft.protocol.test.NestedProtocolTestStruct> structField, final com.google.common.base.Optional<com.google.common.primitives.UnsignedInteger> u32Field, final com.google.common.base.Optional<com.google.common.primitives.UnsignedLong> u64Field, final com.google.common.base.Optional<org.thryft.native_.Uri> uriField, final com.google.common.base.Optional<org.thryft.native_.Url> urlField, final com.google.common.base.Optional<java.lang.Object> variantField, ConstructionValidator validator) {
         this.requiredI32Field = validator.validateRequiredI32Field(requiredI32Field);
         this.requiredStringField = validator.validateRequiredStringField(requiredStringField);
         this.binaryField = validator.validateBinaryField(binaryField);
@@ -2200,14 +2200,14 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
         this.emailAddressField = validator.validateEmailAddressField(emailAddressField);
         this.enumField = validator.validateEnumField(enumField);
         this.floatField = validator.validateFloatField(floatField);
-        this.i8Field = validator.validateI8Field(i8Field);
         this.i16Field = validator.validateI16Field(i16Field);
         this.i32Field = validator.validateI32Field(i32Field);
         this.i64Field = validator.validateI64Field(i64Field);
-        this.stringListField = validator.validateStringListField(stringListField);
-        this.stringStringMapField = validator.validateStringStringMapField(stringStringMapField);
-        this.stringSetField = validator.validateStringSetField(stringSetField);
+        this.i8Field = validator.validateI8Field(i8Field);
         this.stringField = validator.validateStringField(stringField);
+        this.stringListField = validator.validateStringListField(stringListField);
+        this.stringSetField = validator.validateStringSetField(stringSetField);
+        this.stringStringMapField = validator.validateStringStringMapField(stringStringMapField);
         this.structField = validator.validateStructField(structField);
         this.u32Field = validator.validateU32Field(u32Field);
         this.u64Field = validator.validateU64Field(u64Field);
@@ -2232,28 +2232,28 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
      * Required factory method
      */
     public static ProtocolTestStruct create(final int requiredI32Field, final String requiredStringField) {
-        return new ProtocolTestStruct(requiredI32Field, requiredStringField, com.google.common.base.Optional.<byte[]> absent(), com.google.common.base.Optional.<Boolean> absent(), com.google.common.base.Optional.<java.util.Date> absent(), com.google.common.base.Optional.<java.math.BigDecimal> absent(), com.google.common.base.Optional.<Double> absent(), com.google.common.base.Optional.<org.thryft.native_.EmailAddress> absent(), com.google.common.base.Optional.<org.thryft.protocol.test.ProtocolTestEnum> absent(), com.google.common.base.Optional.<Float> absent(), com.google.common.base.Optional.<Byte> absent(), com.google.common.base.Optional.<Short> absent(), com.google.common.base.Optional.<Integer> absent(), com.google.common.base.Optional.<Long> absent(), com.google.common.base.Optional.<com.google.common.collect.ImmutableList<String>> absent(), com.google.common.base.Optional.<com.google.common.collect.ImmutableMap<String, String>> absent(), com.google.common.base.Optional.<com.google.common.collect.ImmutableSet<String>> absent(), com.google.common.base.Optional.<String> absent(), com.google.common.base.Optional.<org.thryft.protocol.test.NestedProtocolTestStruct> absent(), com.google.common.base.Optional.<com.google.common.primitives.UnsignedInteger> absent(), com.google.common.base.Optional.<com.google.common.primitives.UnsignedLong> absent(), com.google.common.base.Optional.<org.thryft.native_.Uri> absent(), com.google.common.base.Optional.<org.thryft.native_.Url> absent(), com.google.common.base.Optional.<java.lang.Object> absent(), DefaultConstructionValidator.getInstance());
+        return new ProtocolTestStruct(requiredI32Field, requiredStringField, com.google.common.base.Optional.<byte[]> absent(), com.google.common.base.Optional.<Boolean> absent(), com.google.common.base.Optional.<java.util.Date> absent(), com.google.common.base.Optional.<java.math.BigDecimal> absent(), com.google.common.base.Optional.<Double> absent(), com.google.common.base.Optional.<org.thryft.native_.EmailAddress> absent(), com.google.common.base.Optional.<org.thryft.protocol.test.ProtocolTestEnum> absent(), com.google.common.base.Optional.<Float> absent(), com.google.common.base.Optional.<Short> absent(), com.google.common.base.Optional.<Integer> absent(), com.google.common.base.Optional.<Long> absent(), com.google.common.base.Optional.<Byte> absent(), com.google.common.base.Optional.<String> absent(), com.google.common.base.Optional.<com.google.common.collect.ImmutableList<String>> absent(), com.google.common.base.Optional.<com.google.common.collect.ImmutableSet<String>> absent(), com.google.common.base.Optional.<com.google.common.collect.ImmutableMap<String, String>> absent(), com.google.common.base.Optional.<org.thryft.protocol.test.NestedProtocolTestStruct> absent(), com.google.common.base.Optional.<com.google.common.primitives.UnsignedInteger> absent(), com.google.common.base.Optional.<com.google.common.primitives.UnsignedLong> absent(), com.google.common.base.Optional.<org.thryft.native_.Uri> absent(), com.google.common.base.Optional.<org.thryft.native_.Url> absent(), com.google.common.base.Optional.<java.lang.Object> absent(), DefaultConstructionValidator.getInstance());
     }
 
     /**
      * Total boxed factory method
      */
-    public static ProtocolTestStruct create(Integer requiredI32Field, String requiredStringField, com.google.common.base.Optional<byte[]> binaryField, com.google.common.base.Optional<Boolean> boolField, com.google.common.base.Optional<java.util.Date> dateTimeField, com.google.common.base.Optional<java.math.BigDecimal> decimalField, com.google.common.base.Optional<Double> doubleField, com.google.common.base.Optional<org.thryft.native_.EmailAddress> emailAddressField, com.google.common.base.Optional<org.thryft.protocol.test.ProtocolTestEnum> enumField, com.google.common.base.Optional<Float> floatField, com.google.common.base.Optional<Byte> i8Field, com.google.common.base.Optional<Short> i16Field, com.google.common.base.Optional<Integer> i32Field, com.google.common.base.Optional<Long> i64Field, com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> stringListField, com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> stringStringMapField, com.google.common.base.Optional<com.google.common.collect.ImmutableSet<String>> stringSetField, com.google.common.base.Optional<String> stringField, com.google.common.base.Optional<org.thryft.protocol.test.NestedProtocolTestStruct> structField, com.google.common.base.Optional<com.google.common.primitives.UnsignedInteger> u32Field, com.google.common.base.Optional<com.google.common.primitives.UnsignedLong> u64Field, com.google.common.base.Optional<org.thryft.native_.Uri> uriField, com.google.common.base.Optional<org.thryft.native_.Url> urlField, com.google.common.base.Optional<java.lang.Object> variantField) {
-        return new ProtocolTestStruct(requiredI32Field, requiredStringField, binaryField, boolField, dateTimeField, decimalField, doubleField, emailAddressField, enumField, floatField, i8Field, i16Field, i32Field, i64Field, stringListField, stringStringMapField, stringSetField, stringField, structField, u32Field, u64Field, uriField, urlField, variantField, DefaultConstructionValidator.getInstance());
+    public static ProtocolTestStruct create(Integer requiredI32Field, String requiredStringField, com.google.common.base.Optional<byte[]> binaryField, com.google.common.base.Optional<Boolean> boolField, com.google.common.base.Optional<java.util.Date> dateTimeField, com.google.common.base.Optional<java.math.BigDecimal> decimalField, com.google.common.base.Optional<Double> doubleField, com.google.common.base.Optional<org.thryft.native_.EmailAddress> emailAddressField, com.google.common.base.Optional<org.thryft.protocol.test.ProtocolTestEnum> enumField, com.google.common.base.Optional<Float> floatField, com.google.common.base.Optional<Short> i16Field, com.google.common.base.Optional<Integer> i32Field, com.google.common.base.Optional<Long> i64Field, com.google.common.base.Optional<Byte> i8Field, com.google.common.base.Optional<String> stringField, com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> stringListField, com.google.common.base.Optional<com.google.common.collect.ImmutableSet<String>> stringSetField, com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> stringStringMapField, com.google.common.base.Optional<org.thryft.protocol.test.NestedProtocolTestStruct> structField, com.google.common.base.Optional<com.google.common.primitives.UnsignedInteger> u32Field, com.google.common.base.Optional<com.google.common.primitives.UnsignedLong> u64Field, com.google.common.base.Optional<org.thryft.native_.Uri> uriField, com.google.common.base.Optional<org.thryft.native_.Url> urlField, com.google.common.base.Optional<java.lang.Object> variantField) {
+        return new ProtocolTestStruct(requiredI32Field, requiredStringField, binaryField, boolField, dateTimeField, decimalField, doubleField, emailAddressField, enumField, floatField, i16Field, i32Field, i64Field, i8Field, stringField, stringListField, stringSetField, stringStringMapField, structField, u32Field, u64Field, uriField, urlField, variantField, DefaultConstructionValidator.getInstance());
     }
 
     /**
      * Total Nullable factory method
      */
-    public static ProtocolTestStruct create(final int requiredI32Field, final String requiredStringField, final @javax.annotation.Nullable byte[] binaryField, final @javax.annotation.Nullable Boolean boolField, final @javax.annotation.Nullable java.util.Date dateTimeField, final @javax.annotation.Nullable java.math.BigDecimal decimalField, final @javax.annotation.Nullable Double doubleField, final @javax.annotation.Nullable org.thryft.native_.EmailAddress emailAddressField, final @javax.annotation.Nullable org.thryft.protocol.test.ProtocolTestEnum enumField, final @javax.annotation.Nullable Float floatField, final @javax.annotation.Nullable Byte i8Field, final @javax.annotation.Nullable Short i16Field, final @javax.annotation.Nullable Integer i32Field, final @javax.annotation.Nullable Long i64Field, final @javax.annotation.Nullable com.google.common.collect.ImmutableList<String> stringListField, final @javax.annotation.Nullable com.google.common.collect.ImmutableMap<String, String> stringStringMapField, final @javax.annotation.Nullable com.google.common.collect.ImmutableSet<String> stringSetField, final @javax.annotation.Nullable String stringField, final @javax.annotation.Nullable org.thryft.protocol.test.NestedProtocolTestStruct structField, final @javax.annotation.Nullable com.google.common.primitives.UnsignedInteger u32Field, final @javax.annotation.Nullable com.google.common.primitives.UnsignedLong u64Field, final @javax.annotation.Nullable org.thryft.native_.Uri uriField, final @javax.annotation.Nullable org.thryft.native_.Url urlField, final @javax.annotation.Nullable java.lang.Object variantField) {
-        return new ProtocolTestStruct(requiredI32Field, requiredStringField, com.google.common.base.Optional.fromNullable(binaryField), com.google.common.base.Optional.fromNullable(boolField), com.google.common.base.Optional.fromNullable(dateTimeField), com.google.common.base.Optional.fromNullable(decimalField), com.google.common.base.Optional.fromNullable(doubleField), com.google.common.base.Optional.fromNullable(emailAddressField), com.google.common.base.Optional.fromNullable(enumField), com.google.common.base.Optional.fromNullable(floatField), com.google.common.base.Optional.fromNullable(i8Field), com.google.common.base.Optional.fromNullable(i16Field), com.google.common.base.Optional.fromNullable(i32Field), com.google.common.base.Optional.fromNullable(i64Field), com.google.common.base.Optional.fromNullable(stringListField), com.google.common.base.Optional.fromNullable(stringStringMapField), com.google.common.base.Optional.fromNullable(stringSetField), com.google.common.base.Optional.fromNullable(stringField), com.google.common.base.Optional.fromNullable(structField), com.google.common.base.Optional.fromNullable(u32Field), com.google.common.base.Optional.fromNullable(u64Field), com.google.common.base.Optional.fromNullable(uriField), com.google.common.base.Optional.fromNullable(urlField), com.google.common.base.Optional.fromNullable(variantField), DefaultConstructionValidator.getInstance());
+    public static ProtocolTestStruct create(final int requiredI32Field, final String requiredStringField, final @javax.annotation.Nullable byte[] binaryField, final @javax.annotation.Nullable Boolean boolField, final @javax.annotation.Nullable java.util.Date dateTimeField, final @javax.annotation.Nullable java.math.BigDecimal decimalField, final @javax.annotation.Nullable Double doubleField, final @javax.annotation.Nullable org.thryft.native_.EmailAddress emailAddressField, final @javax.annotation.Nullable org.thryft.protocol.test.ProtocolTestEnum enumField, final @javax.annotation.Nullable Float floatField, final @javax.annotation.Nullable Short i16Field, final @javax.annotation.Nullable Integer i32Field, final @javax.annotation.Nullable Long i64Field, final @javax.annotation.Nullable Byte i8Field, final @javax.annotation.Nullable String stringField, final @javax.annotation.Nullable com.google.common.collect.ImmutableList<String> stringListField, final @javax.annotation.Nullable com.google.common.collect.ImmutableSet<String> stringSetField, final @javax.annotation.Nullable com.google.common.collect.ImmutableMap<String, String> stringStringMapField, final @javax.annotation.Nullable org.thryft.protocol.test.NestedProtocolTestStruct structField, final @javax.annotation.Nullable com.google.common.primitives.UnsignedInteger u32Field, final @javax.annotation.Nullable com.google.common.primitives.UnsignedLong u64Field, final @javax.annotation.Nullable org.thryft.native_.Uri uriField, final @javax.annotation.Nullable org.thryft.native_.Url urlField, final @javax.annotation.Nullable java.lang.Object variantField) {
+        return new ProtocolTestStruct(requiredI32Field, requiredStringField, com.google.common.base.Optional.fromNullable(binaryField), com.google.common.base.Optional.fromNullable(boolField), com.google.common.base.Optional.fromNullable(dateTimeField), com.google.common.base.Optional.fromNullable(decimalField), com.google.common.base.Optional.fromNullable(doubleField), com.google.common.base.Optional.fromNullable(emailAddressField), com.google.common.base.Optional.fromNullable(enumField), com.google.common.base.Optional.fromNullable(floatField), com.google.common.base.Optional.fromNullable(i16Field), com.google.common.base.Optional.fromNullable(i32Field), com.google.common.base.Optional.fromNullable(i64Field), com.google.common.base.Optional.fromNullable(i8Field), com.google.common.base.Optional.fromNullable(stringField), com.google.common.base.Optional.fromNullable(stringListField), com.google.common.base.Optional.fromNullable(stringSetField), com.google.common.base.Optional.fromNullable(stringStringMapField), com.google.common.base.Optional.fromNullable(structField), com.google.common.base.Optional.fromNullable(u32Field), com.google.common.base.Optional.fromNullable(u64Field), com.google.common.base.Optional.fromNullable(uriField), com.google.common.base.Optional.fromNullable(urlField), com.google.common.base.Optional.fromNullable(variantField), DefaultConstructionValidator.getInstance());
     }
 
     /**
      * Optional factory method
      */
-    public static ProtocolTestStruct create(final int requiredI32Field, final String requiredStringField, final com.google.common.base.Optional<byte[]> binaryField, final com.google.common.base.Optional<Boolean> boolField, final com.google.common.base.Optional<java.util.Date> dateTimeField, final com.google.common.base.Optional<java.math.BigDecimal> decimalField, final com.google.common.base.Optional<Double> doubleField, final com.google.common.base.Optional<org.thryft.native_.EmailAddress> emailAddressField, final com.google.common.base.Optional<org.thryft.protocol.test.ProtocolTestEnum> enumField, final com.google.common.base.Optional<Float> floatField, final com.google.common.base.Optional<Byte> i8Field, final com.google.common.base.Optional<Short> i16Field, final com.google.common.base.Optional<Integer> i32Field, final com.google.common.base.Optional<Long> i64Field, final com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> stringListField, final com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> stringStringMapField, final com.google.common.base.Optional<com.google.common.collect.ImmutableSet<String>> stringSetField, final com.google.common.base.Optional<String> stringField, final com.google.common.base.Optional<org.thryft.protocol.test.NestedProtocolTestStruct> structField, final com.google.common.base.Optional<com.google.common.primitives.UnsignedInteger> u32Field, final com.google.common.base.Optional<com.google.common.primitives.UnsignedLong> u64Field, final com.google.common.base.Optional<org.thryft.native_.Uri> uriField, final com.google.common.base.Optional<org.thryft.native_.Url> urlField, final com.google.common.base.Optional<java.lang.Object> variantField) {
-        return new ProtocolTestStruct(requiredI32Field, requiredStringField, binaryField, boolField, dateTimeField, decimalField, doubleField, emailAddressField, enumField, floatField, i8Field, i16Field, i32Field, i64Field, stringListField, stringStringMapField, stringSetField, stringField, structField, u32Field, u64Field, uriField, urlField, variantField, DefaultConstructionValidator.getInstance());
+    public static ProtocolTestStruct create(final int requiredI32Field, final String requiredStringField, final com.google.common.base.Optional<byte[]> binaryField, final com.google.common.base.Optional<Boolean> boolField, final com.google.common.base.Optional<java.util.Date> dateTimeField, final com.google.common.base.Optional<java.math.BigDecimal> decimalField, final com.google.common.base.Optional<Double> doubleField, final com.google.common.base.Optional<org.thryft.native_.EmailAddress> emailAddressField, final com.google.common.base.Optional<org.thryft.protocol.test.ProtocolTestEnum> enumField, final com.google.common.base.Optional<Float> floatField, final com.google.common.base.Optional<Short> i16Field, final com.google.common.base.Optional<Integer> i32Field, final com.google.common.base.Optional<Long> i64Field, final com.google.common.base.Optional<Byte> i8Field, final com.google.common.base.Optional<String> stringField, final com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> stringListField, final com.google.common.base.Optional<com.google.common.collect.ImmutableSet<String>> stringSetField, final com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> stringStringMapField, final com.google.common.base.Optional<org.thryft.protocol.test.NestedProtocolTestStruct> structField, final com.google.common.base.Optional<com.google.common.primitives.UnsignedInteger> u32Field, final com.google.common.base.Optional<com.google.common.primitives.UnsignedLong> u64Field, final com.google.common.base.Optional<org.thryft.native_.Uri> uriField, final com.google.common.base.Optional<org.thryft.native_.Url> urlField, final com.google.common.base.Optional<java.lang.Object> variantField) {
+        return new ProtocolTestStruct(requiredI32Field, requiredStringField, binaryField, boolField, dateTimeField, decimalField, doubleField, emailAddressField, enumField, floatField, i16Field, i32Field, i64Field, i8Field, stringField, stringListField, stringSetField, stringStringMapField, structField, u32Field, u64Field, uriField, urlField, variantField, DefaultConstructionValidator.getInstance());
     }
 
     @Override
@@ -2307,10 +2307,6 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
             return false;
         }
 
-        if (!(((getI8Field().isPresent() && other.getI8Field().isPresent()) ? (getI8Field().get().byteValue() == other.getI8Field().get().byteValue()) : (!getI8Field().isPresent() && !other.getI8Field().isPresent())))) {
-            return false;
-        }
-
         if (!(((getI16Field().isPresent() && other.getI16Field().isPresent()) ? (getI16Field().get().shortValue() == other.getI16Field().get().shortValue()) : (!getI16Field().isPresent() && !other.getI16Field().isPresent())))) {
             return false;
         }
@@ -2323,11 +2319,15 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
             return false;
         }
 
-        if (!(((getStringListField().isPresent() && other.getStringListField().isPresent()) ? (getStringListField().get().equals(other.getStringListField().get())) : (!getStringListField().isPresent() && !other.getStringListField().isPresent())))) {
+        if (!(((getI8Field().isPresent() && other.getI8Field().isPresent()) ? (getI8Field().get().byteValue() == other.getI8Field().get().byteValue()) : (!getI8Field().isPresent() && !other.getI8Field().isPresent())))) {
             return false;
         }
 
-        if (!(((getStringStringMapField().isPresent() && other.getStringStringMapField().isPresent()) ? (getStringStringMapField().get().equals(other.getStringStringMapField().get())) : (!getStringStringMapField().isPresent() && !other.getStringStringMapField().isPresent())))) {
+        if (!(((getStringField().isPresent() && other.getStringField().isPresent()) ? (getStringField().get().equals(other.getStringField().get())) : (!getStringField().isPresent() && !other.getStringField().isPresent())))) {
+            return false;
+        }
+
+        if (!(((getStringListField().isPresent() && other.getStringListField().isPresent()) ? (getStringListField().get().equals(other.getStringListField().get())) : (!getStringListField().isPresent() && !other.getStringListField().isPresent())))) {
             return false;
         }
 
@@ -2335,7 +2335,7 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
             return false;
         }
 
-        if (!(((getStringField().isPresent() && other.getStringField().isPresent()) ? (getStringField().get().equals(other.getStringField().get())) : (!getStringField().isPresent() && !other.getStringField().isPresent())))) {
+        if (!(((getStringStringMapField().isPresent() && other.getStringStringMapField().isPresent()) ? (getStringStringMapField().get().equals(other.getStringStringMapField().get())) : (!getStringStringMapField().isPresent() && !other.getStringStringMapField().isPresent())))) {
             return false;
         }
 
@@ -2391,14 +2391,14 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
         case EMAIL_ADDRESS_FIELD: return getEmailAddressField();
         case ENUM_FIELD: return getEnumField();
         case FLOAT_FIELD: return getFloatField();
-        case I8_FIELD: return getI8Field();
         case I16_FIELD: return getI16Field();
         case I32_FIELD: return getI32Field();
         case I64_FIELD: return getI64Field();
-        case STRING_LIST_FIELD: return getStringListField();
-        case STRING_STRING_MAP_FIELD: return getStringStringMapField();
-        case STRING_SET_FIELD: return getStringSetField();
+        case I8_FIELD: return getI8Field();
         case STRING_FIELD: return getStringField();
+        case STRING_LIST_FIELD: return getStringListField();
+        case STRING_SET_FIELD: return getStringSetField();
+        case STRING_STRING_MAP_FIELD: return getStringStringMapField();
         case STRUCT_FIELD: return getStructField();
         case U32_FIELD: return getU32Field();
         case U64_FIELD: return getU64Field();
@@ -2535,9 +2535,6 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
         if (getFloatField().isPresent()) {
             hashCode = 31 * hashCode + ((int)(Double.doubleToLongBits(getFloatField().get()) ^ (Double.doubleToLongBits(getFloatField().get()) >>> 32)));
         }
-        if (getI8Field().isPresent()) {
-            hashCode = 31 * hashCode + getI8Field().get().hashCode();
-        }
         if (getI16Field().isPresent()) {
             hashCode = 31 * hashCode + getI16Field().get().hashCode();
         }
@@ -2547,17 +2544,20 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
         if (getI64Field().isPresent()) {
             hashCode = 31 * hashCode + ((int)(getI64Field().get() ^ (getI64Field().get() >>> 32)));
         }
+        if (getI8Field().isPresent()) {
+            hashCode = 31 * hashCode + getI8Field().get().hashCode();
+        }
+        if (getStringField().isPresent()) {
+            hashCode = 31 * hashCode + getStringField().get().hashCode();
+        }
         if (getStringListField().isPresent()) {
             hashCode = 31 * hashCode + getStringListField().get().hashCode();
-        }
-        if (getStringStringMapField().isPresent()) {
-            hashCode = 31 * hashCode + getStringStringMapField().get().hashCode();
         }
         if (getStringSetField().isPresent()) {
             hashCode = 31 * hashCode + getStringSetField().get().hashCode();
         }
-        if (getStringField().isPresent()) {
-            hashCode = 31 * hashCode + getStringField().get().hashCode();
+        if (getStringStringMapField().isPresent()) {
+            hashCode = 31 * hashCode + getStringStringMapField().get().hashCode();
         }
         if (getStructField().isPresent()) {
             hashCode = 31 * hashCode + getStructField().get().hashCode();
@@ -2606,14 +2606,14 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
         com.google.common.base.Optional<org.thryft.native_.EmailAddress> emailAddressField = com.google.common.base.Optional.<org.thryft.native_.EmailAddress> absent();
         com.google.common.base.Optional<org.thryft.protocol.test.ProtocolTestEnum> enumField = com.google.common.base.Optional.<org.thryft.protocol.test.ProtocolTestEnum> absent();
         com.google.common.base.Optional<Float> floatField = com.google.common.base.Optional.<Float> absent();
-        com.google.common.base.Optional<Byte> i8Field = com.google.common.base.Optional.<Byte> absent();
         com.google.common.base.Optional<Short> i16Field = com.google.common.base.Optional.<Short> absent();
         com.google.common.base.Optional<Integer> i32Field = com.google.common.base.Optional.<Integer> absent();
         com.google.common.base.Optional<Long> i64Field = com.google.common.base.Optional.<Long> absent();
-        com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> stringListField = com.google.common.base.Optional.<com.google.common.collect.ImmutableList<String>> absent();
-        com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> stringStringMapField = com.google.common.base.Optional.<com.google.common.collect.ImmutableMap<String, String>> absent();
-        com.google.common.base.Optional<com.google.common.collect.ImmutableSet<String>> stringSetField = com.google.common.base.Optional.<com.google.common.collect.ImmutableSet<String>> absent();
+        com.google.common.base.Optional<Byte> i8Field = com.google.common.base.Optional.<Byte> absent();
         com.google.common.base.Optional<String> stringField = com.google.common.base.Optional.<String> absent();
+        com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> stringListField = com.google.common.base.Optional.<com.google.common.collect.ImmutableList<String>> absent();
+        com.google.common.base.Optional<com.google.common.collect.ImmutableSet<String>> stringSetField = com.google.common.base.Optional.<com.google.common.collect.ImmutableSet<String>> absent();
+        com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> stringStringMapField = com.google.common.base.Optional.<com.google.common.collect.ImmutableMap<String, String>> absent();
         com.google.common.base.Optional<org.thryft.protocol.test.NestedProtocolTestStruct> structField = com.google.common.base.Optional.<org.thryft.protocol.test.NestedProtocolTestStruct> absent();
         com.google.common.base.Optional<com.google.common.primitives.UnsignedInteger> u32Field = com.google.common.base.Optional.<com.google.common.primitives.UnsignedInteger> absent();
         com.google.common.base.Optional<com.google.common.primitives.UnsignedLong> u64Field = com.google.common.base.Optional.<com.google.common.primitives.UnsignedLong> absent();
@@ -2667,29 +2667,32 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
             }
             if (__list.getSize() > 10) {
                 try {
-                    i8Field = com.google.common.base.Optional.of(iprot.readByte());
+                    i16Field = com.google.common.base.Optional.of(iprot.readI16());
                 } catch (final NumberFormatException e) {
                 }
             }
             if (__list.getSize() > 11) {
                 try {
-                    i16Field = com.google.common.base.Optional.of(iprot.readI16());
+                    i32Field = com.google.common.base.Optional.of(iprot.readI32());
                 } catch (final NumberFormatException e) {
                 }
             }
             if (__list.getSize() > 12) {
                 try {
-                    i32Field = com.google.common.base.Optional.of(iprot.readI32());
+                    i64Field = com.google.common.base.Optional.of(iprot.readI64());
                 } catch (final NumberFormatException e) {
                 }
             }
             if (__list.getSize() > 13) {
                 try {
-                    i64Field = com.google.common.base.Optional.of(iprot.readI64());
+                    i8Field = com.google.common.base.Optional.of(iprot.readByte());
                 } catch (final NumberFormatException e) {
                 }
             }
             if (__list.getSize() > 14) {
+                stringField = com.google.common.base.Optional.of(iprot.readString());
+            }
+            if (__list.getSize() > 15) {
                 try {
                     stringListField = com.google.common.base.Optional.of((new com.google.common.base.Function<org.thryft.protocol.InputProtocol, com.google.common.collect.ImmutableList<String>>() {
                         @Override
@@ -2709,32 +2712,6 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
                     }).apply(iprot));
                 } catch (final org.thryft.protocol.UncheckedInputProtocolException e) {
                      throw new org.thryft.protocol.InvalidFieldInputProtocolException(FieldMetadata.STRING_LIST_FIELD, e.getCause());
-                }
-            }
-            if (__list.getSize() > 15) {
-                try {
-                    stringStringMapField = com.google.common.base.Optional.of((new com.google.common.base.Function<org.thryft.protocol.InputProtocol, com.google.common.collect.ImmutableMap<String, String>>() {
-                        @Override
-                        public com.google.common.collect.ImmutableMap<String, String> apply(final org.thryft.protocol.InputProtocol iprot) {
-                            try {
-                                final org.thryft.protocol.MapBegin mapBegin = iprot.readMapBegin();
-                                final com.google.common.collect.ImmutableMap.Builder<String, String> map = com.google.common.collect.ImmutableMap.builder();
-                                for (int entryI = 0; entryI < mapBegin.getSize(); entryI++) {
-                                    final String key;
-                                    key = iprot.readString();
-                                    final String value;
-                                    value = iprot.readString();
-                                    map.put(key, value);
-                                }
-                                iprot.readMapEnd();
-                                return map.build();
-                            } catch (final org.thryft.protocol.InputProtocolException e) {
-                                throw new org.thryft.protocol.UncheckedInputProtocolException(e);
-                            }
-                        }
-                    }).apply(iprot));
-                } catch (final org.thryft.protocol.UncheckedInputProtocolException e) {
-                     throw new org.thryft.protocol.InvalidFieldInputProtocolException(FieldMetadata.STRING_STRING_MAP_FIELD, e.getCause());
                 }
             }
             if (__list.getSize() > 16) {
@@ -2760,7 +2737,30 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
                 }
             }
             if (__list.getSize() > 17) {
-                stringField = com.google.common.base.Optional.of(iprot.readString());
+                try {
+                    stringStringMapField = com.google.common.base.Optional.of((new com.google.common.base.Function<org.thryft.protocol.InputProtocol, com.google.common.collect.ImmutableMap<String, String>>() {
+                        @Override
+                        public com.google.common.collect.ImmutableMap<String, String> apply(final org.thryft.protocol.InputProtocol iprot) {
+                            try {
+                                final org.thryft.protocol.MapBegin mapBegin = iprot.readMapBegin();
+                                final com.google.common.collect.ImmutableMap.Builder<String, String> map = com.google.common.collect.ImmutableMap.builder();
+                                for (int entryI = 0; entryI < mapBegin.getSize(); entryI++) {
+                                    final String key;
+                                    key = iprot.readString();
+                                    final String value;
+                                    value = iprot.readString();
+                                    map.put(key, value);
+                                }
+                                iprot.readMapEnd();
+                                return map.build();
+                            } catch (final org.thryft.protocol.InputProtocolException e) {
+                                throw new org.thryft.protocol.UncheckedInputProtocolException(e);
+                            }
+                        }
+                    }).apply(iprot));
+                } catch (final org.thryft.protocol.UncheckedInputProtocolException e) {
+                     throw new org.thryft.protocol.InvalidFieldInputProtocolException(FieldMetadata.STRING_STRING_MAP_FIELD, e.getCause());
+                }
             }
             if (__list.getSize() > 18) {
                 structField = com.google.common.base.Optional.of(org.thryft.protocol.test.NestedProtocolTestStruct.readAsStruct(iprot));
@@ -2796,7 +2796,7 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
         } catch (final RuntimeException e) {
             throw new IllegalStateException(e);
         }
-        return new ProtocolTestStruct(DefaultReadValidator.getInstance().validateRequiredI32Field(requiredI32Field), DefaultReadValidator.getInstance().validateRequiredStringField(requiredStringField), DefaultReadValidator.getInstance().validateBinaryField(binaryField), DefaultReadValidator.getInstance().validateBoolField(boolField), DefaultReadValidator.getInstance().validateDateTimeField(dateTimeField), DefaultReadValidator.getInstance().validateDecimalField(decimalField), DefaultReadValidator.getInstance().validateDoubleField(doubleField), DefaultReadValidator.getInstance().validateEmailAddressField(emailAddressField), DefaultReadValidator.getInstance().validateEnumField(enumField), DefaultReadValidator.getInstance().validateFloatField(floatField), DefaultReadValidator.getInstance().validateI8Field(i8Field), DefaultReadValidator.getInstance().validateI16Field(i16Field), DefaultReadValidator.getInstance().validateI32Field(i32Field), DefaultReadValidator.getInstance().validateI64Field(i64Field), DefaultReadValidator.getInstance().validateStringListField(stringListField), DefaultReadValidator.getInstance().validateStringStringMapField(stringStringMapField), DefaultReadValidator.getInstance().validateStringSetField(stringSetField), DefaultReadValidator.getInstance().validateStringField(stringField), DefaultReadValidator.getInstance().validateStructField(structField), DefaultReadValidator.getInstance().validateU32Field(u32Field), DefaultReadValidator.getInstance().validateU64Field(u64Field), DefaultReadValidator.getInstance().validateUriField(uriField), DefaultReadValidator.getInstance().validateUrlField(urlField), DefaultReadValidator.getInstance().validateVariantField(variantField), NopConstructionValidator.getInstance());
+        return new ProtocolTestStruct(DefaultReadValidator.getInstance().validateRequiredI32Field(requiredI32Field), DefaultReadValidator.getInstance().validateRequiredStringField(requiredStringField), DefaultReadValidator.getInstance().validateBinaryField(binaryField), DefaultReadValidator.getInstance().validateBoolField(boolField), DefaultReadValidator.getInstance().validateDateTimeField(dateTimeField), DefaultReadValidator.getInstance().validateDecimalField(decimalField), DefaultReadValidator.getInstance().validateDoubleField(doubleField), DefaultReadValidator.getInstance().validateEmailAddressField(emailAddressField), DefaultReadValidator.getInstance().validateEnumField(enumField), DefaultReadValidator.getInstance().validateFloatField(floatField), DefaultReadValidator.getInstance().validateI16Field(i16Field), DefaultReadValidator.getInstance().validateI32Field(i32Field), DefaultReadValidator.getInstance().validateI64Field(i64Field), DefaultReadValidator.getInstance().validateI8Field(i8Field), DefaultReadValidator.getInstance().validateStringField(stringField), DefaultReadValidator.getInstance().validateStringListField(stringListField), DefaultReadValidator.getInstance().validateStringSetField(stringSetField), DefaultReadValidator.getInstance().validateStringStringMapField(stringStringMapField), DefaultReadValidator.getInstance().validateStructField(structField), DefaultReadValidator.getInstance().validateU32Field(u32Field), DefaultReadValidator.getInstance().validateU64Field(u64Field), DefaultReadValidator.getInstance().validateUriField(uriField), DefaultReadValidator.getInstance().validateUrlField(urlField), DefaultReadValidator.getInstance().validateVariantField(variantField), NopConstructionValidator.getInstance());
     }
 
     public static ProtocolTestStruct readAsStruct(final org.thryft.protocol.InputProtocol iprot) throws org.thryft.protocol.InputProtocolException {
@@ -2814,14 +2814,14 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
         com.google.common.base.Optional<org.thryft.native_.EmailAddress> emailAddressField = com.google.common.base.Optional.<org.thryft.native_.EmailAddress> absent();
         com.google.common.base.Optional<org.thryft.protocol.test.ProtocolTestEnum> enumField = com.google.common.base.Optional.<org.thryft.protocol.test.ProtocolTestEnum> absent();
         com.google.common.base.Optional<Float> floatField = com.google.common.base.Optional.<Float> absent();
-        com.google.common.base.Optional<Byte> i8Field = com.google.common.base.Optional.<Byte> absent();
         com.google.common.base.Optional<Short> i16Field = com.google.common.base.Optional.<Short> absent();
         com.google.common.base.Optional<Integer> i32Field = com.google.common.base.Optional.<Integer> absent();
         com.google.common.base.Optional<Long> i64Field = com.google.common.base.Optional.<Long> absent();
-        com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> stringListField = com.google.common.base.Optional.<com.google.common.collect.ImmutableList<String>> absent();
-        com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> stringStringMapField = com.google.common.base.Optional.<com.google.common.collect.ImmutableMap<String, String>> absent();
-        com.google.common.base.Optional<com.google.common.collect.ImmutableSet<String>> stringSetField = com.google.common.base.Optional.<com.google.common.collect.ImmutableSet<String>> absent();
+        com.google.common.base.Optional<Byte> i8Field = com.google.common.base.Optional.<Byte> absent();
         com.google.common.base.Optional<String> stringField = com.google.common.base.Optional.<String> absent();
+        com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> stringListField = com.google.common.base.Optional.<com.google.common.collect.ImmutableList<String>> absent();
+        com.google.common.base.Optional<com.google.common.collect.ImmutableSet<String>> stringSetField = com.google.common.base.Optional.<com.google.common.collect.ImmutableSet<String>> absent();
+        com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> stringStringMapField = com.google.common.base.Optional.<com.google.common.collect.ImmutableMap<String, String>> absent();
         com.google.common.base.Optional<org.thryft.protocol.test.NestedProtocolTestStruct> structField = com.google.common.base.Optional.<org.thryft.protocol.test.NestedProtocolTestStruct> absent();
         com.google.common.base.Optional<com.google.common.primitives.UnsignedInteger> u32Field = com.google.common.base.Optional.<com.google.common.primitives.UnsignedInteger> absent();
         com.google.common.base.Optional<com.google.common.primitives.UnsignedLong> u64Field = com.google.common.base.Optional.<com.google.common.primitives.UnsignedLong> absent();
@@ -2913,15 +2913,6 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
                     }
                     break;
                 }
-                case "i8_field": {
-                    if (!ifield.hasId() || ifield.getId() == 11) {
-                        try {
-                            i8Field = com.google.common.base.Optional.of(iprot.readByte());
-                        } catch (final NumberFormatException e) {
-                        }
-                    }
-                    break;
-                }
                 case "i16_field": {
                     if (!ifield.hasId() || ifield.getId() == 12) {
                         try {
@@ -2949,6 +2940,21 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
                     }
                     break;
                 }
+                case "i8_field": {
+                    if (!ifield.hasId() || ifield.getId() == 11) {
+                        try {
+                            i8Field = com.google.common.base.Optional.of(iprot.readByte());
+                        } catch (final NumberFormatException e) {
+                        }
+                    }
+                    break;
+                }
+                case "string_field": {
+                    if (!ifield.hasId() || ifield.getId() == 18) {
+                        stringField = com.google.common.base.Optional.of(iprot.readString());
+                    }
+                    break;
+                }
                 case "string_list_field": {
                     if (!ifield.hasId() || ifield.getId() == 15) {
                         try {
@@ -2970,6 +2976,31 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
                             }).apply(iprot));
                         } catch (final org.thryft.protocol.UncheckedInputProtocolException e) {
                              throw new org.thryft.protocol.InvalidFieldInputProtocolException(FieldMetadata.STRING_LIST_FIELD, e.getCause());
+                        }
+                    }
+                    break;
+                }
+                case "string_set_field": {
+                    if (!ifield.hasId() || ifield.getId() == 17) {
+                        try {
+                            stringSetField = com.google.common.base.Optional.of((new com.google.common.base.Function<org.thryft.protocol.InputProtocol, com.google.common.collect.ImmutableSet<String>>() {
+                                @Override
+                                public com.google.common.collect.ImmutableSet<String> apply(final org.thryft.protocol.InputProtocol iprot) {
+                                    try {
+                                        final org.thryft.protocol.SetBegin sequenceBegin = iprot.readSetBegin();
+                                        final com.google.common.collect.ImmutableSet.Builder<String> sequenceBuilder = com.google.common.collect.ImmutableSet.builder();
+                                        for (int elementI = 0; elementI < sequenceBegin.getSize(); elementI++) {
+                                            sequenceBuilder.add(iprot.readString());
+                                        }
+                                        iprot.readSetEnd();
+                                        return sequenceBuilder.build();
+                                    } catch (final org.thryft.protocol.InputProtocolException e) {
+                                        throw new org.thryft.protocol.UncheckedInputProtocolException(e);
+                                    }
+                                }
+                            }).apply(iprot));
+                        } catch (final org.thryft.protocol.UncheckedInputProtocolException e) {
+                             throw new org.thryft.protocol.InvalidFieldInputProtocolException(FieldMetadata.STRING_SET_FIELD, e.getCause());
                         }
                     }
                     break;
@@ -3000,37 +3031,6 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
                         } catch (final org.thryft.protocol.UncheckedInputProtocolException e) {
                              throw new org.thryft.protocol.InvalidFieldInputProtocolException(FieldMetadata.STRING_STRING_MAP_FIELD, e.getCause());
                         }
-                    }
-                    break;
-                }
-                case "string_set_field": {
-                    if (!ifield.hasId() || ifield.getId() == 17) {
-                        try {
-                            stringSetField = com.google.common.base.Optional.of((new com.google.common.base.Function<org.thryft.protocol.InputProtocol, com.google.common.collect.ImmutableSet<String>>() {
-                                @Override
-                                public com.google.common.collect.ImmutableSet<String> apply(final org.thryft.protocol.InputProtocol iprot) {
-                                    try {
-                                        final org.thryft.protocol.SetBegin sequenceBegin = iprot.readSetBegin();
-                                        final com.google.common.collect.ImmutableSet.Builder<String> sequenceBuilder = com.google.common.collect.ImmutableSet.builder();
-                                        for (int elementI = 0; elementI < sequenceBegin.getSize(); elementI++) {
-                                            sequenceBuilder.add(iprot.readString());
-                                        }
-                                        iprot.readSetEnd();
-                                        return sequenceBuilder.build();
-                                    } catch (final org.thryft.protocol.InputProtocolException e) {
-                                        throw new org.thryft.protocol.UncheckedInputProtocolException(e);
-                                    }
-                                }
-                            }).apply(iprot));
-                        } catch (final org.thryft.protocol.UncheckedInputProtocolException e) {
-                             throw new org.thryft.protocol.InvalidFieldInputProtocolException(FieldMetadata.STRING_SET_FIELD, e.getCause());
-                        }
-                    }
-                    break;
-                }
-                case "string_field": {
-                    if (!ifield.hasId() || ifield.getId() == 18) {
-                        stringField = com.google.common.base.Optional.of(iprot.readString());
                     }
                     break;
                 }
@@ -3094,11 +3094,11 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
         } catch (final RuntimeException e) {
             throw new IllegalStateException(e);
         }
-        return new ProtocolTestStruct(DefaultReadValidator.getInstance().validateRequiredI32Field(requiredI32Field), DefaultReadValidator.getInstance().validateRequiredStringField(requiredStringField), DefaultReadValidator.getInstance().validateBinaryField(binaryField), DefaultReadValidator.getInstance().validateBoolField(boolField), DefaultReadValidator.getInstance().validateDateTimeField(dateTimeField), DefaultReadValidator.getInstance().validateDecimalField(decimalField), DefaultReadValidator.getInstance().validateDoubleField(doubleField), DefaultReadValidator.getInstance().validateEmailAddressField(emailAddressField), DefaultReadValidator.getInstance().validateEnumField(enumField), DefaultReadValidator.getInstance().validateFloatField(floatField), DefaultReadValidator.getInstance().validateI8Field(i8Field), DefaultReadValidator.getInstance().validateI16Field(i16Field), DefaultReadValidator.getInstance().validateI32Field(i32Field), DefaultReadValidator.getInstance().validateI64Field(i64Field), DefaultReadValidator.getInstance().validateStringListField(stringListField), DefaultReadValidator.getInstance().validateStringStringMapField(stringStringMapField), DefaultReadValidator.getInstance().validateStringSetField(stringSetField), DefaultReadValidator.getInstance().validateStringField(stringField), DefaultReadValidator.getInstance().validateStructField(structField), DefaultReadValidator.getInstance().validateU32Field(u32Field), DefaultReadValidator.getInstance().validateU64Field(u64Field), DefaultReadValidator.getInstance().validateUriField(uriField), DefaultReadValidator.getInstance().validateUrlField(urlField), DefaultReadValidator.getInstance().validateVariantField(variantField), NopConstructionValidator.getInstance());
+        return new ProtocolTestStruct(DefaultReadValidator.getInstance().validateRequiredI32Field(requiredI32Field), DefaultReadValidator.getInstance().validateRequiredStringField(requiredStringField), DefaultReadValidator.getInstance().validateBinaryField(binaryField), DefaultReadValidator.getInstance().validateBoolField(boolField), DefaultReadValidator.getInstance().validateDateTimeField(dateTimeField), DefaultReadValidator.getInstance().validateDecimalField(decimalField), DefaultReadValidator.getInstance().validateDoubleField(doubleField), DefaultReadValidator.getInstance().validateEmailAddressField(emailAddressField), DefaultReadValidator.getInstance().validateEnumField(enumField), DefaultReadValidator.getInstance().validateFloatField(floatField), DefaultReadValidator.getInstance().validateI16Field(i16Field), DefaultReadValidator.getInstance().validateI32Field(i32Field), DefaultReadValidator.getInstance().validateI64Field(i64Field), DefaultReadValidator.getInstance().validateI8Field(i8Field), DefaultReadValidator.getInstance().validateStringField(stringField), DefaultReadValidator.getInstance().validateStringListField(stringListField), DefaultReadValidator.getInstance().validateStringSetField(stringSetField), DefaultReadValidator.getInstance().validateStringStringMapField(stringStringMapField), DefaultReadValidator.getInstance().validateStructField(structField), DefaultReadValidator.getInstance().validateU32Field(u32Field), DefaultReadValidator.getInstance().validateU64Field(u64Field), DefaultReadValidator.getInstance().validateUriField(uriField), DefaultReadValidator.getInstance().validateUrlField(urlField), DefaultReadValidator.getInstance().validateVariantField(variantField), NopConstructionValidator.getInstance());
     }
 
     public ProtocolTestStruct replaceBinaryField(final com.google.common.base.Optional<byte[]> binaryField) {
-        return new ProtocolTestStruct(this.requiredI32Field, this.requiredStringField, DefaultConstructionValidator.getInstance().validateBinaryField(binaryField), this.boolField, this.dateTimeField, this.decimalField, this.doubleField, this.emailAddressField, this.enumField, this.floatField, this.i8Field, this.i16Field, this.i32Field, this.i64Field, this.stringListField, this.stringStringMapField, this.stringSetField, this.stringField, this.structField, this.u32Field, this.u64Field, this.uriField, this.urlField, this.variantField, NopConstructionValidator.getInstance());
+        return new ProtocolTestStruct(this.requiredI32Field, this.requiredStringField, DefaultConstructionValidator.getInstance().validateBinaryField(binaryField), this.boolField, this.dateTimeField, this.decimalField, this.doubleField, this.emailAddressField, this.enumField, this.floatField, this.i16Field, this.i32Field, this.i64Field, this.i8Field, this.stringField, this.stringListField, this.stringSetField, this.stringStringMapField, this.structField, this.u32Field, this.u64Field, this.uriField, this.urlField, this.variantField, NopConstructionValidator.getInstance());
     }
 
     public ProtocolTestStruct replaceBinaryField(final byte[] binaryField) {
@@ -3106,7 +3106,7 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
     }
 
     public ProtocolTestStruct replaceBoolField(final com.google.common.base.Optional<Boolean> boolField) {
-        return new ProtocolTestStruct(this.requiredI32Field, this.requiredStringField, this.binaryField, DefaultConstructionValidator.getInstance().validateBoolField(boolField), this.dateTimeField, this.decimalField, this.doubleField, this.emailAddressField, this.enumField, this.floatField, this.i8Field, this.i16Field, this.i32Field, this.i64Field, this.stringListField, this.stringStringMapField, this.stringSetField, this.stringField, this.structField, this.u32Field, this.u64Field, this.uriField, this.urlField, this.variantField, NopConstructionValidator.getInstance());
+        return new ProtocolTestStruct(this.requiredI32Field, this.requiredStringField, this.binaryField, DefaultConstructionValidator.getInstance().validateBoolField(boolField), this.dateTimeField, this.decimalField, this.doubleField, this.emailAddressField, this.enumField, this.floatField, this.i16Field, this.i32Field, this.i64Field, this.i8Field, this.stringField, this.stringListField, this.stringSetField, this.stringStringMapField, this.structField, this.u32Field, this.u64Field, this.uriField, this.urlField, this.variantField, NopConstructionValidator.getInstance());
     }
 
     public ProtocolTestStruct replaceBoolField(final boolean boolField) {
@@ -3114,7 +3114,7 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
     }
 
     public ProtocolTestStruct replaceDateTimeField(final com.google.common.base.Optional<java.util.Date> dateTimeField) {
-        return new ProtocolTestStruct(this.requiredI32Field, this.requiredStringField, this.binaryField, this.boolField, DefaultConstructionValidator.getInstance().validateDateTimeField(dateTimeField), this.decimalField, this.doubleField, this.emailAddressField, this.enumField, this.floatField, this.i8Field, this.i16Field, this.i32Field, this.i64Field, this.stringListField, this.stringStringMapField, this.stringSetField, this.stringField, this.structField, this.u32Field, this.u64Field, this.uriField, this.urlField, this.variantField, NopConstructionValidator.getInstance());
+        return new ProtocolTestStruct(this.requiredI32Field, this.requiredStringField, this.binaryField, this.boolField, DefaultConstructionValidator.getInstance().validateDateTimeField(dateTimeField), this.decimalField, this.doubleField, this.emailAddressField, this.enumField, this.floatField, this.i16Field, this.i32Field, this.i64Field, this.i8Field, this.stringField, this.stringListField, this.stringSetField, this.stringStringMapField, this.structField, this.u32Field, this.u64Field, this.uriField, this.urlField, this.variantField, NopConstructionValidator.getInstance());
     }
 
     public ProtocolTestStruct replaceDateTimeField(final java.util.Date dateTimeField) {
@@ -3122,7 +3122,7 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
     }
 
     public ProtocolTestStruct replaceDecimalField(final com.google.common.base.Optional<java.math.BigDecimal> decimalField) {
-        return new ProtocolTestStruct(this.requiredI32Field, this.requiredStringField, this.binaryField, this.boolField, this.dateTimeField, DefaultConstructionValidator.getInstance().validateDecimalField(decimalField), this.doubleField, this.emailAddressField, this.enumField, this.floatField, this.i8Field, this.i16Field, this.i32Field, this.i64Field, this.stringListField, this.stringStringMapField, this.stringSetField, this.stringField, this.structField, this.u32Field, this.u64Field, this.uriField, this.urlField, this.variantField, NopConstructionValidator.getInstance());
+        return new ProtocolTestStruct(this.requiredI32Field, this.requiredStringField, this.binaryField, this.boolField, this.dateTimeField, DefaultConstructionValidator.getInstance().validateDecimalField(decimalField), this.doubleField, this.emailAddressField, this.enumField, this.floatField, this.i16Field, this.i32Field, this.i64Field, this.i8Field, this.stringField, this.stringListField, this.stringSetField, this.stringStringMapField, this.structField, this.u32Field, this.u64Field, this.uriField, this.urlField, this.variantField, NopConstructionValidator.getInstance());
     }
 
     public ProtocolTestStruct replaceDecimalField(final java.math.BigDecimal decimalField) {
@@ -3130,7 +3130,7 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
     }
 
     public ProtocolTestStruct replaceDoubleField(final com.google.common.base.Optional<Double> doubleField) {
-        return new ProtocolTestStruct(this.requiredI32Field, this.requiredStringField, this.binaryField, this.boolField, this.dateTimeField, this.decimalField, DefaultConstructionValidator.getInstance().validateDoubleField(doubleField), this.emailAddressField, this.enumField, this.floatField, this.i8Field, this.i16Field, this.i32Field, this.i64Field, this.stringListField, this.stringStringMapField, this.stringSetField, this.stringField, this.structField, this.u32Field, this.u64Field, this.uriField, this.urlField, this.variantField, NopConstructionValidator.getInstance());
+        return new ProtocolTestStruct(this.requiredI32Field, this.requiredStringField, this.binaryField, this.boolField, this.dateTimeField, this.decimalField, DefaultConstructionValidator.getInstance().validateDoubleField(doubleField), this.emailAddressField, this.enumField, this.floatField, this.i16Field, this.i32Field, this.i64Field, this.i8Field, this.stringField, this.stringListField, this.stringSetField, this.stringStringMapField, this.structField, this.u32Field, this.u64Field, this.uriField, this.urlField, this.variantField, NopConstructionValidator.getInstance());
     }
 
     public ProtocolTestStruct replaceDoubleField(final double doubleField) {
@@ -3138,7 +3138,7 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
     }
 
     public ProtocolTestStruct replaceEmailAddressField(final com.google.common.base.Optional<org.thryft.native_.EmailAddress> emailAddressField) {
-        return new ProtocolTestStruct(this.requiredI32Field, this.requiredStringField, this.binaryField, this.boolField, this.dateTimeField, this.decimalField, this.doubleField, DefaultConstructionValidator.getInstance().validateEmailAddressField(emailAddressField), this.enumField, this.floatField, this.i8Field, this.i16Field, this.i32Field, this.i64Field, this.stringListField, this.stringStringMapField, this.stringSetField, this.stringField, this.structField, this.u32Field, this.u64Field, this.uriField, this.urlField, this.variantField, NopConstructionValidator.getInstance());
+        return new ProtocolTestStruct(this.requiredI32Field, this.requiredStringField, this.binaryField, this.boolField, this.dateTimeField, this.decimalField, this.doubleField, DefaultConstructionValidator.getInstance().validateEmailAddressField(emailAddressField), this.enumField, this.floatField, this.i16Field, this.i32Field, this.i64Field, this.i8Field, this.stringField, this.stringListField, this.stringSetField, this.stringStringMapField, this.structField, this.u32Field, this.u64Field, this.uriField, this.urlField, this.variantField, NopConstructionValidator.getInstance());
     }
 
     public ProtocolTestStruct replaceEmailAddressField(final org.thryft.native_.EmailAddress emailAddressField) {
@@ -3146,7 +3146,7 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
     }
 
     public ProtocolTestStruct replaceEnumField(final com.google.common.base.Optional<org.thryft.protocol.test.ProtocolTestEnum> enumField) {
-        return new ProtocolTestStruct(this.requiredI32Field, this.requiredStringField, this.binaryField, this.boolField, this.dateTimeField, this.decimalField, this.doubleField, this.emailAddressField, DefaultConstructionValidator.getInstance().validateEnumField(enumField), this.floatField, this.i8Field, this.i16Field, this.i32Field, this.i64Field, this.stringListField, this.stringStringMapField, this.stringSetField, this.stringField, this.structField, this.u32Field, this.u64Field, this.uriField, this.urlField, this.variantField, NopConstructionValidator.getInstance());
+        return new ProtocolTestStruct(this.requiredI32Field, this.requiredStringField, this.binaryField, this.boolField, this.dateTimeField, this.decimalField, this.doubleField, this.emailAddressField, DefaultConstructionValidator.getInstance().validateEnumField(enumField), this.floatField, this.i16Field, this.i32Field, this.i64Field, this.i8Field, this.stringField, this.stringListField, this.stringSetField, this.stringStringMapField, this.structField, this.u32Field, this.u64Field, this.uriField, this.urlField, this.variantField, NopConstructionValidator.getInstance());
     }
 
     public ProtocolTestStruct replaceEnumField(final org.thryft.protocol.test.ProtocolTestEnum enumField) {
@@ -3154,7 +3154,7 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
     }
 
     public ProtocolTestStruct replaceFloatField(final com.google.common.base.Optional<Float> floatField) {
-        return new ProtocolTestStruct(this.requiredI32Field, this.requiredStringField, this.binaryField, this.boolField, this.dateTimeField, this.decimalField, this.doubleField, this.emailAddressField, this.enumField, DefaultConstructionValidator.getInstance().validateFloatField(floatField), this.i8Field, this.i16Field, this.i32Field, this.i64Field, this.stringListField, this.stringStringMapField, this.stringSetField, this.stringField, this.structField, this.u32Field, this.u64Field, this.uriField, this.urlField, this.variantField, NopConstructionValidator.getInstance());
+        return new ProtocolTestStruct(this.requiredI32Field, this.requiredStringField, this.binaryField, this.boolField, this.dateTimeField, this.decimalField, this.doubleField, this.emailAddressField, this.enumField, DefaultConstructionValidator.getInstance().validateFloatField(floatField), this.i16Field, this.i32Field, this.i64Field, this.i8Field, this.stringField, this.stringListField, this.stringSetField, this.stringStringMapField, this.structField, this.u32Field, this.u64Field, this.uriField, this.urlField, this.variantField, NopConstructionValidator.getInstance());
     }
 
     public ProtocolTestStruct replaceFloatField(final float floatField) {
@@ -3162,7 +3162,7 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
     }
 
     public ProtocolTestStruct replaceI16Field(final com.google.common.base.Optional<Short> i16Field) {
-        return new ProtocolTestStruct(this.requiredI32Field, this.requiredStringField, this.binaryField, this.boolField, this.dateTimeField, this.decimalField, this.doubleField, this.emailAddressField, this.enumField, this.floatField, this.i8Field, DefaultConstructionValidator.getInstance().validateI16Field(i16Field), this.i32Field, this.i64Field, this.stringListField, this.stringStringMapField, this.stringSetField, this.stringField, this.structField, this.u32Field, this.u64Field, this.uriField, this.urlField, this.variantField, NopConstructionValidator.getInstance());
+        return new ProtocolTestStruct(this.requiredI32Field, this.requiredStringField, this.binaryField, this.boolField, this.dateTimeField, this.decimalField, this.doubleField, this.emailAddressField, this.enumField, this.floatField, DefaultConstructionValidator.getInstance().validateI16Field(i16Field), this.i32Field, this.i64Field, this.i8Field, this.stringField, this.stringListField, this.stringSetField, this.stringStringMapField, this.structField, this.u32Field, this.u64Field, this.uriField, this.urlField, this.variantField, NopConstructionValidator.getInstance());
     }
 
     public ProtocolTestStruct replaceI16Field(final short i16Field) {
@@ -3170,7 +3170,7 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
     }
 
     public ProtocolTestStruct replaceI32Field(final com.google.common.base.Optional<Integer> i32Field) {
-        return new ProtocolTestStruct(this.requiredI32Field, this.requiredStringField, this.binaryField, this.boolField, this.dateTimeField, this.decimalField, this.doubleField, this.emailAddressField, this.enumField, this.floatField, this.i8Field, this.i16Field, DefaultConstructionValidator.getInstance().validateI32Field(i32Field), this.i64Field, this.stringListField, this.stringStringMapField, this.stringSetField, this.stringField, this.structField, this.u32Field, this.u64Field, this.uriField, this.urlField, this.variantField, NopConstructionValidator.getInstance());
+        return new ProtocolTestStruct(this.requiredI32Field, this.requiredStringField, this.binaryField, this.boolField, this.dateTimeField, this.decimalField, this.doubleField, this.emailAddressField, this.enumField, this.floatField, this.i16Field, DefaultConstructionValidator.getInstance().validateI32Field(i32Field), this.i64Field, this.i8Field, this.stringField, this.stringListField, this.stringSetField, this.stringStringMapField, this.structField, this.u32Field, this.u64Field, this.uriField, this.urlField, this.variantField, NopConstructionValidator.getInstance());
     }
 
     public ProtocolTestStruct replaceI32Field(final int i32Field) {
@@ -3178,7 +3178,7 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
     }
 
     public ProtocolTestStruct replaceI64Field(final com.google.common.base.Optional<Long> i64Field) {
-        return new ProtocolTestStruct(this.requiredI32Field, this.requiredStringField, this.binaryField, this.boolField, this.dateTimeField, this.decimalField, this.doubleField, this.emailAddressField, this.enumField, this.floatField, this.i8Field, this.i16Field, this.i32Field, DefaultConstructionValidator.getInstance().validateI64Field(i64Field), this.stringListField, this.stringStringMapField, this.stringSetField, this.stringField, this.structField, this.u32Field, this.u64Field, this.uriField, this.urlField, this.variantField, NopConstructionValidator.getInstance());
+        return new ProtocolTestStruct(this.requiredI32Field, this.requiredStringField, this.binaryField, this.boolField, this.dateTimeField, this.decimalField, this.doubleField, this.emailAddressField, this.enumField, this.floatField, this.i16Field, this.i32Field, DefaultConstructionValidator.getInstance().validateI64Field(i64Field), this.i8Field, this.stringField, this.stringListField, this.stringSetField, this.stringStringMapField, this.structField, this.u32Field, this.u64Field, this.uriField, this.urlField, this.variantField, NopConstructionValidator.getInstance());
     }
 
     public ProtocolTestStruct replaceI64Field(final long i64Field) {
@@ -3186,7 +3186,7 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
     }
 
     public ProtocolTestStruct replaceI8Field(final com.google.common.base.Optional<Byte> i8Field) {
-        return new ProtocolTestStruct(this.requiredI32Field, this.requiredStringField, this.binaryField, this.boolField, this.dateTimeField, this.decimalField, this.doubleField, this.emailAddressField, this.enumField, this.floatField, DefaultConstructionValidator.getInstance().validateI8Field(i8Field), this.i16Field, this.i32Field, this.i64Field, this.stringListField, this.stringStringMapField, this.stringSetField, this.stringField, this.structField, this.u32Field, this.u64Field, this.uriField, this.urlField, this.variantField, NopConstructionValidator.getInstance());
+        return new ProtocolTestStruct(this.requiredI32Field, this.requiredStringField, this.binaryField, this.boolField, this.dateTimeField, this.decimalField, this.doubleField, this.emailAddressField, this.enumField, this.floatField, this.i16Field, this.i32Field, this.i64Field, DefaultConstructionValidator.getInstance().validateI8Field(i8Field), this.stringField, this.stringListField, this.stringSetField, this.stringStringMapField, this.structField, this.u32Field, this.u64Field, this.uriField, this.urlField, this.variantField, NopConstructionValidator.getInstance());
     }
 
     public ProtocolTestStruct replaceI8Field(final byte i8Field) {
@@ -3194,15 +3194,15 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
     }
 
     public ProtocolTestStruct replaceRequiredI32Field(final int requiredI32Field) {
-        return new ProtocolTestStruct(DefaultConstructionValidator.getInstance().validateRequiredI32Field(requiredI32Field), this.requiredStringField, this.binaryField, this.boolField, this.dateTimeField, this.decimalField, this.doubleField, this.emailAddressField, this.enumField, this.floatField, this.i8Field, this.i16Field, this.i32Field, this.i64Field, this.stringListField, this.stringStringMapField, this.stringSetField, this.stringField, this.structField, this.u32Field, this.u64Field, this.uriField, this.urlField, this.variantField, NopConstructionValidator.getInstance());
+        return new ProtocolTestStruct(DefaultConstructionValidator.getInstance().validateRequiredI32Field(requiredI32Field), this.requiredStringField, this.binaryField, this.boolField, this.dateTimeField, this.decimalField, this.doubleField, this.emailAddressField, this.enumField, this.floatField, this.i16Field, this.i32Field, this.i64Field, this.i8Field, this.stringField, this.stringListField, this.stringSetField, this.stringStringMapField, this.structField, this.u32Field, this.u64Field, this.uriField, this.urlField, this.variantField, NopConstructionValidator.getInstance());
     }
 
     public ProtocolTestStruct replaceRequiredStringField(final String requiredStringField) {
-        return new ProtocolTestStruct(this.requiredI32Field, DefaultConstructionValidator.getInstance().validateRequiredStringField(requiredStringField), this.binaryField, this.boolField, this.dateTimeField, this.decimalField, this.doubleField, this.emailAddressField, this.enumField, this.floatField, this.i8Field, this.i16Field, this.i32Field, this.i64Field, this.stringListField, this.stringStringMapField, this.stringSetField, this.stringField, this.structField, this.u32Field, this.u64Field, this.uriField, this.urlField, this.variantField, NopConstructionValidator.getInstance());
+        return new ProtocolTestStruct(this.requiredI32Field, DefaultConstructionValidator.getInstance().validateRequiredStringField(requiredStringField), this.binaryField, this.boolField, this.dateTimeField, this.decimalField, this.doubleField, this.emailAddressField, this.enumField, this.floatField, this.i16Field, this.i32Field, this.i64Field, this.i8Field, this.stringField, this.stringListField, this.stringSetField, this.stringStringMapField, this.structField, this.u32Field, this.u64Field, this.uriField, this.urlField, this.variantField, NopConstructionValidator.getInstance());
     }
 
     public ProtocolTestStruct replaceStringField(final com.google.common.base.Optional<String> stringField) {
-        return new ProtocolTestStruct(this.requiredI32Field, this.requiredStringField, this.binaryField, this.boolField, this.dateTimeField, this.decimalField, this.doubleField, this.emailAddressField, this.enumField, this.floatField, this.i8Field, this.i16Field, this.i32Field, this.i64Field, this.stringListField, this.stringStringMapField, this.stringSetField, DefaultConstructionValidator.getInstance().validateStringField(stringField), this.structField, this.u32Field, this.u64Field, this.uriField, this.urlField, this.variantField, NopConstructionValidator.getInstance());
+        return new ProtocolTestStruct(this.requiredI32Field, this.requiredStringField, this.binaryField, this.boolField, this.dateTimeField, this.decimalField, this.doubleField, this.emailAddressField, this.enumField, this.floatField, this.i16Field, this.i32Field, this.i64Field, this.i8Field, DefaultConstructionValidator.getInstance().validateStringField(stringField), this.stringListField, this.stringSetField, this.stringStringMapField, this.structField, this.u32Field, this.u64Field, this.uriField, this.urlField, this.variantField, NopConstructionValidator.getInstance());
     }
 
     public ProtocolTestStruct replaceStringField(final String stringField) {
@@ -3210,7 +3210,7 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
     }
 
     public ProtocolTestStruct replaceStringListField(final com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> stringListField) {
-        return new ProtocolTestStruct(this.requiredI32Field, this.requiredStringField, this.binaryField, this.boolField, this.dateTimeField, this.decimalField, this.doubleField, this.emailAddressField, this.enumField, this.floatField, this.i8Field, this.i16Field, this.i32Field, this.i64Field, DefaultConstructionValidator.getInstance().validateStringListField(stringListField), this.stringStringMapField, this.stringSetField, this.stringField, this.structField, this.u32Field, this.u64Field, this.uriField, this.urlField, this.variantField, NopConstructionValidator.getInstance());
+        return new ProtocolTestStruct(this.requiredI32Field, this.requiredStringField, this.binaryField, this.boolField, this.dateTimeField, this.decimalField, this.doubleField, this.emailAddressField, this.enumField, this.floatField, this.i16Field, this.i32Field, this.i64Field, this.i8Field, this.stringField, DefaultConstructionValidator.getInstance().validateStringListField(stringListField), this.stringSetField, this.stringStringMapField, this.structField, this.u32Field, this.u64Field, this.uriField, this.urlField, this.variantField, NopConstructionValidator.getInstance());
     }
 
     public ProtocolTestStruct replaceStringListField(final com.google.common.collect.ImmutableList<String> stringListField) {
@@ -3218,7 +3218,7 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
     }
 
     public ProtocolTestStruct replaceStringSetField(final com.google.common.base.Optional<com.google.common.collect.ImmutableSet<String>> stringSetField) {
-        return new ProtocolTestStruct(this.requiredI32Field, this.requiredStringField, this.binaryField, this.boolField, this.dateTimeField, this.decimalField, this.doubleField, this.emailAddressField, this.enumField, this.floatField, this.i8Field, this.i16Field, this.i32Field, this.i64Field, this.stringListField, this.stringStringMapField, DefaultConstructionValidator.getInstance().validateStringSetField(stringSetField), this.stringField, this.structField, this.u32Field, this.u64Field, this.uriField, this.urlField, this.variantField, NopConstructionValidator.getInstance());
+        return new ProtocolTestStruct(this.requiredI32Field, this.requiredStringField, this.binaryField, this.boolField, this.dateTimeField, this.decimalField, this.doubleField, this.emailAddressField, this.enumField, this.floatField, this.i16Field, this.i32Field, this.i64Field, this.i8Field, this.stringField, this.stringListField, DefaultConstructionValidator.getInstance().validateStringSetField(stringSetField), this.stringStringMapField, this.structField, this.u32Field, this.u64Field, this.uriField, this.urlField, this.variantField, NopConstructionValidator.getInstance());
     }
 
     public ProtocolTestStruct replaceStringSetField(final com.google.common.collect.ImmutableSet<String> stringSetField) {
@@ -3226,7 +3226,7 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
     }
 
     public ProtocolTestStruct replaceStringStringMapField(final com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> stringStringMapField) {
-        return new ProtocolTestStruct(this.requiredI32Field, this.requiredStringField, this.binaryField, this.boolField, this.dateTimeField, this.decimalField, this.doubleField, this.emailAddressField, this.enumField, this.floatField, this.i8Field, this.i16Field, this.i32Field, this.i64Field, this.stringListField, DefaultConstructionValidator.getInstance().validateStringStringMapField(stringStringMapField), this.stringSetField, this.stringField, this.structField, this.u32Field, this.u64Field, this.uriField, this.urlField, this.variantField, NopConstructionValidator.getInstance());
+        return new ProtocolTestStruct(this.requiredI32Field, this.requiredStringField, this.binaryField, this.boolField, this.dateTimeField, this.decimalField, this.doubleField, this.emailAddressField, this.enumField, this.floatField, this.i16Field, this.i32Field, this.i64Field, this.i8Field, this.stringField, this.stringListField, this.stringSetField, DefaultConstructionValidator.getInstance().validateStringStringMapField(stringStringMapField), this.structField, this.u32Field, this.u64Field, this.uriField, this.urlField, this.variantField, NopConstructionValidator.getInstance());
     }
 
     public ProtocolTestStruct replaceStringStringMapField(final com.google.common.collect.ImmutableMap<String, String> stringStringMapField) {
@@ -3234,7 +3234,7 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
     }
 
     public ProtocolTestStruct replaceStructField(final com.google.common.base.Optional<org.thryft.protocol.test.NestedProtocolTestStruct> structField) {
-        return new ProtocolTestStruct(this.requiredI32Field, this.requiredStringField, this.binaryField, this.boolField, this.dateTimeField, this.decimalField, this.doubleField, this.emailAddressField, this.enumField, this.floatField, this.i8Field, this.i16Field, this.i32Field, this.i64Field, this.stringListField, this.stringStringMapField, this.stringSetField, this.stringField, DefaultConstructionValidator.getInstance().validateStructField(structField), this.u32Field, this.u64Field, this.uriField, this.urlField, this.variantField, NopConstructionValidator.getInstance());
+        return new ProtocolTestStruct(this.requiredI32Field, this.requiredStringField, this.binaryField, this.boolField, this.dateTimeField, this.decimalField, this.doubleField, this.emailAddressField, this.enumField, this.floatField, this.i16Field, this.i32Field, this.i64Field, this.i8Field, this.stringField, this.stringListField, this.stringSetField, this.stringStringMapField, DefaultConstructionValidator.getInstance().validateStructField(structField), this.u32Field, this.u64Field, this.uriField, this.urlField, this.variantField, NopConstructionValidator.getInstance());
     }
 
     public ProtocolTestStruct replaceStructField(final org.thryft.protocol.test.NestedProtocolTestStruct structField) {
@@ -3242,7 +3242,7 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
     }
 
     public ProtocolTestStruct replaceU32Field(final com.google.common.base.Optional<com.google.common.primitives.UnsignedInteger> u32Field) {
-        return new ProtocolTestStruct(this.requiredI32Field, this.requiredStringField, this.binaryField, this.boolField, this.dateTimeField, this.decimalField, this.doubleField, this.emailAddressField, this.enumField, this.floatField, this.i8Field, this.i16Field, this.i32Field, this.i64Field, this.stringListField, this.stringStringMapField, this.stringSetField, this.stringField, this.structField, DefaultConstructionValidator.getInstance().validateU32Field(u32Field), this.u64Field, this.uriField, this.urlField, this.variantField, NopConstructionValidator.getInstance());
+        return new ProtocolTestStruct(this.requiredI32Field, this.requiredStringField, this.binaryField, this.boolField, this.dateTimeField, this.decimalField, this.doubleField, this.emailAddressField, this.enumField, this.floatField, this.i16Field, this.i32Field, this.i64Field, this.i8Field, this.stringField, this.stringListField, this.stringSetField, this.stringStringMapField, this.structField, DefaultConstructionValidator.getInstance().validateU32Field(u32Field), this.u64Field, this.uriField, this.urlField, this.variantField, NopConstructionValidator.getInstance());
     }
 
     public ProtocolTestStruct replaceU32Field(final com.google.common.primitives.UnsignedInteger u32Field) {
@@ -3250,7 +3250,7 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
     }
 
     public ProtocolTestStruct replaceU64Field(final com.google.common.base.Optional<com.google.common.primitives.UnsignedLong> u64Field) {
-        return new ProtocolTestStruct(this.requiredI32Field, this.requiredStringField, this.binaryField, this.boolField, this.dateTimeField, this.decimalField, this.doubleField, this.emailAddressField, this.enumField, this.floatField, this.i8Field, this.i16Field, this.i32Field, this.i64Field, this.stringListField, this.stringStringMapField, this.stringSetField, this.stringField, this.structField, this.u32Field, DefaultConstructionValidator.getInstance().validateU64Field(u64Field), this.uriField, this.urlField, this.variantField, NopConstructionValidator.getInstance());
+        return new ProtocolTestStruct(this.requiredI32Field, this.requiredStringField, this.binaryField, this.boolField, this.dateTimeField, this.decimalField, this.doubleField, this.emailAddressField, this.enumField, this.floatField, this.i16Field, this.i32Field, this.i64Field, this.i8Field, this.stringField, this.stringListField, this.stringSetField, this.stringStringMapField, this.structField, this.u32Field, DefaultConstructionValidator.getInstance().validateU64Field(u64Field), this.uriField, this.urlField, this.variantField, NopConstructionValidator.getInstance());
     }
 
     public ProtocolTestStruct replaceU64Field(final com.google.common.primitives.UnsignedLong u64Field) {
@@ -3258,7 +3258,7 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
     }
 
     public ProtocolTestStruct replaceUriField(final com.google.common.base.Optional<org.thryft.native_.Uri> uriField) {
-        return new ProtocolTestStruct(this.requiredI32Field, this.requiredStringField, this.binaryField, this.boolField, this.dateTimeField, this.decimalField, this.doubleField, this.emailAddressField, this.enumField, this.floatField, this.i8Field, this.i16Field, this.i32Field, this.i64Field, this.stringListField, this.stringStringMapField, this.stringSetField, this.stringField, this.structField, this.u32Field, this.u64Field, DefaultConstructionValidator.getInstance().validateUriField(uriField), this.urlField, this.variantField, NopConstructionValidator.getInstance());
+        return new ProtocolTestStruct(this.requiredI32Field, this.requiredStringField, this.binaryField, this.boolField, this.dateTimeField, this.decimalField, this.doubleField, this.emailAddressField, this.enumField, this.floatField, this.i16Field, this.i32Field, this.i64Field, this.i8Field, this.stringField, this.stringListField, this.stringSetField, this.stringStringMapField, this.structField, this.u32Field, this.u64Field, DefaultConstructionValidator.getInstance().validateUriField(uriField), this.urlField, this.variantField, NopConstructionValidator.getInstance());
     }
 
     public ProtocolTestStruct replaceUriField(final org.thryft.native_.Uri uriField) {
@@ -3266,7 +3266,7 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
     }
 
     public ProtocolTestStruct replaceUrlField(final com.google.common.base.Optional<org.thryft.native_.Url> urlField) {
-        return new ProtocolTestStruct(this.requiredI32Field, this.requiredStringField, this.binaryField, this.boolField, this.dateTimeField, this.decimalField, this.doubleField, this.emailAddressField, this.enumField, this.floatField, this.i8Field, this.i16Field, this.i32Field, this.i64Field, this.stringListField, this.stringStringMapField, this.stringSetField, this.stringField, this.structField, this.u32Field, this.u64Field, this.uriField, DefaultConstructionValidator.getInstance().validateUrlField(urlField), this.variantField, NopConstructionValidator.getInstance());
+        return new ProtocolTestStruct(this.requiredI32Field, this.requiredStringField, this.binaryField, this.boolField, this.dateTimeField, this.decimalField, this.doubleField, this.emailAddressField, this.enumField, this.floatField, this.i16Field, this.i32Field, this.i64Field, this.i8Field, this.stringField, this.stringListField, this.stringSetField, this.stringStringMapField, this.structField, this.u32Field, this.u64Field, this.uriField, DefaultConstructionValidator.getInstance().validateUrlField(urlField), this.variantField, NopConstructionValidator.getInstance());
     }
 
     public ProtocolTestStruct replaceUrlField(final org.thryft.native_.Url urlField) {
@@ -3274,7 +3274,7 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
     }
 
     public ProtocolTestStruct replaceVariantField(final com.google.common.base.Optional<java.lang.Object> variantField) {
-        return new ProtocolTestStruct(this.requiredI32Field, this.requiredStringField, this.binaryField, this.boolField, this.dateTimeField, this.decimalField, this.doubleField, this.emailAddressField, this.enumField, this.floatField, this.i8Field, this.i16Field, this.i32Field, this.i64Field, this.stringListField, this.stringStringMapField, this.stringSetField, this.stringField, this.structField, this.u32Field, this.u64Field, this.uriField, this.urlField, DefaultConstructionValidator.getInstance().validateVariantField(variantField), NopConstructionValidator.getInstance());
+        return new ProtocolTestStruct(this.requiredI32Field, this.requiredStringField, this.binaryField, this.boolField, this.dateTimeField, this.decimalField, this.doubleField, this.emailAddressField, this.enumField, this.floatField, this.i16Field, this.i32Field, this.i64Field, this.i8Field, this.stringField, this.stringListField, this.stringSetField, this.stringStringMapField, this.structField, this.u32Field, this.u64Field, this.uriField, this.urlField, DefaultConstructionValidator.getInstance().validateVariantField(variantField), NopConstructionValidator.getInstance());
     }
 
     public ProtocolTestStruct replaceVariantField(final java.lang.Object variantField) {
@@ -3283,7 +3283,7 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
 
     @Override
     public String toString() {
-        return com.google.common.base.MoreObjects.toStringHelper(this).omitNullValues().add("required_i32_field", getRequiredI32Field()).add("required_string_field", getRequiredStringField()).add("binary_field", getBinaryField().orNull()).add("bool_field", getBoolField().orNull()).add("date_time_field", getDateTimeField().orNull()).add("decimal_field", getDecimalField().orNull()).add("double_field", getDoubleField().orNull()).add("email_address_field", getEmailAddressField().orNull()).add("enum_field", getEnumField().orNull()).add("float_field", getFloatField().orNull()).add("i8_field", getI8Field().orNull()).add("i16_field", getI16Field().orNull()).add("i32_field", getI32Field().orNull()).add("i64_field", getI64Field().orNull()).add("string_list_field", getStringListField().orNull()).add("string_string_map_field", getStringStringMapField().orNull()).add("string_set_field", getStringSetField().orNull()).add("string_field", getStringField().orNull()).add("struct_field", getStructField().orNull()).add("u32_field", getU32Field().orNull()).add("u64_field", getU64Field().orNull()).add("uri_field", getUriField().orNull()).add("url_field", getUrlField().orNull()).add("variant_field", getVariantField().orNull()).toString();
+        return com.google.common.base.MoreObjects.toStringHelper(this).omitNullValues().add("required_i32_field", getRequiredI32Field()).add("required_string_field", getRequiredStringField()).add("binary_field", getBinaryField().orNull()).add("bool_field", getBoolField().orNull()).add("date_time_field", getDateTimeField().orNull()).add("decimal_field", getDecimalField().orNull()).add("double_field", getDoubleField().orNull()).add("email_address_field", getEmailAddressField().orNull()).add("enum_field", getEnumField().orNull()).add("float_field", getFloatField().orNull()).add("i16_field", getI16Field().orNull()).add("i32_field", getI32Field().orNull()).add("i64_field", getI64Field().orNull()).add("i8_field", getI8Field().orNull()).add("string_field", getStringField().orNull()).add("string_list_field", getStringListField().orNull()).add("string_set_field", getStringSetField().orNull()).add("string_string_map_field", getStringStringMapField().orNull()).add("struct_field", getStructField().orNull()).add("u32_field", getU32Field().orNull()).add("u64_field", getU64Field().orNull()).add("uri_field", getUriField().orNull()).add("url_field", getUrlField().orNull()).add("variant_field", getVariantField().orNull()).toString();
     }
 
     @Override
@@ -3342,12 +3342,6 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
             oprot.writeNull();
         }
 
-        if (getI8Field().isPresent()) {
-            oprot.writeByte(getI8Field().get());
-        } else {
-            oprot.writeNull();
-        }
-
         if (getI16Field().isPresent()) {
             oprot.writeI16(getI16Field().get());
         } else {
@@ -3366,23 +3360,24 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
             oprot.writeNull();
         }
 
+        if (getI8Field().isPresent()) {
+            oprot.writeByte(getI8Field().get());
+        } else {
+            oprot.writeNull();
+        }
+
+        if (getStringField().isPresent()) {
+            oprot.writeString(getStringField().get());
+        } else {
+            oprot.writeNull();
+        }
+
         if (getStringListField().isPresent()) {
             oprot.writeListBegin(org.thryft.protocol.Type.STRING, getStringListField().get().size());
             for (final String _iter0 : getStringListField().get()) {
                 oprot.writeString(_iter0);
             }
             oprot.writeListEnd();
-        } else {
-            oprot.writeNull();
-        }
-
-        if (getStringStringMapField().isPresent()) {
-            oprot.writeMapBegin(org.thryft.protocol.Type.STRING, org.thryft.protocol.Type.STRING, getStringStringMapField().get().size());
-            for (com.google.common.collect.ImmutableMap.Entry<String, String> _iter0 : getStringStringMapField().get().entrySet()) {
-                oprot.writeString(_iter0.getKey());
-                oprot.writeString(_iter0.getValue());
-            }
-            oprot.writeMapEnd();
         } else {
             oprot.writeNull();
         }
@@ -3397,8 +3392,13 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
             oprot.writeNull();
         }
 
-        if (getStringField().isPresent()) {
-            oprot.writeString(getStringField().get());
+        if (getStringStringMapField().isPresent()) {
+            oprot.writeMapBegin(org.thryft.protocol.Type.STRING, org.thryft.protocol.Type.STRING, getStringStringMapField().get().size());
+            for (com.google.common.collect.ImmutableMap.Entry<String, String> _iter0 : getStringStringMapField().get().entrySet()) {
+                oprot.writeString(_iter0.getKey());
+                oprot.writeString(_iter0.getValue());
+            }
+            oprot.writeMapEnd();
         } else {
             oprot.writeNull();
         }
@@ -3507,12 +3507,6 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
             oprot.writeFieldEnd();
         }
 
-        if (getI8Field().isPresent()) {
-            oprot.writeFieldBegin("i8_field", org.thryft.protocol.Type.BYTE, (short)11);
-            oprot.writeByte(getI8Field().get());
-            oprot.writeFieldEnd();
-        }
-
         if (getI16Field().isPresent()) {
             oprot.writeFieldBegin("i16_field", org.thryft.protocol.Type.I16, (short)12);
             oprot.writeI16(getI16Field().get());
@@ -3531,6 +3525,18 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
             oprot.writeFieldEnd();
         }
 
+        if (getI8Field().isPresent()) {
+            oprot.writeFieldBegin("i8_field", org.thryft.protocol.Type.BYTE, (short)11);
+            oprot.writeByte(getI8Field().get());
+            oprot.writeFieldEnd();
+        }
+
+        if (getStringField().isPresent()) {
+            oprot.writeFieldBegin("string_field", org.thryft.protocol.Type.STRING, (short)18);
+            oprot.writeString(getStringField().get());
+            oprot.writeFieldEnd();
+        }
+
         if (getStringListField().isPresent()) {
             oprot.writeFieldBegin("string_list_field", org.thryft.protocol.Type.LIST, (short)15);
             oprot.writeListBegin(org.thryft.protocol.Type.STRING, getStringListField().get().size());
@@ -3538,17 +3544,6 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
                 oprot.writeString(_iter0);
             }
             oprot.writeListEnd();
-            oprot.writeFieldEnd();
-        }
-
-        if (getStringStringMapField().isPresent()) {
-            oprot.writeFieldBegin("string_string_map_field", org.thryft.protocol.Type.MAP, (short)16);
-            oprot.writeMapBegin(org.thryft.protocol.Type.STRING, org.thryft.protocol.Type.STRING, getStringStringMapField().get().size());
-            for (com.google.common.collect.ImmutableMap.Entry<String, String> _iter0 : getStringStringMapField().get().entrySet()) {
-                oprot.writeString(_iter0.getKey());
-                oprot.writeString(_iter0.getValue());
-            }
-            oprot.writeMapEnd();
             oprot.writeFieldEnd();
         }
 
@@ -3562,9 +3557,14 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
             oprot.writeFieldEnd();
         }
 
-        if (getStringField().isPresent()) {
-            oprot.writeFieldBegin("string_field", org.thryft.protocol.Type.STRING, (short)18);
-            oprot.writeString(getStringField().get());
+        if (getStringStringMapField().isPresent()) {
+            oprot.writeFieldBegin("string_string_map_field", org.thryft.protocol.Type.MAP, (short)16);
+            oprot.writeMapBegin(org.thryft.protocol.Type.STRING, org.thryft.protocol.Type.STRING, getStringStringMapField().get().size());
+            for (com.google.common.collect.ImmutableMap.Entry<String, String> _iter0 : getStringStringMapField().get().entrySet()) {
+                oprot.writeString(_iter0.getKey());
+                oprot.writeString(_iter0.getValue());
+            }
+            oprot.writeMapEnd();
             oprot.writeFieldEnd();
         }
 
@@ -3627,21 +3627,21 @@ public final class ProtocolTestStruct implements org.thryft.Struct {
 
     private final com.google.common.base.Optional<Float> floatField;
 
-    private final com.google.common.base.Optional<Byte> i8Field;
-
     private final com.google.common.base.Optional<Short> i16Field;
 
     private final com.google.common.base.Optional<Integer> i32Field;
 
     private final com.google.common.base.Optional<Long> i64Field;
 
-    private final com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> stringListField;
+    private final com.google.common.base.Optional<Byte> i8Field;
 
-    private final com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> stringStringMapField;
+    private final com.google.common.base.Optional<String> stringField;
+
+    private final com.google.common.base.Optional<com.google.common.collect.ImmutableList<String>> stringListField;
 
     private final com.google.common.base.Optional<com.google.common.collect.ImmutableSet<String>> stringSetField;
 
-    private final com.google.common.base.Optional<String> stringField;
+    private final com.google.common.base.Optional<com.google.common.collect.ImmutableMap<String, String>> stringStringMapField;
 
     private final com.google.common.base.Optional<org.thryft.protocol.test.NestedProtocolTestStruct> structField;
 

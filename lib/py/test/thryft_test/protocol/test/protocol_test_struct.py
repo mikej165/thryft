@@ -20,14 +20,14 @@ class ProtocolTestStruct(object):
             email_address_field=None,
             enum_field=None,
             float_field=None,
-            i8_field=None,
             i16_field=None,
             i32_field=None,
             i64_field=None,
-            string_list_field=None,
-            string_string_map_field=None,
-            string_set_field=None,
+            i8_field=None,
             string_field=None,
+            string_list_field=None,
+            string_set_field=None,
+            string_string_map_field=None,
             struct_field=None,
             u32_field=None,
             u64_field=None,
@@ -46,14 +46,14 @@ class ProtocolTestStruct(object):
             :type email_address_field: str or None
             :type enum_field: thryft_test.protocol.test.protocol_test_enum.ProtocolTestEnum or None
             :type float_field: float or None
-            :type i8_field: int or None
             :type i16_field: int or None
             :type i32_field: int or None
             :type i64_field: int or long or None
-            :type string_list_field: tuple(str) or None
-            :type string_string_map_field: dict(str: str) or None
-            :type string_set_field: frozenset(str) or None
+            :type i8_field: int or None
             :type string_field: str or None
+            :type string_list_field: tuple(str) or None
+            :type string_set_field: frozenset(str) or None
+            :type string_string_map_field: dict(str: str) or None
             :type struct_field: thryft_test.protocol.test.nested_protocol_test_struct.NestedProtocolTestStruct or None
             :type u32_field: int or None
             :type u64_field: int or long or None
@@ -72,14 +72,14 @@ class ProtocolTestStruct(object):
             self.__email_address_field = email_address_field
             self.__enum_field = enum_field
             self.__float_field = float_field
-            self.__i8_field = i8_field
             self.__i16_field = i16_field
             self.__i32_field = i32_field
             self.__i64_field = i64_field
-            self.__string_list_field = string_list_field
-            self.__string_string_map_field = string_string_map_field
-            self.__string_set_field = string_set_field
+            self.__i8_field = i8_field
             self.__string_field = string_field
+            self.__string_list_field = string_list_field
+            self.__string_set_field = string_set_field
+            self.__string_string_map_field = string_string_map_field
             self.__struct_field = struct_field
             self.__u32_field = u32_field
             self.__u64_field = u64_field
@@ -88,7 +88,7 @@ class ProtocolTestStruct(object):
             self.__variant_field = variant_field
 
         def build(self):
-            return ProtocolTestStruct(required_i32_field=self.__required_i32_field, required_string_field=self.__required_string_field, binary_field=self.__binary_field, bool_field=self.__bool_field, date_time_field=self.__date_time_field, decimal_field=self.__decimal_field, double_field=self.__double_field, email_address_field=self.__email_address_field, enum_field=self.__enum_field, float_field=self.__float_field, i8_field=self.__i8_field, i16_field=self.__i16_field, i32_field=self.__i32_field, i64_field=self.__i64_field, string_list_field=self.__string_list_field, string_string_map_field=self.__string_string_map_field, string_set_field=self.__string_set_field, string_field=self.__string_field, struct_field=self.__struct_field, u32_field=self.__u32_field, u64_field=self.__u64_field, uri_field=self.__uri_field, url_field=self.__url_field, variant_field=self.__variant_field)
+            return ProtocolTestStruct(required_i32_field=self.__required_i32_field, required_string_field=self.__required_string_field, binary_field=self.__binary_field, bool_field=self.__bool_field, date_time_field=self.__date_time_field, decimal_field=self.__decimal_field, double_field=self.__double_field, email_address_field=self.__email_address_field, enum_field=self.__enum_field, float_field=self.__float_field, i16_field=self.__i16_field, i32_field=self.__i32_field, i64_field=self.__i64_field, i8_field=self.__i8_field, string_field=self.__string_field, string_list_field=self.__string_list_field, string_set_field=self.__string_set_field, string_string_map_field=self.__string_string_map_field, struct_field=self.__struct_field, u32_field=self.__u32_field, u64_field=self.__u64_field, uri_field=self.__uri_field, url_field=self.__url_field, variant_field=self.__variant_field)
 
         @property
         def binary_field(self):
@@ -298,6 +298,10 @@ class ProtocolTestStruct(object):
             if i16_field is not None:
                 if not isinstance(i16_field, int):
                     raise TypeError("expected i16_field to be a int but it is a %s" % getattr(__builtin__, 'type')(i16_field))
+                if i16_field > 100:
+                    raise ValueError("expected i16_field to be <= 100, was %s" % i16_field)
+                if i16_field < 1:
+                    raise ValueError("expected i16_field to be >= 1, was %s" % i16_field)
             self.__i16_field = i16_field
             return self
 
@@ -309,8 +313,6 @@ class ProtocolTestStruct(object):
             if i32_field is not None:
                 if not isinstance(i32_field, int):
                     raise TypeError("expected i32_field to be a int but it is a %s" % getattr(__builtin__, 'type')(i32_field))
-                if i32_field < 1:
-                    raise ValueError("expected i32_field to be >= 1, was %s" % i32_field)
             self.__i32_field = i32_field
             return self
 
@@ -427,6 +429,8 @@ class ProtocolTestStruct(object):
             if u32_field is not None:
                 if not isinstance(u32_field, (int, long)) and u32_field >= 0:
                     raise TypeError("expected u32_field to be a int but it is a %s" % getattr(__builtin__, 'type')(u32_field))
+                if u32_field > 100:
+                    raise ValueError("expected u32_field to be <= 100, was %s" % u32_field)
                 if u32_field < 1:
                     raise ValueError("expected u32_field to be >= 1, was %s" % u32_field)
             self.__u32_field = u32_field
@@ -440,6 +444,8 @@ class ProtocolTestStruct(object):
             if u64_field is not None:
                 if not isinstance(u64_field, (int, long)) and u64_field >= 0:
                     raise TypeError("expected u64_field to be a int or long but it is a %s" % getattr(__builtin__, 'type')(u64_field))
+                if u64_field > 100:
+                    raise ValueError("expected u64_field to be <= 100, was %s" % u64_field)
                 if u64_field < 1:
                     raise ValueError("expected u64_field to be >= 1, was %s" % u64_field)
             self.__u64_field = u64_field
@@ -544,14 +550,14 @@ class ProtocolTestStruct(object):
             :type email_address_field: str or None
             :type enum_field: thryft_test.protocol.test.protocol_test_enum.ProtocolTestEnum or None
             :type float_field: float or None
-            :type i8_field: int or None
             :type i16_field: int or None
             :type i32_field: int or None
             :type i64_field: int or long or None
-            :type string_list_field: tuple(str) or None
-            :type string_string_map_field: dict(str: str) or None
-            :type string_set_field: frozenset(str) or None
+            :type i8_field: int or None
             :type string_field: str or None
+            :type string_list_field: tuple(str) or None
+            :type string_set_field: frozenset(str) or None
+            :type string_string_map_field: dict(str: str) or None
             :type struct_field: thryft_test.protocol.test.nested_protocol_test_struct.NestedProtocolTestStruct or None
             :type u32_field: int or None
             :type u64_field: int or long or None
@@ -571,14 +577,14 @@ class ProtocolTestStruct(object):
                 self.set_email_address_field(protocol_test_struct.email_address_field)
                 self.set_enum_field(protocol_test_struct.enum_field)
                 self.set_float_field(protocol_test_struct.float_field)
-                self.set_i8_field(protocol_test_struct.i8_field)
                 self.set_i16_field(protocol_test_struct.i16_field)
                 self.set_i32_field(protocol_test_struct.i32_field)
                 self.set_i64_field(protocol_test_struct.i64_field)
-                self.set_string_list_field(protocol_test_struct.string_list_field)
-                self.set_string_string_map_field(protocol_test_struct.string_string_map_field)
-                self.set_string_set_field(protocol_test_struct.string_set_field)
+                self.set_i8_field(protocol_test_struct.i8_field)
                 self.set_string_field(protocol_test_struct.string_field)
+                self.set_string_list_field(protocol_test_struct.string_list_field)
+                self.set_string_set_field(protocol_test_struct.string_set_field)
+                self.set_string_string_map_field(protocol_test_struct.string_string_map_field)
                 self.set_struct_field(protocol_test_struct.struct_field)
                 self.set_u32_field(protocol_test_struct.u32_field)
                 self.set_u64_field(protocol_test_struct.u64_field)
@@ -819,14 +825,14 @@ class ProtocolTestStruct(object):
         EMAIL_ADDRESS_FIELD = None
         ENUM_FIELD = None
         FLOAT_FIELD = None
-        I8_FIELD = None
         I16_FIELD = None
         I32_FIELD = None
         I64_FIELD = None
-        STRING_LIST_FIELD = None
-        STRING_STRING_MAP_FIELD = None
-        STRING_SET_FIELD = None
+        I8_FIELD = None
         STRING_FIELD = None
+        STRING_LIST_FIELD = None
+        STRING_SET_FIELD = None
+        STRING_STRING_MAP_FIELD = None
         STRUCT_FIELD = None
         U32_FIELD = None
         U64_FIELD = None
@@ -853,7 +859,7 @@ class ProtocolTestStruct(object):
 
         @classmethod
         def values(cls):
-            return (cls.REQUIRED_I32_FIELD, cls.REQUIRED_STRING_FIELD, cls.BINARY_FIELD, cls.BOOL_FIELD, cls.DATE_TIME_FIELD, cls.DECIMAL_FIELD, cls.DOUBLE_FIELD, cls.EMAIL_ADDRESS_FIELD, cls.ENUM_FIELD, cls.FLOAT_FIELD, cls.I8_FIELD, cls.I16_FIELD, cls.I32_FIELD, cls.I64_FIELD, cls.STRING_LIST_FIELD, cls.STRING_STRING_MAP_FIELD, cls.STRING_SET_FIELD, cls.STRING_FIELD, cls.STRUCT_FIELD, cls.U32_FIELD, cls.U64_FIELD, cls.URI_FIELD, cls.URL_FIELD, cls.VARIANT_FIELD,)
+            return (cls.REQUIRED_I32_FIELD, cls.REQUIRED_STRING_FIELD, cls.BINARY_FIELD, cls.BOOL_FIELD, cls.DATE_TIME_FIELD, cls.DECIMAL_FIELD, cls.DOUBLE_FIELD, cls.EMAIL_ADDRESS_FIELD, cls.ENUM_FIELD, cls.FLOAT_FIELD, cls.I16_FIELD, cls.I32_FIELD, cls.I64_FIELD, cls.I8_FIELD, cls.STRING_FIELD, cls.STRING_LIST_FIELD, cls.STRING_SET_FIELD, cls.STRING_STRING_MAP_FIELD, cls.STRUCT_FIELD, cls.U32_FIELD, cls.U64_FIELD, cls.URI_FIELD, cls.URL_FIELD, cls.VARIANT_FIELD,)
 
     FieldMetadata.REQUIRED_I32_FIELD = FieldMetadata('required_i32_field', int, None)
     FieldMetadata.REQUIRED_STRING_FIELD = FieldMetadata('required_string_field', str, {u'minLength': 1})
@@ -865,14 +871,14 @@ class ProtocolTestStruct(object):
     FieldMetadata.EMAIL_ADDRESS_FIELD = FieldMetadata('email_address_field', str, None)
     FieldMetadata.ENUM_FIELD = FieldMetadata('enum_field', thryft_test.protocol.test.protocol_test_enum.ProtocolTestEnum, None)
     FieldMetadata.FLOAT_FIELD = FieldMetadata('float_field', float, None)
-    FieldMetadata.I8_FIELD = FieldMetadata('i8_field', int, None)
-    FieldMetadata.I16_FIELD = FieldMetadata('i16_field', int, None)
-    FieldMetadata.I32_FIELD = FieldMetadata('i32_field', int, {u'max': 100, u'min': 1})
+    FieldMetadata.I16_FIELD = FieldMetadata('i16_field', int, {u'max': 100, u'min': 1})
+    FieldMetadata.I32_FIELD = FieldMetadata('i32_field', int, None)
     FieldMetadata.I64_FIELD = FieldMetadata('i64_field', long, None)
-    FieldMetadata.STRING_LIST_FIELD = FieldMetadata('string_list_field', tuple, None)
-    FieldMetadata.STRING_STRING_MAP_FIELD = FieldMetadata('string_string_map_field', dict, None)
-    FieldMetadata.STRING_SET_FIELD = FieldMetadata('string_set_field', frozenset, None)
+    FieldMetadata.I8_FIELD = FieldMetadata('i8_field', int, None)
     FieldMetadata.STRING_FIELD = FieldMetadata('string_field', str, {u'minLength': 1})
+    FieldMetadata.STRING_LIST_FIELD = FieldMetadata('string_list_field', tuple, None)
+    FieldMetadata.STRING_SET_FIELD = FieldMetadata('string_set_field', frozenset, None)
+    FieldMetadata.STRING_STRING_MAP_FIELD = FieldMetadata('string_string_map_field', dict, None)
     FieldMetadata.STRUCT_FIELD = FieldMetadata('struct_field', thryft_test.protocol.test.nested_protocol_test_struct.NestedProtocolTestStruct, None)
     FieldMetadata.U32_FIELD = FieldMetadata('u32_field', int, {u'max': 100, u'min': 1})
     FieldMetadata.U64_FIELD = FieldMetadata('u64_field', long, {u'max': 100, u'min': 1})
@@ -892,14 +898,14 @@ class ProtocolTestStruct(object):
         email_address_field=None,
         enum_field=None,
         float_field=None,
-        i8_field=None,
         i16_field=None,
         i32_field=None,
         i64_field=None,
-        string_list_field=None,
-        string_string_map_field=None,
-        string_set_field=None,
+        i8_field=None,
         string_field=None,
+        string_list_field=None,
+        string_set_field=None,
+        string_string_map_field=None,
         struct_field=None,
         u32_field=None,
         u64_field=None,
@@ -918,14 +924,14 @@ class ProtocolTestStruct(object):
         :type email_address_field: str or None
         :type enum_field: thryft_test.protocol.test.protocol_test_enum.ProtocolTestEnum or None
         :type float_field: float or None
-        :type i8_field: int or None
         :type i16_field: int or None
         :type i32_field: int or None
         :type i64_field: int or long or None
-        :type string_list_field: tuple(str) or None
-        :type string_string_map_field: dict(str: str) or None
-        :type string_set_field: frozenset(str) or None
+        :type i8_field: int or None
         :type string_field: str or None
+        :type string_list_field: tuple(str) or None
+        :type string_set_field: frozenset(str) or None
+        :type string_string_map_field: dict(str: str) or None
         :type struct_field: thryft_test.protocol.test.nested_protocol_test_struct.NestedProtocolTestStruct or None
         :type u32_field: int or None
         :type u64_field: int or long or None
@@ -988,21 +994,18 @@ class ProtocolTestStruct(object):
                 raise TypeError("expected float_field to be a float but it is a %s" % getattr(__builtin__, 'type')(float_field))
         self.__float_field = float_field
 
-        if i8_field is not None:
-            if not isinstance(i8_field, int):
-                raise TypeError("expected i8_field to be a int but it is a %s" % getattr(__builtin__, 'type')(i8_field))
-        self.__i8_field = i8_field
-
         if i16_field is not None:
             if not isinstance(i16_field, int):
                 raise TypeError("expected i16_field to be a int but it is a %s" % getattr(__builtin__, 'type')(i16_field))
+            if i16_field > 100:
+                raise ValueError("expected i16_field to be <= 100, was %s" % i16_field)
+            if i16_field < 1:
+                raise ValueError("expected i16_field to be >= 1, was %s" % i16_field)
         self.__i16_field = i16_field
 
         if i32_field is not None:
             if not isinstance(i32_field, int):
                 raise TypeError("expected i32_field to be a int but it is a %s" % getattr(__builtin__, 'type')(i32_field))
-            if i32_field < 1:
-                raise ValueError("expected i32_field to be >= 1, was %s" % i32_field)
         self.__i32_field = i32_field
 
         if i64_field is not None:
@@ -1010,20 +1013,10 @@ class ProtocolTestStruct(object):
                 raise TypeError("expected i64_field to be a int or long but it is a %s" % getattr(__builtin__, 'type')(i64_field))
         self.__i64_field = i64_field
 
-        if string_list_field is not None:
-            if not (isinstance(string_list_field, tuple) and len(list(ifilterfalse(lambda _: isinstance(_, basestring), string_list_field))) == 0):
-                raise TypeError("expected string_list_field to be a tuple(str) but it is a %s" % getattr(__builtin__, 'type')(string_list_field))
-        self.__string_list_field = string_list_field
-
-        if string_string_map_field is not None:
-            if not (isinstance(string_string_map_field, dict) and len(list(ifilterfalse(lambda __item: isinstance(__item[0], basestring) and isinstance(__item[1], basestring), string_string_map_field.iteritems()))) == 0):
-                raise TypeError("expected string_string_map_field to be a dict(str: str) but it is a %s" % getattr(__builtin__, 'type')(string_string_map_field))
-        self.__string_string_map_field = string_string_map_field.copy() if string_string_map_field is not None else None
-
-        if string_set_field is not None:
-            if not (isinstance(string_set_field, frozenset) and len(list(ifilterfalse(lambda _: isinstance(_, basestring), string_set_field))) == 0):
-                raise TypeError("expected string_set_field to be a frozenset(str) but it is a %s" % getattr(__builtin__, 'type')(string_set_field))
-        self.__string_set_field = string_set_field
+        if i8_field is not None:
+            if not isinstance(i8_field, int):
+                raise TypeError("expected i8_field to be a int but it is a %s" % getattr(__builtin__, 'type')(i8_field))
+        self.__i8_field = i8_field
 
         if string_field is not None:
             if not isinstance(string_field, basestring):
@@ -1031,6 +1024,21 @@ class ProtocolTestStruct(object):
             if len(string_field) < 1:
                 raise ValueError("expected len(string_field) to be >= 1, was %d" % len(string_field))
         self.__string_field = string_field
+
+        if string_list_field is not None:
+            if not (isinstance(string_list_field, tuple) and len(list(ifilterfalse(lambda _: isinstance(_, basestring), string_list_field))) == 0):
+                raise TypeError("expected string_list_field to be a tuple(str) but it is a %s" % getattr(__builtin__, 'type')(string_list_field))
+        self.__string_list_field = string_list_field
+
+        if string_set_field is not None:
+            if not (isinstance(string_set_field, frozenset) and len(list(ifilterfalse(lambda _: isinstance(_, basestring), string_set_field))) == 0):
+                raise TypeError("expected string_set_field to be a frozenset(str) but it is a %s" % getattr(__builtin__, 'type')(string_set_field))
+        self.__string_set_field = string_set_field
+
+        if string_string_map_field is not None:
+            if not (isinstance(string_string_map_field, dict) and len(list(ifilterfalse(lambda __item: isinstance(__item[0], basestring) and isinstance(__item[1], basestring), string_string_map_field.iteritems()))) == 0):
+                raise TypeError("expected string_string_map_field to be a dict(str: str) but it is a %s" % getattr(__builtin__, 'type')(string_string_map_field))
+        self.__string_string_map_field = string_string_map_field.copy() if string_string_map_field is not None else None
 
         if struct_field is not None:
             if not isinstance(struct_field, thryft_test.protocol.test.nested_protocol_test_struct.NestedProtocolTestStruct):
@@ -1040,6 +1048,8 @@ class ProtocolTestStruct(object):
         if u32_field is not None:
             if not isinstance(u32_field, (int, long)) and u32_field >= 0:
                 raise TypeError("expected u32_field to be a int but it is a %s" % getattr(__builtin__, 'type')(u32_field))
+            if u32_field > 100:
+                raise ValueError("expected u32_field to be <= 100, was %s" % u32_field)
             if u32_field < 1:
                 raise ValueError("expected u32_field to be >= 1, was %s" % u32_field)
         self.__u32_field = u32_field
@@ -1047,6 +1057,8 @@ class ProtocolTestStruct(object):
         if u64_field is not None:
             if not isinstance(u64_field, (int, long)) and u64_field >= 0:
                 raise TypeError("expected u64_field to be a int or long but it is a %s" % getattr(__builtin__, 'type')(u64_field))
+            if u64_field > 100:
+                raise ValueError("expected u64_field to be <= 100, was %s" % u64_field)
             if u64_field < 1:
                 raise ValueError("expected u64_field to be >= 1, was %s" % u64_field)
         self.__u64_field = u64_field
@@ -1085,21 +1097,21 @@ class ProtocolTestStruct(object):
             return False
         if self.float_field != other.float_field:
             return False
-        if self.i8_field != other.i8_field:
-            return False
         if self.i16_field != other.i16_field:
             return False
         if self.i32_field != other.i32_field:
             return False
         if self.i64_field != other.i64_field:
             return False
-        if self.string_list_field != other.string_list_field:
+        if self.i8_field != other.i8_field:
             return False
-        if self.string_string_map_field != other.string_string_map_field:
+        if self.string_field != other.string_field:
+            return False
+        if self.string_list_field != other.string_list_field:
             return False
         if self.string_set_field != other.string_set_field:
             return False
-        if self.string_field != other.string_field:
+        if self.string_string_map_field != other.string_string_map_field:
             return False
         if self.struct_field != other.struct_field:
             return False
@@ -1116,10 +1128,10 @@ class ProtocolTestStruct(object):
         return True
 
     def __hash__(self):
-        return hash((self.required_i32_field,self.required_string_field,self.binary_field,self.bool_field,self.date_time_field,self.decimal_field,self.double_field,self.email_address_field,self.enum_field,self.float_field,self.i8_field,self.i16_field,self.i32_field,self.i64_field,self.string_list_field,self.string_string_map_field,self.string_set_field,self.string_field,self.struct_field,self.u32_field,self.u64_field,self.uri_field,self.url_field,self.variant_field,))
+        return hash((self.required_i32_field,self.required_string_field,self.binary_field,self.bool_field,self.date_time_field,self.decimal_field,self.double_field,self.email_address_field,self.enum_field,self.float_field,self.i16_field,self.i32_field,self.i64_field,self.i8_field,self.string_field,self.string_list_field,self.string_set_field,self.string_string_map_field,self.struct_field,self.u32_field,self.u64_field,self.uri_field,self.url_field,self.variant_field,))
 
     def __iter__(self):
-        return iter((self.required_i32_field, self.required_string_field, self.binary_field, self.bool_field, self.date_time_field, self.decimal_field, self.double_field, self.email_address_field, self.enum_field, self.float_field, self.i8_field, self.i16_field, self.i32_field, self.i64_field, self.string_list_field, self.string_string_map_field, self.string_set_field, self.string_field, self.struct_field, self.u32_field, self.u64_field, self.uri_field, self.url_field, self.variant_field,))
+        return iter((self.required_i32_field, self.required_string_field, self.binary_field, self.bool_field, self.date_time_field, self.decimal_field, self.double_field, self.email_address_field, self.enum_field, self.float_field, self.i16_field, self.i32_field, self.i64_field, self.i8_field, self.string_field, self.string_list_field, self.string_set_field, self.string_string_map_field, self.struct_field, self.u32_field, self.u64_field, self.uri_field, self.url_field, self.variant_field,))
 
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -1144,22 +1156,22 @@ class ProtocolTestStruct(object):
             field_reprs.append('enum_field=' + repr(self.enum_field))
         if self.float_field is not None:
             field_reprs.append('float_field=' + repr(self.float_field))
-        if self.i8_field is not None:
-            field_reprs.append('i8_field=' + repr(self.i8_field))
         if self.i16_field is not None:
             field_reprs.append('i16_field=' + repr(self.i16_field))
         if self.i32_field is not None:
             field_reprs.append('i32_field=' + repr(self.i32_field))
         if self.i64_field is not None:
             field_reprs.append('i64_field=' + repr(self.i64_field))
-        if self.string_list_field is not None:
-            field_reprs.append('string_list_field=' + repr(self.string_list_field))
-        if self.string_string_map_field is not None:
-            field_reprs.append('string_string_map_field=' + repr(self.string_string_map_field))
-        if self.string_set_field is not None:
-            field_reprs.append('string_set_field=' + repr(self.string_set_field))
+        if self.i8_field is not None:
+            field_reprs.append('i8_field=' + repr(self.i8_field))
         if self.string_field is not None:
             field_reprs.append('string_field=' + "'" + self.string_field.encode('ascii', 'replace') + "'")
+        if self.string_list_field is not None:
+            field_reprs.append('string_list_field=' + repr(self.string_list_field))
+        if self.string_set_field is not None:
+            field_reprs.append('string_set_field=' + repr(self.string_set_field))
+        if self.string_string_map_field is not None:
+            field_reprs.append('string_string_map_field=' + repr(self.string_string_map_field))
         if self.struct_field is not None:
             field_reprs.append('struct_field=' + repr(self.struct_field))
         if self.u32_field is not None:
@@ -1194,22 +1206,22 @@ class ProtocolTestStruct(object):
             field_reprs.append('enum_field=' + repr(self.enum_field))
         if self.float_field is not None:
             field_reprs.append('float_field=' + repr(self.float_field))
-        if self.i8_field is not None:
-            field_reprs.append('i8_field=' + repr(self.i8_field))
         if self.i16_field is not None:
             field_reprs.append('i16_field=' + repr(self.i16_field))
         if self.i32_field is not None:
             field_reprs.append('i32_field=' + repr(self.i32_field))
         if self.i64_field is not None:
             field_reprs.append('i64_field=' + repr(self.i64_field))
-        if self.string_list_field is not None:
-            field_reprs.append('string_list_field=' + repr(self.string_list_field))
-        if self.string_string_map_field is not None:
-            field_reprs.append('string_string_map_field=' + repr(self.string_string_map_field))
-        if self.string_set_field is not None:
-            field_reprs.append('string_set_field=' + repr(self.string_set_field))
+        if self.i8_field is not None:
+            field_reprs.append('i8_field=' + repr(self.i8_field))
         if self.string_field is not None:
             field_reprs.append('string_field=' + "'" + self.string_field.encode('ascii', 'replace') + "'")
+        if self.string_list_field is not None:
+            field_reprs.append('string_list_field=' + repr(self.string_list_field))
+        if self.string_set_field is not None:
+            field_reprs.append('string_set_field=' + repr(self.string_set_field))
+        if self.string_string_map_field is not None:
+            field_reprs.append('string_string_map_field=' + repr(self.string_string_map_field))
         if self.struct_field is not None:
             field_reprs.append('struct_field=' + repr(self.struct_field))
         if self.u32_field is not None:
@@ -1380,11 +1392,6 @@ class ProtocolTestStruct(object):
                     init_kwds['float_field'] = iprot.read_double()
                 except (TypeError, ValueError,):
                     pass
-            elif ifield_name == 'i8_field' and ifield_id == 11:
-                try:
-                    init_kwds['i8_field'] = iprot.read_byte()
-                except (TypeError, ValueError,):
-                    pass
             elif ifield_name == 'i16_field' and ifield_id == 12:
                 try:
                     init_kwds['i16_field'] = iprot.read_i16()
@@ -1400,17 +1407,22 @@ class ProtocolTestStruct(object):
                     init_kwds['i64_field'] = iprot.read_i64()
                 except (TypeError, ValueError,):
                     pass
-            elif ifield_name == 'string_list_field' and ifield_id == 15:
-                init_kwds['string_list_field'] = tuple([iprot.read_string() for _ in xrange(iprot.read_list_begin()[1])] + (iprot.read_list_end() is None and []))
-            elif ifield_name == 'string_string_map_field' and ifield_id == 16:
-                init_kwds['string_string_map_field'] = dict([(iprot.read_string(), iprot.read_string()) for _ in xrange(iprot.read_map_begin()[2])] + (iprot.read_map_end() is None and []))
-            elif ifield_name == 'string_set_field' and ifield_id == 17:
-                init_kwds['string_set_field'] = frozenset([iprot.read_string() for _ in xrange(iprot.read_set_begin()[1])] + (iprot.read_set_end() is None and []))
+            elif ifield_name == 'i8_field' and ifield_id == 11:
+                try:
+                    init_kwds['i8_field'] = iprot.read_byte()
+                except (TypeError, ValueError,):
+                    pass
             elif ifield_name == 'string_field' and ifield_id == 18:
                 try:
                     init_kwds['string_field'] = iprot.read_string()
                 except (TypeError, ValueError,):
                     pass
+            elif ifield_name == 'string_list_field' and ifield_id == 15:
+                init_kwds['string_list_field'] = tuple([iprot.read_string() for _ in xrange(iprot.read_list_begin()[1])] + (iprot.read_list_end() is None and []))
+            elif ifield_name == 'string_set_field' and ifield_id == 17:
+                init_kwds['string_set_field'] = frozenset([iprot.read_string() for _ in xrange(iprot.read_set_begin()[1])] + (iprot.read_set_end() is None and []))
+            elif ifield_name == 'string_string_map_field' and ifield_id == 16:
+                init_kwds['string_string_map_field'] = dict([(iprot.read_string(), iprot.read_string()) for _ in xrange(iprot.read_map_begin()[2])] + (iprot.read_map_end() is None and []))
             elif ifield_name == 'struct_field' and ifield_id == 19:
                 init_kwds['struct_field'] = thryft_test.protocol.test.nested_protocol_test_struct.NestedProtocolTestStruct.read(iprot)
             elif ifield_name == 'u32_field' and ifield_id == 20:
@@ -1452,14 +1464,14 @@ class ProtocolTestStruct(object):
         email_address_field=None,
         enum_field=None,
         float_field=None,
-        i8_field=None,
         i16_field=None,
         i32_field=None,
         i64_field=None,
-        string_list_field=None,
-        string_string_map_field=None,
-        string_set_field=None,
+        i8_field=None,
         string_field=None,
+        string_list_field=None,
+        string_set_field=None,
+        string_string_map_field=None,
         struct_field=None,
         u32_field=None,
         u64_field=None,
@@ -1480,14 +1492,14 @@ class ProtocolTestStruct(object):
         :type email_address_field: str or None
         :type enum_field: thryft_test.protocol.test.protocol_test_enum.ProtocolTestEnum or None
         :type float_field: float or None
-        :type i8_field: int or None
         :type i16_field: int or None
         :type i32_field: int or None
         :type i64_field: int or long or None
-        :type string_list_field: tuple(str) or None
-        :type string_string_map_field: dict(str: str) or None
-        :type string_set_field: frozenset(str) or None
+        :type i8_field: int or None
         :type string_field: str or None
+        :type string_list_field: tuple(str) or None
+        :type string_set_field: frozenset(str) or None
+        :type string_string_map_field: dict(str: str) or None
         :type struct_field: thryft_test.protocol.test.nested_protocol_test_struct.NestedProtocolTestStruct or None
         :type u32_field: int or None
         :type u64_field: int or long or None
@@ -1517,22 +1529,22 @@ class ProtocolTestStruct(object):
             enum_field = self.enum_field
         if float_field is None:
             float_field = self.float_field
-        if i8_field is None:
-            i8_field = self.i8_field
         if i16_field is None:
             i16_field = self.i16_field
         if i32_field is None:
             i32_field = self.i32_field
         if i64_field is None:
             i64_field = self.i64_field
-        if string_list_field is None:
-            string_list_field = self.string_list_field
-        if string_string_map_field is None:
-            string_string_map_field = self.string_string_map_field
-        if string_set_field is None:
-            string_set_field = self.string_set_field
+        if i8_field is None:
+            i8_field = self.i8_field
         if string_field is None:
             string_field = self.string_field
+        if string_list_field is None:
+            string_list_field = self.string_list_field
+        if string_set_field is None:
+            string_set_field = self.string_set_field
+        if string_string_map_field is None:
+            string_string_map_field = self.string_string_map_field
         if struct_field is None:
             struct_field = self.struct_field
         if u32_field is None:
@@ -1545,7 +1557,7 @@ class ProtocolTestStruct(object):
             url_field = self.url_field
         if variant_field is None:
             variant_field = self.variant_field
-        return self.__class__(required_i32_field=required_i32_field, required_string_field=required_string_field, binary_field=binary_field, bool_field=bool_field, date_time_field=date_time_field, decimal_field=decimal_field, double_field=double_field, email_address_field=email_address_field, enum_field=enum_field, float_field=float_field, i8_field=i8_field, i16_field=i16_field, i32_field=i32_field, i64_field=i64_field, string_list_field=string_list_field, string_string_map_field=string_string_map_field, string_set_field=string_set_field, string_field=string_field, struct_field=struct_field, u32_field=u32_field, u64_field=u64_field, uri_field=uri_field, url_field=url_field, variant_field=variant_field)
+        return self.__class__(required_i32_field=required_i32_field, required_string_field=required_string_field, binary_field=binary_field, bool_field=bool_field, date_time_field=date_time_field, decimal_field=decimal_field, double_field=double_field, email_address_field=email_address_field, enum_field=enum_field, float_field=float_field, i16_field=i16_field, i32_field=i32_field, i64_field=i64_field, i8_field=i8_field, string_field=string_field, string_list_field=string_list_field, string_set_field=string_set_field, string_string_map_field=string_string_map_field, struct_field=struct_field, u32_field=u32_field, u64_field=u64_field, uri_field=uri_field, url_field=url_field, variant_field=variant_field)
 
     @property
     def required_i32_field(self):
@@ -1701,11 +1713,6 @@ class ProtocolTestStruct(object):
             oprot.write_double(self.float_field)
             oprot.write_field_end()
 
-        if self.i8_field is not None:
-            oprot.write_field_begin(name='i8_field', type=3, id=11)
-            oprot.write_byte(self.i8_field)
-            oprot.write_field_end()
-
         if self.i16_field is not None:
             oprot.write_field_begin(name='i16_field', type=6, id=12)
             oprot.write_i16(self.i16_field)
@@ -1721,21 +1728,22 @@ class ProtocolTestStruct(object):
             oprot.write_i64(self.i64_field)
             oprot.write_field_end()
 
+        if self.i8_field is not None:
+            oprot.write_field_begin(name='i8_field', type=3, id=11)
+            oprot.write_byte(self.i8_field)
+            oprot.write_field_end()
+
+        if self.string_field is not None:
+            oprot.write_field_begin(name='string_field', type=11, id=18)
+            oprot.write_string(self.string_field)
+            oprot.write_field_end()
+
         if self.string_list_field is not None:
             oprot.write_field_begin(name='string_list_field', type=15, id=15)
             oprot.write_list_begin(11, len(self.string_list_field))
             for _0 in self.string_list_field:
                 oprot.write_string(_0)
             oprot.write_list_end()
-            oprot.write_field_end()
-
-        if self.string_string_map_field is not None:
-            oprot.write_field_begin(name='string_string_map_field', type=13, id=16)
-            oprot.write_map_begin(11, len(self.string_string_map_field), 11)
-            for __key0, __value0 in self.string_string_map_field.iteritems():
-                oprot.write_string(__key0)
-                oprot.write_string(__value0)
-            oprot.write_map_end()
             oprot.write_field_end()
 
         if self.string_set_field is not None:
@@ -1746,9 +1754,13 @@ class ProtocolTestStruct(object):
             oprot.write_set_end()
             oprot.write_field_end()
 
-        if self.string_field is not None:
-            oprot.write_field_begin(name='string_field', type=11, id=18)
-            oprot.write_string(self.string_field)
+        if self.string_string_map_field is not None:
+            oprot.write_field_begin(name='string_string_map_field', type=13, id=16)
+            oprot.write_map_begin(11, len(self.string_string_map_field), 11)
+            for __key0, __value0 in self.string_string_map_field.iteritems():
+                oprot.write_string(__key0)
+                oprot.write_string(__value0)
+            oprot.write_map_end()
             oprot.write_field_end()
 
         if self.struct_field is not None:

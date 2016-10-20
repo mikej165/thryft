@@ -21,10 +21,10 @@ class NestedProtocolTestStruct(object):
             i16_field=None,
             i32_field=None,
             i64_field=None,
-            string_list_field=None,
-            string_string_map_field=None,
-            string_set_field=None,
             string_field=None,
+            string_list_field=None,
+            string_set_field=None,
+            string_string_map_field=None,
             url_field=None,
         ):
             '''
@@ -40,10 +40,10 @@ class NestedProtocolTestStruct(object):
             :type i16_field: int or None
             :type i32_field: int or None
             :type i64_field: int or long or None
-            :type string_list_field: tuple(str) or None
-            :type string_string_map_field: dict(str: str) or None
-            :type string_set_field: frozenset(str) or None
             :type string_field: str or None
+            :type string_list_field: tuple(str) or None
+            :type string_set_field: frozenset(str) or None
+            :type string_string_map_field: dict(str: str) or None
             :type url_field: str or None
             '''
 
@@ -59,14 +59,14 @@ class NestedProtocolTestStruct(object):
             self.__i16_field = i16_field
             self.__i32_field = i32_field
             self.__i64_field = i64_field
-            self.__string_list_field = string_list_field
-            self.__string_string_map_field = string_string_map_field
-            self.__string_set_field = string_set_field
             self.__string_field = string_field
+            self.__string_list_field = string_list_field
+            self.__string_set_field = string_set_field
+            self.__string_string_map_field = string_string_map_field
             self.__url_field = url_field
 
         def build(self):
-            return NestedProtocolTestStruct(required_i32_field=self.__required_i32_field, required_string_field=self.__required_string_field, binary_field=self.__binary_field, bool_field=self.__bool_field, byte_field=self.__byte_field, date_time_field=self.__date_time_field, decimal_field=self.__decimal_field, email_address_field=self.__email_address_field, enum_field=self.__enum_field, i16_field=self.__i16_field, i32_field=self.__i32_field, i64_field=self.__i64_field, string_list_field=self.__string_list_field, string_string_map_field=self.__string_string_map_field, string_set_field=self.__string_set_field, string_field=self.__string_field, url_field=self.__url_field)
+            return NestedProtocolTestStruct(required_i32_field=self.__required_i32_field, required_string_field=self.__required_string_field, binary_field=self.__binary_field, bool_field=self.__bool_field, byte_field=self.__byte_field, date_time_field=self.__date_time_field, decimal_field=self.__decimal_field, email_address_field=self.__email_address_field, enum_field=self.__enum_field, i16_field=self.__i16_field, i32_field=self.__i32_field, i64_field=self.__i64_field, string_field=self.__string_field, string_list_field=self.__string_list_field, string_set_field=self.__string_set_field, string_string_map_field=self.__string_string_map_field, url_field=self.__url_field)
 
         @property
         def binary_field(self):
@@ -403,10 +403,10 @@ class NestedProtocolTestStruct(object):
             :type i16_field: int or None
             :type i32_field: int or None
             :type i64_field: int or long or None
-            :type string_list_field: tuple(str) or None
-            :type string_string_map_field: dict(str: str) or None
-            :type string_set_field: frozenset(str) or None
             :type string_field: str or None
+            :type string_list_field: tuple(str) or None
+            :type string_set_field: frozenset(str) or None
+            :type string_string_map_field: dict(str: str) or None
             :type url_field: str or None
             '''
 
@@ -423,10 +423,10 @@ class NestedProtocolTestStruct(object):
                 self.set_i16_field(nested_protocol_test_struct.i16_field)
                 self.set_i32_field(nested_protocol_test_struct.i32_field)
                 self.set_i64_field(nested_protocol_test_struct.i64_field)
-                self.set_string_list_field(nested_protocol_test_struct.string_list_field)
-                self.set_string_string_map_field(nested_protocol_test_struct.string_string_map_field)
-                self.set_string_set_field(nested_protocol_test_struct.string_set_field)
                 self.set_string_field(nested_protocol_test_struct.string_field)
+                self.set_string_list_field(nested_protocol_test_struct.string_list_field)
+                self.set_string_set_field(nested_protocol_test_struct.string_set_field)
+                self.set_string_string_map_field(nested_protocol_test_struct.string_string_map_field)
                 self.set_url_field(nested_protocol_test_struct.url_field)
             elif isinstance(nested_protocol_test_struct, dict):
                 for key, value in nested_protocol_test_struct.iteritems():
@@ -592,10 +592,10 @@ class NestedProtocolTestStruct(object):
         I16_FIELD = None
         I32_FIELD = None
         I64_FIELD = None
-        STRING_LIST_FIELD = None
-        STRING_STRING_MAP_FIELD = None
-        STRING_SET_FIELD = None
         STRING_FIELD = None
+        STRING_LIST_FIELD = None
+        STRING_SET_FIELD = None
+        STRING_STRING_MAP_FIELD = None
         URL_FIELD = None
 
         def __init__(self, name, type_, validation):
@@ -617,7 +617,7 @@ class NestedProtocolTestStruct(object):
 
         @classmethod
         def values(cls):
-            return (cls.REQUIRED_I32_FIELD, cls.REQUIRED_STRING_FIELD, cls.BINARY_FIELD, cls.BOOL_FIELD, cls.BYTE_FIELD, cls.DATE_TIME_FIELD, cls.DECIMAL_FIELD, cls.EMAIL_ADDRESS_FIELD, cls.ENUM_FIELD, cls.I16_FIELD, cls.I32_FIELD, cls.I64_FIELD, cls.STRING_LIST_FIELD, cls.STRING_STRING_MAP_FIELD, cls.STRING_SET_FIELD, cls.STRING_FIELD, cls.URL_FIELD,)
+            return (cls.REQUIRED_I32_FIELD, cls.REQUIRED_STRING_FIELD, cls.BINARY_FIELD, cls.BOOL_FIELD, cls.BYTE_FIELD, cls.DATE_TIME_FIELD, cls.DECIMAL_FIELD, cls.EMAIL_ADDRESS_FIELD, cls.ENUM_FIELD, cls.I16_FIELD, cls.I32_FIELD, cls.I64_FIELD, cls.STRING_FIELD, cls.STRING_LIST_FIELD, cls.STRING_SET_FIELD, cls.STRING_STRING_MAP_FIELD, cls.URL_FIELD,)
 
     FieldMetadata.REQUIRED_I32_FIELD = FieldMetadata('required_i32_field', int, None)
     FieldMetadata.REQUIRED_STRING_FIELD = FieldMetadata('required_string_field', str, {u'minLength': 1})
@@ -631,10 +631,10 @@ class NestedProtocolTestStruct(object):
     FieldMetadata.I16_FIELD = FieldMetadata('i16_field', int, None)
     FieldMetadata.I32_FIELD = FieldMetadata('i32_field', int, None)
     FieldMetadata.I64_FIELD = FieldMetadata('i64_field', long, None)
-    FieldMetadata.STRING_LIST_FIELD = FieldMetadata('string_list_field', tuple, None)
-    FieldMetadata.STRING_STRING_MAP_FIELD = FieldMetadata('string_string_map_field', dict, None)
-    FieldMetadata.STRING_SET_FIELD = FieldMetadata('string_set_field', frozenset, None)
     FieldMetadata.STRING_FIELD = FieldMetadata('string_field', str, {u'minLength': 1})
+    FieldMetadata.STRING_LIST_FIELD = FieldMetadata('string_list_field', tuple, None)
+    FieldMetadata.STRING_SET_FIELD = FieldMetadata('string_set_field', frozenset, None)
+    FieldMetadata.STRING_STRING_MAP_FIELD = FieldMetadata('string_string_map_field', dict, None)
     FieldMetadata.URL_FIELD = FieldMetadata('url_field', str, None)
 
     def __init__(
@@ -651,10 +651,10 @@ class NestedProtocolTestStruct(object):
         i16_field=None,
         i32_field=None,
         i64_field=None,
-        string_list_field=None,
-        string_string_map_field=None,
-        string_set_field=None,
         string_field=None,
+        string_list_field=None,
+        string_set_field=None,
+        string_string_map_field=None,
         url_field=None,
     ):
         '''
@@ -670,10 +670,10 @@ class NestedProtocolTestStruct(object):
         :type i16_field: int or None
         :type i32_field: int or None
         :type i64_field: int or long or None
-        :type string_list_field: tuple(str) or None
-        :type string_string_map_field: dict(str: str) or None
-        :type string_set_field: frozenset(str) or None
         :type string_field: str or None
+        :type string_list_field: tuple(str) or None
+        :type string_set_field: frozenset(str) or None
+        :type string_string_map_field: dict(str: str) or None
         :type url_field: str or None
         '''
 
@@ -741,27 +741,27 @@ class NestedProtocolTestStruct(object):
                 raise TypeError("expected i64_field to be a int or long but it is a %s" % getattr(__builtin__, 'type')(i64_field))
         self.__i64_field = i64_field
 
-        if string_list_field is not None:
-            if not (isinstance(string_list_field, tuple) and len(list(ifilterfalse(lambda _: isinstance(_, basestring), string_list_field))) == 0):
-                raise TypeError("expected string_list_field to be a tuple(str) but it is a %s" % getattr(__builtin__, 'type')(string_list_field))
-        self.__string_list_field = string_list_field
-
-        if string_string_map_field is not None:
-            if not (isinstance(string_string_map_field, dict) and len(list(ifilterfalse(lambda __item: isinstance(__item[0], basestring) and isinstance(__item[1], basestring), string_string_map_field.iteritems()))) == 0):
-                raise TypeError("expected string_string_map_field to be a dict(str: str) but it is a %s" % getattr(__builtin__, 'type')(string_string_map_field))
-        self.__string_string_map_field = string_string_map_field.copy() if string_string_map_field is not None else None
-
-        if string_set_field is not None:
-            if not (isinstance(string_set_field, frozenset) and len(list(ifilterfalse(lambda _: isinstance(_, basestring), string_set_field))) == 0):
-                raise TypeError("expected string_set_field to be a frozenset(str) but it is a %s" % getattr(__builtin__, 'type')(string_set_field))
-        self.__string_set_field = string_set_field
-
         if string_field is not None:
             if not isinstance(string_field, basestring):
                 raise TypeError("expected string_field to be a str but it is a %s" % getattr(__builtin__, 'type')(string_field))
             if len(string_field) < 1:
                 raise ValueError("expected len(string_field) to be >= 1, was %d" % len(string_field))
         self.__string_field = string_field
+
+        if string_list_field is not None:
+            if not (isinstance(string_list_field, tuple) and len(list(ifilterfalse(lambda _: isinstance(_, basestring), string_list_field))) == 0):
+                raise TypeError("expected string_list_field to be a tuple(str) but it is a %s" % getattr(__builtin__, 'type')(string_list_field))
+        self.__string_list_field = string_list_field
+
+        if string_set_field is not None:
+            if not (isinstance(string_set_field, frozenset) and len(list(ifilterfalse(lambda _: isinstance(_, basestring), string_set_field))) == 0):
+                raise TypeError("expected string_set_field to be a frozenset(str) but it is a %s" % getattr(__builtin__, 'type')(string_set_field))
+        self.__string_set_field = string_set_field
+
+        if string_string_map_field is not None:
+            if not (isinstance(string_string_map_field, dict) and len(list(ifilterfalse(lambda __item: isinstance(__item[0], basestring) and isinstance(__item[1], basestring), string_string_map_field.iteritems()))) == 0):
+                raise TypeError("expected string_string_map_field to be a dict(str: str) but it is a %s" % getattr(__builtin__, 'type')(string_string_map_field))
+        self.__string_string_map_field = string_string_map_field.copy() if string_string_map_field is not None else None
 
         if url_field is not None:
             if not isinstance(url_field, basestring):
@@ -793,23 +793,23 @@ class NestedProtocolTestStruct(object):
             return False
         if self.i64_field != other.i64_field:
             return False
-        if self.string_list_field != other.string_list_field:
+        if self.string_field != other.string_field:
             return False
-        if self.string_string_map_field != other.string_string_map_field:
+        if self.string_list_field != other.string_list_field:
             return False
         if self.string_set_field != other.string_set_field:
             return False
-        if self.string_field != other.string_field:
+        if self.string_string_map_field != other.string_string_map_field:
             return False
         if self.url_field != other.url_field:
             return False
         return True
 
     def __hash__(self):
-        return hash((self.required_i32_field,self.required_string_field,self.binary_field,self.bool_field,self.byte_field,self.date_time_field,self.decimal_field,self.email_address_field,self.enum_field,self.i16_field,self.i32_field,self.i64_field,self.string_list_field,self.string_string_map_field,self.string_set_field,self.string_field,self.url_field,))
+        return hash((self.required_i32_field,self.required_string_field,self.binary_field,self.bool_field,self.byte_field,self.date_time_field,self.decimal_field,self.email_address_field,self.enum_field,self.i16_field,self.i32_field,self.i64_field,self.string_field,self.string_list_field,self.string_set_field,self.string_string_map_field,self.url_field,))
 
     def __iter__(self):
-        return iter((self.required_i32_field, self.required_string_field, self.binary_field, self.bool_field, self.byte_field, self.date_time_field, self.decimal_field, self.email_address_field, self.enum_field, self.i16_field, self.i32_field, self.i64_field, self.string_list_field, self.string_string_map_field, self.string_set_field, self.string_field, self.url_field,))
+        return iter((self.required_i32_field, self.required_string_field, self.binary_field, self.bool_field, self.byte_field, self.date_time_field, self.decimal_field, self.email_address_field, self.enum_field, self.i16_field, self.i32_field, self.i64_field, self.string_field, self.string_list_field, self.string_set_field, self.string_string_map_field, self.url_field,))
 
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -838,14 +838,14 @@ class NestedProtocolTestStruct(object):
             field_reprs.append('i32_field=' + repr(self.i32_field))
         if self.i64_field is not None:
             field_reprs.append('i64_field=' + repr(self.i64_field))
-        if self.string_list_field is not None:
-            field_reprs.append('string_list_field=' + repr(self.string_list_field))
-        if self.string_string_map_field is not None:
-            field_reprs.append('string_string_map_field=' + repr(self.string_string_map_field))
-        if self.string_set_field is not None:
-            field_reprs.append('string_set_field=' + repr(self.string_set_field))
         if self.string_field is not None:
             field_reprs.append('string_field=' + "'" + self.string_field.encode('ascii', 'replace') + "'")
+        if self.string_list_field is not None:
+            field_reprs.append('string_list_field=' + repr(self.string_list_field))
+        if self.string_set_field is not None:
+            field_reprs.append('string_set_field=' + repr(self.string_set_field))
+        if self.string_string_map_field is not None:
+            field_reprs.append('string_string_map_field=' + repr(self.string_string_map_field))
         if self.url_field is not None:
             field_reprs.append('url_field=' + "'" + self.url_field.encode('ascii', 'replace') + "'")
         return 'NestedProtocolTestStruct(' + ', '.join(field_reprs) + ')'
@@ -874,14 +874,14 @@ class NestedProtocolTestStruct(object):
             field_reprs.append('i32_field=' + repr(self.i32_field))
         if self.i64_field is not None:
             field_reprs.append('i64_field=' + repr(self.i64_field))
-        if self.string_list_field is not None:
-            field_reprs.append('string_list_field=' + repr(self.string_list_field))
-        if self.string_string_map_field is not None:
-            field_reprs.append('string_string_map_field=' + repr(self.string_string_map_field))
-        if self.string_set_field is not None:
-            field_reprs.append('string_set_field=' + repr(self.string_set_field))
         if self.string_field is not None:
             field_reprs.append('string_field=' + "'" + self.string_field.encode('ascii', 'replace') + "'")
+        if self.string_list_field is not None:
+            field_reprs.append('string_list_field=' + repr(self.string_list_field))
+        if self.string_set_field is not None:
+            field_reprs.append('string_set_field=' + repr(self.string_set_field))
+        if self.string_string_map_field is not None:
+            field_reprs.append('string_string_map_field=' + repr(self.string_string_map_field))
         if self.url_field is not None:
             field_reprs.append('url_field=' + "'" + self.url_field.encode('ascii', 'replace') + "'")
         return 'NestedProtocolTestStruct(' + ', '.join(field_reprs) + ')'
@@ -1036,17 +1036,17 @@ class NestedProtocolTestStruct(object):
                     init_kwds['i64_field'] = iprot.read_i64()
                 except (TypeError, ValueError,):
                     pass
-            elif ifield_name == 'string_list_field':
-                init_kwds['string_list_field'] = tuple([iprot.read_string() for _ in xrange(iprot.read_list_begin()[1])] + (iprot.read_list_end() is None and []))
-            elif ifield_name == 'string_string_map_field':
-                init_kwds['string_string_map_field'] = dict([(iprot.read_string(), iprot.read_string()) for _ in xrange(iprot.read_map_begin()[2])] + (iprot.read_map_end() is None and []))
-            elif ifield_name == 'string_set_field':
-                init_kwds['string_set_field'] = frozenset([iprot.read_string() for _ in xrange(iprot.read_set_begin()[1])] + (iprot.read_set_end() is None and []))
             elif ifield_name == 'string_field':
                 try:
                     init_kwds['string_field'] = iprot.read_string()
                 except (TypeError, ValueError,):
                     pass
+            elif ifield_name == 'string_list_field':
+                init_kwds['string_list_field'] = tuple([iprot.read_string() for _ in xrange(iprot.read_list_begin()[1])] + (iprot.read_list_end() is None and []))
+            elif ifield_name == 'string_set_field':
+                init_kwds['string_set_field'] = frozenset([iprot.read_string() for _ in xrange(iprot.read_set_begin()[1])] + (iprot.read_set_end() is None and []))
+            elif ifield_name == 'string_string_map_field':
+                init_kwds['string_string_map_field'] = dict([(iprot.read_string(), iprot.read_string()) for _ in xrange(iprot.read_map_begin()[2])] + (iprot.read_map_end() is None and []))
             elif ifield_name == 'url_field':
                 try:
                     init_kwds['url_field'] = iprot.read_string()
@@ -1071,10 +1071,10 @@ class NestedProtocolTestStruct(object):
         i16_field=None,
         i32_field=None,
         i64_field=None,
-        string_list_field=None,
-        string_string_map_field=None,
-        string_set_field=None,
         string_field=None,
+        string_list_field=None,
+        string_set_field=None,
+        string_string_map_field=None,
         url_field=None,
     ):
         '''
@@ -1092,10 +1092,10 @@ class NestedProtocolTestStruct(object):
         :type i16_field: int or None
         :type i32_field: int or None
         :type i64_field: int or long or None
-        :type string_list_field: tuple(str) or None
-        :type string_string_map_field: dict(str: str) or None
-        :type string_set_field: frozenset(str) or None
         :type string_field: str or None
+        :type string_list_field: tuple(str) or None
+        :type string_set_field: frozenset(str) or None
+        :type string_string_map_field: dict(str: str) or None
         :type url_field: str or None
         :rtype: thryft_test.protocol.test.nested_protocol_test_struct.NestedProtocolTestStruct
         '''
@@ -1124,17 +1124,17 @@ class NestedProtocolTestStruct(object):
             i32_field = self.i32_field
         if i64_field is None:
             i64_field = self.i64_field
-        if string_list_field is None:
-            string_list_field = self.string_list_field
-        if string_string_map_field is None:
-            string_string_map_field = self.string_string_map_field
-        if string_set_field is None:
-            string_set_field = self.string_set_field
         if string_field is None:
             string_field = self.string_field
+        if string_list_field is None:
+            string_list_field = self.string_list_field
+        if string_set_field is None:
+            string_set_field = self.string_set_field
+        if string_string_map_field is None:
+            string_string_map_field = self.string_string_map_field
         if url_field is None:
             url_field = self.url_field
-        return self.__class__(required_i32_field=required_i32_field, required_string_field=required_string_field, binary_field=binary_field, bool_field=bool_field, byte_field=byte_field, date_time_field=date_time_field, decimal_field=decimal_field, email_address_field=email_address_field, enum_field=enum_field, i16_field=i16_field, i32_field=i32_field, i64_field=i64_field, string_list_field=string_list_field, string_string_map_field=string_string_map_field, string_set_field=string_set_field, string_field=string_field, url_field=url_field)
+        return self.__class__(required_i32_field=required_i32_field, required_string_field=required_string_field, binary_field=binary_field, bool_field=bool_field, byte_field=byte_field, date_time_field=date_time_field, decimal_field=decimal_field, email_address_field=email_address_field, enum_field=enum_field, i16_field=i16_field, i32_field=i32_field, i64_field=i64_field, string_field=string_field, string_list_field=string_list_field, string_set_field=string_set_field, string_string_map_field=string_string_map_field, url_field=url_field)
 
     @property
     def required_i32_field(self):
@@ -1260,21 +1260,17 @@ class NestedProtocolTestStruct(object):
             oprot.write_i64(self.i64_field)
             oprot.write_field_end()
 
+        if self.string_field is not None:
+            oprot.write_field_begin(name='string_field', type=11, id=None)
+            oprot.write_string(self.string_field)
+            oprot.write_field_end()
+
         if self.string_list_field is not None:
             oprot.write_field_begin(name='string_list_field', type=15, id=None)
             oprot.write_list_begin(11, len(self.string_list_field))
             for _0 in self.string_list_field:
                 oprot.write_string(_0)
             oprot.write_list_end()
-            oprot.write_field_end()
-
-        if self.string_string_map_field is not None:
-            oprot.write_field_begin(name='string_string_map_field', type=13, id=None)
-            oprot.write_map_begin(11, len(self.string_string_map_field), 11)
-            for __key0, __value0 in self.string_string_map_field.iteritems():
-                oprot.write_string(__key0)
-                oprot.write_string(__value0)
-            oprot.write_map_end()
             oprot.write_field_end()
 
         if self.string_set_field is not None:
@@ -1285,9 +1281,13 @@ class NestedProtocolTestStruct(object):
             oprot.write_set_end()
             oprot.write_field_end()
 
-        if self.string_field is not None:
-            oprot.write_field_begin(name='string_field', type=11, id=None)
-            oprot.write_string(self.string_field)
+        if self.string_string_map_field is not None:
+            oprot.write_field_begin(name='string_string_map_field', type=13, id=None)
+            oprot.write_map_begin(11, len(self.string_string_map_field), 11)
+            for __key0, __value0 in self.string_string_map_field.iteritems():
+                oprot.write_string(__key0)
+                oprot.write_string(__value0)
+            oprot.write_map_end()
             oprot.write_field_end()
 
         if self.url_field is not None:

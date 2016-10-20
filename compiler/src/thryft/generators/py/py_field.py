@@ -60,6 +60,31 @@ if not %(type_check)s:
 if %(name)s is not %(acceptance)s:
     raise ValueError("expected %(name)s to be %(acceptance)s, was %%s" %% %(name)s)""" % locals())
 
+        blank = validation.pop('blank', None)
+        if blank is not None:
+            assert blank is False
+            check.append("""\
+if %(name)s.isspace():
+    raise ValueError("expected %(name)s not to be blank")""" % locals())
+
+        max_ = validation.pop('max', None)
+        if max_ is not None:
+            check.append("""\
+if %(name)s > %(max_)s:
+    raise ValueError("expected %(name)s to be <= %(max_)s, was %%s" %% %(name)s)""" % locals())
+
+        max_length = validation.pop('maxLength', None)
+        if max_length is not None:
+            check.append("""\
+if len(%(name)s) > %(max_length)d:
+    raise ValueError("expected len(%(name)s) to be <= %(min_length)d, was %%d" %% len(%(name)s))""" % locals())
+
+        min_length = validation.pop('minLength', None)
+        if min_length is not None:
+            check.append("""\
+if len(%(name)s) < %(min_length)d:
+    raise ValueError("expected len(%(name)s) to be >= %(min_length)d, was %%d" %% len(%(name)s))""" % locals())
+
         min_ = validation.pop('min', None)
         if min_ is not None:
             check.append("""\
@@ -71,23 +96,6 @@ if %(name)s < %(min_)s:
             check.append("""\
 if %(name)s <= %(min_exclusive)s:
     raise ValueError("expected %(name)s to be > %(min_exclusive)s, was %%s" %% %(name)s)""" % locals())
-
-        min_length = validation.pop('minLength', None)
-        if min_length is not None:
-            check.append("""\
-if len(%(name)s) < %(min_length)d:
-    raise ValueError("expected len(%(name)s) to be >= %(min_length)d, was %%d" %% len(%(name)s))""" % locals())
-        max_length = validation.pop('maxLength', None)
-        if max_length is not None:
-            check.append("""\
-if len(%(name)s) > %(max_length)d:
-    raise ValueError("expected len(%(name)s) to be <= %(min_length)d, was %%d" %% len(%(name)s))""" % locals())
-        blank = validation.pop('blank', None)
-        if blank is not None:
-            assert blank is False
-            check.append("""\
-if %(name)s.isspace():
-    raise ValueError("expected %(name)s not to be blank")""" % locals())
 
         if len(validation) > 0:
             self._logger.warn("unhandled validation: %s", validation)

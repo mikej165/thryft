@@ -5,9 +5,9 @@ include "nested_protocol_test_struct.thrift"
 include "protocol_test_enum.thrift"
 include "thryft/native/date_time.thrift"
 include "thryft/native/decimal.thrift"
-include "thryft/native/i8.thrift"
 include "thryft/native/email_address.thrift"
 include "thryft/native/float.thrift"
+include "thryft/native/i8.thrift"
 include "thryft/native/u32.thrift"
 include "thryft/native/u64.thrift"
 include "thryft/native/uri.thrift"
@@ -27,16 +27,16 @@ struct ProtocolTestStruct {
     8: optional email_address.EmailAddress email_address_field;
     9: optional protocol_test_enum.ProtocolTestEnum enum_field;
     10: optional float.float float_field;
-    11: optional i8.i8 i8_field;
-    12: optional i16 i16_field;
     // @validation {"max": 100, "min": 1}
+    12: optional i16 i16_field;
     13: optional i32 i32_field;
     14: optional i64 i64_field;
-    15: optional list<string> string_list_field;
-    16: optional map<string, string> string_string_map_field;
-    17: optional set<string> string_set_field;
+    11: optional i8.i8 i8_field;
     // @validation {"minLength": 1}
     18: optional string string_field;
+    15: optional list<string> string_list_field;
+    17: optional set<string> string_set_field;
+    16: optional map<string, string> string_string_map_field;
     19: optional nested_protocol_test_struct.NestedProtocolTestStruct struct_field;
     // @validation {"max": 100, "min": 1}
     20: optional u32.u32 u32_field;
