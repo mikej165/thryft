@@ -266,36 +266,6 @@ def __init__(
     def _py_imports_use(self, caller_stack):
         return ['import ' + self.py_qname().rsplit('.', 1)[0]]
 
-    def _py_method_as_dict(self):
-        return {'as_dict': """\
-def as_dict(self):
-    '''
-    Return the fields of this object as a dictionary.
-
-    :rtype: dict
-    '''
-
-    return {%s}
-""" % ', '.join("'%s': %s" % (field.py_name(), 'self.' + field.py_getter_call())
-                                 for field in self.fields)}
-
-    def _py_method_as_tuple(self):
-        if len(self.fields) == 0:
-            tuple_ = 'tuple()'
-        else:
-            tuple_ = "(%s,)" % ', '.join('self.' + field.py_getter_name()
-                                        for field in self.fields)
-        return {'as_tuple': """\
-def as_tuple(self):
-    '''
-    Return the fields of this object in declaration order as a tuple.
-
-    :rtype: tuple
-    '''
-
-    return %(tuple_)s
-""" % locals()}
-
     def _py_method_eq(self):
         statements = []
         for field in self.fields:
@@ -329,10 +299,15 @@ def __hash__(self):
                 for field in self.fields)}
 
     def _py_method_iter(self):
-        return {'__iter__': '''\
+        if len(self.fields) == 0:
+            tuple_ = 'tuple()'
+        else:
+            tuple_ = "(%s,)" % ', '.join('self.' + field.py_getter_name()
+                                        for field in self.fields)
+        return {'__iter__': """\
 def __iter__(self):
-    return iter(self.as_tuple())
-'''}
+    return iter(%(tuple_)s)
+""" % locals()}
 
     def _py_method_ne(self):
         return {'__ne__': '''\
@@ -496,8 +471,6 @@ def write(self, oprot):
     def _py_methods(self, methods_dict=None):
         if methods_dict is None:
             methods_dict = {}
-        methods_dict.update(self._py_method_as_dict())
-        methods_dict.update(self._py_method_as_tuple())
         methods_dict.update(self._py_method_eq())
         methods_dict.update(self._py_method_getters())
         methods_dict.update(self._py_method_hash())
