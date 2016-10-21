@@ -77,7 +77,7 @@ if %(name)s > %(max_)s:
         if max_length is not None:
             check.append("""\
 if len(%(name)s) > %(max_length)d:
-    raise ValueError("expected len(%(name)s) to be <= %(min_length)d, was %%d" %% len(%(name)s))""" % locals())
+    raise ValueError("expected len(%(name)s) to be <= %(max_length)d, was %%d" %% len(%(name)s))""" % locals())
 
         min_length = validation.pop('minLength', None)
         if min_length is not None:
