@@ -39,10 +39,11 @@ from yutil import indent, decamelize, lpad
 
 
 class JsonRpcClientPyGenerator(py_generator.PyGenerator):
-    def __init__(self, api_url_default=None, service_imports_definition=None):
+    def __init__(self, api_url_default=None, service_imports_definition=None, libthryft_module_qname='thryft'):
         py_generator.PyGenerator.__init__(self)
         self._api_url_default = api_url_default
         self._service_imports_definition = tuple(service_imports_definition) if service_imports_definition is not None else tuple()
+        self._libthryft_module_qname = libthryft_module_qname
 
     class Document(PyDocument):
         def _py_namespace(self):
@@ -61,15 +62,17 @@ class JsonRpcClientPyGenerator(py_generator.PyGenerator):
             return imports
 
         def py_repr(self):
+            libthryft_module_qname = self._parent_generator()._libthryft_module_qname
             if self.return_field is not None:
                 if isinstance(self.return_field.type, _BaseType):
                     call_prefix = 'return '
                     call_suffix = ''
                 else:
                     call_prefix = 'return_value = '
+                    return_type_read = self.return_field.type.py_read_protocol()
                     call_suffix = """
-    iprot = thryft.protocol.json_input_protocol.JsonInputProtocol(return_value)
-    return %s""" % self.return_field.type.py_read_protocol()
+    iprot = %(libthryft_module_qname)s.protocol.json_input_protocol.JsonInputProtocol(return_value)
+    return %(return_type_read)s""" % locals()
             else:
                 call_prefix = call_suffix = ''
             name = self.py_name()
@@ -82,7 +85,7 @@ class JsonRpcClientPyGenerator(py_generator.PyGenerator):
                 parameter_writes = ''.join(parameter.py_write_protocol(value=parameter.py_name())
                                              for parameter in self.parameters)
                 construct_params = indent(' ' * 4, """
-oprot = thryft.protocol.json_output_protocol.JsonOutputProtocol()
+oprot = %(libthryft_module_qname)s.protocol.json_output_protocol.JsonOutputProtocol()
 oprot.write_struct_begin()
 %(parameter_writes)soprot.write_struct_end()
 
@@ -100,10 +103,11 @@ def _%(name)s(
 
     class Service(PyService):
         def py_imports_definition(self, caller_stack=None):
+            libthryft_module_qname = self._parent_generator()._libthryft_module_qname
             imports = [
                     'import ' + PyService.py_qname(self).rsplit('.', 1)[0],
-                    'import thryft.protocol.json_input_protocol',
-                    'import thryft.protocol.json_output_protocol',
+                    "import %(libthryft_module_qname)s.protocol.json_input_protocol" % locals(),
+                    "import %(libthryft_module_qname)s.protocol.json_output_protocol" % locals(),
                     'from urlparse import urlparse',
                     'import base64',
                     'import json',
@@ -185,6 +189,7 @@ def __init__(self, %(api_url_parameter)s, headers=None):
 #            urllib2.install_opener(opener)
 
         def _py_method_request(self):
+            libthryft_module_qname = self._parent_generator()._libthryft_module_qname
             return {'__request': """\
 def __request(self, method, params, headers=None):
     request = {'jsonrpc': '2.0', 'method': method, 'params': params}
@@ -240,7 +245,7 @@ def __request(self, method, params, headers=None):
             if exception_class is not None and issubclass(exception_class, Exception):
                 data = error.get('data')
                 if isinstance(data, dict):
-                    data_iprot = thryft.protocol.json_input_protocol.JsonInputProtocol(data)
+                    data_iprot = %(libthryft_module_qname)s.protocol.json_input_protocol.JsonInputProtocol(data)
                     exception_ = exception_class.read(data_iprot)
                     raise exception_
                 else:
