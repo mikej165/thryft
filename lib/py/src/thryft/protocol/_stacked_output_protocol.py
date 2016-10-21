@@ -1,5 +1,5 @@
-from thryft.protocol._abstract_output_protocol import _AbstractOutputProtocol
-from thryft.protocol._output_protocol import _OutputProtocol
+from ..protocol._abstract_output_protocol import _AbstractOutputProtocol
+from ..protocol._output_protocol import _OutputProtocol
 
 
 class _StackedOutputProtocol(_OutputProtocol):

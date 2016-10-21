@@ -30,7 +30,7 @@
 # OF SUCH DAMAGE.
 # -----------------------------------------------------------------------------
 
-from thryft.protocol.builtins_output_protocol import BuiltinsOutputProtocol
+from ..protocol.builtins_output_protocol import BuiltinsOutputProtocol
 from urllib import urlencode
 
 

@@ -30,14 +30,15 @@
 # OF SUCH DAMAGE.
 # -----------------------------------------------------------------------------
 
-import thryft.protocol._abstract_output_protocol
-from thryft.protocol._stacked_output_protocol import _StackedOutputProtocol
+from ..protocol._abstract_output_protocol import _AbstractOutputProtocol
+from ..protocol._output_protocol import _OutputProtocol
+from ..protocol._stacked_output_protocol import _StackedOutputProtocol
 
 
 class BuiltinsOutputProtocol(_StackedOutputProtocol):
-    class _OutputProtocol(thryft.protocol._abstract_output_protocol._AbstractOutputProtocol):
+    class _OutputProtocol(_AbstractOutputProtocol):
         def __init__(self, stacked_output_protocol):
-            thryft.protocol._output_protocol._OutputProtocol.__init__(self)
+            _OutputProtocol.__init__(self)
             assert isinstance(stacked_output_protocol, BuiltinsOutputProtocol)
             self.__stacked_output_protocol = stacked_output_protocol
 

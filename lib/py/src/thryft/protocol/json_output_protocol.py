@@ -36,7 +36,7 @@ except ImportError:
     import simplejson as json  # @UnusedImport
 from time import mktime
 
-from thryft.protocol.builtins_output_protocol import BuiltinsOutputProtocol
+from ..protocol.builtins_output_protocol import BuiltinsOutputProtocol
 
 
 class JsonOutputProtocol(BuiltinsOutputProtocol):

@@ -1,4 +1,4 @@
-from thryft.protocol._input_protocol import _InputProtocol
+from ..protocol._input_protocol import _InputProtocol
 
 
 class _StackedInputProtocol(_InputProtocol):

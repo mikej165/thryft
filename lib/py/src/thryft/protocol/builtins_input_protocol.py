@@ -33,8 +33,8 @@
 import datetime
 from decimal import Decimal
 
-from thryft.protocol._abstract_input_protocol import _AbstractInputProtocol
-from thryft.protocol._stacked_input_protocol import _StackedInputProtocol
+from ..protocol._abstract_input_protocol import _AbstractInputProtocol
+from ..protocol._stacked_input_protocol import _StackedInputProtocol
 
 
 class BuiltinsInputProtocol(_StackedInputProtocol):

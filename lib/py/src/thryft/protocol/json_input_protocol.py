@@ -33,7 +33,7 @@
 from datetime import datetime
 from decimal import Decimal
 
-from thryft.protocol.builtins_input_protocol import BuiltinsInputProtocol
+from ..protocol.builtins_input_protocol import BuiltinsInputProtocol
 
 
 try:

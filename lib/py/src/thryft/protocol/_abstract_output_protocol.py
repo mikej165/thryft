@@ -31,7 +31,7 @@
 # -----------------------------------------------------------------------------
 
 
-from thryft.protocol._output_protocol import _OutputProtocol
+from ..protocol._output_protocol import _OutputProtocol
 
 
 class _AbstractOutputProtocol(_OutputProtocol):

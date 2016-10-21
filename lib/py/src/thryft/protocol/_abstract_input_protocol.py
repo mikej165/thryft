@@ -31,9 +31,8 @@
 # -----------------------------------------------------------------------------
 
 from decimal import Decimal
-from datetime import datetime
-from thryft.protocol._input_protocol import _InputProtocol
-from thryft.protocol.type import Type
+from ..protocol._input_protocol import _InputProtocol
+from ..protocol.type import Type
 
 
 class _AbstractInputProtocol(_InputProtocol):
