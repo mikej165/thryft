@@ -111,8 +111,6 @@ def _%(name)s(
             ]
             for function in self.functions:
                 imports.extend(function.py_imports_definition(caller_stack=caller_stack))
-                if function.return_field is not None:
-                    imports.append('import thryft.protocol.json_input_protocol')
             imports.extend(self._parent_generator()._service_imports_definition)
             return imports
 
