@@ -36,7 +36,7 @@ from yutil import decamelize
 
 class Ast(object):
     class Node(object):
-        _DECAMELIZED_CLASS_NAME_CACHE = {}
+        _VISIT_METHOD_NAME_CACHE = {}
 
         class __Annotations(object):
             def __init__(self):
@@ -78,11 +78,11 @@ class Ast(object):
 
         def accept(self, visitor):
             try:
-                decamelized_class_name = self._DECAMELIZED_CLASS_NAME_CACHE[self.__class__.__name__]
+                visit_method_name = self._VISIT_METHOD_NAME_CACHE[self.__class__.__name__]
             except KeyError:
-                decamelized_class_name = decamelize(self.__class__.__name__)
-                self._DECAMELIZED_CLASS_NAME_CACHE[self.__class__.__name__] = decamelized_class_name
-            return getattr(visitor, 'visit_' + decamelized_class_name)(self)
+                visit_method_name = 'visit_' + decamelize(self.__class__.__name__)
+                self._VISIT_METHOD_NAME_CACHE[self.__class__.__name__] = visit_method_name
+            return getattr(visitor, visit_method_name)(self)
 
         @property
         def annotations(self):
