@@ -8,7 +8,7 @@
 	<name>libthryft</name>
 	<packaging>jar</packaging>
 	<url>https://github.com/minorg/thryft</url>
-	<version>2.0.1</version>
+	<version>2.0.2-SNAPSHOT</version>
 
 	<build>
 		<plugins>
