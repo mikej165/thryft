@@ -3,9 +3,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>libthryft</artifactId>
+	<description>Runtime library for the Thryft code generation framework</description>
 	<groupId>org.thryft</groupId>
+	<name>libthryft</name>
 	<packaging>jar</packaging>
-	<version>2.0.1-SNAPSHOT</version>
+	<url>https://github.com/minorg/thryft</url>
+	<version>2.0.1</version>
 
 	<build>
 		<plugins>
@@ -126,6 +129,15 @@
 		</dependency>
 	</dependencies>
 
+	<developers>
+		<developer>
+			<id>minorg</id>
+			<name>Minor G.</name>
+			<email>sonatype@minorgordon.net</email>
+			<url>https://github.com/minorg</url>
+		</developer>
+	</developers>
+
 	<distributionManagement>
 		<snapshotRepository>
 			<id>ossrh</id>
@@ -144,4 +156,8 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
+
+	<scm>
+		<url>https://github.com/minorg/thryft</url>
+	</scm>
 </project>
